@@ -45,7 +45,7 @@ public class GwtDeviceManagementOperationServiceImpl extends KapuaRemoteServiceS
     public PagingLoadResult<GwtDeviceManagementOperation> query(PagingLoadConfig loadConfig, GwtDeviceManagementOperationQuery gwtQuery) throws GwtKapuaException {
 
         int totalLength = 0;
-        List<GwtDeviceManagementOperation> gwtDeviceConnections = new ArrayList<GwtDeviceManagementOperation>();
+        List<GwtDeviceManagementOperation> gwtDeviceManagementOperations = new ArrayList<GwtDeviceManagementOperation>();
         try {
             DeviceManagementOperationQuery query = GwtKapuaDeviceModelConverter.convertDeviceManagementOperationQuery(loadConfig, gwtQuery);
 
@@ -53,13 +53,13 @@ public class GwtDeviceManagementOperationServiceImpl extends KapuaRemoteServiceS
             totalLength = Ints.checkedCast(DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.count(query));
 
             for (DeviceManagementOperation dmo : managementOperations.getItems()) {
-                gwtDeviceConnections.add(KapuaGwtDeviceModelConverter.convertManagementOperation(dmo));
+                gwtDeviceManagementOperations.add(KapuaGwtDeviceModelConverter.convertManagementOperation(dmo));
             }
 
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
 
-        return new BasePagingLoadResult<GwtDeviceManagementOperation>(gwtDeviceConnections, loadConfig.getOffset(), totalLength);
+        return new BasePagingLoadResult<GwtDeviceManagementOperation>(gwtDeviceManagementOperations, loadConfig.getOffset(), totalLength);
     }
 }

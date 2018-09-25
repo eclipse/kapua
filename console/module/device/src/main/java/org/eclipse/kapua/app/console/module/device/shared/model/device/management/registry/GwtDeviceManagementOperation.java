@@ -16,12 +16,10 @@ import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityM
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceEvent;
 
 import java.util.Date;
-import java.util.List;
 
 public class GwtDeviceManagementOperation extends GwtUpdatableEntityModel {
 
     @Override
-    @SuppressWarnings({"unchecked"})
     public <X> X get(String property) {
         if ("startedOnFormatted".equals(property)) {
             return (X) DateUtils.formatDateTime(getStartedOn());
@@ -96,12 +94,7 @@ public class GwtDeviceManagementOperation extends GwtUpdatableEntityModel {
         set("status", status);
     }
 
-    public List<String> getOperationProperties() {
-        return get("operationProperties");
+    public void addInputProperty(String name, String value) {
+        set("inputProperty_" + name.replace(".", ""), value);
     }
-
-    public void setOperationProperties(List<String> operationProperties) {
-        set("operationProperties", operationProperties);
-    }
-
 }

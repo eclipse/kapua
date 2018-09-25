@@ -125,15 +125,6 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
         column.setHidden(true);
         configs.add(column);
 
-        GridCellRenderer<GwtDeviceManagementOperation> renderer = new GridCellRenderer<GwtDeviceManagementOperation>() {
-
-            @Override
-            public Object render(GwtDeviceManagementOperation model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtDeviceManagementOperation> store, Grid<GwtDeviceManagementOperation> grid) {
-                return model.getOperationProperties() == null || model.getOperationProperties().isEmpty() ? "" : model.getOperationProperties().get(0);
-            }
-
-        };
-
         column = new ColumnConfig();
         column.setId("startedOnFormatted");
         column.setHeader(DEVICES_MSGS.deviceInstallTabHistoryTableStartedOn());
@@ -148,13 +139,24 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
         configs.add(column);
 
         column = new ColumnConfig();
-        column.setId("package");
-        column.setHeader(DEVICES_MSGS.deviceInstallTabHistoryTablePackage());
+        column.setId("inputProperty_kapuapackagedownloadname");
+        column.setHeader(DEVICES_MSGS.deviceInstallTabHistoryTableName());
         column.setWidth(200);
-        column.setRenderer(renderer);
         configs.add(column);
 
-        renderer = new GridCellRenderer<GwtDeviceManagementOperation>() {
+        column = new ColumnConfig();
+        column.setId("inputProperty_kapuapackagedownloadversion");
+        column.setHeader(DEVICES_MSGS.deviceInstallTabHistoryTableVersion());
+        column.setWidth(200);
+        configs.add(column);
+
+        column = new ColumnConfig();
+        column.setId("inputProperty_kapuapackagedownloaduri");
+        column.setHeader(DEVICES_MSGS.deviceInstallTabHistoryTableURI());
+        column.setWidth(200);
+        configs.add(column);
+
+        GridCellRenderer renderer = new GridCellRenderer<GwtDeviceManagementOperation>() {
 
             @Override
             public Object render(GwtDeviceManagementOperation model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtDeviceManagementOperation> store, Grid<GwtDeviceManagementOperation> grid) {

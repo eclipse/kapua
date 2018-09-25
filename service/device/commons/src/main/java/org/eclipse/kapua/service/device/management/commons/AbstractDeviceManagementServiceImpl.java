@@ -16,18 +16,24 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ThrowingRunnable;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.type.ObjectTypeConverter;
+import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationCreator;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationProperty;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Utility {@code abstract} {@link Class} used to provide utility methods to all implementation of Device Management Services.
@@ -83,10 +89,33 @@ public abstract class AbstractDeviceManagementServiceImpl {
         deviceManagementOperationCreator.setStartedOn(new Date());
         deviceManagementOperationCreator.setAppId(requestMessage.getChannel().getAppName().getValue());
         deviceManagementOperationCreator.setAction(requestMessage.getChannel().getMethod());
+        deviceManagementOperationCreator.setResource(!requestMessage.getChannel().getSemanticParts().isEmpty() ? requestMessage.getChannel().getSemanticParts().get(0) : null);
         deviceManagementOperationCreator.setStatus(OperationStatus.RUNNING);
+
+        deviceManagementOperationCreator.setInputProperties(extractInputProperties(requestMessage));
 
         DeviceManagementOperation deviceManagementOperation = DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.create(deviceManagementOperationCreator);
 
         return deviceManagementOperation.getId();
     }
+
+    private List<DeviceManagementOperationProperty> extractInputProperties(KapuaRequestMessage<?, ?> requestMessage) {
+
+        List<DeviceManagementOperationProperty> inputProperties = new ArrayList<>();
+        Map<String, Object> properties = requestMessage.getPayload().getMetrics();
+
+        properties.forEach((k, v) -> {
+            if (v != null) {
+                inputProperties.add(
+                        DEVICE_MANAGEMENT_OPERATION_FACTORY.newStepProperty(
+                                k,
+                                ObjectTypeConverter.toString(v.getClass()),
+                                ObjectValueConverter.toString(v))
+                );
+            }
+        });
+
+        return inputProperties;
+    }
+
 }
