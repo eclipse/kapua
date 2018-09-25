@@ -23,7 +23,7 @@
             cardinality="0"
             required="true"
             default="false"
-            description="Whether to allow infinite users for this account.">
+            description="Whether to allow infinite users for this account or not.">
         </AD>
 
         <AD id="maxNumberChildEntities"  
@@ -33,7 +33,7 @@
             required="true"
             default="0" 
             min="0"
-            description="Maximum number of users that are allowed to be created for this account.">
+            description="Maximum number of users that are allowed to be created for this account. Valid if infiniteChildUsers set to false.">
         </AD>
         
     </OCD>

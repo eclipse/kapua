@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+    Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -13,7 +13,7 @@
 <MetaData xmlns="http://www.osgi.org/xmlns/metatype/v1.2.0" localization="en_us">
     <OCD id="org.eclipse.kapua.service.datastore.MessageStoreService"
          name="MessageStoreService"
-         description="This is the configuration for the kapua MessageStoreService ">
+         description="This is the configuration for the kapua MessageStoreService.">
 
         <Icon resource="OSGI-INF/message-store-service.png" size="32" />
 
@@ -33,7 +33,7 @@
             required="true"
             default="30"
             min="0"
-            description="Message retention period, in days." />
+            description="Message retention period (in days)." />
 
         <AD id="rxByteLimit"
             name="rxByteLimit"
@@ -50,7 +50,7 @@
             cardinality="0"
             required="true"
             default="DEVICE_TIMESTAMP"
-            description="Data index by (server timestamp or device timestamp)">
+            description="Data index by server timestamp or device timestamp.">
             <Option label="DEVICE_TIMESTAMP" value="DEVICE_TIMESTAMP" />
             <Option label="SERVER_TIMESTAMP" value="SERVER_TIMESTAMP" />
         </AD>
