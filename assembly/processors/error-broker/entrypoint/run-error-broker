@@ -11,4 +11,11 @@
 #        Eurotech
 ################################################################################
 
-java -jar -Dcommons.db.schema.update=false -Dactivemq_error.connection.host=broker -Ddatastore.elasticsearch.node=es -Dcommons.db.connection.host=db  kapua-processor-error-broker-1.1.0-SNAPSHOT-uber.jar
+java -jar \
+-Dcommons.db.schema.update=true \
+-Dcommons.db.connection.host=db \
+-Dcommons.db.connection.port=3306 \
+-Dbroker.host=broker \
+-Dactivemq_error.connection.host=broker \
+-Dcommons.eventbus.url="failover:(amqp://events-broker:5682)?jms.sendTimeout=1000" \
+kapua-processor-error-broker-1.1.0-SNAPSHOT-uber.jar

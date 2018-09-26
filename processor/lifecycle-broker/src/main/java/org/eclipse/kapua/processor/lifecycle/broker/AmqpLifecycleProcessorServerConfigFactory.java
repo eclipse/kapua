@@ -20,7 +20,6 @@ import org.eclipse.kapua.broker.connector.amqp.AmqpTransportActiveMQSource;
 import org.eclipse.kapua.broker.connector.amqp.ErrorTarget;
 import org.eclipse.kapua.commons.core.ObjectFactory;
 import org.eclipse.kapua.commons.core.vertx.HealthCheckProvider;
-import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.connector.Properties;
 import org.eclipse.kapua.connector.kura.KuraPayloadProtoConverter;
 import org.eclipse.kapua.device.registry.connector.LifecycleProcessor;
@@ -44,9 +43,6 @@ public class AmqpLifecycleProcessorServerConfigFactory implements ObjectFactory<
     @Inject
     @Named("event-bus-server.health-address")
     private String healthCheckEBAddress;
-
-    @Inject
-    private JAXBContextProvider jaxbContextProvider;
 
     @Inject 
     private ConnectionConfiguration connectionConfig;
@@ -134,8 +130,6 @@ public class AmqpLifecycleProcessorServerConfigFactory implements ObjectFactory<
 
         config.setEBAddress(ebAddress);
         config.setHealthCheckEBAddress(healthCheckEBAddress);
-        config.setJAXBContextProvider(jaxbContextProvider);
-
         return config;
     }
 }

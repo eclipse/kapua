@@ -11,18 +11,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core;
 
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.configuration.CompositeConfiguration;
+import org.apache.commons.configuration.ConfigurationConverter;
+import org.apache.commons.configuration.EnvironmentConfiguration;
+import org.apache.commons.configuration.SystemConfiguration;
 import org.eclipse.kapua.commons.core.spi.ConfigurationSourceFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 //import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
+
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 
 /**
  * Creates a {@link ConfigurationSource} from a JSON file specified by the invoker of 
@@ -39,7 +43,7 @@ public class ConfigurationSourceFactoryImpl implements ConfigurationSourceFactor
         ObjectMapper mapper = new ObjectMapper();
 //      JavaPropsMapper propsMapper = new JavaPropsMapper();
 
-        PropertiesSource propSource = null;
+        CompositeSource compositeSource = null;
         try {
             @SuppressWarnings("unchecked")
             HashMap<String, Object> m = mapper.readValue(classLoader.getResourceAsStream(name), HashMap.class);
@@ -48,12 +52,16 @@ public class ConfigurationSourceFactoryImpl implements ConfigurationSourceFactor
 //            props.load(new StringReader(q));
             Properties props = new Properties();
             toProperties(m, "", props);
-            propSource = new PropertiesSource(props);
+
+            CompositeConfiguration compositeConfig = new CompositeConfiguration();
+            compositeConfig.addConfiguration(new SystemConfiguration());
+            compositeConfig.addConfiguration(new EnvironmentConfiguration());
+            compositeConfig.addConfiguration(ConfigurationConverter.getConfiguration(props));
+            compositeSource = new CompositeSource(compositeConfig);
         } catch (IOException e) {
             logger.error("Error building configuration: {}", e.getMessage(), e);
-            propSource = null;
         }
-        return propSource;
+        return compositeSource;
     }
 
     // TODO Replace with jackson JavaPropsMapper

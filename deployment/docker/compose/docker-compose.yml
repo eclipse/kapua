@@ -4,8 +4,8 @@ services:
   db:
     image: kapua/kapua-sql:${IMAGE_VERSION}
     ports:
-    - 8181:8181
-    - 3306:3306
+      - 8181:8181
+      - 3306:3306
   es:
     image: elasticsearch:5.4.0
     ports:
@@ -20,13 +20,13 @@ services:
   events-broker:
     image: kapua/kapua-events-broker:${IMAGE_VERSION}
     ports:
-    - 5682:5682
+      - 5682:5682
   broker:
     image: kapua/kapua-broker:${IMAGE_VERSION}
     ports:
-    - 1883:1883
-    - 61614:61614
-    - 5672:5672
+      - 1883:1883
+      - 61614:61614
+      - 5672:5672
     depends_on:
       - db
       - es
@@ -34,7 +34,7 @@ services:
   kapua-console:
     image: kapua/kapua-console:${IMAGE_VERSION}
     ports:
-    - 8080:8080
+      - 8080:8080
     depends_on:
       - broker
       - db
@@ -43,7 +43,7 @@ services:
   kapua-api:
     image: kapua/kapua-api:${IMAGE_VERSION}
     ports:
-    - 8081:8080
+      - 8081:8080
     depends_on:
       - broker
       - db
@@ -53,14 +53,18 @@ services:
     image: kapua/kapua-datastore-broker:${IMAGE_VERSION}
     depends_on:
       - broker
+      - db
       - es
+      - events-broker
   kapua-error-broker:
     image: kapua/kapua-error-broker:${IMAGE_VERSION}
     depends_on:
-    - broker
-    - es
+      - broker
+      - db
+      - events-broker
   kapua-lifecycle-broker:
     image: kapua/kapua-lifecycle-broker:${IMAGE_VERSION}
     depends_on:
-    - broker
-    - es
+      - broker
+      - db
+      - events-broker
