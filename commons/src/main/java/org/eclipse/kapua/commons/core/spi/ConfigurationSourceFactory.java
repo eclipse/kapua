@@ -15,5 +15,5 @@ import org.eclipse.kapua.commons.core.ConfigurationSource;
 
 public interface ConfigurationSourceFactory {
 
-    public ConfigurationSource create(ClassLoader classLoader, String name);
+    public ConfigurationSource create(ClassLoader classLoader, String name) throws Exception;
 }
