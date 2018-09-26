@@ -88,14 +88,12 @@ public class ServiceEventScope {
      */
     public static void end() {
         Stack<ServiceEvent> eventStack = eventContextThdLocal.get();
-        if (eventStack != null && !eventStack.empty()) {
-            eventContextThdLocal.set(null);
-        }
-
-        if (eventStack != null) {
-            eventStack.pop();
-        } else {
+        if (eventStack == null || eventStack.empty()) {
             throw KapuaRuntimeException.internalError("Event stack shouldn't be 'null'");
+        }
+        eventStack.pop();
+        if (eventStack.empty()) {
+            eventContextThdLocal.set(null);
         }
     }
 }
