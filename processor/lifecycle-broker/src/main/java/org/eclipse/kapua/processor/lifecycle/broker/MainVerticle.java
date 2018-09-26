@@ -14,6 +14,7 @@ package org.eclipse.kapua.processor.lifecycle.broker;
 //import java.util.Optional;
 import javax.inject.Inject;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.core.ObjectFactory;
 import org.eclipse.kapua.commons.core.vertx.AbstractMainVerticle;
 import org.eclipse.kapua.commons.core.vertx.EBHealthCheckProvider;
@@ -22,7 +23,10 @@ import org.eclipse.kapua.commons.core.vertx.HealthCheckProvider;
 //import org.eclipse.kapua.commons.setting.system.SystemSetting;
 //import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.core.vertx.HttpRestServer;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.message.transport.TransportMessage;
+import org.eclipse.kapua.processor.commons.KapuaServiceContext;
 import org.eclipse.kapua.processor.commons.MessageProcessorServer;
 import org.eclipse.kapua.processor.commons.MessageProcessorServerConfig;
 //import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
@@ -37,6 +41,11 @@ public class MainVerticle extends AbstractMainVerticle {
 
     protected final static Logger logger = LoggerFactory.getLogger(MainVerticle.class);
 
+    private KapuaServiceContext kapuaServiceCtx;
+
+    @Inject
+    private JAXBContextProvider jaxbContextProvider;
+
     @Inject
     private HttpRestServer httpRestServer;
 
@@ -46,9 +55,25 @@ public class MainVerticle extends AbstractMainVerticle {
     @Override
     protected void internalStart(Future<Void> startFuture) throws Exception {
 
-        logger.info("Starting Datastore Consumer... DONE");
+        logger.info("Starting Datastore Processor...");
 
-        Future.succeededFuture().compose(map -> {
+        Future<Void> superFuture = Future.future();
+        vertx.executeBlocking(fut -> {
+            try {
+               kapuaServiceCtx = KapuaServiceContext.create(SystemSetting.getInstance(), jaxbContextProvider);
+               fut.complete();
+           } catch (KapuaException e) {
+               fut.fail(e);
+           }
+        }, ar -> {
+            if (ar.succeeded()) {
+                superFuture.complete();;
+            }
+            else {
+                superFuture.fail(ar.cause());;
+            }
+        });
+        superFuture.compose(map -> {
             Future<Void> future = Future.future();
             MessageProcessorServerConfig<byte[], TransportMessage> amqpConnectorServerConfig = amqpConnectorServerConfigFactory.create();
             MessageProcessorServer<byte[], TransportMessage> amqpConnectorServer = amqpConnectorServerConfig.build();
@@ -79,21 +104,38 @@ public class MainVerticle extends AbstractMainVerticle {
             return future;
         }).setHandler(result -> {
             if (result.succeeded()) {
+                logger.info("Starting Lifecycle Processor...DONE");
                 startFuture.complete();
             } else {
+                logger.error("Starting Lifecycle Processor...FAILED", result.cause());
                 startFuture.fail(result.cause());
             }
         });
     }
 
     @Override
-    protected void internalStop(Future<Void> future) throws Exception {
-        //do nothing
-        logger.info("Closing Lifecycle Consumer...");
-        future.complete();
-        logger.info("Closing Lifecycle Consumer... DONE");
-        //this stop call is no more needed since the connector is a verticle then is already stopped during the vertx.stop call
-        //connector.stop(future);
+    protected void internalStop(Future<Void> stopFuture) throws Exception {
+        logger.info("Stopping Lifecycle Processor...");
+        vertx.executeBlocking(fut -> {
+            try {
+                if (kapuaServiceCtx != null) {
+                    kapuaServiceCtx.close();
+                    kapuaServiceCtx = null;
+                }
+                stopFuture.complete();
+            } catch (KapuaException e) {
+                stopFuture.fail(e);
+            }
+        }, ar -> {
+            if (ar.succeeded()) {
+                logger.info("Stopping Lifecycle Processor...DONE");
+                stopFuture.handle(Future.succeededFuture());
+            }
+            else {
+                logger.info("Stopping Lifecycle Processor...FAILED", ar.cause());
+                stopFuture.handle(Future.failedFuture(ar.cause()));
+            }
+        });
     }
 
 }

@@ -20,14 +20,14 @@ services:
   events-broker:
     image: kapua/kapua-events-broker:${IMAGE_VERSION}
     ports:
-    - 5682:5682
+      - 5682:5682
   broker:
     image: kapua/kapua-broker:${IMAGE_VERSION}
     ports:
-    - 1883:1883
-    - 8883:8883
-    - 61614:61614
-    - 5672:5672
+      - 1883:1883
+      - 8883:8883
+      - 61614:61614
+      - 5672:5672
     depends_on:
       - db
       - es
@@ -80,14 +80,18 @@ services:
     image: kapua/kapua-activemq-datastore:${IMAGE_VERSION}
     depends_on:
       - broker
+      - db
       - es
+      - events-broker
   kapua-error-broker:
     image: kapua/kapua-error-broker:${IMAGE_VERSION}
     depends_on:
-    - broker
-    - es
+      - broker
+      - db
+      - events-broker
   kapua-lifecycle-broker:
     image: kapua/kapua-lifecycle-broker:${IMAGE_VERSION}
     depends_on:
-    - broker
-    - es
+      - broker
+      - db
+      - events-broker

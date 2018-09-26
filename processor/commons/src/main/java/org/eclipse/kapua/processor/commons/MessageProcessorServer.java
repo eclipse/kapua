@@ -16,11 +16,9 @@ import java.util.Map;
 
 import org.eclipse.kapua.commons.core.vertx.AbstractEBServer;
 import org.eclipse.kapua.commons.core.vertx.EBServerConfig;
-import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.connector.AbstractMessageProcessor;
-import org.eclipse.kapua.connector.MessageSource;
 import org.eclipse.kapua.connector.Converter;
+import org.eclipse.kapua.connector.MessageSource;
 import org.eclipse.kapua.connector.MessageTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +40,6 @@ public class MessageProcessorServer<M,P> extends AbstractEBServer {
     private MessageTarget<P> messageTarget;
     private MessageTarget errorTarget;
     private AbstractMessageProcessor<M,P> messageProcessor;
-    private JAXBContextProvider jaxbContextProvider;
 
     public static interface Builder<M,P> {
 
@@ -57,8 +54,6 @@ public class MessageProcessorServer<M,P> extends AbstractEBServer {
         String getHealthCheckEBAddress();
 
         String getEBAddress();
-
-        JAXBContextProvider getJAXBContextProvider();
 
         default MessageProcessorServer<M,P> build() {
             MessageProcessorServer<M,P> server = new MessageProcessorServer<M,P>();
@@ -76,18 +71,7 @@ public class MessageProcessorServer<M,P> extends AbstractEBServer {
     private String ebAddress;
     private EBServerConfig ebServerConfig;
 
-    public MessageProcessorServer() {
-//      SystemSetting configSys = SystemSetting.getInstance();
-//      logger.info("Checking database... '{}'", configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false));
-//      if(configSys.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
-//          logger.debug("Starting Liquibase embedded client.");
-//          String dbUsername = configSys.getString(SystemSettingKey.DB_USERNAME);
-//          String dbPassword = configSys.getString(SystemSettingKey.DB_PASSWORD);
-//          String schema = MoreObjects.firstNonNull(configSys.getString(SystemSettingKey.DB_SCHEMA_ENV), configSys.getString(SystemSettingKey.DB_SCHEMA));
-//          new KapuaLiquibaseClient(JdbcConnectionUrlResolvers.resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
-//      }
-      //init options
-    }
+    public MessageProcessorServer() {}
 
     public void start(Future<Void> startFuture) throws Exception {
         super.start();
@@ -114,7 +98,6 @@ public class MessageProcessorServer<M,P> extends AbstractEBServer {
     }
 
     private void initializeProcessors() {
-        XmlUtil.setContextProvider(jaxbContextProvider);
         targetMap = new HashMap<>();
         targetMap.put(PROCESSOR_NAME_DATASTORE, messageTarget);
         errorTargetMap = new HashMap<>();

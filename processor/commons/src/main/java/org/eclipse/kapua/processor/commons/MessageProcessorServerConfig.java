@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.commons.core.vertx.HealthCheckProvider;
-import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.connector.Converter;
 import org.eclipse.kapua.connector.MessageSource;
 import org.eclipse.kapua.connector.MessageTarget;
@@ -28,7 +27,6 @@ public class MessageProcessorServerConfig<M,P> implements MessageProcessorServer
     private MessageTarget errorTarget;
     private String ebAddress;
     private String healthCheckEBAddress;
-    private JAXBContextProvider jaxbContextProvider;
 
     private List<HealthCheckProvider> healthCheckProviders = new ArrayList<>();
 
@@ -84,15 +82,6 @@ public class MessageProcessorServerConfig<M,P> implements MessageProcessorServer
 
     public void setHealthCheckEBAddress(String anEBAddress) {
         healthCheckEBAddress = anEBAddress;
-    }
-
-    @Override
-    public JAXBContextProvider getJAXBContextProvider() {
-        return jaxbContextProvider;
-    }
-
-    public void setJAXBContextProvider(JAXBContextProvider aProvider) {
-        jaxbContextProvider = aProvider;
     }
 
     public List<HealthCheckProvider> getHealthCheckProviders() {
