@@ -41,6 +41,6 @@ ENV ACTIVEMQ_OPTS "-Dcommons.db.schema.update=true \
 
 EXPOSE 1883 8883 61614 61615 8161
 
-VOLUME /var/opt/activemq/data
+VOLUME /opt/activemq/data
 
 ENTRYPOINT /var/opt/activemq/run-broker

@@ -25,11 +25,20 @@ services:
     image: kapua/kapua-broker:${IMAGE_VERSION}
     ports:
       - 1883:1883
+      - 8883:8883
       - 61614:61614
     depends_on:
       - db
       - es
       - events-broker
+    environment:
+      - KAPUA_DISABLE_SSL
+      - KAPUA_CRT
+      - KAPUA_CA
+      - KAPUA_KEY
+      - KAPUA_KEY_PASSWORD
+      - KAPUA_KEYSTORE
+      - KAPUA_KEYSTORE_PASSWORD
   kapua-console:
     image: kapua/kapua-console:${IMAGE_VERSION}
     ports:
