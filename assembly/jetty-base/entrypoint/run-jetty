@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ################################################################################
 #    Copyright (c) 2017 Red Hat Inc
@@ -12,16 +12,54 @@
 #        Red Hat Inc - initial API and implementation
 ################################################################################
 
-# Generate X509 certificate and private key
-openssl req -x509 -newkey rsa:4096 -keyout /var/opt/jetty/key.pem -out /var/opt/jetty/cert.pem -days 365 -nodes -subj '/O=Eclipse Kapua/C=XX'
-openssl pkcs8 -topk8 -in /var/opt/jetty/key.pem -out /var/opt/jetty/key.pk8 -nocrypt
-rm /var/opt/jetty/key.pem
+JETTY_HOME="/opt/jetty"
+JETTY_BASE="/var/opt/jetty"
 
-START_ARGS="$START_ARGS -Djetty.home=/opt/jetty"
-START_ARGS="$START_ARGS -Djetty.base=/var/opt/jetty"
+# Generate X509 certificate and private key
+openssl req -x509 -newkey rsa:4096 -keyout ${JETTY_BASE}/key.pem -out ${JETTY_BASE}/cert.pem -days 365 -nodes -subj '/O=Eclipse Kapua/C=XX'
+openssl pkcs8 -topk8 -in ${JETTY_BASE}/key.pem -out ${JETTY_BASE}/key.pk8 -nocrypt
+rm ${JETTY_BASE}/key.pem
+
+START_ARGS="$START_ARGS -Djetty.home=${JETTY_HOME}"
+START_ARGS="$START_ARGS -Djetty.base=${JETTY_BASE}"
 
 # START_ARGS : Arguments to the starter JVM
 # JAVA_OPTS : Arguments to the server JVMs
+
+# Certificate Options
+
+: ${KAPUA_DISABLE_SSL:="true"}
+
+if [ "${KAPUA_DISABLE_SSL}" == "false" ]; then
+    # Keystore configuration
+    CERTIFICATES_PATH="tls"
+    if [ ! -d "${JETTY_BASE}/${CERTIFICATES_PATH}" ]; then
+        mkdir -p "${JETTY_BASE}/${CERTIFICATES_PATH}"
+    fi
+    : ${KEYSTORE_NAME:="kapua.pkcs12"}
+    : ${KAPUA_KEYSTORE_PASSWORD:="changeit"}
+    if [ ! -f "${JETTY_BASE}/${CERTIFICATES_PATH}/${KEYSTORE_NAME}" ]; then
+        if [ -z "${KAPUA_KEYSTORE}" ]; then
+            if [ ! -z "${KAPUA_KEY_PASSWORD}" ]; then
+                PASSWORD_PARAM="-passin pass:${KAPUA_KEY_PASSWORD}";
+            fi
+            openssl pkcs12 -export -in <(echo "${KAPUA_CRT}"; echo "${KAPUA_CA}") -inkey <(echo "${KAPUA_KEY}") ${PASSWORD_PARAM} -name kapua -password pass:"${KAPUA_KEYSTORE_PASSWORD}" -out "${JETTY_BASE}/${CERTIFICATES_PATH}/${KEYSTORE_NAME}"
+        else
+            echo "${KAPUA_KEYSTORE}" | base64 --decode > "${JETTY_BASE}/${CERTIFICATES_PATH}/${KEYSTORE_NAME}"
+        fi
+    fi
+
+    echo "jetty.sslContext.keyStorePath=${CERTIFICATES_PATH}/${KEYSTORE_NAME}" >> ${JETTY_BASE}/start.d/ssl.ini
+    echo "jetty.sslContext.keyStorePassword=${KAPUA_KEYSTORE_PASSWORD}" >> ${JETTY_BASE}/start.d/ssl.ini
+    echo "jetty.sslContext.trustStorePath=${CERTIFICATES_PATH}/${KEYSTORE_NAME}" >> ${JETTY_BASE}/start.d/ssl.ini
+    echo "jetty.sslContext.trustStorePassword=${KAPUA_KEYSTORE_PASSWORD}" >> ${JETTY_BASE}/start.d/ssl.ini
+    echo "jetty.sslContext.keyManagerPassword=${KAPUA_KEYSTORE_PASSWORD}" >> ${JETTY_BASE}/start.d/ssl.ini
+
+else
+    rm -f ${JETTY_BASE}/start.d/https.ini
+fi
+
+# Start Jetty
 
 eval echo "START_ARGS = $START_ARGS"
 eval echo "JAVA_OPTS = $JAVA_OPTS"
