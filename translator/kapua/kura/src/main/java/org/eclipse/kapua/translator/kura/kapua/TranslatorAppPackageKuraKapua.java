@@ -112,13 +112,33 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
 
         if (metrics.get(PackageMetrics.APP_METRIC_PACKAGE_OPERATION_ID.getValue()) != null) {
             responsePayload.setPackageDownloadOperationId(new KapuaEid(new BigInteger(metrics.get(PackageMetrics.APP_METRIC_PACKAGE_OPERATION_ID.getValue()).toString())));
-        }
 
-        if (metrics.get(PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_STATUS.getValue()) != null) {
-            responsePayload.setPackageDownloadOperationStatus(DevicePackageDownloadStatus.valueOf((String) metrics.get(PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_STATUS.getValue())));
+            if (metrics.get(PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_STATUS.getValue()) != null) {
+                DevicePackageDownloadStatus status;
+
+                String kuraStatus = (String) metrics.get(PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_STATUS.getValue());
+                switch (kuraStatus) {
+                    case "IN_PROGRESS":
+                        status = DevicePackageDownloadStatus.IN_PROGRESS;
+                        break;
+                    case "FAILED":
+                        status = DevicePackageDownloadStatus.FAILED;
+                        break;
+                    case "DONE":
+                    case "ALREADY DONE":
+                        status = DevicePackageDownloadStatus.COMPLETED;
+                        break;
+                    default:
+                        throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, null, kuraStatus);
+                }
+                responsePayload.setPackageDownloadOperationStatus(status);
+            }
+
+            responsePayload.setPackageDownloadOperationSize((Integer) metrics.get(PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_SIZE.getValue()));
+            responsePayload.setPackageDownloadOperationProgress((Integer) metrics.get(PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_PROGRESS.getValue()));
+        } else {
+            responsePayload.setPackageDownloadOperationStatus(DevicePackageDownloadStatus.NONE);
         }
-        responsePayload.setPackageDownloadOperationSize((Integer) metrics.get(PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_SIZE.getValue()));
-        responsePayload.setPackageDownloadOperationProgress((Integer) metrics.get(PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_PROGRESS.getValue()));
 
         String body;
         if (kuraResponsePayload.getBody() != null) {
