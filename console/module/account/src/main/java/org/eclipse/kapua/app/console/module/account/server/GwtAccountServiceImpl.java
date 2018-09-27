@@ -232,14 +232,12 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             accountPropertiesPairs.add(new GwtGroupedNVPair(entityInfo, "accountModifiedBy", userModifiedBy != null ? userModifiedBy.getName() : null));
 
             if (account.getScopeId() != null) {
-                Account parentAccount = KapuaSecurityUtils.doPrivileged(new Callable<Account>() {
-
-                    @Override
-                    public Account call() throws Exception {
-                        return ACCOUNT_SERVICE.find(account.getScopeId());
-                    }
-                });
-                accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountParent", parentAccount != null ? parentAccount.getName() : null));
+                try {
+                    Account parentAccount = ACCOUNT_SERVICE.find(account.getScopeId());
+                    accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountParent", parentAccount != null ? parentAccount.getName() : null));
+                } catch (SubjectUnauthorizedException suex) {
+                    accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountParent", null));
+                }
             }
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountName", account.getName()));
 
