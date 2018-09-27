@@ -36,34 +36,18 @@ public class AccountEditDialog extends AccountAddDialog {
     @Override
     protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
-        parentAccountNameLabel.setValue("");
         bodyPanel.setAutoHeight(true);
         setClosable(false);
         setScrollMode(Scroll.AUTO);
 
         fieldSet.remove(accountNameField);
+        fieldSet.remove(parentAccountNameLabel);
+
         accountNameLabel.setVisible(true);
         accountNameLabel.setToolTip(MSGS.accountFormParentAccountNameEditDialogTooltip());
 
         accountNameLabel.setValue(selectedAccount.getName());
         accountNameField.setValue(selectedAccount.getName());
-
-        if (selectedAccount.getParentAccountId() != null) {
-            GWT_ACCOUNT_SERVICE.find(selectedAccount.getParentAccountId(), new AsyncCallback<GwtAccount>() {
-
-                @Override
-                public void onSuccess(GwtAccount result) {
-                    if (parentAccountNameLabel != null) {
-                        parentAccountNameLabel.setValue(result.getName());
-                    }
-                }
-
-                @Override
-                public void onFailure(Throwable caught) {
-                    parentAccountNameLabel.setValue(MSGS.accountEditParentNotAvailable());
-                }
-            });
-        }      
 
         expirationDateField.setValue(selectedAccount.getExpirationDate());
         expirationDateField.setOriginalValue(selectedAccount.getExpirationDate());

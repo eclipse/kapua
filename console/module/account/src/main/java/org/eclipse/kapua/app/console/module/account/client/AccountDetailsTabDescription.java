@@ -86,8 +86,8 @@ public class AccountDetailsTabDescription extends EntityDescriptionTabItem<GwtAc
         accountsToolBar.add(editButton);
         accountsToolBar.add(new SeparatorToolItem());
 
-        if (currentSession.hasPermission(AccountSessionPermission.write())) {
-            editButton.setEnabled(true);
+        if (!currentSession.hasPermission(AccountSessionPermission.write())) {
+            editButton.disable();
         }
         return accountsToolBar;
     }
