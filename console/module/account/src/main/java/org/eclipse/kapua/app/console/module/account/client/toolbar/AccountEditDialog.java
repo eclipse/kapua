@@ -36,6 +36,7 @@ public class AccountEditDialog extends AccountAddDialog {
     @Override
     protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
+        parentAccountNameLabel.setValue("");
         bodyPanel.setAutoHeight(true);
         setClosable(false);
         setScrollMode(Scroll.AUTO);
