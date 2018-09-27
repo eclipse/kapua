@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2017 Eurotech and/or its affiliates and others
+    Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -13,7 +13,7 @@
 <MetaData xmlns="http://www.osgi.org/xmlns/metatype/v1.2.0" localization="en_us">
     <OCD id="org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService"
          name="DeviceConnectionService" 
-         description="This is the configuration for the kapua DeviceConnectionService ">
+         description="This is the configuration for the kapua DeviceConnectionService.">
         
         <Icon resource="OSGI-INF/account-service.png" size="32"/>
 
@@ -23,7 +23,7 @@
              cardinality="0"
              required="true"
              default="LOOSE"
-             description="Default device-user coupling value. Allowed values are: LOOSE (no check), STRICT (check the device lastUserId and/or reservedUserId fields)">
+             description="Default device-user coupling value. Allowed values are LOOSE (no check) and STRICT (check the device lastUserId and/or reservedUserId fields).">
              <Option label="LOOSE" value="LOOSE" />
              <Option label="STRICT" value="STRICT" />
          </AD>
