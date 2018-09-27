@@ -170,6 +170,8 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
 
     @Override
     protected void preSubmit() {
+        cronExpression.clearInvalid();
+
         if (triggerName.getValue() == null) {
             triggerName.markInvalid(VAL_MSGS.nameRequiredMsg());
             return;
@@ -215,7 +217,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
             }
         }
 
-        if (cronExpression.getValue() == null && retryInterval.getValue() == null) {
+        if (cronExpression.getValue() == null && cronExpression.isValid() && retryInterval.getValue() == null && retryInterval.isValid()) {
             cronExpression.markInvalid(VAL_MSGS.retryIntervalOrCronRequired());
             retryInterval.markInvalid(VAL_MSGS.retryIntervalOrCronRequired());
             return;
@@ -239,8 +241,6 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
                     }
                 }
             });
-        } else {
-            cronExpression.markInvalid(VAL_MSGS.cronExpressionRequired());
         }
     }
 
