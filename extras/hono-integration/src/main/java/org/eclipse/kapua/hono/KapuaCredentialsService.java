@@ -69,6 +69,7 @@ public class KapuaCredentialsService extends BaseCredentialsService<Object> {
     @Override
     public void get(String tenantId, String type, String authId, JsonObject clientContext, Handler<AsyncResult<CredentialsResult<JsonObject>>> resultHandler) {
         CredentialsObject result = null;
+
         try {
             User user = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(authId));
             if (user == null) {
@@ -138,4 +139,5 @@ public class KapuaCredentialsService extends BaseCredentialsService<Object> {
     public void getAll(String s, String s1, Handler<AsyncResult<CredentialsResult<JsonObject>>> handler) {
         //TODO implement
     }
+
 }
