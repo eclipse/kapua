@@ -147,4 +147,9 @@ public class KapuaHonoClient implements HonoClient {
     public Future<CommandClient> getOrCreateCommandClient(String s, String s1) {
         return null;
     }
+
+    @Override
+    public Future<CommandClient> getOrCreateCommandClient(String s, String s1, String s2) {
+        return null;
+    }
 }
