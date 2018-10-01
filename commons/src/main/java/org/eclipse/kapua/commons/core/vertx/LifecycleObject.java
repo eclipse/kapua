@@ -11,13 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core.vertx;
 
-import io.vertx.ext.healthchecks.HealthCheckHandler;
+import io.vertx.core.Future;
 
-/**
- * Registers health checks within a {@link HealthCheckHandler}
- *
- */
-public interface HealthCheckProvider {
+public interface LifecycleObject {
 
-    public void registerHealthChecks(HealthCheckHandler handler);
+    public void start(Future<Void> startFuture) throws Exception;
+
+    public void stop(Future<Void> stopFuture) throws Exception;
 }

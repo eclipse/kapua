@@ -11,19 +11,30 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core.vertx;
 
-import io.vertx.core.Verticle;
-import io.vertx.core.eventbus.EventBus;
-
 /**
- * Defines the interface for a verticle that implements a request/response 
- * interaction through the {@link EventBus}.
- * <p>
- * It can register a set of {@link EBRequestHandlerProvider}, handlers will 
- * be invoked when a matching {@link EBRequest} is received.
+ * Holds the configuration parameters of an {@link EventBusService}
+ *
  */
-public interface EBServer extends Verticle {
+public class EventBusServiceConfig {
 
-    public void registerHandlerProvider(EBRequestHandlerProvider provider);
+    private String healthCheckAddress;
 
-    public void registerHealthCheckProvider(HealthCheckProvider provider);
+    private String address;
+
+    public String getHealthCheckAddress() {
+        return healthCheckAddress;
+    }
+
+    public void setHealthCheckAddress(String address) {
+        this.healthCheckAddress = address;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
 }

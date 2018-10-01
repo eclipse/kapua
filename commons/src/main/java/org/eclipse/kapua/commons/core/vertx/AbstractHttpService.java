@@ -14,7 +14,8 @@ package org.eclipse.kapua.commons.core.vertx;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Future;
+import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.logging.Logger;
@@ -24,36 +25,40 @@ import io.vertx.ext.healthchecks.HealthCheckHandler;
 import io.vertx.ext.web.Router;
 
 /**
- * Base class to implement an {@link HttpRestServer} verticle
+ * Base class to implement an {@link HttpService}
  * <p>
  * It exposes two predefined http endpoints, one to execute health 
  * checks and one to retrieve metrics.
  *
  */
-public abstract class AbstractHttpRestServer extends AbstractVerticle implements HttpRestServer {
+public abstract class AbstractHttpService implements HttpService {
 
-    private static Logger logger = LoggerFactory.getLogger(AbstractHttpRestServer.class);
+    private static Logger logger = LoggerFactory.getLogger(AbstractHttpService.class);
 
     private static final String HEALTH_PATH = "/health";
     private static final String METRICS_PATH = "/metrics";
     private static final String METRICS_BASE_NAME_PARAM = "baseName";
 
-    private List<HttpRouteProvider> routeProviders = new ArrayList<>();
-    private List<HealthCheckProvider> healthCheckProviders = new ArrayList<>();
+    private List<HttpServiceAdapter> routeAdapters = new ArrayList<>();
+    private List<HealthCheckAdapter> healthCheckAdapters = new ArrayList<>();
 
+    private Vertx vertx;
+    private HttpServiceConfig config;
     private HttpServer httpServer;
     private Router router;
     private HealthCheckHandler healthCheckHandler;
 
     private MetricsService metricsService;
 
-    public abstract HttpRestServerConfig getConfigs();
+    protected AbstractHttpService(Vertx aVertx, HttpServiceConfig aConfig) {
+        vertx = aVertx;
+        config = aConfig;
+    }
 
     @Override
-    public void start() throws Exception {
-        logger.trace("Starting verticle...");
-        super.start();
+    public void start(Future<Void> startFuture) throws Exception {
 
+        logger.trace("Starting service...");
         this.router = Router.router(vertx);
         this.healthCheckHandler = HealthCheckHandler.create(vertx);
         this.router.get(HEALTH_PATH).handler(this.healthCheckHandler);
@@ -66,7 +71,7 @@ public abstract class AbstractHttpRestServer extends AbstractVerticle implements
                 return;
             }
 
-            String metricPrefix = getConfigs().getMetricsRoot();
+            String metricPrefix = config.getMetricsRoot();
             String baseName = ctx.request().getParam(METRICS_BASE_NAME_PARAM);
             if (baseName != null) {
                 metricPrefix = baseName;
@@ -74,17 +79,17 @@ public abstract class AbstractHttpRestServer extends AbstractVerticle implements
             ctx.response().end(this.metricsService.getMetricsSnapshot(metricPrefix).toBuffer());
         });
 
-        for(HttpRouteProvider endpoint:routeProviders) {
-            endpoint.registerRoutes(router);
+        for(HttpServiceAdapter adapter:routeAdapters) {
+            adapter.register(router);
         }
 
-        for(HealthCheckProvider provider:healthCheckProviders) {
-            provider.registerHealthChecks(healthCheckHandler);
+        for(HealthCheckAdapter adapter:healthCheckAdapters) {
+            adapter.register(healthCheckHandler);
         }
 
         HttpServerOptions opts = new HttpServerOptions();
-        opts.setHost(this.getConfigs().getHost());
-        opts.setPort(this.getConfigs().getPort());
+        opts.setHost(config.getHost());
+        opts.setPort(config.getPort());
         this.httpServer = vertx.createHttpServer(opts);
 
         this.httpServer.requestHandler(router::accept);
@@ -93,31 +98,38 @@ public abstract class AbstractHttpRestServer extends AbstractVerticle implements
             if (ar.succeeded()) {
                 logger.info("Http server listening on port {}", this.httpServer.actualPort());
                 logger.trace("Starting verticle...DONE");
+                startFuture.complete();
             } else {
                 logger.error("Starting verticle...FAILED", ar.cause());
+                startFuture.fail(ar.cause());
             }
         });        
    }
 
     @Override
-    public void stop() throws Exception {
-        this.httpServer.close(ar -> {
-            if (ar.succeeded()) {
-                logger.info("Http server closed!");
-            } else {
-                logger.error("Error closing http server!");
-            }
-        });        
-        super.stop();
+    public void stop(Future<Void> stopFuture) throws Exception {
+        if (httpServer != null) {
+            httpServer.close(ar -> {
+                if (ar.succeeded()) {
+                    logger.info("Http server closed!");
+                    stopFuture.complete();
+                } else {
+                    logger.error("Error closing http server!");
+                    stopFuture.fail(ar.cause());
+                }
+            });        
+        } else {
+            stopFuture.complete();
+        }
     }
 
     @Override
-    public void registerRouteProvider(HttpRouteProvider endpoint) {
-        this.routeProviders.add(endpoint);
+    public void register(HttpServiceAdapter endpoint) {
+        this.routeAdapters.add(endpoint);
     }
 
     @Override
-    public void registerHealthCheckProvider(HealthCheckProvider provider) {
-        this.healthCheckProviders.add(provider);
+    public void register(HealthCheckAdapter provider) {
+        this.healthCheckAdapters.add(provider);
     }
 }

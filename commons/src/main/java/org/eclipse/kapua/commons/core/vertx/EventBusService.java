@@ -11,22 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core.vertx;
 
-import io.vertx.core.Verticle;
+import io.vertx.core.eventbus.EventBus;
 
 /**
- * Defines the interface for a verticle exposing an http endpoint
+ * Defines the interface for a service that implements a request/response 
+ * interaction through the {@link EventBus}.
  * <p>
- * It can register a set of {@link HttpRouteProvider}, routes will be invoked when 
- * a matching http request is received.
- * <p>
- * It can register a set of {@link HealthCheckProvider}, health checks will be 
- * invoked when an http request is received at a well defined path defined by 
- * its implementation.
- *
+ * It can register a set of {@link EventBusServiceAdapter}, handlers will 
+ * be invoked when a matching {@link EventBusServerRequest} is received.
  */
-public interface HttpRestServer extends Verticle {
+public interface EventBusService extends LifecycleObject {
 
-    public void registerRouteProvider(HttpRouteProvider provider);
+    public void register(EventBusServiceAdapter provider);
 
-    public void registerHealthCheckProvider(HealthCheckProvider provider);
+    public void register(HealthCheckAdapter provider);
 }

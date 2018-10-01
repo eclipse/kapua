@@ -11,31 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core.vertx;
 
-public class EBResponseException extends Exception {
+import io.vertx.ext.healthchecks.HealthCheckHandler;
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1005656055006273926L;
+/**
+ * Registers health checks within a {@link HealthCheckHandler}
+ *
+ */
+public interface HealthCheckAdapter {
 
-    public EBResponseException(int code) {
-        super();
-        this.code = code;
-    }
-
-    public EBResponseException(int code, String message) {
-        super(message);
-        this.code = code;
-    }
-
-    public EBResponseException(int code, String message, Throwable t) {
-        super(message, t);
-        this.code = code;
-    }
-
-    private int code;
-
-    public int getCode() {
-        return code;
-    }    
+    public void register(HealthCheckHandler handler);
 }

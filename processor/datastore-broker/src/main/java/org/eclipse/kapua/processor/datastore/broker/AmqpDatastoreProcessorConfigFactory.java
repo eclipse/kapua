@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.processor.lifecycle.broker;
+package org.eclipse.kapua.processor.datastore.broker;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -19,29 +19,29 @@ import org.eclipse.kapua.broker.client.amqp.AmqpSender;
 import org.eclipse.kapua.broker.connector.amqp.AmqpTransportActiveMQSource;
 import org.eclipse.kapua.broker.connector.amqp.ErrorTarget;
 import org.eclipse.kapua.commons.core.ObjectFactory;
-import org.eclipse.kapua.commons.core.vertx.HealthCheckProvider;
+import org.eclipse.kapua.commons.core.vertx.HealthCheckAdapter;
 import org.eclipse.kapua.connector.Properties;
 import org.eclipse.kapua.connector.kura.KuraPayloadProtoConverter;
-import org.eclipse.kapua.device.registry.connector.LifecycleProcessor;
+import org.eclipse.kapua.datastore.connector.DatastoreTarget;
 import org.eclipse.kapua.message.transport.TransportMessage;
-import org.eclipse.kapua.processor.commons.MessageProcessorServerConfig;
+import org.eclipse.kapua.message.transport.TransportMessageType;
+import org.eclipse.kapua.processor.commons.MessageProcessorConfig;
 
 import io.vertx.core.Vertx;
 import io.vertx.ext.healthchecks.HealthCheckHandler;
 import io.vertx.ext.healthchecks.Status;
 
-
-public class AmqpLifecycleProcessorServerConfigFactory implements ObjectFactory<MessageProcessorServerConfig<byte[], TransportMessage>> {
+public class AmqpDatastoreProcessorConfigFactory implements ObjectFactory<MessageProcessorConfig<byte[], TransportMessage>> {
 
     @Inject
     private Vertx vertx;
 
     @Inject
-    @Named("event-bus-server.default-address")
+    @Named("kapua.vertx-app.event-bus-server.default-address")
     private String ebAddress;
 
     @Inject
-    @Named("event-bus-server.health-address")
+    @Named("kapua.vertx-app.event-bus-server.health-address")
     private String healthCheckEBAddress;
 
     @Inject 
@@ -54,32 +54,26 @@ public class AmqpLifecycleProcessorServerConfigFactory implements ObjectFactory<
     private TargetConfiguration targetConfig;
 
     @Override
-    public MessageProcessorServerConfig<byte[], TransportMessage> create() {
+    public MessageProcessorConfig<byte[], TransportMessage> create() {
 
-        MessageProcessorServerConfig<byte[], TransportMessage> config = new MessageProcessorServerConfig<byte[], TransportMessage>();
+        MessageProcessorConfig<byte[], TransportMessage> config = new MessageProcessorConfig<byte[], TransportMessage>();
 
-        // Consumer
+        // Amqp Source
         AmqpTransportActiveMQSource consumer = AmqpTransportActiveMQSource.create(vertx, new AmqpConsumer(vertx, sourceConfig.createClientOptions(connectionConfig)));
         consumer.messageFilter(message -> {
-            String topic = (String) message.getProperties().get(Properties.MESSAGE_DESTINATION);
-            if (topic!=null && (topic.endsWith("/MQTT/BIRTH") ||
-                    topic.endsWith("/MQTT/DC") ||
-                    topic.endsWith("/MQTT/LWT") ||
-                    topic.endsWith("/MQTT/MISSING") ||
-                    topic.endsWith("MQTT/PROV"))
-                    ) {
+            Object messageType = message.getProperties().get(Properties.MESSAGE_TYPE);
+            if (messageType!=null && messageType instanceof TransportMessageType && TransportMessageType.TELEMETRY.equals(messageType)) {
                 return true;
             }
             else {
                 return false;
             }
-
         });
         config.setMessageSource(consumer);
-        config.getHealthCheckProviders().add(new HealthCheckProvider() {
+        config.getHealthCheckAdapters().add(new HealthCheckAdapter() {
 
             @Override
-            public void registerHealthChecks(HealthCheckHandler handler) {
+            public void register(HealthCheckHandler handler) {
                 handler.register("AmqpTransportActiveMQConsumer", statusEvent -> {
                     if (consumer != null && consumer.isConnected()) {
                         statusEvent.complete(Status.OK());
@@ -92,14 +86,14 @@ public class AmqpLifecycleProcessorServerConfigFactory implements ObjectFactory<
 
         config.setConverter(new KuraPayloadProtoConverter());
 
-        // Processor
-        LifecycleProcessor processor = LifecycleProcessor.create();
+        // Datastore target
+        DatastoreTarget processor = DatastoreTarget.create(vertx);
         config.setMessageTarget(processor);
-        config.getHealthCheckProviders().add(new HealthCheckProvider() {
+        config.getHealthCheckAdapters().add(new HealthCheckAdapter() {
 
             @Override
-            public void registerHealthChecks(HealthCheckHandler handler) {
-                handler.register("LifecycleProcessor", statusEvent -> {
+            public void register(HealthCheckHandler handler) {
+                handler.register("DatastoreProcessor", statusEvent -> {
                     // TODO define a more meaningful health check
                     if (processor != null) {
                         statusEvent.complete(Status.OK());
@@ -110,13 +104,13 @@ public class AmqpLifecycleProcessorServerConfigFactory implements ObjectFactory<
             }
         });
 
-        // Error processor
+        // Error target
         ErrorTarget errorProcessor = ErrorTarget.getProcessor(vertx, new AmqpSender(vertx, targetConfig.createClientOptions(connectionConfig)));
         config.setErrorTarget(errorProcessor);
-        config.getHealthCheckProviders().add(new HealthCheckProvider() {
+        config.getHealthCheckAdapters().add(new HealthCheckAdapter() {
 
             @Override
-            public void registerHealthChecks(HealthCheckHandler handler) {
+            public void register(HealthCheckHandler handler) {
                 handler.register("ErrorProcessor", statusEvent -> {
                     // TODO define a more meaningful health check
                     if (errorProcessor != null) {

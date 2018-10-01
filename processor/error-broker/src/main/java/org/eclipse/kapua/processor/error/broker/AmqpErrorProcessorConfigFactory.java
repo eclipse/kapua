@@ -18,25 +18,25 @@ import org.apache.qpid.proton.message.Message;
 import org.eclipse.kapua.broker.client.amqp.AmqpConsumer;
 import org.eclipse.kapua.broker.connector.amqp.AmqpActiveMQSource;
 import org.eclipse.kapua.commons.core.ObjectFactory;
-import org.eclipse.kapua.commons.core.vertx.HealthCheckProvider;
+import org.eclipse.kapua.commons.core.vertx.HealthCheckAdapter;
 import org.eclipse.kapua.connector.logger.LoggerTarget;
-import org.eclipse.kapua.processor.commons.MessageProcessorServerConfig;
+import org.eclipse.kapua.processor.commons.MessageProcessorConfig;
 
 import io.vertx.core.Vertx;
 import io.vertx.ext.healthchecks.HealthCheckHandler;
 import io.vertx.ext.healthchecks.Status;
 
-public class AmqpErrorProcessorServerConfigFactory implements ObjectFactory<MessageProcessorServerConfig<Message, Message>> {
+public class AmqpErrorProcessorConfigFactory implements ObjectFactory<MessageProcessorConfig<Message, Message>> {
 
     @Inject
     private Vertx vertx;
 
     @Inject
-    @Named("event-bus-server.default-address")
+    @Named("kapua.vertx-app.event-bus-server.default-address")
     private String ebAddress;
 
     @Inject
-    @Named("event-bus-server.health-address")
+    @Named("kapua.vertx-app.event-bus-server.health-address")
     private String healthCheckEBAddress;
 
     @Inject 
@@ -46,9 +46,9 @@ public class AmqpErrorProcessorServerConfigFactory implements ObjectFactory<Mess
     private SourceConfiguration sourceConfig;
 
     @Override
-    public MessageProcessorServerConfig<Message, Message> create() {
+    public MessageProcessorConfig<Message, Message> create() {
 
-        MessageProcessorServerConfig<Message, Message> config = new MessageProcessorServerConfig<Message, Message>();
+        MessageProcessorConfig<Message, Message> config = new MessageProcessorConfig<Message, Message>();
 
         // Consumer
         AmqpActiveMQSource consumer = AmqpActiveMQSource.create(vertx, new AmqpConsumer(vertx, sourceConfig.createClientOptions(connectionConfig)));
@@ -56,10 +56,10 @@ public class AmqpErrorProcessorServerConfigFactory implements ObjectFactory<Mess
             return true;
         });
         config.setMessageSource(consumer);
-        config.getHealthCheckProviders().add(new HealthCheckProvider() {
+        config.getHealthCheckAdapters().add(new HealthCheckAdapter() {
 
             @Override
-            public void registerHealthChecks(HealthCheckHandler handler) {
+            public void register(HealthCheckHandler handler) {
                 handler.register("AmqpActiveMQConsumer", statusEvent -> {
                     if (consumer != null && consumer.isConnected()) {
                         statusEvent.complete(Status.OK());
@@ -76,10 +76,10 @@ public class AmqpErrorProcessorServerConfigFactory implements ObjectFactory<Mess
         // Processor
         LoggerTarget processor = LoggerTarget.create();
         config.setMessageTarget(processor);
-        config.getHealthCheckProviders().add(new HealthCheckProvider() {
+        config.getHealthCheckAdapters().add(new HealthCheckAdapter() {
 
             @Override
-            public void registerHealthChecks(HealthCheckHandler handler) {
+            public void register(HealthCheckHandler handler) {
                 handler.register("LoggerProcessor", statusEvent -> {
                     // TODO define a more meaningful health check
                     if (processor != null) {

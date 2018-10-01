@@ -14,12 +14,13 @@ package org.eclipse.kapua.processor.commons;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.commons.core.vertx.HealthCheckProvider;
+import org.eclipse.kapua.commons.core.vertx.EventBusServiceConfig;
+import org.eclipse.kapua.commons.core.vertx.HealthCheckAdapter;
 import org.eclipse.kapua.connector.Converter;
 import org.eclipse.kapua.connector.MessageSource;
 import org.eclipse.kapua.connector.MessageTarget;
 
-public class MessageProcessorServerConfig<M,P> implements MessageProcessorServer.Builder<M, P> {
+public class MessageProcessorConfig<M,P> {
 
     private MessageSource<M> source;
     private Converter<M,P> converter;
@@ -28,9 +29,8 @@ public class MessageProcessorServerConfig<M,P> implements MessageProcessorServer
     private String ebAddress;
     private String healthCheckEBAddress;
 
-    private List<HealthCheckProvider> healthCheckProviders = new ArrayList<>();
+    private List<HealthCheckAdapter> healthCheckAdapters = new ArrayList<>();
 
-    @Override
     public MessageSource<M> getMessageSource() {
         return source;
     }
@@ -39,7 +39,6 @@ public class MessageProcessorServerConfig<M,P> implements MessageProcessorServer
         source = aConsumer;
     }
 
-    @Override
     public Converter<M, P> getConverter() {
         return converter;
     }
@@ -48,7 +47,6 @@ public class MessageProcessorServerConfig<M,P> implements MessageProcessorServer
         this.converter = aConverter;
     }
 
-    @Override
     public MessageTarget<P> getMessageTarget() {
         return target;
     }
@@ -57,7 +55,6 @@ public class MessageProcessorServerConfig<M,P> implements MessageProcessorServer
         target = aProcessor;
     }
 
-    @Override
     public MessageTarget getErrorTarget() {
         return errorTarget;
     }
@@ -66,7 +63,6 @@ public class MessageProcessorServerConfig<M,P> implements MessageProcessorServer
         errorTarget = target;
     }
 
-    @Override
     public String getEBAddress() {
         return ebAddress;
     }
@@ -75,7 +71,6 @@ public class MessageProcessorServerConfig<M,P> implements MessageProcessorServer
         ebAddress = anEBAddress;
     }
 
-    @Override
     public String getHealthCheckEBAddress() {
         return healthCheckEBAddress;
     }
@@ -84,7 +79,14 @@ public class MessageProcessorServerConfig<M,P> implements MessageProcessorServer
         healthCheckEBAddress = anEBAddress;
     }
 
-    public List<HealthCheckProvider> getHealthCheckProviders() {
-        return healthCheckProviders;
+    public List<HealthCheckAdapter> getHealthCheckAdapters() {
+        return healthCheckAdapters;
+    }
+
+    public EventBusServiceConfig getEventBusServiceConfig() {
+        EventBusServiceConfig c = new EventBusServiceConfig();
+        c.setAddress(this.getEBAddress());
+        c.setHealthCheckAddress(this.getHealthCheckEBAddress());
+        return c;
     }
 }

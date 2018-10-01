@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core.vertx;
 
+import java.util.Objects;
+
 import io.vertx.core.json.JsonObject;
 
 /**
@@ -20,17 +22,31 @@ import io.vertx.core.json.JsonObject;
  * The action is a string in dotted notation (e.g. "service.method")
  *
  */
-public class EBRequest extends JsonObject {
+public class EventBusServerRequest extends JsonObject {
 
     public static final String ACTION = "action";
     public static final String BODY = "body";
 
-    public static EBRequest create(String action, JsonObject body) {
-        EBRequest req = new EBRequest();
+    public static EventBusServerRequest create(String action, JsonObject body) {
+        EventBusServerRequest req = new EventBusServerRequest();
         req.setAction(action);
         if (body != null) {
             req.setBody(body);
         }
+        return req;
+    }
+
+    public static EventBusServerRequest create(JsonObject request) {
+        Objects.requireNonNull(request, "Invalid null request");
+        EventBusServerRequest req = new EventBusServerRequest();
+        if (!request.containsKey(ACTION) || !(request.getValue(ACTION) instanceof String)) {
+            throw new RuntimeException("Request Action is not a string");
+        }
+        req.setAction(request.getString(ACTION));
+        if (!request.containsKey(BODY) || request.getValue(BODY) == null || !(request.getValue(BODY) instanceof JsonObject)) {
+            throw new RuntimeException("Request Body is not a json object");
+        }
+        req.setBody((JsonObject) request.getValue(BODY));
         return req;
     }
 

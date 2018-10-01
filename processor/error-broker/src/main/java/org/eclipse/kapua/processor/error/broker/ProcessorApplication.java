@@ -11,8 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.processor.error.broker;
 
+import java.util.concurrent.TimeUnit;
+
 import org.eclipse.kapua.commons.core.vertx.EnvironmentSetup;
 import org.eclipse.kapua.commons.core.vertx.VertxApplication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ActiveMQ AMQP consumer handling error messages
@@ -20,10 +24,24 @@ import org.eclipse.kapua.commons.core.vertx.VertxApplication;
  */
 public class ProcessorApplication extends VertxApplication<MainVerticle> {
 
+    protected final static Logger logger = LoggerFactory.getLogger(ProcessorApplication.class);
+
     private static final String NAME = "processor-application";
 
     public static void main(String args[]) throws Exception {
-        new ProcessorApplication().run(args);
+        ProcessorApplication application = null;
+        try {
+            application = new ProcessorApplication();
+            application.run(args);
+        }
+        catch (Exception e) {
+            logger.error("Failed to start application: {}", e.getMessage(), e);
+            logger.info("Shutting down application...");
+            application.shutdown();
+            logger.info("Shutting down application...DONE");
+            TimeUnit.SECONDS.sleep(2);
+            System.exit(1);
+        }
     }
 
     @Override

@@ -12,15 +12,10 @@
 package org.eclipse.kapua.processor.datastore.broker;
 
 import org.eclipse.kapua.commons.core.ObjectContextConfig;
-import org.eclipse.kapua.commons.core.ObjectFactory;
-import org.eclipse.kapua.commons.core.vertx.HttpRestServer;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
-import org.eclipse.kapua.message.transport.TransportMessage;
-import org.eclipse.kapua.processor.commons.HttpRestServerImpl;
+import org.eclipse.kapua.processor.commons.HttpServiceVerticle;
 import org.eclipse.kapua.processor.commons.JAXBContextProviderImpl;
-import org.eclipse.kapua.processor.commons.MessageProcessorServerConfig;
-
-import com.google.inject.TypeLiteral;
+import org.eclipse.kapua.processor.commons.MessageProcessorVerticle;
 
 public class ProcessorContextConfig extends ObjectContextConfig {
 
@@ -34,9 +29,10 @@ public class ProcessorContextConfig extends ObjectContextConfig {
         bind(ConnectionConfiguration.class);
         bind(SourceConfiguration.class);
         bind(TargetConfiguration.class);
-        bind(HttpRestServer.class).to(HttpRestServerImpl.class);
+        bind(HttpServiceVerticle.class);
         bind(JAXBContextProvider.class).to(JAXBContextProviderImpl.class);
-        bind(new TypeLiteral<ObjectFactory<MessageProcessorServerConfig<byte[],TransportMessage>>>() {}).to(AmqpDatastoreProcessorServerConfigFactory.class);
+        bind(MessageProcessorVerticle.class).to(AmqpDatastoreProcessorVerticle.class);
+        bind(AmqpDatastoreProcessorConfigFactory.class);
     }
 
 }

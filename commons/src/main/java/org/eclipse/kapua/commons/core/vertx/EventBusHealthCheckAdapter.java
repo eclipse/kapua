@@ -17,22 +17,22 @@ import io.vertx.ext.healthchecks.HealthCheckHandler;
 import io.vertx.ext.healthchecks.Status;
 
 
-public class EBHealthCheckProvider implements HealthCheckProvider {
+public class EventBusHealthCheckAdapter implements HealthCheckAdapter {
 
     private EventBus eventBus;
     private String healthCheckAddress;
 
-    public static HealthCheckProvider create(EventBus eventBus, String healthCheckAddress) {
-        return new EBHealthCheckProvider(eventBus, healthCheckAddress);
+    public static HealthCheckAdapter create(EventBus eventBus, String healthCheckAddress) {
+        return new EventBusHealthCheckAdapter(eventBus, healthCheckAddress);
     }
 
-    private EBHealthCheckProvider(EventBus eventBus, String healthCheckAddress) {
+    private EventBusHealthCheckAdapter(EventBus eventBus, String healthCheckAddress) {
         this.eventBus = eventBus;
         this.healthCheckAddress = healthCheckAddress;
     }
 
     @Override
-    public void registerHealthChecks(HealthCheckHandler handler) {
+    public void register(HealthCheckHandler handler) {
         handler.register("more-checks", hcm -> {
             eventBus.<JsonObject>send(healthCheckAddress, "", reply -> {
 

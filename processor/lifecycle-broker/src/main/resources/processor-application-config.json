@@ -1,19 +1,21 @@
 {
-    "vertx": {
-	    "startup-timeout": 20000,
-	    "shutdown-timeout": 20000,
-        "metrics-enabled": true,
-        "metrics-root": "kapuaBase",
-        "warning-exception-time": 86400000,
-        "blocked-thread-check-interval": 86400000
-    },
-    "http-server" : {
-        "host" : "localhost",
-        "port" : 8092,
-        "secure-port" : 8443
-    },
-	"event-bus-server": {
-		"health-address": "health",
-		"default-address": "kapua.requests"
-	}
+    "kapua": {
+        "vertx-app": {
+            "startup-timeout": 120000,
+            "shutdown-timeout": 120000,
+            "metrics-enabled": true,
+            "metrics-root": "kapuaBase",
+            "warning-exception-time": 86400000,
+            "blocked-thread-check-interval": 86400000,
+            "http-server" : {
+                "host" : "localhost",
+                "port" : 8092,
+                "secure-port" : 8443
+            },
+            "event-bus-server": {
+                "health-address": "health",
+                "default-address": "kapua.requests"
+            }
+        }
+    }
 }

@@ -11,37 +11,31 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core.vertx;
 
-/**
- * Holds the configuration parameters of an {@link AbstractHttpRestServer}
- *
- */
-public class HttpRestServerConfig {
+public class EventBusServerResponseException extends Exception {
 
-    private String metricsRoot;
-    private String host;
-    private int port;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1005656055006273926L;
 
-    public String getMetricsRoot() {
-        return metricsRoot;
+    public EventBusServerResponseException(int code) {
+        super();
+        this.code = code;
     }
 
-    public void setMetricsRoot(String metricsRoot) {
-        this.metricsRoot = metricsRoot;
+    public EventBusServerResponseException(int code, String message) {
+        super(message);
+        this.code = code;
     }
 
-    public String getHost() {
-        return host;
+    public EventBusServerResponseException(int code, String message, Throwable t) {
+        super(message, t);
+        this.code = code;
     }
 
-    public void setHost(String host) {
-        this.host = host;
-    }
+    private int code;
 
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
+    public int getCode() {
+        return code;
+    }    
 }
