@@ -27,9 +27,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.DeviceDomains;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionAttributes;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionListResult;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionQueryImpl;
@@ -76,19 +74,12 @@ public class DeviceConnectionOptionServiceImpl extends AbstractKapuaService impl
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, deviceConnectionOptions.getScopeId()));
 
         if (deviceConnectionOptions.getReservedUserId() != null) {
-            AndPredicateImpl deviceAndPredicate = new AndPredicateImpl();
-            deviceAndPredicate.and(new AttributePredicateImpl<>(DeviceConnectionAttributes.RESERVED_USER_ID, deviceConnectionOptions.getReservedUserId()));
+            AndPredicateImpl deviceAndPredicate = new AndPredicateImpl()
+                .and(new AttributePredicateImpl<>(DeviceConnectionAttributes.RESERVED_USER_ID, deviceConnectionOptions.getReservedUserId()))
+                .and(new AttributePredicateImpl<>(DeviceConnectionAttributes.ENTITY_ID, deviceConnectionOptions.getId()));
             DeviceConnectionQuery deviceConnectionQuery = new DeviceConnectionQueryImpl(deviceConnectionOptions.getScopeId());
             deviceConnectionQuery.setPredicate(deviceAndPredicate);
-            DeviceConnectionListResult deviceConnectionListResult = deviceConnectionService.query(deviceConnectionQuery);
-            boolean sameConnId = false;
-            for (DeviceConnection deviceConnection : deviceConnectionListResult.getItems()) {
-                if (!deviceConnection.getId().equals(deviceConnectionOptions.getId())) {
-                    sameConnId = true;
-                    break;
-                }
-            }
-            if (sameConnId) {
+            if (deviceConnectionService.count(deviceConnectionQuery) > 0) {
                 throw new UserAlreadyReservedException(deviceConnectionOptions.getScopeId(), deviceConnectionOptions.getId(), deviceConnectionOptions.getReservedUserId());
             }
         }
