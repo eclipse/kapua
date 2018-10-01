@@ -24,6 +24,7 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.DeviceDomains;
@@ -76,7 +77,7 @@ public class DeviceConnectionOptionServiceImpl extends AbstractKapuaService impl
         if (deviceConnectionOptions.getReservedUserId() != null) {
             AndPredicateImpl deviceAndPredicate = new AndPredicateImpl()
                 .and(new AttributePredicateImpl<>(DeviceConnectionAttributes.RESERVED_USER_ID, deviceConnectionOptions.getReservedUserId()))
-                .and(new AttributePredicateImpl<>(DeviceConnectionAttributes.ENTITY_ID, deviceConnectionOptions.getId()));
+                .and(new AttributePredicateImpl<>(DeviceConnectionAttributes.ENTITY_ID, deviceConnectionOptions.getId(), Operator.NOT_EQUAL));
             DeviceConnectionQuery deviceConnectionQuery = new DeviceConnectionQueryImpl(deviceConnectionOptions.getScopeId());
             deviceConnectionQuery.setPredicate(deviceAndPredicate);
             if (deviceConnectionService.count(deviceConnectionQuery) > 0) {
