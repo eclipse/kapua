@@ -332,6 +332,12 @@ public class AccountConfigPanel extends LayoutContainer {
             } else {
                 field = paintMultiFieldConfigParameter(param);
             }
+            String allowSelfEditValue = param.getOtherAttributes() != null ? param.getOtherAttributes().get("allowSelfEdit") : null;
+            boolean allowSelfEdit = allowSelfEditValue != null && allowSelfEditValue.equals("true");
+            boolean isEditingSelf = selectedAccountId == null || selectedAccountId.equals(currentSession.getSelectedAccountId());
+            if (isEditingSelf && !allowSelfEdit) {
+                field.disable();
+            }
             actionFieldSet.add(field, formData);
         }
 
