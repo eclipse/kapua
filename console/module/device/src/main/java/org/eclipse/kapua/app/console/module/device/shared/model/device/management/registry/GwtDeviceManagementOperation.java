@@ -46,6 +46,14 @@ public class GwtDeviceManagementOperation extends GwtUpdatableEntityModel {
         set("endedOn", endedOn);
     }
 
+    public String getResource() {
+        return get("resource");
+    }
+
+    public void setResource(String resource) {
+        set("resource", resource);
+    }
+
     public String getDeviceId() {
         return get("deviceId");
     }

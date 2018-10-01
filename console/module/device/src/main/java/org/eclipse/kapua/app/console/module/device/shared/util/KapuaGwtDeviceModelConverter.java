@@ -120,6 +120,7 @@ public class KapuaGwtDeviceModelConverter {
 
         gwtDeviceManagementOperation.setStartedOn(deviceManagementOperation.getStartedOn());
         gwtDeviceManagementOperation.setEndedOn(deviceManagementOperation.getEndedOn());
+        gwtDeviceManagementOperation.setResource(deviceManagementOperation.getResource());
         gwtDeviceManagementOperation.setDeviceId(KapuaGwtCommonsModelConverter.convertKapuaId(deviceManagementOperation.getDeviceId()));
         gwtDeviceManagementOperation.setOperationId(KapuaGwtCommonsModelConverter.convertKapuaId(deviceManagementOperation.getOperationId()));
         gwtDeviceManagementOperation.setAppId(deviceManagementOperation.getAppId());

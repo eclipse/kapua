@@ -116,9 +116,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
 
             KapuaId scopeId = KapuaEid.parseCompactId(scopeShortId);
             KapuaId deviceId = KapuaEid.parseCompactId(deviceShortId);
-            DevicePackages deploymentPackages = deviceManagementService.getInstalled(scopeId,
-                    deviceId,
-                    null);
+            DevicePackages deploymentPackages = deviceManagementService.getInstalled(scopeId, deviceId, null);
 
             for (DevicePackage deploymentPackage : deploymentPackages.getPackages()) {
                 GwtDeploymentPackage gwtPkg = new GwtDeploymentPackage();
@@ -172,10 +170,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             packageDownloadRequest.setRebootDelay(gwtPackageInstallRequest.getRebootDelay());
 
             DevicePackageManagementService packageManagementService = locator.getService(DevicePackageManagementService.class);
-            packageManagementService.downloadExec(scopeId,
-                    deviceId,
-                    packageDownloadRequest,
-                    null);
+            packageManagementService.downloadExec(scopeId, deviceId, packageDownloadRequest, null);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }

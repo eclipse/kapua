@@ -18,6 +18,7 @@ import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -136,51 +137,99 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
         column.setHeader(DEVICES_MSGS.deviceInstallTabHistoryTableEndedOn());
         column.setWidth(200);
         column.setAlignment(HorizontalAlignment.CENTER);
+        column.setRenderer(
+                new GridCellRenderer<GwtDeviceManagementOperation>() {
+                    @Override
+                    public Object render(GwtDeviceManagementOperation model, String property, ColumnData columnData, int row, int colum, ListStore listStore, Grid grid) {
+                        if (model.getEndedOn() == null) {
+                            return DEVICES_MSGS.deviceInstallTabHistoryTableEndedOnInProgress();
+                        }
+
+                        return model.get(property);
+                    }
+                });
         configs.add(column);
 
         column = new ColumnConfig();
-        column.setId("inputProperty_kapuapackagedownloadname");
+        column.setId("resource");
+        column.setHeader(DEVICES_MSGS.deviceInstallTabHistoryTableResource());
+        column.setWidth(200);
+        configs.add(column);
+
+        column = new ColumnConfig();
+        column.setId("inputProperty_packageName");
         column.setHeader(DEVICES_MSGS.deviceInstallTabHistoryTableName());
         column.setWidth(200);
+        column.setRenderer(
+                new GridCellRenderer() {
+                    @Override
+                    public Object render(ModelData model, String property, ColumnData columnData, int row, int column, ListStore listStore, Grid grid) {
+
+                        if (model.get("inputProperty_kapuapackagedownloadname") != null) {
+                            return model.get("inputProperty_kapuapackagedownloadname");
+                        }
+
+                        if (model.get("inputProperty_kapuapackageuninstallname") != null) {
+                            return model.get("inputProperty_kapuapackageuninstallname");
+                        }
+
+                        return null;
+                    }
+                });
         configs.add(column);
 
         column = new ColumnConfig();
-        column.setId("inputProperty_kapuapackagedownloadversion");
+        column.setId("inputProperty_packageVersion");
         column.setHeader(DEVICES_MSGS.deviceInstallTabHistoryTableVersion());
         column.setWidth(200);
+        column.setRenderer(
+                new GridCellRenderer() {
+                    @Override
+                    public Object render(ModelData model, String property, ColumnData columnData, int row, int column, ListStore listStore, Grid grid) {
+
+                        if (model.get("inputProperty_kapuapackagedownloadversion") != null) {
+                            return model.get("inputProperty_kapuapackagedownloadversion");
+                        }
+
+                        if (model.get("inputProperty_kapuapackageuninstallversion") != null) {
+                            return model.get("inputProperty_kapuapackageuninstallversion");
+                        }
+
+                        return null;
+                    }
+                });
         configs.add(column);
 
         column = new ColumnConfig();
-        column.setId("inputProperty_kapuapackagedownloaduri");
+        column.setId("inputProperty_packageUri");
         column.setHeader(DEVICES_MSGS.deviceInstallTabHistoryTableURI());
         column.setWidth(200);
         configs.add(column);
-
-        GridCellRenderer renderer = new GridCellRenderer<GwtDeviceManagementOperation>() {
-
-            @Override
-            public Object render(GwtDeviceManagementOperation model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtDeviceManagementOperation> store, Grid<GwtDeviceManagementOperation> grid) {
-                switch (model.getStatusEnum()) {
-                    case COMPLETED:
-                        return DEVICES_MSGS.deviceInstallTabHistoryTableStatusCompleted();
-                    case RUNNING:
-                        return DEVICES_MSGS.deviceInstallTabHistoryTableStatusRunning();
-                    case STALE:
-                        return DEVICES_MSGS.deviceInstallTabHistoryTableStatusStale();
-                    case FAILED:
-                        return DEVICES_MSGS.deviceInstallTabHistoryTableStatusFailed();
-                }
-                return null;
-            }
-
-        };
 
         column = new ColumnConfig();
         column.setId("status");
         column.setHeader(DEVICES_MSGS.deviceInstallTabHistoryTableStatus());
         column.setWidth(200);
         column.setAlignment(HorizontalAlignment.CENTER);
-        column.setRenderer(renderer);
+        column.setRenderer(
+                new GridCellRenderer<GwtDeviceManagementOperation>() {
+
+                    @Override
+                    public Object render(GwtDeviceManagementOperation model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtDeviceManagementOperation> store, Grid<GwtDeviceManagementOperation> grid) {
+                        switch (model.getStatusEnum()) {
+                            case COMPLETED:
+                                return DEVICES_MSGS.deviceInstallTabHistoryTableStatusCompleted();
+                            case RUNNING:
+                                return DEVICES_MSGS.deviceInstallTabHistoryTableStatusRunning();
+                            case STALE:
+                                return DEVICES_MSGS.deviceInstallTabHistoryTableStatusStale();
+                            case FAILED:
+                                return DEVICES_MSGS.deviceInstallTabHistoryTableStatusFailed();
+                        }
+                        return null;
+                    }
+
+                });
         configs.add(column);
 
         // loader and store
