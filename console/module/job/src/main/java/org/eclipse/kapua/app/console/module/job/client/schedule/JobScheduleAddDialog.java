@@ -18,6 +18,7 @@ import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.TimeField;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -122,6 +123,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         startsOnTime.setStyleAttribute("padding", "0px 0px 0px 17px");
         startsOnTime.setEmptyText(JOB_MSGS.dialogAddScheduleTimePlaceholder());
         startsOnTime.setToolTip(JOB_MSGS.dialogAddScheduleStartsOnTimeTooltip());
+        startsOnTime.setTriggerAction(TriggerAction.ALL);
         startsOnPanel.add(startsOnTime);
         mainPanel.add(startsOnPanel);
 
@@ -149,6 +151,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         endsOnTime.setEmptyText(JOB_MSGS.dialogAddScheduleTimePlaceholder());
         endsOnTime.setToolTip(JOB_MSGS.dialogAddScheduleEndsOnTimeTooltip());
         endsOnTime.setStyleAttribute("padding", "0px 0px 0px 17px");
+        endsOnTime.setTriggerAction(TriggerAction.ALL);
         endsOnPanel.add(endsOnTime);
         mainPanel.add(endsOnPanel);
 
