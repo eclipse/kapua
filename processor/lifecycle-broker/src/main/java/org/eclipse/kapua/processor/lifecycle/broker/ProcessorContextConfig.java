@@ -13,14 +13,13 @@ package org.eclipse.kapua.processor.lifecycle.broker;
 
 import org.eclipse.kapua.commons.core.ObjectContextConfig;
 import org.eclipse.kapua.commons.core.ObjectFactory;
-import org.eclipse.kapua.commons.core.vertx.HttpRestServer;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.message.transport.TransportMessage;
-import org.eclipse.kapua.processor.commons.HttpRestServerImpl;
+import org.eclipse.kapua.processor.commons.HttpServiceVerticle;
 import org.eclipse.kapua.processor.commons.JAXBContextProviderImpl;
-import org.eclipse.kapua.processor.commons.MessageProcessorServerConfig;
+import org.eclipse.kapua.processor.commons.MessageProcessorConfig;
+import org.eclipse.kapua.processor.commons.MessageProcessorVerticle;
 
-import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 
 public class ProcessorContextConfig extends ObjectContextConfig {
@@ -32,12 +31,13 @@ public class ProcessorContextConfig extends ObjectContextConfig {
     protected void configure() {
         super.configure();
         bind(MainVerticle.class);
-        bind(ConnectionConfiguration.class).in(Singleton.class);
-        bind(SourceConfiguration.class).in(Singleton.class);
-        bind(TargetConfiguration.class).in(Singleton.class);
-        bind(HttpRestServer.class).to(HttpRestServerImpl.class).in(Singleton.class);
-        bind(JAXBContextProvider.class).to(JAXBContextProviderImpl.class).in(Singleton.class);
-        bind(new TypeLiteral<ObjectFactory<MessageProcessorServerConfig<byte[],TransportMessage>>>() {}).to(AmqpLifecycleProcessorServerConfigFactory.class);
+        bind(ConnectionConfiguration.class);
+        bind(SourceConfiguration.class);
+        bind(TargetConfiguration.class);
+        bind(HttpServiceVerticle.class);
+        bind(JAXBContextProvider.class).to(JAXBContextProviderImpl.class);
+        bind(MessageProcessorVerticle.class).to(AmqpLifecycleProcessorVerticle.class);
+        bind(new TypeLiteral<ObjectFactory<MessageProcessorConfig<byte[],TransportMessage>>>() {}).to(AmqpLifecycleProcessorConfigFactory.class);
     }
 
 }

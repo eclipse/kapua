@@ -12,10 +12,36 @@
 package org.eclipse.kapua.commons.core.vertx;
 
 /**
- * Registers event bus request handlers within a dispatcher
+ * Holds the configuration parameters of an {@link HttpService}
  *
  */
-public interface EBRequestHandlerProvider {
+public class HttpServiceConfig {
 
-    public void registerHandlers(EBRequestDispatcher dispatcher);
+    private String metricsRoot;
+    private String host;
+    private int port;
+
+    public String getMetricsRoot() {
+        return metricsRoot;
+    }
+
+    public void setMetricsRoot(String metricsRoot) {
+        this.metricsRoot = metricsRoot;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
 }

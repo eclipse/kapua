@@ -12,6 +12,18 @@
 package org.eclipse.kapua.processor.error.broker;
 
 import org.apache.qpid.proton.message.Message;
-import org.eclipse.kapua.processor.commons.MainVerticleBase;
+import org.eclipse.kapua.processor.commons.MessageProcessor;
+import org.eclipse.kapua.processor.commons.MessageProcessorConfig;
 
-public class MainVerticle extends MainVerticleBase<Message, Message> {}
+import io.vertx.core.Vertx;
+
+public class AmqpErrorProcessor extends MessageProcessor<Message, Message> {
+
+    public static AmqpErrorProcessor create(Vertx aVertx, MessageProcessorConfig<Message, Message> aConfig) {
+        return new AmqpErrorProcessor(aVertx, aConfig);
+    }
+
+    protected AmqpErrorProcessor(Vertx aVertx, MessageProcessorConfig<Message, Message> aConfig) {
+        super(aVertx, aConfig);
+    }
+}

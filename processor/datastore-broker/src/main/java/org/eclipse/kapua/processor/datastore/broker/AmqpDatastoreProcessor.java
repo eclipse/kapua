@@ -12,6 +12,18 @@
 package org.eclipse.kapua.processor.datastore.broker;
 
 import org.eclipse.kapua.message.transport.TransportMessage;
-import org.eclipse.kapua.processor.commons.MainVerticleBase;
+import org.eclipse.kapua.processor.commons.MessageProcessor;
+import org.eclipse.kapua.processor.commons.MessageProcessorConfig;
 
-public class MainVerticle extends MainVerticleBase<byte[],TransportMessage> {}
+import io.vertx.core.Vertx;
+
+public class AmqpDatastoreProcessor extends MessageProcessor<byte[], TransportMessage> {
+
+    public static AmqpDatastoreProcessor create(Vertx aVertx, MessageProcessorConfig<byte[], TransportMessage> aConfig) {
+        return new AmqpDatastoreProcessor(aVertx, aConfig);
+    }
+
+    protected AmqpDatastoreProcessor(Vertx aVertx, MessageProcessorConfig<byte[], TransportMessage> aConfig) {
+        super(aVertx, aConfig);
+    }
+}

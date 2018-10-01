@@ -64,10 +64,10 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
     private static final String METRIC_REGISTRY_NAME = "com-eurotech-could";
     private static final String DEFAULT_APP_NAME = "vertx-application";
 
-    private static final String PROP_VERTX_METRICS_ROOT = "vertx.metrics-root";
-    private static final String PROP_VERTX_WARNING_EXCEPTION_TIME = "vertx.warning-exception-time";
-    private static final String PROP_VERTX_BLOCKED_THREAD_CHECK_INTERVAL = "vertx.blocked-thread-check-interval";
-    private static final String PROP_VERTX_STARTUP_TIMEOUT = "vertx.startup-timeout";
+    private static final String PROP_VERTX_METRICS_ROOT = "kapua.vertx-app.metrics-root";
+    private static final String PROP_VERTX_WARNING_EXCEPTION_TIME = "kapua.vertx-app.warning-exception-time";
+    private static final String PROP_VERTX_BLOCKED_THREAD_CHECK_INTERVAL = "kapua.vertx-app.blocked-thread-check-interval";
+    private static final String PROP_VERTX_STARTUP_TIMEOUT = "kapua.vertx-app.startup-timeout";
 
     private Vertx vertx;
 
@@ -227,7 +227,7 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
             vertx.close(ar -> {
                 if (ar.succeeded()) {
                     closeFuture.complete();
-                    logger.error("Closing Vertx...DONE");
+                    logger.debug("Closing Vertx...DONE");
                 } else {
                     closeFuture.fail(ar.cause());
                     logger.error("Closing Vertx...FAILED", ar.cause());
@@ -258,7 +258,7 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
         vertx.deployVerticle(m, ar -> {
             if (ar.succeeded()) {
                 deployFuture.complete();
-                logger.trace("Deploying verticle {}...DONE", this.getClass());
+                logger.debug("Deploying verticle {}...DONE", this.getClass());
             } else {
                 deployFuture.fail(ar.cause());
                 logger.error("Deploying verticle {}...FAILED", this.getClass(), ar.cause());
@@ -269,9 +269,9 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
         long startupTimeout = Long.parseLong(config.getProperty(PROP_VERTX_STARTUP_TIMEOUT));
         boolean touchedZero = startedSignal.await(startupTimeout, TimeUnit.MILLISECONDS);
         if (deployFuture.failed()) {
-            throw new Exception(String.format("Error occured while deploying verticle %s", clazz.getName()), deployFuture.cause());
+            throw new Exception(deployFuture.cause());
         } else if (!touchedZero) {
-            throw new Exception(String.format("Error occured while deploying verticle %s [Start timeout expired]", clazz.getName()));
+            throw new Exception(String.format("Start timeout expired"));
         }
     }
 

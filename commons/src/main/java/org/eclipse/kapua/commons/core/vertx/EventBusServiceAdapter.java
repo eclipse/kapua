@@ -12,29 +12,10 @@
 package org.eclipse.kapua.commons.core.vertx;
 
 /**
- * Holds the configuration parameters of an {@link AbstractEBServer}
+ * Registers the event bus adapter within a dispatcher
  *
  */
-public class EBServerConfig {
+public interface EventBusServiceAdapter {
 
-    private String healthCheckAddress;
-
-    private String address;
-
-    public String getHealthCheckAddress() {
-        return healthCheckAddress;
-    }
-
-    public void setHealthCheckAddress(String address) {
-        this.healthCheckAddress = address;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
+    public void register(EventBusDispatcher dispatcher);
 }

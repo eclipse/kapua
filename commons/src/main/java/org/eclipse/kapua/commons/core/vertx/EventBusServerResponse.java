@@ -18,7 +18,7 @@ import io.vertx.core.json.JsonObject;
  * within an event bus request/response interaction.
  *
  */
-public class EBResponse extends JsonObject {
+public class EventBusServerResponse extends JsonObject {
 
     public static final String STATUS_CODE = "status-code";
     public static final String BODY = "body";
@@ -28,8 +28,8 @@ public class EBResponse extends JsonObject {
     public static final int NOT_FOUND = 404;
     public static final int INTERNAL_ERROR = 500;
 
-    public static EBResponse create(int resultCode, JsonObject body) {
-        EBResponse res = new EBResponse();
+    public static EventBusServerResponse create(int resultCode, JsonObject body) {
+        EventBusServerResponse res = new EventBusServerResponse();
         res.setResultCode(resultCode);
         if (body != null) {
             res.setBody(body);
@@ -37,10 +37,26 @@ public class EBResponse extends JsonObject {
         return res;
     }
 
-    public static EBResponse create(int resultCode) {
-        EBResponse res = new EBResponse();
+    public static EventBusServerResponse create(int resultCode) {
+        EventBusServerResponse res = new EventBusServerResponse();
         res.setResultCode(resultCode);
         return res;
+    }
+
+    public static EventBusServerResponse create(Object object) {
+        if (object == null || !(object instanceof JsonObject)) {
+            return null;
+        }
+        JsonObject response = (JsonObject) object;
+        if (!response.containsKey(EventBusServerResponse.STATUS_CODE)) {
+            return null;
+        }
+        int resultCode = response.getInteger(EventBusServerResponse.STATUS_CODE);
+        JsonObject body = null;
+        if (response.containsKey(EventBusServerResponse.BODY)) {
+            body = response.getJsonObject(EventBusServerResponse.BODY);
+        }
+        return EventBusServerResponse.create(resultCode, body);
     }
 
     public int getResultCode() {

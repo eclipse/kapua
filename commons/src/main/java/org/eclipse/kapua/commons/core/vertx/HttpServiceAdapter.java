@@ -11,15 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core.vertx;
 
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
+import io.vertx.ext.web.Router;
 
 /**
- * Executes an event bus request/response interaction. Accepts a {@link EBRequest} 
- * and asynchronously returns a {@link EBResponse}.
+ * Registers an http adapter within a {@link Router}
  *
  */
-public interface EBRequestHandler {
+public interface HttpServiceAdapter {
 
-    public void handle(EBRequest request, Handler<AsyncResult<EBResponse>> responseEvent);
+    public void register(Router router);
 }

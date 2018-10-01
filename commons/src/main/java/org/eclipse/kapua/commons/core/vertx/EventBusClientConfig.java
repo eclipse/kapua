@@ -11,13 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.core.vertx;
 
-import io.vertx.ext.web.Router;
-
 /**
- * Registers a route within a {@link Router}
+ * Holds the configuration parameters of an {@link EventBusClient}
  *
  */
-public interface HttpRouteProvider {
+public class EventBusClientConfig {
 
-    public void registerRoutes(Router router);
+    private String address;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 }

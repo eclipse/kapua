@@ -9,9 +9,8 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.processor.datastore.broker;
+package org.eclipse.kapua.processor.commons;
 
-import org.eclipse.kapua.message.transport.TransportMessage;
-import org.eclipse.kapua.processor.commons.MainVerticleBase;
+import io.vertx.core.Verticle;
 
-public class MainVerticle extends MainVerticleBase<byte[],TransportMessage> {}
+public interface MessageProcessorVerticle extends Verticle {}

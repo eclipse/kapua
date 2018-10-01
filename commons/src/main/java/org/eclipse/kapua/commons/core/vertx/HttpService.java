@@ -12,19 +12,19 @@
 package org.eclipse.kapua.commons.core.vertx;
 
 /**
- * Holds the configuration parameters of an {@link EventBusRequestProducer} or
- * {@link EventBusRequestConsumer}
+ * Defines the interface for a service exposing an http endpoint.
+ * <p>
+ * It can register a set of {@link HttpServiceAdapter}, routes will be invoked when 
+ * a matching http request is received.
+ * <p>
+ * It can register a set of {@link HealthCheckAdapter}, health checks will be 
+ * invoked when an http request is received at a well defined path defined by 
+ * its implementation.
  *
  */
-public class EBClientConfig {
+public interface HttpService extends LifecycleObject {
 
-    private String address;
+    public void register(HttpServiceAdapter provider);
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
+    public void register(HealthCheckAdapter provider);
 }
