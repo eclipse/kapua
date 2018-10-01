@@ -9,7 +9,10 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua;
+package org.eclipse.kapua.service.device.registry.connection.option.internal;
+
+import org.eclipse.kapua.ConnectionServiceErrorCodes;
+import org.eclipse.kapua.KapuaException;
 
 public class ConnectionServiceException extends KapuaException{
 

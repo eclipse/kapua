@@ -9,10 +9,9 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.registry.connection.internal;
+package org.eclipse.kapua.service.device.registry.connection.option.internal;
 
 import org.eclipse.kapua.ConnectionServiceErrorCodes;
-import org.eclipse.kapua.ConnectionServiceException;
 import org.eclipse.kapua.model.id.KapuaId;
 
 public class UserAlreadyReservedException extends ConnectionServiceException{
