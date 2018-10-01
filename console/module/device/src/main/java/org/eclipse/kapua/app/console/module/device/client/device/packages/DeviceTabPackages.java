@@ -85,7 +85,9 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
             tabsPanel.setSelection(installedPackageTab);
         }
 
-        historyPackageTab.setEntity(gwtDevice);
+        if (initialized) {
+            historyPackageTab.setEntity(gwtDevice);
+        }
 
         doRefresh();
     }
@@ -359,8 +361,6 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
             if (selectedEntity != null && selectedEntity.isOnline()) {
                 toolBar.enable();
                 uninstallButton.disable();
-                installButton.disable();
-                refreshButton.disable();
             } else {
                 toolBar.disable();
             }

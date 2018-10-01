@@ -359,6 +359,8 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         if (!responseMessage.getResponseCode().isAccepted()) {
             KapuaResponsePayload responsePayload = responseMessage.getPayload();
 
+            closeManagementOperation(scopeId, deviceId, operationId, responseMessage);
+
             throw new PackageDownloadExecuteManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
         }
     }
@@ -535,6 +537,8 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         // Check response
         if (!responseMessage.getResponseCode().isAccepted()) {
             KapuaResponsePayload responsePayload = responseMessage.getPayload();
+
+            closeManagementOperation(scopeId, deviceId, operationId, responseMessage);
 
             throw new PackageUninstallExecuteManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
         }
