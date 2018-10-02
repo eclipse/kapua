@@ -85,7 +85,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         DeviceValidation.validateUpdatePreconditions(device);
 
         return entityManagerSession.onTransactedResult(entityManager -> {
-            Device currentDevice = DeviceDAO.find(entityManager, device.getId());
+            Device currentDevice = DeviceDAO.find(entityManager, device.getScopeId(), device.getId());
             if (currentDevice == null) {
                 throw new KapuaEntityNotFoundException(Device.TYPE, device.getId());
             }
@@ -124,7 +124,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
     @Override
     public Device find(KapuaId scopeId, KapuaId entityId) throws KapuaException {
         DeviceValidation.validateFindPreconditions(scopeId, entityId);
-        return entityManagerSession.onResult(entityManager -> DeviceDAO.find(entityManager, entityId));
+        return entityManagerSession.onResult(entityManager -> DeviceDAO.find(entityManager, scopeId, entityId));
     }
 
     @Override
@@ -142,7 +142,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
     @Override
     public void delete(KapuaId scopeId, KapuaId deviceId) throws KapuaException {
         DeviceValidation.validateDeletePreconditions(scopeId, deviceId);
-        entityManagerSession.onTransactedAction(entityManager -> DeviceDAO.delete(entityManager, deviceId));
+        entityManagerSession.onTransactedAction(entityManager -> DeviceDAO.delete(entityManager, scopeId, deviceId));
     }
 
     @Override

@@ -145,7 +145,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> JobDAO.find(em, jobId));
+        return entityManagerSession.onResult(em -> JobDAO.find(em, scopeId, jobId));
     }
 
     @Override
@@ -218,7 +218,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         //
         // Do delete
         KapuaSecurityUtils.doPrivileged(() -> jobEngineService.cleanJobData(scopeId, jobId));
-        entityManagerSession.onTransactedAction(em -> JobDAO.delete(em, jobId));
+        entityManagerSession.onTransactedAction(em -> JobDAO.delete(em, scopeId, jobId));
     }
 
 }

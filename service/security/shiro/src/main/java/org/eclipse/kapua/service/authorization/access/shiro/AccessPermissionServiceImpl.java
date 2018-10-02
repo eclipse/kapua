@@ -112,7 +112,7 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
         return entityManagerSession.onTransactedInsert(em -> {
             //
             // Check that accessInfo exists
-            AccessInfo accessInfo = AccessInfoDAO.find(em, accessPermissionCreator.getAccessInfoId());
+            AccessInfo accessInfo = AccessInfoDAO.find(em, accessPermissionCreator.getScopeId(), accessPermissionCreator.getAccessInfoId());
 
             if (accessInfo == null) {
                 throw new KapuaEntityNotFoundException(AccessInfo.TYPE, accessPermissionCreator.getAccessInfoId());
@@ -134,11 +134,11 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.delete, scopeId));
 
         entityManagerSession.onTransactedAction(em -> {
-            if (AccessPermissionDAO.find(em, accessPermissionId) == null) {
+            if (AccessPermissionDAO.find(em, scopeId, accessPermissionId) == null) {
                 throw new KapuaEntityNotFoundException(AccessPermission.TYPE, accessPermissionId);
             }
 
-            AccessPermissionDAO.delete(em, accessPermissionId);
+            AccessPermissionDAO.delete(em, scopeId, accessPermissionId);
         });
     }
 
@@ -155,7 +155,7 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
 
-        return entityManagerSession.onResult(em -> AccessPermissionDAO.find(em, accessPermissionId));
+        return entityManagerSession.onResult(em -> AccessPermissionDAO.find(em, scopeId, accessPermissionId));
     }
 
     @Override

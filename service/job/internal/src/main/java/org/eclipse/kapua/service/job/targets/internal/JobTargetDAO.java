@@ -73,27 +73,20 @@ public class JobTargetDAO {
     }
 
     /**
-     * Deletes the jobTarget by jobTarget identifier
-     * 
-     * @param em
-     * @param jobTargetId
-     * @throws KapuaEntityNotFoundException
-     *             If the {@link JobTarget} is not found
-     */
-    public static void delete(EntityManager em, KapuaId jobTargetId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, JobTargetImpl.class, jobTargetId);
-    }
-
-    /**
      * Finds the jobTarget by jobTarget identifier
+     *
+     * @param em
+     * @param scopeId
+     * @param jobTargetId
+     * @return
      */
-    public static JobTarget find(EntityManager em, KapuaId jobTargetId) {
-        return em.find(JobTargetImpl.class, jobTargetId);
+    public static JobTarget find(EntityManager em, KapuaId scopeId, KapuaId jobTargetId) {
+        return ServiceDAO.find(em, JobTargetImpl.class, scopeId, jobTargetId);
     }
 
     /**
      * Finds the jobTarget by name
-     * 
+     *
      * @param em
      * @param name
      * @return
@@ -104,7 +97,7 @@ public class JobTargetDAO {
 
     /**
      * Returns the jobTarget list matching the provided query
-     * 
+     *
      * @param em
      * @param jobTargetQuery
      * @return
@@ -117,7 +110,7 @@ public class JobTargetDAO {
 
     /**
      * Returns the jobTarget count matching the provided query
-     * 
+     *
      * @param em
      * @param jobTargetQuery
      * @return
@@ -126,6 +119,19 @@ public class JobTargetDAO {
     public static long count(EntityManager em, KapuaQuery<JobTarget> jobTargetQuery)
             throws KapuaException {
         return ServiceDAO.count(em, JobTarget.class, JobTargetImpl.class, jobTargetQuery);
+    }
+
+    /**
+     * Deletes the jobTarget by jobTarget identifier
+     *
+     * @param em
+     * @param scopeId
+     * @param jobTargetId
+     * @throws KapuaEntityNotFoundException
+     *             If the {@link JobTarget} is not found
+     */
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId jobTargetId) throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, JobTargetImpl.class, scopeId, jobTargetId);
     }
 
 }

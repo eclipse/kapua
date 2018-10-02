@@ -53,11 +53,12 @@ public class DeviceEventDAO extends ServiceDAO {
      * Find the device event by device event identifier
      *
      * @param em
+     * @param scopeId
      * @param deviceEventId
      * @return
      */
-    public static DeviceEvent find(EntityManager em, KapuaId deviceEventId) {
-        return em.find(DeviceEventImpl.class, deviceEventId);
+    public static DeviceEvent find(EntityManager em, KapuaId scopeId, KapuaId deviceEventId) {
+        return ServiceDAO.find(em, DeviceEventImpl.class, scopeId, deviceEventId);
     }
 
     /**
@@ -90,12 +91,13 @@ public class DeviceEventDAO extends ServiceDAO {
      * Delete the device event by device event identifier
      *
      * @param em
+     * @param scopeId
      * @param deviceEventId
      * @throws KapuaEntityNotFoundException If the {@link DeviceEvent} is not found.
      */
-    public static void delete(EntityManager em, KapuaId deviceEventId)
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId deviceEventId)
             throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, DeviceEventImpl.class, deviceEventId);
+        ServiceDAO.delete(em, DeviceEventImpl.class, scopeId, deviceEventId);
     }
 
 }

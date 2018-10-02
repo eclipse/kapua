@@ -72,7 +72,7 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
 
             //
             // Check that accessInfo exists
-            AccessInfo accessInfo = AccessInfoDAO.find(em, accessRoleCreator.getAccessInfoId());
+            AccessInfo accessInfo = AccessInfoDAO.find(em, accessRoleCreator.getScopeId(), accessRoleCreator.getAccessInfoId());
 
             if (accessInfo == null) {
                 throw new KapuaEntityNotFoundException(AccessInfo.TYPE, accessRoleCreator.getAccessInfoId());
@@ -80,7 +80,7 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
 
             //
             // Check that role exists
-            Role role = RoleDAO.find(em, accessRoleCreator.getRoleId());
+            Role role = RoleDAO.find(em, accessRoleCreator.getScopeId(), accessRoleCreator.getRoleId());
 
             if (role == null) {
                 throw new KapuaEntityNotFoundException(Role.TYPE, accessRoleCreator.getRoleId());
@@ -119,11 +119,11 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.delete, scopeId));
 
         entityManagerSession.onTransactedAction(em -> {
-            if (AccessRoleDAO.find(em, accessRoleId) == null) {
+            if (AccessRoleDAO.find(em, scopeId, accessRoleId) == null) {
                 throw new KapuaEntityNotFoundException(AccessRole.TYPE, accessRoleId);
             }
 
-            AccessRoleDAO.delete(em, accessRoleId);
+            AccessRoleDAO.delete(em, scopeId, accessRoleId);
         });
     }
 
@@ -140,7 +140,7 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
 
-        return entityManagerSession.onResult(em -> AccessRoleDAO.find(em, accessRoleId));
+        return entityManagerSession.onResult(em -> AccessRoleDAO.find(em, scopeId, accessRoleId));
     }
 
     @Override

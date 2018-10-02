@@ -141,7 +141,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         //
-        entityManagerSession.onTransactedAction(em -> TagDAO.delete(em, tagId));
+        entityManagerSession.onTransactedAction(em -> TagDAO.delete(em, scopeId, tagId));
     }
 
     @Override
@@ -157,7 +157,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> TagDAO.find(em, tagId));
+        return entityManagerSession.onResult(em -> TagDAO.find(em, scopeId, tagId));
     }
 
     @Override

@@ -24,9 +24,9 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessInfoAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
-import org.eclipse.kapua.service.authorization.access.AccessInfoAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
@@ -202,21 +202,21 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
         accessData.permissions = new HashSet<>();
         for (String perm : tmpList) {
             switch (perm.trim()) {
-            case "read":
-                accessData.permissions.add(permissionFactory.newPermission(TEST_DOMAIN, Actions.read, commonData.scopeId));
-                break;
-            case "write":
-                accessData.permissions.add(permissionFactory.newPermission(TEST_DOMAIN, Actions.write, commonData.scopeId));
-                break;
-            case "delete":
-                accessData.permissions.add(permissionFactory.newPermission(TEST_DOMAIN, Actions.delete, commonData.scopeId));
-                break;
-            case "connect":
-                accessData.permissions.add(permissionFactory.newPermission(TEST_DOMAIN, Actions.connect, commonData.scopeId));
-                break;
-            case "execute":
-                accessData.permissions.add(permissionFactory.newPermission(TEST_DOMAIN, Actions.execute, commonData.scopeId));
-                break;
+                case "read":
+                    accessData.permissions.add(permissionFactory.newPermission(TEST_DOMAIN, Actions.read, commonData.scopeId));
+                    break;
+                case "write":
+                    accessData.permissions.add(permissionFactory.newPermission(TEST_DOMAIN, Actions.write, commonData.scopeId));
+                    break;
+                case "delete":
+                    accessData.permissions.add(permissionFactory.newPermission(TEST_DOMAIN, Actions.delete, commonData.scopeId));
+                    break;
+                case "connect":
+                    accessData.permissions.add(permissionFactory.newPermission(TEST_DOMAIN, Actions.connect, commonData.scopeId));
+                    break;
+                case "execute":
+                    accessData.permissions.add(permissionFactory.newPermission(TEST_DOMAIN, Actions.execute, commonData.scopeId));
+                    break;
             }
         }
         // Make sure that there is at least one valid item
@@ -296,6 +296,32 @@ public class AccessInfoServiceTestSteps extends AbstractAuthorizationServiceTest
             });
         } catch (KapuaException e) {
             commonData.verifyException(e);
+        }
+    }
+
+    @When("^I create a clean access info entity$")
+    public void createCleanAccessInfoEntity()
+            throws Exception {
+
+        assertNotNull(commonData.scopeId);
+        assertNotNull(accessData.user);
+
+        accessData.accessInfoCreator = accessInfoFactory.newCreator(commonData.scopeId);
+        assertNotNull(accessData.accessInfoCreator);
+
+        accessData.accessInfoCreator.setUserId(accessData.user.getId());
+
+        accessData.permissions = null;
+        accessData.roleIds = null;
+
+        try {
+            commonData.primeException();
+            KapuaSecurityUtils.doPrivileged(() -> {
+                accessData.accessInfo = accessInfoService.create(accessData.accessInfoCreator);
+                return null;
+            });
+        } catch (KapuaException ex) {
+            commonData.verifyException(ex);
         }
     }
 

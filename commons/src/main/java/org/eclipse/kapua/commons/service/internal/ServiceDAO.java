@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -41,9 +41,9 @@ import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.model.query.predicate.OrPredicate;
 import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessInfoAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
-import org.eclipse.kapua.service.authorization.access.AccessInfoAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
@@ -195,6 +195,37 @@ public class ServiceDAO {
     }
 
     /**
+     * Find {@link KapuaEntity} utility method
+     *
+     * @param em       The {@link EntityManager} that holds the transaction.
+     * @param clazz    The {@link KapuaEntity} class. This must be the implementing {@code class}.
+     * @param scopeId  The {@link KapuaEntity} scopeId of the entity to be found.
+     * @param entityId The {@link KapuaEntity} {@link KapuaId} of the entity to be found.
+     * @since 1.0.0
+     */
+    public static <E extends KapuaEntity> E find(EntityManager em, Class<E> clazz, KapuaId scopeId, KapuaId entityId) {
+        //
+        // Checking existence
+        E entityToFind = em.find(clazz, entityId);
+
+        //
+        // Return if not null and scopeIds matches
+        if (entityToFind != null) {
+            if (scopeId == null) {
+                return entityToFind;
+            } else if (entityToFind.getScopeId() == null) {
+                return entityToFind;
+            } else if (entityToFind.getScopeId().equals(scopeId)) {
+                return entityToFind;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Update {@link KapuaUpdatableEntity} utility method.
      *
      * @param em     The {@link EntityManager} that holds the transaction.
@@ -231,18 +262,19 @@ public class ServiceDAO {
      *
      * @param em       The {@link EntityManager} that holds the transaction.
      * @param clazz    The {@link KapuaEntity} class. This must be the implementing {@code class}.
+     * @param scopeId  The {@link KapuaEntity} scopeId of the entity to be deleted.
      * @param entityId The {@link KapuaEntity} {@link KapuaId} of the entity to be deleted.
      * @throws KapuaEntityNotFoundException If the {@link KapuaEntity} does not exists.
      * @since 1.0.0
      */
-    public static <E extends KapuaEntity> void delete(EntityManager em, Class<E> clazz, KapuaId entityId)
+    public static <E extends KapuaEntity> void delete(EntityManager em, Class<E> clazz, KapuaId scopeId, KapuaId entityId)
             throws KapuaEntityNotFoundException {
         //
         // Checking existence
-        E entityToDelete = em.find(clazz, entityId);
+        E entityToDelete = find(em, clazz, scopeId, entityId);
 
         //
-        // Deleting if not null
+        // Deleting if not null and scopeIds matches
         if (entityToDelete != null) {
             em.remove(entityToDelete);
             em.flush();
@@ -304,10 +336,10 @@ public class ServiceDAO {
      * @since 1.0.0
      */
     public static <I extends KapuaEntity, E extends I, L extends KapuaListResult<I>> L query(EntityManager em,
-            Class<I> interfaceClass,
-            Class<E> implementingClass,
-            L resultContainer,
-            KapuaQuery<I> kapuaQuery)
+                                                                                             Class<I> interfaceClass,
+                                                                                             Class<E> implementingClass,
+                                                                                             L resultContainer,
+                                                                                             KapuaQuery<I> kapuaQuery)
             throws KapuaException {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<E> criteriaSelectQuery = cb.createQuery(implementingClass);
@@ -420,9 +452,9 @@ public class ServiceDAO {
      * @since 1.0.0
      */
     public static <I extends KapuaEntity, E extends I> long count(EntityManager em,
-            Class<I> interfaceClass,
-            Class<E> implementingClass,
-            KapuaQuery<I> kapuaQuery)
+                                                                  Class<I> interfaceClass,
+                                                                  Class<E> implementingClass,
+                                                                  KapuaQuery<I> kapuaQuery)
             throws KapuaException {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> criteriaSelectQuery = cb.createQuery(Long.class);
@@ -485,10 +517,10 @@ public class ServiceDAO {
      * @throws KapuaException
      */
     protected static <E> Expression<Boolean> handleKapuaQueryPredicates(QueryPredicate qp,
-            Map<ParameterExpression, Object> binds,
-            CriteriaBuilder cb,
-            Root<E> userPermissionRoot,
-            EntityType<E> entityType)
+                                                                        Map<ParameterExpression, Object> binds,
+                                                                        CriteriaBuilder cb,
+                                                                        Root<E> userPermissionRoot,
+                                                                        EntityType<E> entityType)
             throws KapuaException {
         Expression<Boolean> expr = null;
         if (qp instanceof AttributePredicate) {
@@ -505,10 +537,10 @@ public class ServiceDAO {
     }
 
     private static <E> Expression<Boolean> handleAndPredicate(AndPredicate andPredicate,
-            Map<ParameterExpression, Object> binds,
-            CriteriaBuilder cb,
-            Root<E> entityRoot,
-            EntityType<E> entityType)
+                                                              Map<ParameterExpression, Object> binds,
+                                                              CriteriaBuilder cb,
+                                                              Root<E> entityRoot,
+                                                              EntityType<E> entityType)
             throws KapuaException {
         List<Expression<Boolean>> expressions = new ArrayList<>();
 
@@ -517,28 +549,28 @@ public class ServiceDAO {
             expressions.add(expr);
         }
 
-        return cb.and(expressions.toArray(new Predicate[] {}));
+        return cb.and(expressions.toArray(new Predicate[]{}));
     }
 
     private static <E> Expression<Boolean> handleOrPredicate(OrPredicate orPredicate,
-            Map<ParameterExpression, Object> binds,
-            CriteriaBuilder cb,
-            Root<E> entityRoot,
-            EntityType<E> entityType)
+                                                             Map<ParameterExpression, Object> binds,
+                                                             CriteriaBuilder cb,
+                                                             Root<E> entityRoot,
+                                                             EntityType<E> entityType)
             throws KapuaException {
         List<Expression<Boolean>> exprs = new ArrayList<>();
         for (QueryPredicate pred : orPredicate.getPredicates()) {
             Expression<Boolean> expr = handleKapuaQueryPredicates(pred, binds, cb, entityRoot, entityType);
             exprs.add(expr);
         }
-        return cb.or(exprs.toArray(new Predicate[] {}));
+        return cb.or(exprs.toArray(new Predicate[]{}));
     }
 
     private static <E> Expression<Boolean> handleAttributePredicate(AttributePredicate attrPred,
-            Map<ParameterExpression, Object> binds,
-            CriteriaBuilder cb,
-            Root<E> entityRoot,
-            EntityType<E> entityType)
+                                                                    Map<ParameterExpression, Object> binds,
+                                                                    CriteriaBuilder cb,
+                                                                    Root<E> entityRoot,
+                                                                    EntityType<E> entityType)
             throws KapuaException {
         Expression<Boolean> expr;
         String attrName = attrPred.getAttributeName();
@@ -576,74 +608,74 @@ public class ServiceDAO {
         } else {
             String strAttrValue;
             switch (attrPred.getOperator()) {
-            case LIKE:
-                strAttrValue = attrValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY);
-                ParameterExpression<String> pl = cb.parameter(String.class);
-                binds.put(pl, LIKE + strAttrValue + LIKE);
-                expr = cb.like((Expression<String>) extractAttribute(entityRoot, attrName), pl);
-                break;
+                case LIKE:
+                    strAttrValue = attrValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY);
+                    ParameterExpression<String> pl = cb.parameter(String.class);
+                    binds.put(pl, LIKE + strAttrValue + LIKE);
+                    expr = cb.like((Expression<String>) extractAttribute(entityRoot, attrName), pl);
+                    break;
 
-            case STARTS_WITH:
-                strAttrValue = attrValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY);
-                ParameterExpression<String> psw = cb.parameter(String.class);
-                binds.put(psw, strAttrValue + LIKE);
-                expr = cb.like((Expression<String>) extractAttribute(entityRoot, attrName), psw);
-                break;
+                case STARTS_WITH:
+                    strAttrValue = attrValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY);
+                    ParameterExpression<String> psw = cb.parameter(String.class);
+                    binds.put(psw, strAttrValue + LIKE);
+                    expr = cb.like((Expression<String>) extractAttribute(entityRoot, attrName), psw);
+                    break;
 
-            case IS_NULL:
-                expr = cb.isNull(extractAttribute(entityRoot, attrName));
-                break;
+                case IS_NULL:
+                    expr = cb.isNull(extractAttribute(entityRoot, attrName));
+                    break;
 
-            case NOT_NULL:
-                expr = cb.isNotNull(extractAttribute(entityRoot, attrName));
-                break;
+                case NOT_NULL:
+                    expr = cb.isNotNull(extractAttribute(entityRoot, attrName));
+                    break;
 
-            case NOT_EQUAL:
-                expr = cb.notEqual(extractAttribute(entityRoot, attrName), attrValue);
-                break;
+                case NOT_EQUAL:
+                    expr = cb.notEqual(extractAttribute(entityRoot, attrName), attrValue);
+                    break;
 
-            case GREATER_THAN:
-                if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
-                    Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
-                    Comparable comparablAttrValue = (Comparable) attrValue;
-                    expr = cb.greaterThan(comparableExpression, comparablAttrValue);
-                } else {
-                    throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
-                }
-                break;
+                case GREATER_THAN:
+                    if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
+                        Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
+                        Comparable comparablAttrValue = (Comparable) attrValue;
+                        expr = cb.greaterThan(comparableExpression, comparablAttrValue);
+                    } else {
+                        throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
+                    }
+                    break;
 
-            case GREATER_THAN_OR_EQUAL:
-                if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
-                    Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
-                    Comparable comparablAttrValue = (Comparable) attrValue;
-                    expr = cb.greaterThanOrEqualTo(comparableExpression, comparablAttrValue);
-                } else {
-                    throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
-                }
-                break;
+                case GREATER_THAN_OR_EQUAL:
+                    if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
+                        Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
+                        Comparable comparablAttrValue = (Comparable) attrValue;
+                        expr = cb.greaterThanOrEqualTo(comparableExpression, comparablAttrValue);
+                    } else {
+                        throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
+                    }
+                    break;
 
-            case LESS_THAN:
-                if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
-                    Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
-                    Comparable comparablAttrValue = (Comparable) attrValue;
-                    expr = cb.lessThan(comparableExpression, comparablAttrValue);
-                } else {
-                    throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
-                }
-                break;
-            case LESS_THAN_OR_EQUAL:
-                if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
-                    Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
-                    Comparable comparablAttrValue = (Comparable) attrValue;
-                    expr = cb.lessThanOrEqualTo(comparableExpression, comparablAttrValue);
-                } else {
-                    throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
-                }
-                break;
+                case LESS_THAN:
+                    if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
+                        Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
+                        Comparable comparablAttrValue = (Comparable) attrValue;
+                        expr = cb.lessThan(comparableExpression, comparablAttrValue);
+                    } else {
+                        throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
+                    }
+                    break;
+                case LESS_THAN_OR_EQUAL:
+                    if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
+                        Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
+                        Comparable comparablAttrValue = (Comparable) attrValue;
+                        expr = cb.lessThanOrEqualTo(comparableExpression, comparablAttrValue);
+                    } else {
+                        throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
+                    }
+                    break;
 
-            case EQUAL:
-            default:
-                expr = cb.equal(extractAttribute(entityRoot, attrName), attrValue);
+                case EQUAL:
+                default:
+                    expr = cb.equal(extractAttribute(entityRoot, attrName), attrValue);
             }
         }
         return expr;

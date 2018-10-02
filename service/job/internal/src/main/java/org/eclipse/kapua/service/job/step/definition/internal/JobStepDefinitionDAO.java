@@ -23,9 +23,8 @@ import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionListResult
 
 /**
  * JobStepDefinition DAO
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class JobStepDefinitionDAO {
 
@@ -34,7 +33,7 @@ public class JobStepDefinitionDAO {
 
     /**
      * Creates and return new JobStepDefinition
-     * 
+     *
      * @param em
      * @param jobStepDefinitionCreator
      * @return
@@ -59,7 +58,7 @@ public class JobStepDefinitionDAO {
 
     /**
      * Updates the provided stepDefinition
-     * 
+     *
      * @param em
      * @param jobStepDefinition
      * @return
@@ -75,27 +74,15 @@ public class JobStepDefinitionDAO {
     }
 
     /**
-     * Deletes the stepDefinition by stepDefinition identifier
-     * 
-     * @param em
-     * @param stepDefinitionId
-     * @throws KapuaEntityNotFoundException
-     *             If the {@link JobStepDefinition} is not found
-     */
-    public static void delete(EntityManager em, KapuaId stepDefinitionId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, JobStepDefinitionImpl.class, stepDefinitionId);
-    }
-
-    /**
      * Finds the stepDefinition by stepDefinition identifier
      */
-    public static JobStepDefinition find(EntityManager em, KapuaId stepDefinitionId) {
-        return em.find(JobStepDefinitionImpl.class, stepDefinitionId);
+    public static JobStepDefinition find(EntityManager em, KapuaId scopeId, KapuaId stepDefinitionId) {
+        return ServiceDAO.find(em, JobStepDefinitionImpl.class, scopeId, stepDefinitionId);
     }
 
     /**
      * Returns the stepDefinition list matching the provided query
-     * 
+     *
      * @param em
      * @param stepDefinitionQuery
      * @return
@@ -108,7 +95,7 @@ public class JobStepDefinitionDAO {
 
     /**
      * Returns the stepDefinition count matching the provided query
-     * 
+     *
      * @param em
      * @param stepDefinitionQuery
      * @return
@@ -117,6 +104,18 @@ public class JobStepDefinitionDAO {
     public static long count(EntityManager em, KapuaQuery<JobStepDefinition> stepDefinitionQuery)
             throws KapuaException {
         return ServiceDAO.count(em, JobStepDefinition.class, JobStepDefinitionImpl.class, stepDefinitionQuery);
+    }
+
+    /**
+     * Deletes the stepDefinition by stepDefinition identifier
+     *
+     * @param em
+     * @param scopeId
+     * @param stepDefinitionId
+     * @throws KapuaEntityNotFoundException If the {@link JobStepDefinition} is not found
+     */
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId stepDefinitionId) throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, JobStepDefinitionImpl.class, scopeId, stepDefinitionId);
     }
 
 }

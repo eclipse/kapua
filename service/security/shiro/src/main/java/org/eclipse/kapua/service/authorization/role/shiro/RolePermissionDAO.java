@@ -51,28 +51,17 @@ public class RolePermissionDAO extends ServiceDAO {
      * Find the role by role identifier
      * 
      * @param em
+     * @param scopeId
      * @param roleId
      * @return
      */
-    public static RolePermission find(EntityManager em, KapuaId roleId) {
-        return em.find(RolePermissionImpl.class, roleId);
-    }
-
-    /**
-     * Delete the role by role identifier
-     * 
-     * @param em
-     * @param rolePermissionId
-     * @throws KapuaEntityNotFoundException
-     *             If {@link RolePermission} is not found.
-     */
-    public static void delete(EntityManager em, KapuaId rolePermissionId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, RolePermissionImpl.class, rolePermissionId);
+    public static RolePermission find(EntityManager em, KapuaId scopeId, KapuaId roleId) {
+        return ServiceDAO.find(em, RolePermissionImpl.class, scopeId, roleId);
     }
 
     /**
      * Return the {@link RolePermission} list matching the provided query
-     * 
+     *
      * @param em
      * @param rolePermissionQuery
      * @return
@@ -85,7 +74,7 @@ public class RolePermissionDAO extends ServiceDAO {
 
     /**
      * Return the count of {@link RolePermission} matching the provided query
-     * 
+     *
      * @param em
      * @param rolePermissionQuery
      * @return
@@ -94,5 +83,18 @@ public class RolePermissionDAO extends ServiceDAO {
     public static long count(EntityManager em, KapuaQuery<RolePermission> rolePermissionQuery)
             throws KapuaException {
         return ServiceDAO.count(em, RolePermission.class, RolePermissionImpl.class, rolePermissionQuery);
+    }
+
+    /**
+     * Delete the role by role identifier
+     *
+     * @param em
+     * @param scopeId
+     * @param rolePermissionId
+     * @throws KapuaEntityNotFoundException
+     *             If {@link RolePermission} is not found.
+     */
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId rolePermissionId) throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, RolePermissionImpl.class, scopeId, rolePermissionId);
     }
 }

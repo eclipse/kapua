@@ -147,7 +147,7 @@ public class EndpointInfoServiceImpl
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> EndpointInfoDAO.delete(em, endpointInfoId));
+        entityManagerSession.onTransactedAction(em -> EndpointInfoDAO.delete(em, scopeId, endpointInfoId));
     }
 
     @Override
@@ -162,7 +162,7 @@ public class EndpointInfoServiceImpl
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> EndpointInfoDAO.find(em, endpointInfoId));
+        return entityManagerSession.onResult(em -> EndpointInfoDAO.find(em, scopeId, endpointInfoId));
     }
 
     @Override

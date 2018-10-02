@@ -16,6 +16,9 @@ import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.model.id.KapuaId;
 
+/**
+ * {@link CollisionEntity} {@link ServiceDAO}
+ */
 public class CollisionEntityDAO {
 
     private CollisionEntityDAO() {
@@ -30,8 +33,8 @@ public class CollisionEntityDAO {
         return ServiceDAO.create(em, collisionEntity);
     }
 
-    public static CollisionEntity find(EntityManager em, KapuaId userId) {
-        return em.find(CollisionEntity.class, userId);
+    public static CollisionEntity find(EntityManager em, KapuaId scopeId, KapuaId userId) {
+        return ServiceDAO.find(em, CollisionEntity.class, scopeId, userId);
     }
 
 }

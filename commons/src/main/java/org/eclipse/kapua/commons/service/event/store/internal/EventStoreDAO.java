@@ -55,26 +55,20 @@ public class EventStoreDAO {
     }
 
     /**
-     * Deletes the kapua event by event identifier
-     * 
-     * @param em
-     * @param eventId
-     * @throws KapuaEntityNotFoundException
-     */
-    public static void delete(EntityManager em, KapuaId eventId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, EventStoreRecordImpl.class, eventId);
-    }
-
-    /**
      * Finds the event by event identifier
+     *
+     * @param em
+     * @param scopeId
+     * @param eventId
+     * @return
      */
-    public static EventStoreRecord find(EntityManager em, KapuaId eventId) {
-        return em.find(EventStoreRecordImpl.class, eventId);
+    public static EventStoreRecord find(EntityManager em, KapuaId scopeId, KapuaId eventId) {
+        return ServiceDAO.find(em, EventStoreRecordImpl.class, scopeId, eventId);
     }
 
     /**
      * Returns the kapuaEvent list matching the provided query
-     * 
+     *
      * @param em
      * @param kapuaEventQuery
      * @return
@@ -87,7 +81,7 @@ public class EventStoreDAO {
 
     /**
      * Returns the kapuaEvent count matching the provided query
-     * 
+     *
      * @param em
      * @param kapuaEventQuery
      * @return
@@ -96,5 +90,17 @@ public class EventStoreDAO {
     public static long count(EntityManager em, KapuaQuery<EventStoreRecord> kapuaEventQuery)
             throws KapuaException {
         return ServiceDAO.count(em, EventStoreRecord.class, EventStoreRecordImpl.class, kapuaEventQuery);
+    }
+
+    /**
+     * Deletes the kapua event by event identifier
+     *
+     * @param em
+     * @param scopeId
+     * @param eventId
+     * @throws KapuaEntityNotFoundException
+     */
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId eventId) throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, EventStoreRecordImpl.class, scopeId, eventId);
     }
 }

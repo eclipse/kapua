@@ -107,7 +107,7 @@ public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimit
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> JobTargetDAO.delete(em, jobTargetId));
+        entityManagerSession.onTransactedAction(em -> JobTargetDAO.delete(em, scopeId, jobTargetId));
     }
 
     @Override
@@ -123,7 +123,7 @@ public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimit
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> JobTargetDAO.find(em, jobTargetId));
+        return entityManagerSession.onResult(em -> JobTargetDAO.find(em, scopeId, jobTargetId));
     }
 
     @Override

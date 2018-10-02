@@ -101,7 +101,7 @@ public class JobStepDefinitionServiceImpl
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> JobStepDefinitionDAO.find(em, stepDefinitionId));
+        return entityManagerSession.onResult(em -> JobStepDefinitionDAO.find(em, scopeId, stepDefinitionId));
     }
 
     @Override
@@ -148,11 +148,11 @@ public class JobStepDefinitionServiceImpl
         //
         // Do delete
         entityManagerSession.onTransactedAction(em -> {
-            if (JobStepDefinitionDAO.find(em, stepDefinitionId) == null) {
+            if (JobStepDefinitionDAO.find(em, scopeId, stepDefinitionId) == null) {
                 throw new KapuaEntityNotFoundException(JobStepDefinition.TYPE, stepDefinitionId);
             }
 
-            JobStepDefinitionDAO.delete(em, stepDefinitionId);
+            JobStepDefinitionDAO.delete(em, scopeId, stepDefinitionId);
         });
 
     }
