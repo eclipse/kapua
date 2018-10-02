@@ -11,13 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.commons.message.notification;
 
-import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyChannel;
 import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyPayload;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Category(JUnitTests.class)
 public class KapuaNotifyMessageTest extends Assert {
@@ -37,18 +33,4 @@ public class KapuaNotifyMessageTest extends Assert {
 
         Assert.assertNotNull(kapuaNotifyMessage);
     }
-
-    @Test
-    public void toStringValue() throws Exception {
-        KapuaNotifyChannel kapuaNotifyChannel = new KapuaNotifyChannelImpl();
-        List<String> semanticParts = new ArrayList<>();
-        semanticParts.add("part1");
-        semanticParts.add("part2");
-        semanticParts.add("part3");
-
-        kapuaNotifyChannel.setSemanticParts(semanticParts);
-        String displayStr = kapuaNotifyChannel.toString();
-        Assert.assertEquals(NOTIFY_MSG_STR, displayStr);
-    }
-
 }
