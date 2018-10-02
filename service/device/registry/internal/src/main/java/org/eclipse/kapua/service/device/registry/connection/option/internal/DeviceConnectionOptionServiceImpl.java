@@ -36,6 +36,7 @@ import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnect
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionCreator;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionListResult;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionService;
+import org.eclipse.kapua.service.device.registry.connection.option.UserAlreadyReservedException;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 
 /**

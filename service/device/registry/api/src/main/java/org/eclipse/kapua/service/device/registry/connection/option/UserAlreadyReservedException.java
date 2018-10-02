@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.registry.connection.option.internal;
+package org.eclipse.kapua.service.device.registry.connection.option;
 
 import org.eclipse.kapua.ConnectionServiceErrorCodes;
 import org.eclipse.kapua.model.id.KapuaId;
