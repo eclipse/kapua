@@ -114,12 +114,12 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     private Future<?> stealingLinkManagerFuture;
 
     static {
-        BrokerSetting config = BrokerSetting.getInstance();
-        BROKER_IP_RESOLVER_CLASS_NAME = config.getString(BrokerSettingKey.BROKER_IP_RESOLVER_CLASS_NAME);
-        BROKER_ID_RESOLVER_CLASS_NAME = config.getString(BrokerSettingKey.BROKER_ID_RESOLVER_CLASS_NAME);
-        AUTHENTICATOR_CLASS_NAME = config.getString(BrokerSettingKey.AUTHENTICATOR_CLASS_NAME);
-        STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME = config.getLong(BrokerSettingKey.STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME);
-        stealingLinkEnabled = config.getBoolean(BrokerSettingKey.BROKER_STEALING_LINK_ENABLED);
+        BrokerPluginSetting config = BrokerPluginSetting.getInstance();
+        BROKER_IP_RESOLVER_CLASS_NAME = config.getString(BrokerPluginSettingKey.BROKER_IP_RESOLVER_CLASS_NAME);
+        BROKER_ID_RESOLVER_CLASS_NAME = config.getString(BrokerPluginSettingKey.BROKER_ID_RESOLVER_CLASS_NAME);
+        AUTHENTICATOR_CLASS_NAME = config.getString(BrokerPluginSettingKey.AUTHENTICATOR_CLASS_NAME);
+        STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME = config.getLong(BrokerPluginSettingKey.STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME);
+        stealingLinkEnabled = config.getBoolean(BrokerPluginSettingKey.BROKER_STEALING_LINK_ENABLED);
     }
 
     protected BrokerService brokerService;

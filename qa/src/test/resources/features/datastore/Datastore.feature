@@ -659,9 +659,12 @@ Feature: Datastore tests
 
   @StopExternalConsumers
   Scenario: Stop external consumers for all scenario 
+
   @StopBroker
   Scenario: Stop broker after all scenarios 
+
   @StopEventBroker
   Scenario: Stop event broker after all scenarios 
+
   @StopDatastore
   Scenario: Stop datastore after all scenarios

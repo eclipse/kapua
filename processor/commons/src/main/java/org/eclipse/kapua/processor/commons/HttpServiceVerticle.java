@@ -83,8 +83,10 @@ public class HttpServiceVerticle extends AbstractVerticle {
                 } catch (Exception e) {
                     future.fail(e);
                 }
-                return future;
-            }        
+            }
+            else {
+                future.complete();
+            }
             return future;
         })
         .compose(map-> {

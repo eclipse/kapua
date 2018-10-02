@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 
 public class CoreJAXBContextProvider implements JAXBContextProvider {
 
-    private static Logger logger = LoggerFactory.getLogger(PluginJAXBContextProvider.class);
+    private static Logger logger = LoggerFactory.getLogger(CoreJAXBContextProvider.class);
 
     private JAXBContext context;
 

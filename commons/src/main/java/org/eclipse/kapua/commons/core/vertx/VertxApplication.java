@@ -70,6 +70,7 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
     private static final String PROP_VERTX_STARTUP_TIMEOUT = "kapua.vertx-app.startup-timeout";
 
     private Vertx vertx;
+    private M mainVerticle;
 
     /**
      * Returns the name of the application which is used later on (e.g. to retrieve 
@@ -224,15 +225,27 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
         if (vertx != null) {
             Future<Void> closeFuture = Future.future();
             CountDownLatch stoppedSignal = new CountDownLatch(1);
-            vertx.close(ar -> {
+            Future.succeededFuture()
+            .compose(map -> {
+                   Future<Void> future = Future.future();
+                   vertx.close(ar -> {
+                    if (ar.succeeded()) {
+                        future.complete();
+                        logger.debug("Closing Vertx...DONE");
+                    } else {
+                        future.fail(ar.cause());
+                        logger.error("Closing Vertx...FAILED", ar.cause());
+                    }
+                    stoppedSignal.countDown();
+                });
+                return future;
+            })
+            .setHandler(ar -> {
                 if (ar.succeeded()) {
                     closeFuture.complete();
-                    logger.debug("Closing Vertx...DONE");
                 } else {
                     closeFuture.fail(ar.cause());
-                    logger.error("Closing Vertx...FAILED", ar.cause());
                 }
-                stoppedSignal.countDown();
             });
 
             boolean touchedZero = stoppedSignal.await(actualTimeout, TimeUnit.MILLISECONDS);
@@ -254,8 +267,8 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
         logger.trace("Deploying verticle {}...", this.getClass());
         CountDownLatch startedSignal = new CountDownLatch(1);
         Future<Void> deployFuture = Future.future();
-        M m = env.getBeanContext().getInstance(clazz);
-        vertx.deployVerticle(m, ar -> {
+        mainVerticle = env.getBeanContext().getInstance(clazz);
+        vertx.deployVerticle(mainVerticle, ar -> {
             if (ar.succeeded()) {
                 deployFuture.complete();
                 logger.debug("Deploying verticle {}...DONE", this.getClass());

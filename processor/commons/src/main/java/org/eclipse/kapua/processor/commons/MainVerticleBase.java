@@ -40,14 +40,9 @@ public class MainVerticleBase<M,P> extends AbstractMainVerticle {
     @Inject
     private MessageProcessorVerticle messageProcessorVerticle;
 
-    private String httpServiceVerticleId;
-    private String messageProcessorverticleId;
-
     @Override
     protected void internalStart(Future<Void> startFuture) throws Exception {
-
         logger.info("Starting Processor...");
-
         Future.succeededFuture()
         .compose(map-> {
             Future<Void> future = Future.future();
@@ -59,7 +54,7 @@ public class MainVerticleBase<M,P> extends AbstractMainVerticle {
             return future;
         })
         .compose(map -> {
-            Future<Void> future = Future.future();            
+            Future<Void> future = Future.future();
             vertx.executeBlocking(fut -> {
                 try {
                    kapuaServiceCtx = KapuaServiceContext.create(SystemSetting.getInstance(), jaxbContextProvider);
@@ -69,10 +64,10 @@ public class MainVerticleBase<M,P> extends AbstractMainVerticle {
                }
             }, ar -> {
                 if (ar.succeeded()) {
-                    future.complete();;
+                    future.complete();
                 }
                 else {
-                    future.fail(ar.cause());;
+                    future.fail(ar.cause());
                 }
             });
             return future;
@@ -81,7 +76,6 @@ public class MainVerticleBase<M,P> extends AbstractMainVerticle {
             Future<Void> future = Future.future();
             vertx.deployVerticle(messageProcessorVerticle, ar -> {
                 if (ar.succeeded()) {
-                    messageProcessorverticleId = ar.result();
                     future.complete();
                 }
                 else {
@@ -94,7 +88,6 @@ public class MainVerticleBase<M,P> extends AbstractMainVerticle {
             Future<Void> future = Future.future();
             vertx.deployVerticle(httpServiceVerticle, ar -> {
                 if (ar.succeeded()) {
-                    httpServiceVerticleId = ar.result();
                     future.complete();
                 }
                 else {
@@ -115,39 +108,9 @@ public class MainVerticleBase<M,P> extends AbstractMainVerticle {
     }
 
     @Override
-    protected void internalStop(Future<Void> stopFuture) throws Exception {
-        logger.info("Stopping Datastore Processor...");
+    public void internalStop(Future<Void> closeFuture) {
+        logger.info("Closing Processor...");
         Future.succeededFuture()
-        .compose(map -> {
-            Future<Void> future = Future.future();
-            if (httpServiceVerticleId != null) {
-                vertx.undeploy(httpServiceVerticleId, ar -> {
-                    if (ar.succeeded()) {
-                        future.complete();
-                    } else {
-                        future.fail(ar.cause());
-                    }
-                });
-            } else {
-                future.complete();
-            }
-            return future;
-        })
-        .compose(map -> {
-            Future<Void> future = Future.future();
-            if (messageProcessorverticleId != null) {
-                vertx.undeploy(messageProcessorverticleId, ar -> {
-                    if (ar.succeeded()) {
-                        future.complete();
-                    } else {
-                        future.fail(ar.cause());
-                    }
-                });
-            } else {
-                future.complete();
-            }
-            return future;
-        })
         .compose(map -> {
             Future<Void> future = Future.future();
             vertx.executeBlocking(fut -> {
@@ -156,17 +119,15 @@ public class MainVerticleBase<M,P> extends AbstractMainVerticle {
                         kapuaServiceCtx.close();
                         kapuaServiceCtx = null;
                     }
-                    stopFuture.complete();
+                    fut.complete();
                 } catch (KapuaException e) {
-                    stopFuture.fail(e);
+                    fut.fail(e);
                 }
             }, ar -> {
                 if (ar.succeeded()) {
-                    logger.info("Stopping Datastore Processor...DONE");
                     future.complete();;
                 }
                 else {
-                    logger.info("Stopping Datastore Processor...FAILED", ar.cause());
                     future.fail(ar.cause());
                 }
             });
@@ -183,12 +144,12 @@ public class MainVerticleBase<M,P> extends AbstractMainVerticle {
         })
         .setHandler(ar -> {
             if (ar.succeeded()) {
-                logger.info("Stopping Datastore Processor...DONE");
-                stopFuture.handle(Future.succeededFuture());
+                logger.info("Closing Processor...DONE");
+                closeFuture.handle(Future.succeededFuture());
             }
             else {
-                logger.info("Stopping Datastore Processor...FAILED", ar.cause());
-                stopFuture.handle(Future.failedFuture(ar.cause()));
+                logger.info("Closing Processor...FAILED", ar.cause());
+                closeFuture.handle(Future.failedFuture(ar.cause()));
             }
         });
     }

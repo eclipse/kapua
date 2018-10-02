@@ -34,15 +34,11 @@ import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PluginJAXBContextProvider implements JAXBContextProvider {
+public class BrokerJAXBContextProvider implements JAXBContextProvider {
 
-    private static Logger logger = LoggerFactory.getLogger(PluginJAXBContextProvider.class);
+    private static Logger logger = LoggerFactory.getLogger(BrokerJAXBContextProvider.class);
 
     private JAXBContext context;
-
-    public PluginJAXBContextProvider() {
-        logger.info("Broker JAXB context initialized!");
-    }
 
     @Override
     public JAXBContext getJAXBContext() throws KapuaException {

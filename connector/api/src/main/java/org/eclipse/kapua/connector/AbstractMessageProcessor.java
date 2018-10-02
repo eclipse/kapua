@@ -47,7 +47,6 @@ public class AbstractMessageProcessor<M, P> implements Processor {
 
     /**
      * Default protected constructor
-     * @param vertx instance
      * @param converter message instance
      * @param processorMap processor map instances
      * @param errorProcessorMap error processor map instances (handles messages errors)
@@ -68,7 +67,7 @@ public class AbstractMessageProcessor<M, P> implements Processor {
 
     /**
      * Default protected constructor
-     * @param vertx instance
+     * @param consumer consumer instance
      * @param converter message instance
      * @param processorMap processor map instances
      */
@@ -81,7 +80,7 @@ public class AbstractMessageProcessor<M, P> implements Processor {
 
     /**
      * Constructor with no message converter
-     * @param vertx instance
+     * @param connector connector instance
      * @param processorMap processor map instances
      */
     public AbstractMessageProcessor(MessageSource<M> connector, Map<String, MessageTarget<P>> processorMap) {

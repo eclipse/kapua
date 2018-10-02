@@ -30,7 +30,6 @@ import io.vertx.core.Vertx;
  * Abstract AMQP connector
  *
  * @param <M> Converter message type (optional)
- * @param <P> Processor message type
  */
 public abstract class AbstractAmqpSource<M> implements MessageSource<M> {
 
@@ -44,9 +43,6 @@ public abstract class AbstractAmqpSource<M> implements MessageSource<M> {
     /**
      * Default protected constructor
      * @param vertx instance
-     * @param converter message instance
-     * @param processorMap processor map instances
-     * @param errorProcessorMap error processor map instances
      */
     protected AbstractAmqpSource(Vertx vertx) {
         this.vertx = vertx;

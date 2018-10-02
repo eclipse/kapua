@@ -77,7 +77,7 @@ services:
       - KAPUA_KEYSTORE
       - KAPUA_KEYSTORE_PASSWORD
   kapua-activemq-datastore:
-    image: kapua/kapua-activemq-datastore:${IMAGE_VERSION}
+    image: kapua/kapua-datastore-broker:${IMAGE_VERSION}
     depends_on:
       - broker
       - db

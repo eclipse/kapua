@@ -46,7 +46,7 @@ public class EnvironmentImpl implements EnvironmentSetup, Environment {
     }
 
     @Override
-    public void configure(ObjectContextConfigFactory factory) {        
+    public void configure(ObjectContextConfigFactory factory) {
         Objects.requireNonNull(factory, "Invalid factory (null)");
         this.configure(factory.create());
     }
