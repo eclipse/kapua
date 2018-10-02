@@ -69,3 +69,45 @@ mvn clean install -Pconsole,docker
 ```
 
 After the build has completed follow the steps from the [Running](#Running) section.
+
+#### Enabling SSL
+
+To enable SSL in the Jetty (Console and REST API) and Broker containers, set the `KAPUA_DISABLE_SSL` environment variable to `false`, and other variables according to the desired behavior, **before** running the `docker-deploy.sh` script:
+
+```bash
+export KAPUA_DISABLE_SSL=false
+```
+
+Additionally, the SSL can be configured in two ways: providing a certificate, a private key and an optional CA chain, or providing a keystore.
+
+##### Providing certificates and private key
+
+To use an existing certificate, a private key and a CA you can set the following environment variables:
+
+- **KAPUA_CRT**: The certificate to use
+- **KAPUA_CA**: *Optional* - The CA chain that validates the certificate
+- **KAPUA_KEY** The private key for the certificate
+- **KAPUA_KEY_PASSWORD** *Optional* - The password for the private key
+
+All the values should be exported as inline values. e.g.:
+
+```bash
+export KAPUA_CA=$(cat /path/to/myCA.pem)
+export KAPUA_CRT=$(cat /path/to/certificate.crt)
+export KAPUA_KEY=$(cat /path/to/private.key)
+export KAPUA_KEY_PASSWORD=private_key_password
+``` 
+
+##### Providing a Keystore
+
+Otherwise, two environment variables can be used to provide an already existing keystore and its password:
+
+- **KAPUA_KEYSTORE**: The base64 encoded keystore
+- **KAPUA_KEYSTORE_PASSWORD**: The password for the keystore
+
+Again, All the values should be exported as inline values. e.g.:
+
+```bash
+export KAPUA_KEYSTORE=$(base64 /path/to/keystore.pkcs)
+export KAPUA_KEYSTORE_PASSWORD=keystore_password
+```

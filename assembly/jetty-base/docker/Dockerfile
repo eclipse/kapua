@@ -18,7 +18,7 @@ COPY maven /
 USER 0
 
 RUN useradd -u 1000 -g 0 -d '/var/opt/jetty' -s '/sbin/nologin' jetty && \
-    mkdir -p /opt/jetty /var/opt/jetty/lib/ext /var/opt/jetty/start.d && \
+    mkdir -p /opt/jetty /var/opt/jetty/lib/ext /var/opt/jetty/start.d /var/opt/jetty/tls && \
     curl -Ls @jetty.url@ -o /tmp/jetty.tar.gz && \
     tar --strip=1 -xzf /tmp/jetty.tar.gz -C /opt/jetty && \
     rm -f /tmp/jetty.tar.gz && \
