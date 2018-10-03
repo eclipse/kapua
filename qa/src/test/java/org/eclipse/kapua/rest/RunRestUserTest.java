@@ -19,7 +19,8 @@ import org.junit.runner.RunWith;
 @RunWith(CucumberWithProperties.class)
 @CucumberOptions(
         features = "classpath:features/rest/user/RestUser.feature",
-        glue = {"org.eclipse.kapua.qa.steps"
+        glue = {"org.eclipse.kapua.qa.steps",
+                "org.eclipse.kapua.service.user.steps"
         },
         plugin = { "pretty",
                 "html:target/cucumber/RestUser",
@@ -28,7 +29,11 @@ import org.junit.runner.RunWith;
         monochrome = true)
 @CucumberProperty(key="certificate.jwt.private.key", value= "cert/key.pk8")
 @CucumberProperty(key="certificate.jwt.certificate", value= "cert/certificate.pem")
-@CucumberProperty(key="commons.db.schema", value="TEST")
+@CucumberProperty(key="commons.db.schema", value="kapuadb")
 @CucumberProperty(key="commons.db.schema.update", value="true")
+@CucumberProperty(key="commons.db.connection.host", value="localhost")
+@CucumberProperty(key="commons.db.connection.port", value="9092")
+@CucumberProperty(key="commons.db.name", value="mem:kapua")
+@CucumberProperty(key="test.h2.server", value="true")
 public class RunRestUserTest {
 }
