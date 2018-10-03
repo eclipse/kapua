@@ -18,6 +18,7 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.user.User;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -26,15 +27,19 @@ import java.util.Map;
  * @since 1.0
  *
  */
-public class LoginAuthenticationInfo implements AuthenticationInfo {
+public class LoginAuthenticationInfo extends KapuaAuthenticationInfo {
 
     private static final long serialVersionUID = -8682457531010599453L;
 
-    private String realmName;
-    private Account account;
-    private User user;
+
     private Credential credentials;
     private Map<String, Object> credentialServiceConfig;
+
+    LoginAuthenticationInfo(String realmName, Account account, User user, Credential credentials) {
+        super(realmName,account, user);
+        this.credentials = credentials;
+        this.credentialServiceConfig = new HashMap<>();
+    }
 
     /**
      * Constructor
@@ -44,38 +49,14 @@ public class LoginAuthenticationInfo implements AuthenticationInfo {
      * @param user
      * @param credentials
      */
-    public LoginAuthenticationInfo(String realmName,
+    LoginAuthenticationInfo(String realmName,
             Account account,
             User user,
             Credential credentials,
             Map<String, Object> credentialServiceConfig) {
-        this.realmName = realmName;
-        this.account = account;
-        this.user = user;
+        super(realmName,account, user);
         this.credentials = credentials;
         this.credentialServiceConfig = credentialServiceConfig;
-    }
-
-    /**
-     * Return the user
-     * 
-     * @return
-     */
-    public User getUser() {
-        return user;
-    }
-
-    /**
-     * Return the account
-     * 
-     * @return
-     */
-    public Account getAccount() {
-        return account;
-    }
-
-    public String getRealmName() {
-        return realmName;
     }
 
     @Override
@@ -83,12 +64,16 @@ public class LoginAuthenticationInfo implements AuthenticationInfo {
         return new SimplePrincipalCollection(getUser(), getRealmName());
     }
 
-    @Override
-    public Object getCredentials() {
+    public Credential getCredential() {
         return credentials;
     }
 
-    public Map<String, Object> getCredentialServiceConfig() {
+    @Override
+    public Object getCredentials() {
+        return getCredential();
+    }
+
+    Map<String, Object> getCredentialServiceConfig() {
         return credentialServiceConfig;
     }
 }

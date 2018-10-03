@@ -117,7 +117,6 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
     @Override
     public AccessToken login(LoginCredentials loginCredentials) throws KapuaException {
-
         checkCurrentSubjectNotAuthenticated();
 
         //
@@ -125,7 +124,6 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         AuthenticationToken shiroAuthenticationToken;
         if (loginCredentials instanceof UsernamePasswordCredentialsImpl) {
             UsernamePasswordCredentialsImpl usernamePasswordCredentials = (UsernamePasswordCredentialsImpl) loginCredentials;
-
             shiroAuthenticationToken = new UsernamePasswordCredentialsImpl(usernamePasswordCredentials.getUsername(), usernamePasswordCredentials.getPassword());
         } else if (loginCredentials instanceof ApiKeyCredentialsImpl) {
             shiroAuthenticationToken = new ApiKeyCredentialsImpl(((ApiKeyCredentialsImpl) loginCredentials).getApiKey());
@@ -196,27 +194,22 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             MDC.put(KapuaSecurityUtils.MDC_USER_ID, accessToken.getUserId().toCompactId());
 
             LOG.info("Login for thread '{}' - '{}' - '{}'", Thread.currentThread().getId(), Thread.currentThread().getName(), shiroSubject);
-        } catch (ShiroException se) {
-
-            KapuaAuthenticationException kae;
-            if (se instanceof UnknownAccountException) {
-                kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.UNKNOWN_SESSION_CREDENTIAL, se, shiroAuthenticationToken.getPrincipal());
-            } else if (se instanceof DisabledAccountException) {
-                kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.DISABLED_SESSION_CREDENTIAL, se, shiroAuthenticationToken.getPrincipal());
-            } else if (se instanceof LockedAccountException) {
-                kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.LOCKED_SESSION_CREDENTIAL, se, shiroAuthenticationToken.getPrincipal());
-            } else if (se instanceof IncorrectCredentialsException) {
-                kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_SESSION_CREDENTIALS, se, shiroAuthenticationToken.getPrincipal());
-            } else if (se instanceof ExpiredCredentialsException) {
-                kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.EXPIRED_SESSION_CREDENTIALS, se, shiroAuthenticationToken.getPrincipal());
-            } else {
-                throw KapuaException.internalError(se);
-            }
-
+        } catch (UnknownAccountException unknownAccountException) {
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.UNKNOWN_SESSION_CREDENTIAL, unknownAccountException, shiroAuthenticationToken.getPrincipal());
+        } catch (LockedAccountException lockedAccountException) {
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.LOCKED_SESSION_CREDENTIAL, lockedAccountException, shiroAuthenticationToken.getPrincipal());
+        } catch (DisabledAccountException disabledAccountException) {
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.DISABLED_SESSION_CREDENTIAL, disabledAccountException, shiroAuthenticationToken.getPrincipal());
+        } catch (IncorrectCredentialsException incorrectCredentialsException) {
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_SESSION_CREDENTIALS, incorrectCredentialsException, shiroAuthenticationToken.getPrincipal());
+        } catch (ExpiredCredentialsException expiredCredentialsException) {
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.EXPIRED_SESSION_CREDENTIALS, expiredCredentialsException, shiroAuthenticationToken.getPrincipal());
+        } catch (ShiroException shiroException) {
+            throw KapuaException.internalError(shiroException);
+        } finally {
             if (currentUser != null) {
                 currentUser.logout();
             }
-            throw kae;
         }
 
     }
@@ -269,9 +262,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
                 if (accessToken != null) {
                     KapuaLocator locator = KapuaLocator.getInstance();
                     AccessTokenService accessTokenService = locator.getService(AccessTokenService.class);
-                    KapuaSecurityUtils.doPrivileged(() -> {
-                        accessTokenService.invalidate(accessToken.getScopeId(), accessToken.getId());
-                    });
+                    KapuaSecurityUtils.doPrivileged(() -> accessTokenService.invalidate(accessToken.getScopeId(), accessToken.getId()));
                 }
             }
             currentUser.logout();
@@ -453,11 +444,10 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
         // Reserved claims
         String issuer = settings.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_ISSUER);
-        Date issuedAtDate = now; // Issued at claim
         Date expiresOnDate = new Date(now.getTime() + ttl); // Expires claim.
 
         claims.setIssuer(issuer);
-        claims.setIssuedAt(NumericDate.fromMilliseconds(issuedAtDate.getTime()));
+        claims.setIssuedAt(NumericDate.fromMilliseconds(now.getTime()));
         claims.setExpirationTime(NumericDate.fromMilliseconds(expiresOnDate.getTime()));
 
         // Jwts.builder().setIssuer(issuer)

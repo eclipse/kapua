@@ -60,11 +60,11 @@ public class UsernamePasswordCredentialsImpl implements UsernamePasswordCredenti
 
     @Override
     public Object getPrincipal() {
-        return username;
+        return getUsername();
     }
 
     @Override
     public Object getCredentials() {
-        return password;
+        return getPassword();
     }
 }

@@ -24,13 +24,10 @@ import org.eclipse.kapua.service.user.User;
  * @since 1.0
  *
  */
-public class SessionAuthenticationInfo implements AuthenticationInfo {
+public class SessionAuthenticationInfo extends KapuaAuthenticationInfo {
 
     private static final long serialVersionUID = -8682457531010599453L;
 
-    private String realmName;
-    private Account account;
-    private User user;
     private AccessToken accessToken;
 
     /**
@@ -45,32 +42,8 @@ public class SessionAuthenticationInfo implements AuthenticationInfo {
             Account account,
             User user,
             AccessToken accessToken) {
-        this.realmName = realmName;
-        this.account = account;
-        this.user = user;
+        super(realmName, account, user);
         this.accessToken = accessToken;
-    }
-
-    /**
-     * Return the user
-     * 
-     * @return
-     */
-    public User getUser() {
-        return user;
-    }
-
-    /**
-     * Return the account
-     * 
-     * @return
-     */
-    public Account getAccount() {
-        return account;
-    }
-
-    public String getRealmName() {
-        return realmName;
     }
 
     public AccessToken getAccessToken() {

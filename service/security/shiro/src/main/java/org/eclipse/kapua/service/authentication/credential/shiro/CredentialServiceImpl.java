@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.shiro;
 
-import org.apache.shiro.codec.Base64;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
@@ -20,6 +19,7 @@ import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
+import org.eclipse.kapua.commons.util.RandomUtil;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -47,8 +47,6 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.security.SecureRandom;
 
 /**
  * {@link CredentialService} implementation.
@@ -112,19 +110,12 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
             String fullKey = null;
             switch (credentialCreator.getCredentialType()) {
                 case API_KEY: // Generate new api key
-                    SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-
                     KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
-                    int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
-                    int keyLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_KEY_LENGTH);
+                int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
+                int keyLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_KEY_LENGTH);
 
-                    byte[] bPre = new byte[preLength];
-                    random.nextBytes(bPre);
-                    String pre = Base64.encodeToString(bPre).substring(0, preLength);
-
-                    byte[] bKey = new byte[keyLength];
-                    random.nextBytes(bKey);
-                    String key = Base64.encodeToString(bKey);
+                    String pre = RandomUtil.getRandomString(preLength);
+                    String key = RandomUtil.getRandomString(keyLength);
 
                     fullKey = pre + key;
 
