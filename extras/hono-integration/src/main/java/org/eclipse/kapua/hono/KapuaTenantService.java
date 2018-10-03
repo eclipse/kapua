@@ -34,6 +34,8 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountQueryImpl;
 
 import javax.security.auth.x500.X500Principal;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.util.Properties;
@@ -59,7 +61,7 @@ public class KapuaTenantService extends BaseTenantService<Object> {
     @Override
     public void get(String tenantId, Handler<AsyncResult<TenantResult<JsonObject>>> resultHandler) {
 
-        log.debug("Getting tenant !");
+        log.debug("Getting tenant:"+tenantId);
         try {
             Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.findByName(tenantId));
             if (account == null) {
@@ -69,13 +71,14 @@ public class KapuaTenantService extends BaseTenantService<Object> {
 
             TenantObject tenant = new TenantObject();
             tenant.setTenantId(tenantId);
-            Properties accountProps = account.getEntityProperties();
+
+            Properties accountProps = account.getEntityAttributes();
             if (accountProps.containsKey("adapters")){
                 tenant.setAdapterConfigurations(new JsonArray()
                         .add(accountProps.getProperty("adapters")));
             }
             tenant.setEnabled(true);
-            log.debug("returning tenant : "+tenant);
+            System.out.println("##############returning tenant : "+account.getName());
             resultHandler.handle(Future.succeededFuture(TenantResult.from(HttpURLConnection.HTTP_OK,
                     JsonObject.mapFrom(tenant),
                     null)));
@@ -87,7 +90,7 @@ public class KapuaTenantService extends BaseTenantService<Object> {
 
     }
 
-   @Override
+    @Override
     public void get(X500Principal subjectDn, Handler<AsyncResult<TenantResult<JsonObject>>> resultHandler) {
 
         // prepare the kapua query
@@ -101,24 +104,32 @@ public class KapuaTenantService extends BaseTenantService<Object> {
             }
 
            TenantObject tenant = new TenantObject();
-           for(Account acc : accountList.getItems()){
-               Properties accountProps = acc.getEntityProperties();
+           for(Account acc : accountList.getItems()) {
+               Properties accountProps = acc.getEntityAttributes();
 
-                if (accountProps.containsKey("trusted-ca")){
+               StringWriter writer = new StringWriter();
+               accountProps.list(new PrintWriter(writer));
+               System.out.println( writer.getBuffer().toString());
 
-                    X500Principal accSubjectDn = new X500Principal( new JsonObject(accountProps.getProperty("trusted-ca")).getString("subject-dn"));
-                    if (accSubjectDn.equals(subjectDn)){
-                        tenant.setProperty("trusted-ca", accountProps.getProperty("trusted-ca"));
-                        tenant.setTenantId(acc.getName());
-                    }
-                }
+               if (accountProps.containsKey("trusted-ca")) {
+                   System.out.println("should be here for "+acc.getName());
+
+                   X500Principal accSubjectDn = new X500Principal(new JsonObject(accountProps.getProperty("trusted-ca")).getString("subject-dn"));
+                   if (accSubjectDn.equals(subjectDn)) {
+                       tenant.setProperty("trusted-ca", accountProps.getProperty("trusted-ca"));
+                       tenant.setTenantId(acc.getName());
+                       tenant.setEnabled(true);
+
+                       System.out.println("returning tenant : "+tenant.getTenantId());
+                       resultHandler.handle(Future.succeededFuture(TenantResult.from(HttpURLConnection.HTTP_OK,
+                               JsonObject.mapFrom(tenant),
+                               null)));
+                       return;
+                   }
+               }
            }
-            tenant.setEnabled(true);
-            System.out.println("returning tenant : "+tenant);
-            resultHandler.handle(Future.succeededFuture(TenantResult.from(HttpURLConnection.HTTP_OK,
-                    JsonObject.mapFrom(tenant),
-                    null)));
-
+           resultHandler.handle(Future.succeededFuture(TenantResult.from(HttpURLConnection.HTTP_NOT_FOUND)));
+           return;
         } catch (KapuaException ke) {
             resultHandler.handle(Future.succeededFuture(TenantResult.from(HttpURLConnection.HTTP_INTERNAL_ERROR)));
             return;
