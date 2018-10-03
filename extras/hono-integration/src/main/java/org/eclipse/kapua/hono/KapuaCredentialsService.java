@@ -63,22 +63,28 @@ public class KapuaCredentialsService extends BaseCredentialsService<Object> {
     @Override
     public void get(String tenantId, String type, String authId, JsonObject clientContext, Handler<AsyncResult<CredentialsResult<JsonObject>>> resultHandler) {
         CredentialsObject result = null;
+        System.out.println("hello get !");
 
         try {
             User user = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(authId));
             if (user == null) {
-                throw KapuaException.internalError("No user found for " + authId);
+                log.debug("No user found for " + authId);
+                resultHandler.handle(Future.succeededFuture(CredentialsResult.from(HttpURLConnection.HTTP_NOT_FOUND)));
+                return;
             }
 
             Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(user.getScopeId()));
             if (account == null) {
-                throw KapuaException.internalError("No account found for " + authId);
+                log.debug("No account found for " + authId);
+                resultHandler.handle(Future.succeededFuture(CredentialsResult.from(HttpURLConnection.HTTP_NOT_FOUND)));
+                return;
             }
 
             String clientId = clientContext.getString("clientId");
             if (clientId == null) {
                 clientId = authId;
             }
+            //TODO context matching verification
 
             CredentialListResult credentials = KapuaSecurityUtils.doPrivileged(() -> credentialService.findByUserId(user.getScopeId(), user.getId()));
             Credential credential = credentials.getFirstItem();
@@ -90,7 +96,7 @@ public class KapuaCredentialsService extends BaseCredentialsService<Object> {
             result = result.addSecret(secret);
 
         } catch (KapuaException ke) {
-            //TODO add logging
+            log.warn(ke.getMessage());
             resultHandler.handle(Future.succeededFuture(CredentialsResult.from(HttpURLConnection.HTTP_INTERNAL_ERROR)));
             return;
         }
@@ -106,6 +112,7 @@ public class KapuaCredentialsService extends BaseCredentialsService<Object> {
     @Override
     public void getAll(String s, String s1, Handler<AsyncResult<CredentialsResult<JsonObject>>> handler) {
         //TODO implement
+        System.out.println("hello getAll ! This need implementation ! ");
     }
 
 }
