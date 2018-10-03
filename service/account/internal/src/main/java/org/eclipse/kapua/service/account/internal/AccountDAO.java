@@ -25,6 +25,7 @@ import org.eclipse.kapua.service.account.AccountListResult;
  * {@link Account} {@link ServiceDAO}
  * 
  * @since 1.0
+ *
  */
 public class AccountDAO {
 
@@ -58,7 +59,8 @@ public class AccountDAO {
 
         AccountImpl accountImpl = new AccountImpl(accountCreator.getScopeId(), accountCreator.getName());
         accountImpl.setOrganization(organizationImpl);
-        accountImpl.setExpirationDate(accountCreator.getExpirationDate());
+        accountImpl.setEntityAttributes(accountCreator.getEntityAttributes());
+	accountImpl.setExpirationDate(accountCreator.getExpirationDate());
 
         return ServiceDAO.create(em, accountImpl);
     }
@@ -78,6 +80,18 @@ public class AccountDAO {
         AccountImpl accountImpl = (AccountImpl) account;
 
         return ServiceDAO.update(em, AccountImpl.class, accountImpl);
+    }
+
+    /**
+     * Deletes the account by account identifier
+     * 
+     * @param em
+     * @param accountId
+     * @throws KapuaEntityNotFoundException
+     *             If the {@link Account} is not found
+     */
+    public static void delete(EntityManager em, KapuaId accountId) throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, AccountImpl.class, accountId);
     }
 
     /**
