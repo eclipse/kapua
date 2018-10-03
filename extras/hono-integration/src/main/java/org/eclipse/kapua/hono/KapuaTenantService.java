@@ -17,6 +17,7 @@ import io.vertx.core.Handler;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import org.eclipse.hono.service.tenant.BaseTenantService;
+import org.eclipse.hono.util.TenantConstants;
 import org.eclipse.hono.util.TenantObject;
 import org.eclipse.hono.util.TenantResult;
 import org.eclipse.kapua.KapuaException;
@@ -34,8 +35,6 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountQueryImpl;
 
 import javax.security.auth.x500.X500Principal;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.util.Properties;
@@ -73,12 +72,12 @@ public class KapuaTenantService extends BaseTenantService<Object> {
             tenant.setTenantId(tenantId);
 
             Properties accountProps = account.getEntityAttributes();
-            if (accountProps.containsKey("adapters")){
+            if (accountProps.containsKey(TenantConstants.FIELD_ADAPTERS)){
                 tenant.setAdapterConfigurations(new JsonArray()
-                        .add(accountProps.getProperty("adapters")));
+                        .add(accountProps.getProperty(TenantConstants.FIELD_ADAPTERS)));
             }
             tenant.setEnabled(true);
-            System.out.println("##############returning tenant : "+account.getName());
+            log.debug("returning tenant : "+account.getName());
             resultHandler.handle(Future.succeededFuture(TenantResult.from(HttpURLConnection.HTTP_OK,
                     JsonObject.mapFrom(tenant),
                     null)));
@@ -105,22 +104,20 @@ public class KapuaTenantService extends BaseTenantService<Object> {
 
            TenantObject tenant = new TenantObject();
            for(Account acc : accountList.getItems()) {
+
                Properties accountProps = acc.getEntityAttributes();
+               if (accountProps.containsKey(TenantConstants.FIELD_PAYLOAD_TRUSTED_CA)) {
 
-               StringWriter writer = new StringWriter();
-               accountProps.list(new PrintWriter(writer));
-               System.out.println( writer.getBuffer().toString());
-
-               if (accountProps.containsKey("trusted-ca")) {
-                   System.out.println("should be here for "+acc.getName());
-
-                   X500Principal accSubjectDn = new X500Principal(new JsonObject(accountProps.getProperty("trusted-ca")).getString("subject-dn"));
+                   X500Principal accSubjectDn = new X500Principal(new JsonObject(accountProps
+                           .getProperty(TenantConstants.FIELD_PAYLOAD_TRUSTED_CA))
+                           .getString(TenantConstants.FIELD_PAYLOAD_SUBJECT_DN));
                    if (accSubjectDn.equals(subjectDn)) {
-                       tenant.setProperty("trusted-ca", accountProps.getProperty("trusted-ca"));
+                       tenant.setProperty(TenantConstants.FIELD_PAYLOAD_TRUSTED_CA
+                               ,new JsonObject(accountProps.getProperty(TenantConstants.FIELD_PAYLOAD_TRUSTED_CA)));
                        tenant.setTenantId(acc.getName());
                        tenant.setEnabled(true);
 
-                       System.out.println("returning tenant : "+tenant.getTenantId());
+                       log.debug("returning tenant : "+tenant.getTenantId());
                        resultHandler.handle(Future.succeededFuture(TenantResult.from(HttpURLConnection.HTTP_OK,
                                JsonObject.mapFrom(tenant),
                                null)));
