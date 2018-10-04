@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection.option;
 
-import org.eclipse.kapua.ConnectionServiceErrorCodes;
 import org.eclipse.kapua.model.id.KapuaId;
 
 public class UserAlreadyReservedException extends ConnectionServiceException{

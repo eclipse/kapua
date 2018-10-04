@@ -9,7 +9,9 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua;
+package org.eclipse.kapua.service.device.registry.connection.option;
+
+import org.eclipse.kapua.KapuaErrorCode;
 
 public enum ConnectionServiceErrorCodes implements KapuaErrorCode{
 
