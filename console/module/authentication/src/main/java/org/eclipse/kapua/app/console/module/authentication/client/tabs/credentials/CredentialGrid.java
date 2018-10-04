@@ -159,6 +159,19 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("expirationDateFormatted", CREDENTIAL_MSGS.gridCredentialColumnHeaderExpirationDate(), 200);
+        GridCellRenderer<GwtCredential> setExpirationDate = new GridCellRenderer<GwtCredential>() {
+
+            @Override
+            public Object render(GwtCredential gwtCredential, String property, ColumnData config, int rowIndex, int colIndex,
+                    ListStore<GwtCredential> store, Grid<GwtCredential> grid) {
+                if (gwtCredential.getExpirationDateFormatted() != null) {
+                    return gwtCredential.getExpirationDateFormatted();
+                } else {
+                    return MSGS.never();
+                }
+            }
+        };
+        columnConfig.setRenderer(setExpirationDate);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("modifiedOnFormatted", CREDENTIAL_MSGS.gridCredentialColumnHeaderModifiedOn(), 200);

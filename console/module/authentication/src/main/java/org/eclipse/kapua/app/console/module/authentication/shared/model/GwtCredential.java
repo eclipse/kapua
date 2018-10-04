@@ -35,7 +35,7 @@ public class GwtCredential extends GwtUpdatableEntityModel {
             if (getExpirationDate() != null) {
                 return (X) ((DateUtils.formatDateTime(getExpirationDate())));
             } else {
-                return (X) "N/A";
+                return (X) null;
             }
         } else if ("firstLoginFailureFormatted".equals(property)) {
             if (getFirstLoginFailure() != null) {
