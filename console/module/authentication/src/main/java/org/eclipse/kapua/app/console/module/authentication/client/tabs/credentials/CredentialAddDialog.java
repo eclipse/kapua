@@ -58,6 +58,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
     protected KapuaDateField expirationDate;
     SimpleComboBox<GwtCredentialStatus> credentialStatus;
     NumberField optlock;
+    protected LabelField passwordTooltip;
 
     static final GwtCredentialServiceAsync GWT_CREDENTIAL_SERVICE = GWT.create(GwtCredentialService.class);
 
@@ -85,7 +86,6 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         credentialTypeLabel.setLabelSeparator(":");
         credentialTypeLabel.setVisible(false);
         credentialFormPanel.add(credentialTypeLabel);
-
         credentialType = new SimpleComboBox<GwtCredentialType>();
         credentialType.setEditable(false);
         credentialType.setTypeAhead(false);
@@ -106,12 +106,19 @@ public class CredentialAddDialog extends EntityAddEditDialog {
                 confirmPassword.setAllowBlank(selectionChangedEvent.getSelectedItem().getValue() != GwtCredentialType.PASSWORD);
                 password.clearInvalid();
                 confirmPassword.clearInvalid();
+                if (password.isVisible() && confirmPassword.isVisible()) {
+                    DialogUtils.resizeDialog(CredentialAddDialog.this, 400, 335);
+                    passwordTooltip.show();
+                } else {
+                    DialogUtils.resizeDialog(CredentialAddDialog.this, 400, 285);
+                    passwordTooltip.hide();
+                }
                 if (selectionChangedEvent.getSelectedItem().getValue() != GwtCredentialType.PASSWORD) {
                     password.clear();
                     confirmPassword.clear();
                     confirmPassword.disable();
                 }
-            }
+             }
         });
         credentialFormPanel.add(credentialType);
 
@@ -150,6 +157,13 @@ public class CredentialAddDialog extends EntityAddEditDialog {
             }
         });
 
+        passwordTooltip = new LabelField();
+        passwordTooltip.setValue(MSGS.dialogAddTooltipCredentialPassword());
+        passwordTooltip.setStyleAttribute("margin-top", "-5px");
+        passwordTooltip.setStyleAttribute("color", "gray");
+        passwordTooltip.setStyleAttribute("font-size", "10px");
+        credentialFormPanel.add(passwordTooltip);
+        passwordTooltip.hide();
         expirationDate = new KapuaDateField();
         expirationDate.setEmptyText(MSGS.dialogAddNoExpiration());
         expirationDate.setFieldLabel(MSGS.dialogAddFieldExpirationDate());

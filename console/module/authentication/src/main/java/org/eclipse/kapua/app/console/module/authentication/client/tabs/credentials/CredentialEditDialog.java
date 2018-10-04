@@ -18,6 +18,7 @@ import com.extjs.gxt.ui.client.widget.Label;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.ConfirmPasswordUpdateFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.PasswordUpdateFieldValidator;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
@@ -90,6 +91,8 @@ public class CredentialEditDialog extends CredentialAddDialog {
             expirationDate.setToolTip(MSGS.dialogAddFieldExpirationDateApiKeyTooltip());
             credentialStatus.setToolTip(MSGS.dialogAddStatusApiKeyTooltip());
         } else if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.PASSWORD) {
+            passwordTooltip.show();
+            DialogUtils.resizeDialog(CredentialEditDialog.this, 400, 335);
             expirationDate.setToolTip(MSGS.dialogAddFieldExpirationDatePasswordTooltip());
             credentialStatus.setToolTip(MSGS.dialogAddStatusPasswordTooltip());
         }
