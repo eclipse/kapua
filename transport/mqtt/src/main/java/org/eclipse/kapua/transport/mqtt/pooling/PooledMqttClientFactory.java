@@ -12,11 +12,27 @@
 package org.eclipse.kapua.transport.mqtt.pooling;
 
 import java.net.URI;
+import java.time.Instant;
+import java.util.Date;
 
 import org.apache.commons.pool2.BasePooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
+
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.kapua.commons.util.RandomUtil;
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.authentication.credential.Credential;
+import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
+import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
+import org.eclipse.kapua.service.authentication.credential.CredentialService;
+import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
+import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.transport.mqtt.MqttClient;
 import org.eclipse.kapua.transport.mqtt.MqttClientConnectionOptions;
 import org.eclipse.kapua.transport.mqtt.pooling.setting.MqttClientPoolSetting;
@@ -27,13 +43,17 @@ import org.eclipse.kapua.transport.utils.ClientIdGenerator;
 
 /**
  * Pooled object factory for {@link MqttClientPool}.
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 public class PooledMqttClientFactory extends BasePooledObjectFactory<MqttClient> {
 
     private final String nodeUri;
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final CredentialService CREDENTIAL_SERVICE = LOCATOR.getService(CredentialService.class);
+    private static final CredentialFactory CREDENTIAL_FACTORY = LOCATOR.getFactory(CredentialFactory.class);
+    private static final UserService USER_SERVICE = LOCATOR.getService(UserService.class);
 
     public PooledMqttClientFactory(String nodeUri) {
         this.nodeUri = nodeUri;
@@ -41,13 +61,12 @@ public class PooledMqttClientFactory extends BasePooledObjectFactory<MqttClient>
 
     /**
      * Creates the {@link MqttClient} for the {@link MqttClientPool}.
-     * 
+     *
      * <p>
      * The client is initialized and connected. In case of any failure on connect operation, an exception is thrown and the the created client is destroyed.
      * </p>
-     * 
-     * @throws Exception
-     *             FIXME [javadoc] document exception.
+     *
+     * @throws Exception FIXME [javadoc] document exception.
      * @since 1.0.0
      */
     @Override
@@ -57,11 +76,15 @@ public class PooledMqttClientFactory extends BasePooledObjectFactory<MqttClient>
         // User pwd generation
         MqttClientSetting mqttClientSettings = MqttClientSetting.getInstance();
         MqttClientPoolSetting mqttClientPoolSettings = MqttClientPoolSetting.getInstance();
-
-        String username = mqttClientSettings.getString(MqttClientSettingKeys.TRANSPORT_CREDENTIAL_USERNAME);
-        char[] password = mqttClientSettings.getString(MqttClientSettingKeys.TRANSPORT_CREDENTIAL_PASSWORD).toCharArray();
+        SystemSetting systemSettings = SystemSetting.getInstance();
+        String username = systemSettings.getString(SystemSettingKey.SYSTOKEN_AUTH_USERNAME);
+        User defaultUser = KapuaSecurityUtils.doPrivileged(() -> USER_SERVICE.findByName(username));
+        int systemTokenLength = mqttClientSettings.getInt(MqttClientSettingKeys.SYSTEM_TOKEN_LENGTH, 16);
+        int systemTokenTtl = mqttClientSettings.getInt(MqttClientSettingKeys.SYSTEM_TOKEN_TTL, 15);
+        CredentialCreator credentialCreator = CREDENTIAL_FACTORY.newCreator(defaultUser.getScopeId(), defaultUser.getId(), CredentialType.SYS_TOKEN, RandomUtil.getRandomString(systemTokenLength), CredentialStatus.ENABLED, Date.from(Instant.now().plusSeconds(systemTokenTtl)));
+        Credential sysTokenCredential = KapuaSecurityUtils.doPrivileged(() -> CREDENTIAL_SERVICE.create(credentialCreator));
         String clientId = ClientIdGenerator.getInstance().next(mqttClientPoolSettings.getString(MqttClientPoolSettingKeys.CLIENT_POOL_CLIENT_ID_PREFIX));
-
+        char[] password = sysTokenCredential.getCredentialKey().toCharArray();
         //
         // Get new client and connection options
         MqttClientConnectionOptions connectionOptions = new MqttClientConnectionOptions();
@@ -85,9 +108,8 @@ public class PooledMqttClientFactory extends BasePooledObjectFactory<MqttClient>
 
     /**
      * Wraps the given {@link MqttClient} into a {@link DefaultPooledObject}.
-     * 
-     * @param mqttClient
-     *            The object to wrap for {@link BasePooledObjectFactory}.
+     *
+     * @param mqttClient The object to wrap for {@link BasePooledObjectFactory}.
      * @since 1.0.0
      */
     @Override
@@ -97,7 +119,7 @@ public class PooledMqttClientFactory extends BasePooledObjectFactory<MqttClient>
 
     /**
      * Validates status of the given {@link MqttClient} pooled object.
-     * 
+     *
      * <p>
      * Check performed for the client to be marked as valid are:
      * </p>
@@ -105,10 +127,8 @@ public class PooledMqttClientFactory extends BasePooledObjectFactory<MqttClient>
      * <li>{@link MqttClient} {@code != null}</li>
      * <li>{@link MqttClient#isConnected()} {@code == true}</li>
      * </ul>
-     * 
-     * @param pooledMqttClient
-     *            The object to validate.
-     * 
+     *
+     * @param pooledMqttClient The object to validate.
      * @since 1.0.0
      */
     @Override
@@ -122,10 +142,8 @@ public class PooledMqttClientFactory extends BasePooledObjectFactory<MqttClient>
      * <p>
      * Before calling super implementation {@link BasePooledObjectFactory#destroyObject(PooledObject)} it tries to clean up the {@link MqttClient}.
      * </p>
-     * 
-     * @param pooledMqttClient
-     *            The pooled object to destroy.
-     * 
+     *
+     * @param pooledMqttClient The pooled object to destroy.
      * @since 1.0.0.
      */
     @Override

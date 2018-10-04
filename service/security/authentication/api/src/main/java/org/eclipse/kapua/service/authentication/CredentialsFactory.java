@@ -69,4 +69,6 @@ public interface CredentialsFactory extends KapuaObjectFactory {
      */
     RefreshTokenCredentials newRefreshTokenCredentials(String tokenId, String refreshToken);
 
+    SysTokenCredentials newSysTokenCredentials(String username, String password);
+
 }

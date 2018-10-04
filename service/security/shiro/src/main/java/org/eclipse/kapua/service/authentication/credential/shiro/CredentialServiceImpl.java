@@ -45,6 +45,7 @@ import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticatio
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,8 +112,8 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
             switch (credentialCreator.getCredentialType()) {
                 case API_KEY: // Generate new api key
                     KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
-                int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
-                int keyLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_KEY_LENGTH);
+                    int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
+                    int keyLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_KEY_LENGTH);
 
                     String pre = RandomUtil.getRandomString(preLength);
                     String key = RandomUtil.getRandomString(keyLength);
@@ -144,6 +145,9 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
             switch (credentialCreator.getCredentialType()) {
                 case API_KEY:
                     credential.setCredentialKey(fullKey);
+                    break;
+                case SYS_TOKEN:
+                    credential.setCredentialKey(credentialCreator.getCredentialPlainKey());
                     break;
                 case PASSWORD:
                 default:

@@ -44,6 +44,7 @@ public enum KapuaAuthenticationSettingKeys implements SettingKey {
     AUTHENTICATION_CREDENTIAL_APIKEY_CACHE_ENABLE("authentication.credential.apiKey.cache.enabled"), //
     AUTHENTICATION_CREDENTIAL_APIKEY_CACHE_TTL("authentication.credential.apiKey.cache.ttl"), //
 
+    AUTHENTICATION_MQTT_CLIENT_USERNAME("authentication.mqtt.client.username"),
     //event queues
     AUTHENTICATION_EVENT_ADDRESS("authentication.eventAddress");
 

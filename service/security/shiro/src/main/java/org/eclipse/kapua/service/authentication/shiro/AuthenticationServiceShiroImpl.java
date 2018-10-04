@@ -42,6 +42,7 @@ import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.SysTokenCredentials;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
@@ -89,6 +90,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         try {
             realms.add(new org.eclipse.kapua.service.authentication.shiro.realm.UserPassAuthenticatingRealm());
             realms.add(new org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizingRealm());
+            realms.add(new org.eclipse.kapua.service.authentication.shiro.realm.SysTokenAuthenticatingRealm());
         } catch (KapuaException e) {
             LOG.error("Unable to build realms", e);
             throw new ExceptionInInitializerError(e);
@@ -129,6 +131,9 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             shiroAuthenticationToken = new ApiKeyCredentialsImpl(((ApiKeyCredentialsImpl) loginCredentials).getApiKey());
         } else if (loginCredentials instanceof JwtCredentialsImpl) {
             shiroAuthenticationToken = new JwtCredentialsImpl(((JwtCredentialsImpl) loginCredentials).getJwt());
+        } else if (loginCredentials instanceof SysTokenCredentials) {
+            SysTokenCredentialsImpl sysTokenCredentials = (SysTokenCredentialsImpl) loginCredentials;
+            shiroAuthenticationToken = new SysTokenCredentialsImpl(sysTokenCredentials.getUsername(), sysTokenCredentials.getPassword());
         } else {
             throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED);
         }

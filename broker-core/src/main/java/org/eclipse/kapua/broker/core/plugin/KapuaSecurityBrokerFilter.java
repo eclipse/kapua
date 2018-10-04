@@ -52,6 +52,7 @@ import org.eclipse.kapua.broker.core.setting.BrokerSettingKey;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ClassUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
@@ -403,7 +404,17 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         try {
             logger.info("User name {} - client id: {}, connection id: {}", kcc.getUserName(), kcc.getClientId(), kcc.getConnectionId());
             Context loginShiroLoginTimeContext = loginMetric.getShiroLoginTime().time();
-            LoginCredentials credentials = credentialsFactory.newUsernamePasswordCredentials(kcc.getUserName(), info.getPassword());
+
+            SystemSetting systemSettings = SystemSetting.getInstance();
+            String username = systemSettings.getString(SystemSettingKey.SYSTOKEN_AUTH_USERNAME);
+
+            LoginCredentials credentials;
+            if (kcc.getUserName().equals(username)) {
+                credentials = credentialsFactory.newSysTokenCredentials(kcc.getUserName(), info.getPassword());
+            } else {
+                credentials = credentialsFactory.newUsernamePasswordCredentials(kcc.getUserName(), info.getPassword());
+
+            }
             AccessToken accessToken = authenticationService.login(credentials);
 
             final Account account;

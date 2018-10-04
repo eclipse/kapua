@@ -24,5 +24,6 @@ public class CredentialAttributes extends KapuaUpdatableEntityAttributes {
     public static final String CREDENTIAL_TYPE = "credentialType";
     public static final String CREDENTIAL_KEY = "credentialKey";
     public static final String EXPIRATION_DATE = "expirationDate";
+    public static final String STATUS = "status";
 
 }

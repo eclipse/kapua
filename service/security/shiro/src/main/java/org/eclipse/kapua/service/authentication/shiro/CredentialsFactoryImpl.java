@@ -17,6 +17,7 @@ import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.RefreshTokenCredentials;
+import org.eclipse.kapua.service.authentication.SysTokenCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 
 /**
@@ -53,4 +54,8 @@ public class CredentialsFactoryImpl implements CredentialsFactory {
         return new RefreshTokenCredentialsImpl(tokenId, refreshToken);
     }
 
+    @Override
+    public SysTokenCredentials newSysTokenCredentials(String username, String password) {
+        return new SysTokenCredentialsImpl(username, password);
+    }
 }

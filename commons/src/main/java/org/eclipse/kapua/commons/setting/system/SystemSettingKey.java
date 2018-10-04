@@ -257,7 +257,11 @@ public enum SystemSettingKey implements SettingKey {
     /**
      * Allow System Settings to be updatable at runtime via System.setProperty()
      */
-    SETTINGS_HOTSWAP("commons.settings.hotswap");
+    SETTINGS_HOTSWAP("commons.settings.hotswap"),
+    /**
+     * Username of the user to use when connecting the pooled MQTT Client to the broker
+     */
+    SYSTOKEN_AUTH_USERNAME("systoken.auth.username");
 
     private String key;
 

@@ -21,20 +21,6 @@ import org.eclipse.kapua.commons.setting.SettingKey;
 public enum MqttClientSettingKeys implements SettingKey {
 
     /**
-     * The username to use for MQTT connection
-     * 
-     * @since 1.0.0
-     */
-    TRANSPORT_CREDENTIAL_USERNAME("transport.credential.username"),
-
-    /**
-     * The password to use for MQTT connection
-     * 
-     * @since 1.0.0
-     */
-    TRANSPORT_CREDENTIAL_PASSWORD("transport.credential.password"),
-
-    /**
      * The MQTT protocol version to use.
      * 
      * @since 1.0.0
@@ -54,6 +40,16 @@ public enum MqttClientSettingKeys implements SettingKey {
      * @since 1.0.0
      */
     SEND_TIMEOUT_MAX("send.timeout.max"),
+
+    /**
+     * MQTT Client SystemToken Length
+     */
+    SYSTEM_TOKEN_LENGTH("system.token.length"),
+
+    /**
+     * SystemToken TTL (in seconds)
+     */
+    SYSTEM_TOKEN_TTL("system.token.ttl"),
     ;
 
     /**
