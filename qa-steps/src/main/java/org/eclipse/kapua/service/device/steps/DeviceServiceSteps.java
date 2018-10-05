@@ -397,9 +397,10 @@ public class DeviceServiceSteps extends BaseQATests /*KapuaTest*/ {
             stepData.put("ExceptionCaught", false);
             tags.add(tag.getId());
             device.setTagIds(tags);
-            deviceRegistryService.update(device);
+            Device updatedDevice = deviceRegistryService.update(device);
             stepData.put("tag", tag);
             stepData.put("tags", tags);
+            stepData.put("Device", updatedDevice);
         } catch (KapuaException ex) {
             stepData.put("ExceptionCaught", true);
         }
@@ -441,7 +442,8 @@ public class DeviceServiceSteps extends BaseQATests /*KapuaTest*/ {
         stepData.remove("tags");
         Set<KapuaId> tags = new HashSet<>();
         device.setTagIds(tags);
-        deviceRegistryService.update(device);
+        Device updatedDevice = deviceRegistryService.update(device);
+        stepData.put("Device", updatedDevice);
         Assert.assertEquals(device.getTagIds().isEmpty(), true);
     }
 

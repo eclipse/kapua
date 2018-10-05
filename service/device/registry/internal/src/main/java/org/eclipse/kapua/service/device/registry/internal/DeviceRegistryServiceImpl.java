@@ -89,35 +89,8 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
             if (currentDevice == null) {
                 throw new KapuaEntityNotFoundException(Device.TYPE, device.getId());
             }
-
-            currentDevice.setStatus(device.getStatus());
-            currentDevice.setDisplayName(device.getDisplayName());
-            currentDevice.setGroupId(device.getGroupId());
-            currentDevice.setSerialNumber(device.getSerialNumber());
-            currentDevice.setModelId(device.getModelId());
-            currentDevice.setImei(device.getImei());
-            currentDevice.setImsi(device.getImsi());
-            currentDevice.setIccid(device.getIccid());
-            currentDevice.setBiosVersion(device.getBiosVersion());
-            currentDevice.setFirmwareVersion(device.getFirmwareVersion());
-            currentDevice.setOsVersion(device.getOsVersion());
-            currentDevice.setJvmVersion(device.getJvmVersion());
-            currentDevice.setOsgiFrameworkVersion(device.getOsgiFrameworkVersion());
-            currentDevice.setApplicationFrameworkVersion(device.getApplicationFrameworkVersion());
-            currentDevice.setApplicationIdentifiers(device.getApplicationIdentifiers());
-            currentDevice.setAcceptEncoding(device.getAcceptEncoding());
-            currentDevice.setCustomAttribute1(device.getCustomAttribute1());
-            currentDevice.setCustomAttribute2(device.getCustomAttribute2());
-            currentDevice.setCustomAttribute3(device.getCustomAttribute3());
-            currentDevice.setCustomAttribute4(device.getCustomAttribute4());
-            currentDevice.setCustomAttribute5(device.getCustomAttribute5());
-
-            currentDevice.setConnectionId(device.getConnectionId());
-            currentDevice.setLastEventId(device.getLastEventId());
-
-            currentDevice.setTagIds(device.getTagIds());
             // Update
-            return DeviceDAO.update(entityManager, currentDevice);
+            return DeviceDAO.update(entityManager, device);
         });
     }
 
