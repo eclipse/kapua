@@ -16,13 +16,14 @@ import java.util.Map;
 
 public class ClientOptions {
 
-    enum HonoClientOptions {
+    public enum HonoClientOptions {
         HOST,
         PORT,
         USERNAME,
         PASSWORD,
         TENANT_ID,
-        DESTINATION,
+        NAME,
+        MESSAGE_TYPE,
         TRUSTSTORE_FILE,
         MAXIMUM_RECONNECTION_ATTEMPTS,
         WAIT_BETWEEN_RECONNECT,
@@ -31,30 +32,23 @@ public class ClientOptions {
         EXIT_CODE
     }
 
-    //example values
-    /*
-hono_lifecycle.connection.host=127.0.0.1
-hono_lifecycle.connection.port=5672
-hono_lifecycle.connection.username=username
-hono_lifecycle.connection.password=password
-hono_lifecycle.connection.telemetry_client_id=hono-lifecycle
-hono_lifecycle.connection.telemetry_destination=
-hono_lifecycle.connection.error_client_id=hono-lifecycle-error
-hono_lifecycle.connection.error_destination=
-#milliseconds
-hono_lifecycle.connection.wait_between_reconnect=1000
-#milliseconds
-hono_lifecycle.connection.connect_timeout=5000
-#seconds
-hono_lifecycle.connection.idle_timeout=300
-hono_lifecycle.maximum_reconnection_attempt=10
-hono_lifecycle.exit_code=-1
-     */
-
     private Map<String, Object> options;
 
     public ClientOptions() {
         options = new HashMap<>();
+        //fill default values
+        put(HonoClientOptions.MAXIMUM_RECONNECTION_ATTEMPTS, 10);
+        put(HonoClientOptions.EXIT_CODE, -1);
+    }
+
+    public ClientOptions(String host, int port, String username, String password) {
+        this();
+        options = new HashMap<>();
+        //fill default values
+        put(HonoClientOptions.HOST, host);
+        put(HonoClientOptions.PORT, port);
+        put(HonoClientOptions.USERNAME, username);
+        put(HonoClientOptions.PASSWORD, password);
     }
 
     public void put(String key, Object value) {
@@ -67,6 +61,11 @@ hono_lifecycle.exit_code=-1
 
     public Integer getInt(HonoClientOptions key, Integer defaultValue) {
         Integer tmp = (Integer)options.get(key.name());
+        return (tmp!=null ? tmp : defaultValue);
+    }
+
+    public Long getLong(HonoClientOptions key, Long defaultValue) {
+        Long tmp = (Long)options.get(key.name());
         return (tmp!=null ? tmp : defaultValue);
     }
 

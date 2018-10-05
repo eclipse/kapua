@@ -229,13 +229,13 @@ objects:
             periodSeconds: 5
             timeoutSeconds: 1
             tcpSocket:
-              port: 5672
+              port: 5682
           livenessProbe:
             initialDelaySeconds: 20
             periodSeconds: 9
             timeoutSeconds: 1
             tcpSocket:
-              port: 5672
+              port: 5682
           volumeMounts:
           - mountPath: /opt/artemis/data
             name: events-broker-volume-1
@@ -298,6 +298,45 @@ objects:
         - name: elasticsearch-data
           emptyDir: {}
 
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    generation: 1
+    labels:
+      app: grafana
+    name: grafana
+  spec:
+    replicas: 1
+    selector:
+      app: grafana
+      deploymentconfig: grafana
+    template:
+      metadata:
+        labels:
+          app: grafana
+          deploymentconfig: grafana
+          hawkular-openshift-agent: jolokia-kapua
+      spec:
+        containers:
+        - image: grafana/grafana:5.3.1
+          imagePullPolicy: Always
+          name: grafana
+          ports:
+          - containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+            periodSeconds: 10
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: elasticsearch-data
+          emptyDir: {}
 # Services
 
 - apiVersion: v1
@@ -327,9 +366,9 @@ objects:
       app: events-broker
   spec:
     ports:
-    - port: 5672
+    - port: 5682
       protocol: TCP
-      targetPort: 5672
+      targetPort: 5682
     selector:
       app: events-broker
       deploymentconfig: events-broker
@@ -352,3 +391,32 @@ objects:
     selector:
       app: elasticsearch
       deploymentconfig: elasticsearch
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: grafana
+    labels:
+      app: grafana
+  spec:
+    ports:
+    - name: http
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+    selector:
+      app: grafana
+      deploymentconfig: grafana
+
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: grafana
+    labels:
+      app: grafana
+  spec:
+    to:
+      kind: Service
+      name: grafana
+    port:
+      targetPort: 3000

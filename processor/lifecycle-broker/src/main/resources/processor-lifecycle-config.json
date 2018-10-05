@@ -1,0 +1,60 @@
+{
+    "kapua": {
+        "vertxApp": {
+            "startupTimeout": 120000,
+            "shutdownTimeout": 120000,
+            "metricsEnabled": true,
+            "metricsRoot": "kapuaBase",
+            "warningExceptionTime": 86400000,
+            "blockedThreadCheckInterval": 86400000
+        },
+        "restService" : {
+            "httpServer": {
+                "host" : "0.0.0.0",
+                "port" : 8091
+            },
+            "eventBusHealthcheckAdapter": {
+                "name": "more-checks",
+                "address": "health"
+            }
+        },
+        "lifecycleProcessor": {
+            "eventBusServer": {
+                "healthAddress": "health",
+                "defaultAddress": "kapua.requests"
+            },
+            "messageSource": {
+                "amqp": {
+                    "host": "127.0.0.1",
+                    "port": 5672,
+                    "username": "username",
+                    "password": "password",
+                    "waitBetweenReconnect": 1000,
+                    "connectTimeout": 5000,
+                    "idleTimeout": 300,
+                    "maximumReconnectionAttempt": 10,
+                    "exitCode": -1,
+                    "clientId": "activemq-lifecycle",
+                    "destination": "queue://Consumer.activemq-lifecycle.VirtualTopic.$EDC.>",
+                    "prefetchMessages": 10
+                }
+            },
+            "errorTarget": {
+                "amqp": {
+                    "host": "127.0.0.1",
+                    "port": 5672,
+                    "username": "username",
+                    "password": "password",
+                    "waitBetweenReconnect": 1000,
+                    "connectTimeout": 5000,
+                    "idleTimeout": 300,
+                    "maximumReconnectionAttempt": 10,
+                    "exitCode": -1,
+                    "clientId": "activemq-lifecycle-error",
+                    "destination": "queue://lifecycle-error",
+                    "prefetchMessages": 10
+                }
+            }
+        }
+    }
+}

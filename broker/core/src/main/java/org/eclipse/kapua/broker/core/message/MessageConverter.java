@@ -53,8 +53,8 @@ public class MessageConverter {
      */
     public static CamelKapuaMessage<?> convertToKapuaMessage(ConnectorDescriptor connectorDescriptor, MessageType messageType, BytesMessage jmsMessage, KapuaId connectionId, String clientId)
             throws JMSException, KapuaException {
-        String jmsTopic = jmsMessage.getStringProperty(Properties.PROPERTY_ORIGINAL_TOPIC);
-        Date queuedOn = new Date(jmsMessage.getLongProperty(Properties.PROPERTY_ENQUEUED_TIMESTAMP));
+        String jmsTopic = jmsMessage.getStringProperty(Properties.MESSAGE_ORIGINAL_DESTINATION);
+        Date queuedOn = new Date(jmsMessage.getLongProperty(Properties.MESSAGE_ENQUEUED_TIMESTAMP));
         return convertToKapuaMessage(connectorDescriptor, connectorDescriptor.getDeviceClass(messageType), connectorDescriptor.getKapuaClass(messageType), jmsMessage, jmsTopic, queuedOn, connectionId,
                 clientId);
     }

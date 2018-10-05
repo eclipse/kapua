@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2018 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<assembly
+        xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+
+    <id>kapua-lifecycle-hono</id>
+
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+
+    <files>
+        <file>
+            <source>${project.basedir}/entrypoint/run-lifecycle-hono</source>
+            <fileMode>0755</fileMode>
+        </file>
+        <file>
+            <source>${project.basedir}/../../../../extras/hono/processor-lifecycle/target/kapua-processor-lifecycle-hono-${project.version}-uber.jar</source>
+            <fileMode>0755</fileMode>
+        </file>
+    </files>
+    <fileSets>
+        <fileSet>
+            <directory>${project.basedir}/configurations</directory>
+            <outputDirectory>/</outputDirectory>
+            <fileMode>0644</fileMode>
+        </fileSet>
+    </fileSets>
+</assembly>

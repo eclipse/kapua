@@ -13,7 +13,7 @@ package org.eclipse.kapua.processor.datastore.broker;
 
 import javax.inject.Inject;
 
-import org.eclipse.kapua.broker.client.amqp.AmqpConsumer;
+import org.eclipse.kapua.broker.client.amqp.AmqpReceiver;
 import org.eclipse.kapua.broker.client.amqp.AmqpSender;
 import org.eclipse.kapua.broker.connector.amqp.AmqpTransportActiveMQSource;
 import org.eclipse.kapua.broker.connector.amqp.ErrorTarget;
@@ -51,7 +51,7 @@ public class AmqpDatastoreProcessorConfigFactory implements ObjectFactory<Messag
 
         // Amqp Source
         AmqpConsumerConfig amqpSourceConfig = AmqpConsumerConfig.create(CONFIG_PROP_PROCESSOR_MSG_SOURCE_AMQP, configuration);
-        AmqpTransportActiveMQSource consumer = AmqpTransportActiveMQSource.create(vertx, new AmqpConsumer(vertx, amqpSourceConfig.createClientOptions()));
+        AmqpTransportActiveMQSource consumer = AmqpTransportActiveMQSource.create(vertx, new AmqpReceiver(vertx, amqpSourceConfig.createClientOptions()));
         consumer.messageFilter(message -> {
             Object messageType = message.getProperties().get(Properties.MESSAGE_TYPE);
             if (messageType!=null && messageType instanceof TransportMessageType && TransportMessageType.TELEMETRY.equals(messageType)) {

@@ -18,7 +18,6 @@ import org.apache.qpid.proton.amqp.messaging.AmqpValue;
 import org.apache.qpid.proton.amqp.messaging.Data;
 import org.apache.qpid.proton.amqp.messaging.Section;
 import org.apache.qpid.proton.message.Message;
-import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,9 +93,13 @@ public abstract class AbstractAmqpSource<M> implements MessageSource<M> {
             String content = (String) ((AmqpValue) body).getValue();
             logger.debug("Received message with content: {}", content);
             return content != null ? content.getBytes() : new byte[0];
-        } else {
+        } else if (body == null) {
+            logger.warn("Received empty message!");
+            return null;
+        }
+        else {
             logger.warn("Received message with unknown message type! ({})", body != null ? body.getClass() : "null");
-            throw new KapuaConverterException(KapuaErrorCodes.INTERNAL_ERROR);
+            return new byte[0];
         }
     }
 

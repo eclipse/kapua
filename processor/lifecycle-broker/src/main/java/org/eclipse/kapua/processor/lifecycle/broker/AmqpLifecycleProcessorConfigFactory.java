@@ -13,7 +13,7 @@ package org.eclipse.kapua.processor.lifecycle.broker;
 
 import javax.inject.Inject;
 
-import org.eclipse.kapua.broker.client.amqp.AmqpConsumer;
+import org.eclipse.kapua.broker.client.amqp.AmqpReceiver;
 import org.eclipse.kapua.broker.client.amqp.AmqpSender;
 import org.eclipse.kapua.broker.connector.amqp.AmqpTransportActiveMQSource;
 import org.eclipse.kapua.broker.connector.amqp.ErrorTarget;
@@ -51,9 +51,9 @@ public class AmqpLifecycleProcessorConfigFactory implements ObjectFactory<Messag
 
         // Consumer
         AmqpConsumerConfig amqpSourceConfig = AmqpConsumerConfig.create(CONFIG_PROP_PROCESSOR_MSG_SOURCE_AMQP, configuration);
-        AmqpTransportActiveMQSource consumer = AmqpTransportActiveMQSource.create(vertx, new AmqpConsumer(vertx, amqpSourceConfig.createClientOptions()));
+        AmqpTransportActiveMQSource consumer = AmqpTransportActiveMQSource.create(vertx, new AmqpReceiver(vertx, amqpSourceConfig.createClientOptions()));
         consumer.messageFilter(message -> {
-            String topic = (String) message.getProperties().get(Properties.MESSAGE_DESTINATION);
+            String topic = (String) message.getProperties().get(Properties.MESSAGE_ORIGINAL_DESTINATION);
             if (topic!=null && (topic.endsWith("/MQTT/BIRTH") ||
                     topic.endsWith("/MQTT/DC") ||
                     topic.endsWith("/MQTT/LWT") ||

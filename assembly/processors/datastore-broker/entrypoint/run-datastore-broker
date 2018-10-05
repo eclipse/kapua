@@ -11,15 +11,4 @@
 #        Eurotech
 ################################################################################
 
-java -jar \
--Dcommons.db.schema.update=true \
--Dcommons.db.connection.host=db \
--Dcommons.db.connection.port=3306 \
--Dbroker.host=broker \
--Dkapua.datastoreProcessor.messageSource.amqp.host=broker \
--Dkapua.datastoreProcessor.errorTarget.amqp.host=broker \
--Ddatastore.elasticsearch.nodes=es \
--Ddatastore.elasticsearch.port=9200 \
--Ddatastore.client.class=org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient \
--Dcommons.eventbus.url="failover:(amqp://events-broker:5682)?jms.sendTimeout=1000" \
-kapua-processor-datastore-broker-1.1.0-SNAPSHOT-uber.jar
+java ${JAVA_OPTS} -jar kapua-processor-datastore-broker-1.1.0-SNAPSHOT-uber.jar

@@ -44,11 +44,11 @@ public class JmsAssistantProducerWrapper extends JmsProducerWrapper {
         TextMessage textMessage = session.createTextMessage();
         Topic jmsTopic = session.createTopic(topic);
 
-        textMessage.setStringProperty(Properties.PROPERTY_BROKER_ID, kcc.getBrokerId());
-        textMessage.setStringProperty(Properties.PROPERTY_CLIENT_ID, kcc.getClientId());
-        textMessage.setLongProperty(Properties.PROPERTY_SCOPE_ID, kcc.getScopeIdAsLong());
-        textMessage.setStringProperty(Properties.PROPERTY_ORIGINAL_TOPIC, JmsUtil.convertMqttWildCardToJms(topic));
-        textMessage.setLongProperty(Properties.PROPERTY_ENQUEUED_TIMESTAMP, System.currentTimeMillis());
+        textMessage.setStringProperty(Properties.MESSAGE_BROKER_ID, kcc.getBrokerId());
+        textMessage.setStringProperty(Properties.MESSAGE_CLIENT_ID, kcc.getClientId());
+        textMessage.setLongProperty(Properties.MESSAGE_SCOPE_ID, kcc.getScopeIdAsLong());
+        textMessage.setStringProperty(Properties.MESSAGE_ORIGINAL_DESTINATION, JmsUtil.convertMqttWildCardToJms(topic));
+        textMessage.setLongProperty(Properties.MESSAGE_ENQUEUED_TIMESTAMP, System.currentTimeMillis());
         textMessage.setText(message);
         textMessage.setJMSDestination(jmsTopic);
 

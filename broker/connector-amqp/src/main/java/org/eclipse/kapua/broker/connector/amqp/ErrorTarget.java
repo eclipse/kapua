@@ -20,7 +20,6 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
-import io.vertx.proton.ProtonHelper;
 
 public class ErrorTarget implements MessageTarget<Message> {
 
@@ -41,9 +40,7 @@ public class ErrorTarget implements MessageTarget<Message> {
 
     @Override
     public void process(MessageContext<Message> message, Handler<AsyncResult<Void>> result) {
-        sender.send(message.getMessage(), delivery -> {
-            ProtonHelper.accepted(delivery, true);
-        });
+        sender.send(message.getMessage());
         result.handle(Future.succeededFuture());
     }
 

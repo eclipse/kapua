@@ -59,7 +59,7 @@ objects:
                 -Ddatastore.elasticsearch.nodes=$ELASTICSEARCH_PORT_9200_TCP_ADDR
                 -Dcertificate.jwt.private.key=file:///var/opt/jetty/key.pk8
                 -Dcertificate.jwt.certificate=file:///var/opt/jetty/cert.pem
-                -Dcommons.eventbus.url="failover:(amqp://${EVENTS_BROKER_PORT_5672_TCP_ADDR}:${EVENTS_BROKER_PORT_5672_TCP_PORT})"
+                -Dcommons.eventbus.url="failover:(amqp://${EVENTS_BROKER_PORT_5682_TCP_ADDR}:${EVENTS_BROKER_PORT_5682_TCP_PORT})"
                 -javaagent:/opt/jolokia/jolokia-jvm-agent.jar=port=8778,protocol=https,caCert=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt,clientPrincipal=cn=system:master-proxy,useSslClientAuthentication=true,extraClientCheck=true,host=0.0.0.0,discoveryEnabled=false,user=${JOLOKIA_USER},password=${JOLOKIA_PASSWORD}
                 ${JAVA_OPTS_EXTRA}
             image: ${DOCKER_ACCOUNT}/kapua-console:${IMAGE_VERSION}

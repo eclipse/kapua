@@ -50,16 +50,11 @@
                                     <build>
                                         <from>${docker.account}/java-base</from>
                                         <assembly>
-                                            <descriptor>${project.basedir}/descriptors/kapua-error-broker.xml
-                                            </descriptor>
-                                            <basedir>/home/kapua</basedir>
+                                            <descriptor>${project.basedir}/descriptors/kapua-error-broker.xml</descriptor>
+                                            <basedir>/</basedir>
                                         </assembly>
-                                        <workdir>/home/kapua</workdir>
-                                        <entryPoint>
-                                            <exec>
-                                                <arg>/home/kapua/run-error-broker</arg>
-                                            </exec>
-                                        </entryPoint>
+                                        <dockerFile>${project.basedir}/docker/Dockerfile</dockerFile>
+                                        <filter>@</filter>
                                     </build>
                                 </image>
                             </images>

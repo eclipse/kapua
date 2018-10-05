@@ -14,45 +14,56 @@ package org.eclipse.kapua.broker.client.amqp;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.qpid.proton.message.Message;
 import org.eclipse.kapua.broker.client.amqp.ClientOptions.AmqpClientOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.proton.ProtonClient;
 import io.vertx.proton.ProtonClientOptions;
 import io.vertx.proton.ProtonConnection;
+import io.vertx.proton.ProtonDelivery;
+import io.vertx.proton.ProtonLinkOptions;
+import io.vertx.proton.ProtonMessageHandler;
+import io.vertx.proton.ProtonQoS;
+import io.vertx.proton.ProtonReceiver;
+import io.vertx.proton.ProtonSender;
 
 public abstract class AbstractAmqpClient {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractAmqpClient.class);
 
-    protected boolean disconnecting;
-    protected boolean connected;
-    protected AtomicInteger reconnectionFaultCount = new AtomicInteger();
-    protected Long reconnectTaskId;
+    private boolean disconnecting;
+    private boolean connected;
+    private AtomicInteger reconnectionFaultCount = new AtomicInteger();
+    private Long reconnectTaskId;
 
     private String brokerHost;
     private Integer brokerPort;
+    private String clientId;
     private Integer waitBetweenReconnect;
     private Integer connectTimeout;
     private Integer idleTimeout;
     private ProtonClientOptions options;
-    protected ClientOptions clientOptions;
-    protected Vertx vertx;
-    protected Context context;
-    protected ProtonClient client;
-    protected ProtonConnection connection;
+    private ClientOptions clientOptions;
+    private Vertx vertx;
+    private ProtonClient client;
+    private ProtonConnection connection;
+
+    private ProtonMessageHandler messageHandler;
+    private ProtonReceiver receiver;
+
+    private ProtonSender sender;
 
     protected AbstractAmqpClient(Vertx vertx, ClientOptions clientOptions) {
         this.vertx = vertx;
         this.clientOptions = clientOptions;
-        this.context = vertx.getOrCreateContext();
         brokerHost = clientOptions.getString(AmqpClientOptions.BROKER_HOST);
         brokerPort = clientOptions.getInt(AmqpClientOptions.BROKER_PORT, null);
+        clientId = clientOptions.getString(AmqpClientOptions.CLIENT_ID);
         Objects.requireNonNull(brokerHost);
         Objects.requireNonNull(brokerPort);
         client = ProtonClient.create(vertx);
@@ -80,15 +91,122 @@ public abstract class AbstractAmqpClient {
         logger.info("Created client {}", client);
     }
 
+    public String getClientId() {
+        return clientId;
+    }
+
+    protected void createSender(String destination, boolean autoSettle, ProtonQoS qos) {
+        try {
+            logger.info("Register sender for destination {}... (client: {})", destination, client);
+            if (connection.isDisconnected()) {
+                logger.warn("Cannot register sender since the connection is not opened!");
+                notifyConnectionLost();
+            }
+            else {
+                ProtonLinkOptions senderOptions = new ProtonLinkOptions();
+                // The client ID is set implicitly into the destination subscribed
+                sender = connection.open().createSender(destination, senderOptions);
+
+                //default values not changeable by config
+                sender.setQoS(qos);
+                sender.setAutoSettle(autoSettle);
+                logger.info("Setting auto accept: {} - QoS: {}", autoSettle, qos);
+
+                sender.openHandler(ar -> {
+                   if (ar.succeeded()) {
+                       logger.info("Register sender for destination {}... DONE (client: {})", destination, client);
+                       setConnected();
+                   }
+                   else {
+                       logger.info("Register sender for destination {}... ERROR... (client: {})", destination, client, ar.cause());
+                       notifyConnectionLost();
+                   }
+                });
+                sender.closeHandler(snd -> {
+                    logger.warn("Sender is closed! (client: {})", client, snd.cause());
+                    notifyConnectionLost();
+                });
+                sender.open();
+                logger.info("Register sender for destination {}... DONE (client: {})", destination, client);
+            }
+        }
+        catch(Exception e) {
+            notifyConnectionLost();
+        }
+    }
+
+    protected void send(Message message, String destination, Handler<ProtonDelivery> deliveryHandler) {
+        message.setAddress(destination);
+        sender.send(message, deliveryHandler);
+        //TODO check if its better to create a new message like
+//        import org.apache.qpid.proton.Proton;
+//        Message msg = Proton.message();
+//        msg.setBody(message.getBody());
+//        msg.setAddress(destination);
+//        protonSender.send(msg, deliveryHandler);
+    }
+
+    protected void createReceiver(String destination, int prefetch, boolean autoAccept, ProtonQoS qos) {
+        try {
+            logger.info("Register consumer for destination {}... (client: {})", destination, client);
+
+            if (connection.isDisconnected()) {
+                logger.warn("Cannot register consumer since the connection is not opened!");
+                notifyConnectionLost();
+            }
+            else {
+                // The client ID is set implicitly into the destination subscribed
+                receiver = connection.createReceiver(destination);
+
+                //default values not changeable by config
+                receiver.setAutoAccept(autoAccept);
+                receiver.setQoS(qos);
+                receiver.setPrefetch(prefetch);
+                logger.info("Setting auto accept: {} - QoS: {} - prefetch: {}", autoAccept, qos, prefetch);
+
+                receiver.handler(messageHandler);
+                receiver.openHandler(ar -> {
+                    if(ar.succeeded()) {
+                        logger.info("Succeeded establishing consumer link! (client: {})", client);
+                        setConnected();
+                    }
+                    else {
+                        logger.warn("Cannot establish link! (client: {})", client, ar.cause());
+                        notifyConnectionLost();
+                    }
+                });
+                receiver.closeHandler(recv -> {
+                    logger.warn("Receiver is closed! (client: {})", client, recv.cause());
+                    notifyConnectionLost();
+                });
+                receiver.open();
+                logger.info("Register consumer for destination {}... DONE (client: {})", destination, client);
+            }
+        }
+        catch(Exception e) {
+            notifyConnectionLost();
+        }
+    }
+
+    public void messageHandler(ProtonMessageHandler messageHandler) {
+        this.messageHandler = messageHandler;
+    }
+
+    protected void doAfterConnect() {
+        //do nothing (to be overwritten by children, if needed)
+    }
+
     public boolean isConnected() {
         return connected;
     }
 
-    protected void setConnected(boolean connected) {
-        this.connected = connected;
+    protected void setConnected() {
+        connected = true;
     }
 
-    protected abstract void registerAction(ProtonConnection connection);
+    protected void setDisconnected() {
+        connected = false;
+    }
 
     public void disconnect(Future<Void> stopFuture) {
         disconnecting = true;
@@ -102,6 +220,21 @@ public abstract class AbstractAmqpClient {
         stopFuture.complete();
     }
 
+    protected void clean() {
+        if (sender!=null) {
+            logger.info("Closing sender {} for client {}", sender, client);
+            sender.close();
+            sender = null;
+            logger.info("Closing sender for client {} DONE", client);
+        }
+        if (receiver!=null) {
+            logger.info("Closing receiver {} for client {}", receiver, client);
+            receiver.close();
+            receiver = null;
+            logger.info("Closing receiver for client {} DONE", client);
+        }
+    }
+
     public void connect(Future<Void> startFuture) {
         logger.info("Connecting to broker {}:{}... (client: {})", brokerHost, brokerPort, client);
         // make sure connection is already closed
@@ -109,12 +242,24 @@ public abstract class AbstractAmqpClient {
             logger.warn("Unable to connect: still connected");
             return;
         }
+        String username = clientOptions.getString(AmqpClientOptions.USERNAME);
+        String password = null;
+        Object tmp = clientOptions.get(AmqpClientOptions.PASSWORD);
+        if (tmp instanceof String) {
+            password = (String) tmp;
+        }
+        else if (tmp instanceof char[]) {
+            password = String.valueOf((char[]) tmp);
+        }
+        else if (tmp!=null) {
+            password = tmp.toString();
+        }
         client.connect(
                 options,
                 brokerHost,
                 brokerPort,
-                clientOptions.getString(AmqpClientOptions.USERNAME),
-                clientOptions.getString(AmqpClientOptions.PASSWORD),
+                username,
+                password,
                 asynchResult ->{
                     if (asynchResult.succeeded()) {
                         connection = asynchResult.result();
@@ -122,18 +267,18 @@ public abstract class AbstractAmqpClient {
                         connection.openHandler(event -> {
                             if (event.succeeded()) {
                                 connection = event.result();
-                                registerAction(connection);
+                                doAfterConnect();
                             }
                             else {
                                 notifyConnectionLost();
                             }
                         });
                         connection.disconnectHandler(conn -> {
-                            logger.warn("Client ({}) is closed! attempting to restore it...", client);
+                            logger.warn("Client ({}) is closed!", client);
                             notifyConnectionLost();
                         });
                         connection.closeHandler(conn -> {
-                            logger.warn("Client ({}) is closed! attempting to restore it...", client);
+                            logger.warn("Client ({}) is closed!", client);
                             notifyConnectionLost();
                         });
                         connection.open();
@@ -150,7 +295,11 @@ public abstract class AbstractAmqpClient {
 
     protected void notifyConnectionLost() {
         logger.info("Notify disconnection... (client: {})", client);
-        setConnected(false);
+        setDisconnected();
+        doReconnect();
+    }
+
+    protected void doReconnect() {
         if (disconnecting) {
             logger.info("Notify disconnection... shutdown in progress - skipping reconection! (client: {})", client);
             return;

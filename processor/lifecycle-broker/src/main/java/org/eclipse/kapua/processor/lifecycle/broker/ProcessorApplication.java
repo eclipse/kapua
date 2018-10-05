@@ -26,7 +26,7 @@ public class ProcessorApplication extends VertxApplication<MainVerticle> {
 
     protected final static Logger logger = LoggerFactory.getLogger(ProcessorApplication.class);
 
-    private static final String NAME = "processor-application";
+    private static final String NAME = "processor-lifecycle";
 
     public static void main(String args[]) throws Exception {
         ProcessorApplication application = null;

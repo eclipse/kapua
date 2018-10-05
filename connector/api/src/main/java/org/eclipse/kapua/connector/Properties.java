@@ -20,21 +20,23 @@ public class Properties {
     private Properties() {
     }
 
-    public static final String CONNECTION_ID = new String("connection-id");
-    public static final String MESSAGE_DESTINATION = new String("message-destination");
+    public static final String MESSAGE_CONNECTION_ID = new String("connection-id");
+    public static final String MESSAGE_ORIGINAL_DESTINATION = new String("message-destination");
     public static final String MESSAGE_QOS = new String("message-qos");
     public static final String MESSAGE_TYPE = new String("message-type");
+    public static final String MESSAGE_CONTENT = new String("message-content");
+    public static final String MESSAGE_ENQUEUED_TIMESTAMP = "enqueuedTimestamp";
+    public static final String MESSAGE_BROKER_ID = "brokerId";
+    public static final String MESSAGE_CLIENT_ID = "clientId";
+    public static final String MESSAGE_DEVICE_ADAPTER = "device-adapter";
+    public static final String MESSAGE_SCOPE_ID = "scopeId";
+    public static final String MESSAGE_SCOPE_NAME = "scopeName";
 
     // used by login update info asynch
     public static final String METRIC_USERNAME = "username";
     public static final String METRIC_ACCOUNT = "account";
     public static final String METRIC_CLIENT_ID = "clientId";
     public static final String METRIC_IP = "ip";
-    public static final String PROPERTY_ORIGINAL_TOPIC = "originalTopic";
-    public static final String PROPERTY_ENQUEUED_TIMESTAMP = "enqueuedTimestamp";
-    public static final String PROPERTY_BROKER_ID = "brokerId";
-    public static final String PROPERTY_CLIENT_ID = "clientId";
-    public static final String PROPERTY_SCOPE_ID = "scopeId";
 
     // used by login update info asynch
     public static final String METRIC_USER_ID = "userId";

@@ -14,7 +14,7 @@ package org.eclipse.kapua.processor.error.broker;
 import javax.inject.Inject;
 
 import org.apache.qpid.proton.message.Message;
-import org.eclipse.kapua.broker.client.amqp.AmqpConsumer;
+import org.eclipse.kapua.broker.client.amqp.AmqpReceiver;
 import org.eclipse.kapua.broker.connector.amqp.AmqpActiveMQSource;
 import org.eclipse.kapua.commons.core.Configuration;
 import org.eclipse.kapua.commons.core.ObjectFactory;
@@ -45,7 +45,7 @@ public class AmqpErrorProcessorConfigFactory implements ObjectFactory<MessagePro
 
         // Consumer
         AmqpConsumerConfig amqpSourceConfig = AmqpConsumerConfig.create(CONFIG_PROP_PROCESSOR_MSG_SOURCE_AMQP, configuration);
-        AmqpActiveMQSource consumer = AmqpActiveMQSource.create(vertx, new AmqpConsumer(vertx, amqpSourceConfig.createClientOptions()));
+        AmqpActiveMQSource consumer = AmqpActiveMQSource.create(vertx, new AmqpReceiver(vertx, amqpSourceConfig.createClientOptions()));
         consumer.messageFilter(message -> {
             return true;
         });

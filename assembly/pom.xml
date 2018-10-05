@@ -38,6 +38,8 @@
         <module>broker</module>
         <module>api</module>
         <module>processors</module>
+
+        <module>extras</module>
     </modules>
 
     <profiles>
