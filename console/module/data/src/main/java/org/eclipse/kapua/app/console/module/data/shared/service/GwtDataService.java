@@ -107,7 +107,7 @@ public interface GwtDataService extends RemoteService {
     PagingLoadResult<GwtMessage> findMessagesByDevice(PagingLoadConfig loadConfig, String scopeId, GwtDatastoreDevice device, List<GwtHeader> headers, Date startDate, Date endDate)
             throws GwtKapuaException;
 
-    PagingLoadResult<GwtMessage> findMessagesByAssets(PagingLoadConfig loadConfig, String scopeId, GwtDatastoreAsset asset, List<GwtHeader> headers, Date startDate, Date endDate) throws GwtKapuaException;
+    PagingLoadResult<GwtMessage> findMessagesByAssets(PagingLoadConfig loadConfig, String scopeId, GwtDatastoreDevice device, GwtDatastoreAsset asset, List<GwtHeader> headers, Date startDate, Date endDate) throws GwtKapuaException;
 
     ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String scopeId, GwtDatastoreAsset gwtDatastoreAsset) throws GwtKapuaException;
 

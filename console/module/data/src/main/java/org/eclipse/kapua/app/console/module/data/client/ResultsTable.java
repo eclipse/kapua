@@ -41,6 +41,7 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.ExportButton;
@@ -53,7 +54,6 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.data.client.messages.ConsoleDataMessages;
 import org.eclipse.kapua.app.console.module.data.client.util.GwtMessage;
 import org.eclipse.kapua.app.console.module.data.shared.model.GwtDatastoreAsset;
-import org.eclipse.kapua.app.console.module.data.shared.model.GwtDatastoreChannel;
 import org.eclipse.kapua.app.console.module.data.shared.model.GwtDatastoreDevice;
 import org.eclipse.kapua.app.console.module.data.shared.model.GwtHeader;
 import org.eclipse.kapua.app.console.module.data.shared.service.GwtDataService;
@@ -84,7 +84,7 @@ public class ResultsTable extends LayoutContainer {
     private GwtTopic selectedTopic;
     private GwtDatastoreDevice selectedDevice;
     private GwtDatastoreAsset selectedAsset;
-    private List<GwtDatastoreChannel> selectedChannels;
+    private List<GwtHeader> selectedChannels;
     private List<GwtHeader> selectedMetrics;
     private Date startDate;
     private Date endDate;
@@ -140,12 +140,9 @@ public class ResultsTable extends LayoutContainer {
                         dataService.findMessagesByTopic((PagingLoadConfig) loadConfig, currentSession.getSelectedAccountId(), selectedTopic, selectedMetrics, startDate, endDate, callback);
                     } else if (selectedDevice != null) {
                         dataService.findMessagesByDevice((PagingLoadConfig) loadConfig, currentSession.getSelectedAccountId(), selectedDevice, selectedMetrics, startDate, endDate, callback);
-                    } else if (selectedAsset != null) {
-                        dataService.findMessagesByAssets((PagingLoadConfig) loadConfig, currentSession.getSelectedAccountId(), selectedAsset, selectedMetrics, startDate, endDate, callback);
                     }
-
                 } else if (selectedDevice != null && selectedAsset != null && selectedChannels != null && !selectedChannels.isEmpty()) {
-                    // TODO fetch data.
+                    dataService.findMessagesByAssets((PagingLoadConfig) loadConfig, currentSession.getSelectedAccountId(), selectedDevice, selectedAsset, selectedChannels, startDate, endDate, callback);
                 } else {
                     callback.onSuccess(new BasePagingLoadResult<GwtMessage>(new ArrayList<GwtMessage>()));
                 }
@@ -178,7 +175,7 @@ public class ResultsTable extends LayoutContainer {
                     queryButton.disable();
                 }
             }
-        } );
+        });
         loader.addListener(Loader.Load, new Listener<BaseEvent>() {
 
             @Override
@@ -187,7 +184,7 @@ public class ResultsTable extends LayoutContainer {
                     queryButton.enable();
                 }
             }
-        } );
+        });
         loader.addListener(Loader.LoadException, new Listener<BaseEvent>() {
 
             @Override
@@ -196,7 +193,7 @@ public class ResultsTable extends LayoutContainer {
                     queryButton.enable();
                 }
             }
-        } );
+        });
 
         loader.setSortField("timestampFormatted");
         loader.setSortDir(SortDir.DESC);
@@ -300,20 +297,10 @@ public class ResultsTable extends LayoutContainer {
         refresh(headers);
     }
 
-    public void refresh(GwtDatastoreAsset asset, List<GwtHeader> headers) {
+    public void refresh(GwtDatastoreDevice device, GwtDatastoreAsset asset, List<GwtHeader> channels) {
         this.selectedAsset = asset;
-        refresh(headers);
-    }
-
-    public void refresh(GwtDatastoreDevice device, GwtDatastoreAsset asset, List<GwtDatastoreChannel> channels) {
-        if (channelColumn == null) {
-            channelColumn = new ColumnConfig("channel", MSGS.resultsTableChannelHeader(), 100);
-            columnConfigs.add(channelColumn);
-        }
         this.selectedDevice = device;
-        this.selectedAsset = asset;
-        this.selectedChannels = channels;
-        loader.load();
+        refresh(channels);
     }
 
     private void export(String format) {
@@ -336,8 +323,8 @@ public class ResultsTable extends LayoutContainer {
         }
 
         if (selectedChannels != null && !selectedChannels.isEmpty()) {
-            for (GwtDatastoreChannel channel : selectedChannels) {
-                sbUrl.append("&channels=").append(channel.getChannel());
+            for (GwtHeader channel : selectedChannels) {
+                sbUrl.append("&channels=").append(channel.getName());
             }
         }
 
