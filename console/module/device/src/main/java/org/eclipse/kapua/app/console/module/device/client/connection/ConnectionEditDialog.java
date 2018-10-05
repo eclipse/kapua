@@ -21,6 +21,9 @@ import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
@@ -165,8 +168,17 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
             @Override
             public void onFailure(Throwable arg0) {
                 exitStatus = false;
-                exitMessage = MSGS.dialogEditError(arg0.getLocalizedMessage());
-                hide();
+                status.hide();
+                unmask();
+                FailureHandler.handle(arg0);
+                submitButton.enable();
+                cancelButton.enable();
+                if (arg0 instanceof GwtKapuaException) {
+                    GwtKapuaException gwtCause = (GwtKapuaException) arg0;
+                    if (gwtCause.getCode().equals(GwtKapuaErrorCode.INTERNAL_ERROR)) {
+                        reservedUserCombo.markInvalid(arg0.getMessage());
+                    }
+                }
             }
 
             @Override
