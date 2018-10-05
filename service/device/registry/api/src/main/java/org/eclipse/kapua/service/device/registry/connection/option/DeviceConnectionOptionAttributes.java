@@ -34,4 +34,9 @@ public class DeviceConnectionOptionAttributes extends KapuaUpdatableEntityAttrib
      * Last user identifier
      */
     public static final String USER_ID = "userId";
+
+    /**
+     * Client identifier
+     */
+    public static final String CLIENT_ID = "clientId";
 }
