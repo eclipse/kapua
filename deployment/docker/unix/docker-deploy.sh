@@ -17,7 +17,12 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 echo "Deploying Eclipse Kapua..."
 
-docker-compose -f ${SCRIPT_DIR}/../compose/docker-compose.yml up -d
+if [ "$1" == 'HONO' ]; then
+    docker-compose -f ${SCRIPT_DIR}/../compose/docker-compose-hono.yml up -d
+    echo "Run \"docker-compose -f ${SCRIPT_DIR}/../compose/docker-compose-hono.yml logs -f\" for container logs"
+else
+    docker-compose -f ${SCRIPT_DIR}/../compose/docker-compose.yml up -d
+    echo "Run \"docker-compose -f ${SCRIPT_DIR}/../compose/docker-compose.yml logs -f\" for container logs"
+fi
 
 echo "Deploying Eclipse Kapua... DONE!"
-echo "Run \"docker-compose -f ${SCRIPT_DIR}/../compose/docker-compose.yml logs -f\" for container logs"

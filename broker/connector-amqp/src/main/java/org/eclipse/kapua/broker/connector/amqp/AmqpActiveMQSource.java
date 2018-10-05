@@ -16,7 +16,7 @@ import java.util.Map;
 
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.broker.client.amqp.AmqpConsumer;
+import org.eclipse.kapua.broker.client.amqp.AmqpReceiver;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.connector.AbstractAmqpSource;
 import org.eclipse.kapua.connector.MessageContext;
@@ -43,13 +43,13 @@ public class AmqpActiveMQSource extends AbstractAmqpSource<Message> {
     private final static String TOPIC_SEPARATOR = "/";
     private final static String CLASSIFIER_TOPIC_PREFIX = SystemSetting.getInstance().getMessageClassifier() + TOPIC_SEPARATOR;
 
-    private AmqpConsumer consumer;
+    private AmqpReceiver consumer;
 
-    public static AmqpActiveMQSource create(Vertx vertx, AmqpConsumer consumer) {
+    public static AmqpActiveMQSource create(Vertx vertx, AmqpReceiver consumer) {
         return new AmqpActiveMQSource(vertx, consumer);
     }
 
-    protected AmqpActiveMQSource(Vertx vertx, AmqpConsumer consumer) {
+    protected AmqpActiveMQSource(Vertx vertx, AmqpReceiver consumer) {
         super(vertx);
         this.consumer = consumer;
         this.consumer.messageHandler(this::handleMessage);
@@ -112,7 +112,7 @@ public class AmqpActiveMQSource extends AbstractAmqpSource<Message> {
         // extract original MQTT topic
         //TODO restore it once the ActiveMQ issue will be fixed
         //String mqttTopic = message.getProperties().getTo(); // topic://VirtualTopic.kapua-sys.02:42:AC:11:00:02.heater.data
-        String mqttTopic = (String)message.getApplicationProperties().getValue().get("originalTopic");
+        String mqttTopic = (String)message.getApplicationProperties().getValue().get(Properties.MESSAGE_ORIGINAL_DESTINATION);
         mqttTopic = mqttTopic.replace(".", "/");
         // process prefix and extract message type
         // FIXME: pluggable message types and dialects
@@ -122,7 +122,7 @@ public class AmqpActiveMQSource extends AbstractAmqpSource<Message> {
         } else {
             parameters.put(Properties.MESSAGE_TYPE, TransportMessageType.TELEMETRY);
         }
-        parameters.put(Properties.MESSAGE_DESTINATION, mqttTopic);
+        parameters.put(Properties.MESSAGE_ORIGINAL_DESTINATION, mqttTopic);
 
         //extract connection id
         try {
@@ -133,7 +133,7 @@ public class AmqpActiveMQSource extends AbstractAmqpSource<Message> {
             }
             String connectionId = (String)tmp;
             if (connectionId!=null) {
-                parameters.put(Properties.CONNECTION_ID, connectionId);
+                parameters.put(Properties.MESSAGE_CONNECTION_ID, connectionId);
             }
         }
         catch (NullPointerException | IllegalArgumentException e) {

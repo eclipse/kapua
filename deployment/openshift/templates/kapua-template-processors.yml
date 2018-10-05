@@ -1,0 +1,174 @@
+apiVersion: v1
+id: eclipse-kapua
+kind: Template
+name: eclipse-kapua
+metadata:
+  name: eclipse-kapua
+parameters:
+- name:           DOCKER_ACCOUNT
+  description:      The docker hub account name to pull from
+  value:            eclipse
+- name:           ELASTIC_SEARCH_MEMORY
+  descrption:       The minimum and maximun Java heap space for Elasticsearch
+  value:            '512m'
+- name:           IMAGE_VERSION
+  description:      The version of the image to use
+  value:            latest
+- name:           JAVA_OPTS_EXTRA
+  description:      Extra Java options
+  value:            ''
+- name:           JOLOKIA_PASSWORD
+  description:      The password used for the Jolokia endpoint authentication
+  generate:         expression
+  from:             '[a-zA-Z0-9]{15}'
+  required:         true
+- name:           JOLOKIA_USER
+  description:      The username used for the Jolokia endpoint authentication
+  value:            jolokia
+objects:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    generation: 1
+    labels:
+      app: kapua-datastore-broker
+    name: kapua-datastore-broker
+  spec:
+    replicas: 1
+    selector:
+      app: kapua-datastore-broker
+      deploymentconfig: kapua-datastore-broker
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        annotations:
+          openshift.io/container.kapua-broker.image.entrypoint: '["/run-datastore-broker"]'
+        labels:
+          app: kapua-datastore-broker
+          deploymentconfig: kapua-datastore-broker
+          hawkular-openshift-agent: jolokia-processor-datastore-broker
+      spec:
+        containers:
+        - image: ${DOCKER_ACCOUNT}/kapua-datastore-broker:${IMAGE_VERSION}
+          imagePullPolicy: IfNotPresent
+          name: kapua-datastore-broker
+          ports:
+          - containerPort: 8778
+            name: jolokia
+          - containerPort: 8080
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 8080
+            timeoutSeconds: 1
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: kapua-datastore-broker-volume-1
+          emptyDir: {}
+        - name: hawkular-openshift-agent
+          configMap:
+            name: hawkular-openshift-agent-broker
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    generation: 1
+    labels:
+      app: kapua-lifecycle-broker
+    name: kapua-lifecycle-broker
+  spec:
+    replicas: 1
+    selector:
+      app: kapua-lifecycle-broker
+      deploymentconfig: kapua-lifecycle-broker
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        annotations:
+          openshift.io/container.kapua-broker.image.entrypoint: '["/run-datastore-broker"]'
+        labels:
+          app: kapua-lifecycle-broker
+          deploymentconfig: kapua-lifecycle-broker
+          hawkular-openshift-agent: jolokia-processor-datastore-broker
+      spec:
+        containers:
+        - image: ${DOCKER_ACCOUNT}/kapua-lifecycle-broker:${IMAGE_VERSION}
+          imagePullPolicy: IfNotPresent
+          name: kapua-lifecycle-broker
+          ports:
+          - containerPort: 8778
+            name: jolokia
+          - containerPort: 8080
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 8080
+            timeoutSeconds: 1
+          volumeMounts:
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: kapua-lifecycle-broker-volume-1
+          emptyDir: {}
+        - name: hawkular-openshift-agent
+          configMap:
+            name: hawkular-openshift-agent-broker
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    generation: 1
+    labels:
+      app: kapua-error-broker
+    name: kapua-error-broker
+  spec:
+    replicas: 1
+    selector:
+      app: kapua-error-broker
+      deploymentconfig: kapua-error-broker
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        annotations:
+          openshift.io/container.kapua-broker.image.entrypoint: '["/run-datastore-broker"]'
+        labels:
+          app: kapua-error-broker
+          deploymentconfig: kapua-error-broker
+          hawkular-openshift-agent: jolokia-processor-datastore-broker
+      spec:
+        containers:
+        - image: ${DOCKER_ACCOUNT}/kapua-error-broker:${IMAGE_VERSION}
+          imagePullPolicy: IfNotPresent
+          name: kapua-error-broker
+          ports:
+          - containerPort: 8778
+            name: jolokia
+          - containerPort: 8080
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 8080
+            timeoutSeconds: 1
+          volumeMounts:
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: kapua-error-broker-volume-1
+          emptyDir: {}
+        - name: hawkular-openshift-agent
+          configMap:
+            name: hawkular-openshift-agent-broker

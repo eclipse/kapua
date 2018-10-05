@@ -247,7 +247,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 logger.debug("Received connect message topic: '{}' - message id: '{}'", destination, messageId);
                 String messageBrokerId;
                 try {
-                    messageBrokerId = message.getStringProperty(Properties.PROPERTY_BROKER_ID);
+                    messageBrokerId = message.getStringProperty(Properties.MESSAGE_BROKER_ID);
                     if (!brokerId.equals(messageBrokerId)) {
                         logger.debug("Received connect message from another broker id: '{}' topic: '{}' - message id: '{}'", messageBrokerId, destination, messageId);
                         KapuaConnectionContext kcc = null;
@@ -283,8 +283,8 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             }
 
             private KapuaConnectionContext parseMessageSession(javax.jms.Message message) throws JMSException, KapuaException {
-                Long scopeId = message.propertyExists(Properties.PROPERTY_SCOPE_ID) ? message.getLongProperty(Properties.PROPERTY_SCOPE_ID) : null;
-                String clientId = message.getStringProperty(Properties.PROPERTY_CLIENT_ID);
+                Long scopeId = message.propertyExists(Properties.MESSAGE_SCOPE_ID) ? message.getLongProperty(Properties.MESSAGE_SCOPE_ID) : null;
+                String clientId = message.getStringProperty(Properties.MESSAGE_CLIENT_ID);
                 if (scopeId == null || scopeId <= 0 || StringUtils.isEmpty(clientId)) {
                     logger.debug("Invalid message context. Try parsing the topic.");
                     throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Invalid message context");
@@ -293,7 +293,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             }
 
             private KapuaConnectionContext parseTopicInfo(javax.jms.Message message) throws JMSException, KapuaException {
-                String originalTopic = message.getStringProperty(Properties.PROPERTY_ORIGINAL_TOPIC);
+                String originalTopic = message.getStringProperty(Properties.MESSAGE_ORIGINAL_DESTINATION);
                 String topic[] = originalTopic.split("\\.");
                 if (topic.length != 5) {
                     logger.error("Invalid topic format. Cannot process connect message.");
@@ -598,7 +598,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             messageSend.setProperty(Properties.HEADER_KAPUA_BROKER_CONTEXT, true);
         }
         publishMetric.getMessageSizeAllowed().update(messageSend.getSize());
-        messageSend.setProperty(Properties.PROPERTY_ORIGINAL_TOPIC, originalTopic);
+        messageSend.setProperty(Properties.MESSAGE_ORIGINAL_DESTINATION, originalTopic);
         publishMetric.getAllowedMessages().inc();
         super.send(producerExchange, messageSend);
     }

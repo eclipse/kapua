@@ -45,7 +45,7 @@ public class JmsUtil {
         if (jmsMessage.getDestination().isTopic()) {
             jmsTopic = ((Topic) jmsMessage.getJMSDestination()).getTopicName().substring(KapuaSecurityBrokerFilter.VT_TOPIC_PREFIX.length());
         } else if (jmsMessage.getDestination().isQueue()) {
-            jmsTopic = jmsMessage.getStringProperty(Properties.PROPERTY_ORIGINAL_TOPIC);
+            jmsTopic = jmsMessage.getStringProperty(Properties.MESSAGE_ORIGINAL_DESTINATION);
         } else {
             logger.warn("jmsMessage destination is not a Topic or Queue: {}", jmsMessage.getDestination());
         }

@@ -11,11 +11,4 @@
 #        Eurotech
 ################################################################################
 
-java -jar \
--Dcommons.db.schema.update=true \
--Dcommons.db.connection.host=db \
--Dcommons.db.connection.port=3306 \
--Dbroker.host=broker \
--Dkapua.errorProcessor.messageSource.amqp.host=broker \
--Dcommons.eventbus.url="failover:(amqp://events-broker:5682)?jms.sendTimeout=1000" \
-kapua-processor-error-broker-1.1.0-SNAPSHOT-uber.jar
+java ${JAVA_OPTS} -jar kapua-processor-error-broker-1.1.0-SNAPSHOT-uber.jar

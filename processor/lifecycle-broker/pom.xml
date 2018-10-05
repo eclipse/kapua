@@ -118,7 +118,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-lifecycle-connector</artifactId>
+            <artifactId>kapua-connector-lifecycle</artifactId>
         </dependency>
     </dependencies>
     <build>

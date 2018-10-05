@@ -155,6 +155,6 @@ public class LifecycleListener {
     }
 
     private KapuaId getConnectionId(MessageContext<TransportMessage> message) {
-        return (KapuaId)SerializationUtils.deserialize(Base64.getDecoder().decode((String)message.getProperties().get(Properties.CONNECTION_ID)));
+        return (KapuaId)SerializationUtils.deserialize(Base64.getDecoder().decode((String)message.getProperties().get(Properties.MESSAGE_CONNECTION_ID)));
     }
 }

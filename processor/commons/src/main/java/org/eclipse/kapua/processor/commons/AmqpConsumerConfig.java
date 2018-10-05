@@ -157,14 +157,11 @@ public class AmqpConsumerConfig {
                 this.getPort(),
                 this.getUsername(),
                 this.getPassword());
-        options.put(AmqpClientOptions.AUTO_ACCEPT, this.isAutoAccept());
-        options.put(AmqpClientOptions.QOS, ProtonQoS.valueOf(this.getQos()));
-        options.put(AmqpClientOptions.CLIENT_ID, this.getClientId());
-        options.put(AmqpClientOptions.DESTINATION, this.getDestination());
-        options.put(AmqpClientOptions.CONNECT_TIMEOUT, this.getConnectTimeout());
-        options.put(AmqpClientOptions.MAXIMUM_RECONNECTION_ATTEMPTS, this.getMaxReconnectAttempts());
-        options.put(AmqpClientOptions.IDLE_TIMEOUT, this.getIdelTimeout());
-        options.put(AmqpClientOptions.PREFETCH_MESSAGES, this.getPrefetchMessages());
+        options.put(AmqpClientOptions.CLIENT_ID, getClientId());
+        options.put(AmqpClientOptions.DESTINATION, getDestination());
+        options.put(AmqpClientOptions.CONNECT_TIMEOUT, getConnectTimeout());
+        options.put(AmqpClientOptions.MAXIMUM_RECONNECTION_ATTEMPTS, getMaxReconnectAttempts());
+        options.put(AmqpClientOptions.IDLE_TIMEOUT, getIdelTimeout());
         return options;
     }
 }

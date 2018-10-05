@@ -79,7 +79,7 @@ public class CamelKapuaDefaultRouter {
 
     public String defaultRoute(Exchange exchange, Object value, @Header(Exchange.SLIP_ENDPOINT) String previous, @Properties Map<String, Object> properties) {
         LOG.trace("Received message on topic {} - Previous slip endpoint {} - id {}",
-                exchange.getIn().getHeader(org.eclipse.kapua.connector.Properties.PROPERTY_ORIGINAL_TOPIC, String.class),
+                exchange.getIn().getHeader(org.eclipse.kapua.connector.Properties.MESSAGE_ORIGINAL_DESTINATION, String.class),
                 previous,
                 exchange.getIn().getHeader(CamelConstants.JMS_CORRELATION_ID));
         for (EndPoint endPoint : endPointContainer.getEndPoints()) {

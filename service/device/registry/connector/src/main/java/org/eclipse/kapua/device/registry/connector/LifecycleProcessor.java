@@ -73,21 +73,21 @@ public class LifecycleProcessor implements MessageTarget<TransportMessage> {
                 return;
             }
             switch (token) {
-            case APPS:
-                lifecycleListener.processAppsMessage(message);
-                break;
-            case BIRTH:
-                lifecycleListener.processBirthMessage(message);
-                break;
-            case DC:
-                lifecycleListener.processDisconnectMessage(message);
-                break;
-            case MISSING:
-                lifecycleListener.processMissingMessage(message);
-                break;
-            default:
-                result.handle(Future.succeededFuture());
-                break;
+                case APPS:
+                    lifecycleListener.processAppsMessage(message);
+                    break;
+                case BIRTH:
+                    lifecycleListener.processBirthMessage(message);
+                    break;
+                case DC:
+                    lifecycleListener.processDisconnectMessage(message);
+                    break;
+                case MISSING:
+                    lifecycleListener.processMissingMessage(message);
+                    break;
+                default:
+                    result.handle(Future.succeededFuture());
+                    break;
             }
         }
         else {

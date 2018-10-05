@@ -242,6 +242,9 @@
                 <include>${pom.groupId}:kapua-service-api</include>
                 <include>${pom.groupId}:kapua-liquibase</include>
                 <include>${pom.groupId}:kapua-guice</include>
+                <include>${pom.groupId}:kapua-broker-api</include>
+                <include>${pom.groupId}:kapua-connector-api</include>
+                <include>${pom.groupId}:kapua-broker-plugin</include>
                 <include>${pom.groupId}:kapua-job-api</include>
                 <include>${pom.groupId}:kapua-job-internal</include>
                 <include>${pom.groupId}:kapua-job-engine-api</include>

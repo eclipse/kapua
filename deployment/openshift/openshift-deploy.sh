@@ -31,9 +31,10 @@ ${OC} describe "project/${OPENSHIFT_PROJECT_NAME}" &>/dev/null || die "Project '
 
 echo "Creating Kapua from templates..."
 
-${OC} new-app -n "${OPENSHIFT_PROJECT_NAME}" -f templates/kapua-template-core.yml    -p "DOCKER_ACCOUNT=${DOCKER_ACCOUNT}" -p "IMAGE_VERSION=${IMAGE_VERSION}" -p "JAVA_OPTS_EXTRA=${JAVA_OPTS_EXTRA}"
-${OC} new-app -n "${OPENSHIFT_PROJECT_NAME}" -f templates/kapua-template-broker.yml  -p "DOCKER_ACCOUNT=${DOCKER_ACCOUNT}" -p "IMAGE_VERSION=${IMAGE_VERSION}" -p "JAVA_OPTS_EXTRA=${JAVA_OPTS_EXTRA}"
-${OC} new-app -n "${OPENSHIFT_PROJECT_NAME}" -f templates/kapua-template-console.yml -p "DOCKER_ACCOUNT=${DOCKER_ACCOUNT}" -p "IMAGE_VERSION=${IMAGE_VERSION}" -p "JAVA_OPTS_EXTRA=${JAVA_OPTS_EXTRA}"
-${OC} new-app -n "${OPENSHIFT_PROJECT_NAME}" -f templates/kapua-template-api.yml     -p "DOCKER_ACCOUNT=${DOCKER_ACCOUNT}" -p "IMAGE_VERSION=${IMAGE_VERSION}" -p "JAVA_OPTS_EXTRA=${JAVA_OPTS_EXTRA}"
+${OC} new-app -n "${OPENSHIFT_PROJECT_NAME}" -f templates/kapua-template-core.yml           -p "DOCKER_ACCOUNT=${DOCKER_ACCOUNT}" -p "IMAGE_VERSION=${IMAGE_VERSION}" -p "JAVA_OPTS_EXTRA=${JAVA_OPTS_EXTRA}"
+${OC} new-app -n "${OPENSHIFT_PROJECT_NAME}" -f templates/kapua-template-broker.yml         -p "DOCKER_ACCOUNT=${DOCKER_ACCOUNT}" -p "IMAGE_VERSION=${IMAGE_VERSION}" -p "JAVA_OPTS_EXTRA=${JAVA_OPTS_EXTRA}"
+${OC} new-app -n "${OPENSHIFT_PROJECT_NAME}" -f templates/kapua-template-console.yml        -p "DOCKER_ACCOUNT=${DOCKER_ACCOUNT}" -p "IMAGE_VERSION=${IMAGE_VERSION}" -p "JAVA_OPTS_EXTRA=${JAVA_OPTS_EXTRA}"
+${OC} new-app -n "${OPENSHIFT_PROJECT_NAME}" -f templates/kapua-template-api.yml            -p "DOCKER_ACCOUNT=${DOCKER_ACCOUNT}" -p "IMAGE_VERSION=${IMAGE_VERSION}" -p "JAVA_OPTS_EXTRA=${JAVA_OPTS_EXTRA}"
+${OC} new-app -n "${OPENSHIFT_PROJECT_NAME}" -f templates/kapua-template-processors.yml     -p "DOCKER_ACCOUNT=${DOCKER_ACCOUNT}" -p "IMAGE_VERSION=${IMAGE_VERSION}" -p "JAVA_OPTS_EXTRA=${JAVA_OPTS_EXTRA}"
 
 echo "Creating Kapua from templates... DONE!"

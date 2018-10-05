@@ -48,17 +48,12 @@
                                 <image>
                                     <name>${docker.account}/kapua-datastore-broker</name>
                                     <build>
-                                        <from>${docker.account}/java-base</from>
                                         <assembly>
                                             <descriptor>${project.basedir}/descriptors/kapua-datastore-broker.xml</descriptor>
-                                            <basedir>/home/kapua</basedir>
+                                            <basedir>/</basedir>
                                         </assembly>
-                                        <workdir>/home/kapua</workdir>
-                                        <entryPoint>
-                                            <exec>
-                                                <arg>/home/kapua/run-datastore-broker</arg>
-                                            </exec>
-                                        </entryPoint>
+                                        <dockerFile>${project.basedir}/docker/Dockerfile</dockerFile>
+                                        <filter>@</filter>
                                     </build>
                                 </image>
                             </images>

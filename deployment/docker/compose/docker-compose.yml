@@ -79,7 +79,7 @@ services:
   kapua-datastore-broker-processor:
     image: kapua/kapua-datastore-broker:${IMAGE_VERSION}
     ports:
-      - 8090:8090
+      - 8090:8080
     depends_on:
       - broker
       - db
@@ -88,7 +88,7 @@ services:
   kapua-error-broker-processor:
     image: kapua/kapua-error-broker:${IMAGE_VERSION}
     ports:
-      - 8092:8092
+      - 8092:8082
     depends_on:
       - broker
       - db
@@ -96,7 +96,7 @@ services:
   kapua-lifecycle-broker-processor:
     image: kapua/kapua-lifecycle-broker:${IMAGE_VERSION}
     ports:
-      - 8091:8091
+      - 8091:8081
     depends_on:
       - broker
       - db

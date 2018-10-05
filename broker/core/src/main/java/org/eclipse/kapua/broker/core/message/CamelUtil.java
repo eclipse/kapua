@@ -42,7 +42,7 @@ public class CamelUtil {
      * @throws JMSException
      */
     public static String getTopic(org.apache.camel.Message message) throws JMSException {
-        String topicOrig = message.getHeader(Properties.PROPERTY_ORIGINAL_TOPIC, String.class);
+        String topicOrig = message.getHeader(Properties.MESSAGE_ORIGINAL_DESTINATION, String.class);
         if (topicOrig != null) {
             return topicOrig;
         } else {
