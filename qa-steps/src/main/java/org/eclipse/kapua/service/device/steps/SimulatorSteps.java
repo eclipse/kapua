@@ -213,7 +213,7 @@ public class SimulatorSteps {
                     Assert.assertNotNull(device);
 
                     Assert.assertEquals("Kura Simulator (Display Name)", device.getDisplayName());
-                    // Assert.assertEquals("Kura Simulator (Model Name)", device.getModelName());
+                    Assert.assertEquals("Kura Simulator (Model Name)", device.getModelName());
                     Assert.assertEquals("kura-simulator-" + clientId, device.getModelId());
                     // Assert.assertEquals("ksim-part-123456-" + clientId, device.getPartNumber());
                     Assert.assertEquals("ksim-serial-123456-" + clientId, device.getSerialNumber());

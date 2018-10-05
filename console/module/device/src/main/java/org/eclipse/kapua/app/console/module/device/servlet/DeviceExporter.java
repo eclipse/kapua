@@ -42,6 +42,7 @@ public abstract class DeviceExporter {
             "IMSI",
             "ICCID",
             "Model ID",
+            "Model Name",
             "Bios Version",
             "Firmware Version",
             "OS Version",

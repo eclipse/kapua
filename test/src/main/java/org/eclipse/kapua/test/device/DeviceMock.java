@@ -180,6 +180,16 @@ public class DeviceMock implements Device {
     }
 
     @Override
+    public String getModelName() {
+        return null;
+    }
+
+    @Override
+    public void setModelName(String modelName) {
+
+    }
+
+    @Override
     public String getImei() {
         // TODO Auto-generated method stub
         return null;
