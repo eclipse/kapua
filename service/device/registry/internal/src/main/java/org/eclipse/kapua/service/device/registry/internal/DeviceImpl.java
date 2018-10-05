@@ -108,6 +108,10 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device, 
     private String modelId;
 
     @Basic
+    @Column(name = "model_name")
+    private String modelName;
+
+    @Basic
     @Column(name = "imei")
     private String imei;
 
@@ -315,6 +319,16 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device, 
     @Override
     public void setModelId(String modelId) {
         this.modelId = modelId;
+    }
+
+    @Override
+    public String getModelName() {
+        return modelName;
+    }
+
+    @Override
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
     }
 
     @Override

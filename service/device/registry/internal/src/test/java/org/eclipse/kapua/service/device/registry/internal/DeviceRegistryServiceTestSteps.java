@@ -459,6 +459,7 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
         assertEquals(deviceCreator.getDisplayName(), device.getDisplayName());
         assertEquals(deviceCreator.getSerialNumber(), device.getSerialNumber());
         assertEquals(deviceCreator.getModelId(), device.getModelId());
+        assertEquals(deviceCreator.getModelName(), device.getModelName());
         assertEquals(deviceCreator.getImei(), device.getImei());
         assertEquals(deviceCreator.getImsi(), device.getImsi());
         assertEquals(deviceCreator.getIccid(), device.getIccid());
@@ -493,6 +494,7 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
         assertEquals(tmpDevice.getDisplayName(), device.getDisplayName());
         assertEquals(tmpDevice.getSerialNumber(), device.getSerialNumber());
         assertEquals(tmpDevice.getModelId(), device.getModelId());
+        assertEquals(tmpDevice.getModelName(), device.getModelName());
         assertEquals(tmpDevice.getImei(), device.getImei());
         assertEquals(tmpDevice.getImsi(), device.getImsi());
         assertEquals(tmpDevice.getIccid(), device.getIccid());
