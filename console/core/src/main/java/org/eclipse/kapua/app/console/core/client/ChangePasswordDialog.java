@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.client;
 
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.ActionDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.SimpleDialog;
@@ -26,6 +23,11 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialService;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialServiceAsync;
 
+import com.extjs.gxt.ui.client.widget.form.LabelField;
+import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
 public class ChangePasswordDialog extends SimpleDialog {
 
     GwtCredentialServiceAsync credentialService = GWT.create(GwtCredentialService.class);
@@ -33,6 +35,7 @@ public class ChangePasswordDialog extends SimpleDialog {
     private TextField<String> oldPassword;
     private TextField<String> newPassword;
     private TextField<String> confirmPassword;
+    protected LabelField passwordTooltip;
 
     private GwtSession currentSession;
 
@@ -44,7 +47,7 @@ public class ChangePasswordDialog extends SimpleDialog {
     public void createBody() {
         submitButton.disable();
         FormPanel credentialFormPanel = new FormPanel(ActionDialog.FORM_LABEL_WIDTH);
-        DialogUtils.resizeDialog(this, 400, 200);
+        DialogUtils.resizeDialog(this, 400, 230);
 
         oldPassword = new TextField<String>();
         oldPassword.setAllowBlank(false);
@@ -68,6 +71,13 @@ public class ChangePasswordDialog extends SimpleDialog {
         confirmPassword.setValidator(new ConfirmPasswordFieldValidator(confirmPassword, newPassword));
         confirmPassword.setPassword(true);
         credentialFormPanel.add(confirmPassword);
+
+        passwordTooltip = new LabelField();
+        passwordTooltip.setValue(ActionDialog.MSGS.dialogAddTooltipCredentialPassword());
+        passwordTooltip.setStyleAttribute("margin-top", "-5px");
+        passwordTooltip.setStyleAttribute("color", "gray");
+        passwordTooltip.setStyleAttribute("font-size", "10px");
+        credentialFormPanel.add(passwordTooltip);
 
         bodyPanel.add(credentialFormPanel);
     }
