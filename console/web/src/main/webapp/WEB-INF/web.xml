@@ -96,8 +96,7 @@
     <!-- XSRF servlet support -->
     <servlet>
         <servlet-name>GwtSecurityTokenServiceImpl</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.module.api.server.GwtSecurityTokenServiceImpl
-        </servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.module.api.server.GwtSecurityTokenServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>GwtSecurityTokenServiceImpl</servlet-name>
@@ -107,8 +106,7 @@
     <!-- Http error handling servlet -->
     <servlet>
         <servlet-name>KapuaErrorHandlerServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.core.servlet.KapuaErrorHandlerServlet
-        </servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.core.servlet.KapuaErrorHandlerServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>KapuaErrorHandlerServlet</servlet-name>
@@ -126,8 +124,7 @@
 
     <servlet>
         <servlet-name>GwtSettingsServiceImpl</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.core.server.GwtSettingsServiceImpl
-        </servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.core.server.GwtSettingsServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>GwtSettingsServiceImpl</servlet-name>
