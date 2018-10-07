@@ -254,6 +254,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
                 senderPool.close();
                 senderPool.clear();
                 // borrowed object will be returned to the pool soon (since the connection is gone bad) and then destroyed by the pool (since the pool is stopped)
+                senderIterator.remove();
             }
         }
 
