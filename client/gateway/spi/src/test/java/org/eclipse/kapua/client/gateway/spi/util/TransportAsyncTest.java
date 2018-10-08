@@ -42,7 +42,7 @@ public class TransportAsyncTest {
             Duration duration = Duration.between(start, Instant.now());
             System.out.println(duration);
 
-            Assert.assertTrue(duration.compareTo(Duration.ofMillis(100)) > 0);
+            Assert.assertTrue(duration.compareTo(Duration.ofMillis(100)) >= 0);
 
         } finally {
             executor.shutdown();
