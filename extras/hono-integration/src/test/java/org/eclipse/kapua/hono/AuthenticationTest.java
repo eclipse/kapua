@@ -73,7 +73,7 @@ public class AuthenticationTest extends TestBase {
         KapuaCredentialsService credentialsService = new KapuaCredentialsService();
         credentialsService.setConfig(null);
 
-        credentialsService.get("kapua-sys", "password", "kapua-broker", new JsonObject().put("clientId", "my-device"), ctx.asyncAssertSuccess(response -> {
+        credentialsService.get("kapua-sys", "password", "kapua-broker", new JsonObject().put("client-id", "my-device"), ctx.asyncAssertSuccess(response -> {
             Assert.assertEquals(HttpURLConnection.HTTP_OK, response.getStatus());
             Assert.assertEquals("my-device", response.getPayload().getString("device-id"));
         }));

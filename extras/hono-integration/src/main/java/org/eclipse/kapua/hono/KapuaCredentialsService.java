@@ -80,16 +80,24 @@ public class KapuaCredentialsService extends BaseCredentialsService<Object> {
                 return;
             }
 
-            String clientId = clientContext.getString("clientId");
+            String clientId = clientContext.getString("client-id");
             if (clientId == null) {
                 clientId = authId;
             }
-            //TODO context matching verification
 
             CredentialListResult credentials = KapuaSecurityUtils.doPrivileged(() -> credentialService.findByUserId(user.getScopeId(), user.getId()));
             Credential credential = credentials.getFirstItem();
 
             result = new CredentialsObject(clientId, authId, CredentialsConstants.SECRETS_TYPE_HASHED_PASSWORD);
+
+            //context matching verification
+           if ( user.getEntityAttributes().contains("client-id") && clientContext.containsKey("client-id")) {
+               if (! clientId.equals(user.getEntityAttributes().getProperty("client-id"))) {
+                log.debug("Context mismatch" + authId);
+                resultHandler.handle(Future.succeededFuture(CredentialsResult.from(HttpURLConnection.HTTP_NOT_FOUND)));
+                return;
+                }
+           }
             //TODO handle secret expiry
             final JsonObject secret = CredentialsObject.emptySecret(null, null);
             secret.put(CredentialsConstants.FIELD_SECRETS_KEY, credential.getCredentialKey());
