@@ -404,7 +404,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                 String[] strValues = gwtConfigParam.getValues();
                 objValue = getObjectValue(gwtConfigParam, strValues);
             }
-            compProps.put(gwtConfigParam.getName(), objValue);
+            compProps.put(gwtConfigParam.getId(), objValue);
         }
         compConfig.setProperties(compProps);
 
