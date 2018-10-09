@@ -15,7 +15,11 @@ import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.account.client.messages.ConsoleAccountMessages;
@@ -25,6 +29,7 @@ import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery
 import org.eclipse.kapua.app.console.module.account.shared.model.permission.AccountSessionPermission;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
@@ -37,6 +42,7 @@ import java.util.List;
 public class AccountGrid extends EntityGrid<GwtAccount> {
 
     private static final ConsoleAccountMessages ACCOUNT_MSGS = GWT.create(ConsoleAccountMessages.class);
+    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     private final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
 
@@ -114,6 +120,19 @@ public class AccountGrid extends EntityGrid<GwtAccount> {
 
         column = new ColumnConfig("expirationDateFormatted", 120);
         column.setHeader(ACCOUNT_MSGS.accountTableExpirationDate());
+        GridCellRenderer<GwtAccount> setExpirationDate = new GridCellRenderer<GwtAccount>() {
+
+            @Override
+            public Object render(GwtAccount gwtAccount, String property, ColumnData config, int rowIndex, int colIndex,
+                    ListStore<GwtAccount> store, Grid<GwtAccount> grid) {
+                if (gwtAccount.getExpirationDateFormatted() != null) {
+                    return gwtAccount.getExpirationDateFormatted();
+                } else {
+                    return MSGS.never();
+                }
+            }
+        };
+        column.setRenderer(setExpirationDate);
         column.setWidth(150);
         column.setSortable(false);
         configs.add(column);

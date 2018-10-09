@@ -44,7 +44,7 @@ import java.util.List;
 
 public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends KapuaTabItem<M> {
 
-    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+    protected static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     private ContentPanel contentPanel;
     private ToolBar toolbar;
@@ -87,13 +87,7 @@ public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends
             public Object render(GwtGroupedNVPair model, String property, ColumnData config,
                     int rowIndex, int colIndex, ListStore<GwtGroupedNVPair> store,
                     Grid<GwtGroupedNVPair> grid) {
-                Object value = model.getValue();
-                if (value != null && value instanceof Date) {
-                    Date dateValue = (Date) value;
-                    return DateUtils.formatDateTime(dateValue);
-                } else {
-                    return value;
-                }
+               return renderValueCell(model, property, config, rowIndex, colIndex, store, grid);
             }
         };
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,6 +13,9 @@ package org.eclipse.kapua.app.console.module.user.client.tabs.description;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -48,4 +51,14 @@ public class UserTabDescription extends EntityDescriptionTabItem<GwtUser> {
         super.onRender(parent, index);
     }
 
+    @Override
+    protected Object renderValueCell(GwtGroupedNVPair model, String property, ColumnData config, int rowIndex,
+            int colIndex, ListStore<GwtGroupedNVPair> store, Grid<GwtGroupedNVPair> grid) {
+        Object value = model.getValue();
+        if (model.getName().equals("expirationDate") && model.getValue().equals("N/A")) {
+            return MSGS.never();
+        } else {
+            return value;
+        }
+    }
 }

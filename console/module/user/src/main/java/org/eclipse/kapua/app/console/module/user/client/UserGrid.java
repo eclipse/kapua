@@ -142,6 +142,19 @@ public class UserGrid extends EntityGrid<GwtUser> {
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("expirationDateFormatted", USER_MSGS.gridUserColumnHeaderExpirationDate(), 400);
+        GridCellRenderer<GwtUser> setExpirationDate = new GridCellRenderer<GwtUser>() {
+
+            @Override
+            public Object render(GwtUser gwtUser, String property, ColumnData config, int rowIndex, int colIndex,
+                    ListStore<GwtUser> store, Grid<GwtUser> grid) {
+                if (gwtUser.getExpirationDateFormatted() != null) {
+                    return gwtUser.getExpirationDateFormatted();
+                } else {
+                    return MSGS.never();
+                }
+            }
+        };
+        columnConfig.setRenderer(setExpirationDate);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("modifiedOnFormatted", USER_MSGS.gridUserColumnHeaderModifiedOn(), 200);
