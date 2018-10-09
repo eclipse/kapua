@@ -78,7 +78,7 @@
         <qpid-jms-client.version>0.24.0</qpid-jms-client.version>
         <qpid-proton.version>0.20.0</qpid-proton.version>
         <quartz-scheduler.version>2.2.3</quartz-scheduler.version>
-        <jetty.version>9.4.6.v20170531</jetty.version>
+        <jetty.version>9.4.12.v20180830</jetty.version>
 
         <!-- Plugins versions -->
         <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
