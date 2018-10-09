@@ -158,32 +158,30 @@ public class AbstractMessageProcessor<M, P> implements Processor {
         }
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "unchecked" })
     private Future<Void> callProcessor(MessageContext<P> message, MessageTarget<P> processor, String processorName) {
         Future<Void> internalFuture = Future.future();
-        try {
-            processor.process(message, internalFuture);
-        } catch (KapuaException e) {
-            MessageTarget<?> errorProcessor = errorTargetMap.get(processorName);
-                try {
-                    if (errorProcessor != null) {
-                        errorProcessor.process(new MessageContext(message), ar -> {
-                                if (ar.succeeded()) {
-                                    internalFuture.succeeded();
-                                }
-                                else {
-                                    internalFuture.fail(ar.cause());
-                                }
-                            }
-                        );
-                    }
-                    else {
-                        internalFuture.fail(e);
-                    }
-                } catch (Exception e1) {
-                    internalFuture.fail(e1);
+        processor.process(message, ar -> {
+            if (ar.succeeded()) {
+                internalFuture.succeeded();
+            }
+            else {
+                MessageTarget<P> errorProcessor = errorTargetMap.get(processorName);
+                if (errorProcessor != null) {
+                    errorProcessor.process(message, ar1 -> {
+                        if (ar1.failed()) {
+                            internalFuture.fail(ar1.cause());
+                        }
+                        else {
+                            internalFuture.complete();
+                        }
+                    });
                 }
-        }
+                else {
+                    internalFuture.fail(ar.cause());
+                }
+            }
+        });
         return internalFuture;
     }
 

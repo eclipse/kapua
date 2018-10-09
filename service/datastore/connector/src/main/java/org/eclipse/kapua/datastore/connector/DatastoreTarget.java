@@ -65,7 +65,7 @@ public class DatastoreTarget implements MessageTarget<TransportMessage> {
 
     @Override
     //TODO choose the appropriate exception
-    public void process(MessageContext<TransportMessage> message, Handler<AsyncResult<Void>> result) throws KapuaException {
+    public void process(MessageContext<TransportMessage> message, Handler<AsyncResult<Void>> result) {
         logger.debug("Datastore service... converting received message: {}", message);
         TransportMessage tm = message.getMessage();
         final String scopeName = tm.getScopeName();

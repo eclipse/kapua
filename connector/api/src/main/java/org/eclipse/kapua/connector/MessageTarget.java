@@ -11,13 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.connector;
 
-import org.eclipse.kapua.KapuaException;
-
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 
 public interface MessageTarget<T> extends ResourceConnector {
 
-    public void process(MessageContext<T> message, Handler<AsyncResult<Void>> result) throws KapuaException;
+    public void process(MessageContext<T> message, Handler<AsyncResult<Void>> result);
 
 }
