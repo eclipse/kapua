@@ -16,7 +16,8 @@ java -jar \
 -Dcommons.db.connection.host=db \
 -Dcommons.db.connection.port=3306 \
 -Dbroker.host=broker \
--Dactivemq_datastore.connection.host=broker \
+-Dkapua.datastoreProcessor.messageSource.amqp.host=broker \
+-Dkapua.datastoreProcessor.errorTarget.amqp.host=broker \
 -Ddatastore.elasticsearch.nodes=es \
 -Ddatastore.elasticsearch.port=9200 \
 -Ddatastore.client.class=org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient \

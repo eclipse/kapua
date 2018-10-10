@@ -64,10 +64,11 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
     private static final String METRIC_REGISTRY_NAME = "com-eurotech-could";
     private static final String DEFAULT_APP_NAME = "vertx-application";
 
-    private static final String PROP_VERTX_METRICS_ROOT = "kapua.vertx-app.metrics-root";
-    private static final String PROP_VERTX_WARNING_EXCEPTION_TIME = "kapua.vertx-app.warning-exception-time";
-    private static final String PROP_VERTX_BLOCKED_THREAD_CHECK_INTERVAL = "kapua.vertx-app.blocked-thread-check-interval";
-    private static final String PROP_VERTX_STARTUP_TIMEOUT = "kapua.vertx-app.startup-timeout";
+    private static final String PROP_VERTX_METRICS_ROOT = "kapua.vertxApp.metricsRoot";
+    private static final String PROP_VERTX_METRICS_ENABLE = "kapua.vertxApp.metricsEnabled";
+    private static final String PROP_VERTX_WARNING_EXCEPTION_TIME = "kapua.vertxApp.warningExceptionTime";
+    private static final String PROP_VERTX_BLOCKED_THREAD_CHECK_INTERVAL = "kapua.vertxApp.blockedThreadCheckInterval";
+    private static final String PROP_VERTX_STARTUP_TIMEOUT = "kapua.vertxApp.startupTimeout";
 
     private Vertx vertx;
     private M mainVerticle;
@@ -109,8 +110,8 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
 
         MetricRegistry metricRegistry = null;
         DropwizardMetricsOptions metrOpts = new DropwizardMetricsOptions();
-        metrOpts.setEnabled(Boolean.parseBoolean(config.getProperty("vertx.metrics-enabled")));
-        String metricsRoot = config.getProperty(PROP_VERTX_METRICS_ROOT);
+        metrOpts.setEnabled(Boolean.parseBoolean(config.getString(PROP_VERTX_METRICS_ENABLE)));
+        String metricsRoot = config.getString(PROP_VERTX_METRICS_ROOT);
         metricRegistry = SharedMetricRegistries.getOrCreate(METRIC_REGISTRY_NAME);
         try {
             SharedMetricRegistries.setDefault(METRIC_REGISTRY_NAME, metricRegistry);
@@ -122,8 +123,8 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
         metrOpts.setBaseName(metricsRoot + ".vertx");
 
         VertxOptions opts = new VertxOptions();
-        opts.setWarningExceptionTime(Long.parseLong(config.getProperty(PROP_VERTX_WARNING_EXCEPTION_TIME)));
-        opts.setBlockedThreadCheckInterval(Long.parseLong(config.getProperty(PROP_VERTX_BLOCKED_THREAD_CHECK_INTERVAL)));
+        opts.setWarningExceptionTime(Long.parseLong(config.getString(PROP_VERTX_WARNING_EXCEPTION_TIME)));
+        opts.setBlockedThreadCheckInterval(Long.parseLong(config.getString(PROP_VERTX_BLOCKED_THREAD_CHECK_INTERVAL)));
         opts.setMetricsOptions(metrOpts);
         vertx = Vertx.vertx(opts);
 
@@ -155,7 +156,7 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
                 }
                 bind(Configuration.class).toInstance(finalConfig);
                 for(String key:finalConfig.getKeys()) {
-                    bind(String.class).annotatedWith(Names.named(key)).toInstance(finalConfig.getProperty(key));
+                    bind(String.class).annotatedWith(Names.named(key)).toInstance(finalConfig.getString(key));
                 }
             }
 
@@ -249,8 +250,11 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
             });
 
             boolean touchedZero = stoppedSignal.await(actualTimeout, TimeUnit.MILLISECONDS);
-            if (closeFuture.failed() || !touchedZero) {
+            if (closeFuture.failed()) {
                 throw new Exception("Closing Vertx...FAILED", closeFuture.cause());
+            }
+            if (!touchedZero) {
+                throw new Exception("Closing Vertx...FAILED", new Exception("Timeout expired"));
             }
         }
     }
@@ -279,11 +283,12 @@ public abstract class VertxApplication<M extends AbstractMainVerticle> implement
             startedSignal.countDown();
         });
 
-        long startupTimeout = Long.parseLong(config.getProperty(PROP_VERTX_STARTUP_TIMEOUT));
+        long startupTimeout = config.getLong(PROP_VERTX_STARTUP_TIMEOUT);
         boolean touchedZero = startedSignal.await(startupTimeout, TimeUnit.MILLISECONDS);
         if (deployFuture.failed()) {
             throw new Exception(deployFuture.cause());
-        } else if (!touchedZero) {
+        }
+        if (!touchedZero) {
             throw new Exception(String.format("Start timeout expired"));
         }
     }

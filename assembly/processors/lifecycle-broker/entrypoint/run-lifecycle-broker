@@ -16,6 +16,7 @@ java -jar \
 -Dcommons.db.connection.host=db \
 -Dcommons.db.connection.port=3306 \
 -Dbroker.host=broker \
--Dactivemq_lifecycle.connection.host=broker \
+-Dkapua.lifecycleProcessor.messageSource.amqp.host=broker \
+-Dkapua.lifecycleProcessor.errorTarget.amqp.host=broker \
 -Dcommons.eventbus.url="failover:(amqp://events-broker:5682)?jms.sendTimeout=1000" \
 kapua-processor-lifecycle-broker-1.1.0-SNAPSHOT-uber.jar

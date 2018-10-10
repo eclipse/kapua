@@ -20,20 +20,22 @@ import io.vertx.ext.healthchecks.Status;
 public class EventBusHealthCheckAdapter implements HealthCheckAdapter {
 
     private EventBus eventBus;
+    private String healthCheckName;
     private String healthCheckAddress;
 
-    public static HealthCheckAdapter create(EventBus eventBus, String healthCheckAddress) {
-        return new EventBusHealthCheckAdapter(eventBus, healthCheckAddress);
+    public static HealthCheckAdapter create(EventBus eventBus, String healthCheckName, String healthCheckAddress) {
+        return new EventBusHealthCheckAdapter(eventBus, healthCheckName, healthCheckAddress);
     }
 
-    private EventBusHealthCheckAdapter(EventBus eventBus, String healthCheckAddress) {
+    private EventBusHealthCheckAdapter(EventBus eventBus, String healthCheckName, String healthCheckAddress) {
         this.eventBus = eventBus;
+        this.healthCheckName = healthCheckName;
         this.healthCheckAddress = healthCheckAddress;
     }
 
     @Override
     public void register(HealthCheckHandler handler) {
-        handler.register("more-checks", hcm -> {
+        handler.register(healthCheckName, hcm -> {
             eventBus.<JsonObject>send(healthCheckAddress, "", reply -> {
 
                 if (reply.succeeded()) {

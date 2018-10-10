@@ -32,8 +32,6 @@ public class ProcessorContextConfig extends ObjectContextConfig {
     protected void configure() {
         super.configure();
         bind(MainVerticle.class);
-        bind(ConnectionConfiguration.class);
-        bind(SourceConfiguration.class);
         bind(HttpServiceVerticle.class);
         bind(JAXBContextProvider.class).to(JAXBContextProviderImpl.class).in(Singleton.class);
         bind(MessageProcessorVerticle.class).to(AmqpErrorProcessorVerticle.class);

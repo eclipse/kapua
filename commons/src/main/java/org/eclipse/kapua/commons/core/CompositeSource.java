@@ -37,7 +37,32 @@ public class CompositeSource implements ConfigurationSource {
 
     @Override
     public String getString(String key) {
-        return (String)config.getString(key);
+        return config.getString(key);
+    }
+
+    @Override
+    public String getString(String key, String defaultValue) {
+        return config.getString(key, defaultValue);
+    }
+
+    @Override
+    public Integer getInteger(String key) {
+        return config.getInt(key);
+    }
+
+    @Override
+    public Integer getInteger(String key, Integer defaultValue) {
+        return config.getInt(key, defaultValue);
+    }
+
+    @Override
+    public Long getLong(String key) {
+        return config.getLong(key);
+    }
+
+    @Override
+    public Long getLong(String key, Long defaultValue) {
+        return config.getLong(key, defaultValue);
     }
 
 }

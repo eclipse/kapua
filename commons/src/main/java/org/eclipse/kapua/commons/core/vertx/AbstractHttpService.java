@@ -97,10 +97,10 @@ public abstract class AbstractHttpService implements HttpService {
         this.httpServer.listen(ar -> {
             if (ar.succeeded()) {
                 logger.info("Http server listening on port {}", this.httpServer.actualPort());
-                logger.trace("Starting verticle...DONE");
+                logger.trace("Starting service...DONE");
                 startFuture.complete();
             } else {
-                logger.error("Starting verticle...FAILED", ar.cause());
+                logger.error("Starting service...FAILED", ar.cause());
                 startFuture.fail(ar.cause());
             }
         });        

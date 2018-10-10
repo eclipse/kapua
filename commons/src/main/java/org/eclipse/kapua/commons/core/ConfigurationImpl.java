@@ -31,7 +31,32 @@ public class ConfigurationImpl implements Configuration {
     }
 
     @Override
-    public String getProperty(String key) {
+    public String getString(String key) {
         return configSource.getString(key);
+    }
+
+    @Override
+    public String getString(String key, String defaultValue) {
+        return configSource.getString(key, defaultValue);
+    }
+
+    @Override
+    public Integer getInteger(String key) {
+        return configSource.getInteger(key);
+    }
+
+    @Override
+    public Integer getInteger(String key, Integer defaultValue) {
+        return configSource.getInteger(key, defaultValue);
+    }
+
+    @Override
+    public Long getLong(String key) {
+        return configSource.getLong(key);
+    }
+
+    @Override
+    public Long getLong(String key, Long defaultValue) {
+        return configSource.getLong(key, defaultValue);
     }
 }

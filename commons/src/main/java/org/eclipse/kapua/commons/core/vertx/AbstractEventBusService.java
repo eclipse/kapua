@@ -65,7 +65,7 @@ public abstract class AbstractEventBusService implements EventBusService {
         EventBusClientConfig clientConfig = new EventBusClientConfig();
         clientConfig.setAddress(config.getAddress());
         eventBusServer = EventBusServer.server(eventBus, clientConfig);
-        messageDispatcher = EventBusDispatcher.dispatcher(eventBusServer);
+        messageDispatcher = EventBusDispatcher.dispatcher(vertx, eventBusServer);
         for(EventBusServiceAdapter adapter:handlerAdapters) {
             adapter.register(messageDispatcher);
         }

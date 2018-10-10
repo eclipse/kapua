@@ -72,8 +72,13 @@ public class MessageProcessorConfig<M,P> {
         return errorTarget;
     }
 
+<<<<<<< Updated upstream
     public void setErrorTarget(MessageTarget aTarget) {
         errorTarget = aTarget;
+=======
+    public void setErrorTarget(MessageTarget aProcessor) {
+        errorTarget = aProcessor;
+>>>>>>> Stashed changes
     }
 
     public String getEBAddress() {

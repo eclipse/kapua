@@ -12,8 +12,8 @@
 package org.eclipse.kapua.processor.commons;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
+import org.eclipse.kapua.commons.core.Configuration;
 import org.eclipse.kapua.commons.core.vertx.EventBusHealthCheckAdapter;
 import org.eclipse.kapua.commons.core.vertx.HttpServiceConfig;
 
@@ -23,18 +23,9 @@ import io.vertx.core.Future;
 public class HttpServiceVerticle extends AbstractVerticle {
 
     @Inject
-    @Named("kapua.vertx-app.metrics-root")
-    private String metricsRoot;
+    Configuration configuration;
 
-    @Inject
-    @Named("kapua.vertx-app.http-server.host")
-    private String host;
-
-    @Inject
-    @Named("kapua.vertx-app.http-server.port")
-    private int port;
-
-    private HttpServiceImpl impl;
+    private HttpServiceImpl restService;
 
     @Override
     public void start(Future<Void> startFuture) throws Exception {
@@ -50,14 +41,17 @@ public class HttpServiceVerticle extends AbstractVerticle {
         })
         .compose(map -> {
             Future<Void> future = Future.future();
+            HttpServiceImplConfig restServiceConfig = HttpServiceImplConfig.create("kapua.restService", configuration);
             HttpServiceConfig config = new HttpServiceConfig();
-            config.setHost(this.host);
-            config.setMetricsRoot(this.metricsRoot);
-            config.setPort(port);
-            impl = new HttpServiceImpl(vertx, config);
-            impl.register(EventBusHealthCheckAdapter.create(vertx.eventBus(), "health"));
+            config.setHost(restServiceConfig.getHost());
+            config.setMetricsRoot(restServiceConfig.getMetricsRoot());
+            config.setPort(restServiceConfig.getPort());
+            restService = new HttpServiceImpl(vertx, config);
+            restService.register(EventBusHealthCheckAdapter.create(vertx.eventBus()
+                    , restServiceConfig.getEventbusHealthCheckName()
+                    , restServiceConfig.getEventbusHealthCheckAddress()));
             try {
-                impl.start(future);
+                restService.start(future);
             } catch (Exception e) {
                 future.fail(e);
             }
@@ -77,9 +71,9 @@ public class HttpServiceVerticle extends AbstractVerticle {
         Future.succeededFuture()
         .compose(map -> {
             Future<Void> future = Future.future();
-            if (impl != null) {
+            if (restService != null) {
                 try {
-                    impl.stop(future);
+                    restService.stop(future);
                 } catch (Exception e) {
                     future.fail(e);
                 }

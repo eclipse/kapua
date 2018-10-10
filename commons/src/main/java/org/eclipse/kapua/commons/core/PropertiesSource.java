@@ -37,4 +37,28 @@ public class PropertiesSource implements ConfigurationSource {
         return (String) this.properties.get(key);
     }
 
+    @Override
+    public String getString(String key, String defaultValue) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Integer getInteger(String key) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Integer getInteger(String key, Integer defaultValue) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Long getLong(String key) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Long getLong(String key, Long defaultValue) {
+        throw new UnsupportedOperationException();
+    }
 }

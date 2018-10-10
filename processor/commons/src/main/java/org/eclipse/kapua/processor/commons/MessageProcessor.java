@@ -124,9 +124,13 @@ public class MessageProcessor<M,P> extends AbstractEventBusService {
         messageTarget = config.getMessageTarget();
         errorTarget = config.getErrorTarget();
         targetMap = new HashMap<>();
-        targetMap.put(PROCESSOR_NAME_DATASTORE, messageTarget);
+        if (messageTarget != null) {
+            targetMap.put(PROCESSOR_NAME_DATASTORE, messageTarget);
+        }
         errorTargetMap = new HashMap<>();
-        errorTargetMap.put(PROCESSOR_NAME_DATASTORE, errorTarget);
+        if (errorTarget != null) {
+            errorTargetMap.put(PROCESSOR_NAME_DATASTORE, errorTarget);
+        }
         messageProcessor = new AbstractMessageProcessor<>(messageSource, converter, targetMap, errorTargetMap);
     }
 }

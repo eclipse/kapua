@@ -12,14 +12,15 @@
 package org.eclipse.kapua.processor.error.broker;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.kapua.broker.client.amqp.AmqpConsumer;
 import org.eclipse.kapua.broker.connector.amqp.AmqpActiveMQSource;
+import org.eclipse.kapua.commons.core.Configuration;
 import org.eclipse.kapua.commons.core.ObjectFactory;
 import org.eclipse.kapua.commons.core.vertx.HealthCheckAdapter;
 import org.eclipse.kapua.connector.logger.LoggerTarget;
+import org.eclipse.kapua.processor.commons.AmqpConsumerConfig;
 import org.eclipse.kapua.processor.commons.MessageProcessorConfig;
 
 import io.vertx.core.Vertx;
@@ -28,30 +29,23 @@ import io.vertx.ext.healthchecks.Status;
 
 public class AmqpErrorProcessorConfigFactory implements ObjectFactory<MessageProcessorConfig<Message, Message>> {
 
+    private static final String CONFIG_PROP_PROCESSOR = "kapua.errorProcessor";
+    private static final String CONFIG_PROP_PROCESSOR_MSG_SOURCE_AMQP = "kapua.errorProcessor.messageSource.amqp";
+
     @Inject
     private Vertx vertx;
 
     @Inject
-    @Named("kapua.vertx-app.event-bus-server.default-address")
-    private String ebAddress;
-
-    @Inject
-    @Named("kapua.vertx-app.event-bus-server.health-address")
-    private String healthCheckEBAddress;
-
-    @Inject 
-    private ConnectionConfiguration connectionConfig;
-
-    @Inject 
-    private SourceConfiguration sourceConfig;
+    private Configuration configuration;
 
     @Override
     public MessageProcessorConfig<Message, Message> create() {
 
-        MessageProcessorConfig<Message, Message> config = new MessageProcessorConfig<Message, Message>();
+        MessageProcessorConfig<Message, Message> config = MessageProcessorConfig.<Message, Message>create(CONFIG_PROP_PROCESSOR, configuration);
 
         // Consumer
-        AmqpActiveMQSource consumer = AmqpActiveMQSource.create(vertx, new AmqpConsumer(vertx, sourceConfig.createClientOptions(connectionConfig)));
+        AmqpConsumerConfig amqpSourceConfig = AmqpConsumerConfig.create(CONFIG_PROP_PROCESSOR_MSG_SOURCE_AMQP, configuration);
+        AmqpActiveMQSource consumer = AmqpActiveMQSource.create(vertx, new AmqpConsumer(vertx, amqpSourceConfig.createClientOptions()));
         consumer.messageFilter(message -> {
             return true;
         });
@@ -70,9 +64,6 @@ public class AmqpErrorProcessorConfigFactory implements ObjectFactory<MessagePro
             }
         });
 
-        // Converter
-        config.setConverter(null);
-
         // Processor
         LoggerTarget processor = LoggerTarget.create();
         config.setMessageTarget(processor);
@@ -90,13 +81,6 @@ public class AmqpErrorProcessorConfigFactory implements ObjectFactory<MessagePro
                 });
             }
         });
-
-        // Error processor
-        config.setErrorTarget(null);
-
-        // Other
-        config.setEBAddress(ebAddress);
-        config.setHealthCheckEBAddress(healthCheckEBAddress);
         return config;
     }
 }

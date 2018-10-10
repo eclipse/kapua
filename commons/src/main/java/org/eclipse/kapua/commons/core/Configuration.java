@@ -22,5 +22,15 @@ public interface Configuration {
 
     public List<String> getKeys();
 
-    public String getProperty(String key);
+    public String getString(String key);
+
+    public String getString(String key, String defaultValue);
+
+    public Integer getInteger(String key);
+
+    public Integer getInteger(String key, Integer defaultValue);
+
+    public Long getLong(String key);
+
+    public Long getLong(String key, Long defaultValue);
 }
