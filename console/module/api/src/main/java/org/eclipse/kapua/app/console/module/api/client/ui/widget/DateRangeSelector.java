@@ -13,6 +13,7 @@ package org.eclipse.kapua.app.console.module.api.client.ui.widget;
 
 import java.util.Date;
 
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -233,6 +234,7 @@ public class DateRangeSelector extends LayoutContainer {
         dialog.setHeight(200);
         dialog.setHideOnButtonClick(true);
         dialog.setButtons(Dialog.OKCANCEL);
+        dialog.setButtonAlign(HorizontalAlignment.CENTER);
         dialog.setHideOnButtonClick(false);
         dialog.setResizable(false);
         FormData formData = new FormData("-20");
