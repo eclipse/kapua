@@ -36,6 +36,8 @@ import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 
 import java.net.HttpURLConnection;
+import java.time.Instant;
+import java.util.Date;
 
 public class KapuaCredentialsService extends BaseCredentialsService<Object> {
 
@@ -105,7 +107,14 @@ public class KapuaCredentialsService extends BaseCredentialsService<Object> {
                }
            }
             //TODO handle secret expiry and before moment.
-            final JsonObject secret = CredentialsObject.emptySecret(null, credential.getExpirationDate().toInstant());
+            Date expDate = credential.getExpirationDate();
+            Instant expInstant;
+            if ( expDate != null ) {
+                expInstant = expDate.toInstant();
+            } else{
+                expInstant = null;
+            }
+            final JsonObject secret = CredentialsObject.emptySecret(null, expInstant);
             secret.put(CredentialsConstants.FIELD_SECRETS_KEY, credential.getCredentialKey());
             result = result.addSecret(secret);
 
