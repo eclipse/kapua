@@ -13,7 +13,6 @@ package org.eclipse.kapua.broker.connector.amqp;
 
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.kapua.broker.client.amqp.AmqpSender;
-import org.eclipse.kapua.connector.KapuaProcessorException;
 import org.eclipse.kapua.connector.MessageContext;
 import org.eclipse.kapua.connector.MessageTarget;
 
@@ -41,7 +40,7 @@ public class ErrorTarget implements MessageTarget<Message> {
     }
 
     @Override
-    public void process(MessageContext<Message> message, Handler<AsyncResult<Void>> result) throws KapuaProcessorException {
+    public void process(MessageContext<Message> message, Handler<AsyncResult<Void>> result) {
         sender.send(message.getMessage(), delivery -> {
             ProtonHelper.accepted(delivery, true);
         });

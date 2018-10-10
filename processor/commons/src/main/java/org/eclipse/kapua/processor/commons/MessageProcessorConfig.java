@@ -51,16 +51,16 @@ public class MessageProcessorConfig<M,P> {
         return target;
     }
 
-    public void setMessageTarget(MessageTarget<P> aProcessor) {
-        target = aProcessor;
+    public void setMessageTarget(MessageTarget<P> aTarget) {
+        target = aTarget;
     }
 
     public MessageTarget getErrorTarget() {
         return errorTarget;
     }
 
-    public void setErrorTarget(MessageTarget aProcessor) {
-        errorTarget = target;
+    public void setErrorTarget(MessageTarget aTarget) {
+        errorTarget = aTarget;
     }
 
     public String getEBAddress() {

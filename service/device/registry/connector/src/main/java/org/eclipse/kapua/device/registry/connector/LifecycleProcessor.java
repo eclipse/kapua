@@ -13,7 +13,6 @@ package org.eclipse.kapua.device.registry.connector;
 
 import java.util.List;
 
-import org.eclipse.kapua.connector.KapuaProcessorException;
 import org.eclipse.kapua.connector.MessageContext;
 import org.eclipse.kapua.connector.MessageTarget;
 import org.eclipse.kapua.message.transport.TransportMessage;
@@ -60,7 +59,7 @@ public class LifecycleProcessor implements MessageTarget<TransportMessage> {
     }
 
     @Override
-    public void process(MessageContext<TransportMessage> message, Handler<AsyncResult<Void>> result) throws KapuaProcessorException {
+    public void process(MessageContext<TransportMessage> message, Handler<AsyncResult<Void>> result) {
         List<String> destination = message.getMessage().getChannel().getSemanticParts();
         if (destination!=null && destination.size()>1) {
             String messageType = destination.get(1);

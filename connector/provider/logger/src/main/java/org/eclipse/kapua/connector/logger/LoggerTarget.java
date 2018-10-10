@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.connector.logger;
 
-import org.apache.qpid.proton.message.Message;
-import org.eclipse.kapua.connector.KapuaProcessorException;
 import org.eclipse.kapua.connector.MessageContext;
 import org.eclipse.kapua.connector.MessageTarget;
 import org.slf4j.Logger;
@@ -22,10 +20,11 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 
-public class LoggerTarget implements MessageTarget<Message> {
+public class LoggerTarget<M> implements MessageTarget<M> {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggerTarget.class);
 
+    @SuppressWarnings("rawtypes")
     public static LoggerTarget create() {
         return new LoggerTarget();
     }
@@ -40,9 +39,9 @@ public class LoggerTarget implements MessageTarget<Message> {
     }
 
     @Override
-    public void process(MessageContext<Message> message, Handler<AsyncResult<Void>> result) throws KapuaProcessorException {
+    public void process(MessageContext<M> message, Handler<AsyncResult<Void>> result) {
         //avoid null check on message fields
-        logger.info("Message (between #): #{}#", message.getMessage() != null ? String.valueOf(message.getMessage().getBody()) : "NULL");
+        logger.info("Message (between #): #{}#", message.getMessage() != null ? message.getMessage().toString() : "NULL");
         result.handle(Future.succeededFuture());
 
         //old code
