@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.client;
 
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.ActionDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.SimpleDialog;
@@ -97,8 +99,15 @@ public class ChangePasswordDialog extends SimpleDialog {
                 submitButton.enable();
                 cancelButton.enable();
                 status.hide();
-
-                ConsoleInfo.display("Error", ActionDialog.MSGS.changePasswordError(caught.getLocalizedMessage()));
+                if (caught instanceof GwtKapuaException) {
+                    GwtKapuaException gwtCaught = (GwtKapuaException) caught;
+                    if (gwtCaught.getCode().equals(GwtKapuaErrorCode.INVALID_USERNAME_PASSWORD)) {
+                        ConsoleInfo.display("Error", ActionDialog.MSGS.changePasswordError(MSGS.changePasswordErrorWrongOldPassword()));
+                        oldPassword.markInvalid(MSGS.changePasswordErrorWrongOldPassword());
+                    } else {
+                        ConsoleInfo.display("Error", ActionDialog.MSGS.changePasswordError(caught.getLocalizedMessage()));
+                    }
+                }
             }
 
             @Override
