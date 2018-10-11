@@ -45,6 +45,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
         "displayName",
         "serialNumber",
         "modelId",
+        "modelName",
         "imei",
         "imsi",
         "iccid",
@@ -192,6 +193,21 @@ public interface DeviceCreator extends KapuaUpdatableEntityCreator<Device> {
      * @param modelId
      */
     void setModelId(String modelId);
+
+    /**
+     * Get the model name
+     *
+     * @return
+     */
+    @XmlElement(name = "modelName")
+    String getModelName();
+
+    /**
+     * Set the model name
+     *
+     * @param modelName
+     */
+    void setModelName(String modelName);
 
     /**
      * Get the imei

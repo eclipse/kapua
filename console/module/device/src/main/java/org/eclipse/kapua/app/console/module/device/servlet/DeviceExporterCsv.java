@@ -129,6 +129,9 @@ public class DeviceExporterCsv extends DeviceExporter {
             // Model Id
             cols.add(device.getModelId() != null ? device.getModelId() : BLANK);
 
+            // Model Name
+            cols.add(device.getModelName() != null ? device.getModelName() : BLANK);
+
             // Bios version
             cols.add(device.getBiosVersion() != null ? device.getBiosVersion() : BLANK);
 

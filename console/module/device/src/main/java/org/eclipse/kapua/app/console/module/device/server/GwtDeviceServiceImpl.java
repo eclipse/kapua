@@ -238,8 +238,8 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                 pairs.add(new GwtGroupedNVPair("devAttributesInfo", "devCustomAttribute4", device.getCustomAttribute4()));
                 pairs.add(new GwtGroupedNVPair("devAttributesInfo", "devCustomAttribute5", device.getCustomAttribute5()));
 
-                pairs.add(new GwtGroupedNVPair("devHw", "devModelName", device.getModelId()));
                 pairs.add(new GwtGroupedNVPair("devHw", "devModelId", device.getModelId()));
+                pairs.add(new GwtGroupedNVPair("devHw", "devModelName", device.getModelName()));
                 pairs.add(new GwtGroupedNVPair("devHw", "devSerialNumber", device.getSerialNumber()));
 
                 pairs.add(new GwtGroupedNVPair("devSw", "devFirmwareVersion", device.getFirmwareVersion()));

@@ -34,6 +34,7 @@ public class DeviceCreatorImpl extends AbstractKapuaUpdatableEntityCreator<Devic
     private String displayName;
     private String serialNumber;
     private String modelId;
+    private String modelName;
     private String imei;
     private String imsi;
     private String iccid;
@@ -141,6 +142,16 @@ public class DeviceCreatorImpl extends AbstractKapuaUpdatableEntityCreator<Devic
     @Override
     public void setModelId(String modelId) {
         this.modelId = modelId;
+    }
+
+    @Override
+    public String getModelName() {
+        return modelName;
+    }
+
+    @Override
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
     }
 
     @Override

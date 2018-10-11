@@ -48,6 +48,7 @@ public class DeviceDAO extends ServiceDAO {
         device.setDisplayName(deviceCreator.getDisplayName());
         device.setSerialNumber(deviceCreator.getSerialNumber());
         device.setModelId(deviceCreator.getModelId());
+        device.setModelName(deviceCreator.getModelName());
         device.setImei(deviceCreator.getImei());
         device.setImsi(deviceCreator.getImsi());
         device.setIccid(deviceCreator.getIccid());
