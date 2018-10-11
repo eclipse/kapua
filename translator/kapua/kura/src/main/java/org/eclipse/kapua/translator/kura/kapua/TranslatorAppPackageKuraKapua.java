@@ -128,7 +128,7 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
                         case "FAILED":
                             status = DevicePackageDownloadStatus.FAILED;
                             break;
-                        case "DONE":
+                        case "COMPLETED":
                         case "ALREADY DONE":
                             status = DevicePackageDownloadStatus.COMPLETED;
                             break;

@@ -47,9 +47,5 @@ For the available managed placeholders see the CAMEL_ROUTER_PLACEHOLDER enum.
             <regex>.*</regex>
             <endPoint>bean:kapuaDataConverter?method=convertToData,bean:dataStorageMessageProcessor?method=processMessage</endPoint>
         </simpleEndPoint>
-        <!--<simpleEndPoint>-->
-        <!--<regex>${CLASSIFIER}(.*\.){2}MQTT\.DC {qualcosa notify}</regex>-->
-        <!--<endPoint>bean:kapuaManagementOperationConverter?method=convertToManagementOperationNotification,bean:dataStorageMessageProcessor?method=processMessage</endPoint>-->
-        <!--</simpleEndPoint>-->
     </endPoints>
 </endPoints>

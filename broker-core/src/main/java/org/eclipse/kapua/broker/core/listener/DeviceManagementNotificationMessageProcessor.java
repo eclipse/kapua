@@ -20,9 +20,10 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.message.CamelKapuaMessage;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyMessage;
 import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyPayload;
-import org.eclipse.kapua.service.device.management.registry.manager.DeviceManagementRegistryManager;
+import org.eclipse.kapua.service.device.management.registry.manager.DeviceManagementRegistryManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +35,11 @@ import org.slf4j.LoggerFactory;
 @UriEndpoint(title = "Device management notification storage message processor", syntax = "bean:deviceManagementNotificationMessageProcessor", scheme = "bean")
 public class DeviceManagementNotificationMessageProcessor extends AbstractProcessor<CamelKapuaMessage<?>> {
 
+    private static final DeviceManagementRegistryManagerService DEVICE_MANAGEMENT_REGISTRY_MANAGER_SERVICE = KapuaLocator.getInstance().getService(DeviceManagementRegistryManagerService.class);
+
     private static final Logger LOG = LoggerFactory.getLogger(DeviceManagementNotificationMessageProcessor.class);
     private static final String METRIC_COMPONENT_NAME = "deviceManagementRegistry";
+
 
     // queues counters
     private final Counter metricQueueCommunicationErrorCount;
@@ -64,7 +68,7 @@ public class DeviceManagementNotificationMessageProcessor extends AbstractProces
 
         KapuaNotifyPayload notifyPayload = notifyMessage.getPayload();
 
-        DeviceManagementRegistryManager.processOperationNotification(
+        DEVICE_MANAGEMENT_REGISTRY_MANAGER_SERVICE.processOperationNotification(
                 notifyMessage.getScopeId(),
                 notifyPayload.getOperationId(),
                 Objects.firstNonNull(notifyMessage.getSentOn(), notifyMessage.getReceivedOn()),

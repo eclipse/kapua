@@ -41,7 +41,6 @@ import java.util.List;
 @Table(name = "dvcm_device_management_operation")
 public class DeviceManagementOperationImpl extends AbstractKapuaUpdatableEntity implements DeviceManagementOperation {
 
-
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "started_on", nullable = false, updatable = false)
     private Date startedOn;

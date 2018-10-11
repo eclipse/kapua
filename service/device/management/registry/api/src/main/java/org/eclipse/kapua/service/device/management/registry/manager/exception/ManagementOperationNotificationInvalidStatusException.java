@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.registry.manager.exception;
 
-import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
@@ -27,7 +26,7 @@ public class ManagementOperationNotificationInvalidStatusException extends Kapua
     private Integer progress;
 
     public ManagementOperationNotificationInvalidStatusException(KapuaId scopeId, KapuaId operationId, OperationStatus status, Date updateOn, Integer progress) {
-        super(KapuaErrorCodes.BUNDLE_START_ERROR, scopeId, operationId, status, updateOn, progress);
+        super(ManagementOperationManagerErrorCodes.MANAGEMENT_NOTIFICATION_INVALID_STATUS, scopeId, operationId, status, updateOn, progress);
 
         setScopeId(scopeId);
         setOperationId(operationId);

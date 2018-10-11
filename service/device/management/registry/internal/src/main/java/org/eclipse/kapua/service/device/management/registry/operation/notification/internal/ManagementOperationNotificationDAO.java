@@ -56,18 +56,19 @@ public class ManagementOperationNotificationDAO {
      * Deletes the stepDefinition by stepDefinition identifier
      *
      * @param em
+     * @param scopeId
      * @param stepDefinitionId
      * @throws KapuaEntityNotFoundException If the {@link ManagementOperationNotification} is not found
      */
-    public static void delete(EntityManager em, KapuaId stepDefinitionId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, ManagementOperationNotificationImpl.class, stepDefinitionId);
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId stepDefinitionId) throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, ManagementOperationNotificationImpl.class, scopeId, stepDefinitionId);
     }
 
     /**
      * Finds the stepDefinition by stepDefinition identifier
      */
-    public static ManagementOperationNotification find(EntityManager em, KapuaId stepDefinitionId) {
-        return em.find(ManagementOperationNotificationImpl.class, stepDefinitionId);
+    public static ManagementOperationNotification find(EntityManager em, KapuaId scopeId, KapuaId stepDefinitionId) {
+        return ServiceDAO.find(em, ManagementOperationNotificationImpl.class, scopeId, stepDefinitionId);
     }
 
     /**
@@ -80,8 +81,7 @@ public class ManagementOperationNotificationDAO {
      */
     public static ManagementOperationNotificationListResult query(EntityManager em, KapuaQuery<ManagementOperationNotification> stepDefinitionQuery)
             throws KapuaException {
-        return ServiceDAO.query(em, ManagementOperationNotification.class, ManagementOperationNotificationImpl.class, new ManagementOperationNotificationListResultImpl(),
-                stepDefinitionQuery);
+        return ServiceDAO.query(em, ManagementOperationNotification.class, ManagementOperationNotificationImpl.class, new ManagementOperationNotificationListResultImpl(), stepDefinitionQuery);
     }
 
     /**

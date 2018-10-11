@@ -126,17 +126,16 @@ public class EndpointInfoServiceImpl
 
         //
         // Check duplicate endpoint
-        //
-        // Check duplicate endpoint
         checkDuplicateEndpointInfo(
                 endpointInfo.getScopeId(),
                 endpointInfo.getId(),
                 endpointInfo.getSchema(),
                 endpointInfo.getDns(),
                 endpointInfo.getPort());
+
         //
         // Do update
-        return entityManagerSession.onTransactedInsert(em -> EndpointInfoDAO.update(em, endpointInfo));
+        return entityManagerSession.onTransactedResult(em -> EndpointInfoDAO.update(em, endpointInfo));
     }
 
     @Override

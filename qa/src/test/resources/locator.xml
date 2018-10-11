@@ -69,7 +69,13 @@
         <api>org.eclipse.kapua.service.device.call.DeviceMessageFactory</api>
 
         <api>org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessageFactory</api>
-        <api>org.eclipse.kapua.service.device.management.request.GenericRequestFactory</api>
+
+
+        <api>org.eclipse.kapua.service.device.management.registry.manager.DeviceManagementRegistryManagerService</api>
+        <api>org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory</api>
+        <api>org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService</api>
+        <api>org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationRegistryService</api>
+        <api>org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationFactory</api>
 
         <api>org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService</api>
         <api>org.eclipse.kapua.service.device.management.bundle.DeviceBundleFactory</api>
@@ -82,6 +88,7 @@
         <api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService</api>
         <api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory</api>
         <api>org.eclipse.kapua.service.device.management.request.DeviceRequestManagementService</api>
+        <api>org.eclipse.kapua.service.device.management.request.GenericRequestFactory</api>
 
         <api>org.eclipse.kapua.service.tag.TagFactory</api>
         <api>org.eclipse.kapua.service.tag.TagService</api>

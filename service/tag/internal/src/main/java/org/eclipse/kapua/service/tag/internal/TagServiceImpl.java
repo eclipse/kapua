@@ -119,7 +119,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Do Update
-        return entityManagerSession.onTransactedInsert(em -> TagDAO.update(em, tag));
+        return entityManagerSession.onTransactedResult(em -> TagDAO.update(em, tag));
     }
 
     @Override

@@ -34,13 +34,12 @@ import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 @KapuaProvider
 public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaService implements DeviceManagementOperationRegistryService {
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
-    private static KapuaLocator locator = KapuaLocator.getInstance();
+    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
+    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
-    private static AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-    private static PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-
-    private static DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
+    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
 
     protected DeviceManagementOperationRegistryServiceImpl() {
         super(DeviceManagementOperationEntityManagerFactory.getInstance());
@@ -61,11 +60,11 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.write, null));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.write, null));
 
         //
         // Check device existence
-        if (KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.find(creator.getScopeId(), creator.getDeviceId()) == null)) {
+        if (KapuaSecurityUtils.doPrivileged(() -> DEVICE_REGISTRY_SERVICE.find(creator.getScopeId(), creator.getDeviceId()) == null)) {
             throw new KapuaEntityNotFoundException(Device.TYPE, creator.getDeviceId());
         }
 
@@ -90,11 +89,11 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.write, null));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.write, null));
 
         //
         // Check device existence
-        if (KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.find(entity.getScopeId(), entity.getDeviceId()) == null)) {
+        if (KapuaSecurityUtils.doPrivileged(() -> DEVICE_REGISTRY_SERVICE.find(entity.getScopeId(), entity.getDeviceId()) == null)) {
             throw new KapuaEntityNotFoundException(Device.TYPE, entity.getDeviceId());
         }
 
@@ -106,7 +105,7 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Do update
-        return entityManagerSession.onTransactedInsert(em -> DeviceManagementOperationDAO.update(em, entity));
+        return entityManagerSession.onTransactedResult(em -> DeviceManagementOperationDAO.update(em, entity));
     }
 
     @Override
@@ -118,11 +117,11 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> DeviceManagementOperationDAO.find(em, entityId));
+        return entityManagerSession.onResult(em -> DeviceManagementOperationDAO.find(em, scopeId, entityId));
     }
 
     @Override
@@ -134,7 +133,7 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -150,7 +149,7 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count
@@ -166,7 +165,7 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.delete, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.delete, scopeId));
 
         //
         // Check existence
@@ -176,6 +175,6 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> DeviceManagementOperationDAO.delete(em, entityId));
+        entityManagerSession.onTransactedAction(em -> DeviceManagementOperationDAO.delete(em, scopeId, entityId));
     }
 }

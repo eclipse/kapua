@@ -99,7 +99,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
 
         deviceManagementOperationCreator.setInputProperties(extractInputProperties(requestMessage));
 
-        DeviceManagementOperation deviceManagementOperation = DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.create(deviceManagementOperationCreator);
+        DeviceManagementOperation deviceManagementOperation = KapuaSecurityUtils.doPrivileged(() -> DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.create(deviceManagementOperationCreator));
 
         return deviceManagementOperation.getId();
     }
@@ -121,7 +121,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
         deviceManagementOperation.setStatus(responseMessageMessage.getResponseCode().isAccepted() ? OperationStatus.COMPLETED : OperationStatus.FAILED);
         deviceManagementOperation.setEndedOn(responseMessageMessage.getReceivedOn());
 
-        DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.update(deviceManagementOperation);
+        KapuaSecurityUtils.doPrivileged(() -> DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.update(deviceManagementOperation));
     }
 
 

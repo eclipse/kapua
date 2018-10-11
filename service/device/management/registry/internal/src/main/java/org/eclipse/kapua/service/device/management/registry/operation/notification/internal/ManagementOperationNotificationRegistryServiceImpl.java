@@ -86,7 +86,7 @@ public class ManagementOperationNotificationRegistryServiceImpl extends Abstract
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> ManagementOperationNotificationDAO.find(em, entityId));
+        return entityManagerSession.onResult(em -> ManagementOperationNotificationDAO.find(em, scopeId, entityId));
     }
 
     @Override
@@ -134,6 +134,6 @@ public class ManagementOperationNotificationRegistryServiceImpl extends Abstract
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> ManagementOperationNotificationDAO.delete(em, entityId));
+        entityManagerSession.onTransactedAction(em -> ManagementOperationNotificationDAO.delete(em, scopeId, entityId));
     }
 }

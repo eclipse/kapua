@@ -68,8 +68,6 @@ public class DeviceManagementOperationDAO {
      */
     public static DeviceManagementOperation update(EntityManager em, DeviceManagementOperation deviceManagementOperation)
             throws KapuaException {
-        //
-        // Update stepDefinition
         DeviceManagementOperationImpl deviceManagementOperationImpl = (DeviceManagementOperationImpl) deviceManagementOperation;
 
         return ServiceDAO.update(em, DeviceManagementOperationImpl.class, deviceManagementOperationImpl);
@@ -79,18 +77,19 @@ public class DeviceManagementOperationDAO {
      * Deletes the stepDefinition by stepDefinition identifier
      *
      * @param em
+     * @param scopeId
      * @param entityId
      * @throws KapuaEntityNotFoundException If the {@link DeviceManagementOperation} is not found
      */
-    public static void delete(EntityManager em, KapuaId entityId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, DeviceManagementOperationImpl.class, entityId);
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId entityId) throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, DeviceManagementOperationImpl.class, scopeId, entityId);
     }
 
     /**
      * Finds the stepDefinition by stepDefinition identifier
      */
-    public static DeviceManagementOperation find(EntityManager em, KapuaId entityId) {
-        return em.find(DeviceManagementOperationImpl.class, entityId);
+    public static DeviceManagementOperation find(EntityManager em, KapuaId scopeId, KapuaId entityId) {
+        return ServiceDAO.find(em, DeviceManagementOperationImpl.class, scopeId, entityId);
     }
 
     /**

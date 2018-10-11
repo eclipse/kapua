@@ -126,7 +126,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         //
         // Do update
-        return entityManagerSession.onTransactedInsert(em -> GroupDAO.update(em, group));
+        return entityManagerSession.onTransactedResult(em -> GroupDAO.update(em, group));
     }
 
     @Override

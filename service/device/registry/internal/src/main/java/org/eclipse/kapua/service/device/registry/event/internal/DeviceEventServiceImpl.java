@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.device.registry.event.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaOptimisticLockingException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -30,6 +31,8 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link DeviceEventService} implementation.
@@ -38,6 +41,8 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFac
  */
 @KapuaProvider
 public class DeviceEventServiceImpl extends AbstractKapuaService implements DeviceEventService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DeviceEventServiceImpl.class);
 
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
@@ -87,7 +92,14 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
             Device device = deviceRegistryService.find(deviceEvent.getScopeId(), deviceEvent.getDeviceId());
             if (device != null) {
                 device.setLastEventId(deviceEvent.getId());
-                deviceRegistryService.update(device);
+
+                try {
+                    deviceRegistryService.update(device);
+                } catch (KapuaOptimisticLockingException kole) {
+                    LOG.warn("Update of field 'lastEventOn' failed due to concurrent updates on the device: {} ({}). Error: {}", device.getId(), device.getClientId(), kole.getMessage());
+                    LOG.debug("Update of field 'lastEventOn' failed due to concurrent updates on the device: {} ({}). See following exception...", device.getId(), device.getClientId());
+                    LOG.debug("Error:", kole);
+                }
             }
         }
 

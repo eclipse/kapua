@@ -201,7 +201,7 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
         configs.add(column);
 
         column = new ColumnConfig();
-        column.setId("inputProperty_packageUri");
+        column.setId("inputProperty_kapuapackagedownloaduri");
         column.setHeader(DEVICES_MSGS.deviceInstallTabHistoryTableURI());
         column.setWidth(200);
         configs.add(column);
