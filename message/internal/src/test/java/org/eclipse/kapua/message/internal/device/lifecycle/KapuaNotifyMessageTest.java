@@ -16,9 +16,12 @@ import java.util.List;
 
 import org.eclipse.kapua.message.device.lifecycle.KapuaNotifyChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaNotifyPayload;
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(JUnitTests.class)
 public class KapuaNotifyMessageTest extends Assert {
 
     private static final String NOTIFY_MSG_STR = "Client id 'clientId-1' - semantic topic 'part1/part2/part3'";

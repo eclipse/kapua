@@ -11,8 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.steps;
 
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
+import cucumber.api.java.en.Given;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AllowSymLinkAliasChecker;
@@ -31,10 +30,10 @@ public class EmbeddedJetty {
 
     private static Server jetty;
 
-    @Before(value = "@StartJetty")
-    public void start() throws Exception {
+    @Given("^Start Jetty Server on host \"(.*)\" at port \"(.+)\"$")
+    public void start(String host, int port) throws Exception {
 
-        InetSocketAddress address = new InetSocketAddress("127.0.0.1", 8080);
+        InetSocketAddress address = new InetSocketAddress(host, port);
         jetty = new Server(address);
         logger.info("Starting Jetty " + jetty);
 
@@ -68,7 +67,7 @@ public class EmbeddedJetty {
         //jetty.join();
     }
 
-    @After(value = "@StopJetty")
+    @Given("^Stop Jetty Server$")
     public void stop() throws Exception {
         logger.info("Stopping Jetty " + jetty);
 

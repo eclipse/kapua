@@ -25,9 +25,12 @@ import org.eclipse.kapua.kura.simulator.simulation.Configuration.MetricsMapping;
 import org.eclipse.kapua.kura.simulator.simulation.Configuration.Topic;
 import org.eclipse.kapua.kura.simulator.simulation.Configurations;
 import org.eclipse.kapua.kura.simulator.simulation.Simulation;
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.eclipse.kura.core.message.protobuf.KuraPayloadProto.KuraPayload.Builder;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(JUnitTests.class)
 public class AppTest {
 
     @Test

@@ -24,9 +24,12 @@ import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.AbstractMessageStoreServiceTest;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(JUnitTests.class)
 public class ClientUtilsIndexNameTest extends AbstractMessageStoreServiceTest {
 
     private static final KapuaId ONE = new KapuaEid(BigInteger.ONE);

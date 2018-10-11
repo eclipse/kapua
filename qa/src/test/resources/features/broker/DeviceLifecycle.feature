@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 Eurotech and/or its affiliates and others
+# Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -12,14 +12,23 @@
 @device
 Feature: Device lifecycle scenarios
 
-  @StartDatastore
+  Scenario: Set environment variables
+
+    Given System property "commons.settings.hotswap" with value "true"
+    And System property "broker.ip" with value "localhost"
+    And System property "kapua.config.url" with value "null"
+
   Scenario: Start datastore for all scenarios
 
-  @StartEventBroker
+    Given Start Datastore
+
   Scenario: Start event broker for all scenarios
 
-  @StartBroker
+    Given Start Event Broker
+
   Scenario: Start broker for all scenarios
+
+    Given Start Broker
 
 Scenario: Starting and stopping the simulator should create a device entry and properly set its status
   This starts and stops a simulator instance and checks if the connection state
@@ -71,11 +80,14 @@ Scenario: Installing a package
   When I fetch the package states
   Then Package "foo.bar" with version 1.2.3 is installed and has 10 mock bundles
 
-  @StopBroker
   Scenario: Stop broker after all scenarios
 
-  @StopEventBroker
+    Given Stop Broker
+
   Scenario: Stop event broker for all scenarios
 
-  @StopDatastore
+    Given Stop Event Broker
+
   Scenario: Stop datastore after all scenarios
+
+    Given Stop Datastore

@@ -13,13 +13,16 @@ package org.eclipse.kapua.message.internal;
 
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.internal.device.data.KapuaDataChannelImpl;
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Category(JUnitTests.class)
 public class KapuaChannelTest extends Assert {
 
     KapuaDataChannel kapuaDataChannel;

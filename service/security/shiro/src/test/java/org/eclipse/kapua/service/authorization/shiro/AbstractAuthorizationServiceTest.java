@@ -28,10 +28,13 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Assert;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Category(JUnitTests.class)
 public abstract class AbstractAuthorizationServiceTest extends Assert {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractAuthorizationServiceTest.class);

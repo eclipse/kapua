@@ -14,9 +14,12 @@ package org.eclipse.kapua.service.datastore.internal;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.test.KapuaTest;
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.experimental.categories.Category;
 
+@Category(JUnitTests.class)
 public abstract class AbstractMessageStoreServiceTest extends KapuaTest {
 
 

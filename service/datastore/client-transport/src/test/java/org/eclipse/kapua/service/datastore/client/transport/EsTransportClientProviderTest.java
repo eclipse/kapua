@@ -15,9 +15,11 @@ import org.assertj.core.api.Assertions;
 import org.assertj.core.api.Condition;
 import org.eclipse.kapua.commons.setting.AbstractBaseKapuaSetting;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.elasticsearch.client.Client;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -28,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Category(JUnitTests.class)
 public class EsTransportClientProviderTest {
 
     /**

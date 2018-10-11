@@ -91,6 +91,10 @@ public class BasicSteps extends Assert {
 
     @Given("^System property \"(.*)\" with value \"(.*)\"$")
     public void setSystemProperty(String key, String value) {
-        System.setProperty(key, value);
+        if ("null".equalsIgnoreCase(value)) {
+            System.clearProperty(key);
+        } else {
+            System.setProperty(key, value);
+        }
     }
 }

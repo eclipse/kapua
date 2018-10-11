@@ -15,9 +15,12 @@ package org.eclipse.kapua.commons.util;
 import java.lang.reflect.Constructor;
 import java.util.Random;
 
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(JUnitTests.class)
 public class CryptoUtilTest extends Assert {
 
     @Test

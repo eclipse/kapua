@@ -15,13 +15,16 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.kapua.kura.simulator.main.SimulatorRunner;
 
 import org.assertj.core.api.Assertions;
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Category(JUnitTests.class)
 public class OpenShiftTest {
 
     String oc = "/tmp/openshift/openshift-origin-server-v1.4.1+3f9807a-linux-64bit/oc";

@@ -11,8 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.security;
 
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +31,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @since 1.0
  */
+@Category(JUnitTests.class)
 public class KapuaDoPrivilegeTest {
 
     private static Logger logger = LoggerFactory.getLogger(KapuaDoPrivilegeTest.class);

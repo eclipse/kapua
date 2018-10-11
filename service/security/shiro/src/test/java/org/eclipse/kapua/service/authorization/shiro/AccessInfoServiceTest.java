@@ -38,13 +38,16 @@ import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.ResourceLimitsConfig;
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 
+@Category(JUnitTests.class)
 public class AccessInfoServiceTest extends KapuaTest {
 
     private static final TestDomain TEST_DOMAIN = new TestDomain();

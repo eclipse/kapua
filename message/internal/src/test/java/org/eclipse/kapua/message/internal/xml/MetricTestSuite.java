@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.xml;
 
+import org.eclipse.kapua.test.junit.JUnitTests;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -19,5 +21,6 @@ import org.junit.runners.Suite;
         KapuaMetricTest.class,
         KapuaMetricsMapAdapterTest.class
 })
+@Category(JUnitTests.class)
 public class MetricTestSuite {
 }

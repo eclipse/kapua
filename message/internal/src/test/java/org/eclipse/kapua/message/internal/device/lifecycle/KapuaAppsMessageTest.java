@@ -13,9 +13,12 @@ package org.eclipse.kapua.message.internal.device.lifecycle;
 
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsPayload;
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(JUnitTests.class)
 public class KapuaAppsMessageTest extends Assert {
 
     private static final String PAYLOAD_DISPLAY_STR = "[ getUptime()=12" +

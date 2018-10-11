@@ -20,8 +20,11 @@ import org.eclipse.kapua.locator.internal.guice.ServiceA;
 import org.eclipse.kapua.locator.internal.guice.ServiceAImpl;
 import org.eclipse.kapua.locator.internal.guice.ServiceC;
 import org.eclipse.kapua.locator.internal.guice.ServiceCImpl;
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(JUnitTests.class)
 public class ResolverTest {
 
     @Test(expected = KapuaLocatorException.class)

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 Eurotech and/or its affiliates and others
+# Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -12,11 +12,13 @@
 @connection
 Feature: User Coupling
 
-  @StartEventBroker
   Scenario: Start event broker for all scenarios
 
-  @StartBroker
+    Given Start Event Broker
+
   Scenario: Start broker for all scenarios
+
+    Given Start Broker
 
   Scenario: Test LOOSE user coupling on single connection
 
@@ -1652,8 +1654,10 @@ Feature: User Coupling
     Then I stop the simulator
     And I wait for 2 seconds
 
-  @StopBroker
   Scenario: Stop broker after all scenarios
 
-  @StopEventBroker
+    Given Stop Broker
+
   Scenario: Stop event broker for all scenarios
+
+    Given Stop Event Broker

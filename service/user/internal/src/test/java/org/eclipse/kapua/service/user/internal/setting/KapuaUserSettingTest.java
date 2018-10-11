@@ -11,9 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal.setting;
 
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(JUnitTests.class)
 public class KapuaUserSettingTest {
 
     @Test

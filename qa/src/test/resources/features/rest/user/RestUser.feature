@@ -13,11 +13,13 @@
 Feature: REST API tests for User
   REST API test of Kapua User API.
 
-  @StartEventBroker
   Scenario: Start event broker for all scenarios
 
-  @StartJetty
+    Given Start Event Broker
+
   Scenario: Start Jetty server for all scenarios
+
+    Given Start Jetty Server on host "127.0.0.1" at port "8080"
 
 
   Scenario: Simple Jetty with rest-api war
@@ -30,8 +32,10 @@ Feature: REST API tests for User
     When REST GET call at "/v1/_/users?offset=0&limit=50"
     Then REST response containing Users
 
-  @StopJetty
   Scenario: Stop Jetty server for all scenarios
 
-  @StopEventBroker
+    Given Stop Jetty Server
+
   Scenario: Stop event broker for all scenarios
+
+    Given Stop Event Broker

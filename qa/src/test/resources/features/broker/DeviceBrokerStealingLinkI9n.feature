@@ -17,14 +17,23 @@ Feature: Device Broker Cluster tests
     others in cluster and by this disconnecting client form other brokers.
     Tests also include connecting client with same id.
 
-    @StartDatastore
+    Scenario: Set environment variables
+
+        Given System property "commons.settings.hotswap" with value "true"
+        And System property "broker.ip" with value "localhost"
+        And System property "kapua.config.url" with value "null"
+
     Scenario: Start datastore for all scenarios
 
-    @StartEventBroker
+        Given Start Datastore
+
+    Scenario: Start event broker for all scenarios
+
+        Given Start Event Broker
+
     Scenario: Start broker for all scenarios
 
-    @StartBroker
-    Scenario: Start broker for all scenarios
+        Given Start Broker
 
     Scenario: Positive scenario without stealing link
         Connect first client and send BIRTH message. Then connect two more
@@ -95,11 +104,14 @@ Feature: Device Broker Cluster tests
     Then Disconnect client with name "client-1-1"
         And Disconnect client with name "client-1-2"
 
-    @StopBroker
     Scenario: Stop broker after all scenarios
 
-    @StopEventBroker
-    Scenario: Stop event broker after all scenarios
+        Given Stop Broker
 
-    @StopDatastore
-    Scenario: Stop datastore after all scenario
+    Scenario: Stop event broker for all scenarios
+
+        Given Stop Event Broker
+
+    Scenario: Stop datastore after all scenarios
+
+        Given Stop Datastore
