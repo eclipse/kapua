@@ -37,6 +37,10 @@ is a DNS system which simply resolved to the IP address provided in the hostname
 
 ![REST API page](images/rest-api.png)
 
+## Documentation on Kapua Web Site {#swagger-website}
+
+REST API Documentation is also available at [Eclipse Kapua Web Site](http://www.eclipse.org/kapua/docs/api/index.html?version=1.0.0)
+
 ## Logging into Kapua REST API
 
 Before you start to work with REST API, you need to authenticate yourself and receive session token which you will then pass together with every 
@@ -85,4 +89,3 @@ The following examples assume that you set the API token in the environment vari
 
     curl -X GET --header "Authorization: Bearer ${TOKEN}" --header "Accept: application/json" "${APIURL}/v1/_/users?offset=0&limit=50"
     {"type":"userListResult","limitExceeded":false,"size":2,"items":{"item":[{"type":"user","id":"Ag","scopeId":"AQ","createdOn":"2017-03-24T14:48:03.686Z","createdBy":"AQ","modifiedOn":"2017-03-24T14:48:03.686Z","modifiedBy":"AQ","optlock":0,"name":"kapua-broker","status":"ENABLED","displayName":"Kapua Broker","email":"kapua-broker@eclipse.org","phoneNumber":"+1 555 123 4567","userType":"INTERNAL"},{"type":"user","id":"AQ","scopeId":"AQ","createdOn":"2017-03-24T14:48:03.686Z","createdBy":"AQ","modifiedOn":"2017-03-24T14:48:03.686Z","modifiedBy":"AQ","optlock":0,"name":"kapua-sys","status":"ENABLED","displayName":"Kapua Sysadmin","email":"kapua-sys@eclipse.org","phoneNumber":"+1 555 123 4567","userType":"INTERNAL"}]}}
-
