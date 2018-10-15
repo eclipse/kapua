@@ -21,6 +21,9 @@ public class SortField {
     private SortDirection sortDirection;
     private String field;
 
+    public SortField() {
+    }
+
     private SortField(final SortDirection direction, final String field) {
         this.sortDirection = direction;
         this.field = field;

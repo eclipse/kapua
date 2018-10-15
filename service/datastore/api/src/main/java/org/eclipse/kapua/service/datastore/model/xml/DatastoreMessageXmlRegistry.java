@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.datastore.model.xml;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
+import org.eclipse.kapua.service.datastore.model.query.JsonMessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 
 import javax.xml.bind.annotation.XmlRegistry;
@@ -45,5 +46,14 @@ public class DatastoreMessageXmlRegistry {
      */
     public MessageQuery newQuery() {
         return DATASTORE_OBJECT_FACTORY.newDatastoreMessageQuery(null);
+    }
+
+    /**
+     * Creates a {@link JsonMessageQuery} instance.
+     *
+     * @return
+     */
+    public JsonMessageQuery newJsonQuery() {
+        return DATASTORE_OBJECT_FACTORY.newJsonDatastoreMessageQuery(null);
     }
 }

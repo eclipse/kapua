@@ -100,8 +100,13 @@ import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.JsonMessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.SortField;
+import org.eclipse.kapua.service.datastore.model.query.SortFieldXmlAdapter;
+import org.eclipse.kapua.service.datastore.model.query.XmlAdaptedSortField;
+import org.eclipse.kapua.service.datastore.model.query.XmlAdaptedSortFields;
 import org.eclipse.kapua.service.datastore.model.xml.ChannelInfoXmlRegistry;
 import org.eclipse.kapua.service.datastore.model.xml.ClientInfoXmlRegistry;
 import org.eclipse.kapua.service.datastore.model.xml.DatastoreMessageXmlRegistry;
@@ -269,6 +274,11 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     InsertResponse.class,
                     StorableEntityId.class,
                     StorableId.class,
+                    SortField.class,
+                    SortFieldXmlAdapter.class,
+                    XmlAdaptedSortField.class,
+                    XmlAdaptedSortFields.class,
+                    JsonMessageQuery.class,
 
                     // Device
                     Device.class,

@@ -14,21 +14,28 @@ package org.eclipse.kapua.service.datastore.model.query;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.service.datastore.model.xml.DatastoreMessageXmlRegistry;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.List;
 
 /**
- * Storable query definition.<br>
+ * Storable query definition - JSON version
  * It defines the queries applicable to the persisted objects (such as messages, channeles information...)
  *
- * @param <S> persisted object type (such as messages, channeles information...)
  * @since 1.0.0
  */
-public interface StorableQuery<S extends Object> {
+@XmlRootElement(name = "query")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(factoryClass = DatastoreMessageXmlRegistry.class, factoryMethod = "newJsonQuery")
+public interface JsonMessageQuery {
 
     /**
      * Gets the fetch attribute names list.
@@ -165,8 +172,9 @@ public interface StorableQuery<S extends Object> {
      * @return
      * @since 1.0.0
      */
-    @XmlJavaTypeAdapter(SortFieldXmlAdapter.class)
-    List<SortField> getSortFields();
+    @XmlElementWrapper(name = "sortFields")
+    @XmlElement(name = "sortField")
+    List<XmlAdaptedSortField> getSortFields();
 
     /**
      * Set the sort fields list
@@ -174,6 +182,29 @@ public interface StorableQuery<S extends Object> {
      * @param sortFields
      * @since 1.0.0
      */
-    void setSortFields(List<SortField> sortFields);
+    void setSortFields(List<XmlAdaptedSortField> sortFields);
+
+    /**
+     * Get the includes fields by fetchStyle
+     *
+     * @param fetchStyle
+     * @return
+     */
+    public abstract String[] getIncludes(StorableFetchStyle fetchStyle);
+
+    /**
+     * Get the excludes fields by fetchStyle
+     *
+     * @param fetchStyle
+     * @return
+     */
+    public abstract String[] getExcludes(StorableFetchStyle fetchStyle);
+
+    /**
+     * Get the fields list
+     *
+     * @return
+     */
+    public abstract String[] getFields();
 
 }
