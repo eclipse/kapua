@@ -176,4 +176,8 @@ public class DeviceTabPackagesInstalled extends TabItem {
             dirty = false;
         }
     }
+
+    public TreeGrid<ModelData> getTreeGrid() {
+        return treeGrid;
+    }
 }
