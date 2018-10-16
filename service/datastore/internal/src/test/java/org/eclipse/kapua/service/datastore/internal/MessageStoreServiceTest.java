@@ -90,10 +90,12 @@ import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,6 +122,7 @@ import java.util.TimeZone;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Category(JUnitTests.class)
 public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger(MessageStoreServiceTest.class);

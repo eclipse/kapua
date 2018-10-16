@@ -16,11 +16,14 @@ import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.google.common.io.CharStreams;
+import org.junit.experimental.categories.Category;
 
+@Category(JUnitTests.class)
 public class ResourceUtilsTest {
 
     /**

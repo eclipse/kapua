@@ -25,11 +25,14 @@ import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainAttributes;
 import org.eclipse.kapua.test.KapuaTest;
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@Category(JUnitTests.class)
 public class DomainRegistryServiceTest extends KapuaTest {
 
     KapuaEid scope = new KapuaEid(IdGenerator.generate());

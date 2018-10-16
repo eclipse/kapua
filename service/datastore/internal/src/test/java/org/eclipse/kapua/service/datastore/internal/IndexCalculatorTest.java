@@ -21,7 +21,9 @@ import org.eclipse.kapua.service.datastore.client.ClientException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +35,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+@Category(JUnitTests.class)
 public class IndexCalculatorTest extends AbstractMessageStoreServiceTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(IndexCalculatorTest.class);

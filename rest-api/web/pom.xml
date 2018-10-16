@@ -189,6 +189,12 @@
             <artifactId>joda-time</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>marker-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <!-- use logback only for testing -->
         <dependency>
             <groupId>ch.qos.logback</groupId>

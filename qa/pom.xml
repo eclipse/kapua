@@ -224,6 +224,11 @@
             <artifactId>cucumber-guice</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>marker-api</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <!-- activemq -->
         <dependency>
@@ -331,7 +336,7 @@
                                 </artifactItem>
                             </artifactItems>
                             <overWriteReleases>true</overWriteReleases>
-                            <overWriteSnapshots>true</overWriteSnapshots>
+                            <overWriteSnapshots>false</overWriteSnapshots>
                         </configuration>
                     </execution>
                 </executions>

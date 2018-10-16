@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Red Hat Inc and others.
+ * Copyright (c) 2017, 2018 Red Hat Inc and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,8 @@
 package org.eclipse.kapua.qa.steps;
 
 import java.time.Duration;
+
+import cucumber.api.java.en.Given;
 import org.eclipse.kapua.qa.utils.Ports;
 import org.eclipse.kapua.qa.utils.Suppressed;
 
@@ -26,8 +28,6 @@ import org.elasticsearch.common.UUIDs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
 import cucumber.runtime.java.guice.ScenarioScoped;
 
 @ScenarioScoped
@@ -53,10 +53,10 @@ public class EmbeddedBroker {
     public EmbeddedBroker() {
     }
 
-    @Before(value = "@StartBroker")
+    @Given("^Start Broker$")
     public void start() {
 
-        logger.info("Starting new instance");
+        logger.info("Starting new Broker instance");
 
         try {
             // test if port is already open
@@ -88,9 +88,9 @@ public class EmbeddedBroker {
         }
     }
 
-    @After(value = "@StopBroker")
+    @Given("^Stop Broker$")
     public void stop() {
-        logger.info("Stopping instance ...");
+        logger.info("Stopping Broker instance ...");
 
         try (final Suppressed<RuntimeException> s = Suppressed.withRuntimeException()) {
 
@@ -107,12 +107,20 @@ public class EmbeddedBroker {
             }
 
         } catch (Exception e) {
-            throw new RuntimeException("Failed to stop broker", e);
+            logger.error("Failed to stop Broker!");
+            e.printStackTrace();
         }
 
         DatastoreMediator.getInstance().clearCache();
 
-        logger.info("Stopping instance ... done!");
+        if (EXTRA_STARTUP_DELAY > 0) {
+            try {
+                Thread.sleep(Duration.ofSeconds(EXTRA_STARTUP_DELAY).toMillis());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        logger.info("Stopping Broker instance ... done!");
     }
 
 }

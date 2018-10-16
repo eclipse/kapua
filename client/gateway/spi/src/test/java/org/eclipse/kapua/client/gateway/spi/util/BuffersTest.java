@@ -13,9 +13,12 @@ package org.eclipse.kapua.client.gateway.spi.util;
 
 import java.nio.ByteBuffer;
 
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(JUnitTests.class)
 public class BuffersTest {
 
     @Test

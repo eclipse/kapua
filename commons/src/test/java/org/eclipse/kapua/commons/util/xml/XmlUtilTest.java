@@ -11,12 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util.xml;
 
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import javax.xml.bind.JAXBException;
 import java.lang.reflect.Constructor;
 
+@Category(JUnitTests.class)
 public class XmlUtilTest extends Assert {
 
     @Test

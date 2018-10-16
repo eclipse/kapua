@@ -19,8 +19,11 @@ import org.assertj.core.api.Assertions;
 
 import org.eclipse.kapua.service.datastore.internal.AbstractMessageStoreServiceTest;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(JUnitTests.class)
 public class ClientUtilsConvertDateTest extends AbstractMessageStoreServiceTest {
 
     @Test(expected = java.lang.IllegalArgumentException.class)

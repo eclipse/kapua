@@ -11,11 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util.xml;
 
+import org.eclipse.kapua.test.junit.JUnitTests;
+import org.junit.experimental.categories.Category;
 import org.xml.sax.Attributes;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+@Category(JUnitTests.class)
 public class XmlNamespaceFilterTest extends Assert {
 
     @Test

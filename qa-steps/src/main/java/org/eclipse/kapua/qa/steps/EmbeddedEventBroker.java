@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Red Hat Inc and others.
+ * Copyright (c) 2017, 2018 Red Hat Inc and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cucumber.api.java.en.Given;
 import org.apache.activemq.artemis.core.config.Configuration;
 import org.apache.activemq.artemis.core.config.impl.ConfigurationImpl;
 import org.apache.activemq.artemis.jms.server.config.ConnectionFactoryConfiguration;
@@ -32,8 +33,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
 import cucumber.runtime.java.guice.ScenarioScoped;
 
 @ScenarioScoped
@@ -46,24 +45,24 @@ public class EmbeddedEventBroker {
 
     private static final int EXTRA_STARTUP_DELAY = Integer.getInteger("org.eclipse.kapua.qa.broker.extraStartupDelay", 0);
 
-    private Map<String, List<AutoCloseable>> closables = new HashMap<>();
+    private static Map<String, List<AutoCloseable>> closables = new HashMap<>();
 
     private DBHelper database;
 
-    private EmbeddedJMS jmsServer;
+    private static EmbeddedJMS jmsServer;
 
     @Inject
     public EmbeddedEventBroker(final DBHelper database) {
         this.database = database;
     }
 
-    @Before(value = "@StartEventBroker")
+    @Given("^Start Event Broker$")
     public void start() {
 
         System.setProperty(SystemSettingKey.EVENT_BUS_URL.key(), "amqp://127.0.0.1:5672");
         database.setup();
 
-        logger.info("Starting new instance");
+        logger.info("Starting new instance of Event Broker");
         try {
             //start Artemis embedded
             Configuration configuration = new ConfigurationImpl();
@@ -85,13 +84,13 @@ public class EmbeddedEventBroker {
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw new RuntimeException("Failed to start broker", e);
+            logger.error("Failed to start Event Broker", e);
         }
     }
 
-    @After(value = "@StopEventBroker")
+    @Given("^Stop Event Broker$")
     public void stop() {
-        logger.info("Stopping instance ...");
+        logger.info("Stopping Event Broker instance ...");
         try (final Suppressed<RuntimeException> s = Suppressed.withRuntimeException()) {
             // close all resources
             closables.values().stream().flatMap(values -> values.stream()).forEach(s::closeSuppressed);
@@ -101,9 +100,16 @@ public class EmbeddedEventBroker {
                 jmsServer = null;
             }
         } catch (Exception e) {
-            throw new RuntimeException("Failed to stop broker", e);
+            logger.error("Failed to stop Event Broker", e);
         }
-        logger.info("Stopping instance ... done!");
+        if (EXTRA_STARTUP_DELAY > 0) {
+            try {
+                Thread.sleep(Duration.ofSeconds(EXTRA_STARTUP_DELAY).toMillis());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        logger.info("Stopping Event Broker instance ... done!");
     }
 
 }

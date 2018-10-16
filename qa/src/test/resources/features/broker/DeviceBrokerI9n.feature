@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 Eurotech and/or its affiliates and others
+# Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -15,14 +15,21 @@ Feature: Device Broker Integration
   Each Scenario starts with BIRTH of device and then the communication over MQTT
   between device and Kapua.
 
-  @StartDatastore
+  Scenario: Set environment variables
+
+    Given System property "broker.ip" with value "localhost"
+
   Scenario: Start datastore for all scenarios
 
-  @StartEventBroker
+    Given Start Datastore
+
+  Scenario: Start event broker for all scenarios
+
+    Given Start Event Broker
+
   Scenario: Start broker for all scenarios
 
-  @StartBroker
-  Scenario: Start event broker for all scenarios
+    Given Start Broker
 
   Scenario: Send BIRTH message and then DC message
     Effectively this is connect and disconnect of Kura device.
@@ -43,12 +50,14 @@ Feature: Device Broker Integration
     And I logout
     And Device death message is sent
 
-  @StopBroker
   Scenario: Stop broker after all scenarios
 
-  @StopEventBroker
-  Scenario: Stop event broker after all scenarios
+    Given Stop Broker
 
-  @StopDatastore
+  Scenario: Stop event broker for all scenarios
+
+    Given Stop Event Broker
+
   Scenario: Stop datastore after all scenarios
 
+    Given Stop Datastore

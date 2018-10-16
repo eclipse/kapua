@@ -12,9 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.setting;
 
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(JUnitTests.class)
 public class SimpleSettingKeyTest extends Assert {
 
     @Test

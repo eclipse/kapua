@@ -13,14 +13,26 @@
 @datastore
 Feature: Datastore tests
 
-  @StartDatastore
+  Scenario: Set environment variables
+
+    Given System property "commons.settings.hotswap" with value "true"
+    And System property "datastore.index.prefix" with value "custom-prefix"
+    And System property "kapua.config.url" with value "null"
+    And System property "broker.ip" with value "192.168.33.10"
+    And System property "datastore.client.class" with value "org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient"
+
   Scenario: Start datastore for all scenarios
 
-  @StartEventBroker
+    Given Start Datastore
+
   Scenario: Start event broker for all scenarios
 
-  @StartBroker
+    Given Start Event Broker
+
   Scenario: Start broker for all scenarios
+
+    Given Start Broker
+
 
   Scenario: Create index with specific prefix
   Create elasticsearch index with specific prefix set by system property.
@@ -39,11 +51,14 @@ Feature: Datastore tests
     And REST response containing text "custom-prefix-1-2018-01"
     And All indices are deleted
 
-  @StopBroker
   Scenario: Stop broker after all scenarios
 
-  @StopEventBroker
+    Given Stop Broker
+
   Scenario: Stop event broker for all scenarios
 
-  @StopDatastore
+    Given Stop Event Broker
+
   Scenario: Stop datastore after all scenarios
+
+    Given Stop Datastore

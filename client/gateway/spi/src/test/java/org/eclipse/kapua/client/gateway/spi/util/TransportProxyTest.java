@@ -17,11 +17,14 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.kapua.client.gateway.Transport.ListenerHandle;
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(JUnitTests.class)
 public class TransportProxyTest {
 
     private static final class TestListener {

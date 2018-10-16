@@ -209,6 +209,11 @@
             <artifactId>cucumber-junit</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>marker-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>
