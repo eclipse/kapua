@@ -72,10 +72,7 @@ public class KapuaRegistrationService extends BaseRegistrationService<Object> {
 
     @Override
     public void assertRegistration(String tenantId, String deviceId, String gatewayId, Handler<AsyncResult<RegistrationResult>> resultHandler) {
-        System.out.println("accessing registry.");
-        System.out.println( "TenantId="+tenantId);
-        System.out.println("deviceId="+deviceId);
-        System.out.println("gatewawyId="+gatewayId);
+
         try {
             Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.findByName(tenantId));
             if (account == null) {

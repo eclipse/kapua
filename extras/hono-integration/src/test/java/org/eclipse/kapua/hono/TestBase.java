@@ -55,6 +55,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 public class TestBase {
@@ -105,11 +106,20 @@ public class TestBase {
 
             // Create user
             UserCreator userCreator = new UserFactoryImpl().newCreator(account.getId(), "test-user");
+            Properties userProps = new Properties();
+            userProps.setProperty("client-id", "my-device");
+            userCreator.setEntityAttributes(userProps);
             User user = userService.create(userCreator);
 
             // Create credentials
             CredentialCreator credentialCreator;
-            credentialCreator = new CredentialFactoryImpl().newCreator(account.getId(), user.getId(), CredentialType.PASSWORD, "verysecret", CredentialStatus.ENABLED, null);
+            credentialCreator = new CredentialFactoryImpl().newCreator(
+                    account.getId(),
+                    user.getId(),
+                    CredentialType.PASSWORD,
+                    "verysecret",
+                    CredentialStatus.ENABLED,
+                    null);
             credentialService.create(credentialCreator);
 
             // Permissions
