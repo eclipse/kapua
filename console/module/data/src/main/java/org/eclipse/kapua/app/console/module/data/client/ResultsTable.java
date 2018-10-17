@@ -89,6 +89,7 @@ public class ResultsTable extends LayoutContainer {
     private Button exportButton;
     private DateRangeSelector dateRangeSelector;
     private Button queryButton;
+    private List<GwtHeader> metrics;
 
     public ResultsTable(GwtSession currentSession, Button queryButton) {
         this.currentSession = currentSession;
@@ -106,6 +107,8 @@ public class ResultsTable extends LayoutContainer {
         add(tableContainer);
 
         loader.load();
+        queryButton.disable();
+        dateRangeSelector.disable();
     }
 
     private void initResultsTable() {
@@ -178,7 +181,7 @@ public class ResultsTable extends LayoutContainer {
 
             @Override
             public void handleEvent(BaseEvent baseEvent) {
-                if (queryButton != null) {
+                if (queryButton != null && !metrics.isEmpty()) {
                     queryButton.enable();
                 }
             }
@@ -345,5 +348,17 @@ public class ResultsTable extends LayoutContainer {
 
     public void clearTable() {
         resultsGrid.getStore().removeAll();
+    }
+
+    public List<GwtHeader> getMetrics() {
+        return metrics;
+    }
+
+    public void setMetrics(List<GwtHeader> metrics) {
+        this.metrics = metrics;
+    }
+
+    public DateRangeSelector getDateRangeSelector() {
+        return dateRangeSelector;
     }
 }

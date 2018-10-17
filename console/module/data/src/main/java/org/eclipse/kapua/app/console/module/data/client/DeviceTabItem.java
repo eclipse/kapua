@@ -98,10 +98,13 @@ public class DeviceTabItem extends TabItem {
 
             @Override
             public void selectionChanged(SelectionChangedEvent<GwtHeader> se) {
+                resultsTable.setMetrics(metricsTable.getSelectedMetrics());
                 if (!se.getSelection().isEmpty()) {
                     queryButton.enable();
+                    resultsTable.getDateRangeSelector().enable();
                 } else {
                     queryButton.disable();
+                    resultsTable.getDateRangeSelector().disable();
                 }
             }
         });
