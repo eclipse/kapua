@@ -85,7 +85,7 @@ jobs:
         - bash <(curl -s https://codecov.io/bash)
     - stage: test
       script:
-        - ./travis.sh $M2_HOME/bin/mvn -B -Dcommons.db.schema=kapuadb -Dcommons.setadsftings.hotswap=true -Dgroups='org.eclipse.kapua.test.junit.JUnitTests' verify
+        - ./travis.sh $M2_HOME/bin/mvn -B -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dgroups='org.eclipse.kapua.test.junit.JUnitTests' verify
         - bash <(curl -s https://codecov.io/bash)
 
 # The following upgrades Java during the build in
@@ -96,4 +96,4 @@ jobs:
 addons:
   apt:
     packages:
-      - oracle-java9-installer
+      - oracle-java8-installer
