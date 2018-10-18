@@ -51,8 +51,12 @@ public class PackageUninstallDialog extends SimpleDialog {
         this.scopeId = scopeId;
         this.deviceId = deviceId;
         this.selectedDeploymentPackage = selectedDeploymentPackage;
-
-        DialogUtils.resizeDialog(this, 400, 210);
+        Integer height = selectedDeploymentPackage.getName().length() + 200;
+        if (selectedDeploymentPackage.getName().length() > 30) {
+            DialogUtils.resizeDialog(this, 400, height);
+        } else {
+            DialogUtils.resizeDialog(this, 400, 210);
+        }
     }
 
     @Override
