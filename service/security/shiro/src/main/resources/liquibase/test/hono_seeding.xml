@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+  logicalFilePath="KapuaDB/changelog-hono.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+
+    <changeSet id="changelog-hono-seeding" author="eurotech">
+        <insert tableName="act_account">
+            <column name="id" value="2"/>
+            <column name="name" value="DEFAULT_TENANT"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="3"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="3"/>
+            <column name="org_name" value="kapua-org"/>
+            <column name="org_person_name" value="Hono demo Sysadmin"/>
+            <column name="org_email" value="hono-demo@eclipse.org"/>
+            <column name="org_phone_number" value="+1 555 123 4567"/>
+            <column name="parent_account_path" value="/1"/>
+            <column name="optlock" value="0"/>
+        </insert>
+        <insert tableName="usr_user">
+            <column name="scope_id" value="2"/>
+            <column name="id" value="3"/>
+            <column name="name" value="hono-sys"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="3"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="3"/>
+            <column name="status" value="ENABLED"/>
+            <column name="display_name" value="Hono Sysadmin"/>
+            <column name="email" value="hono-sys@eclipse.org"/>
+            <column name="phone_number" value="+1 555 123 4567"/>
+            <column name="user_type" value="INTERNAL"/>
+            <column name="optlock" value="0"/>
+        </insert>
+        <insert tableName="usr_user">
+            <column name="scope_id" value="2"/>
+            <column name="id" value="4"/>
+            <column name="name" value="hono-broker"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="3"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="3"/>
+            <column name="status" value="ENABLED"/>
+            <column name="display_name" value="Hono Broker"/>
+            <column name="email" value="hono-broker@eclipse.org"/>
+            <column name="phone_number" value="+1 555 123 4567"/>
+            <column name="user_type" value="INTERNAL"/>
+            <column name="optlock" value="0"/>
+        </insert>
+        <insert tableName="sys_configuration">
+            <column name="scope_id" value="2"/>
+            <column name="pid" value='org.eclipse.kapua.service.account.AccountService'/>
+            <column name="configurations" valueComputed="CONCAT('#', ${now}, CHAR(13), CHAR(10),
+               'maxNumberChildEntities=0', CHAR(13), CHAR(10),
+               'infiniteChildEntities=true')"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="3"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="3"/>
+            <column name="optlock" value="0"/>
+        </insert>
+        <insert tableName="sys_configuration">
+            <column name="scope_id" value="2"/>
+            <column name="pid" value='org.eclipse.kapua.service.device.registry.DeviceRegistryService'/>
+            <column name="configurations" valueComputed="CONCAT('#', ${now}, CHAR(13), CHAR(10),
+               'maxNumberChildEntities=0', CHAR(13), CHAR(10),
+               'infiniteChildEntities=true')"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="3"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="3"/>
+            <column name="optlock" value="0"/>
+        </insert>
+        <insert tableName="sys_configuration">
+            <column name="scope_id" value="2"/>
+            <column name="pid" value='org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService'/>
+            <column name="configurations" valueComputed="CONCAT('#', ${now}, CHAR(13), CHAR(10),
+               'deviceConnectionUserCouplingDefaultMode=LOOSE')"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="3"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="3"/>
+            <column name="optlock" value="0"/>
+        </insert>
+        <insert tableName="sys_configuration">
+            <column name="scope_id" value="2"/>
+            <column name="pid" value='org.eclipse.kapua.service.job.JobService'/>
+            <column name="configurations" valueComputed="CONCAT('#', ${now}, CHAR(13), CHAR(10),
+               'maxNumberChildEntities=0', CHAR(13), CHAR(10),
+               'infiniteChildEntities=true')"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="3"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="3"/>
+            <column name="optlock" value="0"/>
+        </insert>
+        <insert tableName="sys_configuration">
+            <column name="scope_id" value="2"/>
+            <column name="pid" value='org.eclipse.kapua.service.scheduler.trigger.TriggerService'/>
+            <column name="configurations" valueComputed="CONCAT('#', ${now}, CHAR(13), CHAR(10),
+               'maxNumberChildEntities=0', CHAR(13), CHAR(10),
+               'infiniteChildEntities=true')"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="3"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="3"/>
+            <column name="optlock" value="0"/>
+        </insert>
+        <insert tableName="sys_configuration">
+            <column name="scope_id" value="2"/>
+            <column name="pid" value='org.eclipse.kapua.service.authorization.group.GroupService'/>
+            <column name="configurations" valueComputed="CONCAT('#', ${now}, CHAR(13), CHAR(10),
+               'maxNumberChildEntities=0', CHAR(13), CHAR(10),
+               'infiniteChildEntities=true')"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="3"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="3"/>
+            <column name="optlock" value="0"/>
+        </insert>
+        <insert tableName="sys_configuration">
+            <column name="scope_id" value="2"/>
+            <column name="pid" value='org.eclipse.kapua.service.authorization.role.RoleService'/>
+            <column name="configurations" valueComputed="CONCAT('#', ${now}, CHAR(13), CHAR(10),
+               'maxNumberChildEntities=0', CHAR(13), CHAR(10),
+               'infiniteChildEntities=true')"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="3"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="3"/>
+            <column name="optlock" value="0"/>
+        </insert>
+        <insert tableName="sys_configuration">
+            <column name="scope_id" value="2"/>
+            <column name="pid" value='org.eclipse.kapua.service.tag.TagService'/>
+            <column name="configurations" valueComputed="CONCAT('#', ${now}, CHAR(13), CHAR(10),
+               'maxNumberChildEntities=0', CHAR(13), CHAR(10),
+               'infiniteChildEntities=true')"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="3"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="3"/>
+            <column name="optlock" value="0"/>
+        </insert>
+        <insert tableName="sys_configuration">
+            <column name="scope_id" value="2"/>
+            <column name="pid" value='org.eclipse.kapua.service.user.UserService'/>
+            <column name="configurations" valueComputed="CONCAT('#', ${now}, CHAR(13), CHAR(10),
+               'maxNumberChildEntities=0', CHAR(13), CHAR(10),
+               'infiniteChildEntities=true')"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="3"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="3"/>
+            <column name="optlock" value="0"/>
+        </insert>
+
+        <insert tableName="atht_credential">
+            <column name="scope_id" value="2"/>
+            <column name="id" value="4"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="3"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="3"/>
+            <column name="user_id" value="3"/>
+            <column name="credential_type" value="PASSWORD"/>
+            <column name="credential_key" value='$2a$12$BjLeC/gqcnEyk.XNo2qorul.a/v4HDuOUlfmojdSZXRSFTjymPdVm'/>
+            <column name="optlock" value="0"/>
+        </insert>
+        <insert tableName="atht_credential">
+            <column name="scope_id" value="2"/>
+            <column name="id" value="5"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="3"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="3"/>
+            <column name="user_id" value="3"/>
+            <column name="credential_type" value="API_KEY"/>
+            <column name="credential_key" value='12345678:$2a$12$BjLeC/gqcnEyk.XNo2qorul.a/v4HDuOUlfmojdSZXRSFTjymPdVm'/>
+            <column name="optlock" value="0"/>
+        </insert>
+        <insert tableName="atht_credential">
+            <column name="scope_id" value="2"/>
+            <column name="id" value="6"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="3"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="3"/>
+            <column name="user_id" value="4"/>
+            <column name="credential_type" value="PASSWORD"/>
+            <column name="credential_key" value='$2a$12$BjLeC/gqcnEyk.XNo2qorul.a/v4HDuOUlfmojdSZXRSFTjymPdVm'/>
+            <column name="optlock" value="0"/>
+        </insert>
+        <insert tableName="athz_role">
+            <column name="scope_id" value="2"/>
+            <column name="id" value="2"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="3"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="3"/>
+            <column name="name" value="admin"/>
+            <column name="optlock" value="0"/>
+            <column name="attributes" value=""/>
+            <column name="properties" value=""/>
+        </insert>
+        <insert tableName="athz_role_permission">
+            <column name="scope_id" value="2"/>
+            <column name="id" value="2"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="3"/>
+            <column name="role_id" value="2"/>
+            <column name="forwardable" valueBoolean="true"/>
+        </insert>
+
+        <insert tableName="athz_access_info">
+            <column name="scope_id" value="2"/>
+            <column name="id" value="3"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="3"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="3"/>
+            <column name="user_id" value="3"/>
+            <column name="optlock" value="0"/>
+            <column name="attributes" value=""/>
+            <column name="properties" value=""/>
+        </insert>
+        <insert tableName="athz_access_info">
+            <column name="scope_id" value="2"/>
+            <column name="id" value="4"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="3"/>
+            <column name="modified_on" valueComputed="${now}"/>
+            <column name="modified_by" value="3"/>
+            <column name="user_id" value="4"/>
+            <column name="optlock" value="0"/>
+            <column name="attributes" value=""/>
+            <column name="properties" value=""/>
+        </insert>
+
+        <insert tableName="athz_access_permission">
+            <!-- kapua-broker assigned of NOT forwardable permission: broker:connect:1:* -->
+            <column name="scope_id" value="2"/>
+            <column name="id" value="2"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="3"/>
+            <column name="access_info_id" value="3"/>
+            <column name="domain" value="broker"/>
+            <column name="action" value="connect"/>
+            <column name="target_scope_id" value="2"/>
+            <column name="forwardable" valueBoolean="false"/>
+        </insert>
+
+        <insert tableName="athz_access_role">
+            <column name="scope_id" value="2"/>
+            <column name="id" value="2"/>
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="3"/>
+            <column name="access_info_id" value="3"/>
+            <column name="role_id" value="2"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

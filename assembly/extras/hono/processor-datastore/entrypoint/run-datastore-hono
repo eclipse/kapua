@@ -11,4 +11,17 @@
 #        Eurotech
 ################################################################################
 
+java -jar \
+-Dcommons.db.schema.update=true \
+-Dcommons.db.connection.host=${SQL_DB_ADDR} \
+-Dcommons.db.connection.port=${SQL_DB_PORT} \
+-Dbroker.host=${BROKER_ADDR} \
+-Dbroker.port=${BROKER_PORT} \
+-Dkapua.datastoreProcessor.messageSource.hono.host=${HONO_ADDR} \
+-Dkapua.datastoreProcessor.messageSource.hono.truststoreFile=${HONO_TRUSTSTORE_FILE} \
+-Ddatastore.elasticsearch.nodes=${DATASTORE_ADDR} \
+-Ddatastore.elasticsearch.port=${DATASTORE_PORT} \
+-Ddatastore.client.class=${DATASTORE_CLIENT} \
+-Dcommons.eventbus.url="${SERVICE_BROKER_ADDR}" \
+kapua-processor-datastore-hono-1.1.0-SNAPSHOT-uber.jar
 java ${JAVA_OPTS} -jar kapua-processor-datastore-hono-1.1.0-SNAPSHOT-uber.jar
