@@ -40,7 +40,7 @@ if [ "${KAPUA_DISABLE_SSL}" == "false" ]; then
     : ${KAPUA_KEYSTORE_PASSWORD:="changeit"}
     if [ ! -f "${JETTY_BASE}/${CERTIFICATES_PATH}/${KEYSTORE_NAME}" ]; then
         if [ -z "${KAPUA_KEYSTORE}" ]; then
-            if [ ! -z "${KAPUA_KEY_PASSWORD}" ]; then
+            if [ -n "${KAPUA_KEY_PASSWORD}" ]; then
                 PASSWORD_PARAM="-passin pass:${KAPUA_KEY_PASSWORD}";
             fi
             openssl pkcs12 -export -in <(echo "${KAPUA_CRT}"; echo "${KAPUA_CA}") -inkey <(echo "${KAPUA_KEY}") ${PASSWORD_PARAM} -name kapua -password pass:"${KAPUA_KEYSTORE_PASSWORD}" -out "${JETTY_BASE}/${CERTIFICATES_PATH}/${KEYSTORE_NAME}"
