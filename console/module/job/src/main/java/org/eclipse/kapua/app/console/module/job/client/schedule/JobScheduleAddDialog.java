@@ -86,7 +86,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
     @Override
     public void createBody() {
         submitButton.disable();
-        FormPanel mainPanel = new FormPanel(150);
+        FormPanel mainPanel = new FormPanel(140);
         HorizontalPanel startsOnPanel = new HorizontalPanel();
         HorizontalPanel endsOnPanel = new HorizontalPanel();
         endsOnPanel.setStyleAttribute("padding", "4px 0px 4px 0px");
@@ -99,7 +99,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
 
         startsOn.setFormatValue(true);
         startsOn.setAllowBlank(false);
-        startsOn.setWidth(95);
+        startsOn.setWidth(90);
         startsOn.setEmptyText(JOB_MSGS.dialogAddScheduleDatePlaceholder());
         startsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         startsOn.setToolTip(JOB_MSGS.dialogAddScheduleStartsOnTooltip());
@@ -112,15 +112,16 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         });
         startsOnLabel.setText("* " + JOB_MSGS.dialogAddScheduleStartsOnLabel());
         startsOnLabel.setWidth(FORM_LABEL_WIDTH);
-        startsOnLabel.setStyleAttribute("padding", "0px 101px 0px 0px");
+        startsOnLabel.setStyleAttribute("padding", "0px 91px 0px 0px");
         startsOnPanel.add(startsOnLabel);
         startsOnPanel.add(startsOn);
 
         startsOnTime.setAllowBlank(false);
         startsOnTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
         startsOnTime.setEditable(false);
-        startsOnTime.setWidth(100);
-        startsOnTime.setStyleAttribute("padding", "0px 0px 0px 17px");
+        startsOnTime.setWidth(90);
+        startsOnTime.setStyleAttribute("position", "relative");
+        startsOnTime.setStyleAttribute("left", "25px");
         startsOnTime.setEmptyText(JOB_MSGS.dialogAddScheduleTimePlaceholder());
         startsOnTime.setToolTip(JOB_MSGS.dialogAddScheduleStartsOnTimeTooltip());
         startsOnTime.setTriggerAction(TriggerAction.ALL);
@@ -128,13 +129,13 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         mainPanel.add(startsOnPanel);
 
         endsOn.setFormatValue(true);
-        endsOn.setWidth(95);
+        endsOn.setWidth(90);
         endsOn.setEmptyText(JOB_MSGS.dialogAddScheduleDatePlaceholder());
         endsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         endsOn.setToolTip(JOB_MSGS.dialogAddScheduleEndsOnTooltip());
         endsOnLabel.setText("* " + JOB_MSGS.dialogAddScheduleEndsOnLabel());
         endsOnLabel.setWidth(FORM_LABEL_WIDTH);
-        endsOnLabel.setStyleAttribute("padding", "0px 106px 0px 0px");
+        endsOnLabel.setStyleAttribute("padding", "0px 96px 0px 0px");
         endsOn.getDatePicker().addListener(Events.Select, new Listener<BaseEvent>() {
 
             @Override
@@ -147,10 +148,11 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
 
         endsOnTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
         endsOnTime.setEditable(false);
-        endsOnTime.setWidth(100);
+        endsOnTime.setWidth(90);
+        endsOnTime.setStyleAttribute("position", "relative");
+        endsOnTime.setStyleAttribute("left", "25px");
         endsOnTime.setEmptyText(JOB_MSGS.dialogAddScheduleTimePlaceholder());
         endsOnTime.setToolTip(JOB_MSGS.dialogAddScheduleEndsOnTimeTooltip());
-        endsOnTime.setStyleAttribute("padding", "0px 0px 0px 17px");
         endsOnTime.setTriggerAction(TriggerAction.ALL);
         endsOnPanel.add(endsOnTime);
         mainPanel.add(endsOnPanel);
