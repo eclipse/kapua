@@ -162,6 +162,7 @@ public class PackageInstallDialog extends TabbedDialog {
             operationRebootDelayField.setEmptyText("0");
             operationRebootDelayField.setAllowDecimals(false);
             operationRebootDelayField.setAllowNegative(false);
+            operationRebootDelayField.disable();
             operationOptionsForm.add(operationRebootDelayField, formData);
         }
 
