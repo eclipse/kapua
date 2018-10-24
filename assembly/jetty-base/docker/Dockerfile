@@ -22,6 +22,7 @@ RUN useradd -u 1000 -g 0 -d '/var/opt/jetty' -s '/sbin/nologin' jetty && \
     curl -Ls @jetty.url@ -o /tmp/jetty.tar.gz && \
     tar --strip=1 -xzf /tmp/jetty.tar.gz -C /opt/jetty && \
     rm -f /tmp/jetty.tar.gz && \
+    ln -s /opt/jetty/modules/alpn-impl/alpn-1.8.0_181.mod /opt/jetty/modules/alpn-impl/alpn-1.8.0_191.mod && \
     cd /var/opt/jetty && \
     java -jar /opt/jetty/start.jar --approve-all-licenses --create-startd --add-to-start=http,http2,https,jsp,jstl,websocket,deploy,logging-logback,jmx,ssl,stats && \
     chown -R 1000:0 /opt/jetty /var/opt/jetty && \
