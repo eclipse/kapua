@@ -57,6 +57,7 @@ if [ "${KAPUA_DISABLE_SSL}" == "false" ]; then
 
 else
     rm -f ${JETTY_BASE}/start.d/https.ini
+    rm -f ${JETTY_BASE}/start.d/ssl.ini
 fi
 
 # Start Jetty
