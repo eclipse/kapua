@@ -124,8 +124,12 @@
             <artifactId>commons-pool2</artifactId>
             <scope>provided</scope>
         </dependency>
-
         <!-- Testing -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>marker-api</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

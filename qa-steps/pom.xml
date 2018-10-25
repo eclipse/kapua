@@ -108,7 +108,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-transport-amqp-proton</artifactId>
+            <artifactId>kapua-transport-amqp</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>

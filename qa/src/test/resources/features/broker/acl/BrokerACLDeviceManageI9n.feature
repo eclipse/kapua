@@ -54,6 +54,9 @@ Feature: Broker ACL tests
 
     Given Start Broker
 
+  Scenario: Start External Consumers for all scenarios
+
+    Given Start External Consumers
 #
 # Data manage
 #
@@ -210,6 +213,10 @@ Feature: Broker ACL tests
     Then An exception was thrown
     And clients are disconnected
     And Mqtt Device is stoped
+
+  Scenario: Stop External Consumers for all scenarios
+
+    Given Stop External Consumers
 
   Scenario: Stop broker after all scenarios
 

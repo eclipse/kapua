@@ -21,8 +21,6 @@ Feature: Device Broker connection ip not set
 
   Scenario: Start datastore for all scenarios
 
-  @StartEventBroker
-  Scenario: Start broker for all scenarios
     Given Start Datastore
 
   Scenario: Start event broker for all scenarios
@@ -32,6 +30,10 @@ Feature: Device Broker connection ip not set
   Scenario: Start broker for all scenarios
 
     Given Start Broker
+
+  Scenario: Start External Consumers for all scenarios
+
+    Given Start External Consumers
 
   Scenario: Send BIRTH message and then DC message while broker ip is NOT set
   Effectively this is connect and disconnect of Kura device.
@@ -44,13 +46,11 @@ Feature: Device Broker connection ip not set
     And Device death message is sent
     And I wait 5 seconds for system to receive and process that message
 
-  @StopExternalConsumers
-  Scenario: Stop external consumers for all scenario 
+  Scenario: Stop External Consumers for all scenarios
+
+    Given Stop External Consumers
 
   Scenario: Stop broker after all scenarios 
-
-  @StopEventBroker
-  Scenario: Stop event broker after all scenarios 
 
     Given Stop Broker
 

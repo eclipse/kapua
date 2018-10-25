@@ -16,8 +16,7 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
+import cucumber.api.java.en.Given;
 import cucumber.runtime.java.guice.ScenarioScoped;
 
 @ScenarioScoped
@@ -36,7 +35,7 @@ public class ExternalConsumers {
         this.database = database;
     }
 
-    @Before(value = "@StartExternalConsumers")
+    @Given("^Start External Consumers$")
     public void start() throws Exception {
         database.setup();
         datastore = new org.eclipse.kapua.processor.datastore.broker.ProcessorApplication();
@@ -50,7 +49,7 @@ public class ExternalConsumers {
         error.run(null);
     }
 
-    @After(value = "@StopExternalConsumers")
+    @Given("^Stop External Consumers$")
     public void stop() throws Exception {
         logger.info("Stopping datastore consumer (timeout 60sec) {}", datastore);
         datastore.shutdown(60000);

@@ -19,9 +19,9 @@ import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraRespo
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
 import org.eclipse.kapua.translator.exception.TranslatorException;
-import org.eclipse.kapua.transport.amqpproton.message.AmqpMessage;
-import org.eclipse.kapua.transport.amqpproton.message.AmqpPayload;
-import org.eclipse.kapua.transport.amqpproton.message.AmqpTopic;
+import org.eclipse.kapua.transport.amqp.message.AmqpMessage;
+import org.eclipse.kapua.transport.amqp.message.AmqpPayload;
+import org.eclipse.kapua.transport.amqp.message.AmqpTopic;
 
 /**
  * Messages translator implementation from {@link AmqpMessage} to {@link KuraResponseMessage}

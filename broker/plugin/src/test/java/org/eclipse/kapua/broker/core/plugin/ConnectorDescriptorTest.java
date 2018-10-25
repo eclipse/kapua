@@ -15,6 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.KapuaBrokerJAXBContextLoader;
+import org.eclipse.kapua.broker.core.setting.BrokerPluginSetting;
+import org.eclipse.kapua.broker.core.setting.BrokerPluginSettingKey;
 import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.After;
 import org.junit.Assert;

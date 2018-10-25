@@ -16,9 +16,9 @@ import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataChannel;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataPayload;
 import org.eclipse.kapua.translator.Translator;
-import org.eclipse.kapua.transport.amqpproton.message.AmqpMessage;
-import org.eclipse.kapua.transport.amqpproton.message.AmqpPayload;
-import org.eclipse.kapua.transport.amqpproton.message.AmqpTopic;
+import org.eclipse.kapua.transport.amqp.message.AmqpMessage;
+import org.eclipse.kapua.transport.amqp.message.AmqpPayload;
+import org.eclipse.kapua.transport.amqp.message.AmqpTopic;
 
 import java.util.ArrayList;
 import java.util.Date;

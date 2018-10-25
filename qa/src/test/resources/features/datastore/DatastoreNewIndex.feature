@@ -34,6 +34,10 @@ Feature: Datastore tests
 
     Given Start Broker
 
+  Scenario: Start External Consumers for all scenarios
+
+    Given Start External Consumers
+
   Scenario: Simple positive scenario for creating default - weekly index
   Create elasticsearch index with default setting for index creation which is weekly
   index creation. Index gets created when user publishes data. Index is based on
@@ -208,6 +212,10 @@ Feature: Datastore tests
     When REST GET call at "/_cat/indices/"
     And REST response containing "-2018-01" with prefix account "LastAccount"
     And All indices are deleted
+
+  Scenario: Stop External Consumers for all scenarios
+
+    Given Stop External Consumers
 
   Scenario: Stop broker after all scenarios
 

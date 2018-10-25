@@ -18,9 +18,9 @@ import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraReques
 import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSetting;
 import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSettingKeys;
 import org.eclipse.kapua.translator.Translator;
-import org.eclipse.kapua.transport.amqpproton.message.AmqpMessage;
-import org.eclipse.kapua.transport.amqpproton.message.AmqpPayload;
-import org.eclipse.kapua.transport.amqpproton.message.AmqpTopic;
+import org.eclipse.kapua.transport.amqp.message.AmqpMessage;
+import org.eclipse.kapua.transport.amqp.message.AmqpPayload;
+import org.eclipse.kapua.transport.amqp.message.AmqpTopic;
 
 import java.util.ArrayList;
 import java.util.List;
