@@ -26,12 +26,12 @@
             "messageSource": {
                 "hono": {
                     "host": "127.0.0.1",
-                    "port": 15671,
+                    "port": 30671,
                     "username": "consumer@HONO",
                     "password": "verysecret",
                     "truststoreFile": "src/test/resources/trusted-certs.pem",
-                    "tenantId": "DEFAULT_TENANT",
-                    "name": "datastore-hono",
+                    "tenantId": "kapua",
+                    "name": "data-consumer",
                     "transportMessageType": "TELEMETRY",
                     "waitBetweenReconnect": 1000,
                     "connectTimeout": 1000,

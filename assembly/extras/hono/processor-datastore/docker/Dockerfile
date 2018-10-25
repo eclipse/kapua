@@ -27,19 +27,20 @@ ENV SQL_DB_PORT 3306
 
 ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5682)?jms.sendTimeout=1000
 
-ENV HONO_TRUSTSTORE_FILE /trusted-certs.pem
+ENV HONO_ADDR 127.0.0.1
+ENV HONO_TRUSTSTORE_FILE "/trusted-certs.pem"
 
 ENV JAVA_OPTS -Dcommons.db.schema.update=true \
-              -Dcommons.db.connection.host=${SQL_DB_ADDR} \
-              -Dcommons.db.connection.port=${SQL_DB_PORT} \
-              -Ddatastore.elasticsearch.nodes=${DATASTORE_ADDR} \
-              -Ddatastore.elasticsearch.port=${DATASTORE_PORT} \
-              -Ddatastore.client.class=${DATASTORE_CLIENT} \
-              -Dbroker.host=${BROKER_ADDR} \
-              -Dbroker.port=${BROKER_PORT} \
-              -Dkapua.datastoreProcessor.messageSource.hono.host=${HONO_ADDR} \
-              -Dkapua.datastoreProcessor.messageSource.hono.truststoreFile=${HONO_TRUSTSTORE_FILE} \
-              -Dcommons.eventbus.url="${SERVICE_BROKER_ADDR}"
+              -Dcommons.db.connection.host=\${SQL_DB_ADDR} \
+              -Dcommons.db.connection.port=\${SQL_DB_PORT} \
+              -Ddatastore.elasticsearch.nodes=\${DATASTORE_ADDR} \
+              -Ddatastore.elasticsearch.port=\${DATASTORE_PORT} \
+              -Ddatastore.client.class=\${DATASTORE_CLIENT} \
+              -Dbroker.host=\${BROKER_ADDR} \
+              -Dbroker.port=\${BROKER_PORT} \
+              -Dkapua.datastoreProcessor.messageSource.hono.host=\${HONO_ADDR} \
+              -Dkapua.datastoreProcessor.messageSource.hono.truststoreFile=\${HONO_TRUSTSTORE_FILE} \
+              -Dcommons.eventbus.url="\${SERVICE_BROKER_ADDR}"
 
 EXPOSE 8080
 

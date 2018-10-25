@@ -124,7 +124,6 @@
             <artifactId>commons-pool2</artifactId>
             <scope>provided</scope>
         </dependency>
-
         <!-- Testing -->
         <dependency>
             <groupId>junit</groupId>

@@ -24,12 +24,12 @@ ENV SQL_DB_PORT 3306
 ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5682)?jms.sendTimeout=1000
 
 ENV JAVA_OPTS -Dcommons.db.schema.update=true \
-              -Dcommons.db.connection.host=${SQL_DB_ADDR} \
-              -Dcommons.db.connection.port=${SQL_DB_PORT} \
-              -Dbroker.host=${BROKER_ADDR} \
-              -Dbroker.port=${BROKER_PORT} \
-              -Dkapua.errorProcessor.messageSource.amqp.host=${BROKER_ADDR} \
-              -Dcommons.eventbus.url="${SERVICE_BROKER_ADDR}"
+              -Dcommons.db.connection.host=\${SQL_DB_ADDR} \
+              -Dcommons.db.connection.port=\${SQL_DB_PORT} \
+              -Dbroker.host=\${BROKER_ADDR} \
+              -Dbroker.port=\${BROKER_PORT} \
+              -Dkapua.errorProcessor.messageSource.amqp.host=\${BROKER_ADDR} \
+              -Dcommons.eventbus.url="\${SERVICE_BROKER_ADDR}"
 EXPOSE 8080
 
 ENTRYPOINT /run-error-broker

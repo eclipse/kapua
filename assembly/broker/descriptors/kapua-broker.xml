@@ -160,6 +160,7 @@
                 <include>com.google.guava:guava</include>
                 <include>com.google.guava:failureaccess</include>
                 <include>com.google.guava:listenablefuture</include>
+                <include>com.google.inject:guice</include>
                 <include>com.google.inject.extensions:guice-multibindings</include>
                 <include>com.h2database:h2</include>
                 <include>com.tdunning:t-digest</include>
@@ -244,6 +245,8 @@
                 <include>${pom.groupId}:kapua-guice</include>
                 <include>${pom.groupId}:kapua-broker-api</include>
                 <include>${pom.groupId}:kapua-connector-api</include>
+                <include>${pom.groupId}:kapua-broker-api</include>
+                <include>${pom.groupId}:kapua-broker-core</include>
                 <include>${pom.groupId}:kapua-broker-plugin</include>
                 <include>${pom.groupId}:kapua-job-api</include>
                 <include>${pom.groupId}:kapua-job-internal</include>

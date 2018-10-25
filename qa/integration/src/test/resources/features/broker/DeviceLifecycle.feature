@@ -25,7 +25,6 @@ Feature: Device lifecycle scenarios
 
     Given Start Datastore
 
-  @StartBroker
   Scenario: Start event broker for all scenarios
 
     Given Start Event Broker
@@ -33,6 +32,10 @@ Feature: Device lifecycle scenarios
   Scenario: Start broker for all scenarios
 
     Given Start Broker
+
+  Scenario: Start External Consumers for all scenarios
+
+    Given Start External Consumers
 
 Scenario: Starting and stopping the simulator should create a device entry and properly set its status
   This starts and stops a simulator instance and checks if the connection state
@@ -84,8 +87,9 @@ Scenario: Installing a package
   When I fetch the package states
   Then Package "foo.bar" with version 1.2.3 is installed and has 10 mock bundles
 
-  @StopExternalConsumers
   Scenario: Stop external consumers for all scenario 
+
+    Given Stop External Consumers
 
   Scenario: Stop broker after all scenarios 
 

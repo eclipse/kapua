@@ -917,6 +917,7 @@ Feature: Datastore tests
   Checking of the number of messages that are associated with the incorrect metrics.
   Searching for messages is done by one metric.
 
+    Given Stop External Consumers
     Given I start the Kura Mock
     When Device is connected
     And I wait for 1 seconds

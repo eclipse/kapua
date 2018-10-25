@@ -25,20 +25,21 @@ Feature: Device Broker Cluster tests
         And System property "broker.ip" with value "localhost"
         And System property "kapua.config.url" with value "null"
 
+  Scenario: Start datastore for all scenarios
 
-  @StartEventBroker
+    Given Start Datastore
+
+  Scenario: Start event broker for all scenarios
+
+    Given Start Event Broker
+
   Scenario: Start broker for all scenarios
 
-        Given Start Datastore
+    Given Start Broker
 
-    Scenario: Start event broker for all scenarios
-
-        Given Start Event Broker
-
-    Scenario: Start broker for all scenarios
-
-  @StartExternalConsumers
   Scenario: Start external consumers for all scenario
+
+    Given Start External Consumers
 
     Scenario: Positive scenario without stealing link
         Connect first client and send BIRTH message. Then connect two more
@@ -108,18 +109,18 @@ Feature: Device Broker Cluster tests
     Then Disconnect client with name "client-1-1"
         And Disconnect client with name "client-1-2"
 
-  @StopExternalConsumers
   Scenario: Stop external consumers for all scenario 
 
-  @StopBroker
+    Given Stop External Consumers
+
   Scenario: Stop broker after all scenarios 
 
-        Given Stop Broker
+    Given Stop Broker
 
-    Scenario: Stop event broker for all scenarios
+  Scenario: Stop event broker for all scenarios
 
-        Given Stop Event Broker
+    Given Stop Event Broker
 
-    Scenario: Stop datastore after all scenarios
+  Scenario: Stop datastore after all scenarios
 
-        Given Stop Datastore
+    Given Stop Datastore

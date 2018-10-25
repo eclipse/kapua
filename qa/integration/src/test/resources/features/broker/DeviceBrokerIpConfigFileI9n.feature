@@ -34,6 +34,10 @@ Feature: Device Broker connection ip with config file
 
     Given Start Broker
 
+  Scenario: Start External Consumers for all scenarios
+
+    Given Start External Consumers
+
   Scenario: Send BIRTH message and then DC message while broker ip is set by config file
     Effectively this is connect and disconnect of Kura device.
     Basic birth - death scenario. Scenario includes check that broker server ip
@@ -47,13 +51,11 @@ Feature: Device Broker connection ip with config file
     And I logout
     And Device death message is sent
 
-  @StopExternalConsumers
-  Scenario: Stop external consumers for all scenario 
+  Scenario: Stop External Consumers for all scenarios
+
+    Given Stop External Consumers
 
   Scenario: Stop broker after all scenarios 
-
-  @StopEventBroker
-  Scenario: Stop event broker after all scenarios 
 
     Given Stop Broker
 

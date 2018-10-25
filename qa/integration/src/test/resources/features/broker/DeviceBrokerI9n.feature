@@ -35,8 +35,9 @@ Feature: Device Broker Integration
 
     Given Start Broker
 
-  @StartExternalConsumers
-  Scenario: Start external consumers for all scenario
+  Scenario: Start External Consumers for all scenarios
+
+    Given Start External Consumers
 
   Scenario: Send BIRTH message and then DC message
     Effectively this is connect and disconnect of Kura device.
@@ -57,8 +58,9 @@ Feature: Device Broker Integration
     And I logout
     And Device death message is sent
 
-  @StopExternalConsumers
-  Scenario: Stop external consumers for all scenario 
+  Scenario: Stop External Consumers for all scenarios
+
+    Given Stop External Consumers
 
   Scenario: Stop broker after all scenarios 
 

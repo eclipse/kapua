@@ -36,6 +36,10 @@ Feature: Tag Service
 
     Given Start Broker
 
+  Scenario: Start External Consumers for all scenarios
+
+    Given Start External Consumers
+
   Scenario: Creating tag
     Create a tag entry, with specified name. Name is only tag specific attribute.
     Once created search for it and is should been created.
@@ -54,8 +58,9 @@ Feature: Tag Service
     Then Tag with name "tagName2" is found and deleted
       And I logout
 
-  @StopExternalConsumers
-  Scenario: Stop external consumers for all scenario 
+  Scenario: Stop External Consumers for all scenarios
+
+    Given Stop External Consumers
 
   Scenario: Stop broker after all scenarios 
 

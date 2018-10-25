@@ -34,7 +34,11 @@ Feature: Device Registry Integration
 
     Given Start Broker
 
-Scenario: Birth message handling from a new device
+  Scenario: Start External Consumers for all scenarios
+
+    Given Start External Consumers
+
+  Scenario: Birth message handling from a new device
     A birth message is received. The referenced device does not yet exist and is created on-the-fly. After the
     message is processed a new device must be created and a BIRTH event inserted in the database.
 
@@ -317,8 +321,9 @@ Scenario: Creating new device, tagging it with specific Tag and then deleting th
     And I verify that tag "KuraDevice2" is deleted
     And I logout
 
-  @StopExternalConsumers
-  Scenario: Stop external consumers for all scenario 
+  Scenario: Stop External Consumers for all scenarios
+
+    Given Stop External Consumers
 
   Scenario: Stop broker after all scenarios 
 

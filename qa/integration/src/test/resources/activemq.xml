@@ -188,7 +188,7 @@
             <!-- option: transport.transformer=jms
             for details see http://activemq.apache.org/amqp.html#AMQP-MappingtoJMS -->
             <transportConnector name="amqp"
-                                uri="amqp://0.0.0.0:5672?maximumConnections=1000&amp;wireFormat.maxFrameSize=1048576&amp;transport.transformer=jms" />
+                                uri="amqp://0.0.0.0:5672?maximumConnections=100&amp;transport.transformer=jms&amp;transport.prefetch=10&amp;transport.producerCredit=100" />
         </transportConnectors>
         <!-- NOTE:
         The following template shows how to configure a network of brokers (i.e. a broker cluster).

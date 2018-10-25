@@ -36,6 +36,9 @@ Feature: Datastore tests
 
     Given Start Broker
 
+  Scenario: Start External Consumers for all scenarios
+
+    Given Start External Consumers
 
   Scenario: Create index with specific prefix
   Create elasticsearch index with specific prefix set by system property.
@@ -53,6 +56,10 @@ Feature: Datastore tests
     Then REST response containing text "green open"
 #    And REST response containing text "custom-prefix-1-2018-01"
     And I delete all indices
+
+  Scenario: Stop External Consumers for all scenarios
+
+    Given Stop External Consumers
 
   Scenario: Stop broker after all scenarios
 
