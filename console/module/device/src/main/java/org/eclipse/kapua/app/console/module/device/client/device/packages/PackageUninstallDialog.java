@@ -88,6 +88,7 @@ public class PackageUninstallDialog extends SimpleDialog {
                 if (operationReboot.getValue()) {
                     operationRebootDelay.enable();
                 } else {
+                    operationRebootDelay.clear();
                     operationRebootDelay.disable();
                 }
             }

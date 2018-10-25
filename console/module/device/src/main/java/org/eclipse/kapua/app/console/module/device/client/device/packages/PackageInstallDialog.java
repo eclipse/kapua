@@ -148,6 +148,7 @@ public class PackageInstallDialog extends TabbedDialog {
                     if (operationRebootField.getValue()) {
                         operationRebootDelayField.enable();
                     } else {
+                        operationRebootDelayField.clear();
                         operationRebootDelayField.disable();
                     }
                 }
