@@ -238,6 +238,8 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
                 }
             } else if (gwtUser.getId().equals(selectedDeviceConnection.getReservedUserId())) {
                 reservedUserCombo.setValue(gwtUser);
+            } else {
+                reservedUserCombo.setValue(NO_USER);
             }
         }
         formPanel.clearDirtyFields();
