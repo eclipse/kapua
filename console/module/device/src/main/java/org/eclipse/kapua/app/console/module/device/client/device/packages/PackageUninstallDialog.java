@@ -14,23 +14,23 @@ package org.eclipse.kapua.app.console.module.device.client.device.packages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.SimpleDialog;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaNumberField;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeploymentPackage;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.packages.GwtPackageUninstallRequest;
+import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementService;
+import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementServiceAsync;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementService;
-import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementServiceAsync;
 
 public class PackageUninstallDialog extends SimpleDialog {
 
@@ -44,7 +44,7 @@ public class PackageUninstallDialog extends SimpleDialog {
 
     private FormPanel operationOptionsForm;
     private CheckBox operationReboot;
-    private NumberField operationRebootDelay;
+    private KapuaNumberField operationRebootDelay;
 
     public PackageUninstallDialog(String scopeId, String deviceId, GwtDeploymentPackage selectedDeploymentPackage) {
 
@@ -94,13 +94,16 @@ public class PackageUninstallDialog extends SimpleDialog {
             }
         });
 
-        operationRebootDelay = new NumberField();
+        operationRebootDelay = new KapuaNumberField();
         operationRebootDelay.setName("operationRebootDelay");
         operationRebootDelay.setFieldLabel(DEVICE_MSGS.deviceUnistallAsyncUninstallRebootDelay());
         operationRebootDelay.setEmptyText("0");
         operationRebootDelay.setAllowDecimals(false);
         operationRebootDelay.setAllowNegative(false);
         operationRebootDelay.disable();
+        operationRebootDelay.setMaxLength(5);
+        operationRebootDelay.setMaxValue(65535);
+        operationRebootDelay.setPropertyEditorType(Integer.class);
         operationOptionsForm.add(operationRebootDelay, formData);
 
         bodyPanel.add(operationOptionsForm);
