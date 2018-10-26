@@ -20,7 +20,6 @@ import org.eclipse.kapua.service.datastore.internal.model.MessageListResultImpl;
 import org.eclipse.kapua.service.datastore.internal.model.MetricInfoListResultImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.JsonMessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
@@ -29,7 +28,6 @@ import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
-import org.eclipse.kapua.service.datastore.model.query.JsonMessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 
@@ -64,11 +62,6 @@ public class DatastoreObjectFactoryImpl implements DatastoreObjectFactory {
     @Override
     public MessageQuery newDatastoreMessageQuery(KapuaId scopeId) {
         return new MessageQueryImpl(scopeId);
-    }
-
-    @Override
-    public JsonMessageQuery newJsonDatastoreMessageQuery(KapuaId scopeId) {
-        return new JsonMessageQueryImpl(scopeId);
     }
 
     @Override

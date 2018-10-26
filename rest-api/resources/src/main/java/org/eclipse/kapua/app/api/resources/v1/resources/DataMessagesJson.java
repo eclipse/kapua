@@ -24,6 +24,7 @@ import org.eclipse.kapua.app.api.resources.v1.resources.model.StorableEntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonDatastoreMessage;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonKapuaDataMessage;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonMessageListResult;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonMessageQuery;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 import org.eclipse.kapua.message.internal.device.data.KapuaDataMessageImpl;
@@ -34,7 +35,6 @@ import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.StorableId;
-import org.eclipse.kapua.service.datastore.model.query.JsonMessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.eclipse.kapua.service.datastore.model.query.XmlAdaptedSortField;
