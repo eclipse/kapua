@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,16 +9,23 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal.model.query;
+package org.eclipse.kapua.app.api.resources.v1.resources.model.data;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
-import org.eclipse.kapua.service.datastore.model.query.JsonMessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
 import org.eclipse.kapua.service.datastore.model.query.XmlAdaptedSortField;
@@ -29,7 +36,9 @@ import org.eclipse.kapua.service.datastore.model.query.XmlAdaptedSortField;
  * @since 1.0.0
  *
  */
-public class JsonMessageQueryImpl implements JsonMessageQuery {
+@XmlRootElement(name = "query")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+public class JsonMessageQuery {
 
     private StorablePredicate predicate;
 
@@ -46,7 +55,7 @@ public class JsonMessageQueryImpl implements JsonMessageQuery {
      *
      * @since 1.0.0
      */
-    public JsonMessageQueryImpl() {
+    public JsonMessageQuery() {
         super();
 
         fetchStyle = StorableFetchStyle.SOURCE_FULL;
@@ -62,88 +71,83 @@ public class JsonMessageQueryImpl implements JsonMessageQuery {
      *
      * @since 1.0.0
      */
-    public JsonMessageQueryImpl(KapuaId scopeId) {
+    public JsonMessageQuery(KapuaId scopeId) {
         this();
 
         setScopeId(scopeId);
     }
 
-    @Override
+    @XmlElement(name = "scopeId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getScopeId() {
         return scopeId;
     }
 
-    @Override
     public void setScopeId(KapuaId scopeId) {
         this.scopeId = KapuaEid.parseKapuaId(scopeId);
     }
 
-    @Override
+    @XmlTransient
     public StorablePredicate getPredicate() {
         return this.predicate;
     }
 
-    @Override
     public void setPredicate(StorablePredicate predicate) {
         this.predicate = predicate;
     }
 
-    @Override
+    @XmlElement(name = "offset")
     public Integer getOffset() {
         return indexOffset;
     }
 
-    @Override
     public void setOffset(Integer offset) {
         this.indexOffset = offset;
     }
 
-    @Override
+    @XmlElement(name = "limit")
     public void setLimit(Integer limit) {
         this.limit = limit;
     }
 
-    @Override
     public Integer getLimit() {
         return limit;
     }
 
-    @Override
+    @XmlElement(name = "askTotalCount")
     public boolean isAskTotalCount() {
         return askTotalCount;
     }
 
-    @Override
     public void setAskTotalCount(boolean askTotalCount) {
         this.askTotalCount = askTotalCount;
     }
 
-    @Override
+    @XmlTransient
     public StorableFetchStyle getFetchStyle() {
         return this.fetchStyle;
     }
 
-    @Override
     public void setFetchStyle(StorableFetchStyle fetchStyle) {
         this.fetchStyle = fetchStyle;
     }
 
-    @Override
+    @XmlElementWrapper(name = "fetchAttributeName")
+    @XmlElement(name = "fetchAttributeName")
     public List<String> getFetchAttributes() {
         return fetchAttributes;
     }
 
-    @Override
     public void addFetchAttributes(String fetchAttribute) {
         fetchAttributes.add(fetchAttribute);
     }
 
-    @Override
     public void setFetchAttributes(List<String> fetchAttributeNames) {
         fetchAttributes = fetchAttributeNames;
     }
 
-    @Override
+    @XmlElementWrapper(name = "sortFields")
+    @XmlElement(name = "sortField")
     public List<XmlAdaptedSortField> getSortFields() {
         return sortFields;
     }
@@ -152,7 +156,7 @@ public class JsonMessageQueryImpl implements JsonMessageQuery {
         this.sortFields = sortFields;
     }
 
-    @Override
+    @XmlTransient
     public String[] getIncludes(StorableFetchStyle fetchStyle) {
         // Fetch mode
         String[] includeSource = null;
@@ -169,7 +173,7 @@ public class JsonMessageQueryImpl implements JsonMessageQuery {
         return includeSource;
     }
 
-    @Override
+    @XmlTransient
     public String[] getExcludes(StorableFetchStyle fetchStyle) {
         // Fetch mode
         String[] excludeSource = null;
@@ -186,7 +190,7 @@ public class JsonMessageQueryImpl implements JsonMessageQuery {
         return excludeSource;
     }
 
-    @Override
+    @XmlTransient
     public String[] getFields() {
         return new String[] {
                 MessageField.MESSAGE_ID.field(),

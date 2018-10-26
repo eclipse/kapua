@@ -19,7 +19,6 @@ import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
-import org.eclipse.kapua.service.datastore.model.query.JsonMessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 
@@ -72,15 +71,6 @@ public interface DatastoreObjectFactory extends KapuaObjectFactory {
      * @since 1.0.0
      */
     MessageQuery newDatastoreMessageQuery(KapuaId scopeId);
-
-    /**
-     * Return a new datastore message query
-     *
-     * @param scopeId
-     * @return
-     * @since 1.0.0
-     */
-    JsonMessageQuery newJsonDatastoreMessageQuery(KapuaId scopeId);
 
     /**
      * s
