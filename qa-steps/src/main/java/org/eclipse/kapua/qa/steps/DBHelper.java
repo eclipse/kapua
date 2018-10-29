@@ -49,11 +49,37 @@ public class DBHelper {
      */
     public static final String DELETE_SCRIPT = "all_delete.sql";
 
-    private boolean setup;
+    private static boolean setup;
+
+    /**
+     * Web access to DB.
+     */
+    private static Server webServer;
+
+    /**
+     * TCP access to DB.
+     */
+    private static Server server;
 
     private Connection connection;
 
     public void setup() {
+        boolean h2TestServer = Boolean.parseBoolean(System.getProperty("test.h2.server", "false"))
+                || Boolean.parseBoolean(System.getenv("test.h2.server"));
+        if (h2TestServer) {
+            // Start external server to provide access to in mem H2 database
+            if ((webServer == null) && (server == null)) {
+                if (h2TestServer) {
+                    try {
+                        webServer = Server.createWebServer("-webAllowOthers", "-webPort", "8082").start();
+                        server = Server.createTcpServer("-tcpAllowOthers", "-tcpPort", "9092").start();
+                        logger.info("H2 TCP and Web server started.");
+                    } catch (SQLException e) {
+                        logger.warn("Error setting up H2 web server.");
+                    }
+                }
+            }
+        }
         if (this.setup) {
             return;
         }
@@ -70,15 +96,6 @@ public class DBHelper {
 
         String jdbcUrl = JdbcConnectionUrlResolvers.resolveJdbcUrl();
 
-        // Start external server to provide access to in mem H2 database
-        if (Boolean.parseBoolean(System.getProperty("test.h2.server", "false")) || Boolean.parseBoolean(System.getenv("test.h2.server"))) {
-            try {
-                Server webServer = Server.createWebServer("-webAllowOthers", "-webPort", "8082").start();
-                Server server = Server.createTcpServer("-tcpAllowOthers", "-tcpPort", "9092").start();
-            } catch (SQLException e) {
-                logger.warn("Error setting up H2 web server.");
-            }
-        }
         try {
             /*
              * Keep a connection open during the tests, as this may be an in-memory
@@ -102,6 +119,14 @@ public class DBHelper {
                 throw new RuntimeException(e);
             }
         }
+        if ((server != null) && (server.isRunning(true))) {
+            server.shutdown();
+            server = null;
+        }
+        if ((webServer != null) && (webServer.isRunning(true))) {
+            webServer.shutdown();
+            webServer = null;
+        }
     }
 
     @After(order = HookPriorities.DATABASE)
@@ -120,6 +145,14 @@ public class DBHelper {
                 connection = null;
             }
 
+        }
+        if ((server != null) && (server.isRunning(true))) {
+            server.shutdown();
+            server = null;
+        }
+        if ((webServer != null) && (webServer.isRunning(true))) {
+            webServer.shutdown();
+            webServer = null;
         }
 
     }

@@ -17,6 +17,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AllowSymLinkAliasChecker;
 import org.eclipse.jetty.webapp.Configuration;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +33,10 @@ public class EmbeddedJetty {
 
     @Given("^Start Jetty Server on host \"(.*)\" at port \"(.+)\"$")
     public void start(String host, int port) throws Exception {
+
+        // Switch back to default DB connection resolver
+        // as Jetty has its own class loader and has to access in memory DB over TCP
+        System.setProperty(SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER.key(), "DEFAULT");
 
         InetSocketAddress address = new InetSocketAddress(host, port);
         jetty = new Server(address);
@@ -72,6 +77,7 @@ public class EmbeddedJetty {
         logger.info("Stopping Jetty " + jetty);
 
         jetty.stop();
+        System.setProperty(SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER.key(), "H2");
     }
 
 }

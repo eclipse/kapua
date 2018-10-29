@@ -13,6 +13,9 @@ package org.eclipse.kapua.service;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountCreator;
+import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
@@ -50,7 +53,11 @@ public class RestJAXBContextProvider implements JAXBContextProvider {
                         UserCreator.class,
                         UserListResult.class,
                         UserQuery.class,
-                        UserXmlRegistry.class
+                        UserXmlRegistry.class,
+                        // Account
+                        Account.class,
+                        AccountCreator.class,
+                        AccountListResult.class
                 }, properties);
             }
             return context;
