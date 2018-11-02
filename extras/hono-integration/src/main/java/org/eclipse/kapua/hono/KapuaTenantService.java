@@ -32,13 +32,16 @@ import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountService;
-import org.eclipse.kapua.service.account.internal.AccountQueryImpl;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Repository;
 
 import javax.security.auth.x500.X500Principal;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.util.Properties;
 
+@Repository
+@ConditionalOnProperty(name = "hono.app.type", havingValue = "kapua", matchIfMissing = true)
 public class KapuaTenantService extends BaseTenantService<Object> {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
@@ -49,6 +52,7 @@ public class KapuaTenantService extends BaseTenantService<Object> {
         JAXBContextProvider brokerProvider = new BrokerJAXBContextProvider();
         XmlUtil.setContextProvider(brokerProvider);
         accountService = locator.getService(AccountService.class);
+
     }
 
     @Override
