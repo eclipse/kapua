@@ -31,9 +31,13 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.user.UserService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Repository;
 
 import java.net.HttpURLConnection;
 
+@Repository
+@ConditionalOnProperty(name = "hono.app.type", havingValue = "kapua", matchIfMissing = true)
 public class KapuaRegistrationService extends BaseRegistrationService<Object> {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();

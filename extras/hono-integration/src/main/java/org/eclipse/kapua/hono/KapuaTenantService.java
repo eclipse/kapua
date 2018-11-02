@@ -26,9 +26,13 @@ import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Repository;
 
 import java.net.HttpURLConnection;
 
+@Repository
+@ConditionalOnProperty(name = "hono.app.type", havingValue = "kapua", matchIfMissing = true)
 public class KapuaTenantService extends BaseTenantService<Object> {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
@@ -39,12 +43,10 @@ public class KapuaTenantService extends BaseTenantService<Object> {
         JAXBContextProvider brokerProvider = new BrokerJAXBContextProvider();
         XmlUtil.setContextProvider(brokerProvider);
         accountService = locator.getService(AccountService.class);
-
     }
 
     @Override
     public void setConfig(Object configuration) {
-
     }
 
 

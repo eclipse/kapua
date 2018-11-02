@@ -34,9 +34,13 @@ import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Repository;
 
 import java.net.HttpURLConnection;
 
+@Repository
+@ConditionalOnProperty(name = "hono.app.type", havingValue = "kapua", matchIfMissing = true)
 public class KapuaCredentialsService extends BaseCredentialsService<Object> {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
