@@ -57,7 +57,6 @@ public class KapuaTenantService extends BaseTenantService<Object> {
 
     @Override
     public void setConfig(Object configuration) {
-
     }
 
 
