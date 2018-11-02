@@ -52,6 +52,26 @@
             <artifactId>hono-service-base</artifactId>
             <version>${hono.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.hono</groupId>
+            <artifactId>hono-service-device-registry</artifactId>
+            <version>${hono.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>4.3.18.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-core</artifactId>
+            <version>3.5.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>5.2.4.Final</version>
+        </dependency>
 
         <!-- Misc -->
         <dependency>
@@ -62,12 +82,10 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
