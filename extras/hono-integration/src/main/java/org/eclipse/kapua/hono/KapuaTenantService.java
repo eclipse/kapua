@@ -32,6 +32,7 @@ import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountService;
+import org.eclipse.kapua.service.account.internal.AccountQueryImpl;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
