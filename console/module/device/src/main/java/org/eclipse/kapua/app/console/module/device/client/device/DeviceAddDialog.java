@@ -12,6 +12,9 @@
 package org.eclipse.kapua.app.console.module.device.client.device;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
@@ -126,6 +129,14 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         // formPanel.setStyleAttribute("padding-bottom", "0px");
         // formPanel.setLayout(new FlowLayout());
 
+        Listener<BaseEvent> comboBoxListener = new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                DeviceAddDialog.this.formPanel.fireEvent(Events.OnClick);
+            }
+        };
+
         // Device general info fieldset
         FieldSet fieldSet = new FieldSet();
         FormLayout layout = new FormLayout();
@@ -190,6 +201,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
             groupCombo.setTemplate("<tpl for=\".\"><div role=\"listitem\" class=\"x-combo-list-item\" title={groupName}>{groupName}</div></tpl>");
             groupCombo.setValueField("id");
             groupCombo.setEmptyText(DEVICE_MSGS.deviceFilteringPanelGroupEmptyText());
+            groupCombo.addListener(Events.Select, comboBoxListener);
 
             gwtGroupService.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtGroup>>() {
 
