@@ -30,7 +30,7 @@ public class KapuaExceptionMapper implements ExceptionMapper<KapuaException> {
     public Response toResponse(KapuaException kapuaException) {
         LOG.error("Generic Kapua exception!", kapuaException);
         return Response
-                .status(Status.UNAUTHORIZED)
+                .serverError()
                 .entity(new KapuaExceptionInfo(Status.INTERNAL_SERVER_ERROR, kapuaException.getCode(), kapuaException))
                 .build();
     }
