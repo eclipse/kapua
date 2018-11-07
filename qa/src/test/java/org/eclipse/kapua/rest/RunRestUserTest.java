@@ -35,5 +35,6 @@ import org.junit.runner.RunWith;
 @CucumberProperty(key="commons.db.connection.port", value="9092")
 @CucumberProperty(key="commons.db.name", value="mem:kapua")
 @CucumberProperty(key="test.h2.server", value="true")
+@CucumberProperty(key="h2.bindAddress", value="127.0.0.1")
 public class RunRestUserTest {
 }

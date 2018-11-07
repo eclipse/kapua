@@ -75,7 +75,7 @@ public class DBHelper {
                         server = Server.createTcpServer("-tcpAllowOthers", "-tcpPort", "9092").start();
                         logger.info("H2 TCP and Web server started.");
                     } catch (SQLException e) {
-                        logger.warn("Error setting up H2 web server.");
+                        logger.warn("Error setting up H2 web server.", e);
                     }
                 }
             }
