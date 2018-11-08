@@ -6,17 +6,26 @@ hono:
     healthCheckPort: 8088
     startupTimeout: 90
   auth:
-    host: hono-service-auth.hono
+    host: localhost #hono-service-auth.hono
     port: 5672
+    hostnameVerificationRequired: false
+    keyPath: src/test/resources/certificates/device-registry-key.pem
+    certPath: src/main/resources/certificates/jwt/device-registry-cert.pem
+    trustStorePath: src/test/resources/certificates/trusted-certs.pem
     name: device-registry
     validation:
-      certPath: auth-server-cert.pem
+      certPath: src/main/resources/auth-server-cert.pem
   registry:
     amqp:
+      port: 25671
       insecurePortEnabled: true
       insecurePortBindAddress: 0.0.0.0
+      insecurePort: 25672
+      keyStorePath: src/test/resources/certificates/deviceRegistryKeyStore.p12
+      KeyStorePassword: deviceregistrykeys
     rest:
       insecurePortEnabled: true
+      insecurePort: 18080
       insecurePortBindAddress: 0.0.0.0
     svc:
       signing:

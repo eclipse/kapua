@@ -20,7 +20,7 @@
 
     <logger name="liquibase" level="WARN" />
 
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>
