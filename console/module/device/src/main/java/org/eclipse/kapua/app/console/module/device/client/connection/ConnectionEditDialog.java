@@ -12,6 +12,9 @@
 package org.eclipse.kapua.app.console.module.device.client.connection;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
@@ -75,6 +78,14 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
         FormLayout layoutSecurityOptions = new FormLayout();
         layoutSecurityOptions.setLabelWidth(Constants.LABEL_WIDTH_DEVICE_FORM);
 
+        Listener<BaseEvent> comboBoxListener = new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                formPanel.fireEvent(Events.OnClick);
+            }
+        };
+
         lastUserField = new LabelField();
         lastUserField.setName("connectionUserLastUserField");
         lastUserField.setLabelSeparator(":");
@@ -113,6 +124,7 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
         reservedUserCombo.setDisplayField("username");
         reservedUserCombo.setTemplate("<tpl for=\".\"><div role=\"listitem\" class=\"x-combo-list-item\" title={username}>{username}</div></tpl>");
         reservedUserCombo.setValueField("id");
+        reservedUserCombo.addListener(Events.Select, comboBoxListener);
 
         if (currentSession.hasPermission(UserSessionPermission.read())) {
             // Device User
@@ -238,6 +250,9 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
                 }
             } else if (gwtUser.getId().equals(selectedDeviceConnection.getReservedUserId())) {
                 reservedUserCombo.setValue(gwtUser);
+                break;
+            } else {
+                reservedUserCombo.setValue(NO_USER);
             }
         }
         formPanel.clearDirtyFields();

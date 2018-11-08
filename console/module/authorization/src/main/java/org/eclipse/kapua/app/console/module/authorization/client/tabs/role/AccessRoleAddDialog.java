@@ -147,8 +147,8 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
 
             @Override
             public void handleEvent(BaseEvent be) {
-                formPanel.fireEvent(Events.OnClick);
-                }
+                AccessRoleAddDialog.this.formPanel.fireEvent(Events.OnClick);
+            }
         });
 
         GWT_ROLE_SERVICE.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtRole>>() {

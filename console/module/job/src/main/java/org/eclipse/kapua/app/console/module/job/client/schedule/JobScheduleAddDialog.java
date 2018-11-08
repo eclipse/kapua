@@ -91,6 +91,14 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         HorizontalPanel endsOnPanel = new HorizontalPanel();
         endsOnPanel.setStyleAttribute("padding", "4px 0px 4px 0px");
 
+        Listener<BaseEvent> listener = new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                formPanel.fireEvent(Events.OnClick);
+            }
+        };
+
         triggerName.setAllowBlank(false);
         triggerName.setMaxLength(255);
         triggerName.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleScheduleNameLabel());
@@ -103,13 +111,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         startsOn.setEmptyText(JOB_MSGS.dialogAddScheduleDatePlaceholder());
         startsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         startsOn.setToolTip(JOB_MSGS.dialogAddScheduleStartsOnTooltip());
-        startsOn.getDatePicker().addListener(Events.Select, new Listener<BaseEvent>() {
-
-            @Override
-            public void handleEvent(BaseEvent be) {
-                formPanel.fireEvent(Events.OnClick);
-            }
-        });
+        startsOn.getDatePicker().addListener(Events.Select, listener);
         startsOnLabel.setText("* " + JOB_MSGS.dialogAddScheduleStartsOnLabel());
         startsOnLabel.setWidth(FORM_LABEL_WIDTH);
         startsOnLabel.setStyleAttribute("padding", "0px 101px 0px 0px");
@@ -124,6 +126,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         startsOnTime.setEmptyText(JOB_MSGS.dialogAddScheduleTimePlaceholder());
         startsOnTime.setToolTip(JOB_MSGS.dialogAddScheduleStartsOnTimeTooltip());
         startsOnTime.setTriggerAction(TriggerAction.ALL);
+        startsOnTime.addListener(Events.Select, listener);
         startsOnPanel.add(startsOnTime);
         mainPanel.add(startsOnPanel);
 
@@ -135,13 +138,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         endsOnLabel.setText("* " + JOB_MSGS.dialogAddScheduleEndsOnLabel());
         endsOnLabel.setWidth(FORM_LABEL_WIDTH);
         endsOnLabel.setStyleAttribute("padding", "0px 106px 0px 0px");
-        endsOn.getDatePicker().addListener(Events.Select, new Listener<BaseEvent>() {
-
-            @Override
-            public void handleEvent(BaseEvent be) {
-                formPanel.fireEvent(Events.OnClick);
-            }
-        });
+        endsOn.getDatePicker().addListener(Events.Select, listener);
         endsOnPanel.add(endsOnLabel);
         endsOnPanel.add(endsOn);
 
@@ -152,6 +149,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         endsOnTime.setToolTip(JOB_MSGS.dialogAddScheduleEndsOnTimeTooltip());
         endsOnTime.setStyleAttribute("padding", "0px 0px 0px 17px");
         endsOnTime.setTriggerAction(TriggerAction.ALL);
+        endsOnTime.addListener(Events.Select, listener);
         endsOnPanel.add(endsOnTime);
         mainPanel.add(endsOnPanel);
 
