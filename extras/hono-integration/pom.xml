@@ -156,7 +156,6 @@
             </execution>
         </executions>
     </plugin>
->>>>>>>>> Temporary merge branch 2
         </plugins>
     </build>
 
