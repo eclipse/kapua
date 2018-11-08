@@ -132,7 +132,7 @@ public class DeviceEditDialog extends DeviceAddDialog {
 
                         @Override
                         public void onSuccess(GwtGroup result) {
-                            groupCombo.setValue(result);
+                            setAccessGroup();
                         }
                     });
                 } else {
@@ -149,6 +149,20 @@ public class DeviceEditDialog extends DeviceAddDialog {
 
             // Other data
             optlock.setValue(device.getOptlock());
+        }
+        formPanel.clearDirtyFields();
+    }
+
+    private void setAccessGroup() {
+        for (GwtGroup gwtGroup : groupCombo.getStore().getModels()) {
+            if (gwtGroup.getId() == null) {
+                if (selectedDevice.getGroupId() == null) {
+                    groupCombo.setValue(gwtGroup);
+                }
+            } else if (gwtGroup.getId().equals(selectedDevice.getGroupId())) {
+                groupCombo.setValue(gwtGroup);
+                break;
+            }
         }
         formPanel.clearDirtyFields();
     }

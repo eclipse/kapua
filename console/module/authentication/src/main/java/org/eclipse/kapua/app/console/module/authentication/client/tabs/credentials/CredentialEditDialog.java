@@ -92,7 +92,7 @@ public class CredentialEditDialog extends CredentialAddDialog {
             credentialStatus.setToolTip(MSGS.dialogAddStatusApiKeyTooltip());
         } else if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.PASSWORD) {
             passwordTooltip.show();
-            DialogUtils.resizeDialog(CredentialEditDialog.this, 400, 335);
+            DialogUtils.resizeDialog(CredentialEditDialog.this, 400, 355);
             expirationDate.setToolTip(MSGS.dialogAddFieldExpirationDatePasswordTooltip());
             credentialStatus.setToolTip(MSGS.dialogAddStatusPasswordTooltip());
         }
