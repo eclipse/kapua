@@ -20,7 +20,6 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import java.util.List;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
@@ -40,6 +39,8 @@ import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAcce
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessRoleServiceAsync;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleServiceAsync;
+
+import java.util.List;
 
 public class AccessRoleAddDialog extends EntityAddEditDialog {
 
@@ -102,11 +103,11 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
 
                 exitStatus = false;
                 switch (((GwtKapuaException) cause).getCode()) {
-                case DUPLICATE_NAME:
-                    exitMessage = MSGS.dialogAddRoleDuplicateError();
-                    break;
-                default:
-                    exitMessage = MSGS.dialogAddError(MSGS.dialogAddRoleError(cause.getLocalizedMessage()));
+                    case DUPLICATE_NAME:
+                        exitMessage = MSGS.dialogAddRoleDuplicateError();
+                        break;
+                    default:
+                        exitMessage = MSGS.dialogAddError(MSGS.dialogAddRoleError(cause.getLocalizedMessage()));
                 }
 
                 rolesCombo.markInvalid(exitMessage);
@@ -150,7 +151,7 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
                 }
         });
 
-        GWT_ROLE_SERVICE.findAll(currentSession.getAccountId(), new AsyncCallback<List<GwtRole>>() {
+        GWT_ROLE_SERVICE.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtRole>>() {
 
             @Override
             public void onFailure(Throwable caught) {
