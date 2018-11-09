@@ -11,15 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.server;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
-
 import com.extjs.gxt.ui.client.Style.SortDir;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
-import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessRole;
@@ -37,10 +36,10 @@ import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
+import org.eclipse.kapua.service.authorization.access.AccessRoleAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
 import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
-import org.eclipse.kapua.service.authorization.access.AccessRoleAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
 import org.eclipse.kapua.service.authorization.role.Role;
@@ -48,9 +47,9 @@ import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implements GwtAccessRoleService {
 
@@ -141,13 +140,14 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
                     if (sortField.equals("createdOnFormatted")) {
                         sortField = AccessRoleAttributes.CREATED_ON;
                     }
+
                     SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
                     FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
                     query.setSortCriteria(sortCriteria);
-                    AccessRoleListResult accessRoleList =
-                            accessRoleService.query(query);
+                    AccessRoleListResult accessRoleList = accessRoleService.query(query);
+
                     if (!accessRoleList.isEmpty()) {
-                        totalLegnth = Long.valueOf(accessRoleService.count(query)).intValue();
+                        totalLegnth = (int) accessRoleService.count(query);
                     }
 
                     for (AccessRole accessRole : accessRoleList.getItems()) {
@@ -159,8 +159,13 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
                             }
                         });
                         Role role = roleService.find(scopeId, accessRole.getRoleId());
+
                         GwtAccessRole gwtAccessRole = KapuaGwtAuthorizationModelConverter.mergeRoleAccessRole(role, accessRole);
-                        gwtAccessRole.setCreatedByName(createdByUser.getName());
+
+                        if (createdByUser != null) {
+                            gwtAccessRole.setCreatedByName(createdByUser.getName());
+                        }
+
                         gwtAccessRoles.add(gwtAccessRole);
                     }
                 }
