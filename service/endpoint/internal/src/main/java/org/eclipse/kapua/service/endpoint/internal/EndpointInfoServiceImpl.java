@@ -62,6 +62,8 @@ public class EndpointInfoServiceImpl
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
+    private static final EndpointInfoFactory ENDPOINT_INFO_FACTORY = LOCATOR.getFactory(EndpointInfoFactory.class);
+
     public EndpointInfoServiceImpl() {
         super(EndpointInfoService.class.getName(), EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, EndpointEntityManagerFactory.getInstance(), EndpointInfoService.class, EndpointInfoFactory.class);
     }
@@ -180,6 +182,15 @@ public class EndpointInfoServiceImpl
             EndpointInfoListResult endpointInfoListResult = EndpointInfoDAO.query(em, query);
 
             if (endpointInfoListResult.isEmpty() && query.getScopeId() != null) {
+
+                // First check if there are any endpoint specified at all
+                EndpointInfoQuery totalQuery = ENDPOINT_INFO_FACTORY.newQuery(query.getScopeId());
+                long totalCount = EndpointInfoDAO.count(em, totalQuery);
+
+                if (totalCount != 0) {
+                    // if there are endpoints (even not matching the query), return the empty list
+                    return endpointInfoListResult;
+                }
 
                 KapuaId originalScopeId = query.getScopeId();
 
