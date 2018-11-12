@@ -21,7 +21,7 @@
     <artifactId>hono-integration</artifactId>
 
     <properties>
-        <hono.version>0.8-M2-SNAPSHOT</hono.version>
+        <hono.version>0.8-SNAPSHOT</hono.version>
         <start-class>org.eclipse.kapua.hono.KapuaApplication</start-class>
     </properties>
 
