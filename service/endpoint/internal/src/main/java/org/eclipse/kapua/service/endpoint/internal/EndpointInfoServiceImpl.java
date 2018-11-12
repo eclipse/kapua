@@ -15,6 +15,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -184,10 +185,7 @@ public class EndpointInfoServiceImpl
             if (endpointInfoListResult.isEmpty() && query.getScopeId() != null) {
 
                 // First check if there are any endpoint specified at all
-                EndpointInfoQuery totalQuery = ENDPOINT_INFO_FACTORY.newQuery(query.getScopeId());
-                long totalCount = EndpointInfoDAO.count(em, totalQuery);
-
-                if (totalCount != 0) {
+                if (countAllEndpointsInScope(em, query.getScopeId())){
                     // if there are endpoints (even not matching the query), return the empty list
                     return endpointInfoListResult;
                 }
@@ -228,6 +226,12 @@ public class EndpointInfoServiceImpl
             long endpointInfoCount = EndpointInfoDAO.count(em, query);
 
             if (endpointInfoCount == 0 && query.getScopeId() != null) {
+
+                // First check if there are any endpoint specified at all
+                if (countAllEndpointsInScope(em, query.getScopeId())) {
+                    // if there are endpoints (even not matching the query), return 0
+                    return endpointInfoCount;
+                }
 
                 KapuaId originalScopeId = query.getScopeId();
 
@@ -289,5 +293,11 @@ public class EndpointInfoServiceImpl
 
             throw new KapuaEntityUniquenessException(EndpointInfo.TYPE, uniquesFieldValues);
         }
+    }
+
+    private boolean countAllEndpointsInScope(EntityManager em, KapuaId scopeId) throws KapuaException {
+        EndpointInfoQuery totalQuery = ENDPOINT_INFO_FACTORY.newQuery(scopeId);
+        long totalCount = EndpointInfoDAO.count(em, totalQuery);
+        return totalCount != 0;
     }
 }
