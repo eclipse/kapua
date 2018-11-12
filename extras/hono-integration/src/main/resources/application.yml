@@ -17,7 +17,6 @@ hono:
       certPath: src/main/resources/auth-server-cert.pem
   registry:
     amqp:
-      port: 25671
       insecurePortEnabled: true
       insecurePortBindAddress: 0.0.0.0
       insecurePort: 25672
@@ -33,7 +32,7 @@ hono:
   credentials:
     svc:
       filename: /etc/hono/credentials.json
-      maxBcryptIterations: ${max.bcrypt.iterations}
+      maxBcryptIterations: 10
       saveToFile: false
   tenant:
     svc:
