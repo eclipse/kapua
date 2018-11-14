@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,7 @@
 package org.eclipse.kapua.app.console.core.servlet;
 
 import org.apache.commons.fileupload.FileItem;
+import org.eclipse.kapua.DeviceMenagementException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaUnauthenticatedException;
@@ -80,7 +81,7 @@ public class FileServlet extends KapuaHttpServlet {
     }
 
     private void doPostConfigurationSnapshot(KapuaFormFields kapuaFormFields, HttpServletResponse resp)
-            throws ServletException, IOException {
+            throws IOException {
         try {
             List<FileItem> fileItems = kapuaFormFields.getFileItems();
             String scopeIdString = kapuaFormFields.get("scopeIdString");
@@ -122,14 +123,19 @@ public class FileServlet extends KapuaHttpServlet {
         } catch (KapuaIllegalAccessException eiae) {
             resp.sendError(403, eiae.getMessage());
             return;
+        } catch (DeviceMenagementException edme) {
+            logger.error("Device menagement exception", edme);
+            resp.sendError(404, edme.getMessage());
+            return;
         } catch (Exception e) {
-            logger.error("Error posting configuration", e);
-            throw new ServletException(e);
+            logger.error("Generic error", e);
+            resp.sendError(500, e.getMessage());
+            return;
         }
     }
 
     private void doPostCommand(KapuaFormFields kapuaFormFields, HttpServletResponse resp)
-            throws ServletException, IOException {
+            throws IOException {
         try {
             List<FileItem> fileItems = kapuaFormFields.getFileItems();
 
@@ -220,9 +226,14 @@ public class FileServlet extends KapuaHttpServlet {
         } catch (KapuaIllegalAccessException eiae) {
             resp.sendError(403, eiae.getMessage());
             return;
+        } catch (DeviceMenagementException edme) {
+            logger.error("Device menagement exception", edme);
+            resp.sendError(404, edme.getMessage());
+            return;
         } catch (Exception e) {
-            logger.error("Error sending command", e);
-            throw new ServletException(e);
+            logger.error("Generic error", e);
+            resp.sendError(500, e.getMessage());
+            return;
         }
     }
 

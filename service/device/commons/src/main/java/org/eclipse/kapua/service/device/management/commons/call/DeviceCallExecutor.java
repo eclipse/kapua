@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.commons.call;
 
+import org.eclipse.kapua.DeviceMenagementErrorCodes;
+import org.eclipse.kapua.DeviceMenagementException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -18,8 +20,6 @@ import org.eclipse.kapua.service.device.call.DeviceCall;
 import org.eclipse.kapua.service.device.call.DeviceCallFactory;
 import org.eclipse.kapua.service.device.call.message.app.request.DeviceRequestMessage;
 import org.eclipse.kapua.service.device.call.message.app.response.DeviceResponseMessage;
-import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementErrorCodes;
-import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementException;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
@@ -90,13 +90,13 @@ public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRe
         //
         // Check Device Connection
         if (device.getConnection() == null) {
-            throw new DeviceManagementException(DeviceManagementErrorCodes.DEVICE_NEVER_CONNECTED, device.getScopeId(), device.getId());
+            throw new DeviceMenagementException(DeviceMenagementErrorCodes.DEVICE_NEVER_CONNECTED);
         }
 
         //
         // Check Device Connection status
         if (!DeviceConnectionStatus.CONNECTED.equals(device.getConnection().getStatus())) {
-            throw new DeviceManagementException(DeviceManagementErrorCodes.DEVICE_NOT_CONNECTED, device.getScopeId(), device.getId(), device.getConnection().getStatus());
+            throw new DeviceMenagementException(DeviceMenagementErrorCodes.DEVICE_NOT_CONNECTED);
         }
 
         //
@@ -134,7 +134,7 @@ public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRe
         }
         break;
         default:
-            throw new DeviceManagementException(DeviceManagementErrorCodes.REQUEST_BAD_METHOD, null, requestMessage.getChannel().getMethod());
+            throw new DeviceMenagementException(DeviceMenagementErrorCodes.REQUEST_BAD_METHOD);
         }
 
         //
