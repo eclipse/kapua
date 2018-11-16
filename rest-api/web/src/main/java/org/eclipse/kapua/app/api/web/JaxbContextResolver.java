@@ -19,6 +19,7 @@ import org.eclipse.kapua.app.api.core.exception.model.ThrowableInfo;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.StorableEntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonDatastoreMessage;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonMessageQuery;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.device.management.JsonGenericRequestMessage;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.device.management.JsonGenericResponseMessage;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.message.JsonKapuaPayload;
@@ -102,6 +103,10 @@ import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.SortField;
+import org.eclipse.kapua.service.datastore.model.query.SortFieldXmlAdapter;
+import org.eclipse.kapua.service.datastore.model.query.XmlAdaptedSortField;
+import org.eclipse.kapua.service.datastore.model.query.XmlAdaptedSortFields;
 import org.eclipse.kapua.service.datastore.model.xml.ChannelInfoXmlRegistry;
 import org.eclipse.kapua.service.datastore.model.xml.ClientInfoXmlRegistry;
 import org.eclipse.kapua.service.datastore.model.xml.DatastoreMessageXmlRegistry;
@@ -269,6 +274,11 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     InsertResponse.class,
                     StorableEntityId.class,
                     StorableId.class,
+                    SortField.class,
+                    SortFieldXmlAdapter.class,
+                    XmlAdaptedSortField.class,
+                    XmlAdaptedSortFields.class,
+                    JsonMessageQuery.class,
 
                     // Device
                     Device.class,

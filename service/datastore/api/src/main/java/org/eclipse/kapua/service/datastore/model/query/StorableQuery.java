@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Storable query definition.<br>
  * It defines the queries applicable to the persisted objects (such as messages, channeles information...)
- * 
+ *
  * @param <S> persisted object type (such as messages, channeles information...)
  * @since 1.0.0
  */
@@ -42,8 +42,7 @@ public interface StorableQuery<S extends Object> {
     /**
      * Adds an attribute to the fetch attribute names list
      *
-     * @param fetchAttribute
-     *            The fetch attribute to add to the list.
+     * @param fetchAttribute The fetch attribute to add to the list.
      * @since 1.0.0
      */
     public void addFetchAttributes(String fetchAttribute);
@@ -52,15 +51,14 @@ public interface StorableQuery<S extends Object> {
      * Sets the fetch attribute names list.<br>
      * This list is a list of optional attributes of a {@link KapuaEntity} that can be fetched when querying.
      *
-     * @param fetchAttributeNames
-     *            The fetch attribute names list.
+     * @param fetchAttributeNames The fetch attribute names list.
      * @since 1.0.0
      */
     public void setFetchAttributes(List<String> fetchAttributeNames);
 
     /**
      * Gets the scope id
-     * 
+     *
      * @return
      * @since 1.0.0
      */
@@ -70,7 +68,7 @@ public interface StorableQuery<S extends Object> {
 
     /**
      * Sets the scope id
-     * 
+     *
      * @param scopeId
      * @since 1.0.0
      */
@@ -78,7 +76,7 @@ public interface StorableQuery<S extends Object> {
 
     /**
      * Get the predicate
-     * 
+     *
      * @return
      * @since 1.0.0
      */
@@ -87,7 +85,7 @@ public interface StorableQuery<S extends Object> {
 
     /**
      * Set the predicate
-     * 
+     *
      * @param predicate
      * @since 1.0.0
      */
@@ -95,7 +93,7 @@ public interface StorableQuery<S extends Object> {
 
     /**
      * Get the query result list offset
-     * 
+     *
      * @return
      * @since 1.0.0
      */
@@ -104,7 +102,7 @@ public interface StorableQuery<S extends Object> {
 
     /**
      * Set the query result list offset
-     * 
+     *
      * @param offset
      * @since 1.0.0
      */
@@ -112,7 +110,7 @@ public interface StorableQuery<S extends Object> {
 
     /**
      * Get the result list limit count
-     * 
+     *
      * @return
      * @since 1.0.0
      */
@@ -121,7 +119,7 @@ public interface StorableQuery<S extends Object> {
 
     /**
      * Set the result list limit count
-     * 
+     *
      * @param limit
      * @since 1.0.0
      */
@@ -129,7 +127,7 @@ public interface StorableQuery<S extends Object> {
 
     /**
      * Get the ask for the total count matching query objects
-     * 
+     *
      * @return
      * @since 1.0.0
      */
@@ -138,7 +136,7 @@ public interface StorableQuery<S extends Object> {
 
     /**
      * Set the ask for the total count matching query objects
-     * 
+     *
      * @param askTotalCount
      * @since 1.0.0
      */
@@ -146,7 +144,7 @@ public interface StorableQuery<S extends Object> {
 
     /**
      * Get the fetch style
-     * 
+     *
      * @return
      * @since 1.0.0
      */
@@ -155,7 +153,7 @@ public interface StorableQuery<S extends Object> {
 
     /**
      * Set the fetch style
-     * 
+     *
      * @param fetchStyle
      * @since 1.0.0
      */
@@ -163,16 +161,16 @@ public interface StorableQuery<S extends Object> {
 
     /**
      * Get the sort fields list
-     * 
+     *
      * @return
      * @since 1.0.0
      */
-    @XmlTransient
+    @XmlJavaTypeAdapter(SortFieldXmlAdapter.class)
     List<SortField> getSortFields();
 
     /**
      * Set the sort fields list
-     * 
+     *
      * @param sortFields
      * @since 1.0.0
      */
