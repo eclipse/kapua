@@ -319,7 +319,8 @@ public class AccountAddDialog extends EntityAddEditDialog {
                         cancelButton.enable();
                         if (cause instanceof GwtKapuaException) {
                             GwtKapuaException gwtCause = (GwtKapuaException) cause;
-                            if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
+                            if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME) 
+                                    || gwtCause.getCode().equals(GwtKapuaErrorCode.ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT)) {
                                 accountNameField.markInvalid(gwtCause.getMessage());
                             } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.ILLEGAL_ARGUMENT) && gwtCause.getArguments()[0].equals("expirationDate")) {
                                 expirationDateField.markInvalid(MSGS.conflictingExpirationDate());
