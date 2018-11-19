@@ -13,9 +13,12 @@ package org.eclipse.kapua.app.console.module.job.server;
 
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.google.common.base.Strings;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
+import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
+import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStepDefinition;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStepProperty;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobStepDefinitionService;
@@ -33,15 +36,26 @@ import java.util.List;
 
 public class GwtJobStepDefinitionServiceImpl extends KapuaRemoteServiceServlet implements GwtJobStepDefinitionService {
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final JobStepDefinitionService JOB_STEP_DEFINITION_SERVICE = LOCATOR.getService(JobStepDefinitionService.class);
+    private static final JobStepDefinitionFactory JOB_STEP_DEFINITION_FACTORY = LOCATOR.getFactory(JobStepDefinitionFactory.class);
+
+    private static final ConsoleSetting CONSOLE_SETTING = ConsoleSetting.getInstance();
+
+    private static final String JOB_STEP_DEFINITION_EXCLUDE_REGEX = CONSOLE_SETTING.getString(ConsoleSettingKeys.JOB_STEP_DEFINITION_EXCLUDE_REGEX);
+
     @Override
     public ListLoadResult<GwtJobStepDefinition> findAll() throws GwtKapuaException {
         List<GwtJobStepDefinition> gwtJobStepDefinitionList = new ArrayList<GwtJobStepDefinition>();
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            JobStepDefinitionService jobStepDefinitionService = locator.getService(JobStepDefinitionService.class);
-            JobStepDefinitionFactory jobStepDefinitionFactory = locator.getFactory(JobStepDefinitionFactory.class);
-            JobStepDefinitionListResult result = jobStepDefinitionService.query(jobStepDefinitionFactory.newQuery(null));
+            JobStepDefinitionListResult result = JOB_STEP_DEFINITION_SERVICE.query(JOB_STEP_DEFINITION_FACTORY.newQuery(null));
             for (JobStepDefinition jsd : result.getItems()) {
+
+                if (!Strings.isNullOrEmpty(JOB_STEP_DEFINITION_EXCLUDE_REGEX) && jsd.getName().matches(JOB_STEP_DEFINITION_EXCLUDE_REGEX)) {
+                    continue;
+                }
+
                 GwtJobStepDefinition gwtJobStepDefinition = KapuaGwtJobModelConverter.convertJobStepDefinition(jsd);
 
                 setEnumOnJobStepProperty(gwtJobStepDefinition.getStepProperties());
@@ -61,9 +75,7 @@ public class GwtJobStepDefinitionServiceImpl extends KapuaRemoteServiceServlet i
 
         GwtJobStepDefinition gwtJobStepDefinition = null;
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            JobStepDefinitionService jobStepDefinitionService = locator.getService(JobStepDefinitionService.class);
-            JobStepDefinition jobStepDefinition = jobStepDefinitionService.find(null, jobStepDefinitionId);
+            JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE.find(null, jobStepDefinitionId);
             if (jobStepDefinition != null) {
                 gwtJobStepDefinition = KapuaGwtJobModelConverter.convertJobStepDefinition(jobStepDefinition);
 
