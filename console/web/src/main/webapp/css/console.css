@@ -258,3 +258,8 @@ button::-moz-focus-inner, button::-moz-focus-outer, button:-moz-focusring, butto
 .x-btn-focus .x-btn-bc{
     background-position: 0 -18px;
 }
+
+.x-window-dlg .ext-mb-text, .x-window-dlg .x-window-header-text {
+	display: block; 
+	overflow: hidden;
+}
