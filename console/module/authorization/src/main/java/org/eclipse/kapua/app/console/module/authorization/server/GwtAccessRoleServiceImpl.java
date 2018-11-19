@@ -146,27 +146,26 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
                     query.setSortCriteria(sortCriteria);
                     AccessRoleListResult accessRoleList = accessRoleService.query(query);
 
-                    if (!accessRoleList.isEmpty()) {
-                        totalLegnth = (int) accessRoleService.count(query);
-                    }
+                    totalLegnth = (int) accessRoleService.count(query);
+                    if (!accessRoleList.isEmpty()){
+                        for (AccessRole accessRole : accessRoleList.getItems()) {
+                            User createdByUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
-                    for (AccessRole accessRole : accessRoleList.getItems()) {
-                        User createdByUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+                                @Override
+                                public User call() throws Exception {
+                                    return userService.find(scopeId, user.getCreatedBy());
+                                }
+                            });
+                            Role role = roleService.find(scopeId, accessRole.getRoleId());
 
-                            @Override
-                            public User call() throws Exception {
-                                return userService.find(scopeId, user.getCreatedBy());
+                            GwtAccessRole gwtAccessRole = KapuaGwtAuthorizationModelConverter.mergeRoleAccessRole(role, accessRole);
+
+                            if (createdByUser != null) {
+                                gwtAccessRole.setCreatedByName(createdByUser.getName());
                             }
-                        });
-                        Role role = roleService.find(scopeId, accessRole.getRoleId());
 
-                        GwtAccessRole gwtAccessRole = KapuaGwtAuthorizationModelConverter.mergeRoleAccessRole(role, accessRole);
-
-                        if (createdByUser != null) {
-                            gwtAccessRole.setCreatedByName(createdByUser.getName());
+                            gwtAccessRoles.add(gwtAccessRole);
                         }
-
-                        gwtAccessRoles.add(gwtAccessRole);
                     }
                 }
             } catch (Throwable t) {
