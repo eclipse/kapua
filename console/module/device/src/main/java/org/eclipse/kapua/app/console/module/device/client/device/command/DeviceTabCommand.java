@@ -339,7 +339,7 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
 
     private void initCommandOutput() {
         commandOutput = new LayoutContainer();
-        commandOutput.setBorders(true);
+        commandOutput.setBorders(false);
         commandOutput.setWidth("99.5%");
         commandOutput.setLayout(new FitLayout());
 
