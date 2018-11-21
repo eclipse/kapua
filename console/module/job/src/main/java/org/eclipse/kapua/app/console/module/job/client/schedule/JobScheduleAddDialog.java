@@ -118,8 +118,8 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         startsOnPanel.add(startsOnLabel);
         startsOnPanel.add(startsOn);
 
-        startsOnTime.setAllowBlank(false);
         startsOnTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
+        startsOnTime.setAllowBlank(false);
         startsOnTime.setEditable(false);
         startsOnTime.setWidth(100);
         startsOnTime.setStyleAttribute("padding", "0px 0px 0px 17px");
@@ -174,46 +174,58 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
 
         if (triggerName.getValue() == null) {
             triggerName.markInvalid(VAL_MSGS.nameRequiredMsg());
-            return;
         }
 
         if (endsOn.getValue() == null && endsOnTime.getValue() != null) {
             endsOn.markInvalid(VAL_MSGS.endTimeWithoutEndDate());
-            return;
         }
+
         if (startsOn.getValue() == null && startsOnTime.getValue() != null) {
             startsOn.markInvalid(VAL_MSGS.startTimeWithoutStartDate());
-            return;
         }
         if (startsOn.getValue() != null && startsOnTime.getValue() == null) {
             startsOnTime.markInvalid(VAL_MSGS.startDateWithoutStartTime());
-            return;
         }
         if (startsOn.getValue() != null && endsOn.getValue() != null) {
             if (startsOn.getValue().after(endsOn.getValue())) {
                 startsOn.markInvalid(VAL_MSGS.startsOnDateLaterThanEndsOn());
-                return;
             }
         }
-        if (startsOn.getValue() != null && endsOn.getValue() != null && startsOnTime != null && endsOnTime != null) {
+        if (startsOn.getValue() != null && endsOn.getValue() != null && startsOnTime.getValue() != null && endsOnTime.getValue() != null) {
             if (startsOn.getValue().equals(endsOn.getValue()) && startsOnTime.getValue().getDate().after(endsOnTime.getValue().getDate())) {
                 startsOnTime.markInvalid(VAL_MSGS.startsOnTimeLaterThanEndsOn());
-                return;
             }
         }
 
+        if (startsOn.getValue() != null) {
+            if (startsOnTime.getValue() == null) {
+                startsOnTime.markInvalid(VAL_MSGS.startDateWithoutStartTime());
+            }
+        } else {
+            startsOn.markInvalid(VAL_MSGS.emptyStartDate());
+            if (startsOnTime.getValue() == null) {
+                startsOnTime.markInvalid(VAL_MSGS.emptyStartTime());
+            }
+        }
         if (endsOn.getValue() != null) {
             if (endsOnTime.getValue() == null) {
+                endsOnTime.setAllowBlank(false);
                 endsOnTime.markInvalid(VAL_MSGS.endDateWithoutEndTime());
-                return;
             } else {
-                if (endsOn.getValue().before(startsOn.getValue())) {
+                if (startsOn.getValue() != null && endsOn.getValue().before(startsOn.getValue())) {
                     endsOn.markInvalid(VAL_MSGS.endsOnDateEarlierThanStartsOn());
-                    return;
-                } else if (endsOn.getValue().equals(startsOn.getValue()) && endsOnTime.getValue().getDate().before(startsOnTime.getValue().getDate())) {
+                } else if (startsOn.getValue() != null && startsOnTime.getValue() != null && endsOn.getValue().equals(startsOn.getValue()) && endsOnTime.getValue().getDate().before(startsOnTime.getValue().getDate())) {
                     endsOnTime.markInvalid(VAL_MSGS.endsOnTimeEarlierThanStartsOn());
-                    return;
+                } else {
+                    endsOn.clearInvalid();
+                    endsOnTime.clearInvalid();
                 }
+            }
+        }
+
+        if (endsOnTime.getValue() != null) {
+            if (endsOn.getValue() == null) {
+                endsOn.setAllowBlank(false);
             }
         }
 
@@ -241,6 +253,9 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
                     }
                 }
             });
+        }
+        if (!triggerName.isValid() || !startsOn.isValid() || !startsOnTime.isValid() || !endsOn.isValid() || !endsOnTime.isValid() || !retryInterval.isValid() || !cronExpression.isValid() ) {
+            formPanel.isValid(false);
         }
     }
 
