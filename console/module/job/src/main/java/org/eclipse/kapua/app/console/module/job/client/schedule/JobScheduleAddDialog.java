@@ -225,6 +225,16 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
             }
         }
 
+        endsOn.addListener(Events.OnBlur, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                if (endsOn.getValue() == null) {
+                    endsOnTime.clearInvalid();
+                }
+            }
+        });
+
         if (endsOnTime.getValue() != null) {
             if (endsOn.getValue() == null) {
                 endsOn.setAllowBlank(false);
