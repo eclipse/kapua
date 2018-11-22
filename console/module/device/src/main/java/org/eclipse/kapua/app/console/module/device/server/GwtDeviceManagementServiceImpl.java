@@ -100,6 +100,8 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
 
     private static final Logger LOG = LoggerFactory.getLogger(GwtDeviceManagementServiceImpl.class);
 
+    private static final String PASSWORD_PLACEHOLDER = "You won't know this secret! :P";
+
     //
     // Packages
     //
@@ -344,7 +346,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                                     if (value != null) {
 
                                         if (cardinality == 0 || cardinality == 1 || cardinality == -1) {
-                                            gwtParam.setValue(value.toString());
+                                            gwtParam.setValue(GwtConfigParameterType.PASSWORD.equals(gwtParam.getType()) ? PASSWORD_PLACEHOLDER : value.toString());
                                         } else {
                                             // this could be an array value
                                             if (value instanceof Object[]) {
@@ -398,12 +400,18 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             if (cardinality == 0 || cardinality == 1 || cardinality == -1) {
 
                 String strValue = gwtConfigParam.getValue();
+
+                if (GwtConfigParameterType.PASSWORD.equals(gwtConfigParam.getType()) && PASSWORD_PLACEHOLDER.equals(strValue)) {
+                    continue;
+                }
+
                 objValue = getObjectValue(gwtConfigParam, strValue);
             } else {
 
                 String[] strValues = gwtConfigParam.getValues();
                 objValue = getObjectValue(gwtConfigParam, strValues);
             }
+
             compProps.put(gwtConfigParam.getId(), objValue);
         }
         compConfig.setProperties(compProps);
@@ -451,10 +459,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             Collections.sort(snapshotIds.getSnapshots(), new Comparator<DeviceSnapshot>() {
 
                 @Override
-                public int compare(DeviceSnapshot arg0,
-                        DeviceSnapshot arg1) {
-                    DeviceSnapshot snapshotId0 = arg0;
-                    DeviceSnapshot snapshotId1 = arg1;
+                public int compare(DeviceSnapshot snapshotId0, DeviceSnapshot snapshotId1) {
                     return -1 * snapshotId0.getTimestamp().compareTo(snapshotId1.getTimestamp()); // Descending order
                 }
             });
