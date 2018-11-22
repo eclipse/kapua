@@ -60,7 +60,7 @@ public class AccountDAO {
         AccountImpl accountImpl = new AccountImpl(accountCreator.getScopeId(), accountCreator.getName());
         accountImpl.setOrganization(organizationImpl);
         accountImpl.setEntityAttributes(accountCreator.getEntityAttributes());
-	accountImpl.setExpirationDate(accountCreator.getExpirationDate());
+    accountImpl.setExpirationDate(accountCreator.getExpirationDate());
 
         return ServiceDAO.create(em, accountImpl);
     }
@@ -80,18 +80,6 @@ public class AccountDAO {
         AccountImpl accountImpl = (AccountImpl) account;
 
         return ServiceDAO.update(em, AccountImpl.class, accountImpl);
-    }
-
-    /**
-     * Deletes the account by account identifier
-     * 
-     * @param em
-     * @param accountId
-     * @throws KapuaEntityNotFoundException
-     *             If the {@link Account} is not found
-     */
-    public static void delete(EntityManager em, KapuaId accountId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, AccountImpl.class, accountId);
     }
 
     /**
