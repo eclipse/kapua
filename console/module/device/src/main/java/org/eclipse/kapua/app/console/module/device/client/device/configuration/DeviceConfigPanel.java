@@ -11,24 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.configuration;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextArea;
-import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
-import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
-import org.eclipse.kapua.app.console.module.api.client.util.Constants;
-import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.module.api.client.util.FormUtils;
-import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
-import org.eclipse.kapua.app.console.module.api.client.util.MessageUtils;
-import org.eclipse.kapua.app.console.module.api.client.util.UserAgentUtils;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigComponent;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigParameter;
-
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -64,11 +46,25 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextArea;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
+import org.eclipse.kapua.app.console.module.api.client.util.Constants;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.client.util.FormUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.MessageUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.UserAgentUtils;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigComponent;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigParameter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class DeviceConfigPanel extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
-    private static final ConsoleDeviceMessages DEVICE_MSGS = GWT.create(ConsoleDeviceMessages.class);
 
     private GwtConfigComponent configComponent;
     private FormPanel actionFormPanel;
@@ -85,9 +81,11 @@ public class DeviceConfigPanel extends LayoutContainer {
         this.configComponent = configComponent;
         infoPlugin = new ComponentPlugin() {
 
+            @Override
             public void init(Component component) {
                 component.addListener(Events.Render, new Listener<ComponentEvent>() {
 
+                    @Override
                     public void handleEvent(ComponentEvent be) {
                         El elem = be.getComponent().el().findParent(".x-form-element", 3);
                         if (elem != null) {
@@ -102,9 +100,11 @@ public class DeviceConfigPanel extends LayoutContainer {
         final DeviceConfigPanel thePanel = this;
         dirtyPlugin = new ComponentPlugin() {
 
+            @Override
             public void init(Component component) {
                 component.addListener(Events.Change, new Listener<ComponentEvent>() {
 
+                    @Override
                     public void handleEvent(ComponentEvent be) {
                         El elem = be.getComponent().el().findParent(".x-form-element", 7);
                         if (elem != null) {
@@ -138,19 +138,15 @@ public class DeviceConfigPanel extends LayoutContainer {
 
     public GwtConfigComponent getUpdatedConfiguration() {
 
-        List<Component> fields = actionFieldSet.getItems();
-        for (int i = 0; i < fields.size(); i++) {
-            if (fields.get(i) instanceof Field<?>) {
+        for (Component field : actionFieldSet.getItems()) {
 
-                Field<?> field = (Field<?>) fields.get(i);
+            if (field instanceof Field<?>) {
+
                 String fieldName = field.getItemId();
                 GwtConfigParameter param = configComponent.getParameter(fieldName);
-                if (param == null) {
-                    System.err.println(field);
-                }
                 if (!(field instanceof MultiField) || (field instanceof RadioGroup)) {
                     // get the updated values for the single field
-                    String value = getUpdatedFieldConfiguration(param, field);
+                    String value = getUpdatedFieldConfiguration(param, (Field<?>) field);
                     param.setValue(value);
                 } else {
 
@@ -158,16 +154,15 @@ public class DeviceConfigPanel extends LayoutContainer {
                     List<String> multiFieldValues = new ArrayList<String>();
                     MultiField<?> multiField = (MultiField<?>) field;
                     List<Field<?>> childFields = multiField.getAll();
-                    for (int j = 0; j < childFields.size(); j++) {
 
-                        Field<?> childField = (Field<?>) childFields.get(j);
-                        String value = getUpdatedFieldConfiguration(param, childField);
+                    for (Component childField : childFields) {
+                        String value = getUpdatedFieldConfiguration(param, (Field<?>) childField);
                         if (value != null) {
                             multiFieldValues.add(value);
                         }
                     }
                     if (param != null) {
-                        param.setValues(multiFieldValues.toArray(new String[] {}));
+                        param.setValues(multiFieldValues.toArray(new String[]{}));
                     }
                 }
             }
@@ -178,80 +173,79 @@ public class DeviceConfigPanel extends LayoutContainer {
     private String getUpdatedFieldConfiguration(GwtConfigParameter param, Field<?> field) {
         Map<String, String> options = param.getOptions();
         if (options != null && options.size() > 0) {
-            @SuppressWarnings("unchecked")
             SimpleComboValue<String> scv = (SimpleComboValue<String>) field.getValue();
             String value = scv.getValue();
+
             Map<String, String> oMap = param.getOptions();
             return oMap.get(value);
         } else {
             switch (param.getType()) {
-            case LONG:
-                NumberField longField = (NumberField) field;
-                Number longNumber = longField.getValue();
-                if (longNumber != null) {
-                    return String.valueOf(longNumber.longValue());
-                } else {
-                    return null;
-                }
+                case LONG:
+                    NumberField longField = (NumberField) field;
+                    Number longNumber = longField.getValue();
+                    if (longNumber != null) {
+                        return String.valueOf(longNumber.longValue());
+                    } else {
+                        return null;
+                    }
 
-            case DOUBLE:
-                NumberField doubleField = (NumberField) field;
-                Number doubleNumber = doubleField.getValue();
-                if (doubleNumber != null) {
-                    return String.valueOf(doubleNumber.doubleValue());
-                } else {
-                    return null;
-                }
+                case DOUBLE:
+                    NumberField doubleField = (NumberField) field;
+                    Number doubleNumber = doubleField.getValue();
+                    if (doubleNumber != null) {
+                        return String.valueOf(doubleNumber.doubleValue());
+                    } else {
+                        return null;
+                    }
 
-            case FLOAT:
-                NumberField floatField = (NumberField) field;
-                Number floatNumber = floatField.getValue();
-                if (floatNumber != null) {
-                    return String.valueOf(floatNumber.floatValue());
-                } else {
-                    return null;
-                }
+                case FLOAT:
+                    NumberField floatField = (NumberField) field;
+                    Number floatNumber = floatField.getValue();
+                    if (floatNumber != null) {
+                        return String.valueOf(floatNumber.floatValue());
+                    } else {
+                        return null;
+                    }
 
-            case INTEGER:
-                NumberField integerField = (NumberField) field;
-                Number integerNumber = integerField.getValue();
-                if (integerNumber != null) {
-                    return String.valueOf(integerNumber.intValue());
-                } else {
-                    return null;
-                }
+                case INTEGER:
+                    NumberField integerField = (NumberField) field;
+                    Number integerNumber = integerField.getValue();
+                    if (integerNumber != null) {
+                        return String.valueOf(integerNumber.intValue());
+                    } else {
+                        return null;
+                    }
 
-            case SHORT:
-                NumberField shortField = (NumberField) field;
-                Number shortNumber = shortField.getValue();
-                if (shortNumber != null) {
-                    return String.valueOf(shortNumber.shortValue());
-                } else {
-                    return null;
-                }
+                case SHORT:
+                    NumberField shortField = (NumberField) field;
+                    Number shortNumber = shortField.getValue();
+                    if (shortNumber != null) {
+                        return String.valueOf(shortNumber.shortValue());
+                    } else {
+                        return null;
+                    }
 
-            case BYTE:
-                NumberField byteField = (NumberField) field;
-                Number byteNumber = byteField.getValue();
-                if (byteNumber != null) {
-                    return String.valueOf(byteNumber.byteValue());
-                } else {
-                    return null;
-                }
+                case BYTE:
+                    NumberField byteField = (NumberField) field;
+                    Number byteNumber = byteField.getValue();
+                    if (byteNumber != null) {
+                        return String.valueOf(byteNumber.byteValue());
+                    } else {
+                        return null;
+                    }
 
-            case BOOLEAN:
-                RadioGroup radioGroup = (RadioGroup) field;
-                Radio radio = radioGroup.getValue();
-                String booleanValue = radio.getItemId();
-                return booleanValue;
+                case BOOLEAN:
+                    RadioGroup radioGroup = (RadioGroup) field;
+                    Radio radio = radioGroup.getValue();
+                    return radio.getItemId();
 
-            case PASSWORD:
-            case CHAR:
-            case STRING:
-                return (String) field.getValue();
+                case PASSWORD:
+                case CHAR:
+                case STRING:
+                    return field.getValue() != null ? (String) field.getValue() : "";
 
-            default:
-                break;
+                default:
+                    break;
             }
         }
         return null;
@@ -284,6 +278,7 @@ public class DeviceConfigPanel extends LayoutContainer {
             actionFormPanel.setLayout(new FlowLayout());
             actionFormPanel.addListener(Events.Render, new Listener<BaseEvent>() {
 
+                @Override
                 public void handleEvent(BaseEvent be) {
                     NodeList<Element> nl = actionFormPanel.getElement().getElementsByTagName("form");
                     if (nl.getLength() > 0) {
@@ -328,7 +323,6 @@ public class DeviceConfigPanel extends LayoutContainer {
     }
 
     private Field<?> paintMultiFieldConfigParameter(GwtConfigParameter param) {
-        @SuppressWarnings("rawtypes")
         MultiField<?> multiField = new MultiField();
         multiField.setName(param.getId());
         multiField.setItemId(param.getId());
@@ -377,46 +371,46 @@ public class DeviceConfigPanel extends LayoutContainer {
             String minValue = param.getMin();
             String maxValue = param.getMax();
             switch (param.getType()) {
-            case LONG:
-                field = paintNumberConfigParameter(param, new LongValidator(minValue, maxValue));
-                break;
+                case LONG:
+                    field = paintNumberConfigParameter(param, new LongValidator(minValue, maxValue));
+                    break;
 
-            case DOUBLE:
-                field = paintNumberConfigParameter(param, new DoubleValidator(minValue, maxValue));
-                break;
+                case DOUBLE:
+                    field = paintNumberConfigParameter(param, new DoubleValidator(minValue, maxValue));
+                    break;
 
-            case FLOAT:
-                field = paintNumberConfigParameter(param, new FloatValidator(minValue, maxValue));
-                break;
+                case FLOAT:
+                    field = paintNumberConfigParameter(param, new FloatValidator(minValue, maxValue));
+                    break;
 
-            case INTEGER:
-                field = paintNumberConfigParameter(param, new IntegerValidator(minValue, maxValue));
-                break;
+                case INTEGER:
+                    field = paintNumberConfigParameter(param, new IntegerValidator(minValue, maxValue));
+                    break;
 
-            case SHORT:
-                field = paintNumberConfigParameter(param, new ShortValidator(minValue, maxValue));
-                break;
+                case SHORT:
+                    field = paintNumberConfigParameter(param, new ShortValidator(minValue, maxValue));
+                    break;
 
-            case BYTE:
-                field = paintNumberConfigParameter(param, new ByteValidator(minValue, maxValue));
-                break;
+                case BYTE:
+                    field = paintNumberConfigParameter(param, new ByteValidator(minValue, maxValue));
+                    break;
 
-            case BOOLEAN:
-                field = paintBooleanConfigParameter(param);
-                break;
+                case BOOLEAN:
+                    field = paintBooleanConfigParameter(param);
+                    break;
 
-            case PASSWORD:
-                field = paintPasswordConfigParameter(param);
-                break;
+                case PASSWORD:
+                    field = paintPasswordConfigParameter(param);
+                    break;
 
-            case CHAR:
-                field = paintTextConfigParameter(param, new CharValidator(minValue, maxValue));
-                break;
+                case CHAR:
+                    field = paintTextConfigParameter(param, new CharValidator(minValue, maxValue));
+                    break;
 
-            default:
-            case STRING:
-                field = paintTextConfigParameter(param, new StringValidator(minValue, maxValue));
-                break;
+                default:
+                case STRING:
+                    field = paintTextConfigParameter(param, new StringValidator(minValue, maxValue));
+                    break;
             }
         }
 
@@ -447,15 +441,15 @@ public class DeviceConfigPanel extends LayoutContainer {
         }
 
         if (param.getValue() != null) {
-            field.setValue((String) param.getValue());
-            field.setOriginalValue((String) param.getValue());
+            field.setValue(param.getValue());
+            field.setOriginalValue(param.getValue());
         }
-        if (validator != null && validator instanceof CharValidator) {
+        if (validator instanceof CharValidator) {
             field.setMaxLength(1);
-            field.setValidator((CharValidator) validator);
+            field.setValidator(validator);
         }
-        if (validator != null && validator instanceof StringValidator) {
-            field.setValidator((StringValidator) validator);
+        if (validator instanceof StringValidator) {
+            field.setValidator(validator);
         }
         return field;
     }
@@ -509,49 +503,49 @@ public class DeviceConfigPanel extends LayoutContainer {
         }
 
         switch (param.getType()) {
-        case LONG:
-            field.setPropertyEditorType(Long.class);
-            if (param.getValue() != null) {
-                field.setValue(Long.parseLong(param.getValue()));
-                field.setOriginalValue(Long.parseLong(param.getValue()));
-            }
-            break;
-        case DOUBLE:
-            field.setPropertyEditorType(Double.class);
-            if (param.getValue() != null) {
-                field.setValue(Double.parseDouble(param.getValue()));
-                field.setOriginalValue(Double.parseDouble(param.getValue()));
-            }
-            break;
-        case FLOAT:
-            field.setPropertyEditorType(Float.class);
-            if (param.getValue() != null) {
-                field.setValue(Float.parseFloat(param.getValue()));
-                field.setOriginalValue(Float.parseFloat(param.getValue()));
-            }
-            break;
-        case SHORT:
-            field.setPropertyEditorType(Short.class);
-            if (param.getValue() != null) {
-                field.setValue(Short.parseShort(param.getValue()));
-                field.setOriginalValue(Short.parseShort(param.getValue()));
-            }
-            break;
-        case BYTE:
-            field.setPropertyEditor(new BytePropertyEditor());
-            if (param.getValue() != null) {
-                field.setValue(Byte.parseByte(param.getValue()));
-                field.setOriginalValue(Byte.parseByte(param.getValue()));
-            }
-            break;
-        default:
-        case INTEGER:
-            field.setPropertyEditorType(Integer.class);
-            if (param.getValue() != null) {
-                field.setValue(Integer.parseInt(param.getValue()));
-                field.setOriginalValue(Integer.parseInt(param.getValue()));
-            }
-            break;
+            case LONG:
+                field.setPropertyEditorType(Long.class);
+                if (param.getValue() != null) {
+                    field.setValue(Long.parseLong(param.getValue()));
+                    field.setOriginalValue(Long.parseLong(param.getValue()));
+                }
+                break;
+            case DOUBLE:
+                field.setPropertyEditorType(Double.class);
+                if (param.getValue() != null) {
+                    field.setValue(Double.parseDouble(param.getValue()));
+                    field.setOriginalValue(Double.parseDouble(param.getValue()));
+                }
+                break;
+            case FLOAT:
+                field.setPropertyEditorType(Float.class);
+                if (param.getValue() != null) {
+                    field.setValue(Float.parseFloat(param.getValue()));
+                    field.setOriginalValue(Float.parseFloat(param.getValue()));
+                }
+                break;
+            case SHORT:
+                field.setPropertyEditorType(Short.class);
+                if (param.getValue() != null) {
+                    field.setValue(Short.parseShort(param.getValue()));
+                    field.setOriginalValue(Short.parseShort(param.getValue()));
+                }
+                break;
+            case BYTE:
+                field.setPropertyEditor(new BytePropertyEditor());
+                if (param.getValue() != null) {
+                    field.setValue(Byte.parseByte(param.getValue()));
+                    field.setOriginalValue(Byte.parseByte(param.getValue()));
+                }
+                break;
+            default:
+            case INTEGER:
+                field.setPropertyEditorType(Integer.class);
+                if (param.getValue() != null) {
+                    field.setValue(Integer.parseInt(param.getValue()));
+                    field.setOriginalValue(Integer.parseInt(param.getValue()));
+                }
+                break;
         }
         return field;
     }
@@ -577,39 +571,29 @@ public class DeviceConfigPanel extends LayoutContainer {
             field.setEnabled(false);
         }
 
-        /*
-         * for (String v : param.getOptions()) {
-         * field.add(v);
-         * }
-         */
-
         Map<String, String> oMap = param.getOptions();
-        Iterator<String> it = oMap.keySet().iterator();
-        while (it.hasNext()) {
-            field.add(it.next());
+        for (String key : oMap.keySet()) {
+            field.add(key);
         }
 
         if (param.getDefault() != null) {
-            // field.setSimpleValue((String) param.getDefault());
-            field.setSimpleValue(getKeyFromValue(oMap, (String) param.getDefault()));
+            field.setSimpleValue(getKeyFromValue(oMap, param.getDefault()));
         }
         if (param.getValue() != null) {
-            // field.setSimpleValue((String) param.getValue());
-            field.setSimpleValue(getKeyFromValue(oMap, (String) param.getValue()));
+            field.setSimpleValue(getKeyFromValue(oMap, param.getValue()));
         }
         return field;
     }
 
     private String getKeyFromValue(Map<String, String> m, String value) {
         String key = "";
-        Iterator<Map.Entry<String, String>> it = m.entrySet().iterator();
 
-        while (it.hasNext()) {
-            Map.Entry<String, String> es = it.next();
-            if (es.getValue().equals(value)) {
-                key = es.getKey();
+        for (Map.Entry<String, String> entry : m.entrySet()) {
+            if (entry.getValue().equals(value)) {
+                key = entry.getKey();
             }
         }
+
         return key;
     }
 
@@ -651,11 +635,9 @@ public class DeviceConfigPanel extends LayoutContainer {
 
     /**
      * Apply the description of a parameter to a field
-     * 
-     * @param param
-     *            the parameter to take the description from
-     * @param field
-     *            the field to apply the description to
+     *
+     * @param param the parameter to take the description from
+     * @param field the field to apply the description to
      */
     private void applyDescription(GwtConfigParameter param, Field<?> field) {
         String description = extractDescription(param);
@@ -674,26 +656,25 @@ public class DeviceConfigPanel extends LayoutContainer {
      * available the second type will contain the field type. If
      * the description only consists of a field type, then the first
      * field will be an empty string.
-     * 
-     * @param param
-     *            the parameter to take the description from
+     *
+     * @param param the parameter to take the description from
      * @return {@code null} when the parameter or description of
-     *         the parameter is {@code null}, otherwise an array containing
-     *         description and field type
+     * the parameter is {@code null}, otherwise an array containing
+     * description and field type
      */
     private static String[] splitDescription(GwtConfigParameter param) {
         if (param == null || param.getDescription() == null) {
-            return null;
+            return new String[0];
         }
         String description = param.getDescription();
         final int idx = description.lastIndexOf('|');
         if (idx < 0) {
-            return new String[] { description };
+            return new String[]{description};
         }
         if (idx < 1) {
-            return new String[] { "", description.substring(idx + 1) };
+            return new String[]{"", description.substring(idx + 1)};
         }
-        return new String[] { description.substring(0, idx), description.substring(idx + 1) };
+        return new String[]{description.substring(0, idx), description.substring(idx + 1)};
     }
 
     /**
@@ -701,14 +682,13 @@ public class DeviceConfigPanel extends LayoutContainer {
      * <br>
      * This cuts of any field type definition at the end of the
      * description
-     * 
-     * @param param
-     *            the parameter to take the description from
+     *
+     * @param param the parameter to take the description from
      * @return only the description information to two to the user
      */
     private static String extractDescription(GwtConfigParameter param) {
         String[] desc = splitDescription(param);
-        if (desc == null) {
+        if (desc.length == 0) {
             return null;
         }
         return desc[0];
@@ -720,14 +700,13 @@ public class DeviceConfigPanel extends LayoutContainer {
      * This method will inspect the field type inside the description
      * and create the correct text field for this configuration
      * parameter.
-     * 
-     * @param param
-     *            the parameter to create a field for
+     *
+     * @param param the parameter to create a field for
      * @return a new field, never returns {@code null}
      */
     private static TextField<String> createTextFieldOrArea(GwtConfigParameter param) {
         String[] desc = splitDescription(param);
-        if (desc != null && desc.length > 1 && desc[1].equals("TextArea")) {
+        if (desc.length > 1 && desc[1].equals("TextArea")) {
             return new KapuaTextArea();
         }
         return new KapuaTextField<String>();
@@ -757,25 +736,22 @@ public class DeviceConfigPanel extends LayoutContainer {
             }
         }
 
+        @Override
         public String validate(Field<?> field, String value) {
-            Integer intValue = null;
+            Integer intValue;
             try {
                 intValue = Integer.valueOf(value);
             } catch (NumberFormatException nfe) {
                 return nfe.getMessage();
             }
-            if (intValue != null) {
-                if (minValue != null) {
-                    if (intValue.intValue() < minValue.intValue()) {
-                        return MessageUtils.get("configMinValue", minValue.intValue());
-                    }
-                }
-                if (maxValue != null) {
-                    if (intValue.intValue() > maxValue.intValue()) {
-                        return MessageUtils.get("configMaxValue", maxValue.intValue());
-                    }
-                }
+
+            if (minValue != null && intValue < minValue) {
+                return MessageUtils.get("configMinValue", minValue);
             }
+            if (maxValue != null && intValue > maxValue) {
+                return MessageUtils.get("configMaxValue", maxValue);
+            }
+
             return null;
         }
     }
@@ -804,25 +780,22 @@ public class DeviceConfigPanel extends LayoutContainer {
             }
         }
 
+        @Override
         public String validate(Field<?> field, String value) {
-            Long longValue = null;
+            Long longValue;
             try {
                 longValue = Long.valueOf(value);
             } catch (NumberFormatException nfe) {
                 return nfe.getMessage();
             }
-            if (longValue != null) {
-                if (minValue != null) {
-                    if (longValue.longValue() < minValue.longValue()) {
-                        return MessageUtils.get("configMinValue", minValue.longValue());
-                    }
-                }
-                if (maxValue != null) {
-                    if (longValue.longValue() > maxValue.longValue()) {
-                        return MessageUtils.get("configMaxValue", maxValue.longValue());
-                    }
-                }
+
+            if (minValue != null && longValue < minValue) {
+                return MessageUtils.get("configMinValue", minValue);
             }
+            if (maxValue != null && longValue > maxValue) {
+                return MessageUtils.get("configMaxValue", maxValue);
+            }
+
             return null;
         }
     }
@@ -851,25 +824,22 @@ public class DeviceConfigPanel extends LayoutContainer {
             }
         }
 
+        @Override
         public String validate(Field<?> field, String value) {
-            Double doubleValue = null;
+            Double doubleValue;
             try {
                 doubleValue = Double.valueOf(value);
             } catch (NumberFormatException nfe) {
                 return nfe.getMessage();
             }
-            if (doubleValue != null) {
-                if (minValue != null) {
-                    if (doubleValue.doubleValue() < minValue.doubleValue()) {
-                        return MessageUtils.get("configMinValue", minValue.doubleValue());
-                    }
-                }
-                if (maxValue != null) {
-                    if (doubleValue.doubleValue() > maxValue.doubleValue()) {
-                        return MessageUtils.get("configMaxValue", maxValue.doubleValue());
-                    }
-                }
+
+            if (minValue != null && doubleValue < minValue) {
+                return MessageUtils.get("configMinValue", minValue);
             }
+            if (maxValue != null && doubleValue > maxValue) {
+                return MessageUtils.get("configMaxValue", maxValue);
+            }
+
             return null;
         }
     }
@@ -898,25 +868,22 @@ public class DeviceConfigPanel extends LayoutContainer {
             }
         }
 
+        @Override
         public String validate(Field<?> field, String value) {
-            Float floatValue = null;
+            Float floatValue;
             try {
                 floatValue = Float.valueOf(value);
             } catch (NumberFormatException nfe) {
                 return nfe.getMessage();
             }
-            if (floatValue != null) {
-                if (minValue != null) {
-                    if (floatValue.floatValue() < minValue.floatValue()) {
-                        return MessageUtils.get("configMinValue", minValue.floatValue());
-                    }
-                }
-                if (maxValue != null) {
-                    if (floatValue.floatValue() > maxValue.floatValue()) {
-                        return MessageUtils.get("configMaxValue", maxValue.floatValue());
-                    }
-                }
+
+            if (minValue != null && floatValue < minValue) {
+                return MessageUtils.get("configMinValue", minValue);
             }
+            if (maxValue != null && floatValue > maxValue) {
+                return MessageUtils.get("configMaxValue", maxValue);
+            }
+
             return null;
         }
     }
@@ -945,6 +912,7 @@ public class DeviceConfigPanel extends LayoutContainer {
             }
         }
 
+        @Override
         public String validate(Field<?> field, String value) {
             Short shortValue = null;
             try {
@@ -952,18 +920,14 @@ public class DeviceConfigPanel extends LayoutContainer {
             } catch (NumberFormatException nfe) {
                 return nfe.getMessage();
             }
-            if (shortValue != null) {
-                if (minValue != null) {
-                    if (shortValue.shortValue() < minValue.shortValue()) {
-                        return MessageUtils.get("configMinValue", minValue.shortValue());
-                    }
-                }
-                if (maxValue != null) {
-                    if (shortValue.shortValue() > maxValue.shortValue()) {
-                        return MessageUtils.get("configMaxValue", maxValue.shortValue());
-                    }
-                }
+
+            if (minValue != null && shortValue < minValue) {
+                return MessageUtils.get("configMinValue", minValue);
             }
+            if (maxValue != null && shortValue > maxValue) {
+                return MessageUtils.get("configMaxValue", maxValue);
+            }
+
             return null;
         }
     }
@@ -992,25 +956,22 @@ public class DeviceConfigPanel extends LayoutContainer {
             }
         }
 
+        @Override
         public String validate(Field<?> field, String value) {
-            Byte byteValue = null;
+            Byte byteValue;
             try {
                 byteValue = Byte.valueOf(value);
             } catch (NumberFormatException nfe) {
                 return nfe.getMessage();
             }
-            if (byteValue != null) {
-                if (minValue != null) {
-                    if (byteValue.byteValue() < minValue.byteValue()) {
-                        return MessageUtils.get("configMinValue", minValue.byteValue());
-                    }
-                }
-                if (maxValue != null) {
-                    if (byteValue.byteValue() > maxValue.byteValue()) {
-                        return MessageUtils.get("configMaxValue", maxValue.byteValue());
-                    }
-                }
+
+            if (minValue != null && byteValue < minValue) {
+                return MessageUtils.get("configMinValue", minValue);
             }
+            if (maxValue != null && byteValue > maxValue) {
+                return MessageUtils.get("configMaxValue", maxValue);
+            }
+
             return null;
         }
     }
@@ -1024,7 +985,7 @@ public class DeviceConfigPanel extends LayoutContainer {
             this.minValue = null;
             if (minValue != null) {
                 try {
-                    this.minValue = Character.valueOf(minValue.charAt(0));
+                    this.minValue = minValue.charAt(0);
                 } catch (NumberFormatException nfe) {
                     FailureHandler.handle(nfe);
                 }
@@ -1032,32 +993,29 @@ public class DeviceConfigPanel extends LayoutContainer {
             this.maxValue = null;
             if (maxValue != null) {
                 try {
-                    this.maxValue = Character.valueOf(maxValue.charAt(0));
+                    this.maxValue = maxValue.charAt(0);
                 } catch (NumberFormatException nfe) {
                     FailureHandler.handle(nfe);
                 }
             }
         }
 
+        @Override
         public String validate(Field<?> field, String value) {
-            Character charValue = null;
+            Character charValue;
             try {
-                charValue = Character.valueOf(value.charAt(0));
+                charValue = value.charAt(0);
             } catch (NumberFormatException nfe) {
                 return nfe.getMessage();
             }
-            if (charValue != null) {
-                if (minValue != null) {
-                    if (charValue.charValue() < minValue.charValue()) {
-                        return MessageUtils.get("configMinValue", minValue.charValue());
-                    }
-                }
-                if (maxValue != null) {
-                    if (charValue.charValue() > maxValue.charValue()) {
-                        return MessageUtils.get("configMaxValue", maxValue.charValue());
-                    }
-                }
+
+            if (minValue != null && charValue < minValue) {
+                return MessageUtils.get("configMinValue", minValue);
             }
+            if (maxValue != null && charValue > maxValue) {
+                return MessageUtils.get("configMaxValue", maxValue);
+            }
+
             return null;
         }
     }
@@ -1084,6 +1042,7 @@ public class DeviceConfigPanel extends LayoutContainer {
             }
         }
 
+        @Override
         public String validate(Field<?> field, String value) {
             if (value.length() > maxValue) {
                 return MessageUtils.get("configMaxValue", (maxValue + 1));
