@@ -122,8 +122,7 @@ public class DeviceTabConfiguration extends KapuaTabItem<GwtDevice> {
         Node node2 = node1.getChild(0);
         if (node2.getNodeType() == Node.ELEMENT_NODE) {
             Element elem = (Element) node2;
-            elem.setAttribute("style",
-                    "border-top: 0px; border-bottom: 0px; border-color: #d0d0d0; background: #eaeaea;");
+            elem.setAttribute("style", "border-top: 0px; border-bottom: 0px; border-color: #d0d0d0; background: #eaeaea;");
         }
     }
 }
