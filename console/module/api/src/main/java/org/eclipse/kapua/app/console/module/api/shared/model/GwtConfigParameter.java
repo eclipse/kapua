@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.shared.model;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.io.Serializable;
 import java.util.Map;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class GwtConfigParameter implements Serializable {
 
@@ -28,7 +28,7 @@ public class GwtConfigParameter implements Serializable {
 
         public static GwtConfigParameterType fromString(String enumString) {
             for (GwtConfigParameterType p : GwtConfigParameterType.values()) {
-                if (p.name().toLowerCase().equals(enumString.toLowerCase())) {
+                if (p.name().equalsIgnoreCase(enumString)) {
                     return p;
                 }
             }

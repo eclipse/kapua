@@ -100,6 +100,8 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
 
     private static final Logger LOG = LoggerFactory.getLogger(GwtDeviceManagementServiceImpl.class);
 
+    private static final String PASSWORD_PLACEHOLDER = "You won't know this secret! :P";
+
     //
     // Packages
     //
@@ -296,10 +298,10 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                     if (ocd != null) {
                         GwtConfigComponent gwtConfig = new GwtConfigComponent();
                         gwtConfig.setId(config.getId());
-                        if(config.getProperties() != null && config.getProperties().get("service.factoryPid") != null) {
+                        if (config.getProperties() != null && config.getProperties().get("service.factoryPid") != null) {
                             String componentName = config.getId().substring(config.getId().lastIndexOf('.') + 1);
                             gwtConfig.setName(componentName);
-                        } else if(config.getId().indexOf('.') == -1) {
+                        } else if (config.getId().indexOf('.') == -1) {
                             gwtConfig.setName(config.getId());
                         } else {
                             gwtConfig.setName(ocd.getName());
@@ -347,7 +349,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                                     if (value != null) {
 
                                         if (cardinality == 0 || cardinality == 1 || cardinality == -1) {
-                                            gwtParam.setValue(value.toString());
+                                            gwtParam.setValue(GwtConfigParameterType.PASSWORD.equals(gwtParam.getType()) ? PASSWORD_PLACEHOLDER : value.toString());
                                         } else {
                                             // this could be an array value
                                             if (value instanceof Object[]) {
@@ -358,7 +360,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                                                         strValues.add(v.toString());
                                                     }
                                                 }
-                                                gwtParam.setValues(strValues.toArray(new String[] {}));
+                                                gwtParam.setValues(strValues.toArray(new String[]{}));
                                             }
                                         }
                                     }
@@ -378,8 +380,8 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
 
     @Override
     public void updateComponentConfiguration(GwtXSRFToken xsrfToken,
-            GwtDevice gwtDevice,
-            GwtConfigComponent gwtCompConfig)
+                                             GwtDevice gwtDevice,
+                                             GwtConfigComponent gwtCompConfig)
             throws GwtKapuaException {
         //
         // Checking validity of the given XSRF Token
@@ -401,12 +403,18 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             if (cardinality == 0 || cardinality == 1 || cardinality == -1) {
 
                 String strValue = gwtConfigParam.getValue();
+
+                if (GwtConfigParameterType.PASSWORD.equals(gwtConfigParam.getType()) && PASSWORD_PLACEHOLDER.equals(strValue)) {
+                    continue;
+                }
+
                 objValue = getObjectValue(gwtConfigParam, strValue);
             } else {
 
                 String[] strValues = gwtConfigParam.getValues();
                 objValue = getObjectValue(gwtConfigParam, strValues);
             }
+
             compProps.put(gwtConfigParam.getId(), objValue);
         }
         compConfig.setProperties(compProps);
@@ -454,10 +462,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             Collections.sort(snapshotIds.getSnapshots(), new Comparator<DeviceSnapshot>() {
 
                 @Override
-                public int compare(DeviceSnapshot arg0,
-                        DeviceSnapshot arg1) {
-                    DeviceSnapshot snapshotId0 = arg0;
-                    DeviceSnapshot snapshotId1 = arg1;
+                public int compare(DeviceSnapshot snapshotId0, DeviceSnapshot snapshotId1) {
                     return -1 * snapshotId0.getTimestamp().compareTo(snapshotId1.getTimestamp()); // Descending order
                 }
             });
@@ -668,36 +673,36 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
         if (strValue != null) {
             GwtConfigParameterType gwtType = gwtConfigParam.getType();
             switch (gwtType) {
-            case LONG:
-                objValue = Long.parseLong(strValue);
-                break;
-            case DOUBLE:
-                objValue = Double.parseDouble(strValue);
-                break;
-            case FLOAT:
-                objValue = Float.parseFloat(strValue);
-                break;
-            case INTEGER:
-                objValue = Integer.parseInt(strValue);
-                break;
-            case SHORT:
-                objValue = Short.parseShort(strValue);
-                break;
-            case BYTE:
-                objValue = Byte.parseByte(strValue);
-                break;
-            case BOOLEAN:
-                objValue = Boolean.parseBoolean(strValue);
-                break;
-            case PASSWORD:
-                objValue = new Password(strValue);
-                break;
-            case CHAR:
-                objValue = strValue.charAt(0);
-                break;
-            case STRING:
-                objValue = strValue;
-                break;
+                case LONG:
+                    objValue = Long.parseLong(strValue);
+                    break;
+                case DOUBLE:
+                    objValue = Double.parseDouble(strValue);
+                    break;
+                case FLOAT:
+                    objValue = Float.parseFloat(strValue);
+                    break;
+                case INTEGER:
+                    objValue = Integer.parseInt(strValue);
+                    break;
+                case SHORT:
+                    objValue = Short.parseShort(strValue);
+                    break;
+                case BYTE:
+                    objValue = Byte.parseByte(strValue);
+                    break;
+                case BOOLEAN:
+                    objValue = Boolean.parseBoolean(strValue);
+                    break;
+                case PASSWORD:
+                    objValue = new Password(strValue);
+                    break;
+                case CHAR:
+                    objValue = strValue.charAt(0);
+                    break;
+                case STRING:
+                    objValue = strValue;
+                    break;
             }
         }
         return objValue;
@@ -707,63 +712,63 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
         List<Object> values = new ArrayList<Object>();
         GwtConfigParameterType type = gwtConfigParam.getType();
         switch (type) {
-        case BOOLEAN:
-            for (String value : defaultValues) {
-                values.add(Boolean.valueOf(value));
-            }
-            return values.toArray(new Boolean[] {});
+            case BOOLEAN:
+                for (String value : defaultValues) {
+                    values.add(Boolean.valueOf(value));
+                }
+                return values.toArray(new Boolean[]{});
 
-        case BYTE:
-            for (String value : defaultValues) {
-                values.add(Byte.valueOf(value));
-            }
-            return values.toArray(new Byte[] {});
+            case BYTE:
+                for (String value : defaultValues) {
+                    values.add(Byte.valueOf(value));
+                }
+                return values.toArray(new Byte[]{});
 
-        case CHAR:
-            for (String value : defaultValues) {
-                values.add(value.charAt(0));
-            }
-            return values.toArray(new Character[] {});
+            case CHAR:
+                for (String value : defaultValues) {
+                    values.add(value.charAt(0));
+                }
+                return values.toArray(new Character[]{});
 
-        case DOUBLE:
-            for (String value : defaultValues) {
-                values.add(Double.valueOf(value));
-            }
-            return values.toArray(new Double[] {});
+            case DOUBLE:
+                for (String value : defaultValues) {
+                    values.add(Double.valueOf(value));
+                }
+                return values.toArray(new Double[]{});
 
-        case FLOAT:
-            for (String value : defaultValues) {
-                values.add(Float.valueOf(value));
-            }
-            return values.toArray(new Float[] {});
+            case FLOAT:
+                for (String value : defaultValues) {
+                    values.add(Float.valueOf(value));
+                }
+                return values.toArray(new Float[]{});
 
-        case INTEGER:
-            for (String value : defaultValues) {
-                values.add(Integer.valueOf(value));
-            }
-            return values.toArray(new Integer[] {});
+            case INTEGER:
+                for (String value : defaultValues) {
+                    values.add(Integer.valueOf(value));
+                }
+                return values.toArray(new Integer[]{});
 
-        case LONG:
-            for (String value : defaultValues) {
-                values.add(Long.valueOf(value));
-            }
-            return values.toArray(new Long[] {});
+            case LONG:
+                for (String value : defaultValues) {
+                    values.add(Long.valueOf(value));
+                }
+                return values.toArray(new Long[]{});
 
-        case SHORT:
-            for (String value : defaultValues) {
-                values.add(Short.valueOf(value));
-            }
-            return values.toArray(new Short[] {});
+            case SHORT:
+                for (String value : defaultValues) {
+                    values.add(Short.valueOf(value));
+                }
+                return values.toArray(new Short[]{});
 
-        case PASSWORD:
-            for (String value : defaultValues) {
-                values.add(new Password(value));
-            }
-            return values.toArray(new Password[] {});
+            case PASSWORD:
+                for (String value : defaultValues) {
+                    values.add(new Password(value));
+                }
+                return values.toArray(new Password[]{});
 
-        case STRING:
-        default:
-            return defaultValues;
+            case STRING:
+            default:
+                return defaultValues;
         }
     }
 

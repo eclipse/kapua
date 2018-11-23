@@ -106,9 +106,9 @@ public class DeviceConfigComponents extends LayoutContainer {
 
     private GwtSession gwtSession;
 
-    public DeviceConfigComponents(GwtSession currentSession,
-            DeviceTabConfiguration tabConfig) {
+    public DeviceConfigComponents(GwtSession currentSession, DeviceTabConfiguration tabConfig) {
         this.tabConfig = tabConfig;
+
         dirty = false;
         initialized = false;
         gwtSession = currentSession;
@@ -287,10 +287,9 @@ public class DeviceConfigComponents extends LayoutContainer {
 
             @SuppressWarnings("rawtypes")
             @Override
-            public void handleEvent(BaseEvent be) {
+            public void handleEvent(BaseEvent theEvent) {
 
-                BaseEvent theEvent = be;
-                SelectionEvent<ModelData> se = (SelectionEvent<ModelData>) be;
+                SelectionEvent<ModelData> se = (SelectionEvent<ModelData>) theEvent;
 
                 final GwtConfigComponent componentToSwitchTo = (GwtConfigComponent) se.getModel();
                 if (devConfPanel != null && devConfPanel.isDirty()) {
@@ -301,7 +300,7 @@ public class DeviceConfigComponents extends LayoutContainer {
                     // need to reselect the current entry
                     // as the BeforeSelect event cleared it
                     // we need to do this without raising events
-                    TreePanelSelectionModel selectionModel = (TreePanelSelectionModel) tree.getSelectionModel();
+                    TreePanelSelectionModel selectionModel = tree.getSelectionModel();
                     selectionModel.setFiresEvents(false);
                     selectionModel.select(false, devConfPanel.getConfiguration());
                     selectionModel.setFiresEvents(true);
@@ -328,7 +327,7 @@ public class DeviceConfigComponents extends LayoutContainer {
                     // this is needed to select the item in the Tree
                     // Temporarly disable the firing of the selection events
                     // to avoid an infinite loop as BeforeSelect would be invoked again.
-                    TreePanelSelectionModel selectionModel = (TreePanelSelectionModel) tree.getSelectionModel();
+                    TreePanelSelectionModel selectionModel = tree.getSelectionModel();
                     selectionModel.setFiresEvents(false);
                     selectionModel.select(false, componentToSwitchTo);
 
@@ -471,11 +470,6 @@ public class DeviceConfigComponents extends LayoutContainer {
                         Dialog dialog = ce.getDialog();
                         if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
 
-                            // mark the whole config panel dirty and for reload
-
-                            // Why forcing the entity again?
-                            // tabConfig.setEntity(selectedDevice);
-
                             finalDevConfPanel.mask(MSGS.applying());
                             tree.mask();
                             apply.setEnabled(false);
@@ -604,9 +598,6 @@ public class DeviceConfigComponents extends LayoutContainer {
     // --------------------------------------------------------------------------------------
 
     private class DataLoadListener extends KapuaLoadListener {
-
-        public DataLoadListener() {
-        }
 
         @Override
         public void loaderBeforeLoad(LoadEvent le) {
