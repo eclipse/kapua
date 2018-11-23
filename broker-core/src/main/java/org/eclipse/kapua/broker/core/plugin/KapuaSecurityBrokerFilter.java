@@ -106,6 +106,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     public static final String VT_TOPIC_PREFIX = "VirtualTopic.";
 
     private static final String CONNECT_MESSAGE_TOPIC_PATTERN = "VirtualTopic.%s.%s.%s.MQTT.CONNECT";
+    private static final String DISCONNECT_MESSAGE_TOPIC_PATTERN = "VirtualTopic.%s.%s.%s.MQTT.DISCONNECT";
     private static final String BROKER_IP_RESOLVER_CLASS_NAME;
     private static final String BROKER_ID_RESOLVER_CLASS_NAME;
     private static final String AUTHENTICATOR_CLASS_NAME;
@@ -149,6 +150,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         options.put(Authenticator.ADDRESS_PREFIX_KEY, VT_TOPIC_PREFIX);
         options.put(Authenticator.ADDRESS_CLASSIFIER_KEY, SystemSetting.getInstance().getMessageClassifier());
         options.put(Authenticator.ADDRESS_CONNECT_PATTERN_KEY, CONNECT_MESSAGE_TOPIC_PATTERN);
+        options.put(Authenticator.ADDRESS_DISCONNECT_PATTERN_KEY, DISCONNECT_MESSAGE_TOPIC_PATTERN);
     }
 
     @Override

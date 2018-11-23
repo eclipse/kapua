@@ -12,6 +12,7 @@
 package org.eclipse.kapua.broker.core.plugin.authentication;
 
 import com.codahale.metrics.Timer.Context;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.message.system.DefaultSystemMessageCreator;
 import org.eclipse.kapua.broker.core.message.system.SystemMessageCreator;
@@ -90,12 +91,13 @@ public class DefaultAuthenticator implements Authenticator {
 
     @Override
     public void disconnect(KapuaConnectionContext kcc, Throwable error) {
-        if (!isAdminUser(kcc)) {
+        if (isAdminUser(kcc)) {
             clientMetric.getDisconnectionKapuasys().inc();
-            userAuthenticationLogic.disconnect(kcc, error);
+            adminAuthenticationLogic.disconnect(kcc, error);
         } else {
             clientMetric.getDisconnectionClient().inc();
-            adminAuthenticationLogic.disconnect(kcc, error);
+            userAuthenticationLogic.disconnect(kcc, error);
+            sendDisconnectMessage(kcc);
         }
     }
 
@@ -107,6 +109,27 @@ public class DefaultAuthenticator implements Authenticator {
         try {
             producerWrapper = JmsAssistantProducerPool.getIOnstance(DESTINATIONS.NO_DESTINATION).borrowObject();
             producerWrapper.send(String.format((String) options.get(Authenticator.ADDRESS_CONNECT_PATTERN_KEY),
+                    SystemSetting.getInstance().getMessageClassifier(), kcc.getAccountName(), kcc.getClientId()),
+                    message,
+                    kcc);
+        } catch (Exception e) {
+            logger.error("Exception sending the connect message: {}", e.getMessage(), e);
+        } finally {
+            if (producerWrapper != null) {
+                JmsAssistantProducerPool.getIOnstance(DESTINATIONS.NO_DESTINATION).returnObject(producerWrapper);
+            }
+        }
+        loginSendLogingUpdateMsgTimeContex.stop();
+    }
+
+    @Override
+    public void sendDisconnectMessage(KapuaConnectionContext kcc) {
+        Context loginSendLogingUpdateMsgTimeContex = loginMetric.getSendLoginUpdateMsgTime().time();
+        String message = systemMessageCreator.createMessage(SystemMessageType.DISCONNECT, kcc);
+        JmsAssistantProducerWrapper producerWrapper = null;
+        try {
+            producerWrapper = JmsAssistantProducerPool.getIOnstance(DESTINATIONS.NO_DESTINATION).borrowObject();
+            producerWrapper.send(String.format((String) options.get(Authenticator.ADDRESS_DISCONNECT_PATTERN_KEY),
                     SystemSetting.getInstance().getMessageClassifier(), kcc.getAccountName(), kcc.getClientId()),
                     message,
                     kcc);

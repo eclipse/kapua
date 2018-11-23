@@ -101,6 +101,7 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
     @Override
     public void disconnect(KapuaConnectionContext kcc, Throwable error) {
         boolean stealingLinkDetected = false;
+        logger.debug("Old connection id: {} - new connection id: {} - error: {} - error cause: {}", kcc.getOldConnectionId(), kcc.getConnectionId(), error, (error!=null ? error.getCause() : "NULL"), error);
         if (kcc.getOldConnectionId() != null) {
             stealingLinkDetected = !kcc.getOldConnectionId().equals(kcc.getConnectionId());
         } else {
@@ -119,18 +120,16 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
                     kcc.getConnectionId(),
                     kcc.getClientIp());
         } else {
-
             DeviceConnection deviceConnection;
             try {
                 deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(kcc.getScopeId(), kcc.getClientId()));
             } catch (Exception e) {
                 throw new ShiroException("Error while looking for device connection on updating the device!", e);
             }
-
             if (deviceConnection != null) {
                 // the device connection must be not null
                 // update device connection (if the disconnection wasn't caused by a stealing link)
-                if (error instanceof KapuaDuplicateClientIdException) {
+                if (error instanceof KapuaDuplicateClientIdException || (error!=null && error.getCause() instanceof KapuaDuplicateClientIdException)) {
                     logger.debug("Skip device connection status update since is coming from a stealing link condition. Client id: {} - Connection id: {}",
                             kcc.getClientId(),
                             kcc.getConnectionId());
