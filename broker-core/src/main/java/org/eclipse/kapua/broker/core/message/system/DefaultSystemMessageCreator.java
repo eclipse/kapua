@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,12 +21,22 @@ import org.eclipse.kapua.broker.core.plugin.KapuaConnectionContext;
 public class DefaultSystemMessageCreator implements SystemMessageCreator {
 
     private static final String CONNECT_MESSAGE_TEMPLATE = "Device: [%s] - connected by user: [%s]";
+    private static final String DISCONNECT_MESSAGE_TEMPLATE = "Device: [%s] - disconnected by user: [%s]";
 
     @Override
     public String createMessage(SystemMessageType systemMessageType, KapuaConnectionContext kbc) {
-        return String.format(CONNECT_MESSAGE_TEMPLATE,
-                kbc.getClientId(),
-                kbc.getUserName());
+        switch (systemMessageType) {
+        case CONNECT:
+            return String.format(CONNECT_MESSAGE_TEMPLATE,
+                    kbc.getClientId(),
+                    kbc.getUserName());
+        case DISCONNECT:
+            return String.format(DISCONNECT_MESSAGE_TEMPLATE,
+                    kbc.getClientId(),
+                    kbc.getUserName());
+        default:
+            return "";
+        }
     }
 
 }
