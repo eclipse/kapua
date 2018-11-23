@@ -26,7 +26,6 @@ import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.SplitButton;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
-import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TimeField;
@@ -242,8 +241,9 @@ public class DateRangeSelector extends LayoutContainer {
         final FormPanel form = new FormPanel();
         form.setHeaderVisible(false);
 
-        final DateField startDateField = new DateField();
+        final KapuaDateField startDateField = new KapuaDateField();
         startDateField.setFieldLabel(MSGS.dataDateRangeStartDate());
+        startDateField.setMaxLength(10);
         startDateField.setAllowBlank(false);
         startDateField.setValue(start);
         startDateField.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
@@ -259,8 +259,9 @@ public class DateRangeSelector extends LayoutContainer {
         startTimeField.setEditable(false);
         form.add(startTimeField, formData);
 
-        final DateField endDateField = new DateField();
+        final KapuaDateField endDateField = new KapuaDateField();
         endDateField.setFieldLabel(MSGS.dataDateRangeStopDate());
+        endDateField.setMaxLength(10);
         endDateField.setAllowBlank(false);
         endDateField.setValue(end);
         endDateField.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
@@ -329,7 +330,8 @@ public class DateRangeSelector extends LayoutContainer {
                 return null;
             }
         });
-
+        endDateField.setMaxLength(10);
+        startDateField.setMaxLength(10);
         dialog.add(form);
 
         dialog.getButtonById("ok").addSelectionListener(new SelectionListener<ButtonEvent>() {

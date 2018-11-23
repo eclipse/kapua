@@ -16,7 +16,6 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.TimeField;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.core.client.GWT;
@@ -27,6 +26,7 @@ import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ValidationMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaDateField;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaNumberField;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
@@ -53,9 +53,9 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
 
     private final String jobId;
     protected final KapuaTextField<String> triggerName;
-    protected final DateField startsOn;
+    protected final KapuaDateField startsOn;
     protected final TimeField startsOnTime;
-    protected final DateField endsOn;
+    protected final KapuaDateField endsOn;
     protected final TimeField endsOnTime;
     protected final KapuaNumberField retryInterval;
     protected final KapuaTextField<String> cronExpression;
@@ -67,11 +67,13 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         this.jobId = jobId;
 
         triggerName = new KapuaTextField<String>();
-        startsOn = new DateField();
+        startsOn = new KapuaDateField();
+        startsOn.setMaxLength(10);
         startsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         startsOnTime = new TimeField();
         startsOnTime.setEditable(false);
-        endsOn = new DateField();
+        endsOn = new KapuaDateField();
+        endsOn.setMaxLength(10);
         endsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         endsOnTime = new TimeField();
         endsOnTime.setEditable(false);
