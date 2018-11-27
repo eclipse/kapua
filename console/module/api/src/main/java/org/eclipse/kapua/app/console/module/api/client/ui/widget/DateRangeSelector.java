@@ -330,8 +330,7 @@ public class DateRangeSelector extends LayoutContainer {
                 return null;
             }
         });
-        endDateField.setMaxLength(10);
-        startDateField.setMaxLength(10);
+
         dialog.add(form);
 
         dialog.getButtonById("ok").addSelectionListener(new SelectionListener<ButtonEvent>() {
