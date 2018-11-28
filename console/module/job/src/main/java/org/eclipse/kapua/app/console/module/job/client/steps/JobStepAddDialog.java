@@ -213,8 +213,9 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         for (GwtJobStepProperty property : gwtJobStepDefinition.getStepProperties()) {
             String propertyType = property.getPropertyType();
             if (propertyType.equals(String.class.getName()) || property.isEnum() || KAPUA_ID_CLASS_NAME.equals(propertyType)) {
-                TextField<String> textField = new TextField<String>();
+                KapuaTextField<String> textField = new KapuaTextField<String>();
                 textField.setFieldLabel(camelCaseToNormalCase(property.getPropertyName()));
+                textField.setMaxLength(255);
                 textField.setEmptyText(KapuaSafeHtmlUtils.htmlUnescape(property.getPropertyValue()));
                 textField.setData(PROPERTY_TYPE, property.getPropertyType());
                 textField.setData(PROPERTY_NAME, property.getPropertyName());
