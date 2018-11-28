@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Device that connects to MQTT broker and listens for messages as kapua-sys user
@@ -32,6 +33,8 @@ import java.util.Map;
  * Used in Cucumber for writing Gherkin scenarios for broker service.
  */
 public class MqttDevice {
+
+    private static final AtomicInteger COUNT = new AtomicInteger(0);
 
     /**
      * Logger.
@@ -46,7 +49,7 @@ public class MqttDevice {
     /**
      * Listening mqtt client name.
      */
-    private static final java.lang.String LISTENER_NAME = "ListenerClient";
+    private static final java.lang.String LISTENER_NAME = "ListenerClient_";
 
     /**
      * System user under which Device is listening for messages.
@@ -84,6 +87,8 @@ public class MqttDevice {
      */
     private MqttClient subscribedClient;
 
+    private String clientId;
+
     /**
      * Map for storing received messages that clients are listening to.
      * It is Map of Maps, first key is clientId. Key in second map is
@@ -99,6 +104,7 @@ public class MqttDevice {
     public MqttDevice() {
 
         mqttClients = new HashMap<>();
+        clientId = LISTENER_NAME + COUNT.incrementAndGet();
     }
 
     /**
@@ -110,7 +116,7 @@ public class MqttDevice {
         subscriberOpts.setUserName(SYS_USER);
         subscriberOpts.setPassword(SYS_PASSWORD.toCharArray());
         try {
-            subscribedClient = new MqttClient(BROKER_URI, LISTENER_NAME,
+            subscribedClient = new MqttClient(BROKER_URI, clientId,
                     new MemoryPersistence());
             subscribedClient.connect(subscriberOpts);
             subscribedClient.subscribe(NO_TOPIC_FILTER, DEFAULT_QOS);
@@ -121,24 +127,24 @@ public class MqttDevice {
         subscribedClient.setCallback(new MqttCallback() {
             @Override
             public void connectionLost(Throwable throwable) {
-                logger.info("Listener connection to broker lost. {}", throwable.getMessage(), throwable);
+                logger.info("(Client {}) Listener connection to broker lost. {}", clientId, throwable.getMessage(), throwable);
             }
 
             @Override
             public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-                logger.info("Message arrived in Listener with topic: {}", topic);
+                logger.info("(Client {}) - Message arrived in Listener with topic: {}", clientId, topic);
                 // exclude the connect messages sent by the broker (that may affect the tests)
                 // this messages can be received by this callback before the listenerReceivedMqttMessage is properly initialized. So a check for null should be performed
                 // TODO manage this client in a better way, so the list of the received messages should be internal and exposed as getter to the caller.
                 if (listenerReceivedMqttMessage != null) {
-                    if (!topic.contains("MQTT/CONNECT")) {
+                    if (!topic.contains("MQTT/CONNECT") || topic.contains("MQTT/DISCONNECT")) {
                         listenerReceivedMqttMessage.clear();
                         listenerReceivedMqttMessage.put(topic, new String(mqttMessage.getPayload()));
                     } else {
-                        logger.info("Received CONNECT message. The message will be discarded!");
+                        logger.info("(Client {}) - Received CONNECT/DISCONNECT message. The message will be discarded!", clientId);
                     }
                 } else {
-                    logger.info("Received message map is null. The message is not stored!");
+                    logger.info("(Client {}) - Received message map is null. The message is not stored!", clientId);
                 }
             }
 
@@ -153,7 +159,7 @@ public class MqttDevice {
      * Disconnect Device mqtt subscriber that listens on mqtt broker.
      */
     public void mqttSubscriberDisconnect() {
-
+        logger.info("(Client {}) - Unsubscribing", clientId);
         try {
             try (final Suppressed<Exception> s = Suppressed.withException()) {
                 s.run(subscribedClient::disconnect);
@@ -217,7 +223,7 @@ public class MqttDevice {
      * Disconnect Device mqtt client that listens and sends messages to mqtt broker.
      */
     public void mqttClientsDisconnect() {
-
+        logger.info("(Client {}) - Disconnecting", clientId);
         for (Map.Entry<String, MqttClient> mqttClient : mqttClients.entrySet()) {
             try {
                 try (final Suppressed<Exception> s = Suppressed.withException()) {

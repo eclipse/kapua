@@ -396,8 +396,8 @@ Feature: Broker ACL tests
     Given I expect the exception "MqttException" with the text "*"
     When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/acme/foo/bar/NOTIFY/client-1"
 #    Then An exception was thrown
-#      And clients are disconnected
-#      And Mqtt Device is stoped
+      And clients are disconnected
+      And Mqtt Device is stoped
 #
 # Data view
 #

@@ -28,6 +28,7 @@ public interface Authenticator {
     String ADDRESS_CLASSIFIER_KEY = "address_classifier";
     String ADDRESS_PREFIX_KEY = "address_prefix";
     String ADDRESS_CONNECT_PATTERN_KEY = "address_connect_pattern";
+    String ADDRESS_DISCONNECT_PATTERN_KEY = "address_disconnect_pattern";
 
     /**
      * Execute the connect logic returning the authorization list (ACL)
@@ -55,5 +56,12 @@ public interface Authenticator {
      * @param kcc
      */
     public abstract void sendConnectMessage(KapuaConnectionContext kcc);
+
+    /**
+     * Send the disconnect message (this message is mainly for internal use)
+     * 
+     * @param kcc
+     */
+    public abstract void sendDisconnectMessage(KapuaConnectionContext kcc);
 
 }
