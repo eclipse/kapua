@@ -18,9 +18,9 @@
         </encoder>
     </appender>
 
-    <logger name="liquibase" level="WARN" />
+    <logger name="liquibase" level="DEBUG" />
 
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>

@@ -1,3 +1,10 @@
+commons:
+  db:
+    schema:
+      update: true
+    connection:
+      host: localhost
+      port:
 hono:
   app:
     type: kapua
@@ -7,7 +14,7 @@ hono:
     startupTimeout: 90
   auth:
     host: localhost #hono-service-auth.hono
-    port: 5671
+    port: 35671
     hostnameVerificationRequired: false
     keyPath: src/test/resources/certificates/device-registry-key.pem
     certPath: src/main/resources/certificates/jwt/device-registry-cert.pem
@@ -17,6 +24,7 @@ hono:
       certPath: src/main/resources/auth-server-cert.pem
   registry:
     amqp:
+      port: 25671
       insecurePortEnabled: true
       insecurePortBindAddress: 0.0.0.0
       insecurePort: 25672
@@ -49,4 +57,3 @@ management:
     export:
       graphite:
         enabled: false
-    
