@@ -5,7 +5,7 @@ This section describes the single sign-on integration of Eclipse Kapua.
 ## OpenShift
 
 This project provides a template to bootstrap single sign-on based on [Keycloak](http://keycloak.org).
-The scripts for this are located in the directory `kapua/deployments/openshift/sso`.
+The scripts for this are located in the directory `kapua/deployment/openshift/sso`.
 
 Assuming you have already installed Kapua into OpenShift, it is possible to run the script `deploy`, which
 will create a new build and deployment configuration in OpenShift. This is based on the official Keycloak Docker
