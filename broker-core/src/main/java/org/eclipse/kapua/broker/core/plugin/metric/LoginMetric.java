@@ -28,6 +28,7 @@ public class LoginMetric {
     private Counter normalUserAttempt;
     private Counter stealingLinkConnect;
     private Counter stealingLinkDisconnect;
+    private Counter adminStealingLinkDisconnect;
     protected Counter remoteStealingLinkDisconnect;
     private Timer addConnectionTime;
     private Timer normalUserTime;
@@ -54,6 +55,7 @@ public class LoginMetric {
         normalUserAttempt = metricsService.getCounter("security", "login", "normal", "count");
         stealingLinkConnect = metricsService.getCounter("security", "login", "stealing_link", "connect", "count");
         stealingLinkDisconnect = metricsService.getCounter("security", "login", "stealing_link", "disconnect", "count");
+        adminStealingLinkDisconnect = metricsService.getCounter("security", "login", "admin_stealing_link", "disconnect", "count");
         remoteStealingLinkDisconnect = metricsService.getCounter("security", "login", "remote_stealing_link", "disconnect", "count");
         // login time
         addConnectionTime = metricsService.getTimer("security", "login", "add_connection", "time", "s");
@@ -101,6 +103,14 @@ public class LoginMetric {
 
     public Counter getRemoteStealingLinkDisconnect() {
         return remoteStealingLinkDisconnect;
+    }
+
+    public Counter getAdminStealingLinkDisconnect() {
+        return adminStealingLinkDisconnect;
+    }
+
+    public void setAdminStealingLinkDisconnect(Counter adminStealingLinkDisconnect) {
+        this.adminStealingLinkDisconnect = adminStealingLinkDisconnect;
     }
 
     public Timer getAddConnectionTime() {

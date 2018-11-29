@@ -71,9 +71,11 @@ public class KapuaConnectionContext {
         }
     }
 
-    public KapuaConnectionContext(String brokerId, KapuaPrincipal kapuaPrincipal, ConnectionInfo info, String fullClientIdPattern) {
+    public KapuaConnectionContext(String brokerId, String brokerIpOrHostName, KapuaPrincipal kapuaPrincipal, String accountName, ConnectionInfo info, String fullClientIdPattern) {
         authDestinations = new ArrayList<>();
         this.brokerId = brokerId;
+        this.brokerIpOrHostName = brokerIpOrHostName;
+        this.accountName = accountName;
         userName = info.getUserName();
         clientId = kapuaPrincipal.getClientId();
         scopeId = kapuaPrincipal.getAccountId();

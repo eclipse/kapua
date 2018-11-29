@@ -101,8 +101,10 @@ public abstract class AuthenticationLogic {
      *
      * @param kcc
      * @param error
+     * @return true send disconnect message (if the disconnection is a clean disconnection)
+     *         false don't send disconnect message (the disconnection is caused by a stealing link or the device is currently connected to another node)
      */
-    public abstract void disconnect(KapuaConnectionContext kcc, Throwable error);
+    public abstract boolean disconnect(KapuaConnectionContext kcc, Throwable error);
 
     /**
      * @param kcc
