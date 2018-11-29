@@ -126,7 +126,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         fieldSet.add(accountNameLabel, accountFieldsetFormData);
 
         accountNameField.setAllowBlank(false);
-        accountNameField.setMaxLength(255);
+        accountNameField.setMaxLength(50);
         accountNameField.setName("accountName");
         accountNameField.setFieldLabel("* " + MSGS.accountFormName());
         accountNameField.setValidator(new TextFieldValidator(accountNameField, FieldType.SIMPLE_NAME));
