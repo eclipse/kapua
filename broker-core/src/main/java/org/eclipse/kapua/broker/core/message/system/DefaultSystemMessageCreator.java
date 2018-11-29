@@ -11,7 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.message.system;
 
+import java.util.Map;
+
 import org.eclipse.kapua.broker.core.plugin.KapuaConnectionContext;
+
+import com.google.common.base.Splitter;
 
 /**
  * Default system message creator
@@ -20,23 +24,31 @@ import org.eclipse.kapua.broker.core.plugin.KapuaConnectionContext;
  */
 public class DefaultSystemMessageCreator implements SystemMessageCreator {
 
-    private static final String CONNECT_MESSAGE_TEMPLATE = "Device: [%s] - connected by user: [%s]";
-    private static final String DISCONNECT_MESSAGE_TEMPLATE = "Device: [%s] - disconnected by user: [%s]";
+    private static final String FIELD_SEPARATOR = ",,";
+    private static final String PAIR_SEPARATOR = ",";
+    private static final String DEVICE_ID_KEY = "DeviceId";
+    private static final String EVENT_KEY = "Event";
+    private static final String USERNAME_KEY = "Username";
 
     @Override
     public String createMessage(SystemMessageType systemMessageType, KapuaConnectionContext kbc) {
-        switch (systemMessageType) {
-        case CONNECT:
-            return String.format(CONNECT_MESSAGE_TEMPLATE,
-                    kbc.getClientId(),
-                    kbc.getUserName());
-        case DISCONNECT:
-            return String.format(DISCONNECT_MESSAGE_TEMPLATE,
-                    kbc.getClientId(),
-                    kbc.getUserName());
-        default:
-            return "";
-        }
+        StringBuilder builder = new StringBuilder();
+        builder.append(EVENT_KEY).append(PAIR_SEPARATOR).append(systemMessageType.name());
+        builder.append(FIELD_SEPARATOR).append(DEVICE_ID_KEY).append(PAIR_SEPARATOR).append(kbc.getClientId());
+        builder.append(FIELD_SEPARATOR).append(USERNAME_KEY).append(PAIR_SEPARATOR).append(kbc.getUserName());
+        return builder.toString();
+    }
+
+    public Map<String, String> convertFrom(String message) {
+         return Splitter.on(FIELD_SEPARATOR).withKeyValueSeparator(PAIR_SEPARATOR).split(message);
+    }
+
+    public String getDeviceId(Map<String, String> map) {
+        return map.get(DEVICE_ID_KEY);
+    }
+
+    public String getUsername(Map<String, String> map) {
+        return map.get(USERNAME_KEY);
     }
 
 }

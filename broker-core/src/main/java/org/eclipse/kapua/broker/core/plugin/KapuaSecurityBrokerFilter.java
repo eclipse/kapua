@@ -97,7 +97,6 @@ import java.util.concurrent.Future;
 public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
     protected static final Logger logger = LoggerFactory.getLogger(KapuaSecurityBrokerFilter.class);
-
     protected static final List<String> VT_DURABLE_PREFIX = ImmutableList.of("Consumer.{0}:AT_LEAST_ONCE.{1}", "Consumer.{0}:EXACTLY_ONCE.{1}");
     protected static final String VT_CONSUMER_PREFIX = "Consumer";
 
@@ -484,7 +483,19 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             try {
                 KapuaSecurityContext kapuaSecurityContext = getKapuaSecurityContext(context);
                 KapuaPrincipal kapuaPrincipal = ((KapuaPrincipal) kapuaSecurityContext.getMainPrincipal());
-                kcc = new KapuaConnectionContext(brokerIdResolver.getBrokerId(this), kapuaPrincipal, info, MULTI_ACCOUNT_CLIENT_ID);
+                //get account name
+                final Account account;
+                try {
+                    account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(kapuaPrincipal.getAccountId()));
+                } catch (Exception e) {
+                    // to preserve the original exception message (if possible)
+                    if (e instanceof AuthenticationException) {
+                        throw (AuthenticationException) e;
+                    } else {
+                        throw new ShiroException("Error while find account!", e);
+                    }
+                }
+                kcc = new KapuaConnectionContext(brokerIdResolver.getBrokerId(this), brokerIpResolver.getBrokerIpOrHostName(), kapuaPrincipal, account.getName(), info, MULTI_ACCOUNT_CLIENT_ID);
                 kcc.updateOldConnectionId(CONNECTION_MAP.get(kcc.getFullClientId()));
                 // TODO fix the kapua session when run as feature will be implemented
                 KapuaSecurityUtils.setSession(new KapuaSession(kapuaPrincipal));
