@@ -96,51 +96,45 @@ public class DefaultAuthenticator implements Authenticator {
             adminAuthenticationLogic.disconnect(kcc, error);
         } else {
             clientMetric.getDisconnectionClient().inc();
-            userAuthenticationLogic.disconnect(kcc, error);
-            sendDisconnectMessage(kcc);
+            if (userAuthenticationLogic.disconnect(kcc, error)) {
+                sendDisconnectMessage(kcc);
+            }
         }
     }
 
     @Override
     public void sendConnectMessage(KapuaConnectionContext kcc) {
-        Context loginSendLogingUpdateMsgTimeContex = loginMetric.getSendLoginUpdateMsgTime().time();
-        String message = systemMessageCreator.createMessage(SystemMessageType.CONNECT, kcc);
-        JmsAssistantProducerWrapper producerWrapper = null;
-        try {
-            producerWrapper = JmsAssistantProducerPool.getIOnstance(DESTINATIONS.NO_DESTINATION).borrowObject();
-            producerWrapper.send(String.format((String) options.get(Authenticator.ADDRESS_CONNECT_PATTERN_KEY),
-                    SystemSetting.getInstance().getMessageClassifier(), kcc.getAccountName(), kcc.getClientId()),
-                    message,
-                    kcc);
-        } catch (Exception e) {
-            logger.error("Exception sending the connect message: {}", e.getMessage(), e);
-        } finally {
-            if (producerWrapper != null) {
-                JmsAssistantProducerPool.getIOnstance(DESTINATIONS.NO_DESTINATION).returnObject(producerWrapper);
-            }
-        }
-        loginSendLogingUpdateMsgTimeContex.stop();
+        sendMessage(kcc, Authenticator.ADDRESS_CONNECT_PATTERN_KEY, SystemMessageType.CONNECT);
     }
 
     @Override
     public void sendDisconnectMessage(KapuaConnectionContext kcc) {
-        Context loginSendLogingUpdateMsgTimeContex = loginMetric.getSendLoginUpdateMsgTime().time();
-        String message = systemMessageCreator.createMessage(SystemMessageType.DISCONNECT, kcc);
-        JmsAssistantProducerWrapper producerWrapper = null;
-        try {
-            producerWrapper = JmsAssistantProducerPool.getIOnstance(DESTINATIONS.NO_DESTINATION).borrowObject();
-            producerWrapper.send(String.format((String) options.get(Authenticator.ADDRESS_DISCONNECT_PATTERN_KEY),
-                    SystemSetting.getInstance().getMessageClassifier(), kcc.getAccountName(), kcc.getClientId()),
-                    message,
-                    kcc);
-        } catch (Exception e) {
-            logger.error("Exception sending the connect message: {}", e.getMessage(), e);
-        } finally {
-            if (producerWrapper != null) {
-                JmsAssistantProducerPool.getIOnstance(DESTINATIONS.NO_DESTINATION).returnObject(producerWrapper);
+        sendMessage(kcc, Authenticator.ADDRESS_DISCONNECT_PATTERN_KEY, SystemMessageType.DISCONNECT);
+    }
+
+    private void sendMessage(KapuaConnectionContext kcc, String messageAddressPattern, SystemMessageType systemMessageType) {
+        if (systemMessageType != null) {
+            Context loginSendLogingUpdateMsgTimeContex = loginMetric.getSendLoginUpdateMsgTime().time();
+            String message = systemMessageCreator.createMessage(systemMessageType, kcc);
+            JmsAssistantProducerWrapper producerWrapper = null;
+            try {
+                producerWrapper = JmsAssistantProducerPool.getIOnstance(DESTINATIONS.NO_DESTINATION).borrowObject();
+                producerWrapper.send(String.format((String) options.get(messageAddressPattern),
+                        SystemSetting.getInstance().getMessageClassifier(), kcc.getAccountName(), kcc.getClientId()),
+                        message,
+                        kcc);
+            } catch (Exception e) {
+                logger.error("Exception sending the {} message: {}", systemMessageType.name().toLowerCase(), e.getMessage(), e);
+            } finally {
+                if (producerWrapper != null) {
+                    JmsAssistantProducerPool.getIOnstance(DESTINATIONS.NO_DESTINATION).returnObject(producerWrapper);
+                }
             }
+            loginSendLogingUpdateMsgTimeContex.stop();
         }
-        loginSendLogingUpdateMsgTimeContex.stop();
+        else {
+            logger.warn("Cannot send system message for address pattern {} since the system message type is null!", messageAddressPattern);
+        }
     }
 
     protected boolean isAdminUser(KapuaConnectionContext kcc) {

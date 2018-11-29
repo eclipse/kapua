@@ -99,41 +99,58 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
     }
 
     @Override
-    public void disconnect(KapuaConnectionContext kcc, Throwable error) {
+    public boolean disconnect(KapuaConnectionContext kcc, Throwable error) {
         boolean stealingLinkDetected = false;
-        logger.debug("Old connection id: {} - new connection id: {} - error: {} - error cause: {}", kcc.getOldConnectionId(), kcc.getConnectionId(), error, (error!=null ? error.getCause() : "NULL"), error);
+        boolean deviceOwnedByTheCurrentNode = true;
+        logger.debug("Old connection id: {} - new connection id: {} - error: {} - error cause: {}", kcc.getOldConnectionId(), kcc.getConnectionId(), error, (error!=null ? error.getCause() : "null"), error);
         if (kcc.getOldConnectionId() != null) {
             stealingLinkDetected = !kcc.getOldConnectionId().equals(kcc.getConnectionId());
-        } else {
+        }
+        else {
             logger.error("Cannot find connection id for client id {} on connection map. Correct connection id is {} - IP: {}",
                     kcc.getClientId(),
                     kcc.getConnectionId(),
                     kcc.getClientIp());
         }
-        if (stealingLinkDetected) {
-            loginMetric.getStealingLinkDisconnect().inc();
-            // stealing link detected, skip info
+        if (!stealingLinkDetected && (error instanceof KapuaDuplicateClientIdException || (error!=null && error.getCause() instanceof KapuaDuplicateClientIdException))) {
+            stealingLinkDetected = true;
             logger.warn("Detected Stealing link for cliend id {} - account id {} - last connection id was {} - current connection id is {} - IP: {} - No disconnection info will be added!",
                     kcc.getClientId(),
                     kcc.getScopeId(),
                     kcc.getOldConnectionId(),
                     kcc.getConnectionId(),
                     kcc.getClientIp());
-        } else {
+        }
+        if (stealingLinkDetected) {
+            loginMetric.getStealingLinkDisconnect().inc();
+            logger.debug("Skip device connection status update since is coming from a stealing link condition. Client id: {} - Connection id: {}",
+                    kcc.getClientId(),
+                    kcc.getConnectionId());
+        }
+        else {
+            // update device connection (if the disconnection wasn't caused by a stealing link)
             DeviceConnection deviceConnection;
             try {
                 deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(kcc.getScopeId(), kcc.getClientId()));
             } catch (Exception e) {
-                throw new ShiroException("Error while looking for device connection on updating the device!", e);
+                throw new ShiroException("Error while looking for device connection on updating the device status!", e);
             }
+            // the device connection must be not null
             if (deviceConnection != null) {
-                // the device connection must be not null
-                // update device connection (if the disconnection wasn't caused by a stealing link)
-                if (error instanceof KapuaDuplicateClientIdException || (error!=null && error.getCause() instanceof KapuaDuplicateClientIdException)) {
-                    logger.debug("Skip device connection status update since is coming from a stealing link condition. Client id: {} - Connection id: {}",
+                if (kcc.getBrokerIpOrHostName() == null) {
+                    logger.warn("Broker Ip or host name is not correctly set! Please check the configuration!");
+                }
+                else if (!kcc.getBrokerIpOrHostName().equals(deviceConnection.getServerIp())) {
+                    //the device is connected to a different node so skip to update the status!
+                    deviceOwnedByTheCurrentNode = false;
+                    logger.warn("Detected disconnection for client connected to another node: cliend id {} - account id {} - last connection id was {} - current connection id is {} - IP: {} - No disconnection info will be added!",
                             kcc.getClientId(),
-                            kcc.getConnectionId());
-                } else {
+                            kcc.getScopeId(),
+                            kcc.getOldConnectionId(),
+                            kcc.getConnectionId(),
+                            kcc.getClientIp());
+                }
+                if(deviceOwnedByTheCurrentNode) {
                     deviceConnection.setStatus(error == null ? DeviceConnectionStatus.DISCONNECTED : DeviceConnectionStatus.MISSING);
                     try {
                         KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.update(deviceConnection));
@@ -143,6 +160,7 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
                 }
             }
         }
+        return !stealingLinkDetected && deviceOwnedByTheCurrentNode;
     }
 
     @Override

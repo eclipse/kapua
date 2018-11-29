@@ -18,6 +18,7 @@ import java.util.Map;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.plugin.Acl;
 import org.eclipse.kapua.broker.core.plugin.KapuaConnectionContext;
+import org.eclipse.kapua.broker.core.plugin.KapuaDuplicateClientIdException;
 
 /**
  * Admin profile authentication logic implementation
@@ -41,7 +42,31 @@ public class AdminAuthenticationLogic extends AuthenticationLogic {
     }
 
     @Override
-    public void disconnect(KapuaConnectionContext kcc, Throwable error) {
+    public boolean disconnect(KapuaConnectionContext kcc, Throwable error) {
+        boolean stealingLinkDetected = false;
+        logger.debug("Old connection id: {} - new connection id: {} - error: {} - error cause: {}", kcc.getOldConnectionId(), kcc.getConnectionId(), error, (error!=null ? error.getCause() : "null"), error);
+        if (kcc.getOldConnectionId() != null) {
+            stealingLinkDetected = !kcc.getOldConnectionId().equals(kcc.getConnectionId());
+        }
+        else {
+            logger.error("Cannot find connection id for client id {} on connection map. Correct connection id is {} - IP: {}",
+                    kcc.getClientId(),
+                    kcc.getConnectionId(),
+                    kcc.getClientIp());
+        }
+        if (!stealingLinkDetected && (error instanceof KapuaDuplicateClientIdException || (error!=null && error.getCause() instanceof KapuaDuplicateClientIdException))) {
+            logger.warn("Detected Stealing link for cliend id {} - account id {} - last connection id was {} - current connection id is {} - IP: {}",
+                    kcc.getClientId(),
+                    kcc.getScopeId(),
+                    kcc.getOldConnectionId(),
+                    kcc.getConnectionId(),
+                    kcc.getClientIp());
+            stealingLinkDetected = true;
+        }
+        if (stealingLinkDetected) {
+            loginMetric.getAdminStealingLinkDisconnect().inc();
+        }
+        return !stealingLinkDetected;
     }
 
     protected List<AuthorizationEntry> buildAuthorizationMap(KapuaConnectionContext kcc) {
