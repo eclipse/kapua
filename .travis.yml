@@ -1,7 +1,7 @@
 language: java
 
 jdk:
-  - oraclejdk8
+- oraclejdk8
 
 sudo: false
 dist: trusty
@@ -13,15 +13,15 @@ cache:
   - $HOME/.m2
 
 install:
-  - echo ==== Setting up toolchain.xml ====
-  - ls /usr/lib/jvm
-  - ls
-  - cp build-tools/src/main/toolchains/travis-ci.xml ~/.m2/toolchains.xml
-  - echo ==== Setting up Maven 3.3 for Travis ====
-  - wget -T 30 -t 3 -O maven.tar.gz http://www-eu.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz || wget -T 30 -t 3 -O maven.tar.gz http://www-us.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
-  - mkdir maven
-  - cd maven ; tar --strip-components 1 -xzf ../maven.tar.gz ; cd ..
-  - chmod a+x maven/bin/mvn
+- echo ==== Setting up toolchain.xml ====
+- ls /usr/lib/jvm
+- ls
+- cp build-tools/src/main/toolchains/travis-ci.xml ~/.m2/toolchains.xml
+- echo ==== Setting up Maven 3.3 for Travis ====
+- wget -T 30 -t 3 -O maven.tar.gz http://www-eu.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz || wget -T 30 -t 3 -O maven.tar.gz http://www-us.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+- mkdir maven
+- cd maven ; tar --strip-components 1 -xzf ../maven.tar.gz ; cd ..
+- chmod a+x maven/bin/mvn
 
 before_script:
   - export M2_HOME=$PWD/maven
@@ -33,55 +33,55 @@ before_script:
 
 jobs:
   include:
-    - stage: build
-      script:
-        - $M2_HOME/bin/mvn -v
-        - $M2_HOME/bin/mvn -B -f external/pom.xml install
-        - $M2_HOME/bin/mvn -B {BUILD_OPTS} -DskipTests clean install
-    - stage: test
-      script:
+  - stage: build
+    script:
+    - $M2_HOME/bin/mvn -v
+    - $M2_HOME/bin/mvn -B -f external/pom.xml install
+        - $M2_HOME/bin/mvn -B ${BUILD_OPTS} -DskipTests clean install
+  - stage: test
+    script:
         - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.test.junit.JUnitTests' -Dcucumber.options="--tags @default"  verify
-        - bash <(curl -s https://codecov.io/bash)
-    - stage: test
-      script:
+    - bash <(curl -s https://codecov.io/bash)
+  - stage: test
+    script:
         - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.test.junit.JUnitTests' -Dcucumber.options="--tags @brokerAcl" verify
-        - bash <(curl -s https://codecov.io/bash)
-    - stage: test
-      script:
+    - bash <(curl -s https://codecov.io/bash)
+  - stage: test
+    script:
         - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.test.junit.JUnitTests' -Dcucumber.options="--tags @tag" verify
-        - bash <(curl -s https://codecov.io/bash)
-    - stage: test
-      script:
+    - bash <(curl -s https://codecov.io/bash)
+  - stage: test
+    script:
         - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.test.junit.JUnitTests' -Dcucumber.options="--tags @broker" verify
-        - bash <(curl -s https://codecov.io/bash)
-    - stage: test
-      script:
+    - bash <(curl -s https://codecov.io/bash)
+  - stage: test
+    script:
         - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.test.junit.JUnitTests' -Dcucumber.options="--tags @device" verify
-        - bash <(curl -s https://codecov.io/bash)
-    - stage: test
-      script:
+    - bash <(curl -s https://codecov.io/bash)
+  - stage: test
+    script:
         - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.test.junit.JUnitTests' -Dcucumber.options="--tags @connection" verify
-        - bash <(curl -s https://codecov.io/bash)
-    - stage: test
-      script:
+    - bash <(curl -s https://codecov.io/bash)
+  - stage: test
+    script:
         - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.test.junit.JUnitTests' -Dcucumber.options="--tags @datastore" verify
-        - bash <(curl -s https://codecov.io/bash)
-    - stage: test
-      script:
+    - bash <(curl -s https://codecov.io/bash)
+  - stage: test
+    script:
         - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.test.junit.JUnitTests' -Dcucumber.options="--tags @user" verify
-        - bash <(curl -s https://codecov.io/bash)
-    - stage: test
-      script:
+    - bash <(curl -s https://codecov.io/bash)
+  - stage: test
+    script:
         - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.test.junit.JUnitTests' -Dcucumber.options="--tags @security" verify
-        - bash <(curl -s https://codecov.io/bash)
-    - stage: test
-      script:
+    - bash <(curl -s https://codecov.io/bash)
+  - stage: test
+    script:
         - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.test.junit.JUnitTests' -Dcucumber.options="--tags @jobs" verify
-        - bash <(curl -s https://codecov.io/bash)
-    - stage: test
-      script:
+    - bash <(curl -s https://codecov.io/bash)
+  - stage: test
+    script:
         - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='org.eclipse.kapua.test.junit.JUnitTests' verify
-        - bash <(curl -s https://codecov.io/bash)
+    - bash <(curl -s https://codecov.io/bash)
     - stage: test
       script:
         - $M2_HOME/bin/mvn -B -DskipTests install javadoc:jar

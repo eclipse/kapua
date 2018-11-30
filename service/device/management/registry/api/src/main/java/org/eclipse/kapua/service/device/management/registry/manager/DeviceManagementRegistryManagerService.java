@@ -103,7 +103,7 @@ public interface DeviceManagementRegistryManagerService extends KapuaService {
 
         short attempts = 0;
         short limit= 3;
-        boolean failed;
+        boolean failed = false;
         do {
             try {
                 deviceManagementOperation = getDeviceManagementOperation(scopeId, operationId);
@@ -113,8 +113,6 @@ public interface DeviceManagementRegistryManagerService extends KapuaService {
                 DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.update(deviceManagementOperation);
 
                 LOG.info("Update DeviceManagementOperation {} with status {}...  SUCCEEDED!", operationId, finalStatus);
-
-                break;
             } catch (Exception e) {
                 failed = true;
                 attempts++;
