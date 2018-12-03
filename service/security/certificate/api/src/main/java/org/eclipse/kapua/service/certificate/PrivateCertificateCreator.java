@@ -27,14 +27,14 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Set;
 
 /**
- * {@link CertificateCreator} {@link org.eclipse.kapua.model.KapuaEntityCreator} definition
+ * PrivateCertificateCreator encapsulates all the information needed to create a new PrivateCertificate in the system.
  *
  * @since 1.0.0
  */
 @XmlRootElement(name = "certificateCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = CertificateXmlRegistry.class, factoryMethod = "newCreator")
-public interface CertificateCreator extends KapuaNamedEntityCreator<Certificate> {
+public interface PrivateCertificateCreator extends KapuaNamedEntityCreator<PrivateCertificate> {
 
     @XmlElement(name = "certificate")
     String getCertificate();

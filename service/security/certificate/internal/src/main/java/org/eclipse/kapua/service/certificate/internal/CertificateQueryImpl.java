@@ -13,10 +13,10 @@ package org.eclipse.kapua.service.certificate.internal;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.certificate.Certificate;
+import org.eclipse.kapua.service.certificate.PrivateCertificate;
 import org.eclipse.kapua.service.certificate.CertificateQuery;
 
-public class CertificateQueryImpl extends AbstractKapuaQuery<Certificate> implements CertificateQuery {
+public class CertificateQueryImpl extends AbstractKapuaQuery<PrivateCertificate> implements CertificateQuery {
 
     private Boolean includeInherited = Boolean.FALSE;
 

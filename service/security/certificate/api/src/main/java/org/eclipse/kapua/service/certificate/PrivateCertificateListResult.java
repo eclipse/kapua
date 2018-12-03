@@ -22,6 +22,6 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "certificates")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = CertificateXmlRegistry.class, factoryMethod = "newListResult")
-public interface CertificateListResult extends KapuaListResult<Certificate> {
+public interface PrivateCertificateListResult extends KapuaListResult<PrivateCertificate> {
 
 }

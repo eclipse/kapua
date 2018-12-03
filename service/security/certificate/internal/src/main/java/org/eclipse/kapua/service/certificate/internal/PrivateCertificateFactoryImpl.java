@@ -14,31 +14,31 @@ package org.eclipse.kapua.service.certificate.internal;
 import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.certificate.Certificate;
-import org.eclipse.kapua.service.certificate.CertificateCreator;
-import org.eclipse.kapua.service.certificate.CertificateFactory;
+import org.eclipse.kapua.service.certificate.PrivateCertificate;
+import org.eclipse.kapua.service.certificate.PrivateCertificateCreator;
+import org.eclipse.kapua.service.certificate.PrivateCertificateFactory;
 import org.eclipse.kapua.service.certificate.CertificateGenerator;
-import org.eclipse.kapua.service.certificate.CertificateListResult;
+import org.eclipse.kapua.service.certificate.PrivateCertificateListResult;
 import org.eclipse.kapua.service.certificate.CertificateQuery;
 import org.eclipse.kapua.service.certificate.CertificateUsage;
 import org.eclipse.kapua.service.certificate.KeyUsage;
 import org.eclipse.kapua.service.certificate.KeyUsageSetting;
 
 /**
- * {@link CertificateFactory} implementation.
+ * {@link PrivateCertificateFactory} implementation.
  *
  * @since 1.0.0
  */
 @KapuaProvider
-public class CertificateFactoryImpl implements CertificateFactory {
+public class PrivateCertificateFactoryImpl implements PrivateCertificateFactory {
 
     @Override
-    public Certificate newEntity(KapuaId scopeId) {
-        return new CertificateImpl(scopeId);
+    public PrivateCertificate newEntity(KapuaId scopeId) {
+        return new PrivateCertificateImpl(scopeId);
     }
 
     @Override
-    public CertificateCreator newCreator(KapuaId scopeId) {
+    public PrivateCertificateCreator newCreator(KapuaId scopeId) {
         throw new UnsupportedOperationException();
     }
 
@@ -48,8 +48,8 @@ public class CertificateFactoryImpl implements CertificateFactory {
     }
 
     @Override
-    public CertificateListResult newListResult() {
-        return new CertificateListResultImpl();
+    public PrivateCertificateListResult newListResult() {
+        return new PrivateCertificateListResultImpl();
     }
 
     @Override
@@ -74,11 +74,11 @@ public class CertificateFactoryImpl implements CertificateFactory {
     }
 
     @Override
-    public Certificate clone(Certificate certificate) {
+    public PrivateCertificate clone(PrivateCertificate certificate) {
         try {
-            return new CertificateImpl(certificate);
+            return new PrivateCertificateImpl(certificate);
         } catch (Exception e) {
-            throw new KapuaEntityCloneException(e, Certificate.TYPE, certificate);
+            throw new KapuaEntityCloneException(e, PrivateCertificate.TYPE, certificate);
         }
     }
 }

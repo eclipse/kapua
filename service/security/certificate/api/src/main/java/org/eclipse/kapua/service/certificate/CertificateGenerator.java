@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.Set;
 
 /**
- * {@link CertificateGenerator} encapsulates all the information needed to generate a new Certificate in the system.
+ * {@link CertificateGenerator} encapsulates all the information needed to generate a new PrivateCertificate in the system.
  *
  * @since 1.0
  */

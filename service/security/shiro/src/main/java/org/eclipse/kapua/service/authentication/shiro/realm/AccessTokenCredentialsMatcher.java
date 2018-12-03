@@ -23,11 +23,11 @@ import org.eclipse.kapua.service.authentication.shiro.exceptions.JwtCertificateN
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
-import org.eclipse.kapua.service.certificate.Certificate;
+import org.eclipse.kapua.service.certificate.PrivateCertificate;
+import org.eclipse.kapua.service.certificate.PrivateCertificateFactory;
 import org.eclipse.kapua.service.certificate.CertificateAttributes;
-import org.eclipse.kapua.service.certificate.CertificateFactory;
 import org.eclipse.kapua.service.certificate.CertificateQuery;
-import org.eclipse.kapua.service.certificate.CertificateService;
+import org.eclipse.kapua.service.certificate.PrivateCertificateService;
 import org.eclipse.kapua.service.certificate.CertificateStatus;
 import org.eclipse.kapua.service.certificate.util.CertificateUtils;
 import org.jose4j.jwt.consumer.InvalidJwtException;
@@ -47,8 +47,8 @@ public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
-    private static final CertificateService CERTIFICATE_SERVICE = LOCATOR.getService(CertificateService.class);
-    private static final CertificateFactory CERTIFICATE_FACTORY = LOCATOR.getFactory(CertificateFactory.class);
+    private static final PrivateCertificateService CERTIFICATE_SERVICE = LOCATOR.getService(PrivateCertificateService.class);
+    private static final PrivateCertificateFactory CERTIFICATE_FACTORY = LOCATOR.getFactory(PrivateCertificateFactory.class);
 
     @Override
     public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
@@ -80,16 +80,16 @@ public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
                 query.setIncludeInherited(true);
                 query.setLimit(1);
 
-                Certificate certificate = KapuaSecurityUtils.doPrivileged(() -> CERTIFICATE_SERVICE.query(query)).getFirstItem();
+                PrivateCertificate privateCertificate = KapuaSecurityUtils.doPrivileged(() -> CERTIFICATE_SERVICE.query(query)).getFirstItem();
 
-                if (certificate == null) {
+                if (privateCertificate == null) {
                     throw new JwtCertificateNotFoundException();
                 }
 
                 //
                 // Set validator
                 JwtConsumer jwtConsumer = new JwtConsumerBuilder()
-                        .setVerificationKey(CertificateUtils.stringToCertificate(certificate.getCertificate()).getPublicKey()) // Set public key
+                        .setVerificationKey(CertificateUtils.stringToCertificate(privateCertificate.getCertificate()).getPublicKey()) // Set public key
                         .setExpectedIssuer(issuer) // Set expected issuer
                         .setRequireIssuedAt() // Set require reserved claim: iat
                         .setRequireExpirationTime() // Set require reserved claim: exp

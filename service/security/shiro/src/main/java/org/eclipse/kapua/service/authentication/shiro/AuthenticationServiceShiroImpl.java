@@ -48,11 +48,11 @@ import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
 import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
-import org.eclipse.kapua.service.certificate.Certificate;
+import org.eclipse.kapua.service.certificate.PrivateCertificate;
+import org.eclipse.kapua.service.certificate.PrivateCertificateFactory;
 import org.eclipse.kapua.service.certificate.CertificateAttributes;
-import org.eclipse.kapua.service.certificate.CertificateFactory;
 import org.eclipse.kapua.service.certificate.CertificateQuery;
-import org.eclipse.kapua.service.certificate.CertificateService;
+import org.eclipse.kapua.service.certificate.PrivateCertificateService;
 import org.eclipse.kapua.service.certificate.CertificateStatus;
 import org.eclipse.kapua.service.certificate.util.CertificateUtils;
 import org.eclipse.kapua.service.user.User;
@@ -470,28 +470,28 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         String jwt = null;
         try {
             KapuaLocator locator = KapuaLocator.getInstance();
-            CertificateService certificateService = locator.getService(CertificateService.class);
-            CertificateFactory certificateFactory = locator.getFactory(CertificateFactory.class);
+            PrivateCertificateService privateCertificateService = locator.getService(PrivateCertificateService.class);
+            PrivateCertificateFactory privateCertificateFactory = locator.getFactory(PrivateCertificateFactory.class);
 
-            CertificateQuery query = certificateFactory.newQuery(scopeId);
-            query.setPredicate(
-                    query.andPredicate(
-                            query.attributePredicate(CertificateAttributes.USAGE_NAME, "JWT"),
-                            query.attributePredicate(CertificateAttributes.STATUS, CertificateStatus.VALID)
+            CertificateQuery certificateQuery = privateCertificateFactory.newQuery(scopeId);
+            certificateQuery.setPredicate(
+                    certificateQuery.andPredicate(
+                            certificateQuery.attributePredicate(CertificateAttributes.USAGE_NAME, "JWT"),
+                            certificateQuery.attributePredicate(CertificateAttributes.STATUS, CertificateStatus.VALID)
                     )
             );
 
-            query.setIncludeInherited(true);
-            query.setLimit(1);
+            certificateQuery.setIncludeInherited(true);
+            certificateQuery.setLimit(1);
 
-            Certificate certificate = KapuaSecurityUtils.doPrivileged(() -> certificateService.query(query)).getFirstItem();
-            if (certificate == null) {
+            PrivateCertificate privateCertificate = KapuaSecurityUtils.doPrivileged(() -> privateCertificateService.query(certificateQuery)).getFirstItem();
+            if (privateCertificate == null) {
                 throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.JWT_CERTIFICATE_NOT_FOUND);
             }
             JsonWebSignature jws = new JsonWebSignature();
             jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
             jws.setPayload(claims.toJson());
-            jws.setKey(CertificateUtils.stringToPrivateKey(certificate.getPrivateKey(), certificate.getPassword()));
+            jws.setKey(CertificateUtils.stringToPrivateKey(privateCertificate.getPrivateKey(), privateCertificate.getPassword()));
             jwt = jws.getCompactSerialization();
         } catch (JoseException | KapuaException e) {
             throw KapuaRuntimeException.internalError(e);

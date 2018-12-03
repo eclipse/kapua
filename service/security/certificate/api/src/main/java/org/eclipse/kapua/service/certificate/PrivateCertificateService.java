@@ -21,29 +21,29 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 import java.util.List;
 
-public interface CertificateService extends KapuaEntityService<Certificate, CertificateCreator>,
-        KapuaNamedEntityService<Certificate>,
-        KapuaUpdatableEntityService<Certificate>,
+public interface PrivateCertificateService extends KapuaEntityService<PrivateCertificate, PrivateCertificateCreator>,
+        KapuaNamedEntityService<PrivateCertificate>,
+        KapuaUpdatableEntityService<PrivateCertificate>,
         KapuaConfigurableService {
 
     CertificateDomain CERTIFICATE_DOMAIN = new CertificateDomain();
 
     @Override
-    Certificate create(CertificateCreator var1) throws KapuaException;
+    PrivateCertificate create(PrivateCertificateCreator var1) throws KapuaException;
 
     @Override
-    Certificate update(Certificate var1) throws KapuaException;
+    PrivateCertificate update(PrivateCertificate var1) throws KapuaException;
 
     @Override
-    Certificate find(KapuaId var1, KapuaId var2) throws KapuaException;
+    PrivateCertificate find(KapuaId var1, KapuaId var2) throws KapuaException;
 
     @Override
-    Certificate findByName(String var1) throws KapuaException;
+    PrivateCertificate findByName(String var1) throws KapuaException;
 
     @Override
-    CertificateListResult query(KapuaQuery<Certificate> query) throws KapuaException;
+    PrivateCertificateListResult query(KapuaQuery<PrivateCertificate> query) throws KapuaException;
 
-    Certificate generate(CertificateGenerator generator) throws KapuaException;
+    PrivateCertificate generate(CertificateGenerator generator) throws KapuaException;
 
-    List<Certificate> findAncestorsCertificates(KapuaId scopeId, CertificateUsage usage) throws KapuaException;
+    List<PrivateCertificate> findAncestorsCertificates(KapuaId scopeId, CertificateUsage usage) throws KapuaException;
 }

@@ -37,10 +37,10 @@ import java.util.Set;
  */
 @XmlRootElement(name = "certificate")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = CertificateXmlRegistry.class, factoryMethod = "newCertificate")
-public interface Certificate extends KapuaNamedEntity {
+@XmlType(factoryClass = CertificateXmlRegistry.class, factoryMethod = "newPrivateCertificate")
+public interface PrivateCertificate extends KapuaNamedEntity {
 
-    String TYPE = "certificate";
+    String TYPE = "privateCertificate";
 
     @Override
     default String getType() {

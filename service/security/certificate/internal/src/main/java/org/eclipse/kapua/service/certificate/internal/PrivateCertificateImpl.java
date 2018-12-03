@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.certificate.internal;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.certificate.Certificate;
+import org.eclipse.kapua.service.certificate.PrivateCertificate;
 import org.eclipse.kapua.service.certificate.CertificateStatus;
 import org.eclipse.kapua.service.certificate.CertificateUsage;
 import org.eclipse.kapua.service.certificate.KeyUsageSetting;
@@ -24,11 +24,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * {@link Certificate} implementation
+ * {@link PrivateCertificate} implementation
  *
  * @since 1.0.0
  */
-public class CertificateImpl extends AbstractKapuaNamedEntity implements Certificate {
+public class PrivateCertificateImpl extends AbstractKapuaNamedEntity implements PrivateCertificate {
 
     private String certificate;
     private String privateKey;
@@ -36,12 +36,12 @@ public class CertificateImpl extends AbstractKapuaNamedEntity implements Certifi
     private Set<KeyUsageSettingImpl> keyUsageSettings;
     private Set<CertificateUsageImpl> certificateUsages;
 
-    public CertificateImpl(KapuaId scopeId) {
+    public PrivateCertificateImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
 
-    public CertificateImpl(Certificate certificate) throws KapuaException {
+    public PrivateCertificateImpl(PrivateCertificate certificate) throws KapuaException {
         throw new UnsupportedOperationException();
     }
 

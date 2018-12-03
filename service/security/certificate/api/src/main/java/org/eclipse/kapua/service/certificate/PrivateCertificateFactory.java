@@ -14,12 +14,12 @@ package org.eclipse.kapua.service.certificate;
 import org.eclipse.kapua.model.KapuaEntityFactory;
 
 /**
- * {@link CertificateFactory} definition.
+ * {@link PrivateCertificateFactory} definition.
  *
  * @see org.eclipse.kapua.model.KapuaEntityFactory
  * @since 1.0.0
  */
-public interface CertificateFactory extends KapuaEntityFactory<Certificate, CertificateCreator, CertificateQuery, CertificateListResult> {
+public interface PrivateCertificateFactory extends KapuaEntityFactory<PrivateCertificate, PrivateCertificateCreator, CertificateQuery, PrivateCertificateListResult> {
 
     /**
      * Instantiates a new {@link CertificateUsage}.
