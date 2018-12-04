@@ -18,8 +18,9 @@
         </encoder>
     </appender>
 
-    <logger name="liquibase" level="DEBUG" />
+    <!--<logger name="liquibase" level="DEBUG" />
     <logger name="org.eclipse.kapua" level="DEBUG"/>
+    <logger name="org.eclipse.hono" level="DEBUG"/>-->
 
     <root level="INFO">
         <appender-ref ref="STDOUT" />

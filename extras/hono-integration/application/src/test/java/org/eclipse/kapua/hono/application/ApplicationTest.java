@@ -28,6 +28,7 @@ import static io.vertx.core.Vertx.vertx;
 public class ApplicationTest {
 
     static HonoClient honoClient;
+    static String tenantId = "kapua-sys";
 
     @Test
     public void testTenantAPI(final TestContext ctx) {
@@ -42,12 +43,16 @@ public class ApplicationTest {
 
         honoClient.connect().compose(
                 connected -> connected.getOrCreateTenantClient()
-                        .compose(client -> client.get("kapua-sys"))
+                        .compose(client -> client.get(tenantId))
                         .map(tenantObject -> {
                             System.out.println("Tenant " + tenantObject.getTenantId());
-                            ctx.assertEquals("kapua-sys", tenantObject.getTenantId());
+                            ctx.assertEquals(tenantId, tenantObject.getTenantId());
                             testComplete.complete();
                             return tenantObject;
+                        }).otherwise(throwable -> {
+                            throwable.printStackTrace();
+                            ctx.fail("No such tenant: " + tenantId);
+                            return null;
                         })
 
         );
