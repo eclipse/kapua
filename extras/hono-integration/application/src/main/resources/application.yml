@@ -1,0 +1,52 @@
+hono:
+  app:
+    type: kapua
+    maxInstances: 1
+    healthCheckBindAddress: 0.0.0.0
+    healthCheckPort: 8088
+    startupTimeout: 90
+  auth:
+    host: localhost #hono-service-auth.hono
+    port: 35671
+    hostnameVerificationRequired: false
+    keyPath: src/test/resources/certificates/device-registry-key.pem
+    certPath: src/main/resources/certificates/jwt/device-registry-cert.pem
+    trustStorePath: src/test/resources/certificates/trusted-certs.pem
+    name: device-registry
+    validation:
+      certPath: src/main/resources/auth-server-cert.pem
+  registry:
+    amqp:
+      insecurePortEnabled: true
+      insecurePortBindAddress: 0.0.0.0
+      insecurePort: 25671
+      keyStorePath: src/test/resources/certificates/deviceRegistryKeyStore.p12
+      KeyStorePassword: deviceregistrykeys
+    rest:
+      insecurePortEnabled: true
+      insecurePort: 18080
+      insecurePortBindAddress: 0.0.0.0
+    svc:
+      signing:
+        sharedSecret: sdgfsdafazufgsdafjhfgsdajfgwhriojsdafjlksdhfgsa8fg452368gdf
+  credentials:
+    svc:
+      filename: /etc/hono/credentials.json
+      maxBcryptIterations: 10
+      saveToFile: false
+  tenant:
+    svc:
+      filename: /etc/hono/tenants.json
+      saveToFile: false
+  metrics:
+    legacy: false
+spring:
+  jmx:
+    enabled: false
+management:
+  metrics:
+    enabled: false
+    export:
+      graphite:
+        enabled: false
+    

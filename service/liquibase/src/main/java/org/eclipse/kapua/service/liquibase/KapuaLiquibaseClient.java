@@ -133,7 +133,7 @@ public class KapuaLiquibaseClient {
                 database.setDefaultSchemaName(schema.get());
             }
             Liquibase liquibase = new Liquibase(masterChangelog.getAbsolutePath(), new FileSystemResourceAccessor(), database);
-            liquibase.update(null);
+            liquibase.update((String)null);
 
             LOG.debug("\t\tExcuted liquibase script: {}", masterChangelog.getAbsolutePath());
         }

@@ -11,11 +11,7 @@
  *******************************************************************************/
 package liquibase.ext.logging.slf4j;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import liquibase.changelog.ChangeSet;
-import liquibase.changelog.DatabaseChangeLog;
+import liquibase.logging.LogType;
 import liquibase.logging.core.AbstractLogger;
 
 /**
@@ -26,67 +22,87 @@ import liquibase.logging.core.AbstractLogger;
  */
 public class LoggerImpl extends AbstractLogger {
 
-    private Logger logger;
-
-    @Override
-    public void setName(String name) {
-        this.logger = LoggerFactory.getLogger(name);
-    }
-
-    @Override
-    public void setLogLevel(String logLevel, String logFile) {
+    public LoggerImpl() {
+        super();
     }
 
     @Override
     public void severe(String message) {
-        logger.error(message);
+        super.severe(message);
     }
 
     @Override
     public void severe(String message, Throwable e) {
-        logger.error(message, e);
+        super.severe(message, e);
     }
 
     @Override
     public void warning(String message) {
-        logger.warn(message);
+        super.warning(message);
     }
 
     @Override
     public void warning(String message, Throwable e) {
-        logger.warn(message, e);
+        super.warning(message, e);
     }
 
     @Override
     public void info(String message) {
-        logger.info(message);
+        super.info(message);
     }
 
     @Override
     public void info(String message, Throwable e) {
-        logger.info(message, e);
+        super.info(message, e);
     }
 
     @Override
     public void debug(String message) {
-        logger.debug(message);
+        super.debug(message);
     }
 
     @Override
     public void debug(String message, Throwable e) {
-        logger.debug(message, e);
+        super.debug(message, e);
     }
 
     @Override
-    public void setChangeLog(DatabaseChangeLog databaseChangeLog) {
+    public void severe(LogType logType, String s) {
+
     }
 
     @Override
-    public void setChangeSet(ChangeSet changeSet) {
+    public void severe(LogType logType, String s, Throwable throwable) {
+
     }
 
     @Override
-    public int getPriority() {
-        return Integer.getInteger("org.eclipse.kapua.liquibase.logger.priority", 10);
+    public void warning(LogType logType, String s) {
+
+    }
+
+    @Override
+    public void warning(LogType logType, String s, Throwable throwable) {
+
+    }
+
+    @Override
+    public void info(LogType logType, String s) {
+
+    }
+
+    @Override
+    public void info(LogType logType, String s, Throwable throwable) {
+
+    }
+
+    @Override
+    public void debug(LogType logType, String s) {
+
+    }
+
+    @Override
+    public void debug(LogType logType, String s, Throwable throwable) {
+
     }
 }
