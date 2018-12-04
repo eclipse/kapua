@@ -12,11 +12,6 @@
 package liquibase.ext.logging.slf4j;
 
 import liquibase.logging.LogType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import liquibase.changelog.ChangeSet;
-import liquibase.changelog.DatabaseChangeLog;
 import liquibase.logging.core.AbstractLogger;
 
 /**
