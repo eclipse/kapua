@@ -19,6 +19,7 @@
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 
         <class>org.eclipse.kapua.service.certificate.internal.PrivateCertificateImpl</class>
+        <class>org.eclipse.kapua.service.certificate.internal.PublicCertificateImpl</class>
 
         <!-- Base classes and External classes -->
         <class>org.eclipse.kapua.commons.model.id.KapuaEid</class>
@@ -28,8 +29,8 @@
         <class>org.eclipse.kapua.commons.configuration.ServiceConfigImpl</class>
 
         <properties>
-            <property name="javax.persistence.lock.timeout" value="1000"/>
-            <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.slf4j.SLF4JLogger"/>
+            <property name="javax.persistence.lock.timeout" value="1000" />
+            <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.slf4j.SLF4JLogger" />
         </properties>
     </persistence-unit>
 </persistence>

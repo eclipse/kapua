@@ -11,45 +11,39 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate.internal;
 
+import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.certificate.PrivateCertificate;
+import org.eclipse.kapua.service.certificate.PrivateCertificateQuery;
 
-/**
- * {@link PrivateCertificate} implementation
- *
- * @since 1.0.0
- */
-public class PrivateCertificateImpl extends PublicCertificateImpl implements PrivateCertificate {
+public class PrivateCertificateQueryImpl extends AbstractKapuaQuery<PrivateCertificate> implements PrivateCertificateQuery {
 
-    private String privateKey;
-    private String password;
+    private Boolean includeInherited = Boolean.FALSE;
 
-    public PrivateCertificateImpl(KapuaId scopeId) {
-        super(scopeId);
+    /**
+     * Constructor
+     */
+    private PrivateCertificateQueryImpl() {
+        super();
     }
 
-    public PrivateCertificateImpl(PrivateCertificate certificate) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public String getPrivateKey() {
-        return privateKey;
-    }
-
-    @Override
-    public void setPrivateKey(String privateKey) {
-        this.privateKey = privateKey;
+    /**
+     * Constructor
+     *
+     * @param scopeId
+     */
+    public PrivateCertificateQueryImpl(KapuaId scopeId) {
+        this();
+        setScopeId(scopeId);
     }
 
     @Override
-    public String getPassword() {
-        return password;
+    public Boolean getIncludeInherited() {
+        return includeInherited;
     }
 
     @Override
-    public void setPassword(String password) {
-        this.password = password;
+    public void setIncludeInherited(Boolean includeInherited) {
+        this.includeInherited = includeInherited;
     }
-
 }

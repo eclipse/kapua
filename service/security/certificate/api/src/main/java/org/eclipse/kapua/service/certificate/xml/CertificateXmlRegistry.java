@@ -16,9 +16,10 @@ import org.eclipse.kapua.service.certificate.PrivateCertificate;
 import org.eclipse.kapua.service.certificate.PrivateCertificateCreator;
 import org.eclipse.kapua.service.certificate.PrivateCertificateFactory;
 import org.eclipse.kapua.service.certificate.PrivateCertificateListResult;
-import org.eclipse.kapua.service.certificate.CertificateQuery;
+import org.eclipse.kapua.service.certificate.PrivateCertificateQuery;
 import org.eclipse.kapua.service.certificate.CertificateUsage;
 import org.eclipse.kapua.service.certificate.CertificateGenerator;
+import org.eclipse.kapua.service.certificate.PublicCertificate;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
@@ -28,7 +29,11 @@ public class CertificateXmlRegistry {
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final PrivateCertificateFactory FACTORY = LOCATOR.getFactory(PrivateCertificateFactory.class);
 
-    public PrivateCertificate newCertificate() {
+    public PrivateCertificate newPrivateCertificate() {
+        return FACTORY.newEntity(null);
+    }
+
+    public PublicCertificate newPublicCertificate() {
         return FACTORY.newEntity(null);
     }
 
@@ -36,7 +41,7 @@ public class CertificateXmlRegistry {
         return FACTORY.newCreator(null);
     }
 
-    public CertificateQuery newQuery() {
+    public PrivateCertificateQuery newQuery() {
         return FACTORY.newQuery(null);
     }
 

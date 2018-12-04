@@ -55,7 +55,7 @@ import java.util.Set;
 @KapuaProvider
 public class PrivateCertificateServiceImpl implements PrivateCertificateService {
 
-    public static final Logger LOG = LoggerFactory.getLogger(PrivateCertificateServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PrivateCertificateServiceImpl.class);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
@@ -164,7 +164,7 @@ public class PrivateCertificateServiceImpl implements PrivateCertificateService 
 
     @Override
     public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
-        return EmptyTocd.INSTANCE;
+        return EmptyTocd.getInstance();
     }
 
     @Override
@@ -180,6 +180,10 @@ public class PrivateCertificateServiceImpl implements PrivateCertificateService 
     public static class EmptyTocd implements KapuaTocd {
 
         private static final EmptyTocd INSTANCE = new EmptyTocd();
+
+        public static EmptyTocd getInstance() {
+            return INSTANCE;
+        }
 
         private EmptyTocd() {
         }

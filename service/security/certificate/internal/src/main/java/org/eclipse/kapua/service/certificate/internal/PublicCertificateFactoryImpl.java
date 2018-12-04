@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,42 +14,36 @@ package org.eclipse.kapua.service.certificate.internal;
 import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.certificate.PrivateCertificate;
-import org.eclipse.kapua.service.certificate.PrivateCertificateCreator;
-import org.eclipse.kapua.service.certificate.PrivateCertificateFactory;
-import org.eclipse.kapua.service.certificate.CertificateGenerator;
-import org.eclipse.kapua.service.certificate.PrivateCertificateListResult;
-import org.eclipse.kapua.service.certificate.PrivateCertificateQuery;
 import org.eclipse.kapua.service.certificate.CertificateUsage;
 import org.eclipse.kapua.service.certificate.KeyUsage;
 import org.eclipse.kapua.service.certificate.KeyUsageSetting;
+import org.eclipse.kapua.service.certificate.PublicCertificate;
+import org.eclipse.kapua.service.certificate.PublicCertificateCreator;
+import org.eclipse.kapua.service.certificate.PublicCertificateFactory;
+import org.eclipse.kapua.service.certificate.PublicCertificateListResult;
+import org.eclipse.kapua.service.certificate.PublicCertificateQuery;
 
-/**
- * {@link PrivateCertificateFactory} implementation.
- *
- * @since 1.0.0
- */
 @KapuaProvider
-public class PrivateCertificateFactoryImpl implements PrivateCertificateFactory {
+public class PublicCertificateFactoryImpl implements PublicCertificateFactory {
 
     @Override
-    public PrivateCertificate newEntity(KapuaId scopeId) {
-        return new PrivateCertificateImpl(scopeId);
+    public PublicCertificate newEntity(KapuaId scopeId) {
+        return new PublicCertificateImpl(scopeId);
     }
 
     @Override
-    public PrivateCertificateCreator newCreator(KapuaId scopeId) {
+    public PublicCertificateCreator newCreator(KapuaId scopeId) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public PrivateCertificateQuery newQuery(KapuaId scopeId) {
-        return new PrivateCertificateQueryImpl(scopeId);
+    public PublicCertificateQuery newQuery(KapuaId scopeId) {
+        return new PublicCertificateQueryImpl(scopeId);
     }
 
     @Override
-    public PrivateCertificateListResult newListResult() {
-        return new PrivateCertificateListResultImpl();
+    public PublicCertificateListResult newListResult() {
+        return new PublicCertificateListResultImpl();
     }
 
     @Override
@@ -60,7 +54,6 @@ public class PrivateCertificateFactoryImpl implements PrivateCertificateFactory 
     @Override
     public KeyUsageSetting newKeyUsageSetting(KeyUsage keyUsage, boolean allowed, Boolean kapuaAllowed) {
         KeyUsageSetting keyUsageSetting = new KeyUsageSettingImpl();
-
         keyUsageSetting.setKeyUsage(keyUsage);
         keyUsageSetting.setAllowed(allowed);
         keyUsageSetting.setKapuaAllowed(kapuaAllowed);
@@ -69,16 +62,11 @@ public class PrivateCertificateFactoryImpl implements PrivateCertificateFactory 
     }
 
     @Override
-    public CertificateGenerator newCertificateGenerator() {
-        return null;
-    }
-
-    @Override
-    public PrivateCertificate clone(PrivateCertificate certificate) {
+    public PublicCertificate clone(PublicCertificate publicCertificate) throws KapuaEntityCloneException {
         try {
-            return new PrivateCertificateImpl(certificate);
+            return new PublicCertificateImpl(publicCertificate);
         } catch (Exception e) {
-            throw new KapuaEntityCloneException(e, PrivateCertificate.TYPE, certificate);
+            throw new KapuaEntityCloneException(e, PublicCertificate.TYPE, publicCertificate);
         }
     }
 }

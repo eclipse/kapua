@@ -19,7 +19,7 @@ import org.eclipse.kapua.model.KapuaEntityFactory;
  * @see org.eclipse.kapua.model.KapuaEntityFactory
  * @since 1.0.0
  */
-public interface PrivateCertificateFactory extends KapuaEntityFactory<PrivateCertificate, PrivateCertificateCreator, CertificateQuery, PrivateCertificateListResult> {
+public interface PrivateCertificateFactory extends KapuaEntityFactory<PrivateCertificate, PrivateCertificateCreator, PrivateCertificateQuery, PrivateCertificateListResult> {
 
     /**
      * Instantiates a new {@link CertificateUsage}.
