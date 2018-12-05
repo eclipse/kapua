@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -114,6 +114,7 @@ public class LoginDialog extends Dialog {
         username = new TextField<String>();
         username.setFieldLabel(CORE_MSGS.loginUsername());
         username.addKeyListener(keyListener);
+        username.setAllowBlank(false);
         username.addListener(Events.OnBlur, changeListener);
 
         add(username);
@@ -122,6 +123,7 @@ public class LoginDialog extends Dialog {
         password.setPassword(true);
         password.setFieldLabel(CORE_MSGS.loginPassword());
         password.addKeyListener(keyListener);
+        password.setAllowBlank(false);
         password.addListener(Events.OnBlur, changeListener);
 
         add(password);
@@ -160,6 +162,15 @@ public class LoginDialog extends Dialog {
         getButtonBar().add(new FillToolItem());
 
         reset = new Button(CORE_MSGS.loginReset());
+        reset.addListener(Events.OnFocus, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                username.clearInvalid();
+                password.clearInvalid();
+            }
+        });
+
         reset.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
@@ -167,7 +178,7 @@ public class LoginDialog extends Dialog {
                 username.reset();
                 password.reset();
                 validate();
-                username.focus();
+                username.focus(); 
             }
         });
 
@@ -268,7 +279,7 @@ public class LoginDialog extends Dialog {
 
     protected boolean hasValue(TextField<String> field) {
         return field.getValue() != null &&
-                !field.getValue().isEmpty();
+                !field.getValue().trim().isEmpty();
     }
 
     protected void validate() {
@@ -281,10 +292,10 @@ public class LoginDialog extends Dialog {
         username.reset();
         password.reset();
 
-        validate();
         username.focus();
         status.hide();
         getButtonBar().enable();
+        login.disable();
     }
 
 }

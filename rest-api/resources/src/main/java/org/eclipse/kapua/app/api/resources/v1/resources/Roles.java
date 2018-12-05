@@ -39,7 +39,7 @@ import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
-import org.eclipse.kapua.service.authorization.role.RolePredicates;
+import org.eclipse.kapua.service.authorization.role.RoleAttributes;
 
 import com.google.common.base.Strings;
 
@@ -83,7 +83,7 @@ public class Roles extends AbstractKapuaResource {
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
         if (!Strings.isNullOrEmpty(name)) {
-            andPredicate.and(new AttributePredicateImpl<>(RolePredicates.NAME, name));
+            andPredicate.and(new AttributePredicateImpl<>(RoleAttributes.NAME, name));
         }
         query.setPredicate(andPredicate);
 

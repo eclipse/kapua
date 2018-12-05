@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.internal;
 
+import com.google.common.base.MoreObjects;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -22,14 +23,18 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.jbatch.JobEngineServiceJbatch;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -37,7 +42,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.JobCreator;
 import org.eclipse.kapua.service.job.JobFactory;
 import org.eclipse.kapua.service.job.JobJAXBContextProvider;
-import org.eclipse.kapua.service.job.JobPredicates;
+import org.eclipse.kapua.service.job.JobAttributes;
 import org.eclipse.kapua.service.job.JobQuery;
 import org.eclipse.kapua.service.job.JobService;
 import org.eclipse.kapua.service.job.common.CommonData;
@@ -45,9 +50,12 @@ import org.eclipse.kapua.service.job.common.TestConfig;
 import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.StepData;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
+import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerFactoryImpl;
+import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerServiceImpl;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
-
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -59,6 +67,7 @@ import java.security.acl.Permission;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 // ****************************************************************************************
 // * Implementation of Gherkin steps used in JobService.feature scenarios.                *
@@ -76,6 +85,7 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
     private static final String DEFAULT_COMMONS_PATH = "../../../commons";
     private static final String DROP_JOB_TABLES = "job_drop.sql";
     private static final String DROP_JOB_ENGINE_TABLES = "job_engine_drop.sql";
+    private static final String DROP_TRIGGER_TABLES = "trigger_drop.sql";
 
     private static final KapuaId ROOT_ID = new KapuaEid(BigInteger.ONE);
 
@@ -115,36 +125,39 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
 
         // Create User Service tables
         enableH2Connection();
+        SystemSetting config = SystemSetting.getInstance();
+        String schema = MoreObjects.firstNonNull(config.getString(SystemSettingKey.DB_SCHEMA_ENV), config.getString(SystemSettingKey.DB_SCHEMA));
+        String jdbcUrl = JdbcConnectionUrlResolvers.resolveJdbcUrl();
 
         // Create the account service tables
-        new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
+        new KapuaLiquibaseClient(jdbcUrl, "kapua", "kapua", Optional.ofNullable(schema)).update();
 
         MockedLocator mockLocator = (MockedLocator) locator;
 
         // Inject mocked Authorization Service method checkPermission
         AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
-        // TODO: Check why does this line needs an explicit cast!
+        // TODO: Check why does this line need an explicit cast!
         Mockito.doNothing().when(mockedAuthorization).checkPermission(
                 (org.eclipse.kapua.service.authorization.permission.Permission) Matchers.any(Permission.class));
-        mockLocator.setMockedService(org.eclipse.kapua.service.authorization.AuthorizationService.class,
-                mockedAuthorization);
+        mockLocator.setMockedService(AuthorizationService.class, mockedAuthorization);
 
         // Inject mocked Permission Factory
         PermissionFactory mockedPermissionFactory = Mockito.mock(PermissionFactory.class);
-        mockLocator.setMockedFactory(org.eclipse.kapua.service.authorization.permission.PermissionFactory.class,
-                mockedPermissionFactory);
+        mockLocator.setMockedFactory(PermissionFactory.class, mockedPermissionFactory);
 
         // Inject actual service implementations
         jobFactory = new JobFactoryImpl();
-        mockLocator.setMockedFactory(org.eclipse.kapua.service.job.JobFactory.class, jobFactory);
+        mockLocator.setMockedFactory(JobFactory.class, jobFactory);
         jobService = new JobServiceImpl();
-        mockLocator.setMockedService(org.eclipse.kapua.service.job.JobService.class, jobService);
+        mockLocator.setMockedService(JobService.class, jobService);
 
         // Inject the implementations of the depending services
         mockLocator.setMockedService(JobEngineService.class, new JobEngineServiceJbatch());
+        mockLocator.setMockedFactory(TriggerFactory.class, new TriggerFactoryImpl());
+        mockLocator.setMockedService(TriggerService.class, new TriggerServiceImpl());
 
         // Set KapuaMetatypeFactory for Metatype configuration
-        mockLocator.setMockedFactory(org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory.class, new KapuaMetatypeFactoryImpl());
+        mockLocator.setMockedFactory(KapuaMetatypeFactory.class, new KapuaMetatypeFactoryImpl());
 
         // All operations on database are performed using system user.
         KapuaSession kapuaSession = new KapuaSession(null, ROOT_ID, ROOT_ID);
@@ -161,6 +174,7 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
         // Drop the Job Service tables
         scriptSession(JobEntityManagerFactory.getInstance(), DROP_JOB_TABLES);
         scriptSession(JobEntityManagerFactory.getInstance(), DROP_JOB_ENGINE_TABLES);
+        scriptSession(JobEntityManagerFactory.getInstance(), DROP_TRIGGER_TABLES);
         KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
         KapuaSecurityUtils.clearSession();
     }
@@ -385,7 +399,7 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
             throws Exception {
 
         JobQuery tmpQuery = jobFactory.newQuery(commonData.currentScopeId);
-        tmpQuery.setPredicate(new AttributePredicateImpl<>(JobPredicates.NAME, name, Operator.STARTS_WITH));
+        tmpQuery.setPredicate(new AttributePredicateImpl<>(JobAttributes.NAME, name, Operator.STARTS_WITH));
 
         try {
             commonData.primeException();
@@ -400,7 +414,7 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
             throws Exception {
 
         JobQuery tmpQuery = jobFactory.newQuery(commonData.currentScopeId);
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo(JobPredicates.NAME, name));
+        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo(JobAttributes.NAME, name));
 
         try {
             commonData.primeException();

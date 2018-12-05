@@ -64,6 +64,7 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
             deviceCreator.setDisplayName(payload.getDisplayName());
             deviceCreator.setSerialNumber(payload.getSerialNumber());
             deviceCreator.setModelId(payload.getModelId());
+            deviceCreator.setModelName(payload.getModelName());
             deviceCreator.setImei(payload.getModemImei());
             deviceCreator.setImsi(payload.getModemImsi());
             deviceCreator.setIccid(payload.getModemIccid());
@@ -87,6 +88,7 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
             device.setDisplayName(payload.getDisplayName());
             device.setSerialNumber(payload.getSerialNumber());
             device.setModelId(payload.getModelId());
+            device.setModelName(payload.getModelName());
             device.setImei(payload.getModemImei());
             device.setImsi(payload.getModemImsi());
             device.setIccid(payload.getModemIccid());

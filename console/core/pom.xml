@@ -17,7 +17,7 @@
     <parent>
         <artifactId>kapua-console</artifactId>
         <groupId>org.eclipse.kapua</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -143,13 +143,13 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-endpoint</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-endpoint</artifactId>
             <classifier>sources</classifier>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -256,11 +256,6 @@
             <groupId>org.eclipse.neoscada.utils</groupId>
             <artifactId>org.eclipse.scada.utils</artifactId>
             <version>0.4.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
         </dependency>
 
         <!-- use logback only for testing -->

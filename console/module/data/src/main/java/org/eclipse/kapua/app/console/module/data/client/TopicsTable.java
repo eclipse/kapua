@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -58,6 +58,7 @@ public class TopicsTable extends LayoutContainer {
     private ContentPanel tableContainer;
     private List<SelectionChangedListener<GwtTopic>> listeners = new ArrayList<SelectionChangedListener<GwtTopic>>();
     private TreeStore<GwtTopic> store;
+    private Button refreshButton;
 
     AsyncCallback<List<GwtTopic>> topicsCallback;
 
@@ -71,12 +72,14 @@ public class TopicsTable extends LayoutContainer {
                 store.sort("topicName", Style.SortDir.ASC);
                 updateTimestamps(new ArrayList<ModelData>(topics));
                 topicInfoGrid.unmask();
+                refreshButton.enable();
             }
 
             @Override
             public void onFailure(Throwable t) {
                 FailureHandler.handle(t);
                 topicInfoGrid.unmask();
+                refreshButton.enable();
             }
         };
     }
@@ -93,6 +96,7 @@ public class TopicsTable extends LayoutContainer {
     }
 
     public void refresh() {
+        refreshButton.disable();
         topicInfoGrid.getSelectionModel().deselect(getSelectedTopic());
         clearTable();
         topicInfoGrid.mask(GXT.MESSAGES.loadMask_msg());
@@ -124,7 +128,7 @@ public class TopicsTable extends LayoutContainer {
         tableContainer.setLayout(new FitLayout());
         tableContainer.add(topicInfoGrid);
 
-        Button refreshButton = new Button(MSGS.refresh(), new KapuaIcon(IconSet.REFRESH), new SelectionListener<ButtonEvent>() {
+        refreshButton = new Button(MSGS.refresh(), new KapuaIcon(IconSet.REFRESH), new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {

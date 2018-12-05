@@ -37,14 +37,12 @@ public class DomainCreatorImpl extends AbstractKapuaEntityCreator<Domain> implem
      * Constructor
      *
      * @param name        The name to set for this {@link DomainCreator}.
-     * @param serviceName The service name that creates this {@link DomainCreator}.
      * @since 1.0.0
      */
-    public DomainCreatorImpl(String name, String serviceName) {
+    public DomainCreatorImpl(String name) {
         super((KapuaId) null);
 
         setName(name);
-        setServiceName(serviceName);
     }
 
     @Override
@@ -55,16 +53,6 @@ public class DomainCreatorImpl extends AbstractKapuaEntityCreator<Domain> implem
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    @Override
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
     }
 
     @Override

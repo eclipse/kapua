@@ -12,7 +12,7 @@
 package org.eclipse.kapua.broker.core.plugin.authentication;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.broker.BrokerService;
+import org.eclipse.kapua.broker.BrokerDomains;
 import org.eclipse.kapua.broker.core.plugin.Acl;
 import org.eclipse.kapua.broker.core.plugin.KapuaConnectionContext;
 import org.eclipse.kapua.broker.core.plugin.metric.ClientMetric;
@@ -34,7 +34,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionFactory;
-import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionPredicates;
+import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionAttributes;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionQuery;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionService;
 import org.slf4j.Logger;
@@ -63,7 +63,7 @@ public abstract class AuthenticationLogic {
     protected PublishMetric publishMetric = PublishMetric.getInstance();
     protected SubscribeMetric subscribeMetric = SubscribeMetric.getInstance();
 
-    protected static final Domain BROKER_DOMAIN = BrokerService.BROKER_DOMAIN;
+    protected static final Domain BROKER_DOMAIN = BrokerDomains.BROKER_DOMAIN;
     protected static final Domain DATASTORE_DOMAIN = new DatastoreDomain();
     protected static final Domain DEVICE_MANAGEMENT_DOMAIN = new DeviceManagementDomain();
 
@@ -226,7 +226,7 @@ public abstract class AuthenticationLogic {
         DeviceConnectionOptionQuery query = deviceConnectionOptionFactory.newQuery(scopeId);
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
-        andPredicate.and(new AttributePredicateImpl<>(DeviceConnectionOptionPredicates.RESERVED_USER_ID, userId));
+        andPredicate.and(new AttributePredicateImpl<>(DeviceConnectionOptionAttributes.RESERVED_USER_ID, userId));
         query.setPredicate(andPredicate);
         query.setLimit(1);
 

@@ -14,31 +14,26 @@ package org.eclipse.kapua.service.scheduler;
 import org.eclipse.kapua.model.domain.AbstractDomain;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * {@link SchedulerService} domain.<br>
- * Used to describe the {@link SchedulerService} {@link Domain} in the {@link SchedulerService}.
+ * {@link TriggerService} domain.<br>
+ * Used to describe the {@link TriggerService} {@link Domain} in the {@link TriggerService}.
  *
  * @since 1.0.0
  */
-public class SchedulerDomain extends AbstractDomain implements Domain {
+public class SchedulerDomain extends AbstractDomain {
 
     private String name = "scheduler";
-    private String serviceName = SchedulerService.class.getName();
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write, Actions.execute));
 
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public String getServiceName() {
-        return serviceName;
     }
 
     @Override

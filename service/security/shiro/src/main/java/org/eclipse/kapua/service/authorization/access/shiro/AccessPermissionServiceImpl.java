@@ -23,12 +23,13 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
-import org.eclipse.kapua.service.authorization.access.AccessPermissionPredicates;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
@@ -67,7 +68,7 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_INFO_DOMAIN, Actions.write, accessPermissionCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.write, accessPermissionCreator.getScopeId()));
 
         //
         // If permission are created out of the access permission scope, check that the current user has the permission on the external scopeId.
@@ -83,25 +84,25 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
         AccessPermissionQuery query = new AccessPermissionQueryImpl(accessPermissionCreator.getScopeId());
         query.setPredicate(
                 new AndPredicateImpl(
-                        new AttributePredicateImpl<>(AccessPermissionPredicates.SCOPE_ID, accessPermissionCreator.getScopeId()),
-                        new AttributePredicateImpl<>(AccessPermissionPredicates.ACCESS_INFO_ID, accessPermissionCreator.getAccessInfoId()),
-                        new AttributePredicateImpl<>(AccessPermissionPredicates.PERMISSION_DOMAIN, accessPermissionCreator.getPermission().getDomain()),
-                        new AttributePredicateImpl<>(AccessPermissionPredicates.PERMISSION_ACTION, accessPermissionCreator.getPermission().getAction()),
-                        new AttributePredicateImpl<>(AccessPermissionPredicates.PERMISSION_TARGET_SCOPE_ID, accessPermissionCreator.getPermission().getTargetScopeId()),
-                        new AttributePredicateImpl<>(AccessPermissionPredicates.PERMISSION_GROUP_ID, accessPermissionCreator.getPermission().getGroupId()),
-                        new AttributePredicateImpl<>(AccessPermissionPredicates.PERMISSION_FORWARDABLE, accessPermissionCreator.getPermission().getForwardable())
+                        new AttributePredicateImpl<>(AccessPermissionAttributes.SCOPE_ID, accessPermissionCreator.getScopeId()),
+                        new AttributePredicateImpl<>(AccessPermissionAttributes.ACCESS_INFO_ID, accessPermissionCreator.getAccessInfoId()),
+                        new AttributePredicateImpl<>(AccessPermissionAttributes.PERMISSION_DOMAIN, accessPermissionCreator.getPermission().getDomain()),
+                        new AttributePredicateImpl<>(AccessPermissionAttributes.PERMISSION_ACTION, accessPermissionCreator.getPermission().getAction()),
+                        new AttributePredicateImpl<>(AccessPermissionAttributes.PERMISSION_TARGET_SCOPE_ID, accessPermissionCreator.getPermission().getTargetScopeId()),
+                        new AttributePredicateImpl<>(AccessPermissionAttributes.PERMISSION_GROUP_ID, accessPermissionCreator.getPermission().getGroupId()),
+                        new AttributePredicateImpl<>(AccessPermissionAttributes.PERMISSION_FORWARDABLE, accessPermissionCreator.getPermission().getForwardable())
                 )
         );
         if (count(query) > 0) {
             List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
 
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionPredicates.SCOPE_ID, accessPermissionCreator.getScopeId()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionPredicates.ACCESS_INFO_ID, accessPermissionCreator.getAccessInfoId()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionPredicates.PERMISSION_DOMAIN, accessPermissionCreator.getPermission().getDomain()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionPredicates.PERMISSION_ACTION, accessPermissionCreator.getPermission().getAction()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionPredicates.PERMISSION_TARGET_SCOPE_ID, accessPermissionCreator.getPermission().getTargetScopeId()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionPredicates.PERMISSION_GROUP_ID, accessPermissionCreator.getPermission().getGroupId()));
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionPredicates.PERMISSION_FORWARDABLE, accessPermissionCreator.getPermission().getForwardable()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.SCOPE_ID, accessPermissionCreator.getScopeId()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.ACCESS_INFO_ID, accessPermissionCreator.getAccessInfoId()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.PERMISSION_DOMAIN, accessPermissionCreator.getPermission().getDomain()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.PERMISSION_ACTION, accessPermissionCreator.getPermission().getAction()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.PERMISSION_TARGET_SCOPE_ID, accessPermissionCreator.getPermission().getTargetScopeId()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.PERMISSION_GROUP_ID, accessPermissionCreator.getPermission().getGroupId()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.PERMISSION_FORWARDABLE, accessPermissionCreator.getPermission().getForwardable()));
 
             throw new KapuaEntityUniquenessException(AccessPermission.TYPE, uniquesFieldValues);
         }
@@ -111,7 +112,7 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
         return entityManagerSession.onTransactedInsert(em -> {
             //
             // Check that accessInfo exists
-            AccessInfo accessInfo = AccessInfoDAO.find(em, accessPermissionCreator.getAccessInfoId());
+            AccessInfo accessInfo = AccessInfoDAO.find(em, accessPermissionCreator.getScopeId(), accessPermissionCreator.getAccessInfoId());
 
             if (accessInfo == null) {
                 throw new KapuaEntityNotFoundException(AccessInfo.TYPE, accessPermissionCreator.getAccessInfoId());
@@ -130,14 +131,14 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_INFO_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.delete, scopeId));
 
         entityManagerSession.onTransactedAction(em -> {
-            if (AccessPermissionDAO.find(em, accessPermissionId) == null) {
+            if (AccessPermissionDAO.find(em, scopeId, accessPermissionId) == null) {
                 throw new KapuaEntityNotFoundException(AccessPermission.TYPE, accessPermissionId);
             }
 
-            AccessPermissionDAO.delete(em, accessPermissionId);
+            AccessPermissionDAO.delete(em, scopeId, accessPermissionId);
         });
     }
 
@@ -152,9 +153,9 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_INFO_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
 
-        return entityManagerSession.onResult(em -> AccessPermissionDAO.find(em, accessPermissionId));
+        return entityManagerSession.onResult(em -> AccessPermissionDAO.find(em, scopeId, accessPermissionId));
     }
 
     @Override
@@ -166,7 +167,7 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
         //
         // Build query
         AccessPermissionQuery query = new AccessPermissionQueryImpl(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(AccessPermissionPredicates.ACCESS_INFO_ID, accessInfoId));
+        query.setPredicate(new AttributePredicateImpl<>(AccessPermissionAttributes.ACCESS_INFO_ID, accessInfoId));
 
         return query(query);
     }
@@ -182,7 +183,7 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> AccessPermissionDAO.query(em, query));
     }
@@ -198,7 +199,7 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
 
         return entityManagerSession.onResult(em -> AccessPermissionDAO.count(em, query));
     }

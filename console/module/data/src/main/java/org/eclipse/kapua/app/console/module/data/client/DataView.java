@@ -22,16 +22,13 @@ import org.eclipse.kapua.app.console.module.device.shared.model.permission.Devic
 
 public class DataView extends AbstractView {
 
-    private GwtSession currentSession;
-    private TabPanel tabsPanel;
-
     private TopicsTabItem channelTabItem;
     private DeviceTabItem deviceTabItem;
     private AssetTabItem assetTabItem;
 
     private static final ConsoleDataMessages MSGS = GWT.create(ConsoleDataMessages.class);
 
-    public DataView(GwtSession currentGwtSession) {
+    DataView(GwtSession currentGwtSession) {
         currentSession = currentGwtSession;
     }
 
@@ -46,7 +43,7 @@ public class DataView extends AbstractView {
         setLayout(new FitLayout());
         setBorders(false);
 
-        tabsPanel = new TabPanel();
+        TabPanel tabsPanel = new TabPanel();
         tabsPanel.setPlain(false);
         tabsPanel.setBorders(false);
         tabsPanel.setBodyBorder(true);

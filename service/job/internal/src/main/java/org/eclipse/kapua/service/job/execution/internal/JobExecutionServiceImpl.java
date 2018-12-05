@@ -22,6 +22,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.execution.JobExecution;
 import org.eclipse.kapua.service.job.execution.JobExecutionCreator;
 import org.eclipse.kapua.service.job.execution.JobExecutionFactory;
@@ -46,7 +47,7 @@ public class JobExecutionServiceImpl
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
     public JobExecutionServiceImpl() {
-        super(JobExecutionService.class.getName(), JOB_DOMAIN, JobEntityManagerFactory.getInstance(), JobExecutionService.class, JobExecutionFactory.class);
+        super(JobExecutionService.class.getName(), JobDomains.JOB_DOMAIN, JobEntityManagerFactory.getInstance(), JobExecutionService.class, JobExecutionFactory.class);
     }
 
     @Override
@@ -58,7 +59,7 @@ public class JobExecutionServiceImpl
 
         //
         // Check access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.write, creator.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, creator.getScopeId()));
 
         //
         // Do create
@@ -74,7 +75,7 @@ public class JobExecutionServiceImpl
 
         //
         // Check access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.write, jobExecution.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobExecution.getScopeId()));
 
         return entityManagerSession.onTransactedResult(em -> JobExecutionDAO.update(em, jobExecution));
     }
@@ -88,11 +89,11 @@ public class JobExecutionServiceImpl
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.write, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, scopeId));
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> JobExecutionDAO.find(em, jobExecutionId));
+        return entityManagerSession.onResult(em -> JobExecutionDAO.find(em, scopeId, jobExecutionId));
     }
 
     @Override
@@ -104,7 +105,7 @@ public class JobExecutionServiceImpl
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -120,7 +121,7 @@ public class JobExecutionServiceImpl
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -136,16 +137,16 @@ public class JobExecutionServiceImpl
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.delete, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
 
         //
         // Do delete
         entityManagerSession.onTransactedAction(em -> {
-            if (JobExecutionDAO.find(em, jobExecutionId) == null) {
+            if (JobExecutionDAO.find(em, scopeId, jobExecutionId) == null) {
                 throw new KapuaEntityNotFoundException(JobExecution.TYPE, jobExecutionId);
             }
 
-            JobExecutionDAO.delete(em, jobExecutionId);
+            JobExecutionDAO.delete(em, scopeId, jobExecutionId);
         });
 
     }

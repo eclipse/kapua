@@ -21,6 +21,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -31,7 +32,6 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.Encoding;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.Method;
 import com.extjs.gxt.ui.client.widget.form.HiddenField;
-import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
@@ -89,7 +89,7 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
     private Button resetButton;
 
     private LayoutContainer commandOutput;
-    private TextArea result;
+    private Label result;
 
     protected boolean resetProcess;
 
@@ -135,6 +135,7 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
         add(devicesCommandPanel);
         layout(true);
         result.setStyleAttribute("border-top", "0px none");
+        result.setStyleAttribute("white-space", "pre-wrap");
         Element el = result.getElement();
         Node node0 = el.getChild(0);
         if (node0.getNodeType() == Node.ELEMENT_NODE) {
@@ -231,7 +232,7 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
 
                     String output = htmlResult.substring(outputMessageStartIndex, outputMessageEndIndex);
 
-                    result.setValue(KapuaSafeHtmlUtils.htmlUnescape(output));
+                    result.setText(KapuaSafeHtmlUtils.htmlUnescape(output));
                     commandInput.unmask();
                 }
             }
@@ -264,6 +265,7 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
         commandField.setMaxLength(1024);
         commandField.getMessages().setMaxLengthText(DEVICE_MSGS.deviceCommandMaxLengthErrorMessage());
         commandField.setFieldLabel("* " + DEVICE_MSGS.deviceCommandExecute());
+        commandField.setToolTip(DEVICE_MSGS.deviceCommandExecuteTooltip());
         commandField.setLayoutData(layout);
         fieldSet.add(commandField, formData);
 
@@ -272,6 +274,7 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
         fileUploadField.setName("file");
         fileUploadField.setLayoutData(layout);
         fileUploadField.setFieldLabel(DEVICE_MSGS.deviceCommandFile());
+        fileUploadField.setToolTip(DEVICE_MSGS.deviceCommandFileTooltip());
         fieldSet.add(fileUploadField, formData);
 
         passwordField = new TextField<String>();
@@ -294,7 +297,7 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (formPanel.isValid()) {
-                    result.clear();
+                    result.clearState();
                     commandInput.mask(DEVICE_MSGS.deviceCommandExecuting());
                     accountField.setValue(selectedEntity.getScopeId());
                     deviceIdField.setValue(selectedEntity.getId());
@@ -340,10 +343,7 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
         commandOutput.setWidth("99.5%");
         commandOutput.setLayout(new FitLayout());
 
-        result = new TextArea();
-        result.setBorders(false);
-        result.setReadOnly(true);
-        result.setEmptyText(DEVICE_MSGS.deviceCommandNoOutput());
+        result = new Label();
         result.setBorders(false);
         commandOutput.add(result);
     }
@@ -364,7 +364,7 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
 
     private void clearAll() {
         formPanel.reset();
-        result.reset();
+        result.setText(DEVICE_MSGS.deviceCommandNoOutput());
     }
 
     // --------------------------------------------------------------------------------------

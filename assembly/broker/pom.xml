@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-    Copyright (c) 2017 Red Hat Inc and others
+    Copyright (c) 2017, 2018 Red Hat Inc and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -11,7 +11,6 @@
         Red Hat Inc - initial API and implementation
         Eurotech
  -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -19,11 +18,11 @@
     <parent>
         <groupId>org.eclipse.kapua</groupId>
         <artifactId>kapua-assembly</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.1.0-SNAPSHOT</version>
     </parent>
 
+    <packaging>pom</packaging>
     <artifactId>kapua-assembly-broker</artifactId>
-    <name>${project.artifactId}</name>
 
     <dependencies>
         <dependency>
@@ -36,11 +35,6 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-guice</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>aopalliance</groupId>
-            <artifactId>aopalliance</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -76,15 +70,15 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-configuration-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-shiro</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-liquibase</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -120,46 +114,6 @@
         </dependency>
 
         <!-- dependencies added otherwise the unix assembly doesn't know the arctifact to add -->
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-asset-api</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-asset-internal</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-bundle-api</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-bundle-internal</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-command-api</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-command-internal</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-packages-api</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-packages-internal</artifactId>
-            <scope>runtime</scope>
-        </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-sso-jwt</artifactId>
@@ -198,6 +152,12 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-foreignkeys</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>aopalliance</groupId>
+            <artifactId>aopalliance</artifactId>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <!-- Google protobuf for message encoding -->
@@ -404,7 +364,7 @@
                         </goals>
                         <configuration>
                             <descriptors>
-                                <descriptor>src/main/descriptors/kapua-broker.xml</descriptor>
+                                <descriptor>descriptors/kapua-broker.xml</descriptor>
                             </descriptors>
                             <tarLongFileMode>posix</tarLongFileMode>
                             <finalName>kapua-broker-${project.version}</finalName>
@@ -653,55 +613,11 @@
                                 <image>
                                     <name>${docker.account}/kapua-broker</name>
                                     <build>
-                                        <from>${docker.account}/java-base</from>
                                         <assembly>
-                                            <descriptor>${basedir}/src/main/descriptors/kapua-broker.xml</descriptor>
+                                            <descriptor>${project.basedir}/descriptors/kapua-broker.xml</descriptor>
                                         </assembly>
-                                        <entryPoint>
-                                            <exec>
-                                                <arg>/maven/run-broker</arg>
-                                            </exec>
-                                        </entryPoint>
-                                        <env>
-                                            <SQL_DB_PORT>\${DB_PORT_3306_TCP_PORT}</SQL_DB_PORT>
-                                            <SQL_DB_ADDR>\${DB_PORT_3306_TCP_ADDR}</SQL_DB_ADDR>
-                                            <DATASTORE_PORT>\${ES_PORT_9200_TCP_PORT}</DATASTORE_PORT>
-                                            <DATASTORE_ADDR>\${ES_PORT_9200_TCP_ADDR}</DATASTORE_ADDR>
-                                            <SERVICE_BROKER_ADDR>failover:(amqp://\${SERVICE_PORT_5672_TCP_ADDR}:\${SERVICE_PORT_5672_TCP_PORT})?jms.sendTimeout=1000</SERVICE_BROKER_ADDR>
-                                            <DATASTORE_CLIENT>org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient</DATASTORE_CLIENT>
-                                            <ACTIVEMQ_OPTS>
-                                                -Dcommons.db.schema.update=true \
-                                                -Dcommons.db.connection.host=db \
-                                                -Dcommons.db.connection.port=3306 \
-                                                -Ddatastore.elasticsearch.nodes=es \
-                                                -Ddatastore.elasticsearch.port=9200 \
-                                                -Ddatastore.client.class=\${DATASTORE_CLIENT} \
-                                                -Dcommons.eventbus.url="failover:(amqp://events-broker:5672)?jms.sendTimeout=1000" \
-                                                -Dcertificate.jwt.private.key=file:///home/kapua/key.pk8 \
-                                                -Dcertificate.jwt.certificate=file:///home/kapua/cert.pem \
-                                                -Dbroker.ip=broker
-                                            </ACTIVEMQ_OPTS>
-                                        </env>
-                                        <ports>
-                                            <port>1883</port><!-- MQTT -->
-                                            <port>8883</port><!-- MQTTS -->
-                                            <port>8778</port><!-- Jolokia -->
-                                            <port>61614</port><!-- MQTT-WS -->
-                                        </ports>
-                                        <user>kapua</user>
-                                        <runCmds>
-                                            <run><![CDATA[
-                                    chown -R kapua:kapua /maven && \
-                                    chmod -R a+rw /maven && \
-                                    find /maven -type d -exec chmod a+x {} +
-                                    ]]></run>
-                                            <runCmd>
-                                                chmod og+rwx /home/kapua
-                                            </runCmd>
-                                        </runCmds>
-                                        <volumes>
-                                            <volume>/maven/data</volume>
-                                        </volumes>
+                                        <dockerFile>${project.basedir}/docker/Dockerfile</dockerFile>
+                                        <filter>@</filter>
                                     </build>
                                 </image>
                             </images>
@@ -711,5 +627,6 @@
             </build>
         </profile>
     </profiles>
+
 
 </project>

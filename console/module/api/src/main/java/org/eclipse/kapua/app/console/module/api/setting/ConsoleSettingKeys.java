@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.module.api.setting;
 import org.eclipse.kapua.commons.setting.SettingKey;
 
 public enum ConsoleSettingKeys implements SettingKey {
+
     SKIN_RESOURCE_DIR("console.skin.resource.dir"), //
 
     LOGIN_BACKGROUND_CREDITS("console.login.background.credits"), //
@@ -31,6 +32,8 @@ public enum ConsoleSettingKeys implements SettingKey {
     DEVICE_MAP_ENABLED("console.device.map.enabled"), //
     DEVICE_MAP_TILE_URI("console.device.map.tile.uri"), //
 
+    JOB_STEP_DEFINITION_EXCLUDE_REGEX("console.job.step.definition.exclude.regex"),
+
     FILE_UPLOAD_SIZE_MAX("console.file.upload.size.max"), //
     FILE_UPLOAD_INMEMORY_SIZE_THRESHOLD("console.file.upload.inmemory.size.threshold"), //
 
@@ -46,6 +49,7 @@ public enum ConsoleSettingKeys implements SettingKey {
         this.key = key;
     }
 
+    @Override
     public String key() {
         return key;
     }

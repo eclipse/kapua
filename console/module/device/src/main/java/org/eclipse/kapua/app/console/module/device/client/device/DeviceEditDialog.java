@@ -32,6 +32,7 @@ public class DeviceEditDialog extends DeviceAddDialog {
     @Override
     public void createBody() {
         generateBody();
+        submitButton.disable();
 
         // hide fields used for add
         clientIdField.hide();
@@ -116,6 +117,7 @@ public class DeviceEditDialog extends DeviceAddDialog {
             // General info data
             clientIdField.setValue(device.getClientId());
             clientIdLabel.setText(device.getClientId());
+            clientIdLabel.setToolTip(DEVICE_MSGS.deviceFormClientIDEditDialogTooltip());
             displayNameField.setValue(device.getUnescapedDisplayName());
             statusCombo.setSimpleValue(GwtDeviceQueryPredicates.GwtDeviceStatus.valueOf(device.getGwtDeviceStatus()));
 
@@ -130,7 +132,7 @@ public class DeviceEditDialog extends DeviceAddDialog {
 
                         @Override
                         public void onSuccess(GwtGroup result) {
-                            groupCombo.setValue(result);
+                            setAccessGroup();
                         }
                     });
                 } else {
@@ -148,5 +150,20 @@ public class DeviceEditDialog extends DeviceAddDialog {
             // Other data
             optlock.setValue(device.getOptlock());
         }
+        formPanel.clearDirtyFields();
+    }
+
+    private void setAccessGroup() {
+        for (GwtGroup gwtGroup : groupCombo.getStore().getModels()) {
+            if (gwtGroup.getId() == null) {
+                if (selectedDevice.getGroupId() == null) {
+                    groupCombo.setValue(gwtGroup);
+                }
+            } else if (gwtGroup.getId().equals(selectedDevice.getGroupId())) {
+                groupCombo.setValue(gwtGroup);
+                break;
+            }
+        }
+        formPanel.clearDirtyFields();
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,8 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.client.ui.dialog;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.util.KeyNav;
 import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -21,7 +26,10 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel.Method;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
@@ -70,6 +78,44 @@ public abstract class ActionDialog extends KapuaDialog {
         addListeners();
 
         add(formPanel);
+        Listener<BaseEvent> listener = new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                setSubmitButtonState();
+            }
+        };
+
+        final Listener<BaseEvent> pasteEventListener = new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                if (be.getType() == Events.OnPaste) {
+                    final Timer timer = new Timer() {
+
+                        @Override
+                        public void run() {
+                            setSubmitButtonState();
+                        }
+                    };
+                    timer.schedule(100);
+                };
+            }
+        };
+
+        KeyNav<ComponentEvent> keyNav = new KeyNav<ComponentEvent>(formPanel) {
+            public void onKeyPress(ComponentEvent ce) {
+                if (ce.getKeyCode() == KeyCodes.KEY_TAB || ce.getKeyCode() == KeyCodes.KEY_ENTER ) {
+                    setSubmitButtonState();
+                }
+            }
+        };
+
+        formPanel.addListener(Events.OnMouseUp, listener);
+        formPanel.addListener(Events.OnClick, listener);
+        formPanel.addListener(Events.OnKeyUp, listener);
+        formPanel.addListener(Events.OnPaste, pasteEventListener);
+        sinkEvents(Event.ONPASTE);
 
         //
         // Buttons setup
@@ -172,5 +218,13 @@ public abstract class ActionDialog extends KapuaDialog {
 
     public void unmaskDialog() {
         formPanel.unmask();
+    }
+
+    public void setSubmitButtonState() {
+        if (formPanel.isDirty()) {
+            submitButton.enable();
+        } else {
+            submitButton.disable();
+        }
     }
 }

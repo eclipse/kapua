@@ -61,31 +61,33 @@ public class AccountDetailsTabDescription extends EntityDescriptionTabItem<GwtAc
 
         ToolBar accountsToolBar = new ToolBar();
         accountsToolBar.setHeight("27px");
-        if (currentSession.hasPermission(AccountSessionPermission.write())) {
-            //
-            // Edit Account Button
-            Button editButton = new EditButton(new SelectionListener<ButtonEvent>() {
 
-                @Override
-                public void componentSelected(ButtonEvent ce) {
-                    if (getSelectedEntity() != null) {
-                        AccountEditDialog accountForm = new AccountEditDialog(currentSession, getSelectedEntity());
-                        accountForm.addListener(Events.Hide, new Listener<ComponentEvent>() {
+        //
+        // Edit Account Button
+        Button editButton = new EditButton(new SelectionListener<ButtonEvent>() {
 
-                            @Override
-                            public void handleEvent(ComponentEvent be) {
-                                setDirty(true);
-                                refresh();
-                            }
-                        });
-                        accountForm.show();
-                    }
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (getSelectedEntity() != null) {
+                    AccountEditDialog accountForm = new AccountEditDialog(currentSession, getSelectedEntity());
+                    accountForm.addListener(Events.Hide, new Listener<ComponentEvent>() {
+
+                        @Override
+                        public void handleEvent(ComponentEvent be) {
+                            setDirty(true);
+                            refresh();
+                        }
+                    });
+                    accountForm.show();
                 }
-            });
-            editButton.setEnabled(true);
+            }
+        });
 
-            accountsToolBar.add(editButton);
-            accountsToolBar.add(new SeparatorToolItem());
+        accountsToolBar.add(editButton);
+        accountsToolBar.add(new SeparatorToolItem());
+
+        if (!currentSession.hasPermission(AccountSessionPermission.write())) {
+            editButton.disable();
         }
         return accountsToolBar;
     }

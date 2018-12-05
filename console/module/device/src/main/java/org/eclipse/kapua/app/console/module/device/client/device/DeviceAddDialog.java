@@ -12,6 +12,9 @@
 package org.eclipse.kapua.app.console.module.device.client.device;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
@@ -107,6 +110,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
     @Override
     public void createBody() {
         generateBody();
+        submitButton.disable();
 
         // hide fields used for edit
         clientIdLabel.hide();
@@ -124,6 +128,14 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         formPanel.setScrollMode(Scroll.AUTOY);
         // formPanel.setStyleAttribute("padding-bottom", "0px");
         // formPanel.setLayout(new FlowLayout());
+
+        Listener<BaseEvent> comboBoxListener = new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                DeviceAddDialog.this.formPanel.fireEvent(Events.OnClick);
+            }
+        };
 
         // Device general info fieldset
         FieldSet fieldSet = new FieldSet();
@@ -144,6 +156,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         clientIdField.setName("clientID");
         clientIdField.setFieldLabel("* " + DEVICE_MSGS.deviceFormClientID());
         clientIdField.setValidator(new TextFieldValidator(clientIdField, FieldType.DEVICE_CLIENT_ID));
+        clientIdField.setToolTip(DEVICE_MSGS.deviceFormClientIDTooltip());
         clientIdField.setWidth(225);
         clientIdField.setMaxLength(255);
 
@@ -154,6 +167,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         displayNameField.setAllowBlank(false);
         displayNameField.setName("displayName");
         displayNameField.setFieldLabel("* " + DEVICE_MSGS.deviceFormDisplayName());
+        displayNameField.setToolTip(DEVICE_MSGS.deviceFormDisplayNameTooltip());
         displayNameField.setWidth(225);
         displayNameField.setMaxLength(255);
         fieldSet.add(displayNameField, formData);
@@ -163,6 +177,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         statusCombo.setAllowBlank(false);
         statusCombo.setName("status");
         statusCombo.setFieldLabel("* " + DEVICE_MSGS.deviceFormStatus());
+        statusCombo.setToolTip(DEVICE_MSGS.deviceFormStatusTooltip());
         statusCombo.setEditable(false);
         statusCombo.setTriggerAction(TriggerAction.ALL);
 
@@ -176,6 +191,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
             groupCombo = new ComboBox<GwtGroup>();
             groupCombo.setStore(new ListStore<GwtGroup>());
             groupCombo.setFieldLabel("* " + DEVICE_MSGS.deviceFormGroup());
+            groupCombo.setToolTip(DEVICE_MSGS.deviceFormGroupTooltip());
             groupCombo.setForceSelection(true);
             groupCombo.setTypeAhead(false);
             groupCombo.setTriggerAction(TriggerAction.ALL);
@@ -184,6 +200,8 @@ public class DeviceAddDialog extends EntityAddEditDialog {
             groupCombo.setDisplayField("groupName");
             groupCombo.setTemplate("<tpl for=\".\"><div role=\"listitem\" class=\"x-combo-list-item\" title={groupName}>{groupName}</div></tpl>");
             groupCombo.setValueField("id");
+            groupCombo.setEmptyText(DEVICE_MSGS.deviceFilteringPanelGroupEmptyText());
+            groupCombo.addListener(Events.Select, comboBoxListener);
 
             gwtGroupService.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtGroup>>() {
 
@@ -213,6 +231,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         customAttribute1Field = new KapuaTextField<String>();
         customAttribute1Field.setName("customAttribute1");
         customAttribute1Field.setFieldLabel(DEVICE_MSGS.deviceFormCustomAttribute1());
+        customAttribute1Field.setToolTip(DEVICE_MSGS.deviceFormCustomAttributesTooltip());
         customAttribute1Field.setWidth(225);
         customAttribute1Field.setMaxLength(255);
         fieldSetCustomAttributes.add(customAttribute1Field, formData);
@@ -221,6 +240,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         customAttribute2Field = new KapuaTextField<String>();
         customAttribute2Field.setName("customAttribute2");
         customAttribute2Field.setFieldLabel(DEVICE_MSGS.deviceFormCustomAttribute2());
+        customAttribute2Field.setToolTip(DEVICE_MSGS.deviceFormCustomAttributesTooltip());
         customAttribute2Field.setWidth(225);
         customAttribute2Field.setMaxLength(255);
         fieldSetCustomAttributes.add(customAttribute2Field, formData);
@@ -229,6 +249,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         customAttribute3Field = new KapuaTextField<String>();
         customAttribute3Field.setName("customAttribute3");
         customAttribute3Field.setFieldLabel(DEVICE_MSGS.deviceFormCustomAttribute3());
+        customAttribute3Field.setToolTip(DEVICE_MSGS.deviceFormCustomAttributesTooltip());
         customAttribute3Field.setWidth(225);
         customAttribute3Field.setMaxLength(255);
         fieldSetCustomAttributes.add(customAttribute3Field, formData);
@@ -237,6 +258,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         customAttribute4Field = new KapuaTextField<String>();
         customAttribute4Field.setName("customAttribute4");
         customAttribute4Field.setFieldLabel(DEVICE_MSGS.deviceFormCustomAttribute4());
+        customAttribute4Field.setToolTip(DEVICE_MSGS.deviceFormCustomAttributesTooltip());
         customAttribute4Field.setWidth(225);
         customAttribute4Field.setMaxLength(255);
         fieldSetCustomAttributes.add(customAttribute4Field, formData);
@@ -245,6 +267,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         customAttribute5Field = new KapuaTextField<String>();
         customAttribute5Field.setName("customAttribute5");
         customAttribute5Field.setFieldLabel(DEVICE_MSGS.deviceFormCustomAttribute5());
+        customAttribute5Field.setToolTip(DEVICE_MSGS.deviceFormCustomAttributesTooltip());
         customAttribute5Field.setWidth(225);
         customAttribute5Field.setMaxLength(255);
         fieldSetCustomAttributes.add(customAttribute5Field, formData);

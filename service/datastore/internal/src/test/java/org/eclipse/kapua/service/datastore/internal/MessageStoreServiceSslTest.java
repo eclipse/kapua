@@ -56,11 +56,14 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Category(JUnitTests.class)
 public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger(MessageStoreServiceSslTest.class);
@@ -77,7 +80,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
      * The method deletes all indices and resets the Kapua internal singleton state.
      * This is required to ensure that each unit test, as it currently expects, starts with an empty ES setup
      * </p>
-     * 
+     *
      * @throws Exception
      *             any case anything goes wrong
      */

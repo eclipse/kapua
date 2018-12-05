@@ -18,10 +18,10 @@ import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
+import org.eclipse.kapua.service.device.registry.DeviceDomains;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
-import org.eclipse.kapua.service.device.registry.DevicePredicates;
-import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 
 import java.util.List;
 
@@ -48,6 +48,7 @@ public class DeviceDAO extends ServiceDAO {
         device.setDisplayName(deviceCreator.getDisplayName());
         device.setSerialNumber(deviceCreator.getSerialNumber());
         device.setModelId(deviceCreator.getModelId());
+        device.setModelName(deviceCreator.getModelName());
         device.setImei(deviceCreator.getImei());
         device.setImsi(deviceCreator.getImsi());
         device.setIccid(deviceCreator.getIccid());
@@ -90,11 +91,12 @@ public class DeviceDAO extends ServiceDAO {
      * Finds the device by device identifier
      *
      * @param em
+     * @param scopeId
      * @param deviceId
      * @return
      */
-    public static Device find(EntityManager em, KapuaId deviceId) {
-        return em.find(DeviceImpl.class, deviceId);
+    public static Device find(EntityManager em, KapuaId scopeId, KapuaId deviceId) {
+        return ServiceDAO.find(em, DeviceImpl.class, scopeId, deviceId);
     }
 
     /**
@@ -108,7 +110,7 @@ public class DeviceDAO extends ServiceDAO {
     public static DeviceListResult query(EntityManager em, KapuaQuery<Device> query)
             throws KapuaException {
 
-        handleKapuaQueryGroupPredicate(query, DeviceRegistryService.DEVICE_DOMAIN, DevicePredicates.GROUP_ID);
+        handleKapuaQueryGroupPredicate(query, DeviceDomains.DEVICE_DOMAIN, DeviceAttributes.GROUP_ID);
 
         // This is fix up for a the Eclipse Link limitation on OneToOne that ignores Lazy Fetch on Java SE environment.
         // Link: https://www.eclipse.org/eclipselink/documentation/2.6/concepts/mappingintro002.htm#CEGCJEHD
@@ -116,15 +118,15 @@ public class DeviceDAO extends ServiceDAO {
         List<String> fetchAttributes = query.getFetchAttributes();
 
         boolean deviceConnectionFetchAdded = false;
-        if (fetchAttributes == null || !fetchAttributes.contains(DevicePredicates.CONNECTION)) {
+        if (fetchAttributes == null || !fetchAttributes.contains(DeviceAttributes.CONNECTION)) {
             deviceConnectionFetchAdded = true;
-            query.addFetchAttributes(DevicePredicates.CONNECTION);
+            query.addFetchAttributes(DeviceAttributes.CONNECTION);
         }
 
         boolean deviceLastEventFetchAdded = false;
-        if (fetchAttributes == null || !fetchAttributes.contains(DevicePredicates.LAST_EVENT)) {
+        if (fetchAttributes == null || !fetchAttributes.contains(DeviceAttributes.LAST_EVENT)) {
             deviceLastEventFetchAdded = true;
-            query.addFetchAttributes(DevicePredicates.LAST_EVENT);
+            query.addFetchAttributes(DeviceAttributes.LAST_EVENT);
         }
 
         DeviceListResult results = ServiceDAO.query(em, Device.class, DeviceImpl.class, new DeviceListResultImpl(), query);
@@ -133,12 +135,12 @@ public class DeviceDAO extends ServiceDAO {
             for (Device d : results.getItems()) {
                 if (deviceConnectionFetchAdded) {
                     ((DeviceImpl) d).setConnection(null);
-                    query.getFetchAttributes().remove(DevicePredicates.CONNECTION);
+                    query.getFetchAttributes().remove(DeviceAttributes.CONNECTION);
                 }
 
                 if (deviceLastEventFetchAdded) {
                     ((DeviceImpl) d).setLastEvent(null);
-                    query.getFetchAttributes().remove(DevicePredicates.LAST_EVENT);
+                    query.getFetchAttributes().remove(DeviceAttributes.LAST_EVENT);
                 }
             }
         }
@@ -156,7 +158,7 @@ public class DeviceDAO extends ServiceDAO {
      */
     public static long count(EntityManager em, KapuaQuery<Device> query)
             throws KapuaException {
-        handleKapuaQueryGroupPredicate(query, DeviceRegistryService.DEVICE_DOMAIN, DevicePredicates.GROUP_ID);
+        handleKapuaQueryGroupPredicate(query, DeviceDomains.DEVICE_DOMAIN, DeviceAttributes.GROUP_ID);
 
         return ServiceDAO.count(em, Device.class, DeviceImpl.class, query);
     }
@@ -165,10 +167,11 @@ public class DeviceDAO extends ServiceDAO {
      * Deletes the device by device identifier
      *
      * @param em
+     * @param scopeId
      * @param deviceId
      * @throws KapuaEntityNotFoundException If {@link Device} is not found.
      */
-    public static void delete(EntityManager em, KapuaId deviceId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, DeviceImpl.class, deviceId);
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId deviceId) throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, DeviceImpl.class, scopeId, deviceId);
     }
 }

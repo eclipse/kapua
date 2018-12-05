@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,8 +15,7 @@ package org.eclipse.kapua.qa.steps;
 import java.io.IOException;
 import java.time.Duration;
 
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
+import cucumber.api.java.en.Given;
 import org.eclipse.kapua.service.datastore.client.embedded.EsEmbeddedEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +34,8 @@ public class EmbeddedDatastore {
 
     private static EsEmbeddedEngine esEmbeddedEngine;
 
-    @Before(order = HookPriorities.DATASTORE, value = "@StartDatastore")
+
+    @Given("^Start Datastore$")
     public void setup() {
         logger.info("starting embedded datastore");
         esEmbeddedEngine = new EsEmbeddedEngine();
@@ -49,7 +49,7 @@ public class EmbeddedDatastore {
         logger.info("starting embedded datastore DONE");
     }
 
-    @After(order = HookPriorities.DATASTORE, value = "@StopDatastore")
+    @Given("^Stop Datastore$")
     public void closeNode() throws IOException {
         logger.info("closing embedded datastore");
         if (EXTRA_STARTUP_DELAY > 0) {

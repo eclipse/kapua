@@ -18,7 +18,7 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.model.KapuaEntity;
-import org.eclipse.kapua.model.KapuaEntityPredicates;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.KapuaSortCriteria;
@@ -52,7 +52,7 @@ public abstract class AbstractKapuaQuery<E extends KapuaEntity> implements Kapua
      * @since 1.0.0
      */
     public AbstractKapuaQuery() {
-        setSortCriteria(new FieldSortCriteria(KapuaEntityPredicates.CREATED_ON, SortOrder.ASCENDING));
+        setSortCriteria(new FieldSortCriteria(KapuaEntityAttributes.CREATED_ON, SortOrder.ASCENDING));
     }
 
     /**

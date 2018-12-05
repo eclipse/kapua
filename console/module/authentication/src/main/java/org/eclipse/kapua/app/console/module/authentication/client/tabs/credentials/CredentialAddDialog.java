@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.client.tabs.credentials;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
@@ -55,6 +58,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
     protected KapuaDateField expirationDate;
     SimpleComboBox<GwtCredentialStatus> credentialStatus;
     NumberField optlock;
+    protected LabelField passwordTooltip;
 
     static final GwtCredentialServiceAsync GWT_CREDENTIAL_SERVICE = GWT.create(GwtCredentialService.class);
 
@@ -68,6 +72,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
     @Override
     public void createBody() {
 
+        submitButton.disable();
         credentialFormPanel = new FormPanel(FORM_LABEL_WIDTH);
 
         subject = new LabelField();
@@ -81,12 +86,12 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         credentialTypeLabel.setLabelSeparator(":");
         credentialTypeLabel.setVisible(false);
         credentialFormPanel.add(credentialTypeLabel);
-
         credentialType = new SimpleComboBox<GwtCredentialType>();
         credentialType.setEditable(false);
         credentialType.setTypeAhead(false);
         credentialType.setAllowBlank(false);
         credentialType.setFieldLabel("* " + MSGS.dialogAddFieldCredentialType());
+        credentialType.setToolTip(MSGS.dialogAddFieldCredentialTypeTooltip());
         credentialType.setTriggerAction(ComboBox.TriggerAction.ALL);
         credentialType.add(GwtCredentialType.PASSWORD);
         credentialType.add(GwtCredentialType.API_KEY);
@@ -99,7 +104,21 @@ public class CredentialAddDialog extends EntityAddEditDialog {
                 password.setAllowBlank(selectionChangedEvent.getSelectedItem().getValue() != GwtCredentialType.PASSWORD);
                 confirmPassword.setVisible(selectionChangedEvent.getSelectedItem().getValue() == GwtCredentialType.PASSWORD);
                 confirmPassword.setAllowBlank(selectionChangedEvent.getSelectedItem().getValue() != GwtCredentialType.PASSWORD);
-            }
+                password.clearInvalid();
+                confirmPassword.clearInvalid();
+                if (password.isVisible() && confirmPassword.isVisible()) {
+                    DialogUtils.resizeDialog(CredentialAddDialog.this, 400, 335);
+                    passwordTooltip.show();
+                } else {
+                    DialogUtils.resizeDialog(CredentialAddDialog.this, 400, 285);
+                    passwordTooltip.hide();
+                }
+                if (selectionChangedEvent.getSelectedItem().getValue() != GwtCredentialType.PASSWORD) {
+                    password.clear();
+                    confirmPassword.clear();
+                    confirmPassword.disable();
+                }
+             }
         });
         credentialFormPanel.add(credentialType);
 
@@ -110,6 +129,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         password.setValidator(new PasswordFieldValidator(password));
         password.setPassword(true);
         password.setVisible(false);
+        password.setAutoValidate(true);
         credentialFormPanel.add(password);
 
         confirmPassword = new TextField<String>();
@@ -119,19 +139,52 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         confirmPassword.setValidator(new ConfirmPasswordFieldValidator(confirmPassword, password));
         confirmPassword.setPassword(true);
         confirmPassword.setVisible(false);
+        confirmPassword.setAutoValidate(true);
+        confirmPassword.disable();
         credentialFormPanel.add(confirmPassword);
 
+        password.addListener(Events.KeyUp, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                if (password.getValue() != null) {
+                    confirmPassword.enable();
+                    confirmPassword.validate();
+                } else {
+                    confirmPassword.disable();
+                    confirmPassword.clear();
+                }
+            }
+        });
+
+        passwordTooltip = new LabelField();
+        passwordTooltip.setValue(MSGS.dialogAddTooltipCredentialPassword());
+        passwordTooltip.setStyleAttribute("margin-top", "-5px");
+        passwordTooltip.setStyleAttribute("color", "gray");
+        passwordTooltip.setStyleAttribute("font-size", "10px");
+        credentialFormPanel.add(passwordTooltip);
+        passwordTooltip.hide();
         expirationDate = new KapuaDateField();
         expirationDate.setEmptyText(MSGS.dialogAddNoExpiration());
         expirationDate.setFieldLabel(MSGS.dialogAddFieldExpirationDate());
         expirationDate.setFormatValue(true);
         expirationDate.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
+        expirationDate.setToolTip(MSGS.dialogAddFieldExpirationDateTooltip());
         expirationDate.setMaxLength(10);
+        expirationDate.getDatePicker().addListener(Events.Select, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                formPanel.fireEvent(Events.OnClick);
+            }
+        });
+
         credentialFormPanel.add(expirationDate);
 
         credentialStatus = new SimpleComboBox<GwtCredentialStatus>();
         credentialStatus.setName("comboStatus");
         credentialStatus.setFieldLabel(MSGS.dialogAddStatus());
+        credentialStatus.setToolTip(MSGS.dialogAddStatusTooltip());
         credentialStatus.setLabelSeparator(":");
         credentialStatus.setEditable(false);
         credentialStatus.setTypeAhead(true);
@@ -149,6 +202,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         optlock.setName("optlock");
         optlock.setEditable(false);
         optlock.setVisible(false);
+        optlock.setPropertyEditorType(Integer.class);
         credentialFormPanel.add(optlock);
 
         bodyPanel.add(credentialFormPanel);

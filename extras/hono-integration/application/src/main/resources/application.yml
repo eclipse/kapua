@@ -49,4 +49,3 @@ management:
     export:
       graphite:
         enabled: false
-    

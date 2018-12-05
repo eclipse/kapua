@@ -12,13 +12,13 @@
 package org.eclipse.kapua.service.device.registry.common;
 
 import org.eclipse.kapua.commons.util.ValidationRegex;
-import org.eclipse.kapua.service.device.registry.DevicePredicates;
+import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 
 import java.util.regex.Pattern;
 
 public enum DeviceValidationRegex implements ValidationRegex {
 
-    QUERY_FETCH_ATTRIBUTES("(" + DevicePredicates.CONNECTION + "|" + DevicePredicates.LAST_EVENT + ")");
+    QUERY_FETCH_ATTRIBUTES("(" + DeviceAttributes.CONNECTION + "|" + DeviceAttributes.LAST_EVENT + ")");
 
     private Pattern pattern;
 

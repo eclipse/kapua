@@ -49,6 +49,15 @@ public class KapuaGwtAccountModelConverter {
         gwtAccount.set("orgName", account.getOrganization().getName());
         gwtAccount.set("orgEmail", account.getOrganization().getEmail());
         gwtAccount.setChildAccounts(convertChildAccounts(account.getChildAccounts()));
+        gwtAccount.setExpirationDate(account.getExpirationDate());
+        gwtAccount.setContactName(account.getOrganization().getPersonName());
+        gwtAccount.setPhoneNumber(account.getOrganization().getPhoneNumber());
+        gwtAccount.setAddress1(account.getOrganization().getAddressLine1());
+        gwtAccount.setAddress2(account.getOrganization().getAddressLine2());
+        gwtAccount.setZipPostCode(account.getOrganization().getZipPostCode());
+        gwtAccount.setCity(account.getOrganization().getCity());
+        gwtAccount.setStateProvince(account.getOrganization().getStateProvinceCounty());
+        gwtAccount.setCountry(account.getOrganization().getCountry());
         //
         // Return converted entity
         return gwtAccount;

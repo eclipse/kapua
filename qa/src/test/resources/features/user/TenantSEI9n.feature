@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 Eurotech and/or its affiliates and others
+# Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -14,8 +14,9 @@ Feature: Tenant service with Service Events
   Basic workflow of Account and User creation and deletion, where Service Events are
   being trigered on create, update and delete action on Account and User service.
 
-  @StartEventBroker
   Scenario: Start event broker for all scenarios
+
+    Given Start Event Broker
 
   Scenario: To be defined
     Given this step says to skip
@@ -57,5 +58,6 @@ Feature: Tenant service with Service Events
     And I don't find user "kapua-g"
     And I logout
 
-  @StopEventBroker
   Scenario: Stop event broker for all scenarios
+
+    Given Stop Event Broker

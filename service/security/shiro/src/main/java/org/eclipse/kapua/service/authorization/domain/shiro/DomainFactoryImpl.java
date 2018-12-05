@@ -29,8 +29,8 @@ import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 public class DomainFactoryImpl implements DomainFactory {
 
     @Override
-    public DomainCreator newCreator(String name, String serviceName) {
-        return new DomainCreatorImpl(name, serviceName);
+    public DomainCreator newCreator(String name) {
+        return new DomainCreatorImpl(name);
     }
 
     @Override

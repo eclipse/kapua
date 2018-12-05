@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,21 +12,29 @@
 package org.eclipse.kapua.service.authorization.shiro;
 
 import java.math.BigInteger;
+import java.util.Optional;
 import java.util.Random;
 
+import com.google.common.base.MoreObjects;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
+import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Assert;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Category(JUnitTests.class)
 public abstract class AbstractAuthorizationServiceTest extends Assert {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractAuthorizationServiceTest.class);
@@ -47,7 +55,12 @@ public abstract class AbstractAuthorizationServiceTest extends Assert {
 
     // Create the database tables and seed them with default data.
     public static void setupDatabase() {
-        new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
+        System.setProperty(SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER.key(), "H2");
+        SystemSetting config = SystemSetting.getInstance();
+        String schema = MoreObjects.firstNonNull(config.getString(SystemSettingKey.DB_SCHEMA_ENV), config.getString(SystemSettingKey.DB_SCHEMA));
+        String jdbcUrl = JdbcConnectionUrlResolvers.resolveJdbcUrl();
+
+        new KapuaLiquibaseClient(jdbcUrl, "kapua", "kapua", Optional.ofNullable(schema)).update();
     }
 
     /**

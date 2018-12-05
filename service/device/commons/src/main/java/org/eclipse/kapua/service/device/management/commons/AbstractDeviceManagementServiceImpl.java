@@ -22,7 +22,7 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 
 /**
- * Utility {@code abstract} {@link Class} used to provide utility methods to all implementation of {@link org.eclipse.kapua.service.device.management.DeviceManagementService}s.
+ * Utility {@code abstract} {@link Class} used to provide utility methods to all implementation of Device Management Services.
  *
  * @since 1.0.0
  */
@@ -33,7 +33,22 @@ public abstract class AbstractDeviceManagementServiceImpl {
     private static final DeviceEventService DEVICE_EVENT_SERVICE = LOCATOR.getService(DeviceEventService.class);
     private static final DeviceEventFactory DEVICE_EVENT_FACTORY = LOCATOR.getFactory(DeviceEventFactory.class);
 
-    protected void createDeviceEvent(KapuaId scopeId, KapuaId deviceId, KapuaRequestMessage<?, ?> requestMessage, KapuaResponseMessage<?,?> responseMessage) throws KapuaException {
+
+    /**
+     * Creates a {@link org.eclipse.kapua.service.device.registry.event.DeviceEvent} extracting data from the given {@link KapuaRequestMessage} and {@link KapuaResponseMessage}.
+     * <p>
+     * This operation is performed using {@link KapuaSecurityUtils#doPrivileged(ThrowingRunnable)} since {@link org.eclipse.kapua.service.device.registry.event.DeviceEventDomain} isn't a required
+     * permission to use any of the Device Management Services.
+     *
+     * @param scopeId         The scopeId in which to create the {@link org.eclipse.kapua.service.device.registry.event.DeviceEvent}
+     * @param deviceId        The {@link org.eclipse.kapua.service.device.registry.Device} id for which the {@link org.eclipse.kapua.service.device.registry.event.DeviceEvent} is created
+     * @param requestMessage  The {@link KapuaRequestMessage} of the DeviceManagementService operation from which to extract data.
+     * @param responseMessage The {@link KapuaResponseMessage} of the DeviceManagementService operation from which to extract data.
+     * @throws KapuaException If the creation of the {@link org.eclipse.kapua.service.device.registry.event.DeviceEvent} fails for some reasons
+     * @since 1.0.0
+     */
+    protected void createDeviceEvent(KapuaId scopeId, KapuaId deviceId, KapuaRequestMessage<?, ?> requestMessage,
+                                     KapuaResponseMessage responseMessage) throws KapuaException {
 
         DeviceEventCreator deviceEventCreator =
                 DEVICE_EVENT_FACTORY.newCreator(
@@ -46,7 +61,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
         deviceEventCreator.setSentOn(responseMessage.getSentOn());
         deviceEventCreator.setAction(requestMessage.getChannel().getMethod());
         deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
-        deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
+        //deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
 
         KapuaSecurityUtils.doPrivileged(() -> DEVICE_EVENT_SERVICE.create(deviceEventCreator));
     }

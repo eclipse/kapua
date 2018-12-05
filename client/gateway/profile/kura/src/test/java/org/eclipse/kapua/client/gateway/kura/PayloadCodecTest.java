@@ -15,10 +15,13 @@ import java.nio.ByteBuffer;
 import java.util.Collections;
 
 import org.eclipse.kapua.client.gateway.Payload;
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(JUnitTests.class)
 public class PayloadCodecTest {
 
     private KuraBinaryPayloadCodec codec;

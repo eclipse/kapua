@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event.internal;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
@@ -22,11 +23,14 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.message.internal.KapuaPositionImpl;
 import org.eclipse.kapua.model.domain.Actions;
@@ -66,6 +70,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -141,7 +146,11 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
 
         // Create the Device Registry Service tables
         KapuaConfigurableServiceSchemaUtils.createSchemaObjects(DEFAULT_COMMONS_PATH);
-        new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
+        SystemSetting config = SystemSetting.getInstance();
+        String schema = MoreObjects.firstNonNull(config.getString(SystemSettingKey.DB_SCHEMA_ENV), config.getString(SystemSettingKey.DB_SCHEMA));
+        String jdbcUrl = JdbcConnectionUrlResolvers.resolveJdbcUrl();
+
+        new KapuaLiquibaseClient(jdbcUrl, "kapua", "kapua", Optional.ofNullable(schema)).update();
 
         MockedLocator mockLocator = (MockedLocator) locator;
 
@@ -423,11 +432,9 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
         Domain tmpDomain = new DomainImpl();
 
         tmpDomain.setName("test_name");
-        tmpDomain.setServiceName("test_service_name");
         tmpDomain.setActions(new HashSet<>(Lists.newArrayList(Actions.connect, Actions.execute)));
 
         assertEquals("test_name", tmpDomain.getName());
-        assertEquals("test_service_name", tmpDomain.getServiceName());
         assertEquals(2, tmpDomain.getActions().size());
         assertTrue(tmpDomain.getActions().contains(Actions.connect));
         assertTrue(tmpDomain.getActions().contains(Actions.execute));

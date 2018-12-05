@@ -18,7 +18,8 @@ import org.eclipse.kapua.commons.setting.SettingKey;
  */
 public enum SimpleSettingKeys implements SettingKey {
     SIMPLE_ROOT_ACCOUNT("auto.registration.simple.rootAccount"), //
-    SIMPLE_MAX_NUMBER_OF_CHILD_USERS("auto.registration.simple.maximumNumberOfChildUsers");
+    SIMPLE_MAX_NUMBER_OF_CHILD_USERS("auto.registration.simple.maximumNumberOfChildUsers"),
+    ACCOUNT_EXPIRATION_DATE_DAYS("auto.registration.simple.accountExpirationDate.days");
 
     private String key;
 

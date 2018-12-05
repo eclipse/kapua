@@ -74,28 +74,13 @@ public class GroupDAO extends ServiceDAO {
      * @return The found {@link Group} or {@code null} if not found.
      * @since 1.0.0
      */
-    public static Group find(EntityManager em, KapuaId groupId) {
-        return em.find(GroupImpl.class, groupId);
-    }
-
-    /**
-     * Deletes the {@link Group} by {@link Group} identifier
-     * 
-     * @param em
-     *            The {@link EntityManager} that holds the transaction.
-     * @param groupId
-     *            The {@link Group} id to delete.
-     * @throws KapuaEntityNotFoundException
-     *             If {@link Group} is not found.
-     * @since 1.0.0
-     */
-    public static void delete(EntityManager em, KapuaId groupId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, GroupImpl.class, groupId);
+    public static Group find(EntityManager em, KapuaId scopeId, KapuaId groupId) {
+        return ServiceDAO.find(em, GroupImpl.class, scopeId, groupId);
     }
 
     /**
      * Returns the {@link Group} list matching the provided query.
-     * 
+     *
      * @param em
      *            The {@link EntityManager} that holds the transaction.
      * @param groupQuery
@@ -111,7 +96,7 @@ public class GroupDAO extends ServiceDAO {
 
     /**
      * Return the {@link Group} count matching the provided query
-     * 
+     *
      * @param em
      *            The {@link EntityManager} that holds the transaction.
      * @param groupQuery
@@ -123,5 +108,21 @@ public class GroupDAO extends ServiceDAO {
     public static long count(EntityManager em, KapuaQuery<Group> groupQuery)
             throws KapuaException {
         return ServiceDAO.count(em, Group.class, GroupImpl.class, groupQuery);
+    }
+
+    /**
+     * Deletes the {@link Group} by {@link Group} identifier
+     *
+     * @param em
+     *            The {@link EntityManager} that holds the transaction.
+     * @param scopeId
+     * @param groupId
+     *            The {@link Group} id to delete.
+     * @throws KapuaEntityNotFoundException
+     *             If {@link Group} is not found.
+     * @since 1.0.0
+     */
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId groupId) throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, GroupImpl.class, scopeId, groupId);
     }
 }

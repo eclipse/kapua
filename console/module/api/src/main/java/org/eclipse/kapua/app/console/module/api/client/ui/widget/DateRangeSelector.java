@@ -13,7 +13,13 @@ package org.eclipse.kapua.app.console.module.api.client.ui.widget;
 
 import java.util.Date;
 
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Dialog;
@@ -32,7 +38,6 @@ import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
-import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 
 public class DateRangeSelector extends LayoutContainer {
 
@@ -106,6 +111,13 @@ public class DateRangeSelector extends LayoutContainer {
                 }));
 
         dateRange.setMenu(menu);
+        dateRange.addListener(Events.OnClick, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                dateRange.showMenu();
+            }
+        });
 
         // initialize with the last 24 hours
         onMenuItemSelected(2, null);
@@ -223,6 +235,7 @@ public class DateRangeSelector extends LayoutContainer {
         dialog.setHeight(200);
         dialog.setHideOnButtonClick(true);
         dialog.setButtons(Dialog.OKCANCEL);
+        dialog.setButtonAlign(HorizontalAlignment.CENTER);
         dialog.setHideOnButtonClick(false);
         dialog.setResizable(false);
         FormData formData = new FormData("-20");
@@ -233,7 +246,6 @@ public class DateRangeSelector extends LayoutContainer {
         startDateField.setFieldLabel(MSGS.dataDateRangeStartDate());
         startDateField.setAllowBlank(false);
         startDateField.setValue(start);
-        startDateField.setEditable(false);
         startDateField.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         startDateField.setFormatValue(true);
         form.add(startDateField, formData);
@@ -251,7 +263,6 @@ public class DateRangeSelector extends LayoutContainer {
         endDateField.setFieldLabel(MSGS.dataDateRangeStopDate());
         endDateField.setAllowBlank(false);
         endDateField.setValue(end);
-        endDateField.setEditable(false);
         endDateField.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         endDateField.setFormatValue(true);
         form.add(endDateField, formData);
@@ -264,27 +275,38 @@ public class DateRangeSelector extends LayoutContainer {
         endTimeField.setDateValue(end);
         endTimeField.setEditable(false);
         form.add(endTimeField, formData);
+        startDateField.addListener(Events.OnBlur, new Listener<BaseEvent>() {
 
-        startDateField.setValidator(new Validator() {
+                @Override
+                public void handleEvent(BaseEvent be) {
+                   startDateField.setValidator(new Validator() {
+                    @Override
+                    public String validate(Field<?> field, String value) {
+                        if (startDateField.getValue().after(endDateField.getValue())) {
+                        return MSGS.dataDateRangeInvalidStartDate();
+                        }
+                        return null;
+                    }
+                 });
 
-            @Override
-            public String validate(Field<?> field, String value) {
-                if (startDateField.getValue().after(endDateField.getValue())) {
-                    return MSGS.dataDateRangeInvalidStartDate();
-                }
-                return null;
             }
         });
-        endDateField.setValidator(new Validator() {
+        endDateField.addListener(Events.OnBlur, new Listener<BaseEvent>() {
 
-            @Override
-            public String validate(Field<?> field, String value) {
-                if (endDateField.getValue().before(startDateField.getValue())) {
-                    return MSGS.dataDateRangeInvalidStopDate();
-                }
-                return null;
+                @Override
+                public void handleEvent(BaseEvent be) {
+                    endDateField.setValidator(new Validator() {
+                        @Override
+                        public String validate(Field<?> field, String value) {
+                            if (endDateField.getValue().before(startDateField.getValue())) {
+                                return MSGS.dataDateRangeInvalidStopDate();
+                            }
+                            return null;
+                        }
+                    });
             }
         });
+
         startTimeField.setValidator(new Validator() {
 
             @Override

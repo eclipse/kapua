@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,23 +14,23 @@ package org.eclipse.kapua.app.console.module.device.client.device.packages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.SimpleDialog;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaNumberField;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeploymentPackage;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.packages.GwtPackageUninstallRequest;
+import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementService;
+import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementServiceAsync;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementService;
-import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementServiceAsync;
 
 public class PackageUninstallDialog extends SimpleDialog {
 
@@ -44,15 +44,19 @@ public class PackageUninstallDialog extends SimpleDialog {
 
     private FormPanel operationOptionsForm;
     private CheckBox operationReboot;
-    private NumberField operationRebootDelay;
+    private KapuaNumberField operationRebootDelay;
 
     public PackageUninstallDialog(String scopeId, String deviceId, GwtDeploymentPackage selectedDeploymentPackage) {
 
         this.scopeId = scopeId;
         this.deviceId = deviceId;
         this.selectedDeploymentPackage = selectedDeploymentPackage;
-
-        DialogUtils.resizeDialog(this, 400, 210);
+        Integer height = selectedDeploymentPackage.getName().length() + 200;
+        if (selectedDeploymentPackage.getName().length() > 30) {
+            DialogUtils.resizeDialog(this, 400, height);
+        } else {
+            DialogUtils.resizeDialog(this, 400, 210);
+        }
     }
 
     @Override
@@ -61,6 +65,7 @@ public class PackageUninstallDialog extends SimpleDialog {
 
         FormLayout formLayout = new FormLayout();
         formLayout.setLabelWidth(FORM_LABEL_WIDTH);
+        formPanel.disableEvents(true);
 
         operationOptionsForm = new FormPanel();
         operationOptionsForm.setFrame(false);
@@ -83,18 +88,22 @@ public class PackageUninstallDialog extends SimpleDialog {
                 if (operationReboot.getValue()) {
                     operationRebootDelay.enable();
                 } else {
+                    operationRebootDelay.clear();
                     operationRebootDelay.disable();
                 }
             }
         });
 
-        operationRebootDelay = new NumberField();
+        operationRebootDelay = new KapuaNumberField();
         operationRebootDelay.setName("operationRebootDelay");
         operationRebootDelay.setFieldLabel(DEVICE_MSGS.deviceUnistallAsyncUninstallRebootDelay());
         operationRebootDelay.setEmptyText("0");
         operationRebootDelay.setAllowDecimals(false);
         operationRebootDelay.setAllowNegative(false);
         operationRebootDelay.disable();
+        operationRebootDelay.setMaxLength(5);
+        operationRebootDelay.setMaxValue(65535);
+        operationRebootDelay.setPropertyEditorType(Integer.class);
         operationOptionsForm.add(operationRebootDelay, formData);
 
         bodyPanel.add(operationOptionsForm);

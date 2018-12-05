@@ -64,32 +64,20 @@ public class ServiceConfigDAO extends ServiceDAO {
     }
 
     /**
-     * Delete the service configuration by user identifier
-     * 
-     * @param em
-     * @param userId
-     * @throws KapuaEntityNotFoundException
-     *             If {@link ServiceConfig} is not found.
-     */
-    public static void delete(EntityManager em, KapuaId userId)
-            throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, ServiceConfigImpl.class, userId);
-    }
-
-    /**
      * Find the service configuration by user identifier
-     * 
+     *
      * @param em
+     * @param scopeId
      * @param userId
      * @return
      */
-    public static ServiceConfig find(EntityManager em, KapuaId userId) {
-        return em.find(ServiceConfigImpl.class, userId);
+    public static ServiceConfig find(EntityManager em, KapuaId scopeId, KapuaId userId) {
+        return ServiceDAO.find(em, ServiceConfigImpl.class, scopeId, userId);
     }
 
     /**
      * Find the service configuration by service name
-     * 
+     *
      * @param em
      * @param name
      * @return
@@ -100,7 +88,7 @@ public class ServiceConfigDAO extends ServiceDAO {
 
     /**
      * Return the service configuration list matching the provided query
-     * 
+     *
      * @param em
      * @param serviceConfigQuery
      * @return
@@ -113,7 +101,7 @@ public class ServiceConfigDAO extends ServiceDAO {
 
     /**
      * Return the service configuration count matching the provided query
-     * 
+     *
      * @param em
      * @param serviceConfigQuery
      * @return
@@ -122,6 +110,19 @@ public class ServiceConfigDAO extends ServiceDAO {
     public static long count(EntityManager em, KapuaQuery<ServiceConfig> serviceConfigQuery)
             throws KapuaException {
         return ServiceDAO.count(em, ServiceConfig.class, ServiceConfigImpl.class, serviceConfigQuery);
+    }
+
+    /**
+     * Delete the service configuration by user identifier
+     *
+     * @param em
+     * @param scopeId
+     * @param userId
+     * @throws KapuaEntityNotFoundException
+     *             If {@link ServiceConfig} is not found.
+     */
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId userId) throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, ServiceConfigImpl.class, scopeId, userId);
     }
 
 }

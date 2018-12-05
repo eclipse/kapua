@@ -13,9 +13,12 @@ package org.eclipse.kapua.client.gateway.kura;
 
 import org.eclipse.kapua.client.gateway.Topic;
 import org.eclipse.kapua.client.gateway.kura.KuraNamespace.Builder;
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(JUnitTests.class)
 public class NamespaceTest {
 
     @Test(expected = IllegalArgumentException.class)

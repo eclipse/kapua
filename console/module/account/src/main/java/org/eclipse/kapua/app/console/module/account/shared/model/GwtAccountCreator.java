@@ -14,7 +14,6 @@ package org.eclipse.kapua.app.console.module.account.shared.model;
 import java.util.Date;
 
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityCreator;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection.GwtConnectionUserCouplingMode;
 
 public class GwtAccountCreator extends GwtEntityCreator {
 
@@ -22,12 +21,7 @@ public class GwtAccountCreator extends GwtEntityCreator {
 
     private String accountName;
     private String accountPassword;
-    private Long brokerClusterId;
-    private Long vpnServerId;
-    private Boolean lockoutPolicyEnabled;
-    private Integer lockoutPolicyMaxFailures;
-    private Integer lockoutPolicyResetAfter;
-    private Integer lockoutPolicyLockDuration;
+    private String parentAccountId;
     private String organizationName;
     private String organizationPersonName;
     private String organizationEmail;
@@ -39,36 +33,6 @@ public class GwtAccountCreator extends GwtEntityCreator {
     private String organizationStateProvinceCounty;
     private String organizationCountry;
     private Date expirationDate;
-
-    // Health check monitor
-    private long healthCheckInterval;
-    private long mqttThreshold;
-    private long restThreshold;
-    private long restCommandThreshold;
-
-    // Tight Coupling
-    private boolean deviceNewAllowUnprovisioned;
-    private GwtConnectionUserCouplingMode deviceDefaultCredentialsTight;
-
-    // Service plan
-    private int maxNumberOfDevices;
-    private String parentAccountId;
-    private int maxNumberChildAccounts;
-    private int maxNumberProvisionRequests;
-    private int maxNumberDeviceJobs;
-    private int maxNumberVpnConnections;
-    private long txByteLimit;
-    private long rxByteLimit;
-    private boolean dataStorageEnabled;
-    private int dataTimeToLive;
-    private String dataIndexBy;
-    private String metricsIndexBy;
-    private int maxNumberOfRules;
-
-    // SSL Auth
-    private boolean simpleConnection;
-    private boolean sslConnection;
-    private boolean mutualSslConnection;
 
     public GwtAccountCreator() {
     }
@@ -169,78 +133,6 @@ public class GwtAccountCreator extends GwtEntityCreator {
         this.organizationCountry = organizationCountry;
     }
 
-    public Boolean getLockoutPolicyEnabled() {
-        return lockoutPolicyEnabled;
-    }
-
-    public void setLockoutPolicyEnabled(Boolean lockoutPolicyEnabled) {
-        this.lockoutPolicyEnabled = lockoutPolicyEnabled;
-    }
-
-    public Integer getLockoutPolicyMaxFailures() {
-        return lockoutPolicyMaxFailures;
-    }
-
-    public void setLockoutPolicyMaxFailures(Integer lockoutPolicyMaxFailures) {
-        this.lockoutPolicyMaxFailures = lockoutPolicyMaxFailures;
-    }
-
-    public Integer getLockoutPolicyResetAfter() {
-        return lockoutPolicyResetAfter;
-    }
-
-    public void setLockoutPolicyResetAfter(Integer lockoutPolicyResetAfter) {
-        this.lockoutPolicyResetAfter = lockoutPolicyResetAfter;
-    }
-
-    public Integer getLockoutPolicyLockDuration() {
-        return lockoutPolicyLockDuration;
-    }
-
-    public void setLockoutPolicyLockDuration(Integer lockoutPolicyLockDuration) {
-        this.lockoutPolicyLockDuration = lockoutPolicyLockDuration;
-    }
-
-    public Long getBrokerClusterId() {
-        return brokerClusterId;
-    }
-
-    public void setBrokerClusterId(Long brokerClusterId) {
-        this.brokerClusterId = brokerClusterId;
-    }
-
-    public Long getVpnServerId() {
-        return vpnServerId;
-    }
-
-    public void setVpnServerId(Long vpnServerId) {
-        this.vpnServerId = vpnServerId;
-    }
-
-    public Date getExpirationDate() {
-        return expirationDate;
-    }
-
-    public void setExpirationDate(Date expirationDate) {
-        this.expirationDate = expirationDate;
-    }
-
-    public long getHealthCheckInterval() {
-        return healthCheckInterval;
-    }
-
-    public void setHealthCheckInterval(long healthCheckInterval) {
-        this.healthCheckInterval = healthCheckInterval;
-    }
-
-    public int getMaxNumberOfDevices() {
-        return maxNumberOfDevices;
-    }
-
-    public void setMaxNumberOfDevices(int maxNumberOfDevices) {
-        this.maxNumberOfDevices = maxNumberOfDevices;
-    }
-
     public String getParentAccountId() {
         return parentAccountId;
     }
@@ -249,160 +141,11 @@ public class GwtAccountCreator extends GwtEntityCreator {
         this.parentAccountId = parentAccountId;
     }
 
-    public int getMaxNumberChildAccounts() {
-        return maxNumberChildAccounts;
+    public Date getExpirationDate() {
+        return expirationDate;
     }
 
-    public void setMaxNumberChildAccounts(int maxNumberChildAccounts) {
-        this.maxNumberChildAccounts = maxNumberChildAccounts;
-    }
-
-    public int getMaxNumberProvisionRequests() {
-        return maxNumberProvisionRequests;
-    }
-
-    public int getMaxNumberDeviceJobs() {
-        return maxNumberDeviceJobs;
-    }
-
-    public void setMaxNumberDeviceJobs(int maxNumberDeviceJobs) {
-        this.maxNumberDeviceJobs = maxNumberDeviceJobs;
-    }
-
-    public void setMaxNumberProvisionRequest(int maxNumberProvisionRequests) {
-        this.maxNumberProvisionRequests = maxNumberProvisionRequests;
-    }
-
-    public int getMaxNumberVpnConnections() {
-        return maxNumberVpnConnections;
-    }
-
-    public void setMaxNumberVpnConnections(int maxNumberVpnConnections) {
-        this.maxNumberVpnConnections = maxNumberVpnConnections;
-    }
-
-    public long getTxByteLimit() {
-        return txByteLimit;
-    }
-
-    public void setTxByteLimit(long txByteLimit) {
-        this.txByteLimit = txByteLimit;
-    }
-
-    public long getRxByteLimit() {
-        return rxByteLimit;
-    }
-
-    public void setRxByteLimit(long rxByteLimit) {
-        this.rxByteLimit = rxByteLimit;
-    }
-
-    public boolean getDataStorageEnabled() {
-        return dataStorageEnabled;
-    }
-
-    public void setDataStorageEnabled(boolean dataStorageEnabled) {
-        this.dataStorageEnabled = dataStorageEnabled;
-    }
-
-    public int getDataTimeToLive() {
-        return dataTimeToLive;
-    }
-
-    public void setDataTimeToLive(int dataTimeToLive) {
-        this.dataTimeToLive = dataTimeToLive;
-    }
-
-    public String getDataIndexBy() {
-        return dataIndexBy;
-    }
-
-    public void setDataIndexBy(String dataIndexBy) {
-        this.dataIndexBy = dataIndexBy;
-    }
-
-    public int getMaxNumberOfRules() {
-        return maxNumberOfRules;
-    }
-
-    public void setMaxNumberOfRules(int maxNumberOfRules) {
-        this.maxNumberOfRules = maxNumberOfRules;
-    }
-
-    public String getMetricsIndexBy() {
-        return metricsIndexBy;
-    }
-
-    public void setMetricsIndexBy(String metricsIndexBy) {
-        this.metricsIndexBy = metricsIndexBy;
-    }
-
-    public boolean isSimpleConnection() {
-        return simpleConnection;
-    }
-
-    public void setSimpleConnection(boolean simpleConnection) {
-        this.simpleConnection = simpleConnection;
-    }
-
-    public boolean isSslConnection() {
-        return sslConnection;
-    }
-
-    public void setSslConnection(boolean sslConnection) {
-        this.sslConnection = sslConnection;
-    }
-
-    public boolean isMutualSslConnection() {
-        return mutualSslConnection;
-    }
-
-    public void setMutualSslConnection(boolean mutualSslConnection) {
-        this.mutualSslConnection = mutualSslConnection;
-    }
-
-    public long getMqttThreshold() {
-        return mqttThreshold;
-    }
-
-    public void setMqttThreshold(long mqttThreshold) {
-        this.mqttThreshold = mqttThreshold;
-    }
-
-    public long getRestThreshold() {
-        return restThreshold;
-    }
-
-    public void setRestThreshold(long restThreshold) {
-        this.restThreshold = restThreshold;
-    }
-
-    public long getRestCommandThreshold() {
-        return restCommandThreshold;
-    }
-
-    public void setRestCommandThreshold(long restCommandThreshold) {
-        this.restCommandThreshold = restCommandThreshold;
-    }
-
-    // Tight Coupling
-    public boolean getDeviceNewAllowUnprovisioned() {
-        return deviceNewAllowUnprovisioned;
-    }
-
-    public void setDeviceNewAllowUnprovisioned(boolean deviceNewAllowUnprovisioned) {
-        this.deviceNewAllowUnprovisioned = deviceNewAllowUnprovisioned;
-    }
-
-    public GwtConnectionUserCouplingMode getDeviceDefaultCredentialsTight() {
-        return deviceDefaultCredentialsTight;
-    }
-
-    public void setDeviceDefaultCredentialsTight(String deviceDefaultCredentialsTight) {
-        setDeviceDefaultCredentialsTight(GwtConnectionUserCouplingMode.getEnumFromLabel(deviceDefaultCredentialsTight));
-    }
-
-    public void setDeviceDefaultCredentialsTight(GwtConnectionUserCouplingMode deviceDefaultCredentialsTight) {
-        this.deviceDefaultCredentialsTight = deviceDefaultCredentialsTight;
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
     }
 }

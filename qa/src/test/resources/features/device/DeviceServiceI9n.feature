@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 Eurotech and/or its affiliates and others
+# Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -14,15 +14,23 @@ Feature: Device Registry Integration
     Device Registy integration test scenarios. These scenarios test higher level device service functionality
     with all services live.
 
-  @StartEventBroker
-  Scenario: Start event broker for all scenarios
+  Scenario: Set environment variables
 
-  @StartBroker
-  Scenario: Start broker for all scenarios
+    Given System property "commons.settings.hotswap" with value "true"
+    And System property "broker.ip" with value "localhost"
+    And System property "kapua.config.url" with value "null"
 
-  @StartDatastore
   Scenario: Start datastore for all scenarios
 
+    Given Start Datastore
+
+  Scenario: Start event broker for all scenarios
+
+    Given Start Event Broker
+
+  Scenario: Start broker for all scenarios
+
+    Given Start Broker
 Scenario: Birth message handling from a new device
     A birth message is received. The referenced device does not yet exist and is created on-the-fly. After the
     message is processed a new device must be created and a BIRTH event inserted in the database.
@@ -306,11 +314,14 @@ Scenario: Creating new device, tagging it with specific Tag and then deleting th
     And I verify that tag "KuraDevice2" is deleted
     And I logout
 
-  @StopBroker
   Scenario: Stop broker after all scenarios
 
-  @StopDatastore
+    Given Stop Broker
+
+  Scenario: Stop event broker for all scenarios
+
+    Given Stop Event Broker
+
   Scenario: Stop datastore after all scenarios
 
-  @StopEventBroker
-  Scenario: Stop event broker for all scenarios
+    Given Stop Datastore

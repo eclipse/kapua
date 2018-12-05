@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+    Copyright (c) 2016, 2018 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -18,16 +18,11 @@
     <parent>
         <artifactId>kapua-assembly</artifactId>
         <groupId>org.eclipse.kapua</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kapua-assembly-api</artifactId>
     <packaging>pom</packaging>
-
-    <properties>
-        <docker.account>kapua</docker.account>
-        <java.base.image>centos:7</java.base.image>
-    </properties>
+    <artifactId>kapua-assembly-api</artifactId>
 
     <dependencies>
 
@@ -73,10 +68,6 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-configuration-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-shiro</artifactId>
         </dependency>
         <dependency>
@@ -108,36 +99,15 @@
             <artifactId>kapua-security-certificate-internal</artifactId>
         </dependency>
 
-        <!-- dependencies added otherwise the unix assembly doesn't know the arctifact
-            to add -->
+        <!-- dependencies added otherwise the unix assembly doesn't know the artifact to add -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-bundle-api</artifactId>
+            <artifactId>kapua-device-management-all-api</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-bundle-internal</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-command-api</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-command-internal</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-packages-api</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-packages-internal</artifactId>
+            <artifactId>kapua-device-management-all-internal</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -249,7 +219,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>log4j-over-slf4j</artifactId>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -266,7 +235,7 @@
                         </goals>
                         <configuration>
                             <descriptors>
-                                <descriptor>src/main/descriptors/kapua-api-jetty.xml</descriptor>
+                                <descriptor>${project.basedir}/descriptors/kapua-api-jetty.xml</descriptor>
                             </descriptors>
                             <tarLongFileMode>posix</tarLongFileMode>
                             <finalName>kapua-api-${project.version}</finalName>
@@ -281,58 +250,11 @@
 
     <profiles>
         <profile>
-            <id>deployVagrant</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.1</version>
-                        <configuration>
-                            <environmentVariables>
-                                <KAPUA_VERSION>${project.version}</KAPUA_VERSION>
-                                <ACTIVEMQ_VERSION>${activemq.version}</ACTIVEMQ_VERSION>
-                            </environmentVariables>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>vagrant_console_deploy</id>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>./deploy-apps.sh</executable>
-                                    <workingDirectory>${basedir}/../../dev-tools/src/main/vagrant/demo</workingDirectory>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>vagrant_broker_deploy</id>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>./deploy-broker.sh</executable>
-                                    <workingDirectory>${basedir}/../../dev-tools/src/main/vagrant/demo</workingDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
             <id>release</id>
             <properties>
                 <timestamp>latest</timestamp>
             </properties>
         </profile>
-
         <profile>
             <id>docker</id>
             <build>
@@ -345,40 +267,11 @@
                                 <image>
                                     <name>${docker.account}/kapua-api</name>
                                     <build>
-                                        <from>${docker.account}/jetty-base</from>
                                         <assembly>
-                                            <descriptor>${basedir}/src/main/descriptors/kapua-api-jetty.xml</descriptor>
-                                            <basedir>/var/lib/jetty</basedir>
+                                            <descriptor>${project.basedir}/descriptors/kapua-api-jetty.xml</descriptor>
                                         </assembly>
-                                        <env>
-                                            <SQL_DB_PORT>\${DB_PORT_3306_TCP_PORT}</SQL_DB_PORT>
-                                            <SQL_DB_ADDR>\${DB_PORT_3306_TCP_ADDR}</SQL_DB_ADDR>
-                                            <DATASTORE_PORT>\${ES_PORT_9200_TCP_PORT}</DATASTORE_PORT>
-                                            <DATASTORE_ADDR>\${ES_PORT_9200_TCP_ADDR}</DATASTORE_ADDR>
-                                            <SERVICE_BROKER_ADDR>failover:(amqp://\${SERVICE_PORT_5672_TCP_ADDR}:\${SERVICE_PORT_5672_TCP_PORT})?jms.sendTimeout=1000</SERVICE_BROKER_ADDR>
-                                            <DATASTORE_CLIENT>org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient</DATASTORE_CLIENT>
-                                            <JAVA_OPTS>
-                                                -Dcommons.db.schema.update=true \
-                                                -Dcommons.db.connection.host=db \
-                                                -Dcommons.db.connection.port=3306 \
-                                                -Dbroker.host=broker \
-                                                -Ddatastore.elasticsearch.nodes=es \
-                                                -Ddatastore.elasticsearch.port=9200 \
-                                                -Ddatastore.client.class=\${DATASTORE_CLIENT} \
-                                                -Dcommons.eventbus.url="failover:(amqp://events-broker:5672)?jms.sendTimeout=1000" \
-                                                -Dcertificate.jwt.private.key=file:///home/kapua/key.pk8 \
-                                                -Dcertificate.jwt.certificate=file:///home/kapua/cert.pem
-                                            </JAVA_OPTS>
-                                        </env>
-                                        <user>kapua</user>
-                                        <runCmds>
-                                            <runCmd>
-                                                chown -R kapua:kapua /home/kapua
-                                            </runCmd>
-                                            <runCmd>
-                                               chmod og+rwx /home/kapua
-                                            </runCmd>
-                                        </runCmds>
+                                        <dockerFile>${project.basedir}/docker/Dockerfile</dockerFile>
+                                        <filter>@</filter>
                                     </build>
                                 </image>
                             </images>

@@ -15,6 +15,7 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FormEvent;
@@ -121,6 +122,17 @@ public class FileUploadDialog extends Dialog {
         fileUploadField.setName("uploadedFile");
         fileUploadField.setFieldLabel("File");
         fileUploadField.setInputStyleAttribute("style", "width:300");
+        fileUploadField.addListener(Events.OnChange, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                if (fileUploadField.isDirty()){
+                    submitButton.enable();
+                } else {
+                    submitButton.disable();
+                }
+            }
+        });
         FormData formData = new FormData("-20");
         fieldSet.add(fileUploadField, formData);
 
@@ -188,6 +200,7 @@ public class FileUploadDialog extends Dialog {
             }
         });
 
+        submitButton.disable();
         addButton(cancelButton);
         addButton(submitButton);
     }

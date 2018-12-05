@@ -17,13 +17,12 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.KapuaEntityPredicates;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTmetadata;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
@@ -212,7 +211,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     private ServiceConfig updateConfig(ServiceConfig serviceConfig)
             throws KapuaException {
         return entityManagerSession.onTransactedResult(em -> {
-            ServiceConfig oldServiceConfig = ServiceConfigDAO.find(em, serviceConfig.getId());
+            ServiceConfig oldServiceConfig = ServiceConfigDAO.find(em, serviceConfig.getScopeId(), serviceConfig.getId());
             if (oldServiceConfig == null) {
                 throw new KapuaEntityNotFoundException(ServiceConfig.TYPE, serviceConfig.getId());
             }
@@ -230,13 +229,12 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     }
 
     @Override
-    public KapuaTocd getConfigMetadata()
+    public KapuaTocd getConfigMetadata(KapuaId scopeId)
             throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
 
-        KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
 
         try {
@@ -263,8 +261,8 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
 
         AndPredicateImpl predicate = new AndPredicateImpl()
-                .and(new AttributePredicateImpl<>(ServiceConfigPredicates.SERVICE_ID, pid, Operator.EQUAL))
-                .and(new AttributePredicateImpl<>(KapuaEntityPredicates.SCOPE_ID, scopeId, Operator.EQUAL));
+                .and(new AttributePredicateImpl<>(ServiceConfigAttributes.SERVICE_ID, pid, Operator.EQUAL))
+                .and(new AttributePredicateImpl<>(KapuaEntityAttributes.SCOPE_ID, scopeId, Operator.EQUAL));
 
         ServiceConfigQueryImpl query = new ServiceConfigQueryImpl(scopeId);
         query.setPredicate(predicate);
@@ -276,7 +274,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
             properties = result.getFirstItem().getConfigurations();
         }
 
-        KapuaTocd ocd = getConfigMetadata();
+        KapuaTocd ocd = getConfigMetadata(scopeId);
         return toValues(ocd, properties);
     }
 
@@ -288,14 +286,14 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.write, scopeId));
 
-        KapuaTocd ocd = getConfigMetadata();
+        KapuaTocd ocd = getConfigMetadata(scopeId);
         validateConfigurations(pid, ocd, values, scopeId, parentId);
 
         ServiceConfigQueryImpl query = new ServiceConfigQueryImpl(scopeId);
         query.setPredicate(
                 new AndPredicateImpl(
-                        new AttributePredicateImpl<>(ServiceConfigPredicates.SERVICE_ID, pid, Operator.EQUAL),
-                        new AttributePredicateImpl<>(KapuaEntityPredicates.SCOPE_ID, scopeId, Operator.EQUAL)
+                        new AttributePredicateImpl<>(ServiceConfigAttributes.SERVICE_ID, pid, Operator.EQUAL),
+                        new AttributePredicateImpl<>(KapuaEntityAttributes.SCOPE_ID, scopeId, Operator.EQUAL)
                 )
         );
 

@@ -53,6 +53,7 @@ public class KapuaGwtDeviceModelConverter {
         gwtDevice.setClientId(device.getClientId());
         gwtDevice.setDisplayName(device.getDisplayName());
         gwtDevice.setModelId(device.getModelId());
+        gwtDevice.setModelName(device.getModelName());
         gwtDevice.setSerialNumber(device.getSerialNumber());
         if (device.getGroupId() != null) {
             gwtDevice.setGroupDevice(GwtGroupDevice.NO_GROUP.name());

@@ -27,7 +27,7 @@ import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainFactoryImpl;
-import org.eclipse.kapua.service.authorization.domain.shiro.DomainPredicates;
+import org.eclipse.kapua.service.authorization.domain.shiro.DomainAttributes;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainRegistryServiceImpl;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupService;
@@ -100,7 +100,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
         for (CucDomain tmpDom : domains) {
             commonData.primeException();
             tmpDom.doParse();
-            domainData.domainCreator = domainFactory.newCreator(tmpDom.getName(), tmpDom.getServiceName());
+            domainData.domainCreator = domainFactory.newCreator(tmpDom.getName());
             if (tmpDom.getActionSet() != null) {
                 domainData.domainCreator.setActions(tmpDom.getActionSet());
             }
@@ -167,35 +167,13 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     public void queryForNamedDomain(String name)
             throws KapuaException {
         DomainQuery query = domainFactory.newQuery(null);
-        query.setPredicate(new AttributePredicateImpl<>(DomainPredicates.NAME, name));
+        query.setPredicate(new AttributePredicateImpl<>(DomainAttributes.NAME, name));
         KapuaSecurityUtils.doPrivileged(() -> {
             domainData.domainList = domainRegistryService.query(query);
             return null;
         });
         assertNotNull(domainData.domainList);
         commonData.count = domainData.domainList.getSize();
-    }
-
-    @When("^I query for domains with the service name \"(.+)\"$")
-    public void queryForDomainsWithServiceName(String serviceName)
-            throws KapuaException {
-        DomainQuery query = domainFactory.newQuery(null);
-        query.setPredicate(new AttributePredicateImpl<>(DomainPredicates.SERVICE_NAME, serviceName));
-        KapuaSecurityUtils.doPrivileged(() -> {
-            domainData.domainList = domainRegistryService.query(query);
-            return null;
-        });
-        assertNotNull(domainData.domainList);
-        commonData.count = domainData.domainList.getSize();
-    }
-
-    @When("^I search for the domains for the service \"(.+)\"$")
-    public void findDomainsByServiceName(String serviceName)
-            throws KapuaException {
-        KapuaSecurityUtils.doPrivileged(() -> {
-            domainData.domain = domainRegistryService.findByServiceName(serviceName);
-            return null;
-        });
     }
 
     @Then("^This is the initial count$")
@@ -227,7 +205,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
             throws KapuaException {
 
         KapuaSecurityUtils.doPrivileged(() -> {
-            DomainCreator tmpCreator = domainFactory.newCreator("name_1", "svc_1");
+            DomainCreator tmpCreator = domainFactory.newCreator("name_1");
             HashSet<Actions> tmpAct = new HashSet<>();
             tmpAct.add(Actions.read);
             tmpAct.add(Actions.write);
@@ -244,7 +222,6 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
             assertNotNull(tmpDom2);
 
             tmpCreator.setName("name_2");
-            tmpCreator.setServiceName("svc_2");
             Domain tmpDom3 = domainRegistryService.create(tmpCreator);
             assertNotNull(tmpDom3);
 
@@ -267,7 +244,6 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
         assertNotNull(domainData.domain.getId());
         assertNotNull(domainData.domainCreator);
         assertEquals(domainData.domainCreator.getName(), domainData.domain.getName());
-        assertEquals(domainData.domainCreator.getServiceName(), domainData.domain.getServiceName());
         if (domainData.domainCreator.getActions() != null) {
             assertNotNull(domainData.domain.getActions());
             assertEquals(domainData.domainCreator.getActions().size(), domainData.domain.getActions().size());
@@ -287,9 +263,6 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
         tmpDom.doParse();
         if (tmpDom.getName() != null) {
             assertEquals(tmpDom.getName(), domainData.domain.getName());
-        }
-        if (tmpDom.getServiceName() != null) {
-            assertEquals(tmpDom.getServiceName(), domainData.domain.getServiceName());
         }
         if (tmpDom.getActionSet() != null) {
             assertEquals(tmpDom.getActionSet().size(), domainData.domain.getActions().size());

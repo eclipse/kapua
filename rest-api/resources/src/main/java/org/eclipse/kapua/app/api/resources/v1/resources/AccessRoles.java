@@ -38,7 +38,7 @@ import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
-import org.eclipse.kapua.service.authorization.access.AccessRolePredicates;
+import org.eclipse.kapua.service.authorization.access.AccessRoleAttributes;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -76,7 +76,7 @@ public class AccessRoles extends AbstractKapuaResource {
             @ApiParam(value = "The result set limit.", defaultValue = "50", required = true) @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
         AccessRoleQuery query = accessRoleFactory.newQuery(scopeId);
 
-        query.setPredicate(new AttributePredicateImpl<>(AccessRolePredicates.ACCESS_INFO_ID, accessInfoId));
+        query.setPredicate(new AttributePredicateImpl<>(AccessRoleAttributes.ACCESS_INFO_ID, accessInfoId));
 
         query.setOffset(offset);
         query.setLimit(limit);
@@ -107,7 +107,7 @@ public class AccessRoles extends AbstractKapuaResource {
             @ApiParam(value = "The AccessRoleQuery to use to filter results.", required = true) AccessRoleQuery query) throws Exception {
         query.setScopeId(scopeId);
 
-        query.setPredicate(new AttributePredicateImpl<>(AccessRolePredicates.ACCESS_INFO_ID, accessInfoId));
+        query.setPredicate(new AttributePredicateImpl<>(AccessRoleAttributes.ACCESS_INFO_ID, accessInfoId));
 
         return accessRoleService.query(query);
     }
@@ -135,7 +135,7 @@ public class AccessRoles extends AbstractKapuaResource {
             @ApiParam(value = "The AccessRoleQuery to use to filter count results", required = true) AccessRoleQuery query) throws Exception {
         query.setScopeId(scopeId);
 
-        query.setPredicate(new AttributePredicateImpl<>(AccessRolePredicates.ACCESS_INFO_ID, accessInfoId));
+        query.setPredicate(new AttributePredicateImpl<>(AccessRoleAttributes.ACCESS_INFO_ID, accessInfoId));
 
         return new CountResult(accessRoleService.count(query));
     }
@@ -190,8 +190,8 @@ public class AccessRoles extends AbstractKapuaResource {
         AccessRoleQuery query = accessRoleFactory.newQuery(scopeId);
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
-        andPredicate.and(new AttributePredicateImpl<>(AccessRolePredicates.ACCESS_INFO_ID, accessInfoId));
-        andPredicate.and(new AttributePredicateImpl<>(AccessRolePredicates.ENTITY_ID, accessRoleId));
+        andPredicate.and(new AttributePredicateImpl<>(AccessRoleAttributes.ACCESS_INFO_ID, accessInfoId));
+        andPredicate.and(new AttributePredicateImpl<>(AccessRoleAttributes.ENTITY_ID, accessRoleId));
 
         query.setPredicate(andPredicate);
         query.setOffset(0);

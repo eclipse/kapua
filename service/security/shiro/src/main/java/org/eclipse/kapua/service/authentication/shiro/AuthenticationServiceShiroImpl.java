@@ -47,7 +47,7 @@ import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 import org.eclipse.kapua.service.certificate.Certificate;
 import org.eclipse.kapua.service.certificate.CertificateFactory;
-import org.eclipse.kapua.service.certificate.CertificatePredicates;
+import org.eclipse.kapua.service.certificate.CertificateAttributes;
 import org.eclipse.kapua.service.certificate.CertificateQuery;
 import org.eclipse.kapua.service.certificate.CertificateService;
 import org.eclipse.kapua.service.certificate.CertificateStatus;
@@ -130,7 +130,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
         //
         // Login the user
-        AccessToken accessToken;
+        AccessToken accessToken = null;
         Subject currentUser = null;
         try {
             // Shiro login
@@ -151,7 +151,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             LOG.info("Login for thread '{}' - '{}' - '{}'", Thread.currentThread().getId(), Thread.currentThread().getName(), shiroSubject);
 
         } catch (ShiroException se) {
-            throw handleTokenLoginException(se, currentUser, shiroAuthenticationToken);
+            handleTokenLoginException(se, currentUser, shiroAuthenticationToken);
         }
 
         return accessToken;
@@ -336,7 +336,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         }
     }
 
-    private KapuaException handleTokenLoginException(ShiroException se, Subject currentSubject, AuthenticationToken authenticationToken) throws KapuaException {
+    private void handleTokenLoginException(ShiroException se, Subject currentSubject, AuthenticationToken authenticationToken) throws KapuaException {
 
         if (currentSubject != null) {
             currentSubject.logout();
@@ -359,7 +359,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         }
 
         KapuaDelayUtil.executeDelay();
-        return kae;
+        throw kae;
     }
 
     /**
@@ -457,8 +457,8 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             CertificateFactory certificateFactory = locator.getFactory(CertificateFactory.class);
             CertificateQuery certificateQuery = certificateFactory.newQuery(scopeId);
             certificateQuery.setPredicate(new AndPredicateImpl()
-                    .and(new AttributePredicateImpl<>(CertificatePredicates.USAGE_NAME, "JWT"))
-                    .and(new AttributePredicateImpl<>(CertificatePredicates.STATUS, CertificateStatus.VALID)));
+                    .and(new AttributePredicateImpl<>(CertificateAttributes.USAGE_NAME, "JWT"))
+                    .and(new AttributePredicateImpl<>(CertificateAttributes.STATUS, CertificateStatus.VALID)));
             certificateQuery.setIncludeInherited(true);
             certificateQuery.setLimit(1);
 

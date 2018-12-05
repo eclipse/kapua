@@ -13,10 +13,13 @@ package org.eclipse.kapua.app.console.module.device.client.device.packages;
 
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.TabbedDialog;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaNumberField;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.packages.GwtPackageInstallRequest;
+import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementService;
+import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementServiceAsync;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -25,13 +28,10 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementService;
-import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementServiceAsync;
 
 public class PackageInstallDialog extends TabbedDialog {
 
@@ -53,7 +53,7 @@ public class PackageInstallDialog extends TabbedDialog {
     private FormPanel operationOptionsForm;
     private Text operationInfoText;
     private CheckBox operationRebootField;
-    private NumberField operationRebootDelayField;
+    private KapuaNumberField operationRebootDelayField;
 
     public PackageInstallDialog(String scopeId, String deviceId) {
         super();
@@ -73,6 +73,7 @@ public class PackageInstallDialog extends TabbedDialog {
     public void createTabItems() {
         // Deployment package info tab content
         {
+            submitButton.disable();
             FormData formData = new FormData("-15");
 
             FormLayout formLayout = new FormLayout();
@@ -95,6 +96,7 @@ public class PackageInstallDialog extends TabbedDialog {
             dpURIField.setName("dpUri");
             dpURIField.setAllowBlank(false);
             dpURIField.setFieldLabel("* " + DEVICE_MSGS.packageInstallDpTabUri());
+            dpURIField.setToolTip(DEVICE_MSGS.devicePackagesUrlTooltip());
             packageInfoForm.add(dpURIField, formData);
 
             dpNameField = new KapuaTextField<String>();
@@ -102,6 +104,7 @@ public class PackageInstallDialog extends TabbedDialog {
             dpNameField.setName("dpName");
             dpNameField.setAllowBlank(false);
             dpNameField.setFieldLabel("* " + DEVICE_MSGS.packageInstallDpTabName());
+            dpNameField.setToolTip(DEVICE_MSGS.devicePackageNameTooltip());
             packageInfoForm.add(dpNameField, formData);
 
             dpVersionField = new KapuaTextField<String>();
@@ -109,6 +112,7 @@ public class PackageInstallDialog extends TabbedDialog {
             dpVersionField.setName("dpVersion");
             dpVersionField.setAllowBlank(false);
             dpVersionField.setFieldLabel("* " + DEVICE_MSGS.packageInstallDpTabVersion());
+            dpVersionField.setToolTip(DEVICE_MSGS.devicePackageVersionTooltip());
             packageInfoForm.add(dpVersionField, formData);
         }
 
@@ -134,6 +138,7 @@ public class PackageInstallDialog extends TabbedDialog {
             operationRebootField = new CheckBox();
             operationRebootField.setName("reboot");
             operationRebootField.setFieldLabel(DEVICE_MSGS.packageInstallOperationTabReboot());
+            operationRebootField.setToolTip(DEVICE_MSGS.devicePackageRebootTooltip());
             operationRebootField.setBoxLabel("");
 
             operationRebootField.addListener(Events.Change, new Listener<BaseEvent>() {
@@ -143,6 +148,7 @@ public class PackageInstallDialog extends TabbedDialog {
                     if (operationRebootField.getValue()) {
                         operationRebootDelayField.enable();
                     } else {
+                        operationRebootDelayField.clear();
                         operationRebootDelayField.disable();
                     }
                 }
@@ -150,12 +156,17 @@ public class PackageInstallDialog extends TabbedDialog {
 
             operationOptionsForm.add(operationRebootField, formData);
 
-            operationRebootDelayField = new NumberField();
+            operationRebootDelayField = new KapuaNumberField();
             operationRebootDelayField.setName("installRebootDelay");
             operationRebootDelayField.setFieldLabel(DEVICE_MSGS.packageInstallOperationTabRebootDelay());
+            operationRebootDelayField.setToolTip(DEVICE_MSGS.devicePackageRebootDelayTooltip());
             operationRebootDelayField.setEmptyText("0");
             operationRebootDelayField.setAllowDecimals(false);
             operationRebootDelayField.setAllowNegative(false);
+            operationRebootDelayField.disable();
+            operationRebootDelayField.setMaxLength(5);
+            operationRebootDelayField.setMaxValue(65535);
+            operationRebootDelayField.setPropertyEditorType(Integer.class);
             operationOptionsForm.add(operationRebootDelayField, formData);
         }
 

@@ -13,11 +13,23 @@
 Feature: Device Broker connection ip with config file
   Device Service integration scenarios with running broker service.
 
-  @StartBroker
+  Scenario: Set environment variables
+
+    Given System property "commons.settings.hotswap" with value "true"
+      And System property "broker.ip" with value "null"
+      And System property "kapua.config.url" with value "broker.setting/kapua-broker-setting-1.properties"
+
+  Scenario: Start datastore for all scenarios
+
+    Given Start Datastore
+
+  Scenario: Start event broker for all scenarios
+
+    Given Start Event Broker
+
   Scenario: Start broker for all scenarios
 
-  @StartDatastore
-  Scenario: Start datastore for all scenarios
+    Given Start Broker
 
   Scenario: Send BIRTH message and then DC message while broker ip is set by config file
     Effectively this is connect and disconnect of Kura device.
@@ -32,8 +44,14 @@ Feature: Device Broker connection ip with config file
     And I logout
     And Device death message is sent
 
-  @StopBroker
   Scenario: Stop broker after all scenarios
 
-  @StopDatastore
+    Given Stop Broker
+
+  Scenario: Stop event broker for all scenarios
+
+    Given Stop Event Broker
+
   Scenario: Stop datastore after all scenarios
+
+    Given Stop Datastore

@@ -50,6 +50,7 @@ public class DeviceTabPackagesInstalled extends TabItem {
     private DeviceTabPackages rootTabPanel;
     private TreeGrid<ModelData> treeGrid;
     private TreeStore<ModelData> treeStore = new TreeStore<ModelData>();
+    private boolean refreshing;
 
     public DeviceTabPackagesInstalled(DeviceTabPackages rootTabPanel) {
         super(DEVICE_MSGS.deviceInstallTabInstalled(), null);
@@ -119,14 +120,20 @@ public class DeviceTabPackagesInstalled extends TabItem {
     }
 
     public void refresh() {
+        if (refreshing) {
+            return;
+        } else {
+            refreshing = true;
+        }
 
-        if (dirty && initialized) {
+        if (initialized) {
 
             GwtDevice selectedDevice = getSelectedDevice();
             if (selectedDevice == null || !selectedDevice.isOnline()) {
                 treeStore.removeAll();
                 treeGrid.unmask();
                 treeGrid.getView().setEmptyText(DEVICE_MSGS.deviceNoDeviceSelectedOrOffline());
+                refreshing = false;
             } else {
                 treeGrid.mask(MSGS.loading());
 
@@ -152,17 +159,25 @@ public class DeviceTabPackagesInstalled extends TabItem {
                         }
 
                         treeGrid.unmask();
+                        rootTabPanel.getRefreshButton().enable();
+                        rootTabPanel.getInstallButton().enable();
+                        refreshing = false;
                     }
 
                     @Override
                     public void onFailure(Throwable caught) {
                         ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceConnectionError());
                         treeGrid.unmask();
+                        refreshing = false;
                     }
                 });
             }
 
             dirty = false;
         }
+    }
+
+    public TreeGrid<ModelData> getTreeGrid() {
+        return treeGrid;
     }
 }

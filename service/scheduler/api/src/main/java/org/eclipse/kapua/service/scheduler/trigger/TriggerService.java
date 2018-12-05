@@ -16,7 +16,6 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
-import org.eclipse.kapua.service.scheduler.SchedulerService;
 
 /**
  * {@link TriggerService} exposes APIs to manage Trigger objects.<br>
@@ -27,8 +26,7 @@ import org.eclipse.kapua.service.scheduler.SchedulerService;
  */
 public interface TriggerService extends KapuaEntityService<Trigger, TriggerCreator>,
         KapuaUpdatableEntityService<Trigger>,
-        KapuaConfigurableService,
-        SchedulerService {
+        KapuaConfigurableService {
 
     /**
      * Returns the {@link TriggerListResult} with elements matching the provided query.

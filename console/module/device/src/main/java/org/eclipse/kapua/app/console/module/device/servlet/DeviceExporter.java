@@ -25,14 +25,14 @@ public abstract class DeviceExporter {
     protected static final String BLANK = "";
 
     protected static final String[] DEVICE_PROPERTIES = {
-            "Id",
-            "Account",
+            "Account Id",
+            "Account Name",
             "Client ID",
             "Status",
             "Connection Status",
-            "Created On",
+            "Created On (UTC)",
             // "Created By",
-            "Last Event On",
+            "Last Event On (UTC)",
             "Last Event Type",
             "Connection IP",
             // "MQTT connection IP",
@@ -42,6 +42,7 @@ public abstract class DeviceExporter {
             "IMSI",
             "ICCID",
             "Model ID",
+            "Model Name",
             "Bios Version",
             "Firmware Version",
             "OS Version",
@@ -67,7 +68,7 @@ public abstract class DeviceExporter {
         this.response = response;
     }
 
-    public abstract void init(String account)
+    public abstract void init(String account, String accountName)
             throws ServletException, IOException;
 
     public abstract void append(KapuaListResult<Device> messages)

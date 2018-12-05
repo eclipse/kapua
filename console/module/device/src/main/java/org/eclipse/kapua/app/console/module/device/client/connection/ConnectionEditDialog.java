@@ -12,6 +12,9 @@
 package org.eclipse.kapua.app.console.module.device.client.connection;
 
 import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
@@ -21,6 +24,9 @@ import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
@@ -67,9 +73,18 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
 
     @Override
     public void createBody() {
+        submitButton.disable();
         FormPanel groupFormPanel = new FormPanel(FORM_LABEL_WIDTH);
         FormLayout layoutSecurityOptions = new FormLayout();
         layoutSecurityOptions.setLabelWidth(Constants.LABEL_WIDTH_DEVICE_FORM);
+
+        Listener<BaseEvent> comboBoxListener = new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                formPanel.fireEvent(Events.OnClick);
+            }
+        };
 
         lastUserField = new LabelField();
         lastUserField.setName("connectionUserLastUserField");
@@ -103,11 +118,13 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
         reservedUserCombo.setTypeAhead(false);
         reservedUserCombo.setAllowBlank(false);
         reservedUserCombo.setFieldLabel(MSGS.connectionFormReservedUser());
+        reservedUserCombo.setToolTip(MSGS.connectionFormReservedUserTooltip());
         reservedUserCombo.setTriggerAction(TriggerAction.ALL);
         reservedUserCombo.setStore(new ListStore<GwtUser>());
         reservedUserCombo.setDisplayField("username");
         reservedUserCombo.setTemplate("<tpl for=\".\"><div role=\"listitem\" class=\"x-combo-list-item\" title={username}>{username}</div></tpl>");
         reservedUserCombo.setValueField("id");
+        reservedUserCombo.addListener(Events.Select, comboBoxListener);
 
         if (currentSession.hasPermission(UserSessionPermission.read())) {
             // Device User
@@ -163,8 +180,17 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
             @Override
             public void onFailure(Throwable arg0) {
                 exitStatus = false;
-                exitMessage = MSGS.dialogEditError(arg0.getLocalizedMessage());
-                hide();
+                status.hide();
+                unmask();
+                FailureHandler.handle(arg0);
+                submitButton.enable();
+                cancelButton.enable();
+                if (arg0 instanceof GwtKapuaException) {
+                    GwtKapuaException gwtCause = (GwtKapuaException) arg0;
+                    if (gwtCause.getCode().equals(GwtKapuaErrorCode.INTERNAL_ERROR)) {
+                        reservedUserCombo.markInvalid(arg0.getMessage());
+                    }
+                }
             }
 
             @Override
@@ -213,6 +239,7 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
         }
         couplingModeCombo.setSimpleValue(gwtConnectionUserCouplingMode != null ? gwtConnectionUserCouplingMode.getLabel() : "N/A");
         allowUserChangeCheckbox.setValue(gwtDeviceConnection.getAllowUserChange());
+        formPanel.clearDirtyFields();
     }
 
     private void setReservedUser() {
@@ -223,8 +250,12 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
                 }
             } else if (gwtUser.getId().equals(selectedDeviceConnection.getReservedUserId())) {
                 reservedUserCombo.setValue(gwtUser);
+                break;
+            } else {
+                reservedUserCombo.setValue(NO_USER);
             }
         }
+        formPanel.clearDirtyFields();
     }
 
 }

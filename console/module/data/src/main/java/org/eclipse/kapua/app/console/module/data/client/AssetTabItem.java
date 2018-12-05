@@ -54,7 +54,7 @@ public class AssetTabItem extends TabItem {
     private AssetTable assetTable;
     private MetricsTable metricsTable;
 
-    public AssetTabItem(GwtSession currentSession) {
+    AssetTabItem(GwtSession currentSession) {
         super(MSGS.assetTabItemTitle(), null);
         this.currentSession = currentSession;
         this.setBorders(false);
@@ -118,10 +118,13 @@ public class AssetTabItem extends TabItem {
 
             @Override
             public void selectionChanged(SelectionChangedEvent<GwtHeader> se) {
+                resultsTable.setMetrics(metricsTable.getSelectedMetrics());
                 if (!se.getSelection().isEmpty()) {
                     queryButton.enable();
+                    resultsTable.getDateRangeSelector().enable();
                 } else {
                     queryButton.disable();
+                    resultsTable.getDateRangeSelector().disable();
                 }
             }
         });
@@ -133,9 +136,10 @@ public class AssetTabItem extends TabItem {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
+                GwtDatastoreDevice gwtDevice = deviceTable.getSelectedDevice();
                 GwtDatastoreAsset gwtAsset = assetTable.getSelectedAsset();
                 List<GwtHeader> metricsInfo = metricsTable.getSelectedMetrics();
-                resultsTable.refresh(gwtAsset, metricsInfo);
+                resultsTable.refresh(gwtDevice, gwtAsset, metricsInfo);
             }
         });
         queryButton.disable();
@@ -167,7 +171,7 @@ public class AssetTabItem extends TabItem {
         add(resultsTabPanel, resultsLayout);
     }
 
-    public void refreshTables() {
+    void refreshTables() {
         if (deviceTable != null) {
             deviceTable.refresh();
         }

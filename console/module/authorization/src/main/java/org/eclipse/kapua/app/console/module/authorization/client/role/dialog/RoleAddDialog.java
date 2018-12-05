@@ -90,6 +90,7 @@ public class RoleAddDialog extends EntityAddEditDialog {
 
     @Override
     public void createBody() {
+        submitButton.disable();
         FormPanel roleFormPanel = new FormPanel(FORM_LABEL_WIDTH);
 
         //
@@ -99,6 +100,7 @@ public class RoleAddDialog extends EntityAddEditDialog {
         roleNameField.setMaxLength(255);
         roleNameField.setFieldLabel("* " + MSGS.dialogAddFieldName());
         roleNameField.setValidator(new TextFieldValidator(roleNameField, FieldType.NAME));
+        roleNameField.setToolTip(MSGS.dialogAddFieldNameTooltip());
         roleFormPanel.add(roleNameField);
 
         bodyPanel.add(roleFormPanel);

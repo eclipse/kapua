@@ -194,7 +194,7 @@ public class KapuaException extends Exception {
         }
     }
 
-    protected String getMessagePattern(Locale locale, KapuaErrorCode code) {
+    private String getMessagePattern(Locale locale, KapuaErrorCode code) {
         //
         // Load the message pattern from the bundle
         String messagePattern = null;
@@ -205,6 +205,7 @@ public class KapuaException extends Exception {
         } catch (MissingResourceException mre) {
             // log the failure to load a message bundle
             logger.warn("Could not load Exception Messages Bundle for Locale {}", locale);
+            return null;
         }
 
         return messagePattern;

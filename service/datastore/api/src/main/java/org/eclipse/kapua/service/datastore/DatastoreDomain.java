@@ -20,25 +20,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * {@link DatastoreService} domain.<br>
- * Used to describe the {@link DatastoreService} {@link Domain} in the {@link DatastoreService}.
+ * {@link ChannelInfoRegistryService}, {@link ClientInfoRegistryService},
+ * {@link MessageStoreService} and {@link MetricInfoRegistryService} domain.<br>
+ * Used to describe the {@link Domain} in all the Datastore Services
  *
  * @since 1.0.0
  */
-public class DatastoreDomain extends AbstractDomain implements Domain {
+public class DatastoreDomain extends AbstractDomain {
 
     private String name = "datastore";
-    private String serviceName = DatastoreService.class.getName();
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write));
 
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public String getServiceName() {
-        return serviceName;
     }
 
     @Override

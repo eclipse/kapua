@@ -83,6 +83,7 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
         ColumnConfig columnConfig = new ColumnConfig("id", ROLE_MSGS.gridRolePermissionColumnHeaderId(), 100);
+        columnConfig.setSortable(false);
         columnConfig.setHidden(true);
         columnConfigs.add(columnConfig);
 
@@ -98,7 +99,7 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("groupId", ROLE_MSGS.gridRolePermissionColumnHeaderTargetGroup(), 100);
+        columnConfig = new ColumnConfig("groupName", ROLE_MSGS.gridRolePermissionColumnHeaderTargetGroup(), 100);
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 

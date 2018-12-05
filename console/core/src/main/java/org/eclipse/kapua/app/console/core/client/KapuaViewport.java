@@ -33,7 +33,7 @@ public class KapuaViewport extends Viewport {
     /**
      * Minimum height of browser window.
      */
-    public static final int MIN_CLIENT_HEIGHT = 530;
+    public static final int MIN_CLIENT_HEIGHT = 570;
 
     private InfoPopup infoPopup;
 

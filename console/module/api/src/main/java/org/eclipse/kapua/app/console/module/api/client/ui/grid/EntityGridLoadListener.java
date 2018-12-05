@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.module.api.client.ui.grid;
 import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.Loader;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
 
@@ -23,6 +24,8 @@ public class EntityGridLoadListener<M extends GwtEntityModel> extends KapuaLoadL
 
     private EntityGrid<M> entityGrid;
     private ListStore<M> entityStore;
+    private Button searchButton;
+    private Button resetButton;
 
     private List<M> selectedEntities;
     private boolean keepSelectedOnLoad = true;
@@ -30,6 +33,13 @@ public class EntityGridLoadListener<M extends GwtEntityModel> extends KapuaLoadL
     public EntityGridLoadListener(EntityGrid<M> entityGrid, ListStore<M> entityStore) {
         this.entityGrid = entityGrid;
         this.entityStore = entityStore;
+    }
+
+    public EntityGridLoadListener(EntityGrid<M> entityGrid, ListStore<M> entityStore, Button searchButton, Button resetButton) {
+        this.entityGrid = entityGrid;
+        this.entityStore = entityStore;
+        this.searchButton = searchButton;
+        this.resetButton = resetButton;
     }
 
     /**
@@ -40,6 +50,10 @@ public class EntityGridLoadListener<M extends GwtEntityModel> extends KapuaLoadL
     @Override
     public void loaderBeforeLoad(LoadEvent le) {
         selectedEntities = entityGrid.getSelectionModel().getSelectedItems();
+        if (searchButton != null && resetButton != null) {
+            searchButton.disable();
+            resetButton.disable();
+        }
     }
 
     /**
@@ -61,6 +75,10 @@ public class EntityGridLoadListener<M extends GwtEntityModel> extends KapuaLoadL
             }
         }
 
+        if (searchButton != null && resetButton != null) {
+            searchButton.enable();
+            resetButton.enable();
+        }
         entityGrid.loaded();
     }
 
@@ -68,6 +86,10 @@ public class EntityGridLoadListener<M extends GwtEntityModel> extends KapuaLoadL
     public void loaderLoadException(LoadEvent le) {
         entityGrid.loaded();
 
+        if (searchButton != null && resetButton != null) {
+            searchButton.enable();
+            resetButton.enable();
+        }
         super.loaderLoadException(le);
     }
 

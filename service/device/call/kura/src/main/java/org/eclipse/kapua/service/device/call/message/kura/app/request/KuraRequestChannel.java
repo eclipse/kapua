@@ -66,6 +66,10 @@ public class KuraRequestChannel extends KuraAppChannel implements DeviceRequestC
 
     @Override
     public String[] getResources() {
+        if (resources == null) {
+            resources = new String[0];
+        }
+
         return resources;
     }
 

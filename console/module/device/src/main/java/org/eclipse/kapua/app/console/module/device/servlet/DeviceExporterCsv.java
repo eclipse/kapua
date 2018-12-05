@@ -18,13 +18,16 @@ import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.service.account.Account;
@@ -35,27 +38,29 @@ import com.opencsv.CSVWriter;
 
 public class DeviceExporterCsv extends DeviceExporter {
 
-    private String account;
+    private String accountId;
+    private String accountName;
     private DateFormat dateFormat;
     private CSVWriter writer;
+
+    private static final AccountService ACCOUNT_SERVICE = KapuaLocator.getInstance().getService(AccountService.class);
 
     public DeviceExporterCsv(HttpServletResponse response) {
         super(response);
     }
 
     @Override
-    public void init(String account)
+    public void init(String accountId, String accountName)
             throws ServletException, IOException {
-        this.account = account;
+        this.accountId = accountId;
+        this.accountName = accountName;
         dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
 
         OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), Charset.forName("UTF-8"));
         writer = new CSVWriter(osw);
 
         List<String> cols = new ArrayList<String>();
-        for (String property : DEVICE_PROPERTIES) {
-            cols.add(property);
-        }
+        Collections.addAll(cols, DEVICE_PROPERTIES);
         writer.writeNext(cols.toArray(new String[] {}));
     }
 
@@ -63,10 +68,14 @@ public class DeviceExporterCsv extends DeviceExporter {
     public void append(KapuaListResult<Device> devices)
             throws ServletException, IOException, KapuaException {
 
-        AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
         Account account = null;
         try {
-            account = accountService.find(KapuaEid.parseCompactId(this.account));
+            account = KapuaSecurityUtils.doPrivileged(new Callable<Account>() {
+                @Override
+                public Account call() throws Exception {
+                    return ACCOUNT_SERVICE.find(KapuaEid.parseCompactId(accountId));
+                }
+            });
         } catch (KapuaException e) {
             throw KapuaException.internalError(e);
         }
@@ -76,7 +85,7 @@ public class DeviceExporterCsv extends DeviceExporter {
             List<String> cols = new ArrayList<String>();
 
             // Account id
-            cols.add(this.account);
+            cols.add(this.accountId);
 
             // Account name
             cols.add(account.getName());
@@ -119,6 +128,9 @@ public class DeviceExporterCsv extends DeviceExporter {
 
             // Model Id
             cols.add(device.getModelId() != null ? device.getModelId() : BLANK);
+
+            // Model Name
+            cols.add(device.getModelName() != null ? device.getModelName() : BLANK);
 
             // Bios version
             cols.add(device.getBiosVersion() != null ? device.getBiosVersion() : BLANK);
@@ -168,7 +180,7 @@ public class DeviceExporterCsv extends DeviceExporter {
             throws ServletException, IOException {
         response.setContentType("text/csv");
         response.setCharacterEncoding("UTF-8");
-        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(account, "UTF-8") + "_devices.csv");
+        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(accountName, "UTF-8") + "_devices.csv");
         response.setHeader("Cache-Control", "no-transform, max-age=0");
 
         writer.flush();

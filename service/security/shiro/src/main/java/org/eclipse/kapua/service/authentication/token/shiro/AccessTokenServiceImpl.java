@@ -22,10 +22,11 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.service.authentication.AuthenticationDomains;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
 import org.eclipse.kapua.service.authentication.token.AccessTokenListResult;
-import org.eclipse.kapua.service.authentication.token.AccessTokenPredicates;
+import org.eclipse.kapua.service.authentication.token.AccessTokenAttributes;
 import org.eclipse.kapua.service.authentication.token.AccessTokenQuery;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -69,7 +70,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Check access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ACCESS_TOKEN_DOMAIN, Actions.write, accessTokenCreator.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.write, accessTokenCreator.getScopeId()));
 
         //
         // Do create
@@ -88,7 +89,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Check access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ACCESS_TOKEN_DOMAIN, Actions.write, accessToken.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.write, accessToken.getScopeId()));
 
         //
         // Check existence
@@ -110,11 +111,11 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> AccessTokenDAO.find(em, accessTokenId));
+        return entityManagerSession.onResult(em -> AccessTokenDAO.find(em, scopeId, accessTokenId));
     }
 
     @Override
@@ -126,7 +127,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -142,7 +143,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count
@@ -158,7 +159,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ACCESS_TOKEN_DOMAIN, Actions.delete, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.delete, scopeId));
 
         //
         // Check existence
@@ -168,7 +169,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> AccessTokenDAO.delete(em, accessTokenId));
+        entityManagerSession.onTransactedAction(em -> AccessTokenDAO.delete(em, scopeId, accessTokenId));
     }
 
     @Override
@@ -180,12 +181,12 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.read, scopeId));
 
         //
         // Build query
         AccessTokenQuery query = new AccessTokenQueryImpl(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(AccessTokenPredicates.USER_ID, userId));
+        query.setPredicate(new AttributePredicateImpl<>(AccessTokenAttributes.USER_ID, userId));
 
         //
         // Do query
@@ -205,7 +206,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
         //
         // Check Access
         if (accessToken != null) {
-            AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, accessToken.getScopeId()));
+            AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.read, accessToken.getScopeId()));
         }
 
         return accessToken;
@@ -220,12 +221,12 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(ACCESS_TOKEN_DOMAIN, Actions.read, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(AuthenticationDomains.ACCESS_TOKEN_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
         entityManagerSession.onTransactedResult(em -> {
-            AccessToken accessToken = AccessTokenDAO.find(em, accessTokenId);
+            AccessToken accessToken = AccessTokenDAO.find(em, scopeId, accessTokenId);
             accessToken.setInvalidatedOn(new Date());
 
             return AccessTokenDAO.update(em, accessToken);
@@ -250,7 +251,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     private void deleteAccessTokenByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
 
         AccessTokenQuery query = new AccessTokenQueryImpl(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(AccessTokenPredicates.USER_ID, userId));
+        query.setPredicate(new AttributePredicateImpl<>(AccessTokenAttributes.USER_ID, userId));
 
         AccessTokenListResult accessTokensToDelete = query(query);
 

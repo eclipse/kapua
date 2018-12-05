@@ -22,9 +22,11 @@ import org.eclipse.kapua.commons.model.misc.CollisionServiceImpl;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Test the random identifier generator retry mechanism.
@@ -32,6 +34,7 @@ import org.junit.Test;
  * @since 1.0
  *
  */
+@Category(JUnitTests.class)
 public class KapuaIdGeneratorTest extends AbstractCommonServiceTest {
 
     public static final String DEFAULT_TEST_FILTER = "test_*.sql";

@@ -23,13 +23,16 @@ import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainListResult;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
-import org.eclipse.kapua.service.authorization.domain.shiro.DomainPredicates;
+import org.eclipse.kapua.service.authorization.domain.shiro.DomainAttributes;
 import org.eclipse.kapua.test.KapuaTest;
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@Category(JUnitTests.class)
 public class DomainRegistryServiceTest extends KapuaTest {
 
     KapuaEid scope = new KapuaEid(IdGenerator.generate());
@@ -48,7 +51,7 @@ public class DomainRegistryServiceTest extends KapuaTest {
             domainActions.add(Actions.read);
             domainActions.add(Actions.write);
 
-            DomainCreator domainCreator = domainFactory.newCreator("test-" + random.nextLong(), DomainRegistryServiceTest.class.getName() + random.nextLong());
+            DomainCreator domainCreator = domainFactory.newCreator("test-" + random.nextLong());
             domainCreator.setActions(domainActions);
 
             DomainRegistryService domainRegistryService = locator.getService(DomainRegistryService.class);
@@ -59,7 +62,6 @@ public class DomainRegistryServiceTest extends KapuaTest {
             assertNotNull(domain.getCreatedOn());
             assertNotNull(domain.getCreatedBy());
             assertEquals(domainCreator.getName(), domain.getName());
-            assertEquals(domainCreator.getServiceName(), domain.getServiceName());
 
             assertNotNull(domain.getActions());
             assertEquals(domainCreator.getActions().size(), domain.getActions().size());
@@ -84,7 +86,7 @@ public class DomainRegistryServiceTest extends KapuaTest {
             domainActions.add(Actions.read);
             domainActions.add(Actions.write);
 
-            DomainCreator domainCreator = domainFactory.newCreator("test-" + random.nextLong(), DomainRegistryServiceTest.class.getName() + random.nextLong());
+            DomainCreator domainCreator = domainFactory.newCreator("test-" + random.nextLong());
             domainCreator.setActions(domainActions);
 
             DomainRegistryService domainRegistryService = locator.getService(DomainRegistryService.class);
@@ -100,7 +102,6 @@ public class DomainRegistryServiceTest extends KapuaTest {
             assertEquals(domain.getCreatedOn(), domainFound.getCreatedOn());
             assertEquals(domain.getCreatedBy(), domainFound.getCreatedBy());
             assertEquals(domain.getName(), domainFound.getName());
-            assertEquals(domain.getServiceName(), domainFound.getServiceName());
 
             assertNotNull(domainFound.getActions());
             assertEquals(domain.getActions().size(), domainFound.getActions().size());
@@ -129,7 +130,7 @@ public class DomainRegistryServiceTest extends KapuaTest {
             domainActions.add(Actions.read);
             domainActions.add(Actions.write);
 
-            DomainCreator domainCreator = domainFactory.newCreator("test-" + random.nextLong(), DomainRegistryServiceTest.class.getName() + random.nextLong());
+            DomainCreator domainCreator = domainFactory.newCreator("test-" + random.nextLong());
             domainCreator.setActions(domainActions);
 
             Domain domain1 = domainRegistryService.create(domainCreator);
@@ -139,7 +140,7 @@ public class DomainRegistryServiceTest extends KapuaTest {
             domainActions.add(Actions.read);
             domainActions.add(Actions.write);
 
-            domainCreator = domainFactory.newCreator("test-" + random.nextLong(), DomainRegistryServiceTest.class.getName() + random.nextLong());
+            domainCreator = domainFactory.newCreator("test-" + random.nextLong());
             domainCreator.setActions(domainActions);
 
             Domain domain2 = domainRegistryService.create(domainCreator);
@@ -158,7 +159,7 @@ public class DomainRegistryServiceTest extends KapuaTest {
             // Test name filtered query
             query = domainFactory.newQuery(null);
 
-            query.setPredicate(new AttributePredicateImpl<>(DomainPredicates.NAME, domain1.getName()));
+            query.setPredicate(new AttributePredicateImpl<>(DomainAttributes.NAME, domain1.getName()));
             result = domainRegistryService.query(query);
             count = domainRegistryService.count(query);
 
@@ -166,19 +167,6 @@ public class DomainRegistryServiceTest extends KapuaTest {
             assertEquals(1, count);
             assertEquals(count, result.getSize());
             assertEquals(domain1, result.getFirstItem());
-
-            //
-            // Test name filtered query
-            query = domainFactory.newQuery(null);
-
-            query.setPredicate(new AttributePredicateImpl<>(DomainPredicates.SERVICE_NAME, domain2.getServiceName()));
-            result = domainRegistryService.query(query);
-            count = domainRegistryService.count(query);
-
-            assertNotNull(result);
-            assertEquals(1, count);
-            assertEquals(count, result.getSize());
-            assertEquals(domain2, result.getFirstItem());
 
             return null;
         });
@@ -196,7 +184,7 @@ public class DomainRegistryServiceTest extends KapuaTest {
             domainActions.add(Actions.read);
             domainActions.add(Actions.write);
 
-            DomainCreator domainCreator = domainFactory.newCreator("test-" + random.nextLong(), DomainRegistryServiceTest.class.getName() + random.nextLong());
+            DomainCreator domainCreator = domainFactory.newCreator("test-" + random.nextLong());
             domainCreator.setActions(domainActions);
 
             DomainRegistryService domainRegistryService = locator.getService(DomainRegistryService.class);

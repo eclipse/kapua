@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-    Copyright (c) 2017 Red Hat Inc and others
+    Copyright (c) 2017, 2018 Red Hat Inc and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -9,23 +9,20 @@
 
     Contributors:
         Red Hat Inc - initial API and implementation
+        Eurotech
  -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.eclipse.kapua</groupId>
         <artifactId>kapua-assembly</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.1.0-SNAPSHOT</version>
     </parent>
 
+    <packaging>pom</packaging>
     <artifactId>kapua-assembly-sql</artifactId>
-    <name>${project.artifactId}</name>
-
-    <properties>
-        <java.base.image>centos:7</java.base.image>
-    </properties>
 
     <profiles>
         <profile>
@@ -46,35 +43,11 @@
                                 <image>
                                     <name>${docker.account}/kapua-sql</name>
                                     <build>
-                                        <from>${docker.account}/java-base</from>
+                                        <filter>@</filter>
                                         <assembly>
-                                            <descriptor>/src/main/descriptors/kapua-sql.xml</descriptor>
-                                            <basedir>/</basedir>
+                                            <descriptor>${project.basedir}/descriptors/kapua-sql.xml</descriptor>
                                         </assembly>
-                                        <runCmds>
-                                            <runCmd><![CDATA[
-                                    mkdir -p /var/h2/data && \
-                                    chown kapua:kapua /var/h2/data && \
-                                    chmod a+rw /var/h2/data && \
-                                    cd /home/kapua && \
-                                    mkdir tmp && chmod a+rwx tmp && \
-                                    curl -s http://repo2.maven.org/maven2/com/h2database/h2/1.4.193/h2-1.4.193.jar -o h2.jar
-                                    ]]></runCmd>
-                                        </runCmds>
-                                        <volumes>
-                                            <volume>/var/h2/data</volume>
-                                        </volumes>
-                                        <ports>
-                                            <port>3306</port>
-                                            <port>8181</port>
-                                            <port>8778</port>
-                                        </ports>
-                                        <user>kapua</user>
-                                        <entryPoint>
-                                            <exec>
-                                                <arg>/home/kapua/run-h2</arg>
-                                            </exec>
-                                        </entryPoint>
+                                        <dockerFile>${project.basedir}/docker/Dockerfile</dockerFile>
                                     </build>
                                 </image>
                             </images>

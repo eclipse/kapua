@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.authorization.access;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.user.User;
 
@@ -23,14 +22,7 @@ import org.eclipse.kapua.service.user.User;
  *
  * @since 1.0.0
  */
-public interface AccessInfoService extends KapuaEntityService<AccessInfo, AccessInfoCreator>, KapuaDomainService<AccessInfoDomain> {
-
-    AccessInfoDomain ACCESS_INFO_DOMAIN = new AccessInfoDomain();
-
-    @Override
-    default AccessInfoDomain getServiceDomain() {
-        return ACCESS_INFO_DOMAIN;
-    }
+public interface AccessInfoService extends KapuaEntityService<AccessInfo, AccessInfoCreator> {
 
     /**
      * Creates a new {@link AccessInfo} entity.<br>

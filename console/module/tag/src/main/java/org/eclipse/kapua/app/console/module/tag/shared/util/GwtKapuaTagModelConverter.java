@@ -25,7 +25,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagQuery;
-import org.eclipse.kapua.service.tag.TagPredicates;
+import org.eclipse.kapua.service.tag.TagAttributes;
 
 public class GwtKapuaTagModelConverter {
 
@@ -47,7 +47,7 @@ public class GwtKapuaTagModelConverter {
         // Predicates conversion
         AndPredicateImpl andPredicate = new AndPredicateImpl();
         if (gwtTagQuery.getName() != null && !gwtTagQuery.getName().isEmpty()) {
-            andPredicate.and(new AttributePredicateImpl<String>(TagPredicates.NAME, gwtTagQuery.getName(), Operator.LIKE));
+            andPredicate.and(new AttributePredicateImpl<String>(TagAttributes.NAME, gwtTagQuery.getName(), Operator.LIKE));
         }
         if (!gwtTagQuery.getIds().isEmpty()) {
             int i = 0;
@@ -56,15 +56,15 @@ public class GwtKapuaTagModelConverter {
                 tagIds[i++] = GwtKapuaCommonsModelConverter.convertKapuaId(gwtTagId);
             }
 
-            andPredicate.and(new AttributePredicateImpl<KapuaId[]>(TagPredicates.ENTITY_ID, tagIds));
+            andPredicate.and(new AttributePredicateImpl<KapuaId[]>(TagAttributes.ENTITY_ID, tagIds));
         }
 
         // Sort order conversion
-        String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? TagPredicates.NAME : loadConfig.getSortField();
+        String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? TagAttributes.NAME : loadConfig.getSortField();
         if (sortField.equals("tagName")) {
-            sortField = TagPredicates.NAME;
+            sortField = TagAttributes.NAME;
         } else if (sortField.equals("createdOnFormatted")) {
-            sortField = TagPredicates.CREATED_ON;
+            sortField = TagAttributes.CREATED_ON;
         }
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
         FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);

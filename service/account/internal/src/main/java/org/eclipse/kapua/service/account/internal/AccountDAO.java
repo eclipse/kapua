@@ -22,7 +22,7 @@ import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountListResult;
 
 /**
- * Account DAO
+ * {@link Account} {@link ServiceDAO}
  * 
  * @since 1.0
  *
@@ -60,6 +60,8 @@ public class AccountDAO {
         AccountImpl accountImpl = new AccountImpl(accountCreator.getScopeId(), accountCreator.getName());
         accountImpl.setOrganization(organizationImpl);
         accountImpl.setEntityAttributes(accountCreator.getEntityAttributes());
+        accountImpl.setExpirationDate(accountCreator.getExpirationDate());
+
 
         return ServiceDAO.create(em, accountImpl);
     }
@@ -82,27 +84,15 @@ public class AccountDAO {
     }
 
     /**
-     * Deletes the account by account identifier
-     * 
-     * @param em
-     * @param accountId
-     * @throws KapuaEntityNotFoundException
-     *             If the {@link Account} is not found
-     */
-    public static void delete(EntityManager em, KapuaId accountId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, AccountImpl.class, accountId);
-    }
-
-    /**
      * Finds the account by account identifier
      */
-    public static Account find(EntityManager em, KapuaId accountId) {
-        return em.find(AccountImpl.class, accountId);
+    public static Account find(EntityManager em, KapuaId scopeId, KapuaId accountId) {
+        return ServiceDAO.find(em, AccountImpl.class, scopeId, accountId);
     }
 
     /**
      * Finds the account by name
-     * 
+     *
      * @param em
      * @param name
      * @return
@@ -113,7 +103,7 @@ public class AccountDAO {
 
     /**
      * Returns the account list matching the provided query
-     * 
+     *
      * @param em
      * @param accountQuery
      * @return
@@ -126,7 +116,7 @@ public class AccountDAO {
 
     /**
      * Returns the account count matching the provided query
-     * 
+     *
      * @param em
      * @param accountQuery
      * @return
@@ -137,4 +127,16 @@ public class AccountDAO {
         return ServiceDAO.count(em, Account.class, AccountImpl.class, accountQuery);
     }
 
+    /**
+     * Deletes the account by account identifier
+     *
+     * @param em
+     * @param scopeId
+     * @param accountId
+     * @throws KapuaEntityNotFoundException
+     *             If the {@link Account} is not found
+     */
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId accountId) throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, AccountImpl.class, scopeId, accountId);
+    }
 }

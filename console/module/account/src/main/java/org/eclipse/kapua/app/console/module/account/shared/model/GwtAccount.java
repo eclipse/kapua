@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,10 +12,12 @@
 package org.eclipse.kapua.app.console.module.account.shared.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
 
 public class GwtAccount extends GwtUpdatableEntityModel implements Serializable {
@@ -61,6 +63,20 @@ public class GwtAccount extends GwtUpdatableEntityModel implements Serializable 
 
     public GwtAccount() {
         super();
+    }
+
+    @Override
+    @SuppressWarnings({ "unchecked" })
+    public <X> X get(String property) {
+        if ("expirationDateFormatted".equals(property)) {
+            if (getExpirationDate() != null) {
+                return (X) ((DateUtils.formatDateTime(getExpirationDate())));
+            } else {
+                return (X) null;
+            }
+        } else {
+            return super.get(property);
+        }
     }
 
     public String getName() {
@@ -114,4 +130,81 @@ public class GwtAccount extends GwtUpdatableEntityModel implements Serializable 
     public void setChildAccounts(List<GwtAccount> childAccounts) {
         set("childAccounts", childAccounts);
     }
+
+    public Date getExpirationDate() {
+        return get("expirationDate");
+    }
+
+    public String getExpirationDateFormatted() {
+        return get("expirationDateFormatted");
+    }
+
+    public void setExpirationDate(Date expirationDate) {
+        set("expirationDate", expirationDate);
+    }
+
+    public String getContactName() {
+        return (String) getUnescaped("contactName");
+    }
+
+    public void setContactName(String contactName) {
+        set("contactName", contactName);
+    }
+
+    public String getPhoneNumber() {
+        return (String) getUnescaped("phoneNumber");
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        set("phoneNumber", phoneNumber);
+    }
+
+    public String getAddress1() {
+        return (String) getUnescaped("adress1");
+    }
+
+    public void setAddress1(String adress1) {
+        set("adress1", adress1);
+    }
+
+    public String getAddress2() {
+        return (String) getUnescaped("address2");
+    }
+
+    public void setAddress2(String address2) {
+        set("address2", address2);
+    }
+
+    public String getZipPostCode() {
+        return (String) getUnescaped("zipPostCode");
+    }
+
+    public void setZipPostCode(String zipPostCode) {
+        set("zipPostCode", zipPostCode);
+    }
+
+    public String getCity() {
+        return (String) getUnescaped("city");
+    }
+
+    public void setCity(String city) {
+        set("city", city);
+    }
+
+    public String getStateProvince() {
+        return (String) getUnescaped("stateProvince");
+    }
+
+    public void setStateProvince(String stateProvince) {
+        set("stateProvince", stateProvince);
+    }
+
+    public String getCountry() {
+        return (String) getUnescaped("country");
+    }
+
+    public void setCountry(String country) {
+        set("country", country);
+    }
+
 }

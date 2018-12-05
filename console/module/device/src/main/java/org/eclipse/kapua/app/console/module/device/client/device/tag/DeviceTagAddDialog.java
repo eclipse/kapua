@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.tag;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
@@ -98,8 +101,16 @@ public class DeviceTagAddDialog extends EntityAddEditDialog {
 
     @Override
     public void createBody() {
+        submitButton.disable();
 
         FormPanel formPanel = new FormPanel(FORM_LABEL_WIDTH);
+        Listener<BaseEvent> comboBoxListener = new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                DeviceTagAddDialog.this.formPanel.fireEvent(Events.OnClick);
+            }
+        };
 
         //
         // Tags
@@ -111,9 +122,11 @@ public class DeviceTagAddDialog extends EntityAddEditDialog {
         tagsCombo.disable();
         // tagsCombo.setEmptyText(MSGS.dialogDeviceTagAddFieldTagEmptyText());
         tagsCombo.setFieldLabel("* " + MSGS.dialogDeviceTagAddFieldTag());
+        tagsCombo.setToolTip(MSGS.deviceFormTagTooltip());
         tagsCombo.setTriggerAction(TriggerAction.ALL);
         tagsCombo.setDisplayField("tagName");
         tagsCombo.setTemplate("<tpl for=\".\"><div role=\"listitem\" class=\"x-combo-list-item\" title={tagName}>{tagName}</div></tpl>");
+        tagsCombo.addListener(Events.Select, comboBoxListener);
 
         GWT_TAG_SERVICE.findAll(selectedDevice.getScopeId(), new AsyncCallback<List<GwtTag>>() {
 

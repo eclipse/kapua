@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.authorization.group.shiro;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
@@ -26,12 +26,13 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
+import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupCreator;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupListResult;
-import org.eclipse.kapua.service.authorization.group.GroupPredicates;
+import org.eclipse.kapua.service.authorization.group.GroupAttributes;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -55,7 +56,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
     public GroupServiceImpl() {
-        super(GroupService.class.getName(), GROUP_DOMAIN, AuthorizationEntityManagerFactory.getInstance(), GroupService.class, GroupFactory.class);
+        super(GroupService.class.getName(), AuthorizationDomains.GROUP_DOMAIN, AuthorizationEntityManagerFactory.getInstance(), GroupService.class, GroupFactory.class);
     }
 
     @Override
@@ -68,18 +69,18 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(GROUP_DOMAIN, Actions.write, groupCreator.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.write, groupCreator.getScopeId()));
 
         //
         // Check limits
         if (allowedChildEntities(groupCreator.getScopeId()) <= 0) {
-            throw new KapuaIllegalArgumentException("scopeId", "max groups reached");
+            throw new KapuaMaxNumberOfItemsReachedException("Groups");
         }
 
         //
         // Check duplicate name
         GroupQuery query = new GroupQueryImpl(groupCreator.getScopeId());
-        query.setPredicate(new AttributePredicateImpl<>(GroupPredicates.NAME, groupCreator.getName()));
+        query.setPredicate(new AttributePredicateImpl<>(GroupAttributes.NAME, groupCreator.getName()));
 
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(groupCreator.getName());
@@ -101,7 +102,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(GROUP_DOMAIN, Actions.write, group.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.write, group.getScopeId()));
 
         //
         // Check existence
@@ -114,8 +115,8 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         GroupQuery query = new GroupQueryImpl(group.getScopeId());
         query.setPredicate(
                 new AndPredicateImpl(
-                        new AttributePredicateImpl<>(GroupPredicates.NAME, group.getName()),
-                        new AttributePredicateImpl<>(GroupPredicates.ENTITY_ID, group.getId(), Operator.NOT_EQUAL)
+                        new AttributePredicateImpl<>(GroupAttributes.NAME, group.getName()),
+                        new AttributePredicateImpl<>(GroupAttributes.ENTITY_ID, group.getId(), Operator.NOT_EQUAL)
                 )
         );
 
@@ -137,7 +138,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(GROUP_DOMAIN, Actions.delete, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.delete, scopeId));
 
         //
         // Check existence
@@ -147,7 +148,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> GroupDAO.delete(em, groupId));
+        entityManagerSession.onTransactedAction(em -> GroupDAO.delete(em, scopeId, groupId));
     }
 
     @Override
@@ -159,11 +160,11 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(GROUP_DOMAIN, Actions.read, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> GroupDAO.find(em, groupId));
+        return entityManagerSession.onResult(em -> GroupDAO.find(em, scopeId, groupId));
     }
 
     @Override
@@ -175,7 +176,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(GROUP_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -191,7 +192,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(GROUP_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count

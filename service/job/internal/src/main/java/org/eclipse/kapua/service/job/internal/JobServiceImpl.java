@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.job.internal;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
@@ -31,11 +31,18 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobCreator;
+import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.JobFactory;
 import org.eclipse.kapua.service.job.JobListResult;
-import org.eclipse.kapua.service.job.JobPredicates;
+import org.eclipse.kapua.service.job.JobAttributes;
 import org.eclipse.kapua.service.job.JobQuery;
 import org.eclipse.kapua.service.job.JobService;
+import org.eclipse.kapua.service.scheduler.trigger.Trigger;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 
 /**
  * {@link JobService} implementation
@@ -50,9 +57,11 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
     private final JobEngineService jobEngineService = LOCATOR.getService(JobEngineService.class);
+    private final TriggerService triggerService = LOCATOR.getService(TriggerService.class);
+    private final TriggerFactory triggerFactory = LOCATOR.getFactory(TriggerFactory.class);
 
     public JobServiceImpl() {
-        super(JobService.class.getName(), JOB_DOMAIN, JobEntityManagerFactory.getInstance(), JobService.class, JobFactory.class);
+        super(JobService.class.getName(), JobDomains.JOB_DOMAIN, JobEntityManagerFactory.getInstance(), JobService.class, JobFactory.class);
     }
 
     @Override
@@ -65,18 +74,18 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.write, creator.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, creator.getScopeId()));
 
         //
         // Check limits
         if (allowedChildEntities(creator.getScopeId()) <= 0) {
-            throw new KapuaIllegalArgumentException("scopeId", "max jobs reached");
+            throw new KapuaMaxNumberOfItemsReachedException("Jobs");
         }
 
         //
         // Check duplicate name
         JobQuery query = new JobQueryImpl(creator.getScopeId());
-        query.setPredicate(new AttributePredicateImpl<>(JobPredicates.NAME, creator.getName()));
+        query.setPredicate(new AttributePredicateImpl<>(JobAttributes.NAME, creator.getName()));
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(creator.getName());
         }
@@ -96,7 +105,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.write, job.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, job.getScopeId()));
 
         //
         // Check existence
@@ -109,8 +118,8 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         JobQuery query = new JobQueryImpl(job.getScopeId());
         query.setPredicate(
                 new AndPredicateImpl(
-                        new AttributePredicateImpl<>(JobPredicates.NAME, job.getName()),
-                        new AttributePredicateImpl<>(JobPredicates.ENTITY_ID, job.getId(), Operator.NOT_EQUAL)
+                        new AttributePredicateImpl<>(JobAttributes.NAME, job.getName()),
+                        new AttributePredicateImpl<>(JobAttributes.ENTITY_ID, job.getId(), Operator.NOT_EQUAL)
                 )
         );
 
@@ -132,11 +141,11 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.read, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> JobDAO.find(em, jobId));
+        return entityManagerSession.onResult(em -> JobDAO.find(em, scopeId, jobId));
     }
 
     @Override
@@ -148,7 +157,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -164,7 +173,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -180,7 +189,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.delete, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
 
         //
         // Check existence
@@ -189,10 +198,27 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         }
 
         //
-        // Do delete
+        // Find all the triggers that are associated with this job
+        TriggerQuery query = triggerFactory.newQuery(scopeId);
+        AndPredicateImpl andPredicate = new AndPredicateImpl()
+                .and(new AttributePredicateImpl<>(TriggerAttributes.TRIGGER_PROPERTIES_NAME, "jobId"))
+                .and(new AttributePredicateImpl<>(TriggerAttributes.TRIGGER_PROPERTIES_VALUE, jobId.toCompactId()))
+                .and(new AttributePredicateImpl<>(TriggerAttributes.TRIGGER_PROPERTIES_TYPE, KapuaId.class.getName()));
+        query.setPredicate(andPredicate);
 
+        //
+        // Query for and delete all the triggers that are associated with this job
+        KapuaSecurityUtils.doPrivileged(() -> {
+            TriggerListResult triggers = triggerService.query(query);
+            for(Trigger trig : triggers.getItems()) {
+                triggerService.delete(trig.getScopeId(), trig.getId());
+            }
+        });
+
+        //
+        // Do delete
         KapuaSecurityUtils.doPrivileged(() -> jobEngineService.cleanJobData(scopeId, jobId));
-        entityManagerSession.onTransactedAction(em -> JobDAO.delete(em, jobId));
+        entityManagerSession.onTransactedAction(em -> JobDAO.delete(em, scopeId, jobId));
     }
 
 }

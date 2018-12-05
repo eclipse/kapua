@@ -34,7 +34,7 @@ import org.eclipse.kapua.service.tag.TagCreator;
 import org.eclipse.kapua.service.tag.TagListResult;
 import org.eclipse.kapua.service.tag.TagService;
 import org.eclipse.kapua.service.tag.internal.TagFactoryImpl;
-import org.eclipse.kapua.service.tag.TagPredicates;
+import org.eclipse.kapua.service.tag.TagAttributes;
 import org.eclipse.kapua.service.user.steps.TestConfig;
 
 import javax.inject.Inject;
@@ -116,7 +116,7 @@ public class TagServiceSteps extends BaseQATests {
     public void tagWithNameIfSearched(String tagName) throws Throwable {
 
         KapuaQuery<Tag> query = new TagFactoryImpl().newQuery(DEFAULT_SCOPE_ID);
-        query.setPredicate(new AttributePredicateImpl<String>(TagPredicates.NAME, tagName, AttributePredicate.Operator.EQUAL));
+        query.setPredicate(new AttributePredicateImpl<String>(TagAttributes.NAME, tagName, AttributePredicate.Operator.EQUAL));
         TagListResult queryResult = tagService.query(query);
         Tag foundTag = queryResult.getFirstItem();
         stepData.put("tag", foundTag);

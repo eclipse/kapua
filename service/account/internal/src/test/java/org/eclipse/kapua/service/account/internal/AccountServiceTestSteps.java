@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
+import com.google.common.base.MoreObjects;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -22,11 +23,13 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -52,24 +55,28 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
+
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 
 /**
  * Implementation of Gherkin steps used in AccountService.feature scenarios.
- *
+ * <p>
  * MockedLocator is used for Location Service. Mockito is used to mock other
  * services that the Account services dependent on. Dependent services are:
  * - Authorization Service
- *
  */
 @ScenarioScoped
 public class AccountServiceTestSteps extends AbstractKapuaSteps {
@@ -173,9 +180,12 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
 
         // Create User Service tables
         enableH2Connection();
+        SystemSetting config = SystemSetting.getInstance();
+        String schema = MoreObjects.firstNonNull(config.getString(SystemSettingKey.DB_SCHEMA_ENV), config.getString(SystemSettingKey.DB_SCHEMA));
+        String jdbcUrl = JdbcConnectionUrlResolvers.resolveJdbcUrl();
 
         // Create the account service tables
-        new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
+        new KapuaLiquibaseClient(jdbcUrl, "kapua", "kapua", Optional.ofNullable(schema)).update();
 
         // All operations on database are performed using system user.
         KapuaSession kapuaSession = new KapuaSession(null, new KapuaEid(BigInteger.ONE), new KapuaEid(BigInteger.ONE));
@@ -221,6 +231,22 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
         }
     }
 
+    @Given("^An existing account that expires on \"(.*)\" with the name \"(.*)\"$")
+    public void createTestAccountWithName(String expirationDateStr, String name)
+            throws Exception {
+
+        Date expirationDate = new SimpleDateFormat("yyyy-MM-dd").parse(expirationDateStr);
+        accountCreator = prepareRegularAccountCreator(rootScopeId, name);
+        accountCreator.setExpirationDate(expirationDate);
+        try {
+            primeException();
+            account = accountService.create(accountCreator);
+            accountId = account.getId();
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
     @Given("^I create (\\d+) childs for account with Id (\\d+)$")
     public void createANumberOfAccounts(int num, int parentId)
             throws Exception {
@@ -253,6 +279,26 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
             }
         }
     }
+
+    @Given("^I create (\\d+) childs for account with expiration date \"(.*)\" and name \"(.*)\"$")
+    public void createANumberOfChildrenForAccountWithName(int num, String expirationDateStr, String name)
+            throws Exception {
+
+        Account tmpAcc = accountService.findByName(name);
+        for (int i = 0; i < num; i++) {
+            Date expirationDate = new SimpleDateFormat("yyyy-MM-dd").parse(expirationDateStr);
+            accountCreator = prepareRegularAccountCreator(tmpAcc.getId(), "tmp_acc_" + String.format("%d", i));
+            accountCreator.setExpirationDate(expirationDate);
+            try {
+                primeException();
+                accountService.create(accountCreator);
+            } catch (KapuaException ex) {
+                verifyException(ex);
+                break;
+            }
+        }
+    }
+
 
     @Given("^I create (\\d+) accounts with organization name \"(.*)\"$")
     public void createANumberOfChildrenForAccountWithOrganizationName(int num, String name)
@@ -340,6 +386,26 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
         Account tmpAcc = accountService.findByName(accName);
         tmpAcc.setName(name);
 
+        try {
+            primeException();
+            accountService.update(tmpAcc);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I change the expiration date of the account \"(.*)\" to \"(.*)\"$")
+    public void changeAccountExpirationDate(String accName, String expirationDateStr)
+            throws Exception {
+
+        Account tmpAcc = accountService.findByName(accName);
+        Date expirationDate;
+        if (expirationDateStr.equals("never")) {
+            expirationDate = null;
+        } else {
+            expirationDate = new SimpleDateFormat("yyyy-DD-mm").parse(expirationDateStr);
+        }
+        tmpAcc.setExpirationDate(expirationDate);
         try {
             primeException();
             accountService.update(tmpAcc);
@@ -456,14 +522,14 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
         Map<String, Object> valueMap = new HashMap<>();
 
         switch (type) {
-        case "integer":
-            valueMap.put(name, Integer.valueOf(value));
-            break;
-        case "string":
-            valueMap.put(name, value);
-            break;
-        default:
-            break;
+            case "integer":
+                valueMap.put(name, Integer.valueOf(value));
+                break;
+            case "string":
+                valueMap.put(name, value);
+                break;
+            default:
+                break;
         }
         valueMap.put("infiniteChildEntities", true);
 
@@ -489,6 +555,14 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
         AccountQuery query = new AccountQueryImpl(rootScopeId);
         KapuaListResult<Account> accList = accountService.query(query);
         intVal = accList.getSize();
+    }
+
+    @When("^I set the expiration date to (.*)$")
+    public void setExpirationDate(String expirationDateStr)
+            throws KapuaException, ParseException {
+        Date expirationDate = new SimpleDateFormat("yyyy-MM-dd").parse(expirationDateStr);
+        account.setExpirationDate(expirationDate);
+        account = accountService.update(account);
     }
 
     @Then("^The account matches the creator settings$")
@@ -582,7 +656,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     @Then("^The account has metadata$")
     public void checkMetadataExistence()
             throws KapuaException {
-        KapuaTocd metaData = accountService.getConfigMetadata();
+        KapuaTocd metaData = accountService.getConfigMetadata(accountId);
 
         assertNotNull(metaData);
     }
@@ -630,10 +704,8 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     /**
      * Create a user creator object. The creator is pre-filled with default data.
      *
-     * @param parentId
-     *            Id of the parent account
-     * @param name
-     *            The name of the account
+     * @param parentId Id of the parent account
+     * @param name     The name of the account
      * @return The newly created account creator object.
      */
     private AccountCreator prepareRegularAccountCreator(KapuaId parentId, String name) {

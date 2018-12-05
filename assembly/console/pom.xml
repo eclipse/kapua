@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-    Copyright (c) 2017 Red Hat Inc and others
+    Copyright (c) 2017, 2018 Red Hat Inc and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -11,7 +11,6 @@
         Red Hat Inc - initial API and implementation
         Eurotech
  -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -19,12 +18,11 @@
     <parent>
         <groupId>org.eclipse.kapua</groupId>
         <artifactId>kapua-assembly</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kapua-assembly-console</artifactId>
-    <name>${project.artifactId}</name>
     <packaging>pom</packaging>
+    <artifactId>kapua-assembly-console</artifactId>
 
     <dependencies>
         <dependency>
@@ -69,10 +67,6 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-configuration-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-shiro</artifactId>
         </dependency>
         <dependency>
@@ -108,33 +102,12 @@
             to add -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-bundle-api</artifactId>
+            <artifactId>kapua-device-management-all-api</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-bundle-internal</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-command-api</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-command-internal</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-packages-api</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-packages-internal</artifactId>
-            <scope>runtime</scope>
+            <artifactId>kapua-device-management-all-internal</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -262,7 +235,7 @@
                         </goals>
                         <configuration>
                             <descriptors>
-                                <descriptor>src/main/descriptors/kapua-console-jetty.xml</descriptor>
+                                <descriptor>${project.basedir}/descriptors/kapua-console-jetty.xml</descriptor>
                             </descriptors>
                             <tarLongFileMode>posix</tarLongFileMode>
                             <finalName>kapua-console-${project.version}</finalName>
@@ -295,43 +268,11 @@
                                     <build>
                                         <from>${docker.account}/jetty-base</from>
                                         <assembly>
-                                            <descriptor>${basedir}/src/main/descriptors/kapua-console-jetty.xml</descriptor>
+                                            <descriptor>${project.basedir}/descriptors/kapua-console-jetty.xml</descriptor>
                                             <basedir>/</basedir>
                                         </assembly>
-                                        <env>
-                                            <SQL_DB_PORT>\${DB_PORT_3306_TCP_PORT}</SQL_DB_PORT>
-                                            <SQL_DB_ADDR>\${DB_PORT_3306_TCP_ADDR}</SQL_DB_ADDR>
-                                            <DATASTORE_PORT>\${ES_PORT_9200_TCP_PORT}</DATASTORE_PORT>
-                                            <DATASTORE_ADDR>\${ES_PORT_9200_TCP_ADDR}</DATASTORE_ADDR>
-                                            <SERVICE_BROKER_ADDR>failover:(amqp://\${SERVICE_PORT_5672_TCP_ADDR}:\${SERVICE_PORT_5672_TCP_PORT})?jms.sendTimeout=1000</SERVICE_BROKER_ADDR>
-                                            <DATASTORE_CLIENT>org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient</DATASTORE_CLIENT>
-                                            <JAVA_OPTS>
-                                                -Dcommons.db.schema.update=true \
-                                                -Dcommons.db.connection.host=db \
-                                                -Dcommons.db.connection.port=3306 \
-                                                -Dbroker.host=broker \
-                                                -Ddatastore.elasticsearch.nodes=es \
-                                                -Ddatastore.elasticsearch.port=9200 \
-                                                -Ddatastore.client.class=\${DATASTORE_CLIENT} \
-                                                -Dcommons.eventbus.url="failover:(amqp://events-broker:5672)?jms.sendTimeout=1000" \
-                                                -Dcertificate.jwt.private.key=file:///home/kapua/key.pk8 \
-                                                -Dcertificate.jwt.certificate=file:///home/kapua/cert.pem
-                                            </JAVA_OPTS>
-                                        </env>
-                                        <user>kapua</user>
-                                        <entryPoint>
-                                            <exec>
-                                                <arg>/home/kapua/run-console</arg>
-                                            </exec>
-                                        </entryPoint>
-                                        <runCmds>
-                                            <runCmd>
-                                                chown -R kapua:kapua /home/kapua
-                                            </runCmd>
-                                            <runCmd>
-                                                chmod og+rwx /home/kapua
-                                            </runCmd>
-                                        </runCmds>
+                                        <dockerFile>${project.basedir}/docker/Dockerfile</dockerFile>
+                                        <filter>@</filter>
                                     </build>
                                 </image>
                             </images>

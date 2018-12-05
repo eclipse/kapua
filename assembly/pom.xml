@@ -11,19 +11,18 @@
         Red Hat Inc - initial API and implementation
         Eurotech
  -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.eclipse.kapua</groupId>
         <artifactId>kapua</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.1.0-SNAPSHOT</version>
     </parent>
-    <packaging>pom</packaging>
 
+    <packaging>pom</packaging>
     <artifactId>kapua-assembly</artifactId>
-    <name>${project.artifactId}</name>
 
     <properties>
         <docker.account>kapua</docker.account>
@@ -33,11 +32,13 @@
         <module>java-base</module>
         <module>jetty-base</module>
         <module>sql</module>
-        <module>broker</module>
+
         <module>events-broker</module>
+
+        <module>broker</module>
         <module>api</module>
     </modules>
-    
+
     <profiles>
         <!-- Profile used to exclude console module on release process -->
         <profile>

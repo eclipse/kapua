@@ -24,6 +24,7 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.color.Color;
@@ -43,6 +44,7 @@ import java.util.List;
 public class AccountChildUserGrid extends EntityGrid<GwtUser> {
 
     private static final ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
+    private static final ConsoleMessages CMSGS = GWT.create(ConsoleMessages.class);
 
     private static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
 
@@ -123,6 +125,7 @@ public class AccountChildUserGrid extends EntityGrid<GwtUser> {
 
         columnConfig = new ColumnConfig("id", MSGS.gridUserColumnHeaderId(), 100);
         columnConfig.setHidden(true);
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("username", MSGS.gridUserColumnHeaderUsername(), 400);
@@ -135,6 +138,22 @@ public class AccountChildUserGrid extends EntityGrid<GwtUser> {
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("email", MSGS.gridUserColumnHeaderEmail(), 200);
+        columnConfigs.add(columnConfig);
+
+        columnConfig = new ColumnConfig("expirationDateFormatted", MSGS.gridUserColumnHeaderExpirationDate(), 400);
+        GridCellRenderer<GwtUser> setExpirationDate = new GridCellRenderer<GwtUser>() {
+
+            @Override
+            public Object render(GwtUser gwtUser, String property, ColumnData config, int rowIndex, int colIndex,
+                    ListStore<GwtUser> store, Grid<GwtUser> grid) {
+                if (gwtUser.getExpirationDateFormatted() != null) {
+                    return gwtUser.getExpirationDateFormatted();
+                } else {
+                    return CMSGS.never();
+                }
+            }
+        };
+        columnConfig.setRenderer(setExpirationDate);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("createdBy", MSGS.gridUserColumnHeaderCreatedBy(), 200);

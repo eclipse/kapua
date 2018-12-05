@@ -36,13 +36,14 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.Job;
+import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.JobService;
 import org.eclipse.kapua.service.job.step.JobStepFactory;
-import org.eclipse.kapua.service.job.step.JobStepPredicates;
+import org.eclipse.kapua.service.job.step.JobStepAttributes;
 import org.eclipse.kapua.service.job.step.JobStepQuery;
 import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.targets.JobTargetFactory;
-import org.eclipse.kapua.service.job.targets.JobTargetPredicates;
+import org.eclipse.kapua.service.job.targets.JobTargetAttributes;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
 
@@ -77,7 +78,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.execute, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.execute, scopeId));
 
         //
         // Check Job Existence
@@ -89,7 +90,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         //
         // Check job targets
         JobTargetQuery jobTargetQuery = JOB_TARGET_FACTORY.newQuery(scopeId);
-        jobTargetQuery.setPredicate(new AttributePredicateImpl<>(JobTargetPredicates.JOB_ID, jobId));
+        jobTargetQuery.setPredicate(new AttributePredicateImpl<>(JobTargetAttributes.JOB_ID, jobId));
         if (JOB_TARGET_SERVICE.count(jobTargetQuery) <= 0) {
             throw new KapuaJobEngineException(KapuaJobEngineErrorCodes.JOB_TARGET_MISSING);
         }
@@ -100,7 +101,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
             jobTargetQuery.setPredicate(
                     new AndPredicateImpl(
                             jobTargetQuery.getPredicate(),
-                            new AttributePredicateImpl<>(JobTargetPredicates.ENTITY_ID, jobStartOptions.getTargetIdSublist().toArray())
+                            new AttributePredicateImpl<>(JobTargetAttributes.ENTITY_ID, jobStartOptions.getTargetIdSublist().toArray())
                     )
             );
 
@@ -112,7 +113,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         //
         // Check job steps
         JobStepQuery jobStepQuery = JOB_STEP_FACTORY.newQuery(scopeId);
-        jobStepQuery.setPredicate(new AttributePredicateImpl<>(JobStepPredicates.JOB_ID, jobId));
+        jobStepQuery.setPredicate(new AttributePredicateImpl<>(JobStepAttributes.JOB_ID, jobId));
         if (JOB_STEP_SERVICE.count(jobStepQuery) <= 0) {
             throw new KapuaJobEngineException(KapuaJobEngineErrorCodes.JOB_STEP_MISSING);
         }
@@ -141,7 +142,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.execute, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.execute, scopeId));
 
         //
         // Check existence
@@ -168,7 +169,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.execute, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.execute, scopeId));
 
         //
         // Check existence
@@ -201,7 +202,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.delete, null));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, null));
 
         //
         // Check existence

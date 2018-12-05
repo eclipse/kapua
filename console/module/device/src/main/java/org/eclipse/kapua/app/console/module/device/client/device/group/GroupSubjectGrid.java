@@ -118,6 +118,7 @@ public class GroupSubjectGrid extends EntityGrid<GwtDevice> {
             query.setPredicates(predicates);
         }
         refresh();
+        entityPagingToolbar.enable();
     }
 
     @Override

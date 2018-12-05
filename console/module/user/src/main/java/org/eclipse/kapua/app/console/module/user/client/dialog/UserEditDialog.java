@@ -13,6 +13,7 @@ package org.eclipse.kapua.app.console.module.user.client.dialog;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
@@ -20,6 +21,7 @@ import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser.GwtUserStatus;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAsync;
 
@@ -95,6 +97,16 @@ public class UserEditDialog extends UserAddDialog {
                     GwtKapuaException gwtCause = (GwtKapuaException) cause;
                     if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
                         username.markInvalid(gwtCause.getMessage());
+                    } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.ILLEGAL_ARGUMENT)) {
+                        if (gwtCause.getArguments().length == 2 && gwtCause.getArguments()[0].equals("status") && gwtCause.getArguments()[1].equals("DISABLED")) {
+                            userStatus.markInvalid(gwtCause.getMessage());
+                        }
+                    } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.OPERATION_NOT_ALLOWED_ON_ADMIN_USER)) {
+                        if (userStatus.getValue().getValue().equals(GwtUserStatus.DISABLED)) {
+                            userStatus.markInvalid(USER_MSGS.dialogEditAdminUserStatusError());
+                        } if (expirationDate.getValue() != null) {
+                            expirationDate.markInvalid(USER_MSGS.dialogEditAdminExpirationDateError());
+                        }
                     }
                 }
             }
@@ -115,7 +127,9 @@ public class UserEditDialog extends UserAddDialog {
     private void populateEditDialog(GwtUser gwtUser) {
         infoFieldSet.remove(username);
         usernameLabel.setVisible(true);
+        username.setVisible(false);
         usernameLabel.setValue(gwtUser.getUsername());
+        usernameLabel.setToolTip(USER_MSGS.dialogAddFieldNameEditDialogTooltip());
         if (password != null) {
             password.setVisible(false);
             password.setAllowBlank(true);
@@ -136,5 +150,6 @@ public class UserEditDialog extends UserAddDialog {
         userStatus.setSimpleValue(gwtUser.getStatusEnum());
         expirationDate.setValue(gwtUser.getExpirationDate());
         expirationDate.setMaxLength(10);
+        formPanel.clearDirtyFields();
     }
 }

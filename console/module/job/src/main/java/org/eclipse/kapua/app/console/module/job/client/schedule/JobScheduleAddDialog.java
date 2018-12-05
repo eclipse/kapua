@@ -11,9 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.client.schedule;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.form.DateField;
-import com.extjs.gxt.ui.client.widget.form.MultiField;
 import com.extjs.gxt.ui.client.widget.form.TimeField;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -54,6 +59,8 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
     protected final TimeField endsOnTime;
     protected final KapuaNumberField retryInterval;
     protected final KapuaTextField<String> cronExpression;
+    private Label startsOnLabel;
+    private Label endsOnLabel;
 
     public JobScheduleAddDialog(GwtSession currentSession, String jobId) {
         super(currentSession);
@@ -68,6 +75,8 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         endsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         endsOnTime = new TimeField();
         endsOnTime.setEditable(false);
+        startsOnLabel = new Label();
+        endsOnLabel = new Label();
         retryInterval = new KapuaNumberField();
         cronExpression = new KapuaTextField<String>();
 
@@ -76,17 +85,24 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
 
     @Override
     public void createBody() {
-        FormPanel mainPanel = new FormPanel(150);
-        MultiField<?> multiFieldStartsOn=new MultiField<Object>();
-        MultiField<?> multiFieldEndsOn=new MultiField<Object>();
-        multiFieldStartsOn.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleStartsOnLabel());
-        multiFieldStartsOn.setSpacing(20);
-        multiFieldEndsOn.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleEndsOnLabel());
-        multiFieldEndsOn.setSpacing(20);
+        submitButton.disable();
+        FormPanel mainPanel = new FormPanel(140);
+        HorizontalPanel startsOnPanel = new HorizontalPanel();
+        HorizontalPanel endsOnPanel = new HorizontalPanel();
+        endsOnPanel.setStyleAttribute("padding", "4px 0px 4px 0px");
+
+        Listener<BaseEvent> listener = new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                formPanel.fireEvent(Events.OnClick);
+            }
+        };
 
         triggerName.setAllowBlank(false);
         triggerName.setMaxLength(255);
         triggerName.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleScheduleNameLabel());
+        triggerName.setToolTip(JOB_MSGS.dialogAddScheduleNameTooltip());
         mainPanel.add(triggerName);
 
         startsOn.setFormatValue(true);
@@ -94,37 +110,61 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         startsOn.setWidth(90);
         startsOn.setEmptyText(JOB_MSGS.dialogAddScheduleDatePlaceholder());
         startsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
-        multiFieldStartsOn.add(startsOn);
+        startsOn.setToolTip(JOB_MSGS.dialogAddScheduleStartsOnTooltip());
+        startsOn.getDatePicker().addListener(Events.Select, listener);
+        startsOnLabel.setText("* " + JOB_MSGS.dialogAddScheduleStartsOnLabel());
+        startsOnLabel.setWidth(FORM_LABEL_WIDTH);
+        startsOnLabel.setStyleAttribute("padding", "0px 91px 0px 0px");
+        startsOnPanel.add(startsOnLabel);
+        startsOnPanel.add(startsOn);
 
-        startsOnTime.setAllowBlank(false);
         startsOnTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
+        startsOnTime.setAllowBlank(false);
         startsOnTime.setEditable(false);
-        startsOnTime.setWidth(85);
+        startsOnTime.setWidth(90);
+        startsOnTime.setStyleAttribute("position", "relative");
+        startsOnTime.setStyleAttribute("left", "25px");
         startsOnTime.setEmptyText(JOB_MSGS.dialogAddScheduleTimePlaceholder());
-        multiFieldStartsOn.add(startsOnTime);
-        mainPanel.add(multiFieldStartsOn);
+        startsOnTime.setToolTip(JOB_MSGS.dialogAddScheduleStartsOnTimeTooltip());
+        startsOnTime.setTriggerAction(TriggerAction.ALL);
+        startsOnTime.addListener(Events.Select, listener);
+        startsOnPanel.add(startsOnTime);
+        mainPanel.add(startsOnPanel);
 
         endsOn.setFormatValue(true);
         endsOn.setWidth(90);
         endsOn.setEmptyText(JOB_MSGS.dialogAddScheduleDatePlaceholder());
         endsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
-        multiFieldEndsOn.add(endsOn);
+        endsOn.setToolTip(JOB_MSGS.dialogAddScheduleEndsOnTooltip());
+        endsOnLabel.setText("* " + JOB_MSGS.dialogAddScheduleEndsOnLabel());
+        endsOnLabel.setWidth(FORM_LABEL_WIDTH);
+        endsOnLabel.setStyleAttribute("padding", "0px 96px 0px 0px");
+        endsOn.getDatePicker().addListener(Events.Select, listener);
+        endsOnPanel.add(endsOnLabel);
+        endsOnPanel.add(endsOn);
 
         endsOnTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
         endsOnTime.setEditable(false);
-        endsOnTime.setWidth(85);
+        endsOnTime.setWidth(90);
+        endsOnTime.setStyleAttribute("position", "relative");
+        endsOnTime.setStyleAttribute("left", "25px");
         endsOnTime.setEmptyText(JOB_MSGS.dialogAddScheduleTimePlaceholder());
-        multiFieldEndsOn.add(endsOnTime);
-        mainPanel.add(multiFieldEndsOn);
+        endsOnTime.setToolTip(JOB_MSGS.dialogAddScheduleEndsOnTimeTooltip());
+        endsOnTime.setTriggerAction(TriggerAction.ALL);
+        endsOnTime.addListener(Events.Select, listener);
+        endsOnPanel.add(endsOnTime);
+        mainPanel.add(endsOnPanel);
 
         retryInterval.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleRetryIntervalLabel());
         retryInterval.setAllowDecimals(false);
-        retryInterval.setAllowNegative(false);
+        retryInterval.setMinValue(1);
         retryInterval.setMaxLength(9);
+        retryInterval.setToolTip(JOB_MSGS.dialogAddScheduleRetryIntervalTooltip());
         mainPanel.add(retryInterval);
 
         cronExpression.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleCronScheduleLabel());
         cronExpression.setMaxLength(255);
+        cronExpression.setToolTip(JOB_MSGS.dialogAddScheduleCronScheduleTooltip());
         mainPanel.add(cronExpression);
 
         bodyPanel.add(mainPanel);
@@ -132,52 +172,66 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
 
     @Override
     protected void preSubmit() {
+        cronExpression.clearInvalid();
+
         if (triggerName.getValue() == null) {
             triggerName.markInvalid(VAL_MSGS.nameRequiredMsg());
-            return;
         }
 
         if (endsOn.getValue() == null && endsOnTime.getValue() != null) {
             endsOn.markInvalid(VAL_MSGS.endTimeWithoutEndDate());
-            return;
         }
+
         if (startsOn.getValue() == null && startsOnTime.getValue() != null) {
             startsOn.markInvalid(VAL_MSGS.startTimeWithoutStartDate());
-            return;
         }
         if (startsOn.getValue() != null && startsOnTime.getValue() == null) {
             startsOnTime.markInvalid(VAL_MSGS.startDateWithoutStartTime());
-            return;
         }
         if (startsOn.getValue() != null && endsOn.getValue() != null) {
             if (startsOn.getValue().after(endsOn.getValue())) {
                 startsOn.markInvalid(VAL_MSGS.startsOnDateLaterThanEndsOn());
-                return;
             }
         }
-        if (startsOn.getValue() != null && endsOn.getValue() != null && startsOnTime != null && endsOnTime != null) {
+        if (startsOn.getValue() != null && endsOn.getValue() != null && startsOnTime.getValue() != null && endsOnTime.getValue() != null) {
             if (startsOn.getValue().equals(endsOn.getValue()) && startsOnTime.getValue().getDate().after(endsOnTime.getValue().getDate())) {
                 startsOnTime.markInvalid(VAL_MSGS.startsOnTimeLaterThanEndsOn());
-                return;
             }
         }
 
+        if (startsOn.getValue() != null) {
+            if (startsOnTime.getValue() == null) {
+                startsOnTime.markInvalid(VAL_MSGS.startDateWithoutStartTime());
+            }
+        } else {
+            startsOn.markInvalid(VAL_MSGS.emptyStartDate());
+            if (startsOnTime.getValue() == null) {
+                startsOnTime.markInvalid(VAL_MSGS.emptyStartTime());
+            }
+        }
         if (endsOn.getValue() != null) {
             if (endsOnTime.getValue() == null) {
+                endsOnTime.setAllowBlank(false);
                 endsOnTime.markInvalid(VAL_MSGS.endDateWithoutEndTime());
-                return;
             } else {
-                if (endsOn.getValue().before(startsOn.getValue())) {
+                if (startsOn.getValue() != null && endsOn.getValue().before(startsOn.getValue())) {
                     endsOn.markInvalid(VAL_MSGS.endsOnDateEarlierThanStartsOn());
-                    return;
-                } else if (endsOn.getValue().equals(startsOn.getValue()) && endsOnTime.getValue().getDate().before(startsOnTime.getValue().getDate())) {
+                } else if (startsOn.getValue() != null && startsOnTime.getValue() != null && endsOn.getValue().equals(startsOn.getValue()) && endsOnTime.getValue().getDate().before(startsOnTime.getValue().getDate())) {
                     endsOnTime.markInvalid(VAL_MSGS.endsOnTimeEarlierThanStartsOn());
-                    return;
+                } else {
+                    endsOn.clearInvalid();
+                    endsOnTime.clearInvalid();
                 }
             }
         }
 
-        if (cronExpression.getValue() == null && retryInterval.getValue() == null) {
+        if (endsOnTime.getValue() != null) {
+            if (endsOn.getValue() == null) {
+                endsOn.setAllowBlank(false);
+            }
+        }
+
+        if (cronExpression.getValue() == null && cronExpression.isValid() && retryInterval.getValue() == null && retryInterval.isValid()) {
             cronExpression.markInvalid(VAL_MSGS.retryIntervalOrCronRequired());
             retryInterval.markInvalid(VAL_MSGS.retryIntervalOrCronRequired());
             return;
@@ -188,7 +242,8 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
 
                 @Override
                 public void onFailure(Throwable caught) {
-                    ConsoleInfo.display(MSGS.popupError(), JOB_MSGS.unableToValidateCronExpression(caught.getMessage()));
+                    ConsoleInfo.display(MSGS.popupError(), JOB_MSGS.unableToValidateCronExpression());
+                    cronExpression.markInvalid(VAL_MSGS.invalidCronExpression());
                 }
 
                 @Override
@@ -200,8 +255,9 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
                     }
                 }
             });
-        } else {
-            cronExpression.markInvalid(VAL_MSGS.cronExpressionRequired());
+        }
+        if (!triggerName.isValid() || !startsOn.isValid() || !startsOnTime.isValid() || !endsOn.isValid() || !endsOnTime.isValid() || !retryInterval.isValid() || !cronExpression.isValid() ) {
+            formPanel.isValid(false);
         }
     }
 

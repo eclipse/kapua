@@ -70,27 +70,20 @@ public class JobDAO {
     }
 
     /**
-     * Deletes the job by job identifier
-     * 
-     * @param em
-     * @param jobId
-     * @throws KapuaEntityNotFoundException
-     *             If the {@link Job} is not found
-     */
-    public static void delete(EntityManager em, KapuaId jobId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, JobImpl.class, jobId);
-    }
-
-    /**
      * Finds the job by job identifier
+     *
+     * @param em
+     * @param scopeId
+     * @param jobId
+     * @return
      */
-    public static Job find(EntityManager em, KapuaId jobId) {
-        return em.find(JobImpl.class, jobId);
+    public static Job find(EntityManager em, KapuaId scopeId, KapuaId jobId) {
+        return ServiceDAO.find(em, JobImpl.class, scopeId, jobId);
     }
 
     /**
      * Finds the job by name
-     * 
+     *
      * @param em
      * @param name
      * @return
@@ -101,7 +94,7 @@ public class JobDAO {
 
     /**
      * Returns the job list matching the provided query
-     * 
+     *
      * @param em
      * @param jobQuery
      * @return
@@ -114,7 +107,7 @@ public class JobDAO {
 
     /**
      * Returns the job count matching the provided query
-     * 
+     *
      * @param em
      * @param jobQuery
      * @return
@@ -123,6 +116,19 @@ public class JobDAO {
     public static long count(EntityManager em, KapuaQuery<Job> jobQuery)
             throws KapuaException {
         return ServiceDAO.count(em, Job.class, JobImpl.class, jobQuery);
+    }
+
+    /**
+     * Deletes the job by job identifier
+     *
+     * @param em
+     * @param scopeId
+     * @param jobId
+     * @throws KapuaEntityNotFoundException
+     *             If the {@link Job} is not found
+     */
+    public static void delete(EntityManager em, KapuaId scopeId, KapuaId jobId) throws KapuaEntityNotFoundException {
+        ServiceDAO.delete(em, JobImpl.class, scopeId, jobId);
     }
 
 }

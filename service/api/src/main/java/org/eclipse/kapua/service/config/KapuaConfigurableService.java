@@ -27,10 +27,11 @@ public interface KapuaConfigurableService {
     /**
      * Return the service configuration metadata
      *
+     * @param scopeId
      * @return
      * @throws KapuaException
      */
-    KapuaTocd getConfigMetadata() throws KapuaException;
+    KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException;
 
     /**
      * Return a map of configuration values associated with the provided scope id

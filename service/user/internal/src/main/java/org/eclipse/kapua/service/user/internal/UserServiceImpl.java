@@ -17,6 +17,7 @@ import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -34,9 +35,10 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
+import org.eclipse.kapua.service.user.UserDomains;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
-import org.eclipse.kapua.service.user.UserPredicates;
+import org.eclipse.kapua.service.user.UserAttributes;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
@@ -63,7 +65,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
      * Constructor
      */
     public UserServiceImpl() {
-        super(UserService.class.getName(), USER_DOMAIN, UserEntityManagerFactory.getInstance(), UserService.class, UserFactory.class);
+        super(UserService.class.getName(), UserDomains.USER_DOMAIN, UserEntityManagerFactory.getInstance(), UserService.class, UserFactory.class);
     }
 
     @Override
@@ -86,17 +88,17 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         int remainingChildEntities = allowedChildEntities(userCreator.getScopeId());
         if (remainingChildEntities <= 0) {
             LOGGER.info("Exceeded child limit - remaining: {}", remainingChildEntities);
-            throw new KapuaIllegalArgumentException("scopeId", "max users reached");
+            throw new KapuaMaxNumberOfItemsReachedException("Users");
         }
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(USER_DOMAIN, Actions.write, userCreator.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(UserDomains.USER_DOMAIN, Actions.write, userCreator.getScopeId()));
 
         //
         // Check duplicate name
         UserQuery query = new UserQueryImpl(userCreator.getScopeId());
-        query.setPredicate(new AttributePredicateImpl<>(UserPredicates.NAME, userCreator.getName()));
+        query.setPredicate(new AttributePredicateImpl<>(UserAttributes.NAME, userCreator.getName()));
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(userCreator.getName());
         }
@@ -129,7 +131,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(USER_DOMAIN, Actions.write, user.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(UserDomains.USER_DOMAIN, Actions.write, user.getScopeId()));
 
         //
         // Check existence
@@ -145,7 +147,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         }
         if (user.getId().equals(KapuaSecurityUtils.getSession().getUserId())) {
             if (user.getStatus().equals(UserStatus.DISABLED)) {
-                throw new KapuaIllegalArgumentException("name", user.getName());
+                throw new KapuaIllegalArgumentException("status", user.getStatus().name());
             }
         }
         //
@@ -172,7 +174,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(USER_DOMAIN, Actions.delete, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(UserDomains.USER_DOMAIN, Actions.delete, scopeId));
 
         //
         // Check existence
@@ -191,7 +193,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Do  delete
-        entityManagerSession.onTransactedAction(em -> UserDAO.delete(em, userId));
+        entityManagerSession.onTransactedAction(em -> UserDAO.delete(em, scopeId, userId));
     }
 
     @Override
@@ -209,10 +211,10 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(USER_DOMAIN, Actions.read, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(UserDomains.USER_DOMAIN, Actions.read, scopeId));
 
         // Do the find
-        return entityManagerSession.onResult(em -> UserDAO.find(em, userId));
+        return entityManagerSession.onResult(em -> UserDAO.find(em, scopeId, userId));
     }
 
     @Override
@@ -247,7 +249,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(USER_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(UserDomains.USER_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -264,7 +266,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(USER_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(UserDomains.USER_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count
@@ -279,7 +281,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     private User checkReadAccess(User user) throws KapuaException {
         if (user != null) {
-            AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(USER_DOMAIN, Actions.read, user.getScopeId()));
+            AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(UserDomains.USER_DOMAIN, Actions.read, user.getScopeId()));
         }
         return user;
     }

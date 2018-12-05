@@ -13,6 +13,9 @@ package org.eclipse.kapua.app.console.module.account.shared.util;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+
+import java.util.Date;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
@@ -23,7 +26,7 @@ import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.account.AccountFactory;
-import org.eclipse.kapua.service.account.AccountPredicates;
+import org.eclipse.kapua.service.account.AccountAttributes;
 import org.eclipse.kapua.service.account.AccountQuery;
 
 public class GwtKapuaAccountModelConverter {
@@ -37,22 +40,58 @@ public class GwtKapuaAccountModelConverter {
         AndPredicateImpl predicate = new AndPredicateImpl();
 
         if (gwtAccountQuery.getName() != null && !gwtAccountQuery.getName().trim().isEmpty()) {
-            predicate.and(new AttributePredicateImpl<String>(AccountPredicates.NAME, gwtAccountQuery.getName(), Operator.LIKE));
+            predicate.and(new AttributePredicateImpl<String>(AccountAttributes.NAME, gwtAccountQuery.getName(), Operator.LIKE));
         }
 
         if (gwtAccountQuery.getOrganizationName() != null && !gwtAccountQuery.getOrganizationName().isEmpty()) {
-            predicate.and(new AttributePredicateImpl<String>(AccountPredicates.ORGANIZATION_NAME, gwtAccountQuery.getOrganizationName(), Operator.LIKE));
+            predicate.and(new AttributePredicateImpl<String>(AccountAttributes.ORGANIZATION_NAME, gwtAccountQuery.getOrganizationName(), Operator.LIKE));
         }
 
         if (gwtAccountQuery.getOrganizationEmail() != null && !gwtAccountQuery.getOrganizationEmail().isEmpty()) {
-            predicate.and(new AttributePredicateImpl<String>(AccountPredicates.ORGANIZATION_EMAIL, gwtAccountQuery.getOrganizationEmail(), Operator.LIKE));
+            predicate.and(new AttributePredicateImpl<String>(AccountAttributes.ORGANIZATION_EMAIL, gwtAccountQuery.getOrganizationEmail(), Operator.LIKE));
         }
 
-        String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? AccountPredicates.NAME : loadConfig.getSortField();
+        if (gwtAccountQuery.getExpirationDate() != null) {
+            predicate.and(new AttributePredicateImpl<Date>(AccountAttributes.EXPIRATION_DATE, gwtAccountQuery.getExpirationDate(), Operator.EQUAL));
+        }
+
+        if (gwtAccountQuery.getOrganizationContactName() != null && !gwtAccountQuery.getOrganizationContactName().isEmpty()) {
+            predicate.and(new AttributePredicateImpl<String>(AccountAttributes.CONTACT_NAME, gwtAccountQuery.getOrganizationContactName(), Operator.LIKE));
+        }
+
+        if (gwtAccountQuery.getOrganizationPhoneNumber() != null && !gwtAccountQuery.getOrganizationPhoneNumber().isEmpty()) {
+            predicate.and(new AttributePredicateImpl<String>(AccountAttributes.PHONE_NUMBER, gwtAccountQuery.getOrganizationPhoneNumber(), Operator.LIKE));
+        }
+
+        if (gwtAccountQuery.getOrganizationAddressLine1() != null && !gwtAccountQuery.getOrganizationAddressLine1().isEmpty()) {
+            predicate.and(new AttributePredicateImpl<String>(AccountAttributes.ADDRESS_1, gwtAccountQuery.getOrganizationAddressLine1(), Operator.LIKE));
+        }
+
+        if (gwtAccountQuery.getOrganizationAddressLine2() != null && !gwtAccountQuery.getOrganizationAddressLine2().isEmpty()) {
+            predicate.and(new AttributePredicateImpl<String>(AccountAttributes.ADDRESS_2, gwtAccountQuery.getOrganizationAddressLine2(), Operator.LIKE));
+        }
+
+        if (gwtAccountQuery.getOrganizationZipPostCode() != null && !gwtAccountQuery.getOrganizationZipPostCode().isEmpty()) {
+            predicate.and(new AttributePredicateImpl<String>(AccountAttributes.ZIP_POST_CODE, gwtAccountQuery.getOrganizationZipPostCode(), Operator.LIKE));
+        }
+
+        if (gwtAccountQuery.getOrganizationCity() != null && !gwtAccountQuery.getOrganizationCity().isEmpty()) {
+            predicate.and(new AttributePredicateImpl<String>(AccountAttributes.ORGANIZATION_CITY, gwtAccountQuery.getOrganizationCity(), Operator.LIKE));
+        }
+
+        if (gwtAccountQuery.getOrganizationStateProvinceCountry() != null && !gwtAccountQuery.getOrganizationStateProvinceCountry().isEmpty()) {
+            predicate.and(new AttributePredicateImpl<String>(AccountAttributes.STATE_PROVINCE, gwtAccountQuery.getOrganizationStateProvinceCountry(), Operator.LIKE));
+        }
+
+        if (gwtAccountQuery.getOrganizationCountry() != null && !gwtAccountQuery.getOrganizationCountry().isEmpty()) {
+            predicate.and(new AttributePredicateImpl<String>(AccountAttributes.ORGANIZATION_COUNTRY, gwtAccountQuery.getOrganizationCountry(), Operator.LIKE));
+        }
+
+        String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? AccountAttributes.NAME : loadConfig.getSortField();
         if (sortField.equals("modifiedOnFormatted")) {
-            sortField = AccountPredicates.MODIFIED_ON;
+            sortField = AccountAttributes.MODIFIED_ON;
         } else if (sortField.equals("modifiedByName")) {
-            sortField = AccountPredicates.MODIFIED_BY;
+            sortField = AccountAttributes.MODIFIED_BY;
         }
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
         FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);

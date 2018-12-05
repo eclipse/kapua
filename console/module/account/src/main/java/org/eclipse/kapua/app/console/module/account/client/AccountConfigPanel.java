@@ -47,7 +47,7 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
@@ -180,7 +180,7 @@ public class AccountConfigPanel extends LayoutContainer {
                         }
                     }
                     if (param != null) {
-                        param.setValues(multiFieldValues.toArray(new String[] {}));
+                        param.setValues(multiFieldValues.toArray(new String[]{ }));
                     }
                 }
             }
@@ -198,73 +198,73 @@ public class AccountConfigPanel extends LayoutContainer {
             return oMap.get(value);
         } else {
             switch (param.getType()) {
-            case LONG:
-                NumberField longField = (NumberField) field;
-                Number longNumber = longField.getValue();
-                if (longNumber != null) {
-                    return String.valueOf(longNumber.longValue());
-                } else {
-                    return null;
-                }
+                case LONG:
+                    NumberField longField = (NumberField) field;
+                    Number longNumber = longField.getValue();
+                    if (longNumber != null) {
+                        return String.valueOf(longNumber.longValue());
+                    } else {
+                        return null;
+                    }
 
-            case DOUBLE:
-                NumberField doubleField = (NumberField) field;
-                Number doubleNumber = doubleField.getValue();
-                if (doubleNumber != null) {
-                    return String.valueOf(doubleNumber.doubleValue());
-                } else {
-                    return null;
-                }
+                case DOUBLE:
+                    NumberField doubleField = (NumberField) field;
+                    Number doubleNumber = doubleField.getValue();
+                    if (doubleNumber != null) {
+                        return String.valueOf(doubleNumber.doubleValue());
+                    } else {
+                        return null;
+                    }
 
-            case FLOAT:
-                NumberField floatField = (NumberField) field;
-                Number floatNumber = floatField.getValue();
-                if (floatNumber != null) {
-                    return String.valueOf(floatNumber.floatValue());
-                } else {
-                    return null;
-                }
+                case FLOAT:
+                    NumberField floatField = (NumberField) field;
+                    Number floatNumber = floatField.getValue();
+                    if (floatNumber != null) {
+                        return String.valueOf(floatNumber.floatValue());
+                    } else {
+                        return null;
+                    }
 
-            case INTEGER:
-                NumberField integerField = (NumberField) field;
-                Number integerNumber = integerField.getValue();
-                if (integerNumber != null) {
-                    return String.valueOf(integerNumber.intValue());
-                } else {
-                    return null;
-                }
+                case INTEGER:
+                    NumberField integerField = (NumberField) field;
+                    Number integerNumber = integerField.getValue();
+                    if (integerNumber != null) {
+                        return String.valueOf(integerNumber.intValue());
+                    } else {
+                        return null;
+                    }
 
-            case SHORT:
-                NumberField shortField = (NumberField) field;
-                Number shortNumber = shortField.getValue();
-                if (shortNumber != null) {
-                    return String.valueOf(shortNumber.shortValue());
-                } else {
-                    return null;
-                }
+                case SHORT:
+                    NumberField shortField = (NumberField) field;
+                    Number shortNumber = shortField.getValue();
+                    if (shortNumber != null) {
+                        return String.valueOf(shortNumber.shortValue());
+                    } else {
+                        return null;
+                    }
 
-            case BYTE:
-                NumberField byteField = (NumberField) field;
-                Number byteNumber = byteField.getValue();
-                if (byteNumber != null) {
-                    return String.valueOf(byteNumber.byteValue());
-                } else {
-                    return null;
-                }
+                case BYTE:
+                    NumberField byteField = (NumberField) field;
+                    Number byteNumber = byteField.getValue();
+                    if (byteNumber != null) {
+                        return String.valueOf(byteNumber.byteValue());
+                    } else {
+                        return null;
+                    }
 
-            case BOOLEAN:
-                RadioGroup radioGroup = (RadioGroup) field;
-                Radio radio = radioGroup.getValue();
-                String booleanValue = radio.getItemId();
-                return booleanValue;
+                case BOOLEAN:
+                    RadioGroup radioGroup = (RadioGroup) field;
+                    Radio radio = radioGroup.getValue();
+                    String booleanValue = radio.getItemId();
+                    return booleanValue;
 
-            case PASSWORD:
-            case CHAR:
-            case STRING:
-                return (String) field.getValue();
+                case PASSWORD:
+                case CHAR:
+                case STRING:
+                    return (String) field.getValue();
 
-            default:
-                break;
+                default:
+                    break;
             }
         }
         return null;
@@ -332,69 +332,11 @@ public class AccountConfigPanel extends LayoutContainer {
             } else {
                 field = paintMultiFieldConfigParameter(param);
             }
-            ACCOUNT_SERVICE.findRootAccount(new AsyncCallback<GwtAccount>() {
-
-                @Override
-                public void onFailure(Throwable caught) {
-                    FailureHandler.handle(caught);
-                }
-
-                @Override
-                public void onSuccess(GwtAccount gwtRootAccount) {
-                    String hideFor = param.getOtherAttributes().get("hideFor");
-                    if (hideFor != null && hideFor.equals("NON_ROOT") && !selectedAccountId.equals(gwtRootAccount.getId())) {
-                        field.hide();
-                    }
-                }
-            });
             String allowSelfEditValue = param.getOtherAttributes() != null ? param.getOtherAttributes().get("allowSelfEdit") : null;
             boolean allowSelfEdit = allowSelfEditValue != null && allowSelfEditValue.equals("true");
             boolean isEditingSelf = selectedAccountId == null || selectedAccountId.equals(currentSession.getSelectedAccountId());
             if (isEditingSelf && !allowSelfEdit) {
                 field.disable();
-            }
-            final String showOnlyForActorValue = param.getOtherAttributes() != null ? param.getOtherAttributes().get("showOnlyForActor") : null;
-            final String showOnlyForTargetValue = param.getOtherAttributes() != null ? param.getOtherAttributes().get("showOnlyForTarget") : null;
-            if (showOnlyForActorValue != null || showOnlyForTargetValue != null) {
-                ACCOUNT_SERVICE.find(selectedAccountId, new AsyncCallback<GwtAccount>() {
-
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        FailureHandler.handle(caught);
-                    }
-
-                    @Override
-                    public void onSuccess(final GwtAccount targetAccount) {
-                        ACCOUNT_SERVICE.findRootAccount(new AsyncCallback<GwtAccount>() {
-
-                            @Override
-                            public void onFailure(Throwable caught) {
-                                FailureHandler.handle(caught);
-                            }
-
-                            @Override
-                            public void onSuccess(GwtAccount rootAccount) {
-                                if (showOnlyForActorValue != null) {
-                                    boolean onlyShownForRootActor = showOnlyForActorValue.equals("ROOT");
-                                    if (onlyShownForRootActor && !rootAccount.getId().equals(currentSession.getSelectedAccountId())) {
-                                        field.hide();
-                                    }
-                                }
-
-                                if (showOnlyForTargetValue != null) {
-                                    boolean onlyShownForRootChildrenTarget = showOnlyForTargetValue.equals("ROOT_AND_CHILDREN");
-                                    boolean onlyShownForRootTarget = showOnlyForTargetValue.equals("ROOT");
-                                    if (onlyShownForRootChildrenTarget && (!rootAccount.getId().equals(targetAccount.getId()) &&
-                                            !rootAccount.getId().equals(targetAccount.getParentAccountId()))) {
-                                        field.hide();
-                                    } else if (onlyShownForRootTarget && !rootAccount.getId().equals(targetAccount.getId())) {
-                                        field.hide();
-                                    }
-                                }
-                            }
-                        });
-                    }
-                });
             }
             actionFieldSet.add(field, formData);
         }
@@ -457,46 +399,46 @@ public class AccountConfigPanel extends LayoutContainer {
             String minValue = param.getMin();
             String maxValue = param.getMax();
             switch (param.getType()) {
-            case LONG:
-                field = paintNumberConfigParameter(param, new LongValidator(minValue, maxValue));
-                break;
+                case LONG:
+                    field = paintNumberConfigParameter(param, new LongValidator(minValue, maxValue));
+                    break;
 
-            case DOUBLE:
-                field = paintNumberConfigParameter(param, new DoubleValidator(minValue, maxValue));
-                break;
+                case DOUBLE:
+                    field = paintNumberConfigParameter(param, new DoubleValidator(minValue, maxValue));
+                    break;
 
-            case FLOAT:
-                field = paintNumberConfigParameter(param, new FloatValidator(minValue, maxValue));
-                break;
+                case FLOAT:
+                    field = paintNumberConfigParameter(param, new FloatValidator(minValue, maxValue));
+                    break;
 
-            case INTEGER:
-                field = paintNumberConfigParameter(param, new IntegerValidator(minValue, maxValue));
-                break;
+                case INTEGER:
+                    field = paintNumberConfigParameter(param, new IntegerValidator(minValue, maxValue));
+                    break;
 
-            case SHORT:
-                field = paintNumberConfigParameter(param, new ShortValidator(minValue, maxValue));
-                break;
+                case SHORT:
+                    field = paintNumberConfigParameter(param, new ShortValidator(minValue, maxValue));
+                    break;
 
-            case BYTE:
-                field = paintNumberConfigParameter(param, new ByteValidator(minValue, maxValue));
-                break;
+                case BYTE:
+                    field = paintNumberConfigParameter(param, new ByteValidator(minValue, maxValue));
+                    break;
 
-            case BOOLEAN:
-                field = paintBooleanConfigParameter(param);
-                break;
+                case BOOLEAN:
+                    field = paintBooleanConfigParameter(param);
+                    break;
 
-            case PASSWORD:
-                field = paintPasswordConfigParameter(param);
-                break;
+                case PASSWORD:
+                    field = paintPasswordConfigParameter(param);
+                    break;
 
-            case CHAR:
-                field = paintTextConfigParameter(param, new CharValidator(minValue, maxValue));
-                break;
+                case CHAR:
+                    field = paintTextConfigParameter(param, new CharValidator(minValue, maxValue));
+                    break;
 
-            default:
-            case STRING:
-                field = paintTextConfigParameter(param, new StringValidator(minValue, maxValue));
-                break;
+                default:
+                case STRING:
+                    field = paintTextConfigParameter(param, new StringValidator(minValue, maxValue));
+                    break;
             }
         }
 
@@ -590,49 +532,49 @@ public class AccountConfigPanel extends LayoutContainer {
         }
 
         switch (param.getType()) {
-        case LONG:
-            field.setPropertyEditorType(Long.class);
-            if (param.getValue() != null) {
-                field.setValue(Long.parseLong(param.getValue()));
-                field.setOriginalValue(Long.parseLong(param.getValue()));
-            }
-            break;
-        case DOUBLE:
-            field.setPropertyEditorType(Double.class);
-            if (param.getValue() != null) {
-                field.setValue(Double.parseDouble(param.getValue()));
-                field.setOriginalValue(Double.parseDouble(param.getValue()));
-            }
-            break;
-        case FLOAT:
-            field.setPropertyEditorType(Float.class);
-            if (param.getValue() != null) {
-                field.setValue(Float.parseFloat(param.getValue()));
-                field.setOriginalValue(Float.parseFloat(param.getValue()));
-            }
-            break;
-        case SHORT:
-            field.setPropertyEditorType(Short.class);
-            if (param.getValue() != null) {
-                field.setValue(Short.parseShort(param.getValue()));
-                field.setOriginalValue(Short.parseShort(param.getValue()));
-            }
-            break;
-        case BYTE:
-            field.setPropertyEditor(new BytePropertyEditor());
-            if (param.getValue() != null) {
-                field.setValue(Byte.parseByte(param.getValue()));
-                field.setOriginalValue(Byte.parseByte(param.getValue()));
-            }
-            break;
-        default:
-        case INTEGER:
-            field.setPropertyEditorType(Integer.class);
-            if (param.getValue() != null) {
-                field.setValue(Integer.parseInt(param.getValue()));
-                field.setOriginalValue(Integer.parseInt(param.getValue()));
-            }
-            break;
+            case LONG:
+                field.setPropertyEditorType(Long.class);
+                if (param.getValue() != null) {
+                    field.setValue(Long.parseLong(param.getValue()));
+                    field.setOriginalValue(Long.parseLong(param.getValue()));
+                }
+                break;
+            case DOUBLE:
+                field.setPropertyEditorType(Double.class);
+                if (param.getValue() != null) {
+                    field.setValue(Double.parseDouble(param.getValue()));
+                    field.setOriginalValue(Double.parseDouble(param.getValue()));
+                }
+                break;
+            case FLOAT:
+                field.setPropertyEditorType(Float.class);
+                if (param.getValue() != null) {
+                    field.setValue(Float.parseFloat(param.getValue()));
+                    field.setOriginalValue(Float.parseFloat(param.getValue()));
+                }
+                break;
+            case SHORT:
+                field.setPropertyEditorType(Short.class);
+                if (param.getValue() != null) {
+                    field.setValue(Short.parseShort(param.getValue()));
+                    field.setOriginalValue(Short.parseShort(param.getValue()));
+                }
+                break;
+            case BYTE:
+                field.setPropertyEditor(new BytePropertyEditor());
+                if (param.getValue() != null) {
+                    field.setValue(Byte.parseByte(param.getValue()));
+                    field.setOriginalValue(Byte.parseByte(param.getValue()));
+                }
+                break;
+            default:
+            case INTEGER:
+                field.setPropertyEditorType(Integer.class);
+                if (param.getValue() != null) {
+                    field.setValue(Integer.parseInt(param.getValue()));
+                    field.setOriginalValue(Integer.parseInt(param.getValue()));
+                }
+                break;
         }
         return field;
     }
@@ -766,12 +708,12 @@ public class AccountConfigPanel extends LayoutContainer {
         String description = param.getDescription();
         int idx = description.lastIndexOf('|');
         if (idx < 0) {
-            return new String[] { description };
+            return new String[]{ description };
         }
         if (idx < 1) {
-            return new String[] { "", description.substring(idx + 1) };
+            return new String[]{ "", description.substring(idx + 1) };
         }
-        return new String[] { description.substring(0, idx), description.substring(idx + 1) };
+        return new String[]{ description.substring(0, idx), description.substring(idx + 1) };
     }
 
     /**

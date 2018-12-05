@@ -16,7 +16,6 @@ import org.apache.camel.Header;
 import org.apache.camel.Properties;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.broker.core.BrokerJAXBContextProvider;
 import org.eclipse.kapua.broker.core.listener.CamelConstants;
 import org.eclipse.kapua.broker.core.message.MessageConstants;
 import org.eclipse.kapua.broker.core.setting.BrokerSetting;
@@ -58,7 +57,6 @@ public class CamelKapuaDefaultRouter {
         LOG.info("Default Camel routing... Loading configuration from file {}", url.getFile());
         FileReader configurationFileReader = null;
         try {
-            XmlUtil.setContextProvider(new BrokerJAXBContextProvider());
             configurationFileReader = new FileReader(url.getFile());
             endPointContainer = XmlUtil.unmarshal(configurationFileReader, EndPointContainer.class);
             LOG.info("Default Camel routing... Loading configuration from file {} Found {} parent endpoints in the route", configurationFileName,

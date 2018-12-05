@@ -19,5 +19,6 @@
 
     <include relativeToChangelogFile="true" file="./account-sys-housekeeper-run-seed.xml"/>
     <include relativeToChangelogFile="true" file="./account-domain.xml"/>
+    <include relativeToChangelogFile="true" file="./account-expiration-date.xml"/>
 
 </databaseChangeLog>

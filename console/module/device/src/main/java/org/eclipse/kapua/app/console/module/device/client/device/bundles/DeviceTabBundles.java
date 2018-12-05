@@ -161,7 +161,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
             }
         });
 
-        refreshButton.setEnabled(true);
+        refreshButton.setEnabled(false);
         toolBar.add(refreshButton);
         toolBar.add(new SeparatorToolItem());
 
@@ -188,6 +188,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
             public void componentSelected(ButtonEvent ce) {
                 if (selectedEntity.isOnline()) {
                     toolBar.disable();
+                    disableButtons();
                     grid.mask(MSGS.loading());
 
                     //
@@ -204,7 +205,21 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
                             gwtDeviceManagementService.startBundle(token,
                                     selectedEntity,
                                     grid.getSelectionModel().getSelectedItem(),
-                                    callback);
+                                    new AsyncCallback<Void>() {
+
+                                        @Override
+                                        public void onFailure(Throwable caught) {
+                                            FailureHandler.handle(caught);
+                                            grid.unmask();
+                                            toolBar.enable();
+                                            stopButton.disable();
+                                        }
+
+                                        @Override
+                                        public void onSuccess(Void result) {
+                                            doRefresh();
+                                        }
+                                   });
                         }
                     });
                 } else {
@@ -261,6 +276,9 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
                                             }
                                         });
                                     }
+                                    grid.unmask();
+                                    toolBar.enable();
+                                    startButton.disable();
                                 }
                             });
                 } else {
@@ -355,8 +373,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
             if (selectedEntity != null) {
                 loader.load();
                 toolBar.enable();
-                startButton.disable();
-                stopButton.disable();
+                disableButtons();
             } else {
                 grid.getStore().removeAll();
                 toolBar.disable();
@@ -383,6 +400,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
 
         @Override
         public void loaderBeforeLoad(LoadEvent le) {
+            disableButtons();
             grid.mask(MSGS.loading());
         }
 
@@ -393,6 +411,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
             }
             startButton.disable();
             stopButton.disable();
+            refreshButton.enable();
             grid.unmask();
         }
 
@@ -406,5 +425,11 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
             stopButton.disable();
             grid.unmask();
         }
+    }
+
+    private void disableButtons() {
+        startButton.disable();
+        stopButton.disable();
+        refreshButton.disable();
     }
 }

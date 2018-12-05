@@ -97,6 +97,7 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
         domainsCombo.setFieldLabel(MSGS.permissionAddDialogDomain());
         domainsCombo.setTriggerAction(TriggerAction.ALL);
         domainsCombo.setEmptyText(MSGS.permissionAddDialogLoading());
+        domainsCombo.setToolTip(MSGS.dialogAddFieldPermissionsDomainTooltip());
         domainsCombo.setDisplayField("domainName");
         GWT_DOMAIN_SERVICE.findAll(new AsyncCallback<List<GwtDomain>>() {
 
@@ -169,6 +170,7 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
         actionsCombo.setFieldLabel(MSGS.permissionAddDialogAction());
         actionsCombo.setTriggerAction(TriggerAction.ALL);
         actionsCombo.setEmptyText(MSGS.permissionAddDialogLoading());
+        actionsCombo.setToolTip(MSGS.dialogAddFieldPermissionsActionTooltip());
 
         actionsCombo.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<GwtAction>>() {
 
@@ -192,6 +194,7 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
         groupsCombo.setFieldLabel(MSGS.permissionAddDialogGroup());
         groupsCombo.setTriggerAction(TriggerAction.ALL);
         groupsCombo.setEmptyText(MSGS.permissionAddDialogLoading());
+        groupsCombo.setToolTip(MSGS.dialogAddFieldPermissionAccessGroupTooltip());
         groupsCombo.disable();
         if (currentSession.hasPermission(GroupSessionPermission.read())) {
             GWT_GROUP_SERVICE.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtGroup>>() {
@@ -233,6 +236,7 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
         // Forwardable
         forwardableChecbox = new CheckBox();
         forwardableChecbox.setBoxLabel("");
+        forwardableChecbox.setToolTip(MSGS.dialogAddFieldPermissionsForwardableTooltip());
 
         forwardableChecboxGroup = new CheckBoxGroup();
         forwardableChecboxGroup.setFieldLabel(MSGS.permissionAddDialogForwardable());

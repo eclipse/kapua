@@ -22,6 +22,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetCreator;
@@ -45,7 +46,7 @@ public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimit
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
     public JobTargetServiceImpl() {
-        super(JobTargetService.class.getName(), JOB_DOMAIN, JobEntityManagerFactory.getInstance(), JobTargetService.class, JobTargetFactory.class);
+        super(JobTargetService.class.getName(), JobDomains.JOB_DOMAIN, JobEntityManagerFactory.getInstance(), JobTargetService.class, JobTargetFactory.class);
     }
 
     @Override
@@ -57,7 +58,7 @@ public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimit
 
         //
         // Check access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.write, creator.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, creator.getScopeId()));
 
         //
         // Do create
@@ -74,7 +75,7 @@ public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimit
 
         //
         // Check access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.write, jobTarget.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobTarget.getScopeId()));
 
         //
         // Check existence
@@ -96,7 +97,7 @@ public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimit
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.delete, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
 
         //
         // Check existence
@@ -106,7 +107,7 @@ public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimit
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> JobTargetDAO.delete(em, jobTargetId));
+        entityManagerSession.onTransactedAction(em -> JobTargetDAO.delete(em, scopeId, jobTargetId));
     }
 
     @Override
@@ -118,11 +119,11 @@ public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimit
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.write, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, scopeId));
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> JobTargetDAO.find(em, jobTargetId));
+        return entityManagerSession.onResult(em -> JobTargetDAO.find(em, scopeId, jobTargetId));
     }
 
     @Override
@@ -134,7 +135,7 @@ public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimit
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -150,7 +151,7 @@ public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimit
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JOB_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query

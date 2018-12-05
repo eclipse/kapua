@@ -19,7 +19,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.KapuaEntityFactory;
-import org.eclipse.kapua.model.KapuaEntityPredicates;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -107,7 +107,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
                 AccountQuery childAccountsQuery = accountFactory.newQuery(scopeId);
                 // Exclude the scope that is under config update
                 if (targetScopeId != null) {
-                    childAccountsQuery.setPredicate(new AttributePredicateImpl<>(KapuaEntityPredicates.ENTITY_ID, targetScopeId, Operator.NOT_EQUAL));
+                    childAccountsQuery.setPredicate(new AttributePredicateImpl<>(KapuaEntityAttributes.ENTITY_ID, targetScopeId, Operator.NOT_EQUAL));
                 }
 
                 AccountListResult childAccounts = accountService.query(childAccountsQuery);

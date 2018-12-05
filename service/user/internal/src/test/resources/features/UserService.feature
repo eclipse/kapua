@@ -307,5 +307,5 @@ Scenario: Find multiple users
 Scenario: Get metadata
     Query for service specific metadata.
 
-    When I retrieve metadata
+    When I retrieve metadata in scope 1
     Then I have metadata

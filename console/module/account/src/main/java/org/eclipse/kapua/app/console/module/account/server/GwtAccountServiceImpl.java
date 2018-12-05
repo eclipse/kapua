@@ -20,6 +20,7 @@ import com.google.common.collect.Sets;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.sanselan.ImageFormat;
 import org.apache.sanselan.Sanselan;
+
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountCreator;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
@@ -36,11 +37,9 @@ import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigParameter;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
-import org.eclipse.kapua.broker.BrokerService;
+import org.eclipse.kapua.broker.BrokerDomains;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ThrowingRunnable;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
@@ -61,6 +60,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleService;
+import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthorizedException;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 import org.eclipse.kapua.service.endpoint.EndpointInfo;
 import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
@@ -71,6 +71,7 @@ import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -140,6 +141,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             accountCreator.setOrganizationZipPostCode(gwtAccountCreator.getOrganizationZipPostCode());
             accountCreator.setOrganizationStateProvinceCounty(gwtAccountCreator.getOrganizationStateProvinceCounty());
             accountCreator.setOrganizationCountry(gwtAccountCreator.getOrganizationCountry());
+            accountCreator.setExpirationDate(gwtAccountCreator.getExpirationDate());
 
             //
             // Create the Account
@@ -162,7 +164,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                     ROLE_SERVICE.create(adminRoleCreator);
 
                     // Thing
-                    Permission thingPermission = PERMISSION_FACTORY.newPermission(BrokerService.BROKER_DOMAIN, Actions.connect, account.getId(), null, false);
+                    Permission thingPermission = PERMISSION_FACTORY.newPermission(BrokerDomains.BROKER_DOMAIN, Actions.connect, account.getId(), null, false);
 
                     RoleCreator thingRoleCreator = ROLE_FACTORY.newCreator(account.getId());
                     thingRoleCreator.setName("Thing");
@@ -222,13 +224,24 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                 }
             });
 
-            accountPropertiesPairs.add(new GwtGroupedNVPair("entityInfo", "accountCreatedOn", account.getCreatedOn()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("entityInfo", "accountCreatedBy", userCreatedBy != null ? userCreatedBy.getName() : null));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("entityInfo", "accountModifiedOn", account.getModifiedOn()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("entityInfo", "accountModifiedBy", userModifiedBy != null ? userModifiedBy.getName() : null));
+            final String entityInfo = "entityInfo";
+            accountPropertiesPairs.add(new GwtGroupedNVPair(entityInfo, "expirationDate", account.getExpirationDate()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(entityInfo, "accountCreatedOn", account.getCreatedOn()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(entityInfo, "accountCreatedBy", userCreatedBy != null ? userCreatedBy.getName() : null));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(entityInfo, "accountModifiedOn", account.getModifiedOn()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(entityInfo, "accountModifiedBy", userModifiedBy != null ? userModifiedBy.getName() : null));
+
+            if (account.getScopeId() != null) {
+                Account parentAccount = KapuaSecurityUtils.doPrivileged(new Callable<Account>() {
+
+                    @Override
+                    public Account call() throws Exception {
+                        return ACCOUNT_SERVICE.find(account.getScopeId());
+                    }
+                });
+                accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountParent", parentAccount != null ? parentAccount.getName() : null));
+            }
             accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountName", account.getName()));
-            Account parentAccount = ACCOUNT_SERVICE.find(account.getScopeId());
-            accountPropertiesPairs.add(new GwtGroupedNVPair("accountInfo", "accountParent", parentAccount != null ? parentAccount.getName() : null));
 
             EndpointInfoListResult endpointInfos = KapuaSecurityUtils.doPrivileged(new Callable<EndpointInfoListResult>() {
 
@@ -241,17 +254,17 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             for (EndpointInfo ei : endpointInfos.getItems()) {
                 accountPropertiesPairs.add(new GwtGroupedNVPair("deploymentInfo", ei.getSecure() ? "deploymentNodeUriSecure" : "deploymentNodeUri", ei.toStringURI()));
             }
-
-            accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationName", account.getOrganization().getName()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationContactName", account.getOrganization().getPersonName()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationEmail", account.getOrganization().getEmail()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationPhoneNumber", account.getOrganization().getPhoneNumber()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationAddress1", account.getOrganization().getAddressLine1()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationAddress2", account.getOrganization().getAddressLine2()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationZip", account.getOrganization().getZipPostCode()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationCity", account.getOrganization().getCity()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationState", account.getOrganization().getStateProvinceCounty()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair("organizationInfo", "organizationCountry", account.getOrganization().getCountry()));
+            final String organizationInfo = "organizationInfo";
+            accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationName", account.getOrganization().getName()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationContactName", account.getOrganization().getPersonName()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationEmail", account.getOrganization().getEmail()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationPhoneNumber", account.getOrganization().getPhoneNumber()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationAddress1", account.getOrganization().getAddressLine1()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationAddress2", account.getOrganization().getAddressLine2()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationZip", account.getOrganization().getZipPostCode()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationCity", account.getOrganization().getCity()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationState", account.getOrganization().getStateProvinceCounty()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationCountry", account.getOrganization().getCountry()));
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -311,6 +324,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             account.getOrganization().setCity(gwtAccount.getGwtOrganization().getCity());
             account.getOrganization().setStateProvinceCounty(gwtAccount.getGwtOrganization().getStateProvinceCounty());
             account.getOrganization().setCountry(gwtAccount.getGwtOrganization().getCountry());
+            account.setExpirationDate(gwtAccount.getExpirationDate());
             account.setOptlock(gwtAccount.getOptlock());
 
             account = ACCOUNT_SERVICE.update(account);
@@ -410,7 +424,12 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             for (KapuaService service : LOCATOR.getServices()) {
                 if (service instanceof KapuaConfigurableService) {
                     KapuaConfigurableService configurableService = (KapuaConfigurableService) service;
-                    KapuaTocd tocd = configurableService.getConfigMetadata();
+                    KapuaTocd tocd;
+                    try {
+                        tocd = configurableService.getConfigMetadata(GwtKapuaCommonsModelConverter.convertKapuaId(scopeId));
+                    } catch (SubjectUnauthorizedException ex) {
+                        continue;
+                    }
                     if (tocd != null) {
                         GwtConfigComponent gwtConfig = new GwtConfigComponent();
                         gwtConfig.setId(tocd.getId());
@@ -426,9 +445,9 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
                         List<GwtConfigParameter> gwtParams = new ArrayList<GwtConfigParameter>();
                         gwtConfig.setParameters(gwtParams);
+                        Map<String, Object> values = configurableService.getConfigValues(kapuaScopeId);
                         for (KapuaTad ad : tocd.getAD()) {
                             if (ad != null) {
-                                Map<String, Object> values = configurableService.getConfigValues(kapuaScopeId);
                                 GwtConfigParameter gwtParam = new GwtConfigParameter();
                                 gwtParam.setId(ad.getId());
                                 gwtParam.setName(ad.getName());
@@ -467,7 +486,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                                                         strValues.add(v.toString());
                                                     }
                                                 }
-                                                gwtParam.setValues(strValues.toArray(new String[] {}));
+                                                gwtParam.setValues(strValues.toArray(new String[]{ }));
                                             }
                                         }
                                     }
@@ -482,13 +501,15 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
-        Collections.sort(gwtConfigs, new Comparator<GwtConfigComponent>() {
+        if (!gwtConfigs.isEmpty()) {
+            Collections.sort(gwtConfigs, new Comparator<GwtConfigComponent>() {
 
-            @Override
-            public int compare(GwtConfigComponent o1, GwtConfigComponent o2) {
-                return o1.getComponentName().compareTo(o2.getComponentName());
-            }
-        });
+                @Override
+                public int compare(GwtConfigComponent o1, GwtConfigComponent o2) {
+                    return o1.getComponentName().compareTo(o2.getComponentName());
+                }
+            });
+        }
         return gwtConfigs;
     }
 
@@ -683,23 +704,6 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         }
 
         return new BasePagingLoadResult<GwtAccount>(gwtAccounts, loadConfig.getOffset(), totalLength);
-    }
-
-    @Override
-    public GwtAccount findRootAccount() throws GwtKapuaException {
-        GwtAccount gwtAccount = null;
-        try {
-            gwtAccount = KapuaSecurityUtils.doPrivileged(new Callable<GwtAccount>() {
-
-                @Override
-                public GwtAccount call() throws Exception {
-                    return findByAccountName(SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_ACCOUNT));
-                }
-            });
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
-        }
-        return gwtAccount;
     }
 
 }

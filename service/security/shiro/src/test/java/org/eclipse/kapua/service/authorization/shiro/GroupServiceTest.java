@@ -26,15 +26,18 @@ import org.eclipse.kapua.service.authorization.group.GroupListResult;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupCreatorImpl;
-import org.eclipse.kapua.service.authorization.group.GroupPredicates;
+import org.eclipse.kapua.service.authorization.group.GroupAttributes;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupQueryImpl;
 import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.ResourceLimitsConfig;
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(JUnitTests.class)
 public class GroupServiceTest extends KapuaTest {
 
     public static final String DROP_FILTER = "athz_*_drop.sql";
@@ -199,7 +202,7 @@ public class GroupServiceTest extends KapuaTest {
             //
             // Query
             GroupQuery query = new GroupQueryImpl(scope);
-            query.setPredicate(new AttributePredicateImpl<String>(GroupPredicates.NAME, group.getName()));
+            query.setPredicate(new AttributePredicateImpl<String>(GroupAttributes.NAME, group.getName()));
             GroupListResult groupsFound = groupService.query(query);
             long groupsCount = groupService.count(query);
 

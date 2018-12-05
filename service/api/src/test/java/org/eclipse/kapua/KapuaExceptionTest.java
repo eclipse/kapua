@@ -11,9 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua;
 
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(JUnitTests.class)
 public class KapuaExceptionTest {
 
     @Test
@@ -38,5 +41,17 @@ public class KapuaExceptionTest {
             }
         }, "abc", 1);
         Assert.assertEquals("Error: abc,1", ke.getMessage());
+    }
+
+    @Test
+    public void missingBundleTest() {
+        KapuaExceptionWithoutBundle exceptionWithoutBundle = new KapuaExceptionWithoutBundle(KapuaErrorCodes.ILLEGAL_STATE, "param1", "param2");
+        Assert.assertEquals("Error: param1,param2", exceptionWithoutBundle.getMessage());
+    }
+
+    @Test
+    public void missingErrorCodeTest() {
+        KapuaException exceptionWithoutCode = new KapuaException(MissingKapuaErrorCodes.NOT_EXISTING, "param1", "param2");
+        Assert.assertEquals("Error: param1,param2", exceptionWithoutCode.getMessage());
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,8 +18,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
+import com.google.common.base.MoreObjects;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -27,9 +29,12 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
+import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
@@ -206,7 +211,11 @@ public class UserServiceSteps extends AbstractKapuaSteps {
 
         // Create User Service tables
         enableH2Connection();
-        new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
+        SystemSetting config = SystemSetting.getInstance();
+        String schema = MoreObjects.firstNonNull(config.getString(SystemSettingKey.DB_SCHEMA_ENV), config.getString(SystemSettingKey.DB_SCHEMA));
+        String jdbcUrl = JdbcConnectionUrlResolvers.resolveJdbcUrl();
+
+        new KapuaLiquibaseClient(jdbcUrl, "kapua", "kapua", Optional.ofNullable(schema)).update();
 
         // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
         // All operations on database are performed using system user.
@@ -502,9 +511,10 @@ public class UserServiceSteps extends AbstractKapuaSteps {
         }
     }
 
-    @When("^I retrieve metadata$")
-    public void getMetadata() throws KapuaException {
-        metadata = userService.getConfigMetadata();
+    @When("^I retrieve metadata in scope (\\d+)$")
+    public void getMetadata(int scopeId) throws KapuaException {
+        KapuaEid scpId = new KapuaEid(BigInteger.valueOf(scopeId));
+        metadata = userService.getConfigMetadata(scpId);
     }
 
     @Then("^I have metadata$")

@@ -47,6 +47,7 @@ import java.util.Set;
         "lastEvent",
         "serialNumber",
         "modelId",
+        "modelName",
         "imei",
         "imsi",
         "iccid",
@@ -237,6 +238,21 @@ public interface Device extends KapuaUpdatableEntity {
      * @param modelId
      */
     void setModelId(String modelId);
+
+    /**
+     * Get the model name
+     *
+     * @return
+     */
+    @XmlElement(name = "modelName")
+    String getModelName();
+
+    /**
+     * Set the model name
+     *
+     * @param modelName
+     */
+    void setModelName(String modelName);
 
     /**
      * Get the imei

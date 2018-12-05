@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.tag.internal;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
@@ -29,9 +29,10 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagCreator;
+import org.eclipse.kapua.service.tag.TagDomains;
 import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagListResult;
-import org.eclipse.kapua.service.tag.TagPredicates;
+import org.eclipse.kapua.service.tag.TagAttributes;
 import org.eclipse.kapua.service.tag.TagQuery;
 import org.eclipse.kapua.service.tag.TagService;
 
@@ -49,7 +50,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
     public TagServiceImpl() {
-        super(TagService.class.getName(), TAG_DOMAIN, TagEntityManagerFactory.getInstance(), TagService.class, TagFactory.class);
+        super(TagService.class.getName(), TagDomains.TAG_DOMAIN, TagEntityManagerFactory.getInstance(), TagService.class, TagFactory.class);
     }
 
     @Override
@@ -62,18 +63,18 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TAG_DOMAIN, Actions.write, tagCreator.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TagDomains.TAG_DOMAIN, Actions.write, tagCreator.getScopeId()));
 
         //
         // Check limit
         if (allowedChildEntities(tagCreator.getScopeId()) <= 0) {
-            throw new KapuaIllegalArgumentException("scopeId", "max tags reached");
+            throw new KapuaMaxNumberOfItemsReachedException("Tags");
         }
 
         //
         // Check duplicate name
         TagQuery query = new TagQueryImpl(tagCreator.getScopeId());
-        query.setPredicate(new AttributePredicateImpl<>(TagPredicates.NAME, tagCreator.getName()));
+        query.setPredicate(new AttributePredicateImpl<>(TagAttributes.NAME, tagCreator.getName()));
 
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(tagCreator.getName());
@@ -95,7 +96,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TAG_DOMAIN, Actions.write, tag.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TagDomains.TAG_DOMAIN, Actions.write, tag.getScopeId()));
 
         //
         // Check existence
@@ -108,8 +109,8 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         TagQuery query = new TagQueryImpl(tag.getScopeId());
         query.setPredicate(
                 new AndPredicateImpl(
-                        new AttributePredicateImpl<>(TagPredicates.NAME, tag.getName()),
-                        new AttributePredicateImpl<>(TagPredicates.ENTITY_ID, tag.getId(), Operator.NOT_EQUAL)
+                        new AttributePredicateImpl<>(TagAttributes.NAME, tag.getName()),
+                        new AttributePredicateImpl<>(TagAttributes.ENTITY_ID, tag.getId(), Operator.NOT_EQUAL)
                 ));
 
         if (count(query) > 0) {
@@ -130,7 +131,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TAG_DOMAIN, Actions.delete, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TagDomains.TAG_DOMAIN, Actions.delete, scopeId));
 
         //
         // Check existence
@@ -140,7 +141,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         //
-        entityManagerSession.onTransactedAction(em -> TagDAO.delete(em, tagId));
+        entityManagerSession.onTransactedAction(em -> TagDAO.delete(em, scopeId, tagId));
     }
 
     @Override
@@ -152,11 +153,11 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TAG_DOMAIN, Actions.read, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TagDomains.TAG_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> TagDAO.find(em, tagId));
+        return entityManagerSession.onResult(em -> TagDAO.find(em, scopeId, tagId));
     }
 
     @Override
@@ -168,7 +169,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TAG_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TagDomains.TAG_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -184,7 +185,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TAG_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(TagDomains.TAG_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count

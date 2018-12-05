@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 Eurotech and/or its affiliates and others
+# Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -12,14 +12,23 @@
 @device
 Feature: Device data scenarios
 
-  @StartEventBroker
+  Scenario: Set environment variables
+
+    Given System property "commons.settings.hotswap" with value "true"
+    And System property "broker.ip" with value "localhost"
+    And System property "kapua.config.url" with value "null"
+
+  Scenario: Start datastore for all scenarios
+
+    Given Start Datastore
+
   Scenario: Start event broker for all scenarios
 
-  @StartBroker
+    Given Start Event Broker
+
   Scenario: Start broker for all scenarios
 
-  @StartDatastore
-  Scenario: Start datastore for all scenarios
+    Given Start Broker
 
 Scenario: Connect to the system and publish some data
 
@@ -65,11 +74,14 @@ Scenario: Connect to the system and publish some data
   When I stop the simulator
   Then Device sim-1 for account kapua-sys is not registered after 5 seconds
 
-  @StopBroker
   Scenario: Stop broker after all scenarios
 
-  @StopDatastore
+    Given Stop Broker
+
+  Scenario: Stop event broker for all scenarios
+
+    Given Stop Event Broker
+
   Scenario: Stop datastore after all scenarios
 
-  @StopEventBroker
-  Scenario: Stop event broker for all scenarios
+    Given Stop Datastore

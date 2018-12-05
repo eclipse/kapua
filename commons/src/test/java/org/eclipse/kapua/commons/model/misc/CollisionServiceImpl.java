@@ -23,7 +23,7 @@ import java.util.Map;
 public class CollisionServiceImpl extends AbstractKapuaConfigurableService implements CollisionEntityService {
 
     public CollisionServiceImpl() {
-        super(CollisionServiceImpl.class.getName(), COLLISION_ENTITY_DOMAIN, CollisionEntityManagerFactory.getInstance());
+        super(CollisionServiceImpl.class.getName(), CollisionEntityDomains.COLLISION_ENTITY_DOMAIN, CollisionEntityManagerFactory.getInstance());
     }
 
     public CollisionEntity insert(String testField) throws KapuaException {
@@ -81,7 +81,7 @@ public class CollisionServiceImpl extends AbstractKapuaConfigurableService imple
     }
 
     @Override
-    public KapuaTocd getConfigMetadata() throws KapuaException {
+    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
         // TODO Auto-generated method stub
         return null;
     }

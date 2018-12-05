@@ -163,7 +163,6 @@ public class DeviceConfigSnapshots extends LayoutContainer {
                     dirty = true;
                     reload();
 
-                    refreshButton.setEnabled(true);
                     refreshProcess = false;
                 }
             }
@@ -199,12 +198,11 @@ public class DeviceConfigSnapshots extends LayoutContainer {
 
                     uploadSnapshot();
 
-                    uploadButton.setEnabled(true);
                     uploadProcess = false;
                 }
             }
         });
-        uploadButton.setEnabled(true);
+        uploadButton.setEnabled(false);
 
         rollbackButton = new SnapshotRollbackButton(new SelectionListener<ButtonEvent>() {
 
@@ -377,7 +375,6 @@ public class DeviceConfigSnapshots extends LayoutContainer {
                 grid.getStore().removeAll();
             } else {
                 toolBar.enable();
-                refreshButton.enable();
                 downloadButton.disable();
                 rollbackButton.disable();
                 reload();
@@ -433,6 +430,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
             });
 
             fileUpload.setHeading(MSGS.upload());
+            fileUpload.setToolTip(DEVICE_MSGS.deviceSnapshotFileTooltip());
             fileUpload.show();
         }
     }
@@ -507,10 +505,19 @@ public class DeviceConfigSnapshots extends LayoutContainer {
         }
 
         @Override
+        public void loaderBeforeLoad(LoadEvent le) {
+            super.loaderBeforeLoad(le);
+            refreshButton.disable();
+            uploadButton.disable();
+        }
+
+        @Override
         public void loaderLoad(LoadEvent le) {
             if (le.exception != null) {
                 FailureHandler.handle(le.exception);
             }
+            refreshButton.enable();
+            uploadButton.enable();
         }
 
         @Override
@@ -522,6 +529,8 @@ public class DeviceConfigSnapshots extends LayoutContainer {
             store.removeAll();
             grid.unmask();
             toolBar.enable();
+            refreshButton.enable();
+            uploadButton.enable();
         }
     }
 }

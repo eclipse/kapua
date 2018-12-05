@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Red Hat Inc and others.
+ * Copyright (c) 2017, 2018 Red Hat Inc and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -87,5 +87,14 @@ public class BasicSteps extends Assert {
     @Then("^I get the text \"(.+)\"$")
     public void checkStringResult(String text) {
         assertEquals(text, (String) stepData.get("Text"));
+    }
+
+    @Given("^System property \"(.*)\" with value \"(.*)\"$")
+    public void setSystemProperty(String key, String value) {
+        if ("null".equalsIgnoreCase(value)) {
+            System.clearProperty(key);
+        } else {
+            System.setProperty(key, value);
+        }
     }
 }

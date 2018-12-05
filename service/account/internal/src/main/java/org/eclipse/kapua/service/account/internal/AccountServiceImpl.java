@@ -19,6 +19,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -31,10 +32,11 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountAttributes;
 import org.eclipse.kapua.service.account.AccountCreator;
+import org.eclipse.kapua.service.account.AccountDomains;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountListResult;
-import org.eclipse.kapua.service.account.AccountPredicates;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -66,7 +68,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
      * @since 1.0.0
      */
     public AccountServiceImpl() {
-        super(AccountService.class.getName(), ACCOUNT_DOMAIN, AccountEntityManagerFactory.getInstance(), AccountService.class, AccountFactory.class);
+        super(AccountService.class.getName(), AccountDomains.ACCOUNT_DOMAIN, AccountEntityManagerFactory.getInstance(), AccountService.class, AccountFactory.class);
     }
 
     @Override
@@ -83,12 +85,12 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.write, accountCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.write, accountCreator.getScopeId()));
 
         //
         // Check child account policy
         if (allowedChildEntities(accountCreator.getScopeId()) <= 0) {
-            throw new KapuaIllegalArgumentException("scopeId", "max child account reached");
+            throw new KapuaMaxNumberOfItemsReachedException("Accounts");
         }
 
         //
@@ -109,7 +111,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Check duplicate name
         AccountQuery query = new AccountQueryImpl(accountCreator.getScopeId());
-        query.setPredicate(new AttributePredicateImpl<>(AccountPredicates.NAME, accountCreator.getName()));
+        query.setPredicate(new AttributePredicateImpl<>(AccountAttributes.NAME, accountCreator.getName()));
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(accountCreator.getName());
         }
@@ -118,12 +120,22 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             throw new KapuaDuplicateNameInAnotherAccountError(accountCreator.getName());
         }
 
+        // check that expiration date is no later than parent expiration date
+        Account parentAccount = KapuaSecurityUtils.doPrivileged(() -> find(accountCreator.getScopeId()));
+        if (parentAccount != null && parentAccount.getExpirationDate() != null) {
+            // parent account never expires no check is needed
+            if (accountCreator.getExpirationDate() == null || parentAccount.getExpirationDate().before(accountCreator.getExpirationDate())) {
+                // if current account expiration date is null it will be obviously after parent expiration date
+                throw new KapuaIllegalArgumentException("expirationDate", accountCreator.getExpirationDate() != null ? accountCreator.getExpirationDate().toString() : "no expiration date set");
+            }
+        }
+
         return entityManagerSession.onTransactedInsert(em -> {
             Account account = AccountDAO.create(em, accountCreator);
             em.persist(account);
 
             // Set the parent account path
-            String parentAccountPath = AccountDAO.find(em, accountCreator.getScopeId()).getParentAccountPath() + "/" + account.getId();
+            String parentAccountPath = AccountDAO.find(em, null, accountCreator.getScopeId()).getParentAccountPath() + "/" + account.getId();
             account.setParentAccountPath(parentAccountPath);
             return AccountDAO.update(em, account);
         });
@@ -143,10 +155,10 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         // Check Access
         if (KapuaSecurityUtils.getSession().getScopeId().equals(account.getId())) {
             // Editing self
-            authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.write, account.getId()));
+            authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.write, account.getId()));
         } else {
             // Editing child
-            authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.write, account.getScopeId()));
+            authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.write, account.getScopeId()));
         }
 
         //
@@ -154,6 +166,31 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         Account oldAccount = find(account.getId());
         if (oldAccount == null) {
             throw new KapuaEntityNotFoundException(Account.TYPE, account.getId());
+        }
+
+        // check that expiration date is no later than parent expiration date
+        Account parentAccount = null;
+        if (oldAccount.getScopeId() != null) {
+            parentAccount = KapuaSecurityUtils.doPrivileged(() -> find(oldAccount.getScopeId()));
+        }
+        if (parentAccount != null && parentAccount.getExpirationDate() != null) {
+            // if parent account never expires no check is needed
+            if (account.getExpirationDate() == null || parentAccount.getExpirationDate().before(account.getExpirationDate())) {
+                // if current account expiration date is null it will be obviously after parent expiration date
+                throw new KapuaIllegalArgumentException("expirationDate", account.getExpirationDate() != null ? account.getExpirationDate().toString() : "no expiration date set");
+            }
+        }
+
+        // check that expiration date is after all the children account
+        if (account.getExpirationDate() != null) {
+            // if expiration date is null it means the account never expires, so it will be obviously later its children
+            AccountListResult childrenAccounts = findChildsRecursively(account.getId());
+            if (childrenAccounts.getItems().stream().anyMatch(childAccount -> {
+                // if child account expiration date is null it will be obviously after current account expiration date
+                return childAccount.getExpirationDate() == null || childAccount.getExpirationDate().after(account.getExpirationDate());
+            })) {
+                throw new KapuaIllegalArgumentException("expirationDate", account.getExpirationDate() != null ? account.getExpirationDate().toString() : "no expiration date set");
+            }
         }
 
         //
@@ -188,7 +225,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Check Access
         Actions action = Actions.delete;
-        authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, action, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, action, scopeId));
 
         //
         // Check if it has children
@@ -200,7 +237,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         // Do delete
         entityManagerSession.onTransactedAction(em -> {
             // Entity needs to be loaded in the context of the same EntityManger to be able to delete it afterwards
-            Account accountx = AccountDAO.find(em, accountId);
+            Account accountx = AccountDAO.find(em, scopeId, accountId);
             if (accountx == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, accountId);
             }
@@ -215,7 +252,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
                 throw new KapuaIllegalAccessException(action.name());
             }
 
-            AccountDAO.delete(em, accountId);
+            AccountDAO.delete(em, scopeId, accountId);
         });
     }
 
@@ -228,7 +265,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
@@ -243,7 +280,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.read, accountId));
+        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.read, accountId));
 
         //
         // Make sure account exists
@@ -264,7 +301,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             //
             // Check Access
             if (account != null) {
-                authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.read, account.getId()));
+                authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.read, account.getId()));
             }
 
             return account;
@@ -286,7 +323,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.read, account.getId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.read, account.getId()));
 
         return entityManagerSession.onResult(em -> {
             AccountListResult result = null;
@@ -308,7 +345,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -323,7 +360,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(ACCOUNT_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count
@@ -345,7 +382,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> AccountDAO.find(em, accountId));
+        return entityManagerSession.onResult(em -> AccountDAO.find(em, null, accountId));
     }
 
     private AccountListResult findChildAccountsTrusted(KapuaId accountId)

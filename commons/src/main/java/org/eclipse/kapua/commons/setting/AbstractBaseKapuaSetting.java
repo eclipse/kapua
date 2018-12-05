@@ -17,27 +17,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.DataConfiguration;
 import org.apache.commons.configuration.MapConfiguration;
+import org.apache.commons.configuration.PropertyConverter;
 
 /**
  * An abstract base class which does not make any assumptions on where the
  * configuration comes from
  *
- * @param <K>
- *            The settings key type
+ * @param <K> The settings key type
  */
 public class AbstractBaseKapuaSetting<K extends SettingKey> {
+
+    private boolean systemPropertyHotSwap;
 
     /**
      * Create an abstract configuration from a provided map
      * <p>
      * This is useful for testing when the configuration has to be provided
      * </p>
-     * 
-     * @param map
-     *            the map of values
+     *
+     * @param map the map of values
      * @return the configuration, may be {@code null} if the "map" parameter was null
      */
     public static <K extends SettingKey> AbstractBaseKapuaSetting<K> fromMap(Map<String, Object> map) {
@@ -51,6 +54,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
 
     public AbstractBaseKapuaSetting(final DataConfiguration dataConfiguration) {
         this.config = dataConfiguration;
+        systemPropertyHotSwap = config.getBoolean(SystemSettingKey.SETTINGS_HOTSWAP.key(), false);
     }
 
     /**
@@ -59,7 +63,9 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * @param cls
      * @param key
      * @return
+     * @deprecated since 1.0. Use typed get instead.
      */
+    @Deprecated
     public <T> T get(Class<T> cls, K key) {
         return config.get(cls, key.key());
     }
@@ -71,7 +77,9 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * @param key
      * @param defaultValue
      * @return
+     * @deprecated since 1.0. Use typed get instead.
      */
+    @Deprecated
     public <T> T get(Class<T> cls, K key, T defaultValue) {
         return config.get(cls, key.key(), defaultValue);
     }
@@ -99,7 +107,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
         Map<String, V> map = new HashMap<>();
         Configuration subsetConfig = config.subset(prefixKey.key());
         DataConfiguration subsetDataConfig = new DataConfiguration(subsetConfig);
-        for (Iterator<String> it = subsetConfig.getKeys(); it.hasNext();) {
+        for (Iterator<String> it = subsetConfig.getKeys(); it.hasNext(); ) {
             String key = it.next();
             if (Pattern.matches(regex, key)) {
                 map.put(key, subsetDataConfig.get(valueType, key));
@@ -119,7 +127,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
         Map<String, V> map = new HashMap<>();
         Configuration subsetConfig = config.subset(prefixKey.key());
         DataConfiguration subsetDataConfig = new DataConfiguration(subsetConfig);
-        for (Iterator<String> it = subsetConfig.getKeys(); it.hasNext();) {
+        for (Iterator<String> it = subsetConfig.getKeys(); it.hasNext(); ) {
             String key = it.next();
             map.put(key, subsetDataConfig.get(valueType, key));
         }
@@ -133,6 +141,12 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * @return
      */
     public int getInt(K key) {
+        if (systemPropertyHotSwap) {
+            String sysProp = System.getProperty(key.key());
+            if (sysProp != null) {
+                return PropertyConverter.toInteger(sysProp);
+            }
+        }
         return config.getInt(key.key());
     }
 
@@ -144,6 +158,12 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * @return
      */
     public int getInt(K key, int defaultValue) {
+        if (systemPropertyHotSwap) {
+            String sysProp = System.getProperty(key.key());
+            if (sysProp != null) {
+                return PropertyConverter.toInteger(sysProp);
+            }
+        }
         return config.getInt(key.key(), defaultValue);
     }
 
@@ -155,6 +175,12 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * @return
      */
     public int getInt(K key, Integer defaultValue) {
+        if (systemPropertyHotSwap) {
+            String sysProp = System.getProperty(key.key());
+            if (sysProp != null) {
+                return PropertyConverter.toInteger(sysProp);
+            }
+        }
         return config.getInt(key.key(), defaultValue);
     }
 
@@ -165,6 +191,12 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * @return
      */
     public boolean getBoolean(K key) {
+        if (systemPropertyHotSwap) {
+            String sysProp = System.getProperty(key.key());
+            if (sysProp != null) {
+                return PropertyConverter.toBoolean(sysProp);
+            }
+        }
         return config.getBoolean(key.key());
     }
 
@@ -176,6 +208,12 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * @return
      */
     public boolean getBoolean(K key, boolean defaultValue) {
+        if (systemPropertyHotSwap) {
+            String sysProp = System.getProperty(key.key());
+            if (sysProp != null) {
+                return PropertyConverter.toBoolean(sysProp);
+            }
+        }
         return config.getBoolean(key.key(), defaultValue);
     }
 
@@ -187,6 +225,12 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * @return
      */
     public boolean getBoolean(K key, Boolean defaultValue) {
+        if (systemPropertyHotSwap) {
+            String sysProp = System.getProperty(key.key());
+            if (sysProp != null) {
+                return PropertyConverter.toBoolean(sysProp);
+            }
+        }
         return config.getBoolean(key.key(), defaultValue);
     }
 
@@ -197,6 +241,12 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * @return
      */
     public String getString(K key) {
+        if (systemPropertyHotSwap) {
+            String sysProp = System.getProperty(key.key());
+            if (sysProp != null) {
+                return sysProp;
+            }
+        }
         return config.getString(key.key());
     }
 
@@ -208,6 +258,12 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * @return
      */
     public String getString(K key, String defaultValue) {
+        if (systemPropertyHotSwap) {
+            String sysProp = System.getProperty(key.key());
+            if (sysProp != null) {
+                return sysProp;
+            }
+        }
         return config.getString(key.key(), defaultValue);
     }
 
@@ -218,6 +274,12 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * @return
      */
     public long getLong(K key) {
+        if (systemPropertyHotSwap) {
+            String sysProp = System.getProperty(key.key());
+            if (sysProp != null) {
+                return PropertyConverter.toLong(sysProp);
+            }
+        }
         return config.getLong(key.key());
     }
 
@@ -229,6 +291,12 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * @return
      */
     public long getLong(K key, long defaultValue) {
+        if (systemPropertyHotSwap) {
+            String sysProp = System.getProperty(key.key());
+            if (sysProp != null) {
+                return PropertyConverter.toLong(sysProp);
+            }
+        }
         return config.getLong(key.key(), defaultValue);
     }
 
@@ -240,6 +308,12 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * @return
      */
     public long getLong(K key, Long defaultValue) {
+        if (systemPropertyHotSwap) {
+            String sysProp = System.getProperty(key.key());
+            if (sysProp != null) {
+                return PropertyConverter.toLong(sysProp);
+            }
+        }
         return config.getLong(key.key(), defaultValue);
     }
 
@@ -250,6 +324,12 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * @return
      */
     public float getFloat(K key) {
+        if (systemPropertyHotSwap) {
+            String sysProp = System.getProperty(key.key());
+            if (sysProp != null) {
+                return PropertyConverter.toFloat(sysProp);
+            }
+        }
         return config.getFloat(key.key());
     }
 
@@ -261,6 +341,12 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * @return
      */
     public float getFloat(K key, float defaultValue) {
+        if (systemPropertyHotSwap) {
+            String sysProp = System.getProperty(key.key());
+            if (sysProp != null) {
+                return PropertyConverter.toFloat(sysProp);
+            }
+        }
         return config.getFloat(key.key(), defaultValue);
     }
 
@@ -272,6 +358,12 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * @return
      */
     public float getFloat(K key, Float defaultValue) {
+        if (systemPropertyHotSwap) {
+            String sysProp = System.getProperty(key.key());
+            if (sysProp != null) {
+                return PropertyConverter.toFloat(sysProp);
+            }
+        }
         return config.getFloat(key.key(), defaultValue);
     }
 
@@ -282,6 +374,12 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * @return
      */
     public double getDouble(K key) {
+        if (systemPropertyHotSwap) {
+            String sysProp = System.getProperty(key.key());
+            if (sysProp != null) {
+                return PropertyConverter.toDouble(sysProp);
+            }
+        }
         return config.getDouble(key.key());
     }
 
@@ -293,6 +391,12 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * @return
      */
     public double getDouble(K key, double defaultValue) {
+        if (systemPropertyHotSwap) {
+            String sysProp = System.getProperty(key.key());
+            if (sysProp != null) {
+                return PropertyConverter.toFloat(sysProp);
+            }
+        }
         return config.getDouble(key.key(), defaultValue);
     }
 
@@ -304,6 +408,20 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * @return
      */
     public double getDouble(K key, Double defaultValue) {
+        if (systemPropertyHotSwap) {
+            String sysProp = System.getProperty(key.key());
+            if (sysProp != null) {
+                return PropertyConverter.toDouble(sysProp);
+            }
+        }
         return config.getDouble(key.key(), defaultValue);
+    }
+
+    public boolean isSystemPropertyHotSwap() {
+        return systemPropertyHotSwap;
+    }
+
+    public void setSystemPropertyHotSwap(boolean systemPropertyHotSwap) {
+        this.systemPropertyHotSwap = systemPropertyHotSwap;
     }
 }

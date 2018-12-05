@@ -571,7 +571,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                         getFindIndexPath(indexRequest.getIndex()),
                         Collections.singletonMap("pretty", "true"));
             }
-        }, "*", "INDEX EXIST");
+        }, indexRequest.getIndex(), "INDEX EXIST");
         if (isIndexExistsResponse != null && isIndexExistsResponse.getStatusLine() != null) {
             if (isIndexExistsResponse.getStatusLine().getStatusCode() == 200) {
                 try {

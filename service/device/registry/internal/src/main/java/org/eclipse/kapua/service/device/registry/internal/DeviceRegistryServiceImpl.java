@@ -15,7 +15,7 @@ import com.google.common.collect.Lists;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.event.ServiceEvent;
@@ -26,9 +26,10 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
+import org.eclipse.kapua.service.device.registry.DeviceDomains;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
-import org.eclipse.kapua.service.device.registry.DevicePredicates;
+import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.common.DeviceValidation;
@@ -52,7 +53,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
      * @param deviceEntityManagerFactory
      */
     public DeviceRegistryServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
-        super(DeviceRegistryService.class.getName(), DEVICE_DOMAIN, deviceEntityManagerFactory, DeviceRegistryService.class, DeviceFactory.class);
+        super(DeviceRegistryService.class.getName(), DeviceDomains.DEVICE_DOMAIN, deviceEntityManagerFactory, DeviceRegistryService.class, DeviceFactory.class);
     }
 
     /**
@@ -67,12 +68,11 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
     public Device create(DeviceCreator deviceCreator) throws KapuaException {
         DeviceValidation.validateCreatePreconditions(deviceCreator);
         if (allowedChildEntities(deviceCreator.getScopeId()) <= 0) {
-            // TODO Check exception type to be catched by the broker
-            throw new KapuaIllegalArgumentException("scopeId", "max devices reached");
+            throw new KapuaMaxNumberOfItemsReachedException("Devices");
         }
 
         DeviceQuery query = new DeviceQueryImpl(deviceCreator.getScopeId());
-        query.setPredicate(new AttributePredicateImpl<>(DevicePredicates.CLIENT_ID, deviceCreator.getClientId()));
+        query.setPredicate(new AttributePredicateImpl<>(DeviceAttributes.CLIENT_ID, deviceCreator.getClientId()));
         DeviceListResult deviceListResult = query(query);
         if (!deviceListResult.isEmpty()) {
             throw new KapuaDuplicateNameException(deviceCreator.getClientId());
@@ -85,46 +85,19 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         DeviceValidation.validateUpdatePreconditions(device);
 
         return entityManagerSession.onTransactedResult(entityManager -> {
-            Device currentDevice = DeviceDAO.find(entityManager, device.getId());
+            Device currentDevice = DeviceDAO.find(entityManager, device.getScopeId(), device.getId());
             if (currentDevice == null) {
                 throw new KapuaEntityNotFoundException(Device.TYPE, device.getId());
             }
-
-            currentDevice.setStatus(device.getStatus());
-            currentDevice.setDisplayName(device.getDisplayName());
-            currentDevice.setGroupId(device.getGroupId());
-            currentDevice.setSerialNumber(device.getSerialNumber());
-            currentDevice.setModelId(device.getModelId());
-            currentDevice.setImei(device.getImei());
-            currentDevice.setImsi(device.getImsi());
-            currentDevice.setIccid(device.getIccid());
-            currentDevice.setBiosVersion(device.getBiosVersion());
-            currentDevice.setFirmwareVersion(device.getFirmwareVersion());
-            currentDevice.setOsVersion(device.getOsVersion());
-            currentDevice.setJvmVersion(device.getJvmVersion());
-            currentDevice.setOsgiFrameworkVersion(device.getOsgiFrameworkVersion());
-            currentDevice.setApplicationFrameworkVersion(device.getApplicationFrameworkVersion());
-            currentDevice.setApplicationIdentifiers(device.getApplicationIdentifiers());
-            currentDevice.setAcceptEncoding(device.getAcceptEncoding());
-            currentDevice.setCustomAttribute1(device.getCustomAttribute1());
-            currentDevice.setCustomAttribute2(device.getCustomAttribute2());
-            currentDevice.setCustomAttribute3(device.getCustomAttribute3());
-            currentDevice.setCustomAttribute4(device.getCustomAttribute4());
-            currentDevice.setCustomAttribute5(device.getCustomAttribute5());
-
-            currentDevice.setConnectionId(device.getConnectionId());
-            currentDevice.setLastEventId(device.getLastEventId());
-
-            currentDevice.setTagIds(device.getTagIds());
             // Update
-            return DeviceDAO.update(entityManager, currentDevice);
+            return DeviceDAO.update(entityManager, device);
         });
     }
 
     @Override
     public Device find(KapuaId scopeId, KapuaId entityId) throws KapuaException {
         DeviceValidation.validateFindPreconditions(scopeId, entityId);
-        return entityManagerSession.onResult(entityManager -> DeviceDAO.find(entityManager, entityId));
+        return entityManagerSession.onResult(entityManager -> DeviceDAO.find(entityManager, scopeId, entityId));
     }
 
     @Override
@@ -142,7 +115,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
     @Override
     public void delete(KapuaId scopeId, KapuaId deviceId) throws KapuaException {
         DeviceValidation.validateDeletePreconditions(scopeId, deviceId);
-        entityManagerSession.onTransactedAction(entityManager -> DeviceDAO.delete(entityManager, deviceId));
+        entityManagerSession.onTransactedAction(entityManager -> DeviceDAO.delete(entityManager, scopeId, deviceId));
     }
 
     @Override
@@ -150,8 +123,8 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         DeviceValidation.validateFindByClientIdPreconditions(scopeId, clientId);
 
         DeviceQueryImpl query = new DeviceQueryImpl(scopeId);
-        QueryPredicate predicate = new AttributePredicateImpl<>(DevicePredicates.CLIENT_ID, clientId);
-        query.setFetchAttributes(Lists.newArrayList(DevicePredicates.CONNECTION, DevicePredicates.LAST_EVENT));
+        QueryPredicate predicate = new AttributePredicateImpl<>(DeviceAttributes.CLIENT_ID, clientId);
+        query.setFetchAttributes(Lists.newArrayList(DeviceAttributes.CONNECTION, DeviceAttributes.LAST_EVENT));
         query.setPredicate(predicate);
 
         //
@@ -184,7 +157,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         DeviceFactory deviceFactory = locator.getFactory(DeviceFactory.class);
 
         DeviceQuery query = deviceFactory.newQuery(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(DevicePredicates.GROUP_ID, groupId));
+        query.setPredicate(new AttributePredicateImpl<>(DeviceAttributes.GROUP_ID, groupId));
 
         DeviceListResult devicesToDelete = query(query);
 

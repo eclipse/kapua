@@ -207,3 +207,30 @@ Scenario: Account name must not be mutable
     When I change the account "test_acc" name to "test_acc_new"
     Then An exception is caught
     And Account "test_acc" exists
+
+Scenario: Account expiration date test - Parent expiration set, child expiration null
+    Given An existing account with the name "exp-acc"
+    And I set the expiration date to 2018-07-11
+    And I configure "integer" item "maxNumberChildEntities" to "5"
+    And I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument"
+    When I create 1 childs for account with name "exp-acc"
+
+Scenario: Account expiration date test - Parent expiration set, child expiration before father expiration
+    Given An existing account that expires on "2018-07-11" with the name "exp-acc"
+    And I configure "integer" item "maxNumberChildEntities" to "5"
+    When I create 1 childs for account with expiration date "2018-07-10" and name "exp-acc"
+    Then Account "exp-acc" has 1 children
+
+Scenario: Account expiration date test - Parent expiration set, child expiration after father expiration
+    Given An existing account that expires on "2018-07-11" with the name "exp-acc"
+    And I configure "integer" item "maxNumberChildEntities" to "5"
+    And I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument"
+    When I create 1 childs for account with expiration date "2018-07-12" and name "exp-acc"
+    And Account "exp-acc" has 0 children
+
+Scenario: Account expiration date test - Parent and child expiration set, then parent expiration date changed to before child expiration date
+    Given An existing account that expires on "2018-07-11" with the name "exp-acc"
+    And I configure "integer" item "maxNumberChildEntities" to "5"
+    And I create 1 childs for account with expiration date "2018-07-10" and name "exp-acc"
+    And I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument"
+    When I change the expiration date of the account "exp-acc" to "2018-07-09"

@@ -14,19 +14,26 @@ package org.eclipse.kapua.broker.core.plugin;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.broker.core.KapuaBrokerJAXBContextLoader;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MessageType;
 import org.eclipse.kapua.broker.core.setting.BrokerSetting;
 import org.eclipse.kapua.broker.core.setting.BrokerSettingKey;
+import org.eclipse.kapua.test.junit.JUnitTests;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Category(JUnitTests.class)
 public class ConnectorDescriptorTest {
 
     private static final String BROKER_IP_RESOLVER_CLASS_NAME;
+
+    private KapuaBrokerJAXBContextLoader kapuaBrokerJAXBContextLoader;
 
     static {
         BrokerSetting config = BrokerSetting.getInstance();
@@ -34,8 +41,15 @@ public class ConnectorDescriptorTest {
     }
 
     @Before
-    public void resetSettings() {
+    public void resetSettings() throws KapuaException {
+        kapuaBrokerJAXBContextLoader = new KapuaBrokerJAXBContextLoader();
+        kapuaBrokerJAXBContextLoader.init();
         BrokerSetting.resetInstance();
+    }
+
+    @After
+    public void resetJAXBContext() {
+        kapuaBrokerJAXBContextLoader.reset();
     }
 
     /**

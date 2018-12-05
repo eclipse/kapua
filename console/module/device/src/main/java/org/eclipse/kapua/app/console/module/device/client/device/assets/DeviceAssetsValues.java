@@ -159,7 +159,6 @@ public class DeviceAssetsValues extends LayoutContainer {
                     dirty = true;
                     refresh();
                     refreshProcess = false;
-                    refreshButton.setEnabled(true);
                 }
             }
         });
@@ -195,13 +194,9 @@ public class DeviceAssetsValues extends LayoutContainer {
                 }
             }
         });
-        if (selectedDevice != null) {
-            refreshButton.setEnabled(true);
-        } else {
-            refreshButton.setEnabled(false);
-        }
         apply.setEnabled(false);
         reset.setEnabled(false);
+        refreshButton.setEnabled(false);
         toolBar.add(refreshButton);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(apply);
@@ -503,18 +498,25 @@ public class DeviceAssetsValues extends LayoutContainer {
         }
 
         @Override
+        public void loaderBeforeLoad(LoadEvent le) {
+            super.loaderBeforeLoad(le);
+            refreshButton.disable();
+        }
+
+        @Override
         public void loaderLoad(LoadEvent le) {
             if (le.exception != null) {
                 FailureHandler.handle(le.exception);
             }
             tree.unmask();
+            refreshButton.enable();
         }
 
         @Override
         public void loaderLoadException(LoadEvent le) {
 
             if (le.exception != null) {
-                ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceConnectionError());
+                ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.assetNoAssetsErrorMessage());
             }
 
             List<ModelData> assets = new ArrayList<ModelData>();
@@ -525,6 +527,7 @@ public class DeviceAssetsValues extends LayoutContainer {
             treeStore.add(assets, false);
 
             tree.unmask();
+            refreshButton.enable();
         }
     }
 }

@@ -40,7 +40,7 @@ import org.eclipse.kapua.service.authorization.role.shiro.RoleFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionServiceImpl;
-import org.eclipse.kapua.service.authorization.role.RolePredicates;
+import org.eclipse.kapua.service.authorization.role.RoleAttributes;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
 import org.eclipse.kapua.test.steps.DatabaseInstance;
 
@@ -324,7 +324,7 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
         assertNotEquals(0, name.length());
 
         RoleQuery tmpQuery = roleFactory.newQuery(tmpId);
-        tmpQuery.setPredicate(new AttributePredicateImpl<>(RolePredicates.NAME, name));
+        tmpQuery.setPredicate(new AttributePredicateImpl<>(RoleAttributes.NAME, name));
         KapuaSecurityUtils.doPrivileged(() -> {
             roleData.roleList = roleService.query(tmpQuery);
             return null;

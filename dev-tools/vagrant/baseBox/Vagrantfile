@@ -1,0 +1,205 @@
+#*******************************************************************************
+# Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     Eurotech - initial API and implementation
+#     Red Hat Inc
+#*******************************************************************************
+
+# Vagrant 1.9.6 or major is required
+# since one of the previous version had a bug with Centos/7 box
+Vagrant.require_version ">= 1.9.6"
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "centos/7"
+  config.vm.box_check_update = false
+
+  # If Virtualbox provider
+  # Check that vagrant-vbguest plugin is installed
+  # If missing, install it.
+  config.vm.provider "virtualbox" do |vb|
+    unless Vagrant.has_plugin?("vagrant-vbguest")
+      system('if ! vagrant plugin list | grep -q vagrant-vbguest; then echo "Installing missing plugin: vagrant-vbguest" ;vagrant plugin install vagrant-vbguest; fi')
+    end
+  end
+
+  config.vm.provision "shell", inline: <<-SHELL
+    export DEBIAN_FRONTEND=noninteractive
+
+    export ELASTICSEARCH_VERSION="5.4.0"
+    export H2DB_VERSION="1.4.192"
+    export ACTIVE_MQ_VERSION="5.14.5"
+    export ARTEMIS_VERSION="2.2.0"
+    export JETTY_VERSION="9.4.12.v20180830"
+
+    export BINDING_IP="192.168.33.10"
+
+    #############################
+    ### Install OpenJDK 8     ###
+    #############################
+    sudo yum clean all
+    sudo yum install -y java-1.8.0-openjdk-devel
+
+    #############################
+    ### Install ActiveMQ      ###
+    #############################
+    cd /usr/local/
+    sudo curl -O http://archive.apache.org/dist/activemq/${ACTIVE_MQ_VERSION}/apache-activemq-${ACTIVE_MQ_VERSION}-bin.tar.gz
+    sudo tar zxvf apache-activemq-${ACTIVE_MQ_VERSION}-bin.tar.gz
+    sudo rm apache-activemq-${ACTIVE_MQ_VERSION}-bin.tar.gz
+    sudo ln -s apache-activemq-${ACTIVE_MQ_VERSION} activemq
+
+    # Remove unnecessary library
+    cd activemq
+    echo 'cleanup unnecessary libraries'
+    sudo rm -rf activemq-all-*
+    sudo rm -rf lib/activemq-jaas-*
+    sudo rm -rf lib/activemq-openwire-legacy*
+    sudo rm -rf lib/activemq-web-*
+    sudo rm -rf lib/activemq-rar.txt
+    sudo rm -rf lib/geronimo-jms_1.1_spec-1.1.1.jar
+    sudo rm -rf lib/geronimo-jta_1.0.1B_spec*
+    sudo rm -rf lib/optional/activeio-core-*
+    sudo rm -rf lib/optional/activemq-amqp-*
+    sudo rm -rf lib/optional/activemq-jdbc-store*
+    sudo rm -rf lib/optional/activemq-leveldb-store*
+    sudo rm -rf lib/optional/activemq-log4j-appender*
+    sudo rm -rf lib/optional/activemq-shiro*
+    sudo rm -rf lib/optional/activemq-partition*
+    sudo rm -rf lib/optional/activemq-pool*
+    sudo rm -rf lib/optional/activemq-runtime-config*
+    sudo rm -rf lib/optional/activemq-stomp*
+    sudo rm -rf lib/optional/commons-codec-*
+    sudo rm -rf lib/optional/commons-collections-*
+    sudo rm -rf lib/optional/commons-dbcp*
+    sudo rm -rf lib/optional/commons-net*
+    sudo rm -rf lib/optional/commons-pool2*
+    sudo rm -rf lib/optional/geronimo-j2ee-connector*
+    sudo rm -rf lib/optional/guava*
+    sudo rm -rf lib/optional/hawt*
+    sudo rm -rf lib/optional/http*
+    sudo rm -rf lib/optional/insight-log*
+    sudo rm -rf lib/optional/jackson-*
+    sudo rm -rf lib/optional/jasypt-*
+    sudo rm -rf lib/optional/jaxb2-*
+    sudo rm -rf lib/optional/jettison-*
+    sudo rm -rf lib/optional/jmdns-*
+    sudo rm -rf lib/optional/leveldb*
+    sudo rm -rf lib/optional/org.apache.servicemix.bundles*
+    sudo rm -rf lib/optional/org.linkedin*
+    sudo rm -rf lib/optional/proton-j*
+    sudo rm -rf lib/optional/scala-library*
+    sudo rm -rf lib/optional/shiro*
+    sudo rm -rf lib/optional/snappy-*
+    sudo rm -rf lib/optional/spring-oxm-*
+    sudo rm -rf lib/optional/velocity*
+    sudo rm -rf lib/optional/xpp3-*
+    sudo rm -rf lib/optional/xstream-*
+    sudo rm -rf lib/optional/zookeeper-*
+
+    sudo rm -rf lib/web/apache*
+    sudo rm -rf lib/web/taglibs*
+    sudo rm -rf lib/web/spring*
+    sudo rm -rf lib/web/org.eclipse*
+    sudo rm -rf lib/web/json-simple*
+    sudo rm -rf lib/web/jolokia*
+    sudo rm -rf lib/web/rome*
+    sudo rm -rf lib/web/jdom*
+    sudo rm -rf lib/web/geronimo*
+    sudo rm -rf lib/web/asm*
+
+    sudo rm -rf bin/wrapper.jar
+    sudo rm -rf bin/macosx/
+    sudo rm -rf bin/linux-x86-32/
+    sudo rm -rf bin/linux-x86-64/
+
+    sudo rm -rf examples/
+    sudo rm -rf docs/
+    sudo rm -rf webapps/
+    sudo rm -rf webapps-demo/
+
+    #############################
+    ### Install Artemis       ###
+    #############################
+    cd /usr/local/
+    sudo curl -O https://archive.apache.org/dist/activemq/activemq-artemis/${ARTEMIS_VERSION}/apache-artemis-${ARTEMIS_VERSION}-bin.tar.gz
+    sudo tar zxvf apache-artemis-${ARTEMIS_VERSION}-bin.tar.gz
+    sudo rm apache-artemis-${ARTEMIS_VERSION}-bin.tar.gz
+    ln -s apache-artemis-${ARTEMIS_VERSION} artemis
+
+    cd artemis
+    #create server
+    ./bin/artemis create \
+    --allow-anonymous \
+    --autocreate \
+    --cluster-password password \
+    --cluster-user user \
+    --clustered false \
+    --data ./data/kapua --default-port 61616 \
+    --disable-persistence false \
+    --home /usr/local/artemis \
+    --host ${BINDING_IP} \
+    --name kapua \
+    --password password \
+    --allow-anonymous \
+    --user user \
+    --verbose kapua
+
+    #############################
+    ### Install H2            ###
+    #############################
+    sudo mkdir -p /usr/local/h2-${H2DB_VERSION}
+    cd /usr/local/h2-${H2DB_VERSION}
+    sudo curl -O http://repo2.maven.org/maven2/com/h2database/h2/${H2DB_VERSION}/h2-${H2DB_VERSION}.jar
+    cd ../
+    ln -s h2-${H2DB_VERSION} h2
+
+    #############################
+    ### Install Elasticsearch ###
+    #############################
+    # Install Elasticsearch
+    cd /usr/local/
+    sudo curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
+    sudo tar -xvf elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
+    sudo rm elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz
+    sudo ln -s elasticsearch-${ELASTICSEARCH_VERSION} elasticsearch
+
+    #############################
+    ### Install Jetty         ###
+    #############################
+    cd /usr/local/
+    curl -s https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/${JETTY_VERSION}/jetty-distribution-${JETTY_VERSION}.tar.gz -o jetty-distribution.tar.gz
+    sudo tar zxvf jetty-distribution.tar.gz
+    sudo rm jetty-distribution.tar.gz
+    ln -s jetty-distribution-${JETTY_VERSION} jetty
+
+    cd jetty
+    mkdir -p lib/ext /var/lib/jetty/start.d /var/lib/jetty/modules
+
+    cd /var/lib/jetty/modules
+    curl -O https://raw.githubusercontent.com/jetty-project/logging-modules/master/capture-all/logging.mod
+    curl -O https://raw.githubusercontent.com/jetty-project/logging-modules/master/centralized/webapp-logging.mod
+
+    cd /usr/local/jetty
+    java -jar start.jar --approve-all-licenses --create-startd --add-to-start=http,jsp,jstl,websocket,deploy,logging,webapp-logging,jmx,stats -Djetty.base=/var/lib/jetty
+
+    sudo chown -R vagrant /usr/local/jetty/
+    sudo chown -R vagrant /var/lib/jetty
+
+    #############################
+    ### System Configuration  ###
+    #############################
+    sudo bash -c 'echo "* soft nofile 65536" > /etc/security/limits.d/kapua.conf'
+    sudo bash -c 'echo "* hard nofile 65536" >> /etc/security/limits.d/kapua.conf'
+
+    sudo bash -c "echo 'vm.max_map_count=262144' > /etc/sysctl.d/98-kapua.conf"
+    sudo sysctl --system
+
+    cat /dev/null > ~/.bash_history && history -c
+  SHELL
+end

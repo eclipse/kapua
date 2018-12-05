@@ -13,6 +13,7 @@ package org.eclipse.kapua.app.console.module.device.servlet;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.concurrent.Callable;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,13 +26,16 @@ import org.eclipse.kapua.KapuaUnauthenticatedException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventPredicates;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventAttributes;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.slf4j.Logger;
@@ -59,16 +63,14 @@ public class DeviceEventExporterServlet extends HttpServlet {
         try {
             // parameter extraction
             String format = request.getParameter("format");
-            String scopeId = request.getParameter("scopeId");
-            String deviceId = request.getParameter("deviceId");
+            final String scopeId = request.getParameter("scopeId");
+            final String deviceId = request.getParameter("deviceId");
             Date startDate = new Date(Long.parseLong(request.getParameter("startDate")));
             Date endDate = new Date(Long.parseLong(request.getParameter("endDate")));
 
             // data exporter
             DeviceEventExporter deviceEventExporter;
-            if ("xls".equals(format)) {
-                deviceEventExporter = new DeviceEventExporterExcel(response);
-            } else if ("csv".equals(format)) {
+            if ("csv".equals(format)) {
                 deviceEventExporter = new DeviceEventExporterCsv(response);
             } else {
                 throw new IllegalArgumentException("format");
@@ -82,13 +84,20 @@ public class DeviceEventExporterServlet extends HttpServlet {
                 throw new IllegalArgumentException("deviceId");
             }
 
-            deviceEventExporter.init(scopeId);
-
             //
             // get the devices and append them to the exporter
             KapuaLocator locator = KapuaLocator.getInstance();
             DeviceEventService des = locator.getService(DeviceEventService.class);
             DeviceEventFactory def = locator.getFactory(DeviceEventFactory.class);
+            final DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
+
+            Device device = KapuaSecurityUtils.doPrivileged(new Callable<Device>() {
+                @Override
+                public Device call() throws Exception {
+                    return deviceRegistryService.find(KapuaEid.parseCompactId(scopeId), KapuaEid.parseCompactId(deviceId));
+                }
+            });
+            deviceEventExporter.init(scopeId, device.getClientId());
 
             int offset = 0;
 
@@ -99,9 +108,9 @@ public class DeviceEventExporterServlet extends HttpServlet {
             // Inserting filter parameter if specified
             AndPredicateImpl andPred = new AndPredicateImpl();
 
-            andPred = andPred.and(new AttributePredicateImpl<KapuaId>(DeviceEventPredicates.DEVICE_ID, KapuaEid.parseCompactId(deviceId), Operator.EQUAL))
-                    .and(new AttributePredicateImpl<Date>(DeviceEventPredicates.RECEIVED_ON, startDate, Operator.GREATER_THAN))
-                    .and(new AttributePredicateImpl<Date>(DeviceEventPredicates.RECEIVED_ON, endDate, Operator.LESS_THAN));
+            andPred = andPred.and(new AttributePredicateImpl<KapuaId>(DeviceEventAttributes.DEVICE_ID, KapuaEid.parseCompactId(deviceId), Operator.EQUAL))
+                    .and(new AttributePredicateImpl<Date>(DeviceEventAttributes.RECEIVED_ON, startDate, Operator.GREATER_THAN))
+                    .and(new AttributePredicateImpl<Date>(DeviceEventAttributes.RECEIVED_ON, endDate, Operator.LESS_THAN));
 
             deq.setPredicate(andPred);
 

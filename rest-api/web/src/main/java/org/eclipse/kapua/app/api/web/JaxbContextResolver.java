@@ -19,7 +19,10 @@ import org.eclipse.kapua.app.api.core.exception.model.ThrowableInfo;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.StorableEntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonDatastoreMessage;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonKapuaPayload;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonMessageQuery;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.device.management.JsonGenericRequestMessage;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.device.management.JsonGenericResponseMessage;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.message.JsonKapuaPayload;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;
@@ -100,6 +103,10 @@ import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.SortField;
+import org.eclipse.kapua.service.datastore.model.query.SortFieldXmlAdapter;
+import org.eclipse.kapua.service.datastore.model.query.XmlAdaptedSortField;
+import org.eclipse.kapua.service.datastore.model.query.XmlAdaptedSortFields;
 import org.eclipse.kapua.service.datastore.model.xml.ChannelInfoXmlRegistry;
 import org.eclipse.kapua.service.datastore.model.xml.ClientInfoXmlRegistry;
 import org.eclipse.kapua.service.datastore.model.xml.DatastoreMessageXmlRegistry;
@@ -194,7 +201,7 @@ import java.util.Map;
  * @since 1.0.0
  */
 @Provider
-@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 public class JaxbContextResolver implements ContextResolver<JAXBContext> {
 
     private JAXBContext jaxbContext;
@@ -204,7 +211,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
             Map<String, Object> properties = new HashMap<>(1);
             properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
 
-            jaxbContext = JAXBContextFactory.createContext(new Class[] {
+            jaxbContext = JAXBContextFactory.createContext(new Class[]{
 
                     // REST API utility models
                     CountResult.class,
@@ -252,6 +259,9 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
 
                     // Data Messages
                     KapuaDataMessage.class,
+                    KapuaDataChannel.class,
+                    KapuaDataPayload.class,
+
                     MessageListResult.class,
                     MessageQuery.class,
                     MessageXmlRegistry.class,
@@ -264,6 +274,11 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     InsertResponse.class,
                     StorableEntityId.class,
                     StorableId.class,
+                    SortField.class,
+                    SortFieldXmlAdapter.class,
+                    XmlAdaptedSortField.class,
+                    XmlAdaptedSortFields.class,
+                    JsonMessageQuery.class,
 
                     // Device
                     Device.class,
@@ -334,6 +349,8 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     KapuaResponseChannel.class,
                     KapuaRequestPayload.class,
                     RequestMessageXmlRegistry.class,
+
+                    // Device Generic Request
                     GenericRequestChannel.class,
                     GenericRequestPayload.class,
                     GenericRequestMessage.class,
@@ -341,10 +358,11 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     GenericResponsePayload.class,
                     GenericResponseMessage.class,
                     GenericRequestXmlRegistry.class,
-                    KapuaDataChannel.class,
-                    KapuaDataPayload.class,
-                    KapuaDataMessage.class,
 
+                    JsonGenericRequestMessage.class,
+                    JsonGenericResponseMessage.class,
+
+                    // Authentication
                     AuthenticationCredentials.class,
                     AuthenticationXmlRegistry.class,
                     AccessToken.class,

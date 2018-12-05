@@ -12,12 +12,14 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.test.KapuaTest;
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.experimental.categories.Category;
 
+@Category(JUnitTests.class)
 public abstract class AbstractMessageStoreServiceTest extends KapuaTest {
 
 
@@ -26,12 +28,12 @@ public abstract class AbstractMessageStoreServiceTest extends KapuaTest {
     @BeforeClass
     public static void tearUpGlobal()
             throws KapuaException {
-        KapuaConfigurableServiceSchemaUtils.createSchemaObjects(DEFAULT_COMMONS_PATH);
+//        KapuaConfigurableServiceSchemaUtils.createSchemaObjects(DEFAULT_COMMONS_PATH);
         XmlUtil.setContextProvider(new DatastoreJAXBContextProvider());
     }
 
     @AfterClass
     public static void tearDownGlobal() {
-        KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
+//        KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
     }
 }

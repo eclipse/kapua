@@ -38,42 +38,52 @@ Before starting, check that your environment has the following prerequisites:
 The team maintains some docker images in a Docker Hub repository at [Kapua Repository](https://hub.docker.com/r/kapua/). Check the repo to view the list of available images, if you haven't found one fitting your needs you may create your own. Please refer to the paragraph [More deployment info](#more-deployment-info) to find more about creating your own images and/or alternative demo deployment scenarios.
 
 ***
-**Note :** the Docker Hub repository mentioned above is not the official project repository from Eclipse Foundation.
+**Note:** the Docker Hub repository mentioned above is not the official project repository from Eclipse Foundation.
 ***
 
-Suppose the target is the current snapshot 1.0.0-SNAPSHOT.
+Suppose the target is the current snapshot 1.1.0-SNAPSHOT.
 
 * Clone Eclipse Kapua into a local directory
-* Open an OS shell and move to Kapua root dir
+* Open an OS shell and move to Kapua project root directory
 * Start Docker runtime
 * Start Kapua:
 
-    kapua/dev-tools/src/main/docker/docker-deploy.sh
+```bash
+    ./deployment/docker/docker-deploy.sh
+```
 
 The command starts all the Kapua containers using Docker Compose.
 
 By default, the `latest` version of images will be used. If you want to run some other version of Kapua, set the `IMAGE_VERSION` environment variable, like
 
+```bash
     export IMAGE_VERSION=0.2.0
+```
 
 You can check if the containers are running by typing the following command:
 
+```bash
     docker ps -as
+```
 
 Docker will list the containers currently running.
 
 To stop Kapua, run
 
-    kapua/dev-tools/src/main/docker/docker-undeploy.sh
+```bash
+    ./deployment/docker/docker-undeploy.sh
+```
 
 ### Access
 
 Once the containers are running, the Kapua services can be accessed. Kapua is a multi tenant
-system. The demo installation comes with one default tenant, called _kapua-sys_, which is also the root tenant. In Eclipse Kapua a tenant is commonly referred to as an _account_.
+system. The demo installation comes with one default tenant, called _kapua-sys_, which is also the root tenant. 
+In Eclipse Kapua a _tenant_ is commonly referred to as an _account_.
 
 #### The console
 
-The administration console is available at http://localhost:8080/. Copy paste the URL above to a Web browser, as the login screen appears, type the following credentials:
+The administration console is available at [http://localhost:8080/](http://localhost:8080/). 
+Copy paste the URL above to a Web browser, as the login screen appears, type the following credentials:
 
 * Username: `kapua-sys`
 * Password: `kapua-password`
@@ -85,7 +95,7 @@ the IP address of your docker instance.
 
 #### RESTful APIs
 
-The documentation of RESTful API is available at http://localhost:8081/doc/ while the mount points are available at http://localhost:8081/v1/.
+The documentation of RESTful API is available at [http://localhost:8081/doc/](http://localhost:8081/doc/) while the mount points are available at [http://localhost:8081/v1/](http://localhost:8081/v1/).
 
 The documentation is available through Swagger UI which greatly helps testing and exploring the exposed services.
 
@@ -96,7 +106,7 @@ In order to get access a REST resource through an API, an authentication token i
 * Select item _/authentication/user_
 * Using the test feature run 'POST /authentication/user' by specifying the following body:
 
-```
+```json
 {
   "password" : [ "kapua-password" ],
   "username": "kapua-sys"
@@ -105,7 +115,7 @@ In order to get access a REST resource through an API, an authentication token i
 
 **Note:** as an alternative to the previous, if curl is available on your machine, execute the following from the shell:
 
-```
+```bash
 curl -X POST  'http://localhost:8081/v1/authentication/user' --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
   "password": [
     "kapua-password"
@@ -148,9 +158,9 @@ Kapua comes with a framework that you can use to simulate Kura gateways. It can 
 #### More deployment info
 Installing and running a demo using Docker is easy but it's not the only way. There are other scenarios that the users may be interested to. We provide advanced setup scenarios in the following guides:
 
-* [Running with Docker](assembly/README.md)
-* [Running with Vagrant](dev-tools/src/main/vagrant/README.md#demo-machine-quick-start)
+* [Running with Docker](deployment/docker/README.md)
 * [Running with OpenShift](docs/developer-guide/en/running.md#openshift)
+* [Running with Minishift](docs/developer-guide/en/running.md#minishift)
 
 They will provide more advanced deployment scenarios.
 

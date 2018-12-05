@@ -117,6 +117,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         domainsCombo.setAllowBlank(false);
         domainsCombo.disable();
         domainsCombo.setFieldLabel(MSGS.dialogAddPermissionDomain());
+        domainsCombo.setToolTip(MSGS.permissionAddDialogDomainTooltip());
         domainsCombo.setTriggerAction(TriggerAction.ALL);
         domainsCombo.setEmptyText(MSGS.dialogAddPermissionLoading());
         domainsCombo.setDisplayField("domainName");
@@ -187,6 +188,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         actionsCombo.setAllowBlank(false);
         actionsCombo.setEditable(false);
         actionsCombo.setFieldLabel(MSGS.dialogAddPermissionAction());
+        actionsCombo.setToolTip(MSGS.permissionAddDialogActionTooltip());
         actionsCombo.setTriggerAction(TriggerAction.ALL);
         actionsCombo.setEmptyText(MSGS.dialogAddPermissionLoading());
 
@@ -210,6 +212,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         groupsCombo.setDisplayField("groupName");
         groupsCombo.setValueField("id");
         groupsCombo.setFieldLabel(MSGS.dialogAddPermissionGroupId());
+        groupsCombo.setToolTip(MSGS.permissionAddDialogGroupTooltip());
         groupsCombo.setTriggerAction(TriggerAction.ALL);
         groupsCombo.setEmptyText(MSGS.dialogAddPermissionLoading());
         groupsCombo.disable();
@@ -247,6 +250,7 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         // Forwardable
         forwardableChecbox = new CheckBox();
         forwardableChecbox.setBoxLabel("");
+        forwardableChecbox.setToolTip(MSGS.permissionAddDialogForwardableTooltip());
 
         forwardableChecboxGroup = new CheckBoxGroup();
         forwardableChecboxGroup.setFieldLabel(MSGS.dialogAddPermissionForwardable());

@@ -253,7 +253,11 @@ public enum SystemSettingKey implements SettingKey {
     /**
      * Time window to consider FIRED messages as "old" messages so ready to be processed by the housekeeper (in milliseconds)
      */
-    HOUSEKEEPER_OLD_MESSAGES_TIME_WINDOW("commons.eventbus.houskeeper.oldMessagesTimeWindow");
+    HOUSEKEEPER_OLD_MESSAGES_TIME_WINDOW("commons.eventbus.houskeeper.oldMessagesTimeWindow"),
+    /**
+     * Allow System Settings to be updatable at runtime via System.setProperty()
+     */
+    SETTINGS_HOTSWAP("commons.settings.hotswap");
 
     private String key;
 

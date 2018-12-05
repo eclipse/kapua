@@ -17,6 +17,8 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.ConfirmPasswordUpdateFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.PasswordUpdateFieldValidator;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
@@ -85,6 +87,15 @@ public class CredentialEditDialog extends CredentialAddDialog {
         expirationDate.setValue(selectedCredential.getExpirationDate());
         credentialStatus.setSimpleValue(selectedCredential.getCredentialStatusEnum());
         optlock.setValue(selectedCredential.getOptlock());
+        if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.API_KEY) {
+            expirationDate.setToolTip(MSGS.dialogAddFieldExpirationDateApiKeyTooltip());
+            credentialStatus.setToolTip(MSGS.dialogAddStatusApiKeyTooltip());
+        } else if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.PASSWORD) {
+            passwordTooltip.show();
+            DialogUtils.resizeDialog(CredentialEditDialog.this, 400, 355);
+            expirationDate.setToolTip(MSGS.dialogAddFieldExpirationDatePasswordTooltip());
+            credentialStatus.setToolTip(MSGS.dialogAddStatusPasswordTooltip());
+        }
     }
 
     @Override
@@ -107,7 +118,7 @@ public class CredentialEditDialog extends CredentialAddDialog {
         confirmPassword.setFieldLabel(MSGS.dialogEditFieldConfirmNewPassword());
         confirmPassword.setAllowBlank(true);
         if (selectedCredential.getLockoutReset() != null && selectedCredential.getLockoutReset().after(new Date())) {
-            lockedUntil.setText(MSGS.dialogEditLockedUntil(selectedCredential.getLockoutResetFormatted()));
+            lockedUntil.setText(MSGS.dialogEditLockedUntil(DateUtils.formatDateTime(selectedCredential.getLockoutReset())));
             credentialFormPanel.add(lockedUntil);
         }
     }

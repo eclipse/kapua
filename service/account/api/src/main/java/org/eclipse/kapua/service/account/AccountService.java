@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.account;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaNamedEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
@@ -30,15 +29,7 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
 public interface AccountService extends KapuaEntityService<Account, AccountCreator>,
         KapuaUpdatableEntityService<Account>,
         KapuaNamedEntityService<Account>,
-        KapuaDomainService<AccountDomain>,
         KapuaConfigurableService {
-
-    AccountDomain ACCOUNT_DOMAIN = new AccountDomain();
-
-    @Override
-    default AccountDomain getServiceDomain() {
-        return ACCOUNT_DOMAIN;
-    }
 
     /**
      * Finds the account by account identifiers

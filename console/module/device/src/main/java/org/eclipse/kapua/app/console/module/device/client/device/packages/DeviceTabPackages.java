@@ -12,11 +12,13 @@
 package org.eclipse.kapua.app.console.module.device.client.device.packages;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabPanel;
@@ -233,7 +235,11 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
                 Boolean exitStatus = packageInstallDialog.getExitStatus();
                 if (exitStatus == null) { // Operation Aborted
-                    uninstallButton.setEnabled(false);
+                    if (installedPackageTab.getTreeGrid() != null) {
+                        installedPackageTab.getTreeGrid().getSelectionModel().fireEvent(Events.SelectionChange, 
+                                new SelectionChangedEvent<ModelData>(installedPackageTab.getTreeGrid().getSelectionModel(), 
+                                        installedPackageTab.getTreeGrid().getSelectionModel().getSelectedItems()));
+                    } 
                     return;
                 } else {
 
@@ -333,6 +339,8 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
             if (selectedEntity != null && selectedEntity.isOnline()) {
                 toolBar.enable();
                 uninstallButton.disable();
+                installButton.disable();
+                refreshButton.disable();
             } else {
                 toolBar.disable();
             }
@@ -359,4 +367,11 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
         return uninstallButton;
     }
 
+    public Button getRefreshButton() {
+        return refreshButton;
+    }
+
+    public Button getInstallButton() {
+        return installButton;
+    }
 }

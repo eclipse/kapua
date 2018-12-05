@@ -23,7 +23,7 @@ public class ObjectValueConverter {
             Class<?> clazz = value.getClass();
             if (clazz == byte[].class) {
                 stringValue = ByteArrayConverter.toString((byte[]) value);
-            } else if (clazz == byte[].class) {
+            } else if (clazz == Byte[].class) {
                 stringValue = ByteArrayConverter.toString((Byte[]) value);
             } else {
                 // String

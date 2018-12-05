@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,16 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.steps;
 
+import com.google.common.base.MoreObjects;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Optional;
 
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtilsWithResources;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
+import org.h2.tools.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,11 +49,37 @@ public class DBHelper {
      */
     public static final String DELETE_SCRIPT = "all_delete.sql";
 
-    private boolean setup;
+    private static boolean setup;
+
+    /**
+     * Web access to DB.
+     */
+    private static Server webServer;
+
+    /**
+     * TCP access to DB.
+     */
+    private static Server server;
 
     private Connection connection;
 
     public void setup() {
+        boolean h2TestServer = Boolean.parseBoolean(System.getProperty("test.h2.server", "false"))
+                || Boolean.parseBoolean(System.getenv("test.h2.server"));
+        if (h2TestServer) {
+            // Start external server to provide access to in mem H2 database
+            if ((webServer == null) && (server == null)) {
+                if (h2TestServer) {
+                    try {
+                        webServer = Server.createWebServer("-webAllowOthers", "-webPort", "8082").start();
+                        server = Server.createTcpServer("-tcpAllowOthers", "-tcpPort", "9092").start();
+                        logger.info("H2 TCP and Web server started.");
+                    } catch (SQLException e) {
+                        logger.warn("Error setting up H2 web server.", e);
+                    }
+                }
+            }
+        }
         if (this.setup) {
             return;
         }
@@ -63,7 +92,7 @@ public class DBHelper {
         SystemSetting config = SystemSetting.getInstance();
         String dbUsername = config.getString(SystemSettingKey.DB_USERNAME);
         String dbPassword = config.getString(SystemSettingKey.DB_PASSWORD);
-        // String schema = firstNonNull(config.getString(DB_SCHEMA_ENV), config.getString(DB_SCHEMA));
+        String schema = MoreObjects.firstNonNull(config.getString(SystemSettingKey.DB_SCHEMA_ENV), config.getString(SystemSettingKey.DB_SCHEMA));
 
         String jdbcUrl = JdbcConnectionUrlResolvers.resolveJdbcUrl();
 
@@ -78,8 +107,26 @@ public class DBHelper {
             throw new RuntimeException(e);
         }
 
-        new KapuaLiquibaseClient(jdbcUrl, dbUsername, dbPassword).update();
+        new KapuaLiquibaseClient(jdbcUrl, dbUsername, dbPassword, Optional.ofNullable(schema)).update();
 
+    }
+
+    public void close() {
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if ((server != null) && (server.isRunning(true))) {
+            server.shutdown();
+            server = null;
+        }
+        if ((webServer != null) && (webServer.isRunning(true))) {
+            webServer.shutdown();
+            webServer = null;
+        }
     }
 
     @After(order = HookPriorities.DATABASE)
@@ -98,6 +145,14 @@ public class DBHelper {
                 connection = null;
             }
 
+        }
+        if ((server != null) && (server.isRunning(true))) {
+            server.shutdown();
+            server = null;
+        }
+        if ((webServer != null) && (webServer.isRunning(true))) {
+            webServer.shutdown();
+            webServer = null;
         }
 
     }

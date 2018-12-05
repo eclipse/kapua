@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.endpoint;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.KapuaDomainService;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 
@@ -23,15 +22,7 @@ import org.eclipse.kapua.service.KapuaUpdatableEntityService;
  * @since 1.0.0
  */
 public interface EndpointInfoService extends KapuaEntityService<EndpointInfo, EndpointInfoCreator>,
-        KapuaUpdatableEntityService<EndpointInfo>,
-        KapuaDomainService<EndpointInfoDomain> {
-
-    EndpointInfoDomain ENDPOINT_INFO_DOMAIN = new EndpointInfoDomain();
-
-    @Override
-    default EndpointInfoDomain getServiceDomain() {
-        return ENDPOINT_INFO_DOMAIN;
-    }
+        KapuaUpdatableEntityService<EndpointInfo> {
 
     /**
      * Returns the {@link EndpointInfoListResult} with elements matching the provided query.

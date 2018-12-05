@@ -25,20 +25,14 @@ import java.util.Set;
  *
  * @since 1.0.0
  */
-public class DomainDomain extends AbstractDomain implements Domain {
+public class DomainDomain extends AbstractDomain {
 
     private String name = "domain";
-    private String serviceName = DomainRegistryService.class.getName();
     private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write));
 
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public String getServiceName() {
-        return serviceName;
     }
 
     @Override

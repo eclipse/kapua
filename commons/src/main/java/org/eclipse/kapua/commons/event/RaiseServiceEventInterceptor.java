@@ -183,7 +183,7 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
                 serviceEventBus.setStatus(newServiceEventStatus);
                 ((AbstractKapuaService) invocation.getThis()).getEntityManagerSession().onTransactedAction(
                         em -> EventStoreDAO.update(em,
-                                ServiceEventUtil.mergeToEntity(EventStoreDAO.find(em, KapuaEid.parseCompactId(serviceEventBus.getId())), serviceEventBus)));
+                                ServiceEventUtil.mergeToEntity(EventStoreDAO.find(em, serviceEventBus.getScopeId(), KapuaEid.parseCompactId(serviceEventBus.getId())), serviceEventBus)));
             } catch (Throwable t) {
                 // this may be a valid condition if the HouseKeeper is doing the update concurrently with this task
                 LOG.warn("Error updating event status: {}", t.getMessage(), t);

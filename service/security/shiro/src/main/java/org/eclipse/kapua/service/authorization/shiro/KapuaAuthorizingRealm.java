@@ -29,7 +29,7 @@ import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
-import org.eclipse.kapua.service.authorization.access.AccessInfoPredicates;
+import org.eclipse.kapua.service.authorization.access.AccessInfoAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
@@ -100,7 +100,7 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
         //
         // Get user access infos
         AccessInfoQuery accessInfoQuery = accessInfoFactory.newQuery(user.getScopeId());
-        QueryPredicate predicate = new AttributePredicateImpl<KapuaId>(AccessInfoPredicates.USER_ID, user.getId());
+        QueryPredicate predicate = new AttributePredicateImpl<KapuaId>(AccessInfoAttributes.USER_ID, user.getId());
         accessInfoQuery.setPredicate(predicate);
 
         final KapuaListResult<AccessInfo> accessInfos;

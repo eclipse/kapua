@@ -44,12 +44,14 @@ public class GroupAddDialog extends EntityAddEditDialog {
 
     @Override
     public void createBody() {
+        submitButton.disable();
         FormPanel groupFormPanel = new FormPanel(FORM_LABEL_WIDTH);
         groupNameField = new KapuaTextField<String>();
         groupNameField.setAllowBlank(false);
         groupNameField.setMaxLength(255);
         groupNameField.setFieldLabel("* " + MSGS.dialogAddFieldName());
         groupNameField.setValidator(new TextFieldValidator(groupNameField, FieldType.NAME));
+        groupNameField.setToolTip(MSGS.dialogAddFieldNameTooltip());
         groupFormPanel.add(groupNameField);
         bodyPanel.add(groupFormPanel);
     }

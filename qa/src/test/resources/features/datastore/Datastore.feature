@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 Eurotech and/or its affiliates and others
+# Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -13,15 +13,17 @@
 @datastore
 Feature: Datastore tests
 
-  @StartEventBroker
-  Scenario: Start event broker for all scenarios
-
-  @StartBroker
-  Scenario: Start broker for all scenarios
-
-  @StartDatastore
   Scenario: Start datastore for all scenarios
 
+    Given Start Datastore
+
+  Scenario: Start event broker for all scenarios
+
+    Given Start Event Broker
+
+  Scenario: Start broker for all scenarios
+
+    Given Start Broker
   Scenario: Delete items by the datastore ID
     Delete a previously stored message and verify that it is not in the store any more. Also delete and check the
     message related channel, metric and client info entries.
@@ -654,11 +656,14 @@ Feature: Datastore tests
       |tba_2/1/1/3 |
     And All indices are deleted
 
-  @StopBroker
   Scenario: Stop broker after all scenarios
 
-  @StopDatastore
+    Given Stop Broker
+
+  Scenario: Stop event broker for all scenarios
+
+    Given Stop Event Broker
+
   Scenario: Stop datastore after all scenarios
 
-  @StopEventBroker
-  Scenario: Stop event broker for all scenarios
+    Given Stop Datastore

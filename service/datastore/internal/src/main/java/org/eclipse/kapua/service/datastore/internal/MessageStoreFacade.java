@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import com.codahale.metrics.Counter;
+
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
@@ -26,6 +27,7 @@ import org.eclipse.kapua.service.datastore.client.ClientException;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
 import org.eclipse.kapua.service.datastore.client.DatastoreClient;
 import org.eclipse.kapua.service.datastore.client.QueryMappingException;
+import org.eclipse.kapua.service.datastore.client.model.IndexRequest;
 import org.eclipse.kapua.service.datastore.client.model.InsertRequest;
 import org.eclipse.kapua.service.datastore.client.model.InsertResponse;
 import org.eclipse.kapua.service.datastore.client.model.ResultList;
@@ -33,7 +35,6 @@ import org.eclipse.kapua.service.datastore.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreChannel;
-import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageInfo;
@@ -64,11 +65,15 @@ import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -349,22 +354,6 @@ public final class MessageStoreFacade {
         client.deleteByQuery(typeDescriptor, query);
     }
 
-    /**
-     * Delete the data messages by date range.<br>
-     * Date range must be valid (so no null dates and start date before end date).<br>
-     * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
-     * It just deletes the messages that matching the date range without checking the consistency of the registries.</b>
-     *
-     * @param scopeId
-     * @param startDate
-     * @param endDate
-     * @throws ClientException
-     * @throws DatastoreException
-     */
-    public void deleteByDate(KapuaId scopeId, Date startDate, Date endDate) throws ClientException, DatastoreException {
-        client.deleteIndexes(DatastoreUtils.convertToDataIndexes(scopeId, startDate.toInstant(), endDate.toInstant()));
-    }
-
     // TODO cache will not be reset from the client code it should be automatically reset
     // after some time.
     private void resetCache(KapuaId scopeId, KapuaId deviceId, String channel, String clientId)
@@ -546,6 +535,12 @@ public final class MessageStoreFacade {
         datastoreMessage.setId(message.getId());
         datastoreMessage.setDatastoreId(new StorableIdImpl(messageId));
         return datastoreMessage;
+    }
+
+    private List<String> getDataIndexesByAccount(KapuaId scopeId) throws ClientException {
+        List<String> result = new ArrayList<>();
+        result.addAll(Arrays.asList(client.findIndexes(new IndexRequest(scopeId.toStringId() + "-*")).getIndexes()));
+        return result;
     }
 
     public void refreshAllIndexes() throws ClientException {

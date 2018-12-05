@@ -28,11 +28,11 @@ public abstract class DeviceEventExporter {
             "Account ID",
             "Account Name",
             "Event ID",
-            "Created On",
+            "Created On (UTC)",
             "Created By",
             "Device ID",
-            "Received On",
-            "Sent On",
+            "Received On (UTC)",
+            "Sent On (UTC)",
             "Position Longitude",
             "Position Latitude",
             "Position Altitude",
@@ -54,7 +54,7 @@ public abstract class DeviceEventExporter {
         this.response = response;
     }
 
-    public abstract void init(String account)
+    public abstract void init(String account, String deviceName)
             throws ServletException, IOException, KapuaException;
 
     public abstract void append(KapuaListResult<DeviceEvent> messages)

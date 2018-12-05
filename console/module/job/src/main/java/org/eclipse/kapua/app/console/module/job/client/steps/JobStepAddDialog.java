@@ -98,12 +98,15 @@ public class JobStepAddDialog extends EntityAddEditDialog {
 
     @Override
     public void createBody() {
+        submitButton.disable();
         FormPanel jobStepFormPanel = new FormPanel(FORM_LABEL_WIDTH);
 
         jobStepName.setFieldLabel("* " + JOB_MSGS.dialogAddStepJobNameLabel());
+        jobStepName.setToolTip(JOB_MSGS.dialogAddStepNameTooltip());
         jobStepName.setAllowBlank(false);
 
         jobStepDescription.setFieldLabel(JOB_MSGS.dialogAddStepJobDescriptionLabel());
+        jobStepDescription.setToolTip(JOB_MSGS.dialogAddStepDescriptionTooltip());
         jobStepDescription.setMaxLength(8192);
 
         GwtJobStepDefinitionQuery query = new GwtJobStepDefinitionQuery();
@@ -121,6 +124,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         jobStepDefinitionCombo.setStore(jobStepDefinitionStore);
         jobStepDefinitionCombo.setDisplayField("jobStepDefinitionName");
         jobStepDefinitionCombo.setFieldLabel("* " + JOB_MSGS.dialogAddStepDefinitionCombo());
+        jobStepDefinitionCombo.setToolTip(JOB_MSGS.dialogAddStepDefinitionComboTooltip());
         jobStepDefinitionCombo.setEmptyText(JOB_MSGS.dialogAddStepDefinitionComboEmpty());
         jobStepDefinitionCombo.setEditable(false);
         jobStepDefinitionCombo.setAllowBlank(false);
@@ -225,6 +229,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
                 numberField.setEmptyText(KapuaSafeHtmlUtils.htmlUnescape(property.getPropertyValue()));
                 numberField.setData(PROPERTY_TYPE, property.getPropertyType());
                 numberField.setData(PROPERTY_NAME, property.getPropertyName());
+                numberField.setToolTip(JOB_MSGS.dialogAddStepTimeoutTooltip());
                 if (propertyType.equals(Long.class.getName())) {
                     numberField.setMaxValue(MAX_SAFE_INTEGER);
                 } else if (propertyType.equals(Integer.class.getName())) {

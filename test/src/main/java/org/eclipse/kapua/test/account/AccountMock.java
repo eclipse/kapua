@@ -162,4 +162,14 @@ public class AccountMock implements Account {
 
     }
 
+    @Override
+    public Date getExpirationDate() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setExpirationDate(Date expirationDate) {
+        // TODO Auto-generated method stub
+    }
 }

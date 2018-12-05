@@ -12,7 +12,6 @@
 package org.eclipse.kapua.service.authorization.domain;
 
 import org.eclipse.kapua.model.KapuaEntityFactory;
-import org.eclipse.kapua.service.KapuaService;
 
 /**
  * {@link Domain} object factory.
@@ -25,10 +24,9 @@ public interface DomainFactory extends KapuaEntityFactory<Domain, DomainCreator,
      * Instantiate a new {@link DomainCreator} implementing object with the provided parameters.
      *
      * @param name        The {@link Domain} name to set.
-     * @param serviceName The {@link KapuaService} the uses this {@link Domain}.
      * @return A instance of the implementing class of {@link Domain}.
      * @since 1.0.0
      */
-    DomainCreator newCreator(String name, String serviceName);
+    DomainCreator newCreator(String name);
 
 }

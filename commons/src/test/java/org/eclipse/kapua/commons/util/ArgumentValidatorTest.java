@@ -13,14 +13,17 @@ package org.eclipse.kapua.commons.util;
 
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
+import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
+@Category(JUnitTests.class)
 public class ArgumentValidatorTest extends Assert {
 
     @Test

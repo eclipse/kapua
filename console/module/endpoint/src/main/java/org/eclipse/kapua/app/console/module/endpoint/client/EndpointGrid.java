@@ -68,6 +68,7 @@ public class EndpointGrid extends EntityGrid<GwtEndpoint> {
 
         ColumnConfig columnConfig = new ColumnConfig("id", MSGS.gridEndpointColumnHeaderId(), 100);
         columnConfig.setHidden(true);
+        columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("schema", MSGS.gridEndpointColumnHeaderEndpointSchema(), 200);

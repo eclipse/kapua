@@ -36,6 +36,7 @@ import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImpl;
 import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
+import org.eclipse.kapua.service.authentication.shiro.exceptions.ExpiredAccountException;
 import org.eclipse.kapua.service.authentication.shiro.utils.JwtProcessors;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
@@ -149,6 +150,11 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm implements Destr
             throw e;
         } catch (Exception e) {
             throw new ShiroException("Error while find account!", e);
+        }
+
+        // Check account expired
+        if (account.getExpirationDate() != null && !account.getExpirationDate().after(new Date())) {
+            throw new ExpiredAccountException(account.getExpirationDate());
         }
 
         // Check account existence

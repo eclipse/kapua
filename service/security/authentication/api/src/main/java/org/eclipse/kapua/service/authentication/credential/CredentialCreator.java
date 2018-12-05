@@ -85,6 +85,7 @@ public interface CredentialCreator extends KapuaEntityCreator<Credential> {
      *
      * @param plainKey
      */
+    @ApiModelProperty(name = "credentialKey")
     void setCredentialPlainKey(String plainKey);
 
     @XmlElement(name = "expirationDate")
