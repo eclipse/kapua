@@ -28,6 +28,7 @@ import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.scheduler.SchedulerDomains;
+import org.eclipse.kapua.service.scheduler.trigger.RetryIntervalAndCronSelectedException;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
@@ -94,6 +95,10 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(triggerCreator.getName());
+        }
+
+        if (triggerCreator.getRetryInterval() != null && triggerCreator.getCronScheduling() != null) {
+            throw new RetryIntervalAndCronSelectedException(triggerCreator.getScopeId());
         }
 
         //
