@@ -214,4 +214,8 @@ public class FileUploadDialog extends Dialog {
         status.show();
         formPanel.submit();
     }
+
+    public FileUploadField getFileUploadField() {
+        return fileUploadField;
+    }
 }
