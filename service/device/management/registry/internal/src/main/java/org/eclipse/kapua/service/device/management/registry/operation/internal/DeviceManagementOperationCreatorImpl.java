@@ -33,6 +33,7 @@ public class DeviceManagementOperationCreatorImpl extends AbstractKapuaEntityCre
     private KapuaMethod action;
     private String resource;
     private OperationStatus status;
+    private int totalCheckpoints;
     private List<DeviceManagementOperationProperty> inputProperties;
 
     public DeviceManagementOperationCreatorImpl(KapuaId scopeId) {
@@ -107,6 +108,16 @@ public class DeviceManagementOperationCreatorImpl extends AbstractKapuaEntityCre
     @Override
     public void setStatus(OperationStatus status) {
         this.status = status;
+    }
+
+    @Override
+    public int getTotalCheckpoints() {
+        return totalCheckpoints;
+    }
+
+    @Override
+    public void setTotalCheckpoints(int totalCheckpoints) {
+        this.totalCheckpoints = totalCheckpoints;
     }
 
     @Override

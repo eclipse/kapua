@@ -96,8 +96,8 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
                 try {
                     deviceRegistryService.update(device);
                 } catch (KapuaOptimisticLockingException kole) {
-                    LOG.warn("Update of field 'lastEventOn' failed due to concurrent updates on the device: {} ({}). Error: {}", device.getId(), device.getClientId(), kole.getMessage());
-                    LOG.debug("Update of field 'lastEventOn' failed due to concurrent updates on the device: {} ({}). See following exception...", device.getId(), device.getClientId());
+                    LOG.warn("Update of field 'lastEventOn' failed due to concurrent updates on the device: {} ({}) - {} {}. Error: {}", device.getId(), device.getClientId(), deviceEvent.getReceivedOn(), deviceEvent.getResource(),kole.getMessage());
+                    LOG.debug("Update of field 'lastEventOn' failed due to concurrent updates on the device: {} ({}) - {} {}. See following exception...", device.getId(), device.getClientId(), deviceEvent.getReceivedOn(), deviceEvent.getResource());
                     LOG.debug("Error:", kole);
                 }
             }

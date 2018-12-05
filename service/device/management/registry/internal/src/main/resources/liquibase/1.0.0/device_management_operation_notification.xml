@@ -44,6 +44,10 @@
             <column name="progress" type="int unsigned">
                 <constraints nullable="false"/>
             </column>
+            <column name="checkpoint" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+
         </createTable>
 
         <sql dbms="h2">ALTER TABLE dvcm_device_management_operation_notification ADD CHECK scope_id >= 0;</sql>

@@ -52,6 +52,10 @@ public class ManagementOperationNotificationImpl extends AbstractKapuaEntity imp
     @Column(name = "progress", nullable = false, updatable = false)
     private Integer progress;
 
+    @Basic
+    @Column(name = "checkpoint", nullable = false, updatable = false)
+    private boolean checkpoint;
+
     private ManagementOperationNotificationImpl() {
         super();
     }
@@ -98,5 +102,15 @@ public class ManagementOperationNotificationImpl extends AbstractKapuaEntity imp
     @Override
     public void setProgress(Integer progress) {
         this.progress = progress;
+    }
+
+    @Override
+    public boolean getCheckpoint() {
+        return checkpoint;
+    }
+
+    @Override
+    public void setCheckpoint(boolean checkpoint) {
+        this.checkpoint = checkpoint;
     }
 }

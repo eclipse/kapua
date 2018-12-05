@@ -61,4 +61,9 @@ public interface ManagementOperationNotification extends KapuaEntity {
 
     void setProgress(Integer progress);
 
+    @XmlElement(name = "checkpoint")
+    boolean getCheckpoint();
+
+    void setCheckpoint(boolean checkpoint);
+
 }

@@ -85,6 +85,11 @@ public interface DeviceManagementOperation extends KapuaUpdatableEntity {
 
     void setStatus(OperationStatus status);
 
+    @XmlElement(name = "totalCheckpoints")
+    int getTotalCheckpoints();
+
+    void setTotalCheckpoints(int totalCheckpoints);
+
     @XmlElementWrapper(name = "operationProperties")
     @XmlElement(name = "operationProperty")
     <P extends DeviceManagementOperationProperty> List<P> getInputProperties();

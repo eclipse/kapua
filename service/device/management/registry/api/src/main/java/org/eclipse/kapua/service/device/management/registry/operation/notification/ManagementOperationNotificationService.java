@@ -15,7 +15,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 
-public interface ManagementOperationNotificationRegistryService
+public interface ManagementOperationNotificationService
         extends
         KapuaEntityService<ManagementOperationNotification, ManagementOperationNotificationCreator> {
 

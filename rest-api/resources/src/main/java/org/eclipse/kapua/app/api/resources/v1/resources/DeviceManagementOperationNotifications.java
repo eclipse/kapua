@@ -28,7 +28,7 @@ import org.eclipse.kapua.service.device.management.registry.operation.notificati
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationListResult;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationQuery;
-import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationRegistryService;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationService;
 import org.eclipse.kapua.service.device.registry.Device;
 
 import javax.ws.rs.Consumes;
@@ -48,7 +48,7 @@ import javax.ws.rs.core.Response;
 public class DeviceManagementOperationNotifications extends AbstractKapuaResource {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final ManagementOperationNotificationRegistryService managementOperationNotificationRegistryService = locator.getService(ManagementOperationNotificationRegistryService.class);
+    private final ManagementOperationNotificationService managementOperationNotificationService = locator.getService(ManagementOperationNotificationService.class);
     private final ManagementOperationNotificationFactory managementOperationNotificationFactory = locator.getFactory(ManagementOperationNotificationFactory.class);
 
     /**
@@ -113,7 +113,7 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
         andPredicate.and(new AttributePredicateImpl<>(ManagementOperationNotificationAttributes.OPERATION_ID, operationId));
         query.setPredicate(andPredicate);
 
-        return managementOperationNotificationRegistryService.query(query);
+        return managementOperationNotificationService.query(query);
     }
 
     /**
@@ -139,7 +139,7 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
         query.setScopeId(scopeId);
         query.setPredicate(new AttributePredicateImpl<>(ManagementOperationNotificationAttributes.OPERATION_ID, operationId));
 
-        return new CountResult(managementOperationNotificationRegistryService.count(query));
+        return new CountResult(managementOperationNotificationService.count(query));
     }
 
     /**
@@ -171,7 +171,7 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
         query.setOffset(0);
         query.setLimit(1);
 
-        ManagementOperationNotificationListResult results = managementOperationNotificationRegistryService.query(query);
+        ManagementOperationNotificationListResult results = managementOperationNotificationService.query(query);
 
         if (!results.isEmpty()) {
             return results.getFirstItem();
@@ -197,7 +197,7 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
             @ApiParam(value = "The device id to filter results.") @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "The id of the Device in which to delete the ManagementOperation.", required = true) @PathParam("operationId") EntityId operationId,
             @ApiParam(value = "The id of the ManagementOperationNotification to be deleted", required = true) @PathParam("managementOperationNotificationId") EntityId managementOperationNotificationId) throws Exception {
-        managementOperationNotificationRegistryService.delete(scopeId, managementOperationNotificationId);
+        managementOperationNotificationService.delete(scopeId, managementOperationNotificationId);
 
         return returnOk();
     }

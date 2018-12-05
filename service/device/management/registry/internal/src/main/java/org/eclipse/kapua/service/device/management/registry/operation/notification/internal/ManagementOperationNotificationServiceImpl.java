@@ -30,10 +30,10 @@ import org.eclipse.kapua.service.device.management.registry.operation.internal.D
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationCreator;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationListResult;
-import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationRegistryService;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationService;
 
 @KapuaProvider
-public class ManagementOperationNotificationRegistryServiceImpl extends AbstractKapuaService implements ManagementOperationNotificationRegistryService {
+public class ManagementOperationNotificationServiceImpl extends AbstractKapuaService implements ManagementOperationNotificationService {
 
     private static KapuaLocator locator = KapuaLocator.getInstance();
 
@@ -42,7 +42,7 @@ public class ManagementOperationNotificationRegistryServiceImpl extends Abstract
 
     private static DeviceManagementOperationRegistryService deviceManagementOperationRegistryService = locator.getService(DeviceManagementOperationRegistryService.class);
 
-    protected ManagementOperationNotificationRegistryServiceImpl() {
+    protected ManagementOperationNotificationServiceImpl() {
         super(DeviceManagementOperationEntityManagerFactory.getInstance());
     }
 

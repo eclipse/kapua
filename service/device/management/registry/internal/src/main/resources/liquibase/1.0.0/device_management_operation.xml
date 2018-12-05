@@ -58,6 +58,9 @@
             <column name="status" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="total_checkpoints" type="int">
+                <constraints nullable="false"/>
+            </column>
 
             <column name="optlock" type="int unsigned"/>
             <column name="attributes" type="text"/>

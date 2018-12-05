@@ -197,7 +197,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
         //
         // Create device management operation
-        createManagementOperation(scopeId, deviceId, operationId, packageRequestMessage);
+        createManagementOperation(scopeId, deviceId, operationId, 1, packageRequestMessage);
 
         //
         // Do get
@@ -343,7 +343,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
         //
         // Create device management operation
-        createManagementOperation(scopeId, deviceId, operationId, packageRequestMessage);
+        createManagementOperation(scopeId, deviceId, operationId, packageDownloadRequest.getInstall() ? 2 : 1, packageRequestMessage);
 
         //
         // Do exec
@@ -522,7 +522,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
         //
         // Create device management operation
-        createManagementOperation(scopeId, deviceId, operationId, packageRequestMessage);
+        createManagementOperation(scopeId, deviceId, operationId, 1, packageRequestMessage);
 
         //
         // Do get

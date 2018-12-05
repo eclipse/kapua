@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.device.management.registry.manager;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -32,7 +33,7 @@ import org.eclipse.kapua.service.device.management.registry.operation.notificati
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationListResult;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationQuery;
-import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationRegistryService;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +48,7 @@ public interface DeviceManagementRegistryManagerService extends KapuaService {
     DeviceManagementOperationRegistryService DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE = LOCATOR.getService(DeviceManagementOperationRegistryService.class);
     DeviceManagementOperationFactory DEVICE_MANAGEMENT_OPERATION_FACTORY = LOCATOR.getFactory(DeviceManagementOperationFactory.class);
 
-    ManagementOperationNotificationRegistryService MANAGEMENT_OPERATION_NOTIFICATION_REGISTRY_SERVICE = LOCATOR.getService(ManagementOperationNotificationRegistryService.class);
+    ManagementOperationNotificationService MANAGEMENT_OPERATION_NOTIFICATION_REGISTRY_SERVICE = LOCATOR.getService(ManagementOperationNotificationService.class);
     ManagementOperationNotificationFactory MANAGEMENT_OPERATION_NOTIFICATION_FACTORY = LOCATOR.getFactory(ManagementOperationNotificationFactory.class);
 
 
@@ -78,15 +79,7 @@ public interface DeviceManagementRegistryManagerService extends KapuaService {
 
 
     default void processRunningNotification(KapuaId scopeId, KapuaId operationId, Date updateOn, Integer progress) throws KapuaException {
-        DeviceManagementOperation deviceManagementOperation = getDeviceManagementOperation(scopeId, operationId);
-
-        ManagementOperationNotificationCreator managementOperationNotificationCreator = MANAGEMENT_OPERATION_NOTIFICATION_FACTORY.newCreator(scopeId);
-        managementOperationNotificationCreator.setOperationId(deviceManagementOperation.getId());
-        managementOperationNotificationCreator.setStatus(OperationStatus.RUNNING);
-        managementOperationNotificationCreator.setSentOn(updateOn);
-        managementOperationNotificationCreator.setProgress(progress);
-
-        MANAGEMENT_OPERATION_NOTIFICATION_REGISTRY_SERVICE.create(managementOperationNotificationCreator);
+        addManagementNotification(scopeId, operationId, updateOn, OperationStatus.RUNNING, progress, false);
     }
 
     default void processFailedNotification(KapuaId scopeId, KapuaId operationId, Date updateOn) throws KapuaException {
@@ -94,7 +87,56 @@ public interface DeviceManagementRegistryManagerService extends KapuaService {
     }
 
     default void processCompletedNotification(KapuaId scopeId, KapuaId operationId, Date updateOn) throws KapuaException {
-        closeDeviceManagementOperation(scopeId, operationId, updateOn, OperationStatus.COMPLETED);
+
+        DeviceManagementOperation deviceManagementOperation = getDeviceManagementOperation(scopeId, operationId);
+
+        if (deviceManagementOperation.getTotalCheckpoints() == 1) {
+            closeDeviceManagementOperation(scopeId, operationId, updateOn, OperationStatus.COMPLETED);
+        }
+        else {
+
+            // defer a bit the count to allow close notifications to allow close checkpoint notifications to be registered.
+            Object timer = new Object();
+            synchronized (timer){
+                try {
+                    timer.wait(2000);
+                } catch (InterruptedException e) {
+                    LOG.warn("Interrupted exception", e);
+                    Thread.currentThread().interrupt();
+                }
+            }
+
+            ManagementOperationNotificationQuery notificationQuery = MANAGEMENT_OPERATION_NOTIFICATION_FACTORY.newQuery(scopeId);
+            notificationQuery.setPredicate(
+                    new AndPredicateImpl(
+                            new AttributePredicateImpl<>(ManagementOperationNotificationAttributes.OPERATION_ID, deviceManagementOperation.getId()),
+                            new AttributePredicateImpl<>(ManagementOperationNotificationAttributes.CHECKPOINT, true)
+                    )
+            );
+
+            long currentCheckpointsCount = MANAGEMENT_OPERATION_NOTIFICATION_REGISTRY_SERVICE.count(notificationQuery);
+
+            if (currentCheckpointsCount + 1 >= deviceManagementOperation.getTotalCheckpoints()) {
+                closeDeviceManagementOperation(scopeId, operationId, updateOn, OperationStatus.COMPLETED);
+            }
+            else {
+                addManagementNotification(scopeId, operationId, updateOn, OperationStatus.COMPLETED, 100, true);
+            }
+        }
+
+    }
+
+    default void addManagementNotification(KapuaId scopeId, KapuaId operationId, Date updateOn, OperationStatus operationStatus, Integer progress, boolean checkpoint) throws KapuaException {
+        DeviceManagementOperation deviceManagementOperation = getDeviceManagementOperation(scopeId, operationId);
+
+        ManagementOperationNotificationCreator managementOperationNotificationCreator = MANAGEMENT_OPERATION_NOTIFICATION_FACTORY.newCreator(scopeId);
+        managementOperationNotificationCreator.setOperationId(deviceManagementOperation.getId());
+        managementOperationNotificationCreator.setSentOn(updateOn);
+        managementOperationNotificationCreator.setStatus(operationStatus);
+        managementOperationNotificationCreator.setProgress(progress);
+        managementOperationNotificationCreator.setCheckpoint(checkpoint);
+
+        MANAGEMENT_OPERATION_NOTIFICATION_REGISTRY_SERVICE.create(managementOperationNotificationCreator);
     }
 
     default void closeDeviceManagementOperation(KapuaId scopeId, KapuaId operationId, Date updateOn, OperationStatus finalStatus) throws KapuaException {
@@ -113,6 +155,7 @@ public interface DeviceManagementRegistryManagerService extends KapuaService {
                 DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.update(deviceManagementOperation);
 
                 LOG.info("Update DeviceManagementOperation {} with status {}...  SUCCEEDED!", operationId, finalStatus);
+                break;
             } catch (Exception e) {
                 failed = true;
                 attempts++;
