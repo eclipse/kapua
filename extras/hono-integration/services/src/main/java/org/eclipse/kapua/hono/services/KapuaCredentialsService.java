@@ -139,5 +139,4 @@ public class KapuaCredentialsService extends BaseCredentialsService<Object> {
     public void getAll(String s, String s1, Handler<AsyncResult<CredentialsResult<JsonObject>>> handler) {
         //TODO implement
     }
-
 }

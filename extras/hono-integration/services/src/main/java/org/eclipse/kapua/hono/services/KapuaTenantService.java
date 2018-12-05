@@ -53,7 +53,6 @@ public class KapuaTenantService extends BaseTenantService<Object> {
         JAXBContextProvider brokerProvider = new BrokerJAXBContextProvider();
         XmlUtil.setContextProvider(brokerProvider);
         accountService = locator.getService(AccountService.class);
-
     }
 
     @Override
