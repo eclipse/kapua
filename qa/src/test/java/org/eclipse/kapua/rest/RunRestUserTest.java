@@ -32,9 +32,8 @@ import org.junit.runner.RunWith;
 @CucumberProperty(key="commons.db.schema", value="kapuadb")
 @CucumberProperty(key="commons.db.schema.update", value="true")
 @CucumberProperty(key="commons.db.connection.host", value="localhost")
-@CucumberProperty(key="commons.db.connection.port", value="9092")
-@CucumberProperty(key="commons.db.name", value="mem:kapua")
-@CucumberProperty(key="test.h2.server", value="true")
+@CucumberProperty(key="commons.db.connection.port", value="3306")
+@CucumberProperty(key="test.h2.server", value="false")
 @CucumberProperty(key="h2.bindAddress", value="127.0.0.1")
 public class RunRestUserTest {
 }

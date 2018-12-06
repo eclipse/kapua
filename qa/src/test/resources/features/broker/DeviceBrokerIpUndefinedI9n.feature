@@ -10,6 +10,7 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @broker
+@integration
 Feature: Device Broker connection ip not set
   Device Service integration scenarios with running broker service.
 
@@ -39,11 +40,6 @@ Feature: Device Broker connection ip not set
     When I start the Kura Mock
     And Device birth message is sent
     And I wait 5 seconds for system to receive and process that message
-# TODO Remove this when implementation without local interfaces scan is ready
-#    And I login as user with name "kapua-sys" and password "kapua-password"
-#    Then Device is connected with "192.168.33.10" server ip
-#    Then An exception was thrown
-#    And I logout
     And Device death message is sent
     And I wait 5 seconds for system to receive and process that message
 

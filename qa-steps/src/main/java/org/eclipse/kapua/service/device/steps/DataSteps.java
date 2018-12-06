@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Red Hat Inc and others.
+ * Copyright (c) 2017, 2018 Red Hat Inc and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.device.steps;
 
 import java.time.Instant;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.device.steps.With;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -76,6 +75,12 @@ public class DataSteps {
     public DataSteps(final SimulatorDevice currentDevice, final Session session) {
         this.currentDevice = currentDevice;
         this.session = session;
+    }
+
+    @Given("I delete indexes \"(.*)\"")
+    public void deleteIndexes(String indexExp) throws Exception {
+        DatastoreMediator.getInstance().deleteIndexes(indexExp);
+        DatastoreMediator.getInstance().refreshAllIndexes();
     }
 
     @Given("I have a mock data application named \"(.*)\"")
@@ -173,6 +178,28 @@ public class DataSteps {
                 // different approach -> same result
 
                 Assert.assertEquals(numberOfMessages, service.count(query));
+            });
+        });
+    }
+
+    @Then("I delete the messages for this device")
+    public void deleteMessages() throws Exception {
+        final MessageStoreService service = KapuaLocator.getInstance().getService(MessageStoreService.class);
+        session.withLogin(() -> {
+            With.withUserAccount(currentDevice.getAccountName(), account -> {
+
+                // create new query
+                final MessageQueryImpl query = new MessageQueryImpl(account.getId());
+
+                // filter for client only
+                query.setPredicate(new TermPredicateImpl(MessageField.CLIENT_ID, currentDevice.getClientId()));
+
+                // set query options
+                query.setAskTotalCount(true);
+                query.setLimit(100);
+
+                // perform delete
+                service.delete(query);
             });
         });
     }

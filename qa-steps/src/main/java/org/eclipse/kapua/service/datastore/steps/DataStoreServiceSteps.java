@@ -35,7 +35,6 @@ import org.eclipse.kapua.message.internal.device.data.KapuaDataChannelImpl;
 import org.eclipse.kapua.message.internal.device.data.KapuaDataMessageImpl;
 import org.eclipse.kapua.message.internal.device.data.KapuaDataPayloadImpl;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.qa.steps.DBHelper;
 import org.eclipse.kapua.service.StepData;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
@@ -140,8 +139,12 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
 
     private StepData stepData;
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final MessageStoreService MESSAGE_STORE_SERVICE = LOCATOR.getService(MessageStoreService.class);
+
     @Inject
-    public DataStoreServiceSteps(StepData stepData, DBHelper dbHelper) {
+    public DataStoreServiceSteps(StepData stepData) {
 
         this.stepData = stepData;
     }

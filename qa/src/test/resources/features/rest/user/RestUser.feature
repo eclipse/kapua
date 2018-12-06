@@ -10,6 +10,7 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @rest
+@integration
 Feature: REST API tests for User
   REST API test of Kapua User API.
 
@@ -19,14 +20,13 @@ Feature: REST API tests for User
 
   Scenario: Start Jetty server for all scenarios
 
-    Given Start Jetty Server on host "127.0.0.1" at port "8085"
-
+    Given Start Jetty Server on host "127.0.0.1" at port "8081"
 
   Scenario: Simple Jetty with rest-api war
     Jetty with api.war is already started, now just login with sys user and
     call GET on users to retrieve list of all users.
 
-    Given Server with host "127.0.0.1" on port "8085"
+    Given Server with host "127.0.0.1" on port "8081"
     When REST POST call at "/v1/authentication/user" with JSON "{"password": "kapua-password", "username": "kapua-sys"}"
     Then REST response containing AccessToken
     When REST GET call at "/v1/_/users?offset=0&limit=50"
@@ -50,7 +50,7 @@ Feature: REST API tests for User
     Fetch user in that account and keep his ID.
     Login into account B and search for user from previous step with its ID.
 
-    Given Server with host "127.0.0.1" on port "8085"
+    Given Server with host "127.0.0.1" on port "8081"
 # ------ Service steps ------
     When I login as user with name "kapua-sys" and password "kapua-password"
     And I configure account service

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,11 +12,13 @@
 package org.eclipse.kapua.service.tag.steps;
 
 import cucumber.api.Scenario;
+import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
+import org.eclipse.kapua.qa.steps.DBHelper;
 import org.junit.Assert;
 
 import org.eclipse.kapua.KapuaException;
@@ -61,10 +63,13 @@ public class TagServiceSteps extends BaseQATests {
      */
 //    private StepData stepData;
 
+    private DBHelper database;
+
     @Inject
-    public TagServiceSteps(StepData stepData) { 
+    public TagServiceSteps(StepData stepData, DBHelper dbHelper) {
 
         this.stepData = stepData;
+        this.database = dbHelper;
     }
 
     @Before
@@ -76,6 +81,14 @@ public class TagServiceSteps extends BaseQATests {
         this.scenario = scenario;
         stepData.clear();
 //        stepData.put("LastAccount", null);
+
+        database.unconditionalDeleteAll();
+    }
+
+    @After
+    public void afterScenario() throws KapuaException {
+
+        database.unconditionalDeleteAll();
     }
 
     @Given("^Tag Service configuration$")

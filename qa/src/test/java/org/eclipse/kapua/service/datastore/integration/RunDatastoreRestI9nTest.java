@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,10 +28,11 @@ import org.junit.runner.RunWith;
                 "json:target/DatastoreRestI9n_cucumber.json" },
         monochrome = true)
 @CucumberProperty(key="datastore.client.class", value="org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient")
-@CucumberProperty(key="broker.ip", value="192.168.33.10")
+@CucumberProperty(key="broker.ip", value="localhost")
 @CucumberProperty(key="kapua.config.url", value="")
 @CucumberProperty(key="org.eclipse.kapua.qa.datastore.extraStartupDelay", value="25")
 @CucumberProperty(key="org.eclipse.kapua.qa.broker.extraStartupDelay", value="23")
 @CucumberProperty(key="commons.settings.hotswap", value="true")
+@CucumberProperty(key="commons.db.schema", value="kapuadb")
 public class RunDatastoreRestI9nTest {
 }

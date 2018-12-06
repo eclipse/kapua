@@ -10,6 +10,7 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @user
+@integration
 Feature: User Service Integration
   User Service integration scenarios
 

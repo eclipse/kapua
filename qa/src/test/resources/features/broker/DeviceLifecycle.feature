@@ -10,6 +10,7 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @device
+@integration
 Feature: Device lifecycle scenarios
 
   Scenario: Set environment variables

@@ -32,11 +32,17 @@ public class EmbeddedDatastore {
 
     private static final int EXTRA_STARTUP_DELAY = Integer.getInteger("org.eclipse.kapua.qa.datastore.extraStartupDelay", 0);
 
+    private static final boolean NO_EMBEDDED_SERVERS = Boolean.getBoolean("org.eclipse.kapua.qa.noEmbeddedServers");
+
     private static EsEmbeddedEngine esEmbeddedEngine;
 
 
     @Given("^Start Datastore$")
     public void setup() {
+
+        if (NO_EMBEDDED_SERVERS) {
+            return;
+        }
         logger.info("starting embedded datastore");
         esEmbeddedEngine = new EsEmbeddedEngine();
         if (EXTRA_STARTUP_DELAY > 0) {
@@ -51,6 +57,10 @@ public class EmbeddedDatastore {
 
     @Given("^Stop Datastore$")
     public void closeNode() throws IOException {
+
+        if (NO_EMBEDDED_SERVERS) {
+            return;
+        }
         logger.info("closing embedded datastore");
         if (EXTRA_STARTUP_DELAY > 0) {
             try {
