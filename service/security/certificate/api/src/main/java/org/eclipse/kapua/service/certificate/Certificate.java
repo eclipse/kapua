@@ -64,6 +64,7 @@ public interface Certificate extends KapuaNamedEntity {
 
     @XmlElement(name = "signature")
     @XmlJavaTypeAdapter(BinaryXmlAdapter.class)
+    @ApiModelProperty(dataType = "string")
     byte[] getSignature();
 
     void setSignature(byte[] signature);
