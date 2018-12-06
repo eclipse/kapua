@@ -25,6 +25,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Map;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * Kapua {@link Message} {@link Payload} definition.
  *
@@ -60,6 +62,7 @@ public interface KapuaPayload extends Payload {
      */
     @XmlElement(name = "body")
     @XmlJavaTypeAdapter(BinaryXmlAdapter.class)
+    @ApiModelProperty(dataType = "string")
     public byte[] getBody();
 
     /**
