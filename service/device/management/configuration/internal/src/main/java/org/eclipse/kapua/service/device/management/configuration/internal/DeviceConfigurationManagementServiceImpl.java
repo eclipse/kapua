@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -211,7 +211,7 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
                     XmlUtil.unmarshal(xmlDeviceConfig, DeviceConfigurationImpl.class),
                     timeout);
         } catch (JAXBException | XMLStreamException | FactoryConfigurationError | SAXException e) {
-            throw new KapuaIllegalArgumentException(xmlDeviceConfig, xmlDeviceConfig);
+            throw new KapuaIllegalArgumentException("xmlDeviceConfig", xmlDeviceConfig);
         }
     }
 
