@@ -10,7 +10,6 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @broker
-@integration
 Feature: Device Broker connection ip with System environment variable
   Device Service integration scenarios with running broker service.
 
