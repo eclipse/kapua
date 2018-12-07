@@ -39,6 +39,8 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
+import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator.FieldType;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
@@ -105,7 +107,10 @@ public class FileUploadDialog extends Dialog {
                     int endIndex = htmlResponse.indexOf("</pre>");
                     if (startIdx != -1 && endIndex != -1) {
                         errMsg = htmlResponse.substring(startIdx + 5, endIndex);
-                    }
+                        if (("xmlDeviceConfig").equals(errMsg)) {
+                            errMsg = MSGS.fileUploadInvalidShapshotFailure();
+                        }
+                    } 
                     MessageBox.alert(MSGS.error(), MSGS.fileUploadFailure() + ": " + errMsg, null);
                 }
                 hide();
@@ -118,6 +123,8 @@ public class FileUploadDialog extends Dialog {
         fieldSet.setLayout(layout);
 
         fileUploadField = new FileUploadField();
+        fileUploadField.setAccept("application/xml");
+        fileUploadField.setValidator(new TextFieldValidator(fileUploadField, FieldType.SNAPSHOT_FILE));
         fileUploadField.setAllowBlank(false);
         fileUploadField.setName("uploadedFile");
         fileUploadField.setFieldLabel("File");

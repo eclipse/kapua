@@ -15,6 +15,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.eclipse.kapua.DeviceMenagementException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
+import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaUnauthenticatedException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
@@ -126,6 +127,10 @@ public class FileServlet extends KapuaHttpServlet {
         } catch (DeviceMenagementException edme) {
             logger.error("Device menagement exception", edme);
             resp.sendError(404, edme.getMessage());
+            return;
+        } catch (KapuaIllegalArgumentException kiae) {
+            logger.error("Illegal argument exception", kiae);
+            resp.sendError(400, kiae.getArgumentName());
             return;
         } catch (Exception e) {
             logger.error("Generic error", e);
