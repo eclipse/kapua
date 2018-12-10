@@ -11,6 +11,7 @@
 #
 ###############################################################################
 @datastore
+@integration
 Feature: Datastore tests
 
   Scenario: Start datastore for all scenarios
@@ -24,6 +25,7 @@ Feature: Datastore tests
   Scenario: Start broker for all scenarios
 
     Given Start Broker
+
   Scenario: Delete items by the datastore ID
     Delete a previously stored message and verify that it is not in the store any more. Also delete and check the
     message related channel, metric and client info entries.
@@ -183,8 +185,8 @@ Feature: Datastore tests
     And I logout
 
   Scenario: Check the database cache coherency
-    This test checks the coherence of the registry cache for the metrics info (so if, once the 
-    cache is erased, after a new metric insert the firstMessageId and firstMessageOn contain 
+    This test checks the coherence of the registry cache for the metrics info (so if, once the
+    cache is erased, after a new metric insert the firstMessageId and firstMessageOn contain
     the previous value)
 
     Given I login as user with name "kapua-sys" and password "kapua-password"

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 Eurotech and/or its affiliates and others
+# Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -10,6 +10,7 @@
 #     Eurotech
 ###############################################################################
 @tag
+@integration
 Feature: Tag Service
   Tag Service is responsible for CRUD operations on Tags. This service is currently
   used to attach tags to Devices, but could be used to tag eny kapua entity, like
@@ -22,14 +23,17 @@ Feature: Tag Service
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
 
-  @StartDatastore
   Scenario: Start datastore for all scenarios
 
-  @StartEventBroker
+    Given Start Datastore
+
   Scenario: Start event broker for all scenarios
 
-  @StartBroker
+    Given Start Event Broker
+
   Scenario: Start broker for all scenarios
+
+    Given Start Broker
 
   Scenario: Creating tag
     Create a tag entry, with specified name. Name is only tag specific attribute.
@@ -49,11 +53,14 @@ Feature: Tag Service
     Then Tag with name "tagName2" is found and deleted
       And I logout
 
-  @StopBroker
   Scenario: Stop broker after all scenarios
 
-  @StopEventBroker
+    Given Stop Broker
+
   Scenario: Stop event broker for all scenarios
 
-  @StopDatastore
+    Given Stop Event Broker
+
   Scenario: Stop datastore after all scenarios
+
+    Given Stop Datastore

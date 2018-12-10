@@ -45,6 +45,8 @@ public class EmbeddedEventBroker {
 
     private static final int EXTRA_STARTUP_DELAY = Integer.getInteger("org.eclipse.kapua.qa.broker.extraStartupDelay", 0);
 
+    private static final boolean NO_EMBEDDED_SERVERS = Boolean.getBoolean("org.eclipse.kapua.qa.noEmbeddedServers");
+
     private static Map<String, List<AutoCloseable>> closables = new HashMap<>();
 
     private DBHelper database;
@@ -59,6 +61,9 @@ public class EmbeddedEventBroker {
     @Given("^Start Event Broker$")
     public void start() {
 
+        if (NO_EMBEDDED_SERVERS) {
+            return;
+        }
         System.setProperty(SystemSettingKey.EVENT_BUS_URL.key(), "amqp://127.0.0.1:5672");
         database.setup();
 
@@ -90,6 +95,10 @@ public class EmbeddedEventBroker {
 
     @Given("^Stop Event Broker$")
     public void stop() {
+
+        if (NO_EMBEDDED_SERVERS) {
+            return;
+        }
         logger.info("Stopping Event Broker instance ...");
         try (final Suppressed<RuntimeException> s = Suppressed.withRuntimeException()) {
             // close all resources

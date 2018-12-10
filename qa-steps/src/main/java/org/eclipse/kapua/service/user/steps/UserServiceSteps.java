@@ -137,6 +137,8 @@ public class UserServiceSteps extends BaseQATests {
 
         this.scenario = scenario;
         this.stepData.clear();
+
+        database.unconditionalDeleteAll();
     }
 
     @After
@@ -145,6 +147,7 @@ public class UserServiceSteps extends BaseQATests {
             logger.info("Logging out in cleanup");
             SecurityUtils.getSubject().logout();
             KapuaSecurityUtils.clearSession();
+            database.unconditionalDeleteAll();
         } catch (Exception e) {
             logger.error("Failed to log out in @After", e);
         }

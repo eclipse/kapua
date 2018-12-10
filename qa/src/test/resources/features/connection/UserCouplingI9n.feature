@@ -10,6 +10,7 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @connection
+@integration
 Feature: User Coupling
 
   Scenario: Start event broker for all scenarios

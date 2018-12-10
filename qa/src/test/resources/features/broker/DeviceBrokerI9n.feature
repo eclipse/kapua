@@ -18,6 +18,7 @@ Feature: Device Broker Integration
   Scenario: Set environment variables
 
     Given System property "broker.ip" with value "localhost"
+    And System property "commons.db.connection.host" with value "localhost"
 
   Scenario: Start datastore for all scenarios
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -514,7 +514,6 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     public void deleteByQuery(TypeDescriptor typeDescriptor, Object query) throws ClientException {
         checkClient();
         JsonNode queryMap = queryConverter.convertQuery(query);
-        JsonNode deleteRequestNode = queryMap.get(SchemaKeys.KEY_QUERY);
         logger.debug("Query - converted query: '{}'", queryMap);
         Response deleteResponse = restCallTimeoutHandler(new Callable<Response>() {
 
@@ -524,7 +523,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                         POST_ACTION,
                         getDeleteByQueryPath(typeDescriptor),
                         Collections.<String, String>emptyMap(),
-                        EntityBuilder.create().setText(MAPPER.writeValueAsString(deleteRequestNode)).build(),
+                        EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).build(),
                         new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
             }
         }, typeDescriptor.getIndex(), "DELETE BY QUERY");

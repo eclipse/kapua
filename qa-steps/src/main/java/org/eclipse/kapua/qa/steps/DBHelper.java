@@ -39,6 +39,8 @@ public class DBHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(DBHelper.class);
 
+    private static final boolean NO_EMBEDDED_SERVERS = Boolean.getBoolean("org.eclipse.kapua.qa.noEmbeddedServers");
+
     /**
      * Path to root of full DB scripts.
      */
@@ -64,6 +66,10 @@ public class DBHelper {
     private Connection connection;
 
     public void setup() {
+
+        if (NO_EMBEDDED_SERVERS) {
+            return;
+        }
         boolean h2TestServer = Boolean.parseBoolean(System.getProperty("test.h2.server", "false"))
                 || Boolean.parseBoolean(System.getenv("test.h2.server"));
         if (h2TestServer) {
@@ -112,6 +118,10 @@ public class DBHelper {
     }
 
     public void close() {
+
+        if (NO_EMBEDDED_SERVERS) {
+            return;
+        }
         if (connection != null) {
             try {
                 connection.close();
@@ -155,5 +165,13 @@ public class DBHelper {
             webServer = null;
         }
 
+    }
+
+    /**
+     * Method that unconditionally deletes database.
+     */
+    public void unconditionalDeleteAll() {
+
+        KapuaConfigurableServiceSchemaUtilsWithResources.scriptSession(FULL_SCHEMA_PATH, DELETE_SCRIPT);
     }
 }

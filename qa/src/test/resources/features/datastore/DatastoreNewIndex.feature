@@ -11,6 +11,7 @@
 #
 ###############################################################################
 @datastore
+@integration
 Feature: Datastore tests
 
   Scenario: Set environment variables
