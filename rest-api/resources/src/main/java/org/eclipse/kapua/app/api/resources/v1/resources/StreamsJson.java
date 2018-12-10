@@ -15,6 +15,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
+
 import org.eclipse.kapua.app.api.resources.v1.resources.marker.JsonSerializationFixed;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonKapuaDataMessage;
@@ -35,7 +36,7 @@ import javax.ws.rs.core.Response;
 /**
  * @see JsonSerializationFixed
  */
-@Api(value = "Streams", authorizations = {@Authorization(value = "kapuaAccessToken")})
+@Api(value = "Streams", authorizations = { @Authorization(value = "kapuaAccessToken") })
 @Path("{scopeId}/streams")
 public class StreamsJson extends AbstractKapuaResource implements JsonSerializationFixed {
 
@@ -90,7 +91,7 @@ public class StreamsJson extends AbstractKapuaResource implements JsonSerializat
      */
     @POST
     @Path("messages")
-    @Consumes({MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_JSON })
     @ApiOperation(nickname = "streamPublish", value = "Publishes a fire-and-forget message", notes = "Publishes a fire-and-forget message to a topic composed of [account-name] / [client-id] / [semtantic-parts]")
     public Response publish(
             @ApiParam(value = "The ScopeId of the device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
@@ -109,15 +110,18 @@ public class StreamsJson extends AbstractKapuaResource implements JsonSerializat
         kapuaDataMessage.setChannel(jsonKapuaDataMessage.getChannel());
 
         KapuaDataPayload kapuaDataPayload = new KapuaDataPayloadImpl();
-        kapuaDataPayload.setBody(jsonKapuaDataMessage.getPayload().getBody());
 
-        jsonKapuaDataMessage.getPayload().getMetrics().forEach(
-                jsonMetric -> {
-                    String name = jsonMetric.getName();
-                    Object value = ObjectValueConverter.fromString(jsonMetric.getValue(), jsonMetric.getValueType());
+        if (jsonKapuaDataMessage.getPayload() != null) {
+            kapuaDataPayload.setBody(jsonKapuaDataMessage.getPayload().getBody());
 
-                    kapuaDataPayload.getMetrics().put(name, value);
-                });
+            jsonKapuaDataMessage.getPayload().getMetrics().forEach(
+                    jsonMetric -> {
+                        String name = jsonMetric.getName();
+                        Object value = ObjectValueConverter.fromString(jsonMetric.getValue(), jsonMetric.getValueType());
+
+                        kapuaDataPayload.getMetrics().put(name, value);
+                    });
+        }
 
         kapuaDataMessage.setPayload(kapuaDataPayload);
 

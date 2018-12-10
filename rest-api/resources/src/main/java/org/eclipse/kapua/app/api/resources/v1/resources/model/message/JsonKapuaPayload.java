@@ -25,6 +25,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.swagger.annotations.ApiModelProperty;
+
 @XmlRootElement(name = "payload")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class JsonKapuaPayload {
@@ -69,6 +71,7 @@ public class JsonKapuaPayload {
 
     @XmlElement(name = "body")
     @XmlJavaTypeAdapter(BinaryXmlAdapter.class)
+    @ApiModelProperty(dataType = "string")
     public byte[] getBody() {
         return body;
     }
