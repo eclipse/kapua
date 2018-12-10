@@ -63,7 +63,7 @@ public class TextFieldValidator implements Validator {
         SNAPSHOT_FILE("snapshot_file", "^([a-zA-Z0-9\\:\\_\\-\\\\]){1,255}(\\.xml)"),
         NAME("name", "^[a-zA-Z0-9\\_\\-]{3,}$"),
         NAME_SPACE("name_space", "^[a-zA-Z0-9\\ \\_\\-]{3,}$"),
-        PASSWORD("password", "^.*(?=.{12,})(?=.*\\p{Digit})(?=.*\\p{Lower})(?=.*\\p{Upper})(?=.*\\p{Punct}).*$"),
+        PASSWORD("password", "^.*(?=.{12,})(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!\\\"\\#$%&'()*+,\\-./:;<=>?@\\[\\]\\\\^_`{|}~]).*$"),
         EMAIL("email", "^(\\w+)([-+.][\\w]+)*@(\\w[-\\w]*\\.){1,5}([A-Za-z]){2,4}$"),
         PHONE("phone",
                 "^\\+? ?[0-9_]+( [0-9_]+)*$"),
