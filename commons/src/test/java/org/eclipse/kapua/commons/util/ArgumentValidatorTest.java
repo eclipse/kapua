@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -177,22 +177,18 @@ public class ArgumentValidatorTest extends Assert {
     public void testIllegalCharacterPasswordRegExp() throws Exception {
         String argRegExprPasswordRegExp = "^.*(?=.{12,})(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!\\~\\|]).*$";
         String permittedSymbols = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890-_@#$%^&+=!~|";
-        String[] listOfFalseStringsPasswordRegExp = new String[] { "abcd1234ABCD\"", "abcd1234ABCD?", "abcd1234ABCD*",
-                "abcd1234ABCD;", "abcd1234ABCD:", "abcd1234ABCD<", "abcd1234ABCD>", "abcd1234ABCD[", "abcd1234ABCD]",
-                "abcd1234ABCD{", "abcd1234ABCD}", "abcd1234ABCD⁄", "abcd1234ABCD€", "abcd1234ABCD(", "abcd1234ABCD)",
-                "abcd1234ABCD.", "abcd1234ABCD,", "abcd1234ABCD¡", "abcd1234ABCD™", "abcd1234ABCD£", "abcd1234ABCD¢",
-                "abcd1234ABCD∞", "abcd1234ABCD§", "abcd1234ABCD¶", "abcd1234ABCD•", "abcd1234ABCDª", "abcd1234ABCDº",
-                "abcd1234ABCD-", "abcd1234ABCD≠", "abcd1234ABCD ", "abcd1234ABCD∑", "abcd1234ABCD´", "abcd1234ABCD®",
-                "abcd1234ABCD†", "abcd1234ABCD—", "abcd1234ABCD¨", "abcd1234ABCDø", "abcd1234ABCDπ", "abcd1234ABCD-",
-                "abcd1234ABCDå", "abcd1234ABCDß", "abcd1234ABCD∂", "abcd1234ABCD", "abcd1234ABCD©", "abcdefghijklm¿",
-                "abcd1234ABCD∆", "abcd1234ABCD¬", "abcd1234ABCD…", "abcd1234ABCD\\", "abcd1234ABCDΩ", "ABCDefghij12_",
-                "abcd1234ABCD≈", "abcd1234ABCDç", "abcd1234ABCD√", "abcd1234ABCD∫", "abcd1234ABCDµ", "abcd1234ABCD≤",
-                "abcd1234ABCD≥", "abcd1234ABCD÷", "abcd1234ABCD‹", "abcd1234ABCD›", "abcd1234ABCD€", "abcd1234ABCDı",
-                "abcd1234ABCD°", "abcd1234ABCD·", "abcd1234ABCD‚", "abcd1234ABCD±", "abcd1234ABCDŒ", "abcd1234ABCD„",
-                "abcd1234ABCD‘", "abcd1234ABCD”", "abcd1234ABCD’", "abcd1234ABCDÉ", "abcd1234ABCDØ", "abcd1234ABCD∏",
-                "abcd1234ABCDÅ", "abcd1234ABCDÍ", "abcd1234ABCDÔ", "abcd1234ABCD", "abcd1234ABCDÒ", "abcd1234ABCDæ",
-                "abcd1234ABCDÆ", "abcd1234ABCD«", "abcd1234ABCD◊", "abcd1234ABCDÑ", "abcd1234ABCD¯",
-                "abcd1234ABCDÈ", "abcd1234ABCDˇ" };
+        String[] listOfFalseStringsPasswordRegExp = new String[] { "abcd1234ABCD€", "abcd1234ABCD¡", "abcd1234ABCD™",
+                "abcd1234ABCD£", "abcd1234ABCD¢", "abcd1234ABCD∞", "abcd1234ABCD§", "abcd1234ABCD¶", "abcd1234ABCD•",
+                "abcd1234ABCDª", "abcd1234ABCDº", "abcd1234ABCD≠", "abcd1234ABCD ", "abcd1234ABCD∑", "abcd1234ABCD´",
+                "abcd1234ABCD®", "abcd1234ABCD†", "abcd1234ABCD¨", "abcd1234ABCDø", "abcd1234ABCDπ", "abcd1234ABCDå",
+                "abcd1234ABCDß", "abcd1234ABCD∂", "abcd1234ABCD", "abcd1234ABCD©", "abcdefghijklm¿", "abcd1234ABCD∆",
+                "abcd1234ABCD¬", "abcd1234ABCD…", "abcd1234ABCDΩ", "abcd1234ABCD≈", "abcd1234ABCDç", "abcd1234ABCD√",
+                "abcd1234ABCD∫", "abcd1234ABCDµ", "abcd1234ABCD≤", "abcd1234ABCD≥", "abcd1234ABCD÷", "abcd1234ABCD‹",
+                "abcd1234ABCD›", "abcd1234ABCD€", "abcd1234ABCDı", "abcd1234ABCD°", "abcd1234ABCD·", "abcd1234ABCD‚",
+                "abcd1234ABCD±", "abcd1234ABCDŒ", "abcd1234ABCD„", "abcd1234ABCD‘", "abcd1234ABCD”", "abcd1234ABCD’",
+                "abcd1234ABCDÉ", "abcd1234ABCDØ", "abcd1234ABCD∏", "abcd1234ABCDÅ", "abcd1234ABCDÍ", "abcd1234ABCDÔ",
+                "abcd1234ABCD", "abcd1234ABCDÒ", "abcd1234ABCDæ", "abcd1234ABCDÆ", "abcd1234ABCD«", "abcd1234ABCD◊",
+                "abcd1234ABCDÑ", "abcd1234ABCD¯", "abcd1234ABCDÈ", "abcd1234ABCDˇ" };
         int sizeOfFalseStrings = listOfFalseStringsPasswordRegExp.length;
         String[] listOfPermittedStringsPasswordRegExp = new String[] { permittedSymbols, "ABCDefghij12@", "ABCDEfghij12#",
                 "ABCDEfghij12$", "ABCDEfghij12%", "ABCDEfghij12^", "ABCDEfghij12&", "ABCDEfghij12+", "ABCDEfghij12=",
