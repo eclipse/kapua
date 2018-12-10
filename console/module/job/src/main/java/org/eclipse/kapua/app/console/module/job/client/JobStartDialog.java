@@ -39,6 +39,7 @@ public class JobStartDialog extends SimpleDialog {
 
     @Override
     public void createBody() {
+        formPanel.disableEvents(true);
     }
 
     @Override
