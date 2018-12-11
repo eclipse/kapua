@@ -11,23 +11,32 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate.internal;
 
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.certificate.CertificateGenerator;
 import org.eclipse.kapua.service.certificate.CertificateUsage;
+import org.eclipse.kapua.service.certificate.PrivateCertificateQuery;
+import org.eclipse.kapua.service.certificate.PrivateCertificateService;
 import org.eclipse.kapua.service.certificate.PublicCertificate;
 import org.eclipse.kapua.service.certificate.PublicCertificateCreator;
 import org.eclipse.kapua.service.certificate.PublicCertificateListResult;
+import org.eclipse.kapua.service.certificate.PublicCertificateQuery;
 import org.eclipse.kapua.service.certificate.PublicCertificateService;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 @KapuaProvider
 public class PublicCertificateServiceImpl implements PublicCertificateService {
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final PrivateCertificateService PRIVATE_CERTIFICATE_SERVICE = LOCATOR.getService(PrivateCertificateService.class);
 
     @Override
     public PublicCertificate create(PublicCertificateCreator creator) {
@@ -40,13 +49,34 @@ public class PublicCertificateServiceImpl implements PublicCertificateService {
     }
 
     @Override
-    public PublicCertificateListResult query(KapuaQuery<PublicCertificate> query) {
-        throw new UnsupportedOperationException();
+    public PublicCertificateListResult query(KapuaQuery<PublicCertificate> query) throws KapuaException {
+
+        PrivateCertificateQuery privateQuery = new PrivateCertificateQueryImpl(query.getScopeId());
+        privateQuery.setFetchAttributes(query.getFetchAttributes());
+        privateQuery.setPredicate(query.getPredicate());
+        privateQuery.setLimit(query.getLimit());
+        privateQuery.setOffset(query.getOffset());
+        privateQuery.setSortCriteria(query.getSortCriteria());
+        privateQuery.setIncludeInherited(((PublicCertificateQuery) query).getIncludeInherited());
+
+        PublicCertificateListResult publicCertificates = new PublicCertificateListResultImpl();
+        publicCertificates.addItems(Arrays.asList(PRIVATE_CERTIFICATE_SERVICE.query(privateQuery).getFirstItem()));
+
+        return publicCertificates;
     }
 
     @Override
-    public long count(KapuaQuery<PublicCertificate> query) {
-        throw new UnsupportedOperationException();
+    public long count(KapuaQuery<PublicCertificate> query) throws KapuaException {
+
+        PrivateCertificateQuery privateQuery = new PrivateCertificateQueryImpl(query.getScopeId());
+        privateQuery.setFetchAttributes(query.getFetchAttributes());
+        privateQuery.setPredicate(query.getPredicate());
+        privateQuery.setLimit(query.getLimit());
+        privateQuery.setOffset(query.getOffset());
+        privateQuery.setSortCriteria(query.getSortCriteria());
+        privateQuery.setIncludeInherited(((PublicCertificateQuery) query).getIncludeInherited());
+
+        return PRIVATE_CERTIFICATE_SERVICE.count(privateQuery);
     }
 
     @Override

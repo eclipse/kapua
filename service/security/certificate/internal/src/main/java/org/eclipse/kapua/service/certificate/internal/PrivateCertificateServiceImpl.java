@@ -133,8 +133,8 @@ public class PrivateCertificateServiceImpl implements PrivateCertificateService 
     }
 
     @Override
-    public long count(KapuaQuery<PrivateCertificate> query) throws KapuaException {
-        throw new UnsupportedOperationException();
+    public long count(KapuaQuery<PrivateCertificate> query) {
+        return 1L;
     }
 
     @Override
