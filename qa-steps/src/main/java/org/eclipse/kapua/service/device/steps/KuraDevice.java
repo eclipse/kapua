@@ -16,7 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.eclipse.kapua.qa.utils.Suppressed;
+import org.eclipse.kapua.qa.common.Suppressed;
 import org.eclipse.kura.core.message.protobuf.KuraPayloadProto;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;

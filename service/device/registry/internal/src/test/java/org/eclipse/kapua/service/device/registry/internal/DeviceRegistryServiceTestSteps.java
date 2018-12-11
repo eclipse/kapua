@@ -46,10 +46,10 @@ import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
 import org.eclipse.kapua.service.device.registry.RegistryJAXBContextProvider;
-import org.eclipse.kapua.service.device.registry.TestConfig;
+import org.eclipse.kapua.service.device.registry.CucConfig;
 import org.eclipse.kapua.service.device.registry.shared.SharedTestSteps;
 import org.eclipse.kapua.test.MockedLocator;
-import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
+import org.eclipse.kapua.test.KapuaTest;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
@@ -68,7 +68,7 @@ import java.util.Optional;
  * Authorization Service -
  */
 @ScenarioScoped
-public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
+public class DeviceRegistryServiceTestSteps extends KapuaTest {
 
     public static final String DEFAULT_PATH = "src/main/sql/H2";
     public static final String DEFAULT_COMMONS_PATH = "../../../../commons";
@@ -129,7 +129,7 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
             throws Exception {
         this.scenario = scenario;
 
-        // Create User Service tables
+        // Create Device Registry Service tables
         enableH2Connection();
         SystemSetting config = SystemSetting.getInstance();
         String schema = MoreObjects.firstNonNull(config.getString(SystemSettingKey.DB_SCHEMA_ENV), config.getString(SystemSettingKey.DB_SCHEMA));
@@ -254,13 +254,13 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
     }
 
     @When("^I configure$")
-    public void setConfigurationValue(List<TestConfig> testConfigs)
+    public void setConfigurationValue(List<CucConfig> cucConfigs)
             throws Exception {
         Map<String, Object> valueMap = new HashMap<>();
         KapuaEid scopeId = null;
         KapuaEid parentScopeId = null;
 
-        for (TestConfig config : testConfigs) {
+        for (CucConfig config : cucConfigs) {
             config.addConfigToMap(valueMap);
             scopeId = new KapuaEid(BigInteger.valueOf(Long.valueOf(config.getScopeId())));
             parentScopeId = new KapuaEid(BigInteger.valueOf(Long.valueOf(config.getParentScopeId())));

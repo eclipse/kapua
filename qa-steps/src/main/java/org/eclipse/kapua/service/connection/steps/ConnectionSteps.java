@@ -25,9 +25,9 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.qa.steps.BaseQATests;
-import org.eclipse.kapua.qa.steps.DBHelper;
-import org.eclipse.kapua.service.StepData;
+import org.eclipse.kapua.qa.common.TestBase;
+import org.eclipse.kapua.qa.common.DBHelper;
+import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.service.TestJAXBContextProvider;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountFactory;
@@ -48,7 +48,7 @@ import org.eclipse.kapua.service.device.steps.AclCreator;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserService;
-import org.eclipse.kapua.service.user.steps.TestUser;
+import org.eclipse.kapua.service.user.steps.CucUser;
 
 import javax.inject.Inject;
 import java.util.HashMap;
@@ -57,7 +57,7 @@ import java.util.Map;
 import java.util.Vector;
 
 @ScenarioScoped
-public class ConnectionSteps extends BaseQATests {
+public class ConnectionSteps extends TestBase {
 
     /**
      * Authentication service.
@@ -146,12 +146,12 @@ public class ConnectionSteps extends BaseQATests {
     }
 
     @Given("^Such a set of privileged users for account \"(.+)\"$")
-    public void createPrivilegedUsers(String accName, List<TestUser> users) throws Throwable {
+    public void createPrivilegedUsers(String accName, List<CucUser> users) throws Throwable {
 
         KapuaSecurityUtils.doPrivileged(() -> {
             Account account = accountService.findByName(accName);
 
-            for (TestUser tmpTestUsr : users) {
+            for (CucUser tmpTestUsr : users) {
                 User tmpUser = aclCreator.createUser(account, tmpTestUsr.getName());
                 if ((tmpTestUsr.getPassword() != null) && !tmpTestUsr.getPassword().isEmpty()) {
                     aclCreator.attachUserCredentials(account, tmpUser, tmpTestUsr.getPassword());

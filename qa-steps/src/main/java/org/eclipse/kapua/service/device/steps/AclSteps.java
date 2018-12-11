@@ -21,8 +21,8 @@ import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.qa.steps.BaseQATests;
-import org.eclipse.kapua.service.StepData;
+import org.eclipse.kapua.qa.common.TestBase;
+import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
@@ -44,7 +44,7 @@ import java.util.Map;
  * Steps for testing Access Control List functionality on Broker service.
  */
 @ScenarioScoped
-public class AclSteps extends BaseQATests {
+public class AclSteps extends TestBase {
 
     public static final int BROKER_START_WAIT_MILLIS = 5000;
 

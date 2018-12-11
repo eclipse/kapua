@@ -49,7 +49,8 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStat
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 import org.eclipse.kapua.service.device.registry.shared.SharedTestSteps;
 import org.eclipse.kapua.test.MockedLocator;
-import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
+import org.eclipse.kapua.test.KapuaTest;
+
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
@@ -67,7 +68,7 @@ import java.util.Optional;
  * Authorization Service -
  */
 @ScenarioScoped
-public class DeviceRegistryConnectionTestSteps extends AbstractKapuaSteps {
+public class DeviceRegistryConnectionTestSteps extends KapuaTest {
 
     public static final String DEFAULT_PATH = "src/main/sql/H2";
     public static final String DEFAULT_COMMONS_PATH = "../../../../commons";

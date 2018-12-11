@@ -12,12 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.test;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Optional;
-import java.util.Random;
-
 import com.google.common.base.MoreObjects;
 import org.apache.commons.lang.RandomStringUtils;
 import org.eclipse.kapua.KapuaException;
@@ -38,6 +32,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Optional;
+import java.util.Random;
 
 public class KapuaTest extends Assert {
 

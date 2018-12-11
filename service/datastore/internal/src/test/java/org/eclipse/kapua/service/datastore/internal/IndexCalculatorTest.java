@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.datastore.internal;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
@@ -22,6 +23,7 @@ import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 
 import org.eclipse.kapua.test.junit.JUnitTests;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
@@ -42,6 +44,11 @@ public class IndexCalculatorTest extends AbstractMessageStoreServiceTest {
 
     private final MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm Z");
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        XmlUtil.setContextProvider(new DatastoreJAXBContextProvider());
+    }
 
     @Test
     public void testIndex() throws KapuaException, ParseException, InterruptedException {

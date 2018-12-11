@@ -41,7 +41,6 @@ import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionFactoryI
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionServiceImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
-import org.eclipse.kapua.test.steps.DatabaseInstance;
 
 import javax.inject.Inject;
 import java.math.BigInteger;
@@ -76,7 +75,7 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
     RoleServiceTestData roleData;
 
     @Inject
-    public RoleServiceTestSteps(RoleServiceTestData roleData, CommonTestData commonData, /* dependency */ DatabaseInstance databaseInstance) {
+    public RoleServiceTestSteps(RoleServiceTestData roleData, CommonTestData commonData) {
         this.roleData = roleData;
         this.commonData = commonData;
     }
@@ -109,7 +108,7 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
     // Definition of Cucumber scenario steps
     // *************************************
     @When("^I configure role$")
-    public void setConfigurationValue(List<TestConfig> testConfigs)
+    public void setConfigurationValue(List<CucConfig> cucConfigs)
             throws Exception {
 
         KapuaSecurityUtils.doPrivileged(() -> {
@@ -117,7 +116,7 @@ public class RoleServiceTestSteps extends AbstractAuthorizationServiceTest {
             KapuaEid scopeId = null;
             KapuaEid parentScopeId = null;
 
-            for (TestConfig config : testConfigs) {
+            for (CucConfig config : cucConfigs) {
                 config.addConfigToMap(valueMap);
                 scopeId = new KapuaEid(BigInteger.valueOf(Long.valueOf(config.getScopeId())));
                 parentScopeId = new KapuaEid(BigInteger.valueOf(Long.valueOf(config.getParentScopeId())));

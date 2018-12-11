@@ -91,7 +91,7 @@ public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
     // Definition of Cucumber scenario steps
     // *************************************
     @When("^I configure$")
-    public void setConfigurationValue(List<TestConfig> testConfigs)
+    public void setConfigurationValue(List<CucConfig> cucConfigs)
             throws Exception {
 
         KapuaSecurityUtils.doPrivileged(() -> {
@@ -99,7 +99,7 @@ public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
             KapuaEid scopeId = null;
             KapuaEid parentScopeId = null;
 
-            for (TestConfig config : testConfigs) {
+            for (CucConfig config : cucConfigs) {
                 config.addConfigToMap(valueMap);
                 scopeId = new KapuaEid(BigInteger.valueOf(Long.valueOf(config.getScopeId())));
                 parentScopeId = new KapuaEid(BigInteger.valueOf(Long.valueOf(config.getParentScopeId())));

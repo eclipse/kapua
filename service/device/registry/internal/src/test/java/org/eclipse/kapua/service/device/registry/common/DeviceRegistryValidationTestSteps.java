@@ -40,8 +40,9 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
 import org.eclipse.kapua.service.device.registry.shared.SharedTestSteps;
+import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.MockedLocator;
-import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
+
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
@@ -55,7 +56,7 @@ import java.math.BigInteger;
  * Authorization Service.
  */
 @ScenarioScoped
-public class DeviceRegistryValidationTestSteps extends AbstractKapuaSteps {
+public class DeviceRegistryValidationTestSteps extends KapuaTest {
 
     KapuaId rootScopeId = new KapuaEid(BigInteger.ONE);
 

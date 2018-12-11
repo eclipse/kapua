@@ -17,7 +17,7 @@ import javax.inject.Inject;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
+import org.eclipse.kapua.test.KapuaTest;
 
 import cucumber.api.Scenario;
 import cucumber.api.java.Before;
@@ -27,7 +27,7 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 
 // Implementation of Gherkin steps used in various integration test scenarios.
 @ScenarioScoped
-public class CommonTestSteps extends AbstractKapuaSteps {
+public class CommonTestSteps extends KapuaTest {
 
     // Scenario scoped common test data
     CommonTestData commonData;

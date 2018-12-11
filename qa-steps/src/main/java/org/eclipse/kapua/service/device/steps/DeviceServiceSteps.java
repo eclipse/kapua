@@ -55,9 +55,9 @@ import org.eclipse.kapua.message.internal.device.lifecycle.KapuaMissingPayloadIm
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
-import org.eclipse.kapua.qa.steps.BaseQATests;
-import org.eclipse.kapua.qa.steps.DBHelper;
-import org.eclipse.kapua.service.StepData;
+import org.eclipse.kapua.qa.common.TestBase;
+import org.eclipse.kapua.qa.common.DBHelper;
+import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.service.TestJAXBContextProvider;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
@@ -84,7 +84,8 @@ import org.eclipse.kapua.service.tag.TagCreator;
 import org.eclipse.kapua.service.tag.TagListResult;
 import org.eclipse.kapua.service.tag.TagService;
 import org.eclipse.kapua.service.tag.internal.TagFactoryImpl;
-import org.eclipse.kapua.service.user.steps.TestConfig;
+import org.eclipse.kapua.qa.common.CucConfig;
+
 import org.junit.Assert;
 
 import javax.inject.Inject;
@@ -101,7 +102,7 @@ import java.util.Vector;
 
 // Implementation of Gherkin steps used in DeviceRegistryI9n.feature scenarios.
 @ScenarioScoped
-public class DeviceServiceSteps extends BaseQATests /*KapuaTest*/ {
+public class DeviceServiceSteps extends TestBase {
 
     protected static Random random = new Random();
 
@@ -307,13 +308,13 @@ public class DeviceServiceSteps extends BaseQATests /*KapuaTest*/ {
     }
 
     @When("^I configure the device service$")
-    public void setDeviceServiceConfig(List<TestConfig> testConfigs)
+    public void setDeviceServiceConfig(List<CucConfig> cucConfigs)
             throws Exception {
 
         Account tmpAccount = (Account) stepData.get("LastAccount");
         Map<String, Object> valueMap = new HashMap<>();
 
-        for (TestConfig config : testConfigs) {
+        for (CucConfig config : cucConfigs) {
             config.addConfigToMap(valueMap);
         }
         try {
@@ -325,13 +326,13 @@ public class DeviceServiceSteps extends BaseQATests /*KapuaTest*/ {
     }
 
     @When("^I configure the tag service$")
-    public void setTagServiceConfig(List<TestConfig> testConfigs)
+    public void setTagServiceConfig(List<CucConfig> cucConfigs)
             throws Exception {
 
         Account tmpAccount = (Account) stepData.get("LastAccount");
         Map<String, Object> valueMap = new HashMap<>();
 
-        for (TestConfig config : testConfigs) {
+        for (CucConfig config : cucConfigs) {
             config.addConfigToMap(valueMap);
         }
         try {

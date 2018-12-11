@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.KapuaPosition;
@@ -148,7 +149,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     }
 
     @BeforeClass
-    public static void startEmbeddedEngine() throws Exception {
+    public static void setUpBeforeClass() throws Exception {
+        XmlUtil.setContextProvider(new DatastoreJAXBContextProvider());
         esEmbeddedEngine = new EsEmbeddedEngine();
         Thread.sleep(5000);
     }

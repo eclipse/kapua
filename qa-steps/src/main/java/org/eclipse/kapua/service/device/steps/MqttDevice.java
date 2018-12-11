@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.steps;
 
-import org.eclipse.kapua.qa.utils.Suppressed;
+import org.eclipse.kapua.qa.common.Suppressed;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;

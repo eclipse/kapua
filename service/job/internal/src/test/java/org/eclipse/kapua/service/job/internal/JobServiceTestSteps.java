@@ -38,6 +38,7 @@ import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.JobAttributes;
 import org.eclipse.kapua.service.job.JobCreator;
@@ -46,15 +47,15 @@ import org.eclipse.kapua.service.job.JobJAXBContextProvider;
 import org.eclipse.kapua.service.job.JobQuery;
 import org.eclipse.kapua.service.job.JobService;
 import org.eclipse.kapua.service.job.common.CommonData;
-import org.eclipse.kapua.service.job.common.TestConfig;
+import org.eclipse.kapua.service.job.common.CucConfig;
 import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.StepData;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerFactoryImpl;
 import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerServiceImpl;
+import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.MockedLocator;
-import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -62,7 +63,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.math.BigInteger;
-import java.security.acl.Permission;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +77,7 @@ import java.util.Optional;
 // ****************************************************************************************
 
 @ScenarioScoped
-public class JobServiceTestSteps extends AbstractKapuaSteps {
+public class JobServiceTestSteps extends KapuaTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobServiceTestSteps.class);
 
@@ -122,7 +122,7 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
         commonData.scenario = scenario;
         locator = KapuaLocator.getInstance();
 
-        // Create User Service tables
+        // Create the Job Service database tables
         enableH2Connection();
         SystemSetting config = SystemSetting.getInstance();
         String schema = MoreObjects.firstNonNull(config.getString(SystemSettingKey.DB_SCHEMA_ENV), config.getString(SystemSettingKey.DB_SCHEMA));
@@ -135,14 +135,11 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
 
         // Inject mocked Authorization Service method checkPermission
         AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
-        // TODO: Check why does this line need an explicit cast!
-        Mockito.doNothing().when(mockedAuthorization).checkPermission(
-                (org.eclipse.kapua.service.authorization.permission.Permission) Matchers.any(Permission.class));
+        Mockito.doNothing().when(mockedAuthorization).checkPermission(Matchers.any(Permission.class));
         mockLocator.setMockedService(AuthorizationService.class, mockedAuthorization);
 
         // Inject mocked Permission Factory
-        PermissionFactory mockedPermissionFactory = Mockito.mock(PermissionFactory.class);
-        mockLocator.setMockedFactory(PermissionFactory.class, mockedPermissionFactory);
+        mockLocator.setMockedFactory(PermissionFactory.class, Mockito.mock(PermissionFactory.class));
 
         // Inject actual service implementations
         jobFactory = new JobFactoryImpl();
@@ -183,10 +180,10 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
     // ************************************************************************************
 
     @When("^I configure$")
-    public void setConfigurationValue(List<TestConfig> testConfigs) throws Exception {
+    public void setConfigurationValue(List<CucConfig> cucConfigs) throws Exception {
         Map<String, Object> valueMap = new HashMap<>();
 
-        for (TestConfig config : testConfigs) {
+        for (CucConfig config : cucConfigs) {
             config.addConfigToMap(valueMap);
         }
         try {

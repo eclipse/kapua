@@ -40,8 +40,8 @@ import org.eclipse.kapua.service.job.internal.JobData;
 import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
 import org.eclipse.kapua.service.job.targets.internal.JobTargetFactoryImpl;
 import org.eclipse.kapua.service.job.targets.internal.JobTargetServiceImpl;
+import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.MockedLocator;
-import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -61,9 +61,9 @@ import java.util.Optional;
 // ****************************************************************************************
 
 @ScenarioScoped
-public class JobTargetsServiceTestSteps extends AbstractKapuaSteps {
+public class JobTargetsServiceTestSteps extends KapuaTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractKapuaSteps.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobTargetsServiceTestSteps.class);
 
     private static final String DEFAULT_COMMONS_PATH = "../../../commons";
     private static final String DROP_STEP_TABLES = "job_target_drop.sql";

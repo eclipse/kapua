@@ -16,15 +16,16 @@ import cucumber.api.java.en.Then;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.service.job.internal.JobServiceTestSteps;
-import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.math.BigInteger;
 
+
 @ScenarioScoped
-public class CommonSteps extends AbstractKapuaSteps {
+public class CommonSteps {
     private static final Logger logger = LoggerFactory.getLogger(JobServiceTestSteps.class);
 
     CommonData commonData;
@@ -59,16 +60,16 @@ public class CommonSteps extends AbstractKapuaSteps {
 
     @Then("^There (?:are|is) exactly (\\d+) items?$")
     public void checkNumberOfCountedItems(long cnt) {
-        assertEquals(String.format("Expected %d but counted %d", cnt, commonData.itemCount), cnt, commonData.itemCount);
+        Assert.assertEquals(String.format("Expected %d but counted %d", cnt, commonData.itemCount), cnt, commonData.itemCount);
     }
 
     @Then("^No exception was thrown$")
     public void checkThatNoExceptionWasThrown() {
-        assertFalse("An unexpected exception was caught", commonData.exceptionCaught);
+        Assert.assertFalse("An unexpected exception was caught", commonData.exceptionCaught);
     }
 
     @Then("^An exception was thrown$")
     public void checkThatAnExceptionWasThrown() {
-        assertTrue("An exception was expected but was not caught", commonData.exceptionCaught);
+        Assert.assertTrue("An exception was expected but was not caught", commonData.exceptionCaught);
     }
 }

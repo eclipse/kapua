@@ -18,14 +18,17 @@ import java.time.ZonedDateTime;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.AbstractMessageStoreServiceTest;
+import org.eclipse.kapua.service.datastore.internal.DatastoreJAXBContextProvider;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 
 import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -35,6 +38,11 @@ public class ClientUtilsIndexNameTest extends AbstractMessageStoreServiceTest {
     private static final KapuaId ONE = new KapuaEid(BigInteger.ONE);
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final MessageStoreService MESSAGE_STORE_SERVICE = LOCATOR.getService(MessageStoreService.class);
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        XmlUtil.setContextProvider(new DatastoreJAXBContextProvider());
+    }
 
     @Test
     public void test1() {

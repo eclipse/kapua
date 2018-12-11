@@ -40,8 +40,8 @@ import org.eclipse.kapua.service.job.execution.internal.JobExecutionFactoryImpl;
 import org.eclipse.kapua.service.job.execution.internal.JobExecutionServiceImpl;
 import org.eclipse.kapua.service.job.internal.JobData;
 import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
+import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.MockedLocator;
-import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.joda.time.DateTime;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -62,9 +62,9 @@ import java.util.Optional;
 // ****************************************************************************************
 
 @ScenarioScoped
-public class JobExecutionServiceTestSteps extends AbstractKapuaSteps {
+public class JobExecutionServiceTestSteps extends KapuaTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractKapuaSteps.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobExecutionServiceTestSteps.class);
 
     private static final String DEFAULT_COMMONS_PATH = "../../../commons";
     private static final String DROP_STEP_TABLES = "job_execution_drop.sql";

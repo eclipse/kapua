@@ -34,7 +34,7 @@ import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.StepData;
+import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
@@ -87,7 +87,7 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
-import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
+import org.eclipse.kapua.test.KapuaTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,7 +113,7 @@ import java.util.stream.Collectors;
  * Steps used in Datastore scenarios.
  */
 @ScenarioScoped
-public class DataStoreServiceSteps extends AbstractKapuaSteps {
+public class DataStoreServiceSteps extends KapuaTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(DataStoreServiceSteps.class);
 
@@ -238,12 +238,12 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
     }
 
     @Given("^I prepare a number of messages with the following details and remember the list as \"(.*)\"$")
-    public void prepareAListOfMessagesWithDifferentTopics(String listKey, List<TestTopic> topics) throws Exception {
+    public void prepareAListOfMessagesWithDifferentTopics(String listKey, List<CucTopic> topics) throws Exception {
 
         List<KapuaDataMessage> tmpList = new ArrayList<>();
         KapuaDataMessage tmpMsg = null;
 
-        for (TestTopic tmpTopic : topics) {
+        for (CucTopic tmpTopic : topics) {
             tmpMsg = createTestMessage(
                     ((Account) stepData.get("LastAccount")).getId(),
                     ((Device) stepData.get("LastDevice")).getId(),
@@ -257,14 +257,14 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
     }
 
     @And("^I set the following metrics to the message (\\d+) from the list \"(.+)\"$")
-    public void appendMetricsToSelectedMessage(int idx, String lstKey, List<TestMetric> metLst) throws Exception {
+    public void appendMetricsToSelectedMessage(int idx, String lstKey, List<CucMetric> metLst) throws Exception {
 
         List<KapuaDataMessage> tmpMsgLst = (List<KapuaDataMessage>) stepData.get(lstKey);
         KapuaDataMessage tmpMsg = tmpMsgLst.get(idx);
 
         tmpMsg.setPayload(KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataPayload());
 
-        for (TestMetric tmpMet : metLst) {
+        for (CucMetric tmpMet : metLst) {
             switch (tmpMet.getType().trim().toLowerCase()) {
                 case "string": {
                     tmpMsg.getPayload().getMetrics().put(tmpMet.getMetric(), tmpMet.getValue());
@@ -308,7 +308,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
     }
 
     @Given("^I prepare (\\d+) randomly ordered messages and remember the list as \"(.*)\"$")
-    public void prepareUnorderedRandomMessagesWithTopics(int number, String lstKey, List<TestTopic> topics) throws Exception {
+    public void prepareUnorderedRandomMessagesWithTopics(int number, String lstKey, List<CucTopic> topics) throws Exception {
 
         Account tmpAccount = (Account) stepData.get("LastAccount");
         KapuaDataMessage tmpMsg;
@@ -373,7 +373,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
             }
 
             Date receivedOn = new Date();
-            TestTopic tmpTopic = topics.get(i % topics.size());
+            CucTopic tmpTopic = topics.get(i % topics.size());
             tmpMsg = createTestMessage(
                     tmpAccount.getId(),
                     tmpDev.getId(),
@@ -608,7 +608,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
     }
 
     @Then("^The channel list \"(.+)\" contains the following topics$")
-    public void checkThattheChannelInfoContainsTheSpecifiedTopics(String lstKey, List<TestTopic> topics) {
+    public void checkThattheChannelInfoContainsTheSpecifiedTopics(String lstKey, List<CucTopic> topics) {
 
         ChannelInfoListResult tmpList = (ChannelInfoListResult) stepData.get(lstKey);
         Set<String> infoTopics = new HashSet<>();
@@ -618,7 +618,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         for (ChannelInfo tmpInfo : tmpList.getItems()) {
             infoTopics.add(tmpInfo.getName());
         }
-        for (TestTopic tmpTop : topics) {
+        for (CucTopic tmpTop : topics) {
             assertTrue(String.format("The topic [%s] was not found!", tmpTop.getTopic()), infoTopics.contains(tmpTop.getTopic()));
         }
     }

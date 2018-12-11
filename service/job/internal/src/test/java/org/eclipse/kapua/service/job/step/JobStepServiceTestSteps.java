@@ -46,8 +46,8 @@ import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionF
 import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionServiceImpl;
 import org.eclipse.kapua.service.job.step.internal.JobStepFactoryImpl;
 import org.eclipse.kapua.service.job.step.internal.JobStepServiceImpl;
+import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.MockedLocator;
-import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -69,7 +69,7 @@ import java.util.Optional;
 // ****************************************************************************************
 
 @ScenarioScoped
-public class JobStepServiceTestSteps extends AbstractKapuaSteps {
+public class JobStepServiceTestSteps extends KapuaTest {
 
     private static final Logger logger = LoggerFactory.getLogger(JobStepServiceTestSteps.class);
 

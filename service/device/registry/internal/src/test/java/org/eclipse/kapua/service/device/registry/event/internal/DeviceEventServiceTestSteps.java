@@ -45,7 +45,7 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
-import org.eclipse.kapua.service.device.registry.TestConfig;
+import org.eclipse.kapua.service.device.registry.CucConfig;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventAttributes;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
@@ -58,7 +58,7 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
 import org.eclipse.kapua.service.device.registry.shared.SharedTestSteps;
 import org.eclipse.kapua.test.MockedLocator;
-import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
+import org.eclipse.kapua.test.KapuaTest;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
@@ -80,7 +80,7 @@ import java.util.Set;
  * Authorization Service -
  */
 @ScenarioScoped
-public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
+public class DeviceEventServiceTestSteps extends KapuaTest {
 
     public static final String DEFAULT_PATH = "src/main/sql/H2";
     public static final String DEFAULT_COMMONS_PATH = "../../../../commons";
@@ -224,11 +224,11 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
     }
 
     @When("^I configure the device service$")
-    public void setDeviceServiceConfig(List<TestConfig> testConfigs)
+    public void setDeviceServiceConfig(List<CucConfig> cucConfigs)
             throws Exception {
 
         Map<String, Object> valueMap = new HashMap<>();
-        for (TestConfig config : testConfigs) {
+        for (CucConfig config : cucConfigs) {
             config.addConfigToMap(valueMap);
         }
         try {

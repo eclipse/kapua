@@ -40,8 +40,8 @@ import org.eclipse.kapua.service.job.step.CucStepProperty;
 import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionFactoryImpl;
 import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionServiceImpl;
 import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
+import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.MockedLocator;
-import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -64,7 +64,7 @@ import java.util.Optional;
 // ****************************************************************************************
 
 @ScenarioScoped
-public class JobStepDefinitionServiceTestSteps extends AbstractKapuaSteps {
+public class JobStepDefinitionServiceTestSteps extends KapuaTest {
 
     private static final Logger logger = LoggerFactory.getLogger(JobStepDefinitionServiceTestSteps.class);
 

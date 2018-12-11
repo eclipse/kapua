@@ -50,10 +50,11 @@ import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.Organization;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
+import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.MockedLocator;
-import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -78,13 +79,14 @@ import java.util.Properties;
  * - Authorization Service
  */
 @ScenarioScoped
-public class AccountServiceTestSteps extends AbstractKapuaSteps {
+public class AccountServiceTestSteps extends KapuaTest {
 
     static {
         setupDI();
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(AccountServiceTestSteps.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountServiceTestSteps.class);
+    private static final KapuaEid KAPUA_SYS_ID = new KapuaEid(BigInteger.ONE);
 
     private static final String DEFAULT_COMMONS_PATH = "../../../commons";
     private static final String DROP_ACCOUNT_TABLES = "act_*_drop.sql";
@@ -136,23 +138,19 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
                 // Inject mocked Authorization Service method checkPermission
                 AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
                 try {
-                    Mockito.doNothing().when(mockedAuthorization).checkPermission(Matchers.any(org.eclipse.kapua.service.authorization.permission.Permission.class));
+                    Mockito.doNothing().when(mockedAuthorization).checkPermission(Matchers.any(Permission.class));
                 } catch (KapuaException e) {
                     // skip
                 }
                 bind(AuthorizationService.class).toInstance(mockedAuthorization);
                 // Inject mocked Permission Factory
-                PermissionFactory mockedPermissionFactory = Mockito.mock(PermissionFactory.class);
-                bind(PermissionFactory.class).toInstance(mockedPermissionFactory);
+                bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
                 // Set KapuaMetatypeFactory for Metatype configuration
-                KapuaMetatypeFactory metaFactory = new KapuaMetatypeFactoryImpl();
-                bind(KapuaMetatypeFactory.class).toInstance(metaFactory);
+                bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
 
                 // Inject actual account related services
-                AccountService accountService = new AccountServiceImpl();
-                bind(AccountService.class).toInstance(accountService);
-                AccountFactory accountFactory = new AccountFactoryImpl();
-                bind(AccountFactory.class).toInstance(accountFactory);
+                bind(AccountService.class).toInstance(new AccountServiceImpl());
+                bind(AccountFactory.class).toInstance(new AccountFactoryImpl());
             }
         };
 
@@ -167,11 +165,11 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
             throws Exception {
 
         this.scenario = scenario;
-
         locator = KapuaLocator.getInstance();
-        this.accountService = locator.getService(AccountService.class);
-        this.accountFactory = locator.getFactory(AccountFactory.class);
+        accountFactory = locator.getFactory(AccountFactory.class);
+        accountService = locator.getService(AccountService.class);
 
+        // Create the Account Service database tables
         exceptionExpected = false;
         exceptionName = "";
         exceptionMessage = "";
@@ -187,7 +185,7 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
         new KapuaLiquibaseClient(jdbcUrl, "kapua", "kapua", Optional.ofNullable(schema)).update();
 
         // All operations on database are performed using system user.
-        KapuaSession kapuaSession = new KapuaSession(null, new KapuaEid(BigInteger.ONE), new KapuaEid(BigInteger.ONE));
+        KapuaSession kapuaSession = new KapuaSession(null, KAPUA_SYS_ID, KAPUA_SYS_ID);
         KapuaSecurityUtils.setSession(kapuaSession);
 
         XmlUtil.setContextProvider(new AccountsJAXBContextProvider());
