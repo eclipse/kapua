@@ -50,12 +50,7 @@ public class PublicCertificateServiceImpl implements PublicCertificateService {
     @Override
     public PublicCertificateListResult query(KapuaQuery<PublicCertificate> query) throws KapuaException {
 
-        PrivateCertificateQuery privateQuery = new PrivateCertificateQueryImpl(query.getScopeId());
-        privateQuery.setFetchAttributes(query.getFetchAttributes());
-        privateQuery.setPredicate(query.getPredicate());
-        privateQuery.setLimit(query.getLimit());
-        privateQuery.setOffset(query.getOffset());
-        privateQuery.setSortCriteria(query.getSortCriteria());
+        PrivateCertificateQuery privateQuery = new PrivateCertificateQueryImpl(query);
         privateQuery.setIncludeInherited(((PublicCertificateQuery) query).getIncludeInherited());
 
         PublicCertificateListResult publicCertificates = new PublicCertificateListResultImpl();
@@ -67,12 +62,7 @@ public class PublicCertificateServiceImpl implements PublicCertificateService {
     @Override
     public long count(KapuaQuery<PublicCertificate> query) throws KapuaException {
 
-        PrivateCertificateQuery privateQuery = new PrivateCertificateQueryImpl(query.getScopeId());
-        privateQuery.setFetchAttributes(query.getFetchAttributes());
-        privateQuery.setPredicate(query.getPredicate());
-        privateQuery.setLimit(query.getLimit());
-        privateQuery.setOffset(query.getOffset());
-        privateQuery.setSortCriteria(query.getSortCriteria());
+        PrivateCertificateQuery privateQuery = new PrivateCertificateQueryImpl(query);
         privateQuery.setIncludeInherited(((PublicCertificateQuery) query).getIncludeInherited());
 
         return PRIVATE_CERTIFICATE_SERVICE.count(privateQuery);

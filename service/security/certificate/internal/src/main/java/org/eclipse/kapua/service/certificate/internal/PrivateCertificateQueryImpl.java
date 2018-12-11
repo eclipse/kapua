@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.certificate.internal;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.certificate.PrivateCertificate;
 import org.eclipse.kapua.service.certificate.PrivateCertificateQuery;
 
@@ -28,13 +29,24 @@ public class PrivateCertificateQueryImpl extends AbstractKapuaQuery<PrivateCerti
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The scopeId of the {@link KapuaQuery}
      */
     public PrivateCertificateQueryImpl(KapuaId scopeId) {
         this();
         setScopeId(scopeId);
+    }
+
+    /**
+     * Constructor
+     * <p>
+     * This deeply clones the given {@link PrivateCertificateQuery}
+     *
+     * @param query the query to clone
+     */
+    public PrivateCertificateQueryImpl(KapuaQuery query) {
+        super(query);
     }
 
     @Override

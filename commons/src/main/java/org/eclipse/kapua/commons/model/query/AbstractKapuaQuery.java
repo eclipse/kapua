@@ -26,13 +26,14 @@ import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.model.query.predicate.OrPredicate;
 import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * {@link KapuaQuery} {@code abstract} implementation.
  *
- * @param <E> {@link KapuaEntity} domain
+ * @param <E> {@link KapuaEntity} domain for this query.
  * @since 1.0.0
  */
 public abstract class AbstractKapuaQuery<E extends KapuaEntity> implements KapuaQuery<E> {
@@ -67,6 +68,21 @@ public abstract class AbstractKapuaQuery<E extends KapuaEntity> implements Kapua
         this();
 
         setScopeId(scopeId);
+    }
+
+    /**
+     * Constructor.
+     * <p>
+     * It deeply clones the given {@link KapuaQuery}
+     *
+     * @param query the query to clone.
+     */
+    public AbstractKapuaQuery(@NotNull KapuaQuery query) {
+        this.setFetchAttributes(query.getFetchAttributes());
+        this.setPredicate(query.getPredicate());
+        this.setLimit(query.getLimit());
+        this.setOffset(query.getOffset());
+        this.setSortCriteria(query.getSortCriteria());
     }
 
     @Override
