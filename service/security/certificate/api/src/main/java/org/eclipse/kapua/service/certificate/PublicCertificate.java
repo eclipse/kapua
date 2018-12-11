@@ -11,6 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate;
 
+import io.swagger.annotations.ApiModelProperty;
+import org.eclipse.kapua.model.KapuaNamedEntity;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.model.xml.BinaryXmlAdapter;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
+import org.eclipse.kapua.service.certificate.xml.PublicCertificateXmlRegistry;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -21,18 +29,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Date;
 import java.util.Set;
 
-import org.eclipse.kapua.model.KapuaNamedEntity;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdAdapter;
-import org.eclipse.kapua.model.xml.BinaryXmlAdapter;
-import org.eclipse.kapua.model.xml.DateXmlAdapter;
-import org.eclipse.kapua.service.certificate.xml.CertificateXmlRegistry;
-
-import io.swagger.annotations.ApiModelProperty;
-
 @XmlRootElement(name = "publicCertificate")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = CertificateXmlRegistry.class, factoryMethod = "newPublicCertificate")
+@XmlType(factoryClass = PublicCertificateXmlRegistry.class, factoryMethod = "newPublicCertificate")
 public interface PublicCertificate extends KapuaNamedEntity {
 
     String TYPE = "publicCertificate";

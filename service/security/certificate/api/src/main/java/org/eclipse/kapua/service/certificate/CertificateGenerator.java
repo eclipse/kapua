@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate;
 
-import org.eclipse.kapua.service.certificate.xml.CertificateXmlRegistry;
+import org.eclipse.kapua.service.certificate.xml.PrivateCertificateXmlRegistry;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -23,23 +23,13 @@ import java.util.Date;
 import java.util.Set;
 
 /**
- * {@link CertificateGenerator} encapsulates all the information needed to generate a new PrivateCertificate in the system.
+ * {@link CertificateGenerator} encapsulates all the information needed to generate a new {@link PrivateCertificate} in the system.
  *
  * @since 1.0
  */
 @XmlRootElement(name = "certificateGenerator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {
-        "name",
-        "subject",
-        "issuer",
-        "keyLength",
-        "notBefore",
-        "notAfter",
-        "status",
-        "certificateUsages",
-        "forwardable"
-}, factoryClass = CertificateXmlRegistry.class, factoryMethod = "newCertificateGenerator")
+@XmlType(factoryClass = PrivateCertificateXmlRegistry.class, factoryMethod = "newCertificateGenerator")
 public interface CertificateGenerator {
 
     String getName();

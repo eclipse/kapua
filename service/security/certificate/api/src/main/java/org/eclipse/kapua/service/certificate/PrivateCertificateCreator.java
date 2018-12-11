@@ -15,7 +15,7 @@ import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.KapuaNamedEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
-import org.eclipse.kapua.service.certificate.xml.CertificateXmlRegistry;
+import org.eclipse.kapua.service.certificate.xml.PrivateCertificateXmlRegistry;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -27,13 +27,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Set;
 
 /**
- * PrivateCertificateCreator encapsulates all the information needed to create a new PrivateCertificate in the system.
+ * {@link PrivateCertificate} {@link org.eclipse.kapua.model.KapuaEntityCreator}encapsulates all the information needed to create a new {@link PrivateCertificate} in the system.
  *
  * @since 1.0.0
  */
 @XmlRootElement(name = "certificateCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = CertificateXmlRegistry.class, factoryMethod = "newCreator")
+@XmlType(factoryClass = PrivateCertificateXmlRegistry.class, factoryMethod = "newCreator")
 public interface PrivateCertificateCreator extends KapuaNamedEntityCreator<PrivateCertificate> {
 
     @XmlElement(name = "certificate")

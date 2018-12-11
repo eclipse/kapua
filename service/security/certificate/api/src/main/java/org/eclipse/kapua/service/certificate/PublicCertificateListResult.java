@@ -12,5 +12,15 @@
 package org.eclipse.kapua.service.certificate;
 
 import org.eclipse.kapua.model.query.KapuaListResult;
+import org.eclipse.kapua.service.certificate.xml.PublicCertificateXmlRegistry;
 
-public interface PublicCertificateListResult extends KapuaListResult<PublicCertificate> { }
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlRootElement(name = "publicCertificateListResult")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(factoryClass = PublicCertificateXmlRegistry.class, factoryMethod = "newListResult")
+public interface PublicCertificateListResult extends KapuaListResult<PublicCertificate> {
+}

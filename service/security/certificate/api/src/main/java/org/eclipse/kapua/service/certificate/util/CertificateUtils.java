@@ -11,6 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate.util;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.kapua.service.certificate.exception.KapuaCertificateErrorCodes;
+import org.eclipse.kapua.service.certificate.exception.KapuaCertificateException;
+
 import javax.crypto.EncryptedPrivateKeyInfo;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -27,11 +32,6 @@ import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.kapua.service.certificate.exception.KapuaCertificateErrorCodes;
-import org.eclipse.kapua.service.certificate.exception.KapuaCertificateException;
 
 public class CertificateUtils {
 

@@ -14,15 +14,15 @@ package org.eclipse.kapua.service.certificate.internal;
 import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.certificate.PrivateCertificate;
-import org.eclipse.kapua.service.certificate.PrivateCertificateCreator;
-import org.eclipse.kapua.service.certificate.PrivateCertificateFactory;
 import org.eclipse.kapua.service.certificate.CertificateGenerator;
-import org.eclipse.kapua.service.certificate.PrivateCertificateListResult;
-import org.eclipse.kapua.service.certificate.PrivateCertificateQuery;
 import org.eclipse.kapua.service.certificate.CertificateUsage;
 import org.eclipse.kapua.service.certificate.KeyUsage;
 import org.eclipse.kapua.service.certificate.KeyUsageSetting;
+import org.eclipse.kapua.service.certificate.PrivateCertificate;
+import org.eclipse.kapua.service.certificate.PrivateCertificateCreator;
+import org.eclipse.kapua.service.certificate.PrivateCertificateFactory;
+import org.eclipse.kapua.service.certificate.PrivateCertificateListResult;
+import org.eclipse.kapua.service.certificate.PrivateCertificateQuery;
 
 /**
  * {@link PrivateCertificateFactory} implementation.

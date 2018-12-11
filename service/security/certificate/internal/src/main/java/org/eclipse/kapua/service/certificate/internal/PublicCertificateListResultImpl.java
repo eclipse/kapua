@@ -16,7 +16,7 @@ import org.eclipse.kapua.service.certificate.PublicCertificate;
 import org.eclipse.kapua.service.certificate.PublicCertificateListResult;
 
 /**
- * User result list definition.
+ * {@link PublicCertificateListResult} implementation.
  *
  * @since 1.0
  */

@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate;
 
-import org.eclipse.kapua.service.certificate.xml.CertificateXmlRegistry;
+import org.eclipse.kapua.service.certificate.xml.PrivateCertificateXmlRegistry;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlRootElement(name = "certificate")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = CertificateXmlRegistry.class, factoryMethod = "newPrivateCertificate")
+@XmlType(factoryClass = PrivateCertificateXmlRegistry.class, factoryMethod = "newPrivateCertificate")
 public interface PrivateCertificate extends PublicCertificate {
 
     String TYPE = "privateCertificate";

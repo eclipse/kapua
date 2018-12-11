@@ -16,7 +16,7 @@ import org.eclipse.kapua.service.certificate.PrivateCertificate;
 import org.eclipse.kapua.service.certificate.PrivateCertificateListResult;
 
 /**
- * User result list definition.
+ * {@link PrivateCertificateListResult} implementation.
  *
  * @since 1.0
  */

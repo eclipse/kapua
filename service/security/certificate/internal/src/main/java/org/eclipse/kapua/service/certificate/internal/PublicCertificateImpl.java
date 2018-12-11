@@ -11,16 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate.internal;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.certificate.CertificateStatus;
 import org.eclipse.kapua.service.certificate.CertificateUsage;
 import org.eclipse.kapua.service.certificate.KeyUsageSetting;
 import org.eclipse.kapua.service.certificate.PublicCertificate;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class PublicCertificateImpl extends AbstractKapuaNamedEntity implements PublicCertificate {
 

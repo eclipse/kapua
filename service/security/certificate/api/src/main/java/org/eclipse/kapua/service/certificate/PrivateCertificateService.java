@@ -26,20 +26,6 @@ public interface PrivateCertificateService extends KapuaEntityService<PrivateCer
         KapuaUpdatableEntityService<PrivateCertificate>,
         KapuaConfigurableService {
 
-    CertificateDomain CERTIFICATE_DOMAIN = new CertificateDomain();
-
-    @Override
-    PrivateCertificate create(PrivateCertificateCreator var1) throws KapuaException;
-
-    @Override
-    PrivateCertificate update(PrivateCertificate var1) throws KapuaException;
-
-    @Override
-    PrivateCertificate find(KapuaId var1, KapuaId var2) throws KapuaException;
-
-    @Override
-    PrivateCertificate findByName(String var1) throws KapuaException;
-
     @Override
     PrivateCertificateListResult query(KapuaQuery<PrivateCertificate> query) throws KapuaException;
 

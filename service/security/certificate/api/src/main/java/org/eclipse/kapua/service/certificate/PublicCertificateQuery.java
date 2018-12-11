@@ -11,18 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate;
 
+import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.service.certificate.xml.PublicCertificateXmlRegistry;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.certificate.xml.CertificateXmlRegistry;
-
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = CertificateXmlRegistry.class, factoryMethod = "newPublicQuery")
+@XmlType(factoryClass = PublicCertificateXmlRegistry.class, factoryMethod = "newQuery")
 public interface PublicCertificateQuery extends KapuaQuery<PublicCertificate> {
 
     @XmlElement(name = "includeInherited")

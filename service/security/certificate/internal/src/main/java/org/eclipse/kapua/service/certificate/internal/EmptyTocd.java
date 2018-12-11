@@ -11,15 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate.internal;
 
-import javax.xml.namespace.QName;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.service.certificate.PrivateCertificateService;
+
+import javax.xml.namespace.QName;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class EmptyTocd implements KapuaTocd {
 
@@ -34,30 +34,37 @@ public class EmptyTocd implements KapuaTocd {
 
     @Override
     public void setOtherAttributes(Map<QName, String> otherAttributes) {
+        // No OP implementation
     }
 
     @Override
     public void setName(String value) {
+        // No OP implementation
     }
 
     @Override
     public void setId(String value) {
+        // No OP implementation
     }
 
     @Override
     public void setIcon(List<? extends KapuaTicon> icon) {
+        // No OP implementation
     }
 
     @Override
     public void setDescription(String value) {
+        // No OP implementation
     }
 
     @Override
     public void setAny(List<Object> any) {
+        // No OP implementation
     }
 
     @Override
     public void setAD(List<? extends KapuaTad> icon) {
+        // No OP implementation
     }
 
     @Override
