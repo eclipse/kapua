@@ -86,6 +86,11 @@ public class KapuaListResultImpl<E extends KapuaEntity> implements KapuaListResu
     }
 
     @Override
+    public void addItem(E item) {
+        getItems().add(item);
+    }
+
+    @Override
     public void clearItems() {
         getItems().clear();
     }

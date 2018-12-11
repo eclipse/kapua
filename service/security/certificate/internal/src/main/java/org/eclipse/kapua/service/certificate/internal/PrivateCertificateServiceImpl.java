@@ -12,7 +12,6 @@
 package org.eclipse.kapua.service.certificate.internal;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -127,7 +126,7 @@ public class PrivateCertificateServiceImpl implements PrivateCertificateService 
         kapuaPrivateCertificate.setPassword(setting.getString(KapuaCertificateSettingKeys.CERTIFICATE_JWT_PRIVATE_KEY_PASSWORD));
 
         PrivateCertificateListResult result = CERTIFICATE_FACTORY.newListResult();
-        result.addItems(Lists.newArrayList(kapuaPrivateCertificate));
+        result.addItem(kapuaPrivateCertificate);
 
         return result;
     }

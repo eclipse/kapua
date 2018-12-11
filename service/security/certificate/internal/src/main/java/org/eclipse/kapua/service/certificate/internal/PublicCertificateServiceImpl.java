@@ -27,7 +27,6 @@ import org.eclipse.kapua.service.certificate.PublicCertificateListResult;
 import org.eclipse.kapua.service.certificate.PublicCertificateQuery;
 import org.eclipse.kapua.service.certificate.PublicCertificateService;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +59,7 @@ public class PublicCertificateServiceImpl implements PublicCertificateService {
         privateQuery.setIncludeInherited(((PublicCertificateQuery) query).getIncludeInherited());
 
         PublicCertificateListResult publicCertificates = new PublicCertificateListResultImpl();
-        publicCertificates.addItems(Arrays.asList(PRIVATE_CERTIFICATE_SERVICE.query(privateQuery).getFirstItem()));
+        publicCertificates.addItem(PRIVATE_CERTIFICATE_SERVICE.query(privateQuery).getFirstItem());
 
         return publicCertificates;
     }
