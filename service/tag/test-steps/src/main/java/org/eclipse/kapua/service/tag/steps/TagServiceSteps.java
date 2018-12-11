@@ -25,6 +25,7 @@ import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.TestBase;
@@ -32,6 +33,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.tag.internal.TagEntityManagerFactory;
+import org.eclipse.kapua.service.tag.internal.TagJAXBContextProvider;
 import org.eclipse.kapua.service.tag.internal.TagServiceImpl;
 import org.eclipse.kapua.test.MockedLocator;
 import org.junit.Assert;
@@ -152,7 +154,7 @@ public class TagServiceSteps extends TestBase {
         }
 
         // Setup JAXB context
-//        XmlUtil.setContextProvider(new TestJAXBContextProvider());
+        XmlUtil.setContextProvider(new TagJAXBContextProvider());
     }
 
     @After
