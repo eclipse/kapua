@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -206,7 +206,7 @@ public class AclCreator {
     public void attachUserCredentials(Account account, User user) throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
             CredentialCreator credentialCreator;
-            credentialCreator = new CredentialFactoryImpl().newCreator(account.getId(), user.getId(), CredentialType.PASSWORD, "kapua-password", CredentialStatus.ENABLED, null);
+            credentialCreator = new CredentialFactoryImpl().newCreator(account.getId(), user.getId(), CredentialType.PASSWORD, "KeepCalm123.", CredentialStatus.ENABLED, null);
             try {
                 credentialService.create(credentialCreator);
             } catch (KapuaException ke) {

@@ -69,7 +69,7 @@ Feature: Broker ACL tests
     and this is allowed as it is part of broker connect procedure.
     Given Mqtt Device is started
       And broker account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "$EDC/acme/client-1/CONF-V1/REPLY" with client "client-1"
       And 1 second passed for message to arrive
     Then Broker receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY"
@@ -82,7 +82,7 @@ Feature: Broker ACL tests
     on REPLY.
     Given Mqtt Device is started
       And broker account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "$EDC/acme/client-1/CONF-V1/REPLY/foo" with client "client-1"
       And 1 second passed for message to arrive
     Then Broker receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY/foo"
@@ -94,7 +94,7 @@ Feature: Broker ACL tests
     Subscribe is not allowed, but it is on client's own topic. Is that OK?
     Given Mqtt Device is started
       And broker account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/acme/client-1/CONF-V1/REPLY"
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/acme/client-1/CONF-V1/REPLY"
       And string "Hello broker" is published to topic "$EDC/acme/client-1/CONF-V1/REPLY" with client "client-1"
       And 1 second passed for message to arrive
     Then client "client-1" receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY"
@@ -108,7 +108,7 @@ Feature: Broker ACL tests
       And broker account and user are created
       And other broker account and user are created
     Given I expect the exception "MqttException" with the text "*"
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/domino/client-1/CONF-V1/REPLY"
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/domino/client-1/CONF-V1/REPLY"
     Then An exception was thrown
     And clients are disconnected
       And Mqtt Device is stoped
@@ -117,7 +117,7 @@ Feature: Broker ACL tests
     Normal user with broker connect profile publishes to topic $EDC.{0}.>
     Given Mqtt Device is started
       And broker account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "$EDC/acme" with client "client-1"
       And 1 second passed for message to arrive
     Then Broker doesn't receive string "Hello broker" on topic "$EDC/acme"
@@ -129,7 +129,7 @@ Feature: Broker ACL tests
     This means that foo topic is not created as broker has no admin rights on this topic.
     Given Mqtt Device is started
       And broker account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "$EDC/acme/foo" with client "client-1"
       And 1 second passed for message to arrive
     Then Broker doesn't receive string "Hello broker" on topic "$EDC/acme/foo"
@@ -142,7 +142,7 @@ Feature: Broker ACL tests
     Given Mqtt Device is started
       And broker account and user are created
     Given I expect the exception "MqttException" with the text "*"
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/acme"
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/acme"
     Then An exception was thrown
       And clients are disconnected
       And Mqtt Device is stoped
@@ -152,7 +152,7 @@ Feature: Broker ACL tests
     publishes to subtopic foo. All this operations are allowed.
     Given Mqtt Device is started
       And broker account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/acme/client-1/foo"
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/acme/client-1/foo"
       And string "Hello broker" is published to topic "$EDC/acme/client-1/foo" with client "client-1"
       And 1 second passed for message to arrive
     Then client "client-1" receives string "Hello broker" on topic "$EDC/acme/client-1/foo"
@@ -163,7 +163,7 @@ Feature: Broker ACL tests
     Normal user with broker connect profile publishes to topic {0}.>
     Given Mqtt Device is started
       And broker account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "acme" with client "client-1"
       And 1 second passed for message to arrive
     Then Broker doesn't receive string "Hello broker" on topic "acme"
@@ -175,7 +175,7 @@ Feature: Broker ACL tests
     This means that foo topic is not created as broker has no admin rights on this topic.
     Given Mqtt Device is started
       And broker account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "acme/foo" with client "client-1"
       And 1 second passed for message to arrive
     Then Broker doesn't receive string "Hello broker" on topic "acme/foo"
@@ -188,7 +188,7 @@ Feature: Broker ACL tests
     Given Mqtt Device is started
       And broker account and user are created
     Given I expect the exception "MqttException" with the text "*"
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "acme"
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "acme"
     Then An exception was thrown
       And clients are disconnected
       And Mqtt Device is stoped
@@ -198,7 +198,7 @@ Feature: Broker ACL tests
     publishes to subtopic foo. All this operations are allowed.
     Given Mqtt Device is started
       And broker account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "acme/client-1/foo"
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "acme/client-1/foo"
       And string "Hello broker" is published to topic "acme/client-1/foo" with client "client-1"
       And 1 second passed for message to arrive
     Then client "client-1" receives string "Hello broker" on topic "acme/client-1/foo"
@@ -210,7 +210,7 @@ Feature: Broker ACL tests
     Publish is allowed, but not subscribe and admin.
     Given Mqtt Device is started
       And broker account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "$EDC/acme/foo/bar/NOTIFY/client-1" with client "client-1"
       And 1 second passed for message to arrive
     Then Broker receives string "Hello broker" on topic "$EDC/acme/foo/bar/NOTIFY/client-1"
@@ -222,7 +222,7 @@ Feature: Broker ACL tests
 #    This means that foo topic is not created as broker has no admin rights on this topic.
 #    Given Mqtt Device is started
 #      And broker account and user are created
-#    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+#    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
 #      And string "Hello broker" is published to topic "$EDC/acme/foo/bar/NOTIFY/client-1/foo" with client "client-1"
 #      And 1 second passed for message to arrive
 #    Then Broker doesn't receive string "Hello broker" on topic "$EDC/acme/foo/bar/NOTIFY/client-1/foo"
@@ -235,7 +235,7 @@ Feature: Broker ACL tests
     Given Mqtt Device is started
       And broker account and user are created
     Given I expect the exception "MqttException" with the text "*"
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/acme/foo/bar/NOTIFY/client-1"
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/acme/foo/bar/NOTIFY/client-1"
     Then An exception was thrown
       And clients are disconnected
       And Mqtt Device is stoped
@@ -247,7 +247,7 @@ Feature: Broker ACL tests
     and this is allowed as it is part of publishing data.
     Given Mqtt Device is started
       And device account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "$EDC/acme/client-1/CONF-V1/REPLY" with client "client-1"
       And 1 second passed for message to arrive
     Then Broker receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY"
@@ -260,7 +260,7 @@ Feature: Broker ACL tests
     on REPLY.
     Given Mqtt Device is started
       And device account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "$EDC/acme/client-1/CONF-V1/REPLY/foo" with client "client-1"
       And 1 second passed for message to arrive
     Then Broker receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY/foo"
@@ -272,7 +272,7 @@ Feature: Broker ACL tests
     Subscribe is not allowed, but it is on client's own topic. Is that OK?
     Given Mqtt Device is started
       And device account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/acme/client-1/CONF-V1/REPLY"
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/acme/client-1/CONF-V1/REPLY"
       And string "Hello broker" is published to topic "$EDC/acme/client-1/CONF-V1/REPLY" with client "client-1"
       And 1 second passed for message to arrive
     Then client "client-1" receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY"
@@ -286,7 +286,7 @@ Feature: Broker ACL tests
       And device account and user are created
       And other broker account and user are created
     Given I expect the exception "MqttException" with the text "*"
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/domino/client-1/CONF-V1/REPLY"
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/domino/client-1/CONF-V1/REPLY"
     Then An exception was thrown
       And clients are disconnected
       And Mqtt Device is stoped
@@ -296,7 +296,7 @@ Feature: Broker ACL tests
     publishes to subtopic foo. All this operations are allowed.
     Given Mqtt Device is started
       And device account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/acme/foo"
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/acme/foo"
       And string "Hello broker" is published to topic "$EDC/acme/foo" with client "client-1"
       And 1 second passed for message to arrive
     Then client "client-1" receives string "Hello broker" on topic "$EDC/acme/foo"
@@ -308,7 +308,7 @@ Feature: Broker ACL tests
     publishes to subtopic foo. All this operations are allowed.
     Given Mqtt Device is started
       And device account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/acme/client-1/foo"
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/acme/client-1/foo"
       And string "Hello broker" is published to topic "$EDC/acme/client-1/foo" with client "client-1"
       And 1 second passed for message to arrive
     Then client "client-1" receives string "Hello broker" on topic "$EDC/acme/client-1/foo"
@@ -319,7 +319,7 @@ Feature: Broker ACL tests
     Normal user with device manage profile publishes to topic {0}.>
     Given Mqtt Device is started
       And device account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "acme" with client "client-1"
       And 1 second passed for message to arrive
     Then Broker doesn't receive string "Hello broker" on topic "acme"
@@ -331,7 +331,7 @@ Feature: Broker ACL tests
     This means that foo topic is not created as device has no admin rights on this topic.
     Given Mqtt Device is started
       And device account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "acme/foo" with client "client-1"
       And 1 second passed for message to arrive
     Then Broker doesn't receive string "Hello broker" on topic "acme/foo"
@@ -344,7 +344,7 @@ Feature: Broker ACL tests
     Given Mqtt Device is started
       And device account and user are created
     Given I expect the exception "MqttException" with the text "*"
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "acme"
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "acme"
     Then An exception was thrown
       And clients are disconnected
       And Mqtt Device is stoped
@@ -354,7 +354,7 @@ Feature: Broker ACL tests
     publishes to subtopic foo. All this operations are allowed.
     Given Mqtt Device is started
       And device account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "acme/client-1/foo"
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "acme/client-1/foo"
       And string "Hello broker" is published to topic "acme/client-1/foo" with client "client-1"
       And 1 second passed for message to arrive
     Then client "client-1" receives string "Hello broker" on topic "acme/client-1/foo"
@@ -366,7 +366,7 @@ Feature: Broker ACL tests
     Publish is allowed, but not subscribe and admin.
     Given Mqtt Device is started
       And device account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "$EDC/acme/foo/bar/NOTIFY/client-1" with client "client-1"
       And 1 second passed for message to arrive
     Then Broker receives string "Hello broker" on topic "$EDC/acme/foo/bar/NOTIFY/client-1"
@@ -378,7 +378,7 @@ Feature: Broker ACL tests
 #    This means that foo topic is not created as broker has no admin rights on this topic.
 #    Given Mqtt Device is started
 #      And device account and user are created
-#    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+#    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
 #      And string "Hello broker" is published to topic "$EDC/acme/foo/bar/NOTIFY/client-1/foo" with client "client-1"
 #      And 1 second passed for message to arrive
 #    Then Broker doesn't receive string "Hello broker" on topic "$EDC/acme/foo/bar/NOTIFY/client-1/foo"
@@ -391,7 +391,7 @@ Feature: Broker ACL tests
     Given Mqtt Device is started
       And device account and user are created
     Given I expect the exception "MqttException" with the text "*"
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/acme/foo/bar/NOTIFY/client-1"
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/acme/foo/bar/NOTIFY/client-1"
 #    Then An exception was thrown
       And clients are disconnected
       And Mqtt Device is stoped
@@ -403,7 +403,7 @@ Feature: Broker ACL tests
     and this is allowed as it is part of broker connect procedure.
     Given Mqtt Device is started
       And data view account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "$EDC/acme/client-1/CONF-V1/REPLY" with client "client-1"
       And 1 second passed for message to arrive
     Then Broker receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY"
@@ -416,7 +416,7 @@ Feature: Broker ACL tests
     on REPLY.
     Given Mqtt Device is started
       And data view account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "$EDC/acme/client-1/CONF-V1/REPLY/foo" with client "client-1"
       And 1 second passed for message to arrive
     Then Broker receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY/foo"
@@ -428,7 +428,7 @@ Feature: Broker ACL tests
     Subscribe is not allowed, but it is on client's own topic. Is that OK?
     Given Mqtt Device is started
       And data view account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/acme/client-1/CONF-V1/REPLY"
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/acme/client-1/CONF-V1/REPLY"
       And string "Hello broker" is published to topic "$EDC/acme/client-1/CONF-V1/REPLY" with client "client-1"
       And 1 second passed for message to arrive
     Then client "client-1" receives string "Hello broker" on topic "$EDC/acme/client-1/CONF-V1/REPLY"
@@ -442,7 +442,7 @@ Feature: Broker ACL tests
       And data view account and user are created
       And other broker account and user are created
     Given I expect the exception "MqttException" with the text "*"
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/domino/client-1/CONF-V1/REPLY"
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/domino/client-1/CONF-V1/REPLY"
     Then An exception was thrown
       And clients are disconnected
       And Mqtt Device is stoped
@@ -451,7 +451,7 @@ Feature: Broker ACL tests
     Normal user with data view profile publishes to topic $EDC.{0}.>
     Given Mqtt Device is started
       And data view account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "$EDC/acme" with client "client-1"
       And 1 second passed for message to arrive
     Then Broker doesn't receive string "Hello broker" on topic "$EDC/acme"
@@ -463,7 +463,7 @@ Feature: Broker ACL tests
     This means that foo topic is not created as data view has no admin rights on this topic.
     Given Mqtt Device is started
       And data view account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "$EDC/acme/foo" with client "client-1"
       And 1 second passed for message to arrive
     Then Broker doesn't receive string "Hello broker" on topic "$EDC/acme/foo"
@@ -476,7 +476,7 @@ Feature: Broker ACL tests
     Given Mqtt Device is started
       And data view account and user are created
     Given I expect the exception "MqttException" with the text "*"
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/acme"
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/acme"
     Then An exception was thrown
       And clients are disconnected
       And Mqtt Device is stoped
@@ -486,7 +486,7 @@ Feature: Broker ACL tests
     publishes to subtopic foo. All this operations are allowed.
     Given Mqtt Device is started
       And data view account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/acme/client-1/foo"
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/acme/client-1/foo"
       And string "Hello broker" is published to topic "$EDC/acme/client-1/foo" with client "client-1"
       And 1 second passed for message to arrive
     Then client "client-1" receives string "Hello broker" on topic "$EDC/acme/client-1/foo"
@@ -497,7 +497,7 @@ Feature: Broker ACL tests
     Normal user with data view profile publishes to topic {0}.>
     Given Mqtt Device is started
       And data view account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "acme" with client "client-1"
       And 1 second passed for message to arrive
     Then Broker doesn't receive string "Hello broker" on topic "acme"
@@ -510,7 +510,7 @@ Feature: Broker ACL tests
     message is not received as publish is not allowed. How is this scenario possible?
     Given Mqtt Device is started
       And data view account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "acme/foo" with client "client-1"
       And 1 second passed for message to arrive
     Then Broker doesn't receive string "Hello broker" on topic "acme/foo"
@@ -522,7 +522,7 @@ Feature: Broker ACL tests
     is received by listening client.
     Given Mqtt Device is started
       And data view account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "acme"
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "acme"
       And broker with clientId "admin-1" and user "kapua-sys" and password "kapua-password" is listening on topic ""
       And string "Hello broker" is published to topic "acme" with client "admin-1"
       And 1 second passed for message to arrive
@@ -535,7 +535,7 @@ Feature: Broker ACL tests
     Publish is allowed, but not subscribe and admin.
     Given Mqtt Device is started
       And data view account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "acme/client-1" with client "client-1"
       And 1 second passed for message to arrive
     Then Broker receives string "Hello broker" on topic "acme/client-1"
@@ -549,7 +549,7 @@ Feature: Broker ACL tests
     Is this correct behaviour?
     Given Mqtt Device is started
       And data view account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "acme/client-1/foo" with client "client-1"
       And 1 second passed for message to arrive
     Then Broker receives string "Hello broker" on topic "acme/client-1/foo"
@@ -562,7 +562,7 @@ Feature: Broker ACL tests
 #    This out-roule is not applied? Why?
 #    Given Mqtt Device is started
 #      And data view account and user are created
-#    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "acme/client-1"
+#    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "acme/client-1"
 #    Then exception is not thrown
 #      And clients are disconnected
 #      And Mqtt Device is stoped
@@ -572,7 +572,7 @@ Feature: Broker ACL tests
     Publish is allowed, but not subscribe and admin.
     Given Mqtt Device is started
       And data view account and user are created
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
       And string "Hello broker" is published to topic "$EDC/acme/foo/bar/NOTIFY/client-1" with client "client-1"
       And 1 second passed for message to arrive
     Then Broker receives string "Hello broker" on topic "$EDC/acme/foo/bar/NOTIFY/client-1"
@@ -584,7 +584,7 @@ Feature: Broker ACL tests
 #    This means that foo topic is not created as data view has no admin rights on this topic.
 #    Given Mqtt Device is started
 #      And data view account and user are created
-#    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic ""
+#    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
 #      And string "Hello broker" is published to topic "$EDC/acme/foo/bar/NOTIFY/client-1/foo" with client "client-1"
 #      And 1 second passed for message to arrive
 #    Then Broker doesn't receive string "Hello broker" on topic "$EDC/acme/foo/bar/NOTIFY/client-1/foo"
@@ -597,7 +597,7 @@ Feature: Broker ACL tests
     Given Mqtt Device is started
       And data view account and user are created
     Given I expect the exception "MqttException" with the text "*"
-    When broker with clientId "client-1" and user "luise" and password "kapua-password" is listening on topic "$EDC/acme/foo/bar/NOTIFY/client-1"
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/acme/foo/bar/NOTIFY/client-1"
     Then An exception was thrown
       And clients are disconnected
       And Mqtt Device is stoped

@@ -26,9 +26,9 @@ Feature: User Coupling
     And A full set of device privileges for account "test-acc-1"
     And The default connection coupling mode for account "test-acc-1" is set to "LOOSE"
     And Such a set of privileged users for account "test-acc-1"
-      | name        | password   | displayName  | status  |
-      | test-user-1 | kp-pass    | Test User 1  | ENABLED |
-      | test-user-2 | kp-pass    | Test User 2  | ENABLED |
+      | name        | password        | displayName  | status  |
+      | test-user-1 | KeepCalm123.    | Test User 1  | ENABLED |
+      | test-user-2 | KeepCalm123.    | Test User 2  | ENABLED |
     And Devices such as
       | clientId | displayName | modelId         | serialNumber |
       | device-1 | testGateway | ReliaGate 10-20 | 12341234ABC  |
@@ -37,7 +37,7 @@ Feature: User Coupling
       | test-acc-1  | device-1   | test-user-1 | LOOSE            |
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kp-pass@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -48,7 +48,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-2:kp-pass@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -66,9 +66,9 @@ Feature: User Coupling
     And A full set of device privileges for account "test-acc-1"
     And The default connection coupling mode for account "test-acc-1" is set to "LOOSE"
     And Such a set of privileged users for account "test-acc-1"
-      | name        | password   | displayName  | status  |
-      | test-user-1 | kp-pass    | Test User 1  | ENABLED |
-      | test-user-2 | kp-pass    | Test User 2  | ENABLED |
+      | name        | password        | displayName  | status  |
+      | test-user-1 | KeepCalm123.    | Test User 1  | ENABLED |
+      | test-user-2 | KeepCalm123.    | Test User 2  | ENABLED |
     And Devices such as
       | clientId | displayName | modelId         | serialNumber |
       | device-1 | testGateway | ReliaGate 10-20 | 12341234ABC  |
@@ -77,7 +77,7 @@ Feature: User Coupling
       | test-acc-1  | device-1   | test-user-1 | test-user-1  |
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kp-pass@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -88,14 +88,14 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-1:kp-pass@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
     Then I find 0 connections
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-2:kp-pass@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -124,7 +124,7 @@ Feature: User Coupling
       | test-acc-1  | device-1   | test-user-1 | STRICT           |
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -135,7 +135,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -161,7 +161,7 @@ Feature: User Coupling
       | test-acc-1  | device-1   | test-user-1 | STRICT           |
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -172,7 +172,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -182,7 +182,7 @@ Feature: User Coupling
     Then I set the user change flag for the connection from device "device-1" in account "test-acc-1" to "true"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -216,7 +216,7 @@ Feature: User Coupling
       | test-acc-1  | device-3   | test-user-3 | LOOSE            |
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -227,7 +227,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -238,7 +238,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -272,7 +272,7 @@ Feature: User Coupling
       | test-acc-1 | device-3 | test-user-3 | LOOSE            |              |
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -282,7 +282,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -290,7 +290,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -298,7 +298,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -306,7 +306,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -316,7 +316,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -324,7 +324,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -357,7 +357,7 @@ Feature: User Coupling
       | test-acc-1  | device-3   | test-user-3 |
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -368,7 +368,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -379,7 +379,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -393,7 +393,7 @@ Feature: User Coupling
     And I set the reserved user for the connection from device "device-1" in account "test-acc-1" to "test-user-1"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -402,7 +402,7 @@ Feature: User Coupling
     Then I stop the simulator
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -410,7 +410,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -418,7 +418,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -426,7 +426,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -436,7 +436,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -444,7 +444,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -456,7 +456,7 @@ Feature: User Coupling
     And I set the reserved user for the connection from device "device-1" in account "test-acc-1" to "null"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -466,7 +466,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -474,7 +474,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -482,7 +482,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -492,7 +492,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -502,7 +502,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -512,7 +512,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -531,7 +531,7 @@ Feature: User Coupling
     Then No exception was thrown
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -541,7 +541,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -549,7 +549,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -557,7 +557,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -565,7 +565,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -575,7 +575,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -583,7 +583,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -591,7 +591,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -599,7 +599,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -611,7 +611,7 @@ Feature: User Coupling
     When I set the reserved user for the connection from device "device-2" in account "test-acc-1" to "null"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -621,7 +621,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -629,7 +629,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -637,7 +637,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -645,7 +645,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -655,7 +655,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -663,7 +663,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -671,7 +671,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -681,7 +681,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -693,7 +693,7 @@ Feature: User Coupling
     Then I set the user change flag for the connection from device "device-2" in account "test-acc-1" to "true"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -703,7 +703,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -711,7 +711,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -719,7 +719,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -729,7 +729,7 @@ Feature: User Coupling
     Then I set the user change flag for the connection from device "device-2" in account "test-acc-1" to "true"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -739,7 +739,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -749,7 +749,7 @@ Feature: User Coupling
     Then I set the user change flag for the connection from device "device-2" in account "test-acc-1" to "true"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -759,7 +759,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -767,7 +767,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -777,7 +777,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -789,7 +789,7 @@ Feature: User Coupling
     Then I set the user coupling mode for the connection from device "device-3" in account "test-acc-1" to "STRICT"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -799,7 +799,7 @@ Feature: User Coupling
     Then I set the user change flag for the connection from device "device-3" in account "test-acc-1" to "true"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -809,7 +809,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -819,7 +819,7 @@ Feature: User Coupling
     Then I set the user change flag for the connection from device "device-3" in account "test-acc-1" to "true"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -852,7 +852,7 @@ Feature: User Coupling
       | test-acc-1 | device-3 | test-user-3 |
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -863,7 +863,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -871,7 +871,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -882,7 +882,7 @@ Feature: User Coupling
     And I set the reserved user for the connection from device "device-1" in account "test-acc-1" to "test-user-1"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -891,7 +891,7 @@ Feature: User Coupling
     Then I stop the simulator
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -899,7 +899,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -907,7 +907,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -915,7 +915,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -925,7 +925,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -933,7 +933,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -945,7 +945,7 @@ Feature: User Coupling
     And I set the reserved user for the connection from device "device-1" in account "test-acc-1" to "null"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -955,7 +955,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -963,7 +963,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -971,7 +971,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -979,7 +979,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -989,7 +989,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -997,7 +997,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1016,7 +1016,7 @@ Feature: User Coupling
     Then No exception was thrown
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1026,7 +1026,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1034,7 +1034,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1042,7 +1042,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -1050,7 +1050,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -1060,7 +1060,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -1068,7 +1068,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1076,7 +1076,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1084,7 +1084,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1096,7 +1096,7 @@ Feature: User Coupling
     When I set the reserved user for the connection from device "device-2" in account "test-acc-1" to "null"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1106,7 +1106,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1114,7 +1114,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1122,7 +1122,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -1130,7 +1130,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -1140,7 +1140,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -1148,7 +1148,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1156,7 +1156,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1164,7 +1164,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1176,7 +1176,7 @@ Feature: User Coupling
     Then I set the user change flag for the connection from device "device-2" in account "test-acc-1" to "true"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1186,7 +1186,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1194,7 +1194,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1202,7 +1202,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -1212,7 +1212,7 @@ Feature: User Coupling
     Then I set the user change flag for the connection from device "device-2" in account "test-acc-1" to "true"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -1222,7 +1222,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -1232,7 +1232,7 @@ Feature: User Coupling
     Then I set the user change flag for the connection from device "device-2" in account "test-acc-1" to "true"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -1242,7 +1242,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1250,7 +1250,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1258,7 +1258,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1270,7 +1270,7 @@ Feature: User Coupling
     Then I set the user change flag for the connection from device "device-3" in account "test-acc-1" to "true"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1280,7 +1280,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1290,7 +1290,7 @@ Feature: User Coupling
     Then I set the user change flag for the connection from device "device-3" in account "test-acc-1" to "true"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1313,7 +1313,7 @@ Feature: User Coupling
       | test-user-3 | Test User 3 | ENABLED |
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1324,7 +1324,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1332,7 +1332,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1340,7 +1340,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -1351,7 +1351,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -1359,7 +1359,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -1367,7 +1367,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1378,7 +1378,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1386,7 +1386,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1396,7 +1396,7 @@ Feature: User Coupling
     When I set the reserved user for the connection from device "device-2" in account "test-acc-1" to "test-user-2"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1407,7 +1407,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1415,7 +1415,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1423,7 +1423,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -1434,7 +1434,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -1442,7 +1442,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -1450,7 +1450,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1458,7 +1458,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1466,7 +1466,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1476,7 +1476,7 @@ Feature: User Coupling
     Then I set the user change flag for the connection from device "device-3" in account "test-acc-1" to "true"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1489,7 +1489,7 @@ Feature: User Coupling
     And The default connection coupling mode for account "test-acc-1" is set to "LOOSE"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1500,7 +1500,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1508,7 +1508,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1519,7 +1519,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -1530,7 +1530,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -1541,7 +1541,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-2
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-2" in account "test-acc-1"
@@ -1552,7 +1552,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1560,7 +1560,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1571,7 +1571,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-3
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-3" in account "test-acc-1"
@@ -1584,7 +1584,7 @@ Feature: User Coupling
     And The default connection coupling mode for account "test-acc-1" is set to "STRICT"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1592,7 +1592,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1600,7 +1600,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1613,7 +1613,7 @@ Feature: User Coupling
     Then I set the user change flag for the connection from device "device-1" in account "test-acc-1" to "true"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-1:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-1:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1624,7 +1624,7 @@ Feature: User Coupling
     And I wait for 2 seconds
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-2:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-2:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1632,7 +1632,7 @@ Feature: User Coupling
     And The connection status is "DISCONNECTED"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
@@ -1642,7 +1642,7 @@ Feature: User Coupling
     Then I set the user change flag for the connection from device "device-1" in account "test-acc-1" to "true"
 
     Given The account name is test-acc-1 and the client ID is device-1
-    And The broker URI is tcp://test-user-3:kapua-password@localhost:1883
+    And The broker URI is tcp://test-user-3:KeepCalm123.@localhost:1883
     When I start the simulator
     And I wait for 2 seconds
     When I search for a connection from the device "device-1" in account "test-acc-1"
