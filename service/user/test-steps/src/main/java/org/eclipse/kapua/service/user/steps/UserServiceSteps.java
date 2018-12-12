@@ -670,33 +670,6 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @When("^I configure account service$")
-    public void setAccountServiceConfig(List<CucConfig> cucConfigs)
-            throws Exception {
-        Map<String, Object> valueMap = new HashMap<>();
-        KapuaId accId;
-        KapuaId scopeId;
-
-        for (CucConfig config : cucConfigs) {
-            config.addConfigToMap(valueMap);
-        }
-
-        primeException();
-        try {
-            Account tmpAccount = (Account) stepData.get("LastAccount");
-            if (tmpAccount != null) {
-                accId = tmpAccount.getId();
-                scopeId = SYS_SCOPE_ID;
-            } else {
-                accId = SYS_SCOPE_ID;
-                scopeId = SYS_SCOPE_ID;
-            }
-            accountService.setConfigValues(accId, scopeId, valueMap);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
     @When("^I configure user service$")
     public void setUserServiceConfig(List<CucConfig> cucConfigs)
             throws Exception {

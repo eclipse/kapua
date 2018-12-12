@@ -24,7 +24,7 @@
 
     <dependencies>
         <!-- Test dependencies -->
-    <dependency>
+        <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-user-test-steps</artifactId>
             <scope>test</scope>

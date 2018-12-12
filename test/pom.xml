@@ -130,6 +130,10 @@
         <!-- Required service interfaces -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-service-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-authentication-api</artifactId>
         </dependency>
         <dependency>
