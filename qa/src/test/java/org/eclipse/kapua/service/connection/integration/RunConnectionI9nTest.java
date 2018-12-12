@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,7 +31,7 @@ import cucumber.api.CucumberOptions;
                 "json:target/ConnectionI9n_cucumber.json"
         },
         monochrome = true )
-@CucumberProperty(key="broker.ip", value="192.168.33.10")
+@CucumberProperty(key="broker.ip", value="localhost")
 @CucumberProperty(key="kapua.config.url", value="")
 public class RunConnectionI9nTest {}
 

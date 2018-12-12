@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.authentication.credential.shiro;
 
 import org.apache.shiro.codec.Base64;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
@@ -20,6 +21,7 @@ import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -44,6 +46,7 @@ import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticatio
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,6 +89,10 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
                     throw new KapuaExistingCredentialException(CredentialType.PASSWORD);
                 }
             }
+
+            //
+            // Validate Password regex
+            ArgumentValidator.match(credentialCreator.getCredentialPlainKey(), CommonsValidationRegex.PASSWORD_REGEXP, "credentialCreator.credentialKey");
         }
 
         //
@@ -106,35 +113,35 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
             // Do pre persist magic on key values
             String fullKey = null;
             switch (credentialCreator.getCredentialType()) {
-            case API_KEY: // Generate new api key
-                SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+                case API_KEY: // Generate new api key
+                    SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
 
-                KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
-                int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
-                int keyLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_KEY_LENGTH);
+                    KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
+                    int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
+                    int keyLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_KEY_LENGTH);
 
-                byte[] bPre = new byte[preLength];
-                random.nextBytes(bPre);
-                String pre = Base64.encodeToString(bPre).substring(0, preLength);
+                    byte[] bPre = new byte[preLength];
+                    random.nextBytes(bPre);
+                    String pre = Base64.encodeToString(bPre).substring(0, preLength);
 
-                byte[] bKey = new byte[keyLength];
-                random.nextBytes(bKey);
-                String key = Base64.encodeToString(bKey);
+                    byte[] bKey = new byte[keyLength];
+                    random.nextBytes(bKey);
+                    String key = Base64.encodeToString(bKey);
 
-                fullKey = pre + key;
+                    fullKey = pre + key;
 
-                credentialCreator = new CredentialCreatorImpl(credentialCreator.getScopeId(),
-                        credentialCreator.getUserId(),
-                        credentialCreator.getCredentialType(),
-                        fullKey,
-                        credentialCreator.getCredentialStatus(),
-                        credentialCreator.getExpirationDate());
+                    credentialCreator = new CredentialCreatorImpl(credentialCreator.getScopeId(),
+                            credentialCreator.getUserId(),
+                            credentialCreator.getCredentialType(),
+                            fullKey,
+                            credentialCreator.getCredentialStatus(),
+                            credentialCreator.getExpirationDate());
 
-                break;
-            case PASSWORD:
-            default:
-                // Don't do nothing special
-                break;
+                    break;
+                case PASSWORD:
+                default:
+                    // Don't do nothing special
+                    break;
 
             }
 
@@ -146,12 +153,12 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
             //
             // Do post persist magic on key values
             switch (credentialCreator.getCredentialType()) {
-            case API_KEY:
-                credential.setCredentialKey(fullKey);
-                break;
-            case PASSWORD:
-            default:
-                credential.setCredentialKey(fullKey);
+                case API_KEY:
+                    credential.setCredentialKey(fullKey);
+                    break;
+                case PASSWORD:
+                default:
+                    credential.setCredentialKey(fullKey);
             }
         } catch (Exception pe) {
             em.rollback();
