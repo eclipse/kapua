@@ -37,7 +37,15 @@ h1 {
     border: 3px solid #F0F0F0;
     padding: 3px;
     background: #F0F0F0;
+    z-index: 10000;
 }
+
+.kapua-PopupPanelGlass {
+    background-color: rgb(0, 0, 0);
+    opacity: 0.3;
+    z-index: 9999;
+}
+
 .serverResponseLabelError {
     color: red;
 }
