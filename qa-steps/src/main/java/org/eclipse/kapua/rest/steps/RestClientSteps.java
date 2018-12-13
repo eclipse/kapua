@@ -24,7 +24,6 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserListResult;
-import org.eclipse.kapua.service.user.steps.ComparableUser;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -244,14 +243,6 @@ public class RestClientSteps extends Assert {
 
         Account account = (Account) stepData.get(keyFrom);
         stepData.put(keyTo, account.getId().toCompactId());
-    }
-
-    // TODO move this step in common steps
-    @Given("^Move User compact id from step data \"(.*)\" to \"(.*)\"$")
-    public void moveUserCompactIdStepData(String keyFrom, String keyTo) {
-
-        ComparableUser comparableUser = (ComparableUser) stepData.get(keyFrom);
-        stepData.put(keyTo, comparableUser.getUser().getId().toCompactId());
     }
 
     // TODO move this step in common steps

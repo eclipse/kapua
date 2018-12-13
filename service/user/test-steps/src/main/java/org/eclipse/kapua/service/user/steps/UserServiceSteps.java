@@ -17,7 +17,6 @@ import com.google.inject.Injector;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
-import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -41,7 +40,6 @@ import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
@@ -80,12 +78,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.math.BigInteger;
-import java.text.DateFormat;
 import java.text.MessageFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -514,17 +507,6 @@ public class UserServiceSteps extends TestBase {
         assertNotNull("Metadata should be retrieved.", metadata);
     }
 
-    @Given("^Account$")
-    public void givenAccount(List<CucAccount> accountList) throws Exception {
-        CucAccount cucAccount = accountList.get(0);
-        // If accountId is not set in account list, use last created Account for scope id
-        if (cucAccount.getScopeId() == null) {
-            cucAccount.setScopeId(((Account) stepData.get("LastAccount")).getId().getId());
-        }
-
-        stepData.put("LastAccount", createAccount(cucAccount));
-    }
-
     @Given("^Credentials$")
     public void givenCredentials(List<CucCredentials> credentialsList) throws Exception {
         CucCredentials cucCredentials = credentialsList.get(0);
@@ -596,42 +578,6 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @When("^I select account \"(.*)\"$")
-    public void selectAccount(String accountName) throws KapuaException {
-        Account tmpAccount;
-        tmpAccount = accountService.findByName(accountName);
-        if (tmpAccount != null) {
-            stepData.put("LastAccount", tmpAccount);
-        } else {
-            stepData.remove("LastAccount");
-        }
-    }
-
-    @When("I change the current account expiration date to \"(.+)\"")
-    public void changeCurrentAccountExpirationDate(String newExpiration) throws Exception {
-
-        Account currAcc = (Account) stepData.get("LastAccount");
-        Date newDate = parseDateString(newExpiration);
-
-        try {
-            primeException();
-            currAcc.setExpirationDate(newDate);
-            Account tmpAcc = accountService.update(currAcc);
-            stepData.put("LastAccount", tmpAcc);
-        } catch (KapuaException e) {
-            verifyException(e);
-        }
-    }
-
-    @When("^I try to delete account \"(.*)\"$")
-    public void deleteAccount(String accountName) throws KapuaException {
-        Account accountToDelete;
-        accountToDelete = accountService.findByName(accountName);
-        if (accountToDelete != null) {
-            accountService.delete(accountToDelete.getScopeId(), accountToDelete.getId());
-        }
-    }
-
     @Then("^I try to delete user \"(.*)\"$")
     public void thenDeleteUser(String userName) throws Exception {
 
@@ -668,6 +614,13 @@ public class UserServiceSteps extends TestBase {
         } catch (KapuaException e) {
             verifyException(e);
         }
+    }
+
+    @Given("^Move User compact id from step data \"(.*)\" to \"(.*)\"$")
+    public void moveUserCompactIdStepData(String keyFrom, String keyTo) {
+
+        ComparableUser comparableUser = (ComparableUser) stepData.get(keyFrom);
+        stepData.put(keyTo, comparableUser.getUser().getId().toCompactId());
     }
 
     @When("^I configure user service$")
@@ -751,61 +704,9 @@ public class UserServiceSteps extends TestBase {
         authenticationService.logout();
     }
 
-    @And("^Using kapua-sys account$")
-    public void usingSysAccount() {
-        stepData.put("LastAccount", null);
-    }
-
     // *******************
     // * Private Helpers *
     // *******************
-    /**
-     * Create account in privileged mode as kapua-sys user.
-     * Account is created in scope specified by scopeId in cucAccount parameter.
-     * This is not accountId, but account under which it is created. AccountId itself
-     * is created automatically.
-     *
-     * @param cucAccount basic data about account
-     * @return Kapua Account object
-     */
-    private Account createAccount(CucAccount cucAccount) throws Exception {
-        List<Account> accountList = new ArrayList<>();
-        KapuaSecurityUtils.doPrivileged(() -> {
-            primeException();
-            try {
-                Account account = accountService.create(accountCreatorCreator(cucAccount.getName(),
-                        cucAccount.getScopeId(), cucAccount.getExpirationDate()));
-                accountList.add(account);
-            } catch (KapuaException ke) {
-                verifyException(ke);
-            }
-
-            return null;
-        });
-
-        return accountList.size() == 1 ? accountList.get(0) : null;
-    }
-
-    /**
-     * Create account creator.
-     *
-     * @param name    account name
-     * @param scopeId acount scope id
-     * @return
-     */
-    private AccountCreator accountCreatorCreator(String name, BigInteger scopeId, Date expiration) {
-        AccountCreator accountCreator;
-
-        accountCreator = accountFactory.newCreator(new KapuaEid(scopeId), name);
-        if (expiration != null) {
-            accountCreator.setExpirationDate(expiration);
-        }
-        accountCreator.setOrganizationName("ACME Inc.");
-        accountCreator.setOrganizationEmail("some@one.com");
-
-        return accountCreator;
-    }
-
     /**
      * Extract list of users form step parameter table and create those users in
      * kapua.
@@ -1025,39 +926,6 @@ public class UserServiceSteps extends TestBase {
             assertEquals(cucUser.getStatus(), user.getStatus());
         }
         return true;
-    }
-
-    private Date parseDateString(String date) {
-        DateFormat df = new SimpleDateFormat("dd/mm/yyyy");
-        Date expDate = null;
-        Instant now = Instant.now();
-
-        if (date == null) {
-            return null;
-        }
-        // Special keywords for date
-        switch (date.trim().toLowerCase()) {
-            case "yesterday":
-                expDate = Date.from(now.minus(Duration.ofDays(1)));
-                break;
-            case "today":
-                expDate = Date.from(now);
-                break;
-            case "tomorrow":
-                expDate = Date.from(now.plus(Duration.ofDays(1)));
-                break;
-            case "null":
-                break;
-        }
-
-        // Not one of the special cases. Just parse the date.
-        try {
-            expDate = df.parse(date.trim().toLowerCase());
-        } catch (ParseException | NullPointerException e) {
-            // skip, leave date null
-        }
-
-        return expDate;
     }
 
     // *****************

@@ -68,6 +68,7 @@ import javax.inject.Inject;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -196,8 +197,25 @@ public class AccountServiceSteps extends TestBase {
         stepData.put("AccountCreator", accountCreator);
     }
 
-    @When("^I create account \"(.*)\"$")
-    public void createAccount(String name)
+    @Given("^Account$")
+    public void givenAccount(List<CucAccount> accountList) throws Exception {
+
+        CucAccount cucAccount = accountList.get(0);
+        // If accountId is not set in account list, use last created Account for scope id
+        if (cucAccount.getScopeId() == null) {
+            cucAccount.setScopeId(((Account) stepData.get("LastAccount")).getId().getId());
+        }
+
+        stepData.put("LastAccount", createAccount(cucAccount));
+    }
+
+    @Given("^Using kapua-sys account$")
+    public void usingSysAccount() {
+        stepData.put("LastAccount", null);
+    }
+
+    @When("^I create a generic account with name \"(.*)\"$")
+    public void createGenericAccount(String name)
             throws Exception {
 
         AccountCreator accountCreator = prepareRegularAccountCreator(SYS_SCOPE_ID, name);
@@ -418,6 +436,33 @@ public class AccountServiceSteps extends TestBase {
 //            verifyException(ex);
 //        }
 //    }
+
+    @When("^I select account \"(.*)\"$")
+    public void selectAccount(String accountName) throws KapuaException {
+        Account tmpAccount;
+        tmpAccount = accountService.findByName(accountName);
+        if (tmpAccount != null) {
+            stepData.put("LastAccount", tmpAccount);
+        } else {
+            stepData.remove("LastAccount");
+        }
+    }
+
+    @When("I change the current account expiration date to \"(.+)\"")
+    public void changeCurrentAccountExpirationDate(String newExpiration) throws Exception {
+
+        Account currAcc = (Account) stepData.get("LastAccount");
+        Date newDate = parseDateString(newExpiration);
+
+        try {
+            primeException();
+            currAcc.setExpirationDate(newDate);
+            Account tmpAcc = accountService.update(currAcc);
+            stepData.put("LastAccount", tmpAcc);
+        } catch (KapuaException e) {
+            verifyException(e);
+        }
+    }
 
     @When("^I delete account \"(.*)\"$")
     public void deleteAccountWithName(String name)
@@ -819,6 +864,53 @@ public class AccountServiceSteps extends TestBase {
         tmpAccCreator.setOrganizationPhoneNumber("012/123-456-789");
 
         return tmpAccCreator;
+    }
+
+    /**
+     * Create account in privileged mode as kapua-sys user.
+     * Account is created in scope specified by scopeId in cucAccount parameter.
+     * This is not accountId, but account under which it is created. AccountId itself
+     * is created automatically.
+     *
+     * @param cucAccount basic data about account
+     * @return Kapua Account object
+     */
+    private Account createAccount(CucAccount cucAccount) throws Exception {
+        List<Account> accountList = new ArrayList<>();
+        KapuaSecurityUtils.doPrivileged(() -> {
+            primeException();
+            try {
+                Account account = accountService.create(accountCreatorCreator(cucAccount.getName(),
+                        cucAccount.getScopeId(), cucAccount.getExpirationDate()));
+                accountList.add(account);
+            } catch (KapuaException ke) {
+                verifyException(ke);
+            }
+
+            return null;
+        });
+
+        return accountList.size() == 1 ? accountList.get(0) : null;
+    }
+
+    /**
+     * Create account creator.
+     *
+     * @param name    account name
+     * @param scopeId acount scope id
+     * @return
+     */
+    private AccountCreator accountCreatorCreator(String name, BigInteger scopeId, Date expiration) {
+        AccountCreator accountCreator;
+
+        accountCreator = accountFactory.newCreator(new KapuaEid(scopeId), name);
+        if (expiration != null) {
+            accountCreator.setExpirationDate(expiration);
+        }
+        accountCreator.setOrganizationName("ACME Inc.");
+        accountCreator.setOrganizationEmail("some@one.com");
+
+        return accountCreator;
     }
 
     // *****************

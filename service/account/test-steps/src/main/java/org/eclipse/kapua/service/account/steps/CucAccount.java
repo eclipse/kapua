@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech
  *******************************************************************************/
-package org.eclipse.kapua.service.user.steps;
+package org.eclipse.kapua.service.account.steps;
 
 import java.math.BigInteger;
 import java.text.DateFormat;

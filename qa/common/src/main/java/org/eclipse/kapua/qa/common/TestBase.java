@@ -16,6 +16,12 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
 
 import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Date;
 import java.util.Random;
 
 import org.eclipse.kapua.model.id.KapuaId;
@@ -123,5 +129,38 @@ public class TestBase extends Assert {
         scenario.write("Exception raised as expected: " + ex.getClass().getCanonicalName() + ", " + ex.getMessage());
         stepData.put("ExceptionCaught", true);
         stepData.put("Exception", ex);
+    }
+
+    public Date parseDateString(String date) {
+        DateFormat df = new SimpleDateFormat("dd/mm/yyyy");
+        Date expDate = null;
+        Instant now = Instant.now();
+
+        if (date == null) {
+            return null;
+        }
+        // Special keywords for date
+        switch (date.trim().toLowerCase()) {
+            case "yesterday":
+                expDate = Date.from(now.minus(Duration.ofDays(1)));
+                break;
+            case "today":
+                expDate = Date.from(now);
+                break;
+            case "tomorrow":
+                expDate = Date.from(now.plus(Duration.ofDays(1)));
+                break;
+            case "null":
+                break;
+        }
+
+        // Not one of the special cases. Just parse the date.
+        try {
+            expDate = df.parse(date.trim().toLowerCase());
+        } catch (ParseException | NullPointerException e) {
+            // skip, leave date null
+        }
+
+        return expDate;
     }
 }
