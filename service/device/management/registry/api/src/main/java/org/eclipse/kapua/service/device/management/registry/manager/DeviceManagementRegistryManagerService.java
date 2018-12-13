@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.device.management.registry.manager;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -25,6 +24,7 @@ import org.eclipse.kapua.service.device.management.registry.operation.DeviceMana
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationAttributes;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationListResult;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationProperty;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationQuery;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
@@ -52,20 +52,20 @@ public interface DeviceManagementRegistryManagerService extends KapuaService {
     ManagementOperationNotificationFactory MANAGEMENT_OPERATION_NOTIFICATION_FACTORY = LOCATOR.getFactory(ManagementOperationNotificationFactory.class);
 
 
-    default void processOperationNotification(KapuaId scopeId, KapuaId operationId, Date updateOn, OperationStatus status, Integer progress) throws ManagementOperationNotificationProcessingException {
+    default void processOperationNotification(KapuaId scopeId, KapuaId operationId, Date updateOn, String resource, OperationStatus status, Integer progress) throws ManagementOperationNotificationProcessingException {
 
         try {
             switch (status) {
                 case RUNNING: {
-                    processRunningNotification(scopeId, operationId, updateOn, progress);
+                    processRunningNotification(scopeId, operationId, updateOn, resource, progress);
                 }
                 break;
                 case FAILED: {
-                    processFailedNotification(scopeId, operationId, updateOn);
+                    processFailedNotification(scopeId, operationId, updateOn, resource);
                 }
                 break;
                 case COMPLETED: {
-                    processCompletedNotification(scopeId, operationId, updateOn);
+                    processCompletedNotification(scopeId, operationId, updateOn, resource);
                 }
                 break;
                 default: {
@@ -78,63 +78,47 @@ public interface DeviceManagementRegistryManagerService extends KapuaService {
     }
 
 
-    default void processRunningNotification(KapuaId scopeId, KapuaId operationId, Date updateOn, Integer progress) throws KapuaException {
-        addManagementNotification(scopeId, operationId, updateOn, OperationStatus.RUNNING, progress, false);
+    default void processRunningNotification(KapuaId scopeId, KapuaId operationId, Date updateOn, String resource, Integer progress) throws KapuaException {
+        addManagementNotification(scopeId, operationId, updateOn, OperationStatus.RUNNING, resource, progress);
     }
 
-    default void processFailedNotification(KapuaId scopeId, KapuaId operationId, Date updateOn) throws KapuaException {
+    default void processFailedNotification(KapuaId scopeId, KapuaId operationId, Date updateOn, String resource) throws KapuaException {
         closeDeviceManagementOperation(scopeId, operationId, updateOn, OperationStatus.FAILED);
     }
 
-    default void processCompletedNotification(KapuaId scopeId, KapuaId operationId, Date updateOn) throws KapuaException {
+    default void processCompletedNotification(KapuaId scopeId, KapuaId operationId, Date updateOn, String resource) throws KapuaException {
 
         DeviceManagementOperation deviceManagementOperation = getDeviceManagementOperation(scopeId, operationId);
 
-        if (deviceManagementOperation.getTotalCheckpoints() == 1) {
-            closeDeviceManagementOperation(scopeId, operationId, updateOn, OperationStatus.COMPLETED);
-        }
-        else {
-
-            // defer a bit the count to allow close notifications to allow close checkpoint notifications to be registered.
-            Object timer = new Object();
-            synchronized (timer){
-                try {
-                    timer.wait(2000);
-                } catch (InterruptedException e) {
-                    LOG.warn("Interrupted exception", e);
-                    Thread.currentThread().interrupt();
+        //
+        // UGLY 'DEPLOY-V2'-related part
+        //
+        boolean isLastNotification = true;
+        for (DeviceManagementOperationProperty ip : deviceManagementOperation.getInputProperties()) {
+            if (ip.getName().equals("kapua.package.download.install")) {
+                if (resource.equals("download")) {
+                    isLastNotification = !Boolean.parseBoolean(ip.getPropertyValue());
                 }
-            }
-
-            ManagementOperationNotificationQuery notificationQuery = MANAGEMENT_OPERATION_NOTIFICATION_FACTORY.newQuery(scopeId);
-            notificationQuery.setPredicate(
-                    new AndPredicateImpl(
-                            new AttributePredicateImpl<>(ManagementOperationNotificationAttributes.OPERATION_ID, deviceManagementOperation.getId()),
-                            new AttributePredicateImpl<>(ManagementOperationNotificationAttributes.CHECKPOINT, true)
-                    )
-            );
-
-            long currentCheckpointsCount = MANAGEMENT_OPERATION_NOTIFICATION_REGISTRY_SERVICE.count(notificationQuery);
-
-            if (currentCheckpointsCount + 1 >= deviceManagementOperation.getTotalCheckpoints()) {
-                closeDeviceManagementOperation(scopeId, operationId, updateOn, OperationStatus.COMPLETED);
-            }
-            else {
-                addManagementNotification(scopeId, operationId, updateOn, OperationStatus.COMPLETED, 100, true);
+                break;
             }
         }
 
+        if (isLastNotification) {
+            closeDeviceManagementOperation(scopeId, operationId, updateOn, OperationStatus.COMPLETED);
+        } else {
+            addManagementNotification(scopeId, operationId, updateOn, OperationStatus.COMPLETED, resource, 100);
+        }
     }
 
-    default void addManagementNotification(KapuaId scopeId, KapuaId operationId, Date updateOn, OperationStatus operationStatus, Integer progress, boolean checkpoint) throws KapuaException {
+    default void addManagementNotification(KapuaId scopeId, KapuaId operationId, Date updateOn, OperationStatus operationStatus, String resource, Integer progress) throws KapuaException {
         DeviceManagementOperation deviceManagementOperation = getDeviceManagementOperation(scopeId, operationId);
 
         ManagementOperationNotificationCreator managementOperationNotificationCreator = MANAGEMENT_OPERATION_NOTIFICATION_FACTORY.newCreator(scopeId);
         managementOperationNotificationCreator.setOperationId(deviceManagementOperation.getId());
         managementOperationNotificationCreator.setSentOn(updateOn);
         managementOperationNotificationCreator.setStatus(operationStatus);
+        managementOperationNotificationCreator.setResource(resource);
         managementOperationNotificationCreator.setProgress(progress);
-        managementOperationNotificationCreator.setCheckpoint(checkpoint);
 
         MANAGEMENT_OPERATION_NOTIFICATION_REGISTRY_SERVICE.create(managementOperationNotificationCreator);
     }
@@ -144,7 +128,7 @@ public interface DeviceManagementRegistryManagerService extends KapuaService {
         DeviceManagementOperation deviceManagementOperation = null;
 
         short attempts = 0;
-        short limit= 3;
+        short limit = 3;
         boolean failed = false;
         do {
             try {
@@ -162,8 +146,7 @@ public interface DeviceManagementRegistryManagerService extends KapuaService {
 
                 if (attempts >= limit) {
                     throw e;
-                }
-                else {
+                } else {
                     LOG.warn("Update DeviceManagementOperation {} with status {}...  FAILED! Retrying...", operationId, finalStatus);
                 }
             }

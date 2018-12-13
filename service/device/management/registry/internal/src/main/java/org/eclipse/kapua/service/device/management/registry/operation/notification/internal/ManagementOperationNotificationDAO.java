@@ -47,8 +47,8 @@ public class ManagementOperationNotificationDAO {
         managementOperationNotification.setOperationId(managementOperationNotificationCreator.getOperationId());
         managementOperationNotification.setSentOn(managementOperationNotificationCreator.getSentOn());
         managementOperationNotification.setStatus(managementOperationNotificationCreator.getStatus());
+        managementOperationNotification.setResource(managementOperationNotificationCreator.getResource());
         managementOperationNotification.setProgress(managementOperationNotificationCreator.getProgress());
-        managementOperationNotification.setCheckpoint(managementOperationNotificationCreator.getCheckpoint());
 
         return ServiceDAO.create(em, managementOperationNotification);
     }

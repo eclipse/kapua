@@ -25,6 +25,10 @@ public interface KapuaNotifyPayload extends KapuaPayload {
 
     void setOperationId(KapuaId operationId);
 
+    String getResource();
+
+    void setResource(String resource);
+
     OperationStatus getStatus();
 
     void setStatus(OperationStatus status);

@@ -96,8 +96,6 @@ public abstract class AbstractDeviceManagementServiceImpl {
         deviceManagementOperationCreator.setAction(requestMessage.getChannel().getMethod());
         deviceManagementOperationCreator.setResource(!requestMessage.getChannel().getSemanticParts().isEmpty() ? requestMessage.getChannel().getSemanticParts().get(0) : null);
         deviceManagementOperationCreator.setStatus(OperationStatus.RUNNING);
-        deviceManagementOperationCreator.setTotalCheckpoints(totalCheckpoints);
-
         deviceManagementOperationCreator.setInputProperties(extractInputProperties(requestMessage));
 
         DeviceManagementOperation deviceManagementOperation = KapuaSecurityUtils.doPrivileged(() -> DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.create(deviceManagementOperationCreator));

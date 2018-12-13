@@ -72,6 +72,7 @@ public class DeviceManagementNotificationMessageProcessor extends AbstractProces
                 notifyMessage.getScopeId(),
                 notifyPayload.getOperationId(),
                 Objects.firstNonNull(notifyMessage.getSentOn(), notifyMessage.getReceivedOn()),
+                notifyPayload.getResource(),
                 notifyPayload.getStatus(),
                 notifyPayload.getProgress());
     }

@@ -78,8 +78,8 @@ public class TranslatorLifeNotifyKuraKapua extends Translator<KuraNotifyMessage,
     }
 
     @Override
-    public KapuaNotifyMessage translate(KuraNotifyMessage kuraNotifyMessage)
-            throws KapuaException {
+    public KapuaNotifyMessage translate(KuraNotifyMessage kuraNotifyMessage) throws KapuaException {
+
         KapuaNotifyMessage kapuaNotifyMessage = new KapuaNotifyMessageImpl();
         kapuaNotifyMessage.setChannel(translate(kuraNotifyMessage.getChannel()));
         kapuaNotifyMessage.setPayload(translate(kuraNotifyMessage.getPayload()));
@@ -120,11 +120,11 @@ public class TranslatorLifeNotifyKuraKapua extends Translator<KuraNotifyMessage,
         return kapuaNotifyChannel;
     }
 
-    private KapuaNotifyPayload translate(KuraNotifyPayload kuraNotifyPayload)
-            throws KapuaException {
+    private KapuaNotifyPayload translate(KuraNotifyPayload kuraNotifyPayload) {
         KapuaNotifyPayload kapuaNotifyPayload = new KapuaNotifyPayloadImpl();
 
         kapuaNotifyPayload.setOperationId(KAPUA_ID_FACTORY.newKapuaId(new BigInteger(kuraNotifyPayload.getOperationId().toString())));
+        kapuaNotifyPayload.setResource(kuraNotifyPayload.getResource());
         kapuaNotifyPayload.setProgress(kuraNotifyPayload.getProgress());
 
         switch (kuraNotifyPayload.getStatus()) {

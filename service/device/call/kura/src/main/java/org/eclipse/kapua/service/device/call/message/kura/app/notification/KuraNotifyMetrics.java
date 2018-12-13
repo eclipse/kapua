@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.device.call.message.kura.app.notification;
 import org.eclipse.kapua.service.device.call.message.app.request.DeviceRequestMetrics;
 
 /**
- * {@link DeviceRequestMetrics }{@link org.eclipse.kapua.service.device.call.kura.Kura} implementation
+ * {@link DeviceRequestMetrics} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation
  */
 public enum KuraNotifyMetrics implements DeviceRequestMetrics {
 

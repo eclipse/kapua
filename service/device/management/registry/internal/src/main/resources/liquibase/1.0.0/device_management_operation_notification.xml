@@ -41,10 +41,10 @@
             <column name="status" type="varchar(64)">
                 <constraints nullable="false"/>
             </column>
-            <column name="progress" type="int unsigned">
+            <column name="resource" type="varchar(64)">
                 <constraints nullable="false"/>
             </column>
-            <column name="checkpoint" type="boolean" defaultValueBoolean="false">
+            <column name="progress" type="int unsigned">
                 <constraints nullable="false"/>
             </column>
 

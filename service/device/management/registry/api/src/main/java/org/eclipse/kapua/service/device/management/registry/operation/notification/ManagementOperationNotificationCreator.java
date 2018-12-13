@@ -49,14 +49,13 @@ public interface ManagementOperationNotificationCreator extends KapuaEntityCreat
 
     void setStatus(OperationStatus status);
 
+    @XmlElement(name = "resource")
+    String getResource();
+
+    void setResource(String resource);
+
     @XmlElement(name = "progress")
     Integer getProgress();
 
     void setProgress(Integer progress);
-
-    @XmlElement(name = "checkpoint")
-    boolean getCheckpoint();
-
-    void setCheckpoint(boolean checkpoint);
-
 }

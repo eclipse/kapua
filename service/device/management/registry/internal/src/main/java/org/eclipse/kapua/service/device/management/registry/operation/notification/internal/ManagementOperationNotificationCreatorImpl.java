@@ -24,8 +24,8 @@ public class ManagementOperationNotificationCreatorImpl extends AbstractKapuaEnt
     private KapuaId operationId;
     private Date sentOn;
     private OperationStatus status;
+    private String resource;
     private Integer progress;
-    private boolean checkpoint;
 
     public ManagementOperationNotificationCreatorImpl(KapuaId scopeId) {
         super(scopeId);
@@ -62,6 +62,16 @@ public class ManagementOperationNotificationCreatorImpl extends AbstractKapuaEnt
     }
 
     @Override
+    public String getResource() {
+        return resource;
+    }
+
+    @Override
+    public void setResource(String resource) {
+        this.resource = resource;
+    }
+
+    @Override
     public Integer getProgress() {
         return progress;
     }
@@ -69,15 +79,5 @@ public class ManagementOperationNotificationCreatorImpl extends AbstractKapuaEnt
     @Override
     public void setProgress(Integer progress) {
         this.progress = progress;
-    }
-
-    @Override
-    public boolean getCheckpoint() {
-        return checkpoint;
-    }
-
-    @Override
-    public void setCheckpoint(boolean checkpoint) {
-        this.checkpoint = checkpoint;
     }
 }

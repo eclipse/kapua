@@ -77,10 +77,6 @@ public class DeviceManagementOperationImpl extends AbstractKapuaUpdatableEntity 
     @Column(name = "status", nullable = false, updatable = true)
     private OperationStatus status;
 
-    @Basic
-    @Column(name = "total_checkpoints", nullable = false, updatable = false)
-    private int totalCheckpoints;
-
     @ElementCollection
     @CollectionTable(name = "dvcm_device_management_operation_input_property", joinColumns = @JoinColumn(name = "operation_id", referencedColumnName = "id"))
     private List<DeviceManagementOperationPropertyImpl> inputProperties;
@@ -170,16 +166,6 @@ public class DeviceManagementOperationImpl extends AbstractKapuaUpdatableEntity 
     @Override
     public void setStatus(OperationStatus status) {
         this.status = status;
-    }
-
-    @Override
-    public int getTotalCheckpoints() {
-        return totalCheckpoints;
-    }
-
-    @Override
-    public void setTotalCheckpoints(int totalCheckpoints) {
-        this.totalCheckpoints = totalCheckpoints;
     }
 
     @Override

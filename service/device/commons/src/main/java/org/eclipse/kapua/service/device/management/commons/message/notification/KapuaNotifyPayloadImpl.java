@@ -24,9 +24,8 @@ import org.eclipse.kapua.service.device.management.message.notification.Operatio
 public class KapuaNotifyPayloadImpl extends KapuaPayloadImpl implements KapuaNotifyPayload {
 
     private KapuaId operationId;
-
+    private String resource;
     private OperationStatus status;
-
     private Integer progress;
 
     @Override
@@ -37,6 +36,16 @@ public class KapuaNotifyPayloadImpl extends KapuaPayloadImpl implements KapuaNot
     @Override
     public void setOperationId(KapuaId operationId) {
         this.operationId = operationId;
+    }
+
+    @Override
+    public String getResource() {
+        return resource;
+    }
+
+    @Override
+    public void setResource(String resource) {
+        this.resource = resource;
     }
 
     @Override

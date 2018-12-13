@@ -53,7 +53,6 @@ public class DeviceManagementOperationDAO {
         deviceManagementOperationImpl.setResource(deviceManagementOperationCreator.getResource());
         deviceManagementOperationImpl.setStatus(deviceManagementOperationCreator.getStatus());
         deviceManagementOperationImpl.setStatus(deviceManagementOperationCreator.getStatus());
-        deviceManagementOperationImpl.setTotalCheckpoints(deviceManagementOperationCreator.getTotalCheckpoints());
         deviceManagementOperationImpl.setInputProperties(deviceManagementOperationCreator.getInputProperties());
 
         return ServiceDAO.create(em, deviceManagementOperationImpl);

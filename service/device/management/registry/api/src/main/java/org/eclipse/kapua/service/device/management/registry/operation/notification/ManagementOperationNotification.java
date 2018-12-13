@@ -51,6 +51,11 @@ public interface ManagementOperationNotification extends KapuaEntity {
 
     void setSentOn(Date sentOn);
 
+    @XmlElement(name = "resource")
+    String getResource();
+
+    void setResource(String resource);
+
     @XmlElement(name = "status")
     OperationStatus getStatus();
 
@@ -60,10 +65,4 @@ public interface ManagementOperationNotification extends KapuaEntity {
     Integer getProgress();
 
     void setProgress(Integer progress);
-
-    @XmlElement(name = "checkpoint")
-    boolean getCheckpoint();
-
-    void setCheckpoint(boolean checkpoint);
-
 }

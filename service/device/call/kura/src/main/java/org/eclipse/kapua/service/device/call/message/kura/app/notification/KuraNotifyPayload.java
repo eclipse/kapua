@@ -26,6 +26,23 @@ public class KuraNotifyPayload extends KuraAppPayload implements DeviceNotifyPay
         return (Long) getMetrics().get(KuraNotifyMetrics.OPERATION_ID.getValue());
     }
 
+    public String getResource() {
+
+        if (getMetrics().containsKey(KuraNotifyMetrics.DOWNLOAD_STATUS.getValue())) {
+            return "download";
+        }
+
+        if (getMetrics().containsKey(KuraNotifyMetrics.INSTALL_STATUS.getValue())) {
+            return "install";
+        }
+
+        if (getMetrics().containsKey(KuraNotifyMetrics.UNINSTALL_PROGRESS.getValue())) {
+            return "uninstall";
+        }
+
+        return null;
+    }
+
     @Override
     public String getStatus() {
         Object status = getMetrics().get(KuraNotifyMetrics.DOWNLOAD_STATUS.getValue());
