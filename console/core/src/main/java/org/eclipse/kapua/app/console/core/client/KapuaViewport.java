@@ -42,6 +42,7 @@ public class KapuaViewport extends Viewport {
 
         setMonitorWindowResize(true);
         infoPopup = new InfoPopup(MSGS.browserWindowTooSmall());
+        infoPopup.setGlassStyleName("kapua-PopupPanelGlass");
         int clientHeight = Window.getClientHeight();
         int clientWidth = Window.getClientWidth();
         // React at browser size at login, before any resize is made
