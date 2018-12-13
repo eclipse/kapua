@@ -263,6 +263,8 @@ public class UserAddDialog extends EntityAddEditDialog {
                     GwtKapuaException gwtCause = (GwtKapuaException) cause;
                     if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
                         username.markInvalid(gwtCause.getMessage());
+                    } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT)) {
+                        username.markInvalid(gwtCause.getMessage());
                     }
                 }
             }

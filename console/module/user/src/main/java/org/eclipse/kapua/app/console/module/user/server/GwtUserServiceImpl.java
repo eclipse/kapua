@@ -83,7 +83,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         try {
             KapuaId scopeId = KapuaEid.parseCompactId(gwtUserCreator.getScopeId());
 
-            UserCreator userCreator = USER_FACTORY.newCreator(scopeId, gwtUserCreator.getUsername());
+            final UserCreator userCreator = USER_FACTORY.newCreator(scopeId, gwtUserCreator.getUsername());
             userCreator.setDisplayName(gwtUserCreator.getDisplayName());
             userCreator.setEmail(gwtUserCreator.getEmail());
             userCreator.setPhoneNumber(gwtUserCreator.getPhoneNumber());
@@ -92,7 +92,13 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
             //
             // Create the User
-            User user = USER_SERVICE.create(userCreator);
+            User user = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+
+                @Override
+                public User call() throws Exception {
+                return USER_SERVICE.create(userCreator);
+                }
+            });
 
             //
             // Create credentials
