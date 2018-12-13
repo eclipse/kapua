@@ -176,7 +176,9 @@ public class LoginDialog extends Dialog {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 username.reset();
+                username.enable();
                 password.reset();
+                password.enable();
                 validate();
                 username.focus(); 
             }
@@ -229,6 +231,8 @@ public class LoginDialog extends Dialog {
     protected void onSubmit() {
         status.show();
         getButtonBar().disable();
+        username.disable();
+        password.disable();
 
         performLogin();
     }
@@ -290,7 +294,9 @@ public class LoginDialog extends Dialog {
 
     public void reset() {
         username.reset();
+        username.enable();
         password.reset();
+        password.enable();
 
         username.focus();
         status.hide();
