@@ -178,7 +178,7 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
         column.setHidden(true);
         columnConfigs.add(column);
 
-        column = new ColumnConfig("connectionIp", DEVICE_MSGS.deviceTableIpAddress(), 100);
+        column = new ColumnConfig("clientIp", DEVICE_MSGS.deviceTableRemoteIpAddress(), 100);
         column.setSortable(false);
         column.setHidden(true);
         columnConfigs.add(column);
