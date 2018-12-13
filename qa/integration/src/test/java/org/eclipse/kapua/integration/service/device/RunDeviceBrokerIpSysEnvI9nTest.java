@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 @CucumberOptions(
         features = {"classpath:features/broker/DeviceBrokerIpSysEnvI9n.feature"},
         glue = {"org.eclipse.kapua.qa.common",
+                "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.service.device.steps"
                },
@@ -28,6 +29,7 @@ import org.junit.runner.RunWith;
                   "html:target/cucumber/DeviceBrokerIpSysEnvI9n",
                   "json:target/DeviceBrokerIpSysEnvI9n_cucumber.json"
                  },
+        strict = true,
         monochrome = true )
 @CucumberProperty(key="broker.ip", value="192.168.33.10")
 @CucumberProperty(key="kapua.config.url", value="")

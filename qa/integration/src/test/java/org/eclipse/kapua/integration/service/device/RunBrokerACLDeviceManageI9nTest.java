@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech
  *******************************************************************************/
-package org.eclipse.kapua.service.device.integration;
+package org.eclipse.kapua.integration.service.device;
 
 import cucumber.api.CucumberOptions;
 import org.eclipse.kapua.test.cucumber.CucumberProperty;
@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
         features = {"classpath:features/broker/acl/BrokerACLDeviceManageI9n.feature"
         },
         glue = {"org.eclipse.kapua.qa.common",
+                "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.service.device.steps"
         },
@@ -28,6 +29,7 @@ import org.junit.runner.RunWith;
                 "html:target/cucumber/BrokerACLDeviceManageI9n",
                 "json:target/BrokerACLDeviceManageI9n_cucumber.json"
         },
+        strict = true,
         monochrome = true )
 @CucumberProperty(key="org.eclipse.kapua.qa.broker.extraStartupDelay", value="3")
 @CucumberProperty(key="broker.ip", value="192.168.33.10")

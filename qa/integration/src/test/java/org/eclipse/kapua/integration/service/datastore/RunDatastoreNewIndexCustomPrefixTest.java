@@ -21,12 +21,14 @@ import org.junit.runner.RunWith;
         features = "classpath:features/datastore/DatastoreNewIndexCustomPrefix.feature",
         glue = {"org.eclipse.kapua.qa.common",
                 "org.eclipse.kapua.rest.steps",
+                "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.service.device.steps",
                 "org.eclipse.kapua.service.datastore.steps" },
         plugin = {"pretty",
                 "html:target/cucumber/DatastoreNewIndex",
                 "json:target/DatastoreNewIndex_cucumber.json" },
+        strict = true,
         monochrome = true)
 @CucumberProperty(key="datastore.client.class", value="org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient")
 @CucumberProperty(key="broker.ip", value="192.168.33.10")

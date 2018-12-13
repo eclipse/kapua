@@ -21,12 +21,15 @@ import org.junit.runner.RunWith;
         features = "classpath:features/rest/user/RestUser.feature",
         glue = {"org.eclipse.kapua.qa.common",
                 "org.eclipse.kapua.rest.steps",
+
+                "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps"
         },
         plugin = { "pretty",
                 "html:target/cucumber/RestUser",
                 "json:target/RestUser_cucumber.json"
         },
+        strict = true,
         monochrome = true)
 
 @CucumberProperty(key="certificate.jwt.private.key", value= "certificates/key.pk8")

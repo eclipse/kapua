@@ -22,6 +22,7 @@ import cucumber.api.CucumberOptions;
         features = {"classpath:features/connection/UserCouplingI9n.feature"
         },
         glue = {"org.eclipse.kapua.qa.common",
+                "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.service.device.steps",
                 "org.eclipse.kapua.service.connection.steps"
@@ -30,6 +31,7 @@ import cucumber.api.CucumberOptions;
                 "html:target/cucumber/ConnectionI9n",
                 "json:target/ConnectionI9n_cucumber.json"
         },
+        strict = true,
         monochrome = true )
 @CucumberProperty(key="broker.ip", value="localhost")
 @CucumberProperty(key="kapua.config.url", value="")

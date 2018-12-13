@@ -21,11 +21,13 @@ import org.junit.runner.RunWith;
         features = "classpath:features/datastore/Datastore.feature",
         glue = {"org.eclipse.kapua.qa.common",
                 "org.eclipse.kapua.service.datastore.steps",
+                "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.service.device.steps"},
         plugin = {"pretty",
                   "html:target/cucumber/DatastoreTransportI9n",
                   "json:target/DatastoreTransportI9n_cucumber.json"},
+        strict = true,
         monochrome = true)
 @CucumberProperty(key="datastore.client.class", value="org.eclipse.kapua.service.datastore.client.transport.TransportDatastoreClient")
 @CucumberProperty(key="org.eclipse.kapua.qa.datastore.extraStartupDelay", value="5")

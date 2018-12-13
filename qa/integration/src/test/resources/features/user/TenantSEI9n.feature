@@ -55,7 +55,7 @@ Feature: Tenant service with Service Events
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-g | Kapua User G | kapua_g@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    When I try to delete account "account-a"
+    When I delete account "account-a"
 #    And I don't find user "kapua-g"
     And I logout
 

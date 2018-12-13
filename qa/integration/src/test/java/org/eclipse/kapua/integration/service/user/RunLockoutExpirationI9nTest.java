@@ -21,13 +21,15 @@ import org.junit.runner.RunWith;
 @CucumberOptions(
         features = "classpath:features/user/LockoutExpirationI9n.feature",
         glue = {"org.eclipse.kapua.qa.common",
+                "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps"
                },
         plugin = {"pretty", 
                   "html:target/cucumber/LockoutExpirationI9n",
                   "json:target/LockoutExpirationI9n_cucumber.json"
                  },
-        monochrome=true)
+        strict = true,
+        monochrome = true)
 @CucumberProperty(key="broker.ip", value="192.168.33.10")
 @CucumberProperty(key="kapua.config.url", value="")
 public class RunLockoutExpirationI9nTest {}

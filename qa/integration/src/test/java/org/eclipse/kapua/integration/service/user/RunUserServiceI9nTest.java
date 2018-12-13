@@ -22,13 +22,15 @@ import cucumber.api.CucumberOptions;
 @CucumberOptions(
         features = "classpath:features/user/UserServiceI9n.feature",
         glue = {"org.eclipse.kapua.qa.common",
+                "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps"
                },
         plugin = {"pretty", 
                   "html:target/cucumber/UserServiceI9n",
                   "json:target/UserServiceI9n_cucumber.json"
                  },
-        monochrome=true)
+        strict = true,
+        monochrome = true)
 @CucumberProperty(key="broker.ip", value="192.168.33.10")
 @CucumberProperty(key="kapua.config.url", value="")
 @CucumberProperty(key="datastore.client.class", value="org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient")
