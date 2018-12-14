@@ -65,8 +65,7 @@ public class ServiceEventHousekeeper implements Runnable {
     private EntityManager manager;
 
     private ServiceEventBus eventbus;
-    private String serviceInternalEventAddress;
-    private String[] servicesNames;
+    private List<ServiceEntry> servicesEntryList;
     private boolean running;
 
     /**
@@ -74,15 +73,12 @@ public class ServiceEventHousekeeper implements Runnable {
      *
      * @param entityManagerFactory
      * @param eventbus
-     * @param serviceInternalEventAddress
-     * @param servicesNameList
+     * @param servicesEntryList
      * @throws KapuaException
      */
-    public ServiceEventHousekeeper(EntityManagerFactory entityManagerFactory, ServiceEventBus eventbus, String serviceInternalEventAddress, List<String> servicesNameList) throws KapuaException {
+    public ServiceEventHousekeeper(EntityManagerFactory entityManagerFactory, ServiceEventBus eventbus, List<ServiceEntry> servicesEntryList) throws KapuaException {
         this.eventbus = eventbus;
-        this.serviceInternalEventAddress = serviceInternalEventAddress;
-        servicesNames = new String[0];
-        servicesNames = servicesNameList.toArray(servicesNames);
+        this.servicesEntryList = servicesEntryList;
         manager = entityManagerFactory.createEntityManager();
         kapuaEventService = new EventStoreServiceImpl(entityManagerFactory);
     }
@@ -93,11 +89,11 @@ public class ServiceEventHousekeeper implements Runnable {
         running = true;
         while (running) {
             waitStep();
-            for (String serviceName : servicesNames) {
+            for (ServiceEntry serviceEntry : servicesEntryList) {
                 try {
                     if (running) {
                         KapuaSecurityUtils.doPrivileged(() -> {
-                            processServiceEvents(serviceName);
+                            processServiceEvents(serviceEntry.getServiceName());
                         });
                     }
                 } catch (KapuaException e) {
@@ -141,12 +137,14 @@ public class ServiceEventHousekeeper implements Runnable {
         if (!unsentMessagesList.isEmpty()) {
             for (EventStoreRecord kapuaEvent : unsentMessagesList.getItems()) {
                 try {
-                    LOGGER.info("publish event: service '{}' - operation '{}' - id '{}'",
+                    String address = ServiceMap.getAddress(serviceName);
+                    LOGGER.info("publish event: service '{}' - address '{}' - operation '{}' - id '{}'",
                             kapuaEvent.getService(),
+                            address,
                             kapuaEvent.getOperation(),
                             kapuaEvent.getContextId());
 
-                    eventbus.publish(serviceInternalEventAddress, ServiceEventUtil.toServiceEventBus(kapuaEvent));
+                    eventbus.publish(address, ServiceEventUtil.toServiceEventBus(kapuaEvent));
                     //if message was sent successfully then confirm the event in the event table
                     //if something goes wrong during this update the event message may be raised twice (but this condition should happens rarely and it is compliant to the contract of the service events)
                     //this is done in a different transaction
