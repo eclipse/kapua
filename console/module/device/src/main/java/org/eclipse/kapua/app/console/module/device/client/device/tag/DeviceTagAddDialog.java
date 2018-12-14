@@ -83,6 +83,8 @@ public class DeviceTagAddDialog extends EntityAddEditDialog {
                     GwtKapuaException gwtCause = (GwtKapuaException) cause;
                     if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
                         tagsCombo.markInvalid(gwtCause.getMessage());
+                    } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.ENTITY_NOT_FOUND)) {
+                        tagsCombo.markInvalid(gwtCause.getMessage());
                     }
                 }
             }
