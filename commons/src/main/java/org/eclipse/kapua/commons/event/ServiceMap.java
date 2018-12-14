@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -38,26 +38,26 @@ public class ServiceMap {
     /**
      * Register the list of services to the provided address
      *
-     * @param serviceAddress
-     * @param servicesNames
+     * @param serviceDefaultAddress
+     * @param servicesEntryList
      */
-    public static synchronized void registerServices(String serviceAddress, List<String> servicesNames) {
-        for (String serviceName : servicesNames) {
+    public static synchronized void registerServices(String serviceDefaultAddress, List<ServiceEntry> servicesEntryList) {
+        for (ServiceEntry serviceEntry : servicesEntryList) {
             //register service name
-            String tmpServiceName = AVAILABLE_SERVICES.get(serviceName);
+            String tmpServiceName = AVAILABLE_SERVICES.get(serviceEntry.getServiceName());
             if (tmpServiceName == null) {
-                AVAILABLE_SERVICES.put(serviceName, serviceAddress);
-                LOG.info("Bound service '{}' to address '{}'", serviceName, serviceAddress);
-            } else if (!serviceAddress.equals(tmpServiceName)) {
-                LOG.warn("The service '{}' is already registered with a different address (old '{}' - new '{}'). No change will be made", serviceName, tmpServiceName, serviceAddress);
+                AVAILABLE_SERVICES.put(serviceEntry.getServiceName(), serviceEntry.getAddress());
+                LOG.info("Bound service '{}' to address '{}'", serviceEntry.getServiceName(), serviceEntry.getAddress());
+            } else if (!serviceEntry.getAddress().equals(tmpServiceName)) {
+                LOG.warn("The service '{}' is already registered with a different address (old '{}' - new '{}'). No change will be made", serviceEntry.getServiceName(), tmpServiceName, serviceEntry.getAddress());
             } else {
-                LOG.info("The service '{}' is already registered with address '{}'", serviceName, serviceAddress);
+                LOG.info("The service '{}' is already registered with address '{}'", serviceEntry.getServiceName(), serviceEntry.getAddress());
             }
         }
     }
 
     /**
-     * Unregister the provided services from the addess map
+     * Unregister the provided services from the address map
      *
      * @param servicesNames
      */

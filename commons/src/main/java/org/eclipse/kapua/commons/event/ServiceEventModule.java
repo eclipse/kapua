@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.core.ServiceModule;
 import org.eclipse.kapua.event.ServiceEventBus;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -59,12 +61,19 @@ public abstract class ServiceEventModule implements ServiceModule {
         LOGGER.info("Starting service event module... initialize event bus");
         ServiceEventBus eventbus = ServiceEventBusManager.getInstance();
         LOGGER.info("Starting service event module... initialize event subscriptions");
+        List<ServiceEntry> servicesEntryList = new ArrayList<>();
         if (serviceEventModuleConfiguration.getServiceEventClientConfigurations() != null) {
             for (ServiceEventClientConfiguration selc : serviceEventModuleConfiguration.getServiceEventClientConfigurations()) {
+                //get the specific service address... if empty switch to use the default configuration address
+                String address = selc.getAddress();
+                if (StringUtils.isEmpty(selc.getAddress())) {
+                    address = serviceEventModuleConfiguration.getInternalAddress();
+                }
                 // Listen to upstream service events
                 if (selc.getEventListener() != null) {
-                    eventbus.subscribe(selc.getAddress(), getSubscriptionName(selc.getAddress(), selc.getClientName()), selc.getEventListener());
+                    eventbus.subscribe(address, getSubscriptionName(address, selc.getClientName()), selc.getEventListener());
                 }
+                servicesEntryList.add(new ServiceEntry(selc.getClientName(), address));
                 subscriberNames.add(selc.getClientName()); // Set because names must be unique
             }
         } else {
@@ -73,7 +82,7 @@ public abstract class ServiceEventModule implements ServiceModule {
 
         // register events to the service map
         LOGGER.info("Starting service event module... register services names");
-        ServiceMap.registerServices(serviceEventModuleConfiguration.getInternalAddress(), new ArrayList<>(subscriberNames));
+        ServiceMap.registerServices(serviceEventModuleConfiguration.getInternalAddress(), servicesEntryList);
 
         // Start the House keeper
         LOGGER.info("Starting service event module... start housekeeper");
@@ -81,15 +90,10 @@ public abstract class ServiceEventModule implements ServiceModule {
         houseKeeperJob = new ServiceEventHousekeeper(
                 serviceEventModuleConfiguration.getEntityManagerFactory(),
                 eventbus,
-                serviceEventModuleConfiguration.getInternalAddress(),
-                new ArrayList<>(subscriberNames));
+                servicesEntryList);
         // Start time can be made random from 0 to 30 seconds
         houseKeeperHandler = houseKeeperScheduler.scheduleAtFixedRate(houseKeeperJob, SCHEDULED_EXECUTION_TIME_WINDOW, SCHEDULED_EXECUTION_TIME_WINDOW, TimeUnit.SECONDS);
         LOGGER.info("Starting service event module... DONE");
-    }
-
-    public String getEventAddress(String serviceName) {
-        return null;
     }
 
     @Override
