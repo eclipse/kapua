@@ -148,12 +148,12 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
 
                     totalLegnth = (int) accessRoleService.count(query);
                     if (!accessRoleList.isEmpty()){
-                        for (AccessRole accessRole : accessRoleList.getItems()) {
+                        for (final AccessRole accessRole : accessRoleList.getItems()) {
                             User createdByUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
                                 @Override
                                 public User call() throws Exception {
-                                    return userService.find(scopeId, user.getCreatedBy());
+                                    return userService.find(accessRole.getScopeId(), accessRole.getCreatedBy());
                                 }
                             });
                             Role role = roleService.find(scopeId, accessRole.getRoleId());
