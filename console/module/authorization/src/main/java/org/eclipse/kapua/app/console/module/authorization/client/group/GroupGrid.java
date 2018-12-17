@@ -14,9 +14,14 @@ package org.eclipse.kapua.app.console.module.authorization.client.group;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
@@ -35,6 +40,8 @@ public class GroupGrid extends EntityGrid<GwtGroup> {
 
     private static final GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
     private static final ConsoleGroupMessages MSGS = GWT.create(ConsoleGroupMessages.class);
+    private static final ConsoleMessages CMSGS = GWT.create(ConsoleMessages.class);
+
     private GwtGroupQuery query;
     private GroupToolbarGrid toolbar;
 
@@ -86,6 +93,13 @@ public class GroupGrid extends EntityGrid<GwtGroup> {
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("userName", MSGS.gridGroupColumnHeaderCreatedBy(), 200);
+        columnConfig.setRenderer(new GridCellRenderer<GwtGroup>() {
+
+            @Override
+            public Object render(GwtGroup gwtGroup, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtGroup> store, Grid<GwtGroup> grid) {
+                return gwtGroup.getUserName() != null ? gwtGroup.getUserName() : CMSGS.notAvailable();
+            }
+        });
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 

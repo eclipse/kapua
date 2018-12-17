@@ -28,6 +28,7 @@ import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.color.Color;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.CreatedByNameCellRenderer;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
@@ -156,7 +157,8 @@ public class AccountChildUserGrid extends EntityGrid<GwtUser> {
         columnConfig.setRenderer(setExpirationDate);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdBy", MSGS.gridUserColumnHeaderCreatedBy(), 200);
+        columnConfig = new ColumnConfig("createdByName", MSGS.gridUserColumnHeaderCreatedBy(), 200);
+        columnConfig.setRenderer(new CreatedByNameCellRenderer<GwtUser>());
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("createdOnFormatted", MSGS.gridUserColumnHeaderCreatedOn(), 200);
