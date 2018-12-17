@@ -23,6 +23,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.CreatedByNameCellRenderer;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
@@ -113,6 +114,7 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("createdByName", PERMISSION_MSGS.gridAccessRoleColumnHeaderCreatedBy(), 200);
+        columnConfig.setRenderer(new CreatedByNameCellRenderer<GwtAccessPermission>());
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 

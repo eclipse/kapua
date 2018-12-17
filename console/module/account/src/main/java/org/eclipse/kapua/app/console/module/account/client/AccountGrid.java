@@ -31,6 +31,7 @@ import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountSer
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.ModifiedByNameCellRenderer;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
@@ -142,6 +143,7 @@ public class AccountGrid extends EntityGrid<GwtAccount> {
         configs.add(column);
 
         column = new ColumnConfig("modifiedByName", ACCOUNT_MSGS.accountTableModifiedBy(), 130);
+        column.setRenderer(new ModifiedByNameCellRenderer<GwtAccount>());
         column.setAlignment(HorizontalAlignment.CENTER);
         configs.add(column);
 

@@ -18,6 +18,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.CreatedByNameCellRenderer;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
@@ -86,6 +87,7 @@ public class EndpointGrid extends EntityGrid<GwtEndpoint> {
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("createdByName", MSGS.gridEndpointColumnHeaderCreatedBy(), 200);
+        columnConfig.setRenderer(new CreatedByNameCellRenderer<GwtEndpoint>());
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 

@@ -19,6 +19,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.CreatedByNameCellRenderer;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
@@ -91,8 +92,9 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
         columnConfig = new ColumnConfig("createdOnFormatted", MSGS.gridRoleColumnHeaderCreatedOn(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("createdByName", MSGS.gridRoleColumnHeaderCreatedBy(), 200);
+        columnConfig = new ColumnConfig("createdByName", MSGS.gridRoleColumnHeaderGrantedBy(), 200);
         columnConfig.setSortable(false);
+        columnConfig.setRenderer(new CreatedByNameCellRenderer<GwtAccessRole>());
         columnConfigs.add(columnConfig);
 
         return columnConfigs;

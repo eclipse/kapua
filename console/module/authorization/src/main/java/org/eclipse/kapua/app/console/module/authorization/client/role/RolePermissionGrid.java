@@ -23,6 +23,7 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.CreatedByNameCellRenderer;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
@@ -117,6 +118,7 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("createdByName", ROLE_MSGS.gridRolePermissionColumnHeaderCreatedBy(), 100);
+        columnConfig.setRenderer(new CreatedByNameCellRenderer<GwtRolePermission>());
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 

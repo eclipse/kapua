@@ -29,6 +29,7 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.color.Color;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.ModifiedByNameCellRenderer;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
@@ -178,6 +179,7 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("modifiedByName", CREDENTIAL_MSGS.gridCredentialColumnHeaderModifiedBy(), 200);
+        columnConfig.setRenderer(new ModifiedByNameCellRenderer<GwtCredential>());
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 

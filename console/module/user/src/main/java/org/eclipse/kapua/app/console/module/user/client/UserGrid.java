@@ -27,6 +27,7 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.color.Color;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.ModifiedByNameCellRenderer;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
@@ -161,6 +162,7 @@ public class UserGrid extends EntityGrid<GwtUser> {
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("modifiedByName", USER_MSGS.gridUserColumnHeaderModifiedBy(), 200);
+        columnConfig.setRenderer(new ModifiedByNameCellRenderer<GwtUser>());
         columnConfigs.add(columnConfig);
 
         return columnConfigs;
