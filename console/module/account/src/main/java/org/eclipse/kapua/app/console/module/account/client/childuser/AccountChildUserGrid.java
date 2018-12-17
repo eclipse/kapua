@@ -77,9 +77,8 @@ public class AccountChildUserGrid extends EntityGrid<GwtUser> {
                 if (query.getScopeId() == null) {
                     callback.onSuccess(new BasePagingLoadResult<GwtUser>(new ArrayList<GwtUser>()));
                 } else {
-                    GWT_USER_SERVICE.query((PagingLoadConfig) loadConfig,
-                            query,
-                            callback);
+                    GWT_USER_SERVICE.getUsersForAccount((PagingLoadConfig) loadConfig, query,
+                            currentSession.getSelectedAccountId(), callback);
                 }
             }
         };

@@ -332,4 +332,44 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         }
         return new BasePagingLoadResult<GwtUser>(list, pagingLoadConfig.getOffset(), totalLength);
     }
+
+    @Override
+    public PagingLoadResult<GwtUser> getUsersForAccount(PagingLoadConfig loadConfig, GwtUserQuery gwtUserQuery,
+            String accountId) throws GwtKapuaException {
+
+        int totalLength = 0;
+        List<GwtUser> gwtUsers = new ArrayList<GwtUser>();
+        try {
+            UserQuery userQuery = GwtKapuaUserModelConverter.convertUserQuery(loadConfig, gwtUserQuery);
+            UserListResult users = USER_SERVICE.query(userQuery);
+            totalLength = (int) USER_SERVICE.count(userQuery);
+
+            if (!users.isEmpty()) {
+                final UserQuery allUsersQuery = USER_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(accountId));
+                UserListResult allUsers = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
+
+                    @Override
+                    public UserListResult call() throws Exception {
+                        return USER_SERVICE.query(allUsersQuery);
+                    }
+                });
+
+                HashMap<String, String> usernameMap = new HashMap<String, String>();
+                for (User user : allUsers.getItems()) {
+                    usernameMap.put(user.getId().toCompactId(), user.getName());
+                }
+                for (User u : users.getItems()) {
+                    GwtUser gwtUser = KapuaGwtUserModelConverter.convertUser(u);
+                    gwtUser.setCreatedByName(usernameMap.get(u.getCreatedBy().toCompactId()));
+                    gwtUser.setModifiedByName(usernameMap.get(u.getModifiedBy().toCompactId()));
+                    gwtUsers.add(gwtUser);
+                }
+            }
+
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+        }
+
+        return new BasePagingLoadResult<GwtUser>(gwtUsers, loadConfig.getOffset(), totalLength);   
+    }
 }
