@@ -40,8 +40,6 @@ import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.account.AccountFactory;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
@@ -112,8 +110,8 @@ public class UserServiceSteps extends TestBase {
     /**
      * Account service by locator.
      */
-    private AccountService accountService;
-    private AccountFactory accountFactory;
+//    private AccountService accountService;
+//    private AccountFactory accountFactory;
 
     /**
      * Security services services by locator.
@@ -191,8 +189,8 @@ public class UserServiceSteps extends TestBase {
         userService = locator.getService(UserService.class);
         userFactory = locator.getFactory(UserFactory.class);
         authenticationService = locator.getService(AuthenticationService.class);
-        accountService = locator.getService(AccountService.class);
-        accountFactory = locator.getFactory(AccountFactory.class);
+//        accountService = locator.getService(AccountService.class);
+//        accountFactory = locator.getFactory(AccountFactory.class);
         credentialService = locator.getService(CredentialService.class);
         accessInfoService = locator.getService(AccessInfoService.class);
         accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
@@ -251,16 +249,24 @@ public class UserServiceSteps extends TestBase {
     @When("^I create user$")
     public void createUser() throws Exception {
         stepData.remove("User");
-            User user = userService.create((UserCreator) stepData.get("UserCreator"));
-            stepData.put("User", user);
+        User user = userService.create((UserCreator) stepData.get("UserCreator"));
+        stepData.put("User", user);
+    }
+
+    @Given("^An invalid user$")
+    public void provideInvalidUserObject() {
+        User user = userFactory.newEntity(getKapuaId());
+        user.setId(getKapuaId());
+        user.setName(getKapuaId().toString());
+        stepData.put("User", user);
     }
 
     @When("^I change name to \"(.*)\"$")
     public void changeUserName(String userName) throws Exception {
-            User user = (User)stepData.get("User");
-            user.setName(userName);
-            user = userService.update(user);
-            stepData.put("User", user);
+        User user = (User)stepData.get("User");
+        user.setName(userName);
+        user = userService.update(user);
+        stepData.put("User", user);
     }
 
     @When("^I change user to$")
@@ -467,7 +473,7 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @Given("^I have following (?:user|users)$")
+    @Given("^I have the following (?:user|users)$")
     public void haveUsers(List<CucUser> userList) throws Exception {
         Set<ComparableUser> iHaveUsers = new HashSet<>();
         User lastUser = null;
@@ -535,6 +541,7 @@ public class UserServiceSteps extends TestBase {
 
         stepData.put("UserA", tmpUser);
         stepData.put("LastUser", tmpUser);
+        stepData.put("User", tmpUser.getUser());
     }
 
     @Given("^User B$")
@@ -546,9 +553,9 @@ public class UserServiceSteps extends TestBase {
         while (userIterator.hasNext()) {
             tmpUser = userIterator.next();
         }
-
         stepData.put("UserB", tmpUser);
         stepData.put("LastUser", tmpUser);
+        stepData.put("User", tmpUser.getUser());
     }
 
     @Given("^A generic user$")
@@ -561,6 +568,7 @@ public class UserServiceSteps extends TestBase {
             tmpUser = userIterator.next();
         }
         stepData.put("LastUser", tmpUser);
+        stepData.put("User", tmpUser.getUser());
     }
 
     @When("^I login as user with name \"(.*)\" and password \"(.*)\"$")

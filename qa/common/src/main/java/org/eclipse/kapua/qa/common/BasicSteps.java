@@ -78,6 +78,11 @@ public class BasicSteps extends Assert {
         assertFalse("An unexpected exception was raised!", exCaught);
     }
 
+    @Then("^I count (\\d+)$")
+    public void checkCountResult(int num) {
+        assertEquals(num, (long) stepData.get("Count"));
+    }
+
     @Then("^I get the integer (\\d+)$")
     public void checkIntResult(int num) {
         assertEquals(num, (int) stepData.get("IntValue"));

@@ -79,8 +79,12 @@ public class TestBase extends Assert {
         }
     }
 
-    public KapuaId getRandomId() {
+    public KapuaId getKapuaId() {
         return new KapuaEid(BigInteger.valueOf(random.nextLong()));
+    }
+
+    public KapuaId getKapuaId(int i) {
+        return new KapuaEid(BigInteger.valueOf(i));
     }
 
     public KapuaId getCurrentScopeId() {

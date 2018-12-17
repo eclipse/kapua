@@ -18,6 +18,12 @@ import java.util.Map;
  */
 public class CucConfig {
 
+    /** The scope ID of the configuration. */
+    private Integer scopeId;
+
+    /** The scope ID of the parent scope. */
+    private Integer parentId;
+
     /** Name of type that config value has. */
     private String type;
 
@@ -26,6 +32,22 @@ public class CucConfig {
 
     /** String representation of parameter value. */
     private String value;
+
+    public Integer getScopeId() {
+        return scopeId;
+    }
+
+    public void setScopeId(Integer scopeId) {
+        this.scopeId = scopeId;
+    }
+
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
+    }
 
     public String getType() {
         return type;

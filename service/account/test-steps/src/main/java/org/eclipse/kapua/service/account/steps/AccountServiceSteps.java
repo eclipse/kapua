@@ -206,7 +206,15 @@ public class AccountServiceSteps extends TestBase {
             cucAccount.setScopeId(((Account) stepData.get("LastAccount")).getId().getId());
         }
 
-        stepData.put("LastAccount", createAccount(cucAccount));
+        Account tmpAccount = createAccount(cucAccount);
+        stepData.put("LastAccount", tmpAccount);
+        stepData.put("CurrentScope", tmpAccount.getId());
+    }
+
+    @Given("^Scope ID (\\d+)$")
+    public void givenAccount(int scopeId) {
+
+        stepData.put("CurrentScope", getKapuaId(scopeId));
     }
 
     @Given("^Using kapua-sys account$")
