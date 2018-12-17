@@ -92,13 +92,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
             //
             // Create the User
-            User user = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
-
-                @Override
-                public User call() throws Exception {
-                return USER_SERVICE.create(userCreator);
-                }
-            });
+            User user = USER_SERVICE.create(userCreator);
 
             //
             // Create credentials
