@@ -27,7 +27,7 @@ Scenario: Creating user
         | integer | lockoutPolicy.maxFailures  | 3     |
         | integer | lockoutPolicy.resetAfter   | 300   |
         | integer | lockoutPolicy.lockDuration | 3     |
-    Given I have following user
+    Given I have the following user
         | name     | displayName        | email              | phoneNumber     | status  |
         | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
     When I search for user with name "kapua-u1"
@@ -46,7 +46,7 @@ Scenario: Create user with short name
         | integer | lockoutPolicy.resetAfter   | 300   |
         | integer | lockoutPolicy.lockDuration | 3     |
     Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided"
-    And I have following user
+    And I have the following user
         | name | displayName        | email              | phoneNumber     | status  |
         | u1   |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
     Then An exception was thrown
@@ -63,7 +63,7 @@ Scenario: Create user that has more than DB allowed length
         | integer | lockoutPolicy.resetAfter   | 300   |
         | integer | lockoutPolicy.lockDuration | 3     |
     Given I expect the exception "KapuaException" with the text "*"
-    And I have following user
+    And I have the following user
         | name | displayName        | email              | phoneNumber     | status  |
         | uuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaauuuuuuuuuuaaaaaaaaaa  |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
     Then An exception was thrown
@@ -80,7 +80,7 @@ Scenario: Create user with special characters in his name
         | integer | lockoutPolicy.resetAfter   | 300   |
         | integer | lockoutPolicy.lockDuration | 3     |
     Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided"
-    And I have following user
+    And I have the following user
         | name      | displayName        | email              | phoneNumber     | status  |
         | ###$$$%%% | Kapua User 1       | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
     Then An exception was thrown
@@ -98,7 +98,7 @@ Scenario: Update user
         | integer | lockoutPolicy.maxFailures  | 3     |
         | integer | lockoutPolicy.resetAfter   | 300   |
         | integer | lockoutPolicy.lockDuration | 3     |
-    Given I have following user
+    Given I have the following user
         | name     | displayName        | email              | phoneNumber     | status  |
         | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
     And I search for user with name "kapua-u1"
@@ -175,7 +175,7 @@ Scenario: Find user by id
         | integer | lockoutPolicy.maxFailures  | 3     |
         | integer | lockoutPolicy.resetAfter   | 300   |
         | integer | lockoutPolicy.lockDuration | 3     |
-    Given I have following user
+    Given I have the following user
         | name     | displayName        | email              | phoneNumber     | status  |
         | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
     When I search for created user by id
@@ -194,7 +194,7 @@ Scenario: Find user by name
         | integer | lockoutPolicy.maxFailures  | 3     |
         | integer | lockoutPolicy.resetAfter   | 300   |
         | integer | lockoutPolicy.lockDuration | 3     |
-    Given I have following user
+    Given I have the following user
         | name     | displayName        | email              | phoneNumber     | status  |
         | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
     When I search for created user by name
@@ -272,7 +272,7 @@ Scenario: Create multiple users
         | integer | lockoutPolicy.maxFailures  | 3     |
         | integer | lockoutPolicy.resetAfter   | 300   |
         | integer | lockoutPolicy.lockDuration | 3     |
-    Given I have following users
+    Given I have the following users
         | name     | displayName        | email              | phoneNumber     | status  |
         | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 111 | ENABLED |
         | kapua-u2 |    Kapua User 2    | kapua_u2@kapua.com | +386 31 323 222 | ENABLED |
@@ -292,7 +292,7 @@ Scenario: Find multiple users
         | integer | lockoutPolicy.maxFailures  | 3     |
         | integer | lockoutPolicy.resetAfter   | 300   |
         | integer | lockoutPolicy.lockDuration | 3     |
-    Given I have following users
+    Given I have the following users
         | name     | displayName        | email              | phoneNumber     | status  |
         | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 111 | ENABLED |
         | kapua-u2 |    Kapua User 2    | kapua_u2@kapua.com | +386 31 323 222 | ENABLED |

@@ -11,10 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.group;
 
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 
@@ -23,7 +21,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-import java.math.BigInteger;
 
 /**
  * {@link Group} {@link org.eclipse.kapua.model.KapuaEntity} definition.<br>
@@ -39,7 +36,7 @@ import java.math.BigInteger;
 public interface Group extends KapuaNamedEntity {
 
     @XmlTransient
-    KapuaId ANY = KapuaLocator.getInstance().getFactory(KapuaIdFactory.class).newKapuaId(BigInteger.ONE.negate());
+    KapuaId ANY = KapuaId.ANY;
 
     String TYPE = "group";
 

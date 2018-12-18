@@ -64,10 +64,10 @@ public class TestBase extends Assert {
     /**
      * Commonly used constants
      */
-    protected static final KapuaEid SYS_SCOPE_ID = new KapuaEid(BigInteger.ONE);
-    protected static final KapuaEid SYS_USER_ID = new KapuaEid(BigInteger.ONE);
+    protected static final KapuaId SYS_SCOPE_ID = KapuaId.ONE;
+    protected static final KapuaId SYS_USER_ID = new KapuaEid(BigInteger.ONE);
     protected static final int DEFAULT_SCOPE_ID = 42;
-    protected static final KapuaEid DEFAULT_ID = new KapuaEid(BigInteger.valueOf(DEFAULT_SCOPE_ID));
+    protected static final KapuaId DEFAULT_ID = new KapuaEid(BigInteger.valueOf(DEFAULT_SCOPE_ID));
 
     public TestBase() {
 
@@ -90,12 +90,25 @@ public class TestBase extends Assert {
     public KapuaId getCurrentScopeId() {
 
         Account tmpAccount = (Account) stepData.get("LastAccount");
-        KapuaId tmpId = (KapuaId) stepData.get("CurrentScopeId");
+        KapuaId tmpId = (KapuaId) stepData.get("LastAccountId");
 
         if (tmpAccount != null) {
             return tmpAccount.getId();
-        } else {
+        } else if (tmpId != null){
             return tmpId;
+        } else {
+            return SYS_SCOPE_ID;
+        }
+    }
+
+    public KapuaId getCurrentParentId() {
+
+        Account tmpAccount = (Account) stepData.get("LastAccount");
+
+        if (tmpAccount != null) {
+            return tmpAccount.getScopeId();
+        } else {
+            return SYS_SCOPE_ID;
         }
     }
 

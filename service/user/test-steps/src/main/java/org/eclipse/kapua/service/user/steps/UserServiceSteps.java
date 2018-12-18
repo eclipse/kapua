@@ -189,8 +189,6 @@ public class UserServiceSteps extends TestBase {
         userService = locator.getService(UserService.class);
         userFactory = locator.getFactory(UserFactory.class);
         authenticationService = locator.getService(AuthenticationService.class);
-//        accountService = locator.getService(AccountService.class);
-//        accountFactory = locator.getFactory(AccountFactory.class);
         credentialService = locator.getService(CredentialService.class);
         accessInfoService = locator.getService(AccessInfoService.class);
         accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
@@ -419,17 +417,17 @@ public class UserServiceSteps extends TestBase {
     public void countUsersInScope(int scopeId) throws Exception {
         UserQuery query = userFactory.newQuery(new KapuaEid(BigInteger.valueOf(scopeId)));
         stepData.remove("Count");
-        long userCnt = userService.count(query);
+        Long userCnt = userService.count(query);
         stepData.put("Count", userCnt);
     }
 
     @Then("^I count (\\d+) (?:user|users)$")
-    public void countUserCount(int cnt) {
-        assertEquals(cnt, (long)stepData.get("Count"));
+    public void countUserCount(Long cnt) {
+        assertEquals(cnt, stepData.get("Count"));
     }
 
     @Then("^I count (\\d+) (?:user|users) as query result list$")
-    public void countUserQuery(int cnt) {
+    public void countUserQuery(long cnt) {
         Set<ComparableUser> userLst = (Set<ComparableUser>)stepData.get("UserList");
         assertEquals(cnt, userLst.size());
     }
@@ -475,11 +473,24 @@ public class UserServiceSteps extends TestBase {
 
     @Given("^I have the following (?:user|users)$")
     public void haveUsers(List<CucUser> userList) throws Exception {
+
+        Account account = (Account) stepData.get("LastAccount");
+        KapuaId accountId = (KapuaId) stepData.get("LastAccountId");
+        KapuaId currentAccount;
         Set<ComparableUser> iHaveUsers = new HashSet<>();
         User lastUser = null;
         stepData.remove("UserList");
+
+        if (account != null) {
+            currentAccount = account.getId();
+        } else if (accountId != null) {
+            currentAccount = accountId;
+        } else {
+            currentAccount = DEFAULT_ID;
+        }
+
+        primeException();
         try {
-            primeException();
             for (CucUser userItem : userList) {
                 String name = userItem.getName();
                 String displayName = userItem.getDisplayName();
@@ -488,7 +499,7 @@ public class UserServiceSteps extends TestBase {
                 @SuppressWarnings("unused")
                 UserStatus status = userItem.getStatus();
 
-                UserCreator userCreator = userCreatorCreator(name, displayName, email, phone, DEFAULT_ID);
+                UserCreator userCreator = userCreatorCreator(name, displayName, email, phone, currentAccount);
                 User user = userService.create(userCreator);
                 iHaveUsers.add(new ComparableUser(user));
                 lastUser = user;
@@ -503,7 +514,7 @@ public class UserServiceSteps extends TestBase {
     @When("^I retrieve metadata in scope (\\d+)$")
     public void getMetadata(int scopeId) throws KapuaException {
         stepData.remove("Metadata");
-        KapuaTocd metadata = userService.getConfigMetadata(new KapuaEid(BigInteger.valueOf(scopeId)));
+        KapuaTocd metadata = userService.getConfigMetadata(getKapuaId(scopeId));
         stepData.put("Metadata", metadata);
     }
 
@@ -784,7 +795,7 @@ public class UserServiceSteps extends TestBase {
      *
      * @return UserCreator instance for creating user
      */
-    private UserCreator userCreatorCreator(String name, String displayName, String email, String phone, KapuaEid scopeId) {
+    private UserCreator userCreatorCreator(String name, String displayName, String email, String phone, KapuaId scopeId) {
         UserCreator userCreator = userFactory.newCreator(scopeId, name);
 
         userCreator.setName(name);
@@ -795,7 +806,7 @@ public class UserServiceSteps extends TestBase {
         return userCreator;
     }
 
-    private UserCreator userCreatorCreator(String name, String displayName, String email, String phone, KapuaEid scopeId, Date expirationDate) {
+    private UserCreator userCreatorCreator(String name, String displayName, String email, String phone, KapuaId scopeId, Date expirationDate) {
         UserCreator userCreator = userCreatorCreator(name, displayName, email, phone, scopeId);
         userCreator.setExpirationDate(expirationDate);
 

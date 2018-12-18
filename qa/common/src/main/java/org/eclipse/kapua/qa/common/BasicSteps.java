@@ -79,8 +79,8 @@ public class BasicSteps extends Assert {
     }
 
     @Then("^I count (\\d+)$")
-    public void checkCountResult(int num) {
-        assertEquals(num, (long) stepData.get("Count"));
+    public void checkCountResult(Long num) {
+        assertEquals(num, stepData.get("Count"));
     }
 
     @Then("^I get the integer (\\d+)$")
@@ -90,12 +90,12 @@ public class BasicSteps extends Assert {
 
     @Then("^I get the boolean \"(.+)\"$")
     public void checkBoolResult(String val) {
-        assertEquals(Boolean.valueOf(val).booleanValue(), (boolean) stepData.get("BoolValue"));
+        assertEquals(Boolean.valueOf(val).booleanValue(), stepData.get("BoolValue"));
     }
 
     @Then("^I get the text \"(.+)\"$")
     public void checkStringResult(String text) {
-        assertEquals(text, (String) stepData.get("Text"));
+        assertEquals(text, stepData.get("Text"));
     }
 
     @Given("^System property \"(.*)\" with value \"(.*)\"$")
