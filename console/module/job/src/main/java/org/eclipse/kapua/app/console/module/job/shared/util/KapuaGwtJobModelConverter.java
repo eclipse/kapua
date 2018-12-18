@@ -83,6 +83,7 @@ public class KapuaGwtJobModelConverter {
         GwtJobTarget gwtJobTarget = new GwtJobTarget();
         KapuaGwtCommonsModelConverter.convertUpdatableEntity(jobTarget, gwtJobTarget);
         gwtJobTarget.setJobTargetId(KapuaGwtCommonsModelConverter.convertKapuaId(jobTarget.getJobTargetId()));
+        gwtJobTarget.setClientId(KapuaGwtCommonsModelConverter.convertKapuaId(jobTarget.getJobTargetId()));
         gwtJobTarget.setStatus(jobTarget.getStatus().toString());
         gwtJobTarget.setStepIndex(jobTarget.getStepIndex());
         gwtJobTarget.setErrorMessage(jobTarget.getException() != null ? jobTarget.getException().getMessage() : null);
