@@ -16,6 +16,9 @@ Feature: Device Broker connection ip with System environment variable
   @StartDatastore
   Scenario: Start datastore for all scenarios
 
+  @StartEventBroker
+  Scenario: Start event broker for all scenarios
+
   @StartBroker
   Scenario: Start broker for all scenarios
 
@@ -34,6 +37,9 @@ Feature: Device Broker connection ip with System environment variable
 
   @StopBroker
   Scenario: Stop broker after all scenarios
+
+  @StopEventBroker
+  Scenario: Stop event broker after all scenarios
 
   @StopDatastore
   Scenario: Stop datastore after all scenarios
