@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,12 +9,8 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.module.job.client.targets;
+package org.eclipse.kapua.app.console.module.job.client;
 
-import java.util.Arrays;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.SimpleDialog;
@@ -22,30 +18,29 @@ import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
-import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStartOptions;
-import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobTarget;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobEngineService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobEngineServiceAsync;
 
-public class JobTargetStartTargetDialog extends SimpleDialog {
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
+public class JobRestartDialog extends SimpleDialog {
 
     private static final ConsoleJobMessages JOB_MSGS = GWT.create(ConsoleJobMessages.class);
 
     private static final GwtJobEngineServiceAsync JOB_ENGINE_SERVICE = GWT.create(GwtJobEngineService.class);
 
     private final GwtJob gwtJob;
-    private final GwtJobTarget gwtJobTarget;
 
-    public JobTargetStartTargetDialog(GwtJob gwtJob, GwtJobTarget gwtJobTarget) {
+    public JobRestartDialog(GwtJob gwtJob) {
         this.gwtJob = gwtJob;
-        this.gwtJobTarget = gwtJobTarget;
 
-        DialogUtils.resizeDialog(this, 300, 135);
+        DialogUtils.resizeDialog(this, 300, 185);
     }
 
     @Override
     public void createBody() {
-        // No action needed
+        formPanel.disableEvents(true);
     }
 
     @Override
@@ -55,20 +50,18 @@ public class JobTargetStartTargetDialog extends SimpleDialog {
 
     @Override
     public void submit() {
-        GwtJobStartOptions gwtJobStartOptions = new GwtJobStartOptions();
-        gwtJobStartOptions.setTargetIdSublist(Arrays.asList(gwtJobTarget.getId()));
-        JOB_ENGINE_SERVICE.start(gwtJob.getScopeId(), gwtJob.getId(), gwtJobStartOptions, new AsyncCallback<Void>() {
+        JOB_ENGINE_SERVICE.restart(gwtJob.getScopeId(), gwtJob.getId(), new AsyncCallback<Void>() {
 
             @Override
             public void onFailure(Throwable caught) {
-                ConsoleInfo.display(MSGS.popupError(), JOB_MSGS.jobStartTargetErrorMessage(caught.getLocalizedMessage()));
+                ConsoleInfo.display(MSGS.popupError(), JOB_MSGS.jobRestartErrorMessage(caught.getLocalizedMessage()));
                 unmask();
                 hide();
             }
 
             @Override
             public void onSuccess(Void result) {
-                ConsoleInfo.display(MSGS.popupInfo(), JOB_MSGS.jobStartTargetStartedMessage());
+                ConsoleInfo.display(MSGS.popupInfo(), JOB_MSGS.jobRestartRestartedMessage());
                 unmask();
                 hide();
             }
@@ -77,7 +70,7 @@ public class JobTargetStartTargetDialog extends SimpleDialog {
 
     @Override
     public String getHeaderMessage() {
-        return JOB_MSGS.jobStartTargetDialogHeader(gwtJob.getJobName(), gwtJobTarget.getClientId());
+        return JOB_MSGS.jobRestartDialogHeader(gwtJob.getJobName());
     }
 
     @Override
@@ -87,6 +80,6 @@ public class JobTargetStartTargetDialog extends SimpleDialog {
 
     @Override
     public String getInfoMessage() {
-        return JOB_MSGS.jobStartTargetDialogInfo();
+        return JOB_MSGS.jobRestartDialogInfo();
     }
 }
