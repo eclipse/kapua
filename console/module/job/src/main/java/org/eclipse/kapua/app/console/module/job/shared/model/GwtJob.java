@@ -53,13 +53,4 @@ public class GwtJob extends GwtUpdatableEntityModel implements IsSerializable {
     public void setJobXmlDefinition(String xmlJobDefinition) {
         set("jobXmlDefinition", xmlJobDefinition);
     }
-
-    public String getUserName() {
-        return get("userName");
-    }
-
-    public void setUserName(String userName) {
-        set("userName", userName);
-    }
-
 }

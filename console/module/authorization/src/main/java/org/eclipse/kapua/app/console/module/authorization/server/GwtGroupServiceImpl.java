@@ -142,7 +142,7 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
 
                 for (Group g : groups.getItems()) {
                     GwtGroup gwtGroup = KapuaGwtAuthorizationModelConverter.convertGroup(g);
-                    gwtGroup.setUserName(usernameMap.get(g.getCreatedBy().toCompactId()));
+                    gwtGroup.setCreatedByName(usernameMap.get(g.getCreatedBy().toCompactId()));
                     gwtGroupList.add(gwtGroup);
                 }
             }

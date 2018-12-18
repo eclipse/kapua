@@ -12,7 +12,7 @@
 package org.eclipse.kapua.app.console.module.api.client.ui.grid;
 
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
 
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
@@ -20,7 +20,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
 
-public class CreatedByNameCellRenderer<M extends GwtUpdatableEntityModel> implements GridCellRenderer<M> {
+public class CreatedByNameCellRenderer<M extends GwtEntityModel> implements GridCellRenderer<M> {
 
     private static final ConsoleMessages CMSGS = GWT.create(ConsoleMessages.class);
 
