@@ -14,14 +14,10 @@ package org.eclipse.kapua.app.console.module.job.client;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
-import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnData;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.CreatedByNameCellRenderer;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
@@ -40,7 +36,6 @@ import java.util.List;
 public class JobGrid extends EntityGrid<GwtJob> {
 
     private static final ConsoleJobMessages MSGS = GWT.create(ConsoleJobMessages.class);
-    private static final ConsoleMessages CMSGS = GWT.create(ConsoleMessages.class);
 
     private static final GwtJobServiceAsync GWT_JOB_SERVICE = GWT.create(GwtJobService.class);
 
@@ -94,15 +89,8 @@ public class JobGrid extends EntityGrid<GwtJob> {
         columnConfig = new ColumnConfig("description", MSGS.gridJobColumnHeaderDescription(), 400);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("userName", MSGS.gridJobColumnHeaderCreatedBy(), 200);
-        columnConfig.setRenderer(new GridCellRenderer<GwtJob>() {
-
-            @Override
-            public Object render(GwtJob gwtJob, String property, ColumnData config, int rowIndex, int colIndex,
-                    ListStore<GwtJob> store, Grid<GwtJob> grid) {
-                return gwtJob.getUserName() != null ? gwtJob.getUserName() : CMSGS.notAvailable();
-            }
-        });
+        columnConfig = new ColumnConfig("createdByName", MSGS.gridJobColumnHeaderCreatedBy(), 200);
+        columnConfig.setRenderer(new CreatedByNameCellRenderer<GwtJob>());
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 

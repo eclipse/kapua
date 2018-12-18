@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.shared.model;
 
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtPermission.GwtAction;
 
-public class GwtRolePermission extends GwtUpdatableEntityModel {
+public class GwtRolePermission extends GwtEntityModel {
 
     private static final long serialVersionUID = 6331197556606146242L;
 

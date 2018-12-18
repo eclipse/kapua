@@ -91,7 +91,7 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
                 // Converto to GWT entity
                 for (Job j : jobs.getItems()) {
                     GwtJob gwtJob = KapuaGwtJobModelConverter.convertJob(j);
-                    gwtJob.setUserName(usernameMap.get(j.getCreatedBy().toCompactId()));
+                    gwtJob.setCreatedByName(usernameMap.get(j.getCreatedBy().toCompactId()));
                     gwtJobs.add(gwtJob);
                 }
             }
