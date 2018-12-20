@@ -17,6 +17,7 @@ import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.CreatedByNameCellRenderer;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
@@ -88,7 +89,8 @@ public class JobGrid extends EntityGrid<GwtJob> {
         columnConfig = new ColumnConfig("description", MSGS.gridJobColumnHeaderDescription(), 400);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("userName", MSGS.gridJobColumnHeaderCreatedBy(), 200);
+        columnConfig = new ColumnConfig("createdByName", MSGS.gridJobColumnHeaderCreatedBy(), 200);
+        columnConfig.setRenderer(new CreatedByNameCellRenderer<GwtJob>());
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 

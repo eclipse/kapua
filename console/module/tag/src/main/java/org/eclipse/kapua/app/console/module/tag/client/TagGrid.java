@@ -18,6 +18,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.CreatedByNameCellRenderer;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
@@ -35,6 +36,7 @@ import java.util.List;
 public class TagGrid extends EntityGrid<GwtTag> {
 
     private static final ConsoleTagMessages MSGS = GWT.create(ConsoleTagMessages.class);
+
     private TagToolbarGrid toolbar;
 
     protected static final GwtTagServiceAsync GWT_TAG_SERVICE = GWT.create(GwtTagService.class);
@@ -94,7 +96,8 @@ public class TagGrid extends EntityGrid<GwtTag> {
         columnConfig = new ColumnConfig("createdOnFormatted", MSGS.gridTagColumnHeaderCreatedOn(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("userName", MSGS.gridTagColumnHeaderCreatedBy(), 200);
+        columnConfig = new ColumnConfig("createdByName", MSGS.gridTagColumnHeaderCreatedBy(), 200);
+        columnConfig.setRenderer(new CreatedByNameCellRenderer<GwtTag>());
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 

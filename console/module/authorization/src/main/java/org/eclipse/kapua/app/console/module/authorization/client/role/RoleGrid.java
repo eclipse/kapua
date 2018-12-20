@@ -18,6 +18,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.ModifiedByNameCellRenderer;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
@@ -91,6 +92,7 @@ public class RoleGrid extends EntityGrid<GwtRole> {
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("modifiedByName", ROLE_MSGS.gridRoleColumnHeaderModifiedBy(), 200);
+        columnConfig.setRenderer(new ModifiedByNameCellRenderer<GwtRole>());
         columnConfigs.add(columnConfig);
 
         return columnConfigs;

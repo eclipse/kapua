@@ -17,6 +17,8 @@ import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.CreatedByNameCellRenderer;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
@@ -35,6 +37,8 @@ public class GroupGrid extends EntityGrid<GwtGroup> {
 
     private static final GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
     private static final ConsoleGroupMessages MSGS = GWT.create(ConsoleGroupMessages.class);
+    private static final ConsoleMessages CMSGS = GWT.create(ConsoleMessages.class);
+
     private GwtGroupQuery query;
     private GroupToolbarGrid toolbar;
 
@@ -85,7 +89,8 @@ public class GroupGrid extends EntityGrid<GwtGroup> {
         columnConfig = new ColumnConfig("createdOnFormatted", MSGS.gridGroupColumnHeaderCreatedOn(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("userName", MSGS.gridGroupColumnHeaderCreatedBy(), 200);
+        columnConfig = new ColumnConfig("createdByName", MSGS.gridGroupColumnHeaderCreatedBy(), 200);
+        columnConfig.setRenderer(new CreatedByNameCellRenderer<GwtGroup>());
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
