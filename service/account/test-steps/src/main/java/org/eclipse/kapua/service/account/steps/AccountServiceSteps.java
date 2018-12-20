@@ -208,7 +208,9 @@ public class AccountServiceSteps extends TestBase {
 
         Account tmpAccount = createAccount(cucAccount);
         stepData.put("LastAccount", tmpAccount);
-        stepData.put("LastAccountId", tmpAccount.getId());
+        if (tmpAccount != null) {
+            stepData.put("LastAccountId", tmpAccount.getId());
+        }
     }
 
     @Given("^Scope ID (\\d+)$")
