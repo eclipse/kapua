@@ -106,6 +106,7 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleFactoryImpl;
+import org.eclipse.kapua.service.authorization.role.shiro.RoleImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionServiceImpl;
@@ -386,7 +387,7 @@ public class AuthorizationServiceSteps extends TestBase {
     public void updateRoleNameTo(String name)
             throws Exception {
 
-        Role role = (Role) stepData.get("Role");
+        Role role = new RoleImpl((Role) stepData.get("Role"));
         role.setName(name);
         Thread.sleep(200);
 
