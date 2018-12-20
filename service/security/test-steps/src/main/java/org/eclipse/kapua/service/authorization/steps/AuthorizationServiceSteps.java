@@ -510,7 +510,7 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I count the permission in scope (\\d+)$")
+    @When("^I count the role permissions in scope (\\d+)$")
     public void countRolePermissionsInScope(Integer scope)
             throws Exception {
 
@@ -549,6 +549,11 @@ public class AuthorizationServiceSteps extends TestBase {
         } catch (KapuaException ex) {
             verifyException(ex);
         }
+    }
+
+    @Then("^The role was found$")
+    public void chackThatSomethingWasFound() {
+        assertNotNull(stepData.get("RoleFound"));
     }
 
     @Then("^I find no roles$")
@@ -1209,6 +1214,12 @@ public class AuthorizationServiceSteps extends TestBase {
         assertNull(stepData.get("Group"));
     }
 
+    @Then("^The group was found$")
+    public void checkThatTheGroupWasFound() {
+
+        assertNotNull(stepData.get("GroupSecond"));
+    }
+
     @Then("^No group was found$")
     public void checkNoGroupWasFound() {
 
@@ -1814,6 +1825,18 @@ public class AuthorizationServiceSteps extends TestBase {
     public void checkThatAnAccessPermissionWasFound() {
         AccessPermission accessPermissionFound = (AccessPermission) stepData.get("AccessPermissionFound");
         assertNotNull(accessPermissionFound);
+    }
+
+    @Then("^There are no such access permissions$")
+    public void checkThatThePermissionsWereRemoved() {
+        AccessPermissionListResult accessPermissions = (AccessPermissionListResult) stepData.get("AccessPermissions");
+        assertEquals(0, accessPermissions.getSize());
+    }
+
+    @Then("^There are no such access roles$")
+    public void checkThatTheRolesWereRemoved() {
+        AccessRoleListResult accessRoles = (AccessRoleListResult) stepData.get("AccessRoles");
+        assertEquals(0, accessRoles.getSize());
     }
 
     @Then("^The entity matches the creator$")

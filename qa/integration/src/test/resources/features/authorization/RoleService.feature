@@ -135,6 +135,8 @@ Scenario: Delete an existing role
     Given I create the following role
     | scopeId | name      | actions              |
     | 1       | test_role | write, read, connect |
+    And I search for the last created role
+    Then The role was found
     When I delete the last created role
     And I search for the last created role
     Then I find no roles
@@ -281,7 +283,7 @@ Scenario: Empty query results are supported
     Then No exception was thrown
     And I count 0
 
-    Scenario: Create some regular role permissions
+Scenario: Create some regular role permissions
 
     When I login as user with name "kapua-sys" and password "kapua-password"
     When I configure the role service
@@ -385,13 +387,13 @@ Scenario: Count role permissions in specific scopes
     And I create the following role permissions
     | scopeId  | actionName | targetScopeId |
     | 4        | read       | 4             |
-    When I count the permission in scope 2
+    When I count the role permissions in scope 2
     Then I count 3
-    When I count the permission in scope 3
+    When I count the role permissions in scope 3
     Then I count 2
-    When I count the permission in scope 4
+    When I count the role permissions in scope 4
     Then I count 1
-    When I count the permission in scope 5
+    When I count the role permissions in scope 5
     Then I count 0
 
 Scenario: Role creator sanity checks

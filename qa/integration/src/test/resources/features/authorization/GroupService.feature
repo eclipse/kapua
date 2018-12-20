@@ -159,6 +159,8 @@ Feature: Group Service tests
       | scope | name        |
       | 0     | test_name_6 |
       | 0     | test_name_7 |
+    And I search for the last created group
+    Then The group was found
     When I delete the last created group
     And I search for the last created group
     Then No group was found

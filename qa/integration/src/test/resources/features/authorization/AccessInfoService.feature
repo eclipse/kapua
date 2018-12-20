@@ -214,6 +214,10 @@ Feature: Access Info Service CRUD tests
     When I delete the existing access info entity
     And I search for the last created access info entity
     Then I find no access info entity
+    When I search for the permissions of the last access info entity
+    Then There are no such access permissions
+    When I search for the roles of the last access info entity
+    Then There are no such access roles
     Then I logout
 
   Scenario: Delete an access info entity twice
