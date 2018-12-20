@@ -31,6 +31,7 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
 
     private Button startJobButton;
     private Button stopJobButton;
+    private Button restartJobButton;
 
     public JobGridToolbar(GwtSession currentSession) {
         super(currentSession);
@@ -42,6 +43,10 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
 
     public Button getStopJobButton() {
         return stopJobButton;
+    }
+
+    public Button getRestartJobButton() {
+        return restartJobButton;
     }
 
     @Override
@@ -68,6 +73,17 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
         });
         stopJobButton.disable();
         addExtraButton(stopJobButton);
+
+        restartJobButton = new Button(JOB_MSGS.jobRestartButton(), new KapuaIcon(IconSet.REPEAT), new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                JobRestartDialog dialog = new JobRestartDialog(gridSelectionModel.getSelectedItem());
+                dialog.show();
+            }
+        });
+        restartJobButton.disable();
+        addExtraButton(restartJobButton);
 
         super.onRender(target, index);
 
