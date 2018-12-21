@@ -89,13 +89,10 @@ public class TestBase extends Assert {
 
     public KapuaId getCurrentScopeId() {
 
-        Account tmpAccount = (Account) stepData.get("LastAccount");
-        KapuaId tmpId = (KapuaId) stepData.get("LastAccountId");
-
-        if (tmpAccount != null) {
-            return tmpAccount.getId();
-        } else if (tmpId != null){
-            return tmpId;
+        if (stepData.contains("LastAccountId")) {
+            return (KapuaId) stepData.get("LastAccountId");
+        } else if (stepData.get("LastAccount") != null) {
+            return ((Account)stepData.get("LastAccount")).getId();
         } else {
             return SYS_SCOPE_ID;
         }
@@ -103,10 +100,8 @@ public class TestBase extends Assert {
 
     public KapuaId getCurrentParentId() {
 
-        Account tmpAccount = (Account) stepData.get("LastAccount");
-
-        if (tmpAccount != null) {
-            return tmpAccount.getScopeId();
+        if (stepData.get("LastAccount") != null) {
+            return ((Account)stepData.get("LastAccount")).getScopeId();
         } else {
             return SYS_SCOPE_ID;
         }

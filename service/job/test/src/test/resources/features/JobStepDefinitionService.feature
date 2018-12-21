@@ -10,6 +10,8 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @jobs
+@unit
+@jobsStepDefinition
 Feature: Job step definition service CRUD tests
     The Job Step Definition service is responsible for maintaining job step definitions.
     During regular runtime the step definitions are automatically extracted from the various
@@ -130,14 +132,14 @@ Scenario: Count step definition items
 
     Given I create 10 step definition items
     When I count the step definition in the database
-    Then There are exactly 10 items
+    Then I count 10
 
 Scenario: Count step definitions in wrong (empty) scope
 
     Given I create 10 step definition items
     Given Scope with ID 20
     When I count the step definition in the database
-    Then There are exactly 0 items
+    Then I count 0
 
 Scenario: Query for step definitions
 
@@ -146,7 +148,7 @@ Scenario: Query for step definitions
     Given Scope with ID 20
     Then I create 20 step definition items
     When I query for step definitions in scope 10
-    Then There are exactly 10 items
+    Then I count 10
 
 Scenario: Step definition factory sanity checks
 

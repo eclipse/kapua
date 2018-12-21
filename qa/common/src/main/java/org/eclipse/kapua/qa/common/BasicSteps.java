@@ -16,7 +16,6 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
-import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +23,7 @@ import javax.inject.Inject;
 import java.time.Duration;
 
 @ScenarioScoped
-public class BasicSteps extends Assert {
+public class BasicSteps extends TestBase {
 
     private static final Logger logger = LoggerFactory.getLogger(BasicSteps.class);
 
@@ -45,6 +44,18 @@ public class BasicSteps extends Assert {
         if (WAIT_MULTIPLIER != 1.0d) {
             logger.info("Wait multiplier active: {}", WAIT_MULTIPLIER);
         }
+    }
+
+    @Given("^Scope with ID (\\d+)$")
+    public void setSpecificScopeId(Integer id) {
+
+        stepData.put("LastAccountId", getKapuaId(id));
+    }
+
+    @Given("^A null scope$")
+    public void setNullScope() {
+
+        stepData.put("LastAccountId", null);
     }
 
     @Given("^I expect the exception \"(.+)\" with the text \"(.+)\"$")

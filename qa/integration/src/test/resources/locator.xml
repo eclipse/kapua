@@ -15,6 +15,7 @@
     <provided>
         <api>org.eclipse.kapua.service.account.AccountFactory</api>
         <api>org.eclipse.kapua.service.account.AccountService</api>
+
         <api>org.eclipse.kapua.service.user.UserFactory</api>
         <api>org.eclipse.kapua.service.user.UserService</api>
 
@@ -92,8 +93,26 @@
         <api>org.eclipse.kapua.service.tag.TagFactory</api>
         <api>org.eclipse.kapua.service.tag.TagService</api>
 
-        <api>org.eclipse.kapua.service.user.UserFactory</api>
-        <api>org.eclipse.kapua.service.user.UserService</api>
+        <api>org.eclipse.kapua.service.job.JobFactory</api>
+        <api>org.eclipse.kapua.service.job.JobService</api>
+
+        <api>org.eclipse.kapua.service.job.step.JobStepService</api>
+        <api>org.eclipse.kapua.service.job.step.JobStepFactory</api>
+
+        <api>org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService</api>
+        <api>org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory</api>
+
+        <api>org.eclipse.kapua.service.job.execution.JobExecutionService</api>
+        <api>org.eclipse.kapua.service.job.execution.JobExecutionFactory</api>
+
+        <api>org.eclipse.kapua.service.job.targets.JobTargetService</api>
+        <api>org.eclipse.kapua.service.job.targets.JobTargetFactory</api>
+
+        <api>org.eclipse.kapua.job.engine.JobEngineService</api>
+        <api>org.eclipse.kapua.job.engine.JobEngineFactory</api>
+
+        <api>org.eclipse.kapua.service.scheduler.trigger.TriggerFactory</api>
+        <api>org.eclipse.kapua.service.scheduler.trigger.TriggerService</api>
 
         <api>org.eclipse.kapua.service.stream.StreamService</api>
 
@@ -118,5 +137,7 @@
         <package>org.eclipse.kapua.message</package>
         <package>org.eclipse.kapua.service</package>
         <package>org.eclipse.kapua.transport</package>
+        <package>org.eclipse.kapua.message</package>
+        <package>org.eclipse.kapua.job.engine</package>
     </packages>
 </locator-config>

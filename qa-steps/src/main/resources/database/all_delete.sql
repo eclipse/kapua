@@ -43,3 +43,17 @@ DELETE FROM athz_domain WHERE NOT (scope_id IS null AND id IN (1,2,3,4,5,6,7,8,9
 DELETE FROM athz_group;
 
 DELETE FROM tag_tag;
+
+DELETE FROM job_job;
+
+DELETE FROM job_job_execution;
+
+DELETE FROM job_job_step;
+
+DELETE FROM job_job_step_definition;
+
+DELETE FROM job_job_step_definition_properties;
+
+DELETE FROM job_job_step_properties;
+
+DELETE FROM job_job_target;

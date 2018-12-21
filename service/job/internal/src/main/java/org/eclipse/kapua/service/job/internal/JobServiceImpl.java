@@ -53,8 +53,9 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
-    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
-    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
+    private final static AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
+    private final static PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
+
     private final JobEngineService jobEngineService = LOCATOR.getService(JobEngineService.class);
     private final TriggerService triggerService = LOCATOR.getService(TriggerService.class);
     private final TriggerFactory triggerFactory = LOCATOR.getFactory(TriggerFactory.class);
