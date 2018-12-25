@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -96,6 +96,11 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
      * Max number of items is reached
      */
     MAX_NUMBER_OF_ITEMS_REACHED,
+
+    /**
+     * End before start time error
+     */
+    END_BEFORE_START_TIME_ERROR,
 
     /**
      * Same values start and end date and time
