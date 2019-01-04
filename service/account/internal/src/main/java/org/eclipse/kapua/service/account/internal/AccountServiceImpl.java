@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 , 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011 , 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -181,8 +181,14 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             }
         }
 
-        // check that expiration date is after all the children account
         if (account.getExpirationDate() != null) {
+            SystemSetting setting = SystemSetting.getInstance();
+            //check if the updated account is an admin account
+            if (setting.getString(SystemSettingKey.SYS_ADMIN_ACCOUNT).equals(account.getName())) {
+                //throw exception if trying to set an expiration date for an admin account
+                throw new KapuaIllegalArgumentException("notAllowedExpirationDate", account.getExpirationDate().toString());
+            }
+            // check that expiration date is after all the children account
             // if expiration date is null it means the account never expires, so it will be obviously later its children
             AccountListResult childrenAccounts = findChildsRecursively(account.getId());
             if (childrenAccounts.getItems().stream().anyMatch(childAccount -> {
