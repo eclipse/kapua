@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.server;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import java.util.ArrayList;
+import java.util.List;
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
@@ -37,9 +37,9 @@ import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetListResult;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implements GwtJobTargetService {
 
@@ -108,27 +108,30 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
         List<GwtJobTarget> existingTargets = findByJobId(scopeId, jobId, false);
         List<GwtJobTarget> gwtJobTargetList = new ArrayList<GwtJobTarget>();
         try {
-
             for (GwtJobTargetCreator gwtJobTargetCreator : gwtJobTargetCreatorList) {
                 if (findExtistingTarget(gwtJobTargetCreator.getJobTargetId(), existingTargets)) {
                     continue;
                 }
-                KapuaId creatorScopeId = KapuaEid.parseCompactId(gwtJobTargetCreator.getScopeId());
-                JobTargetCreator jobTargetCreator = JOB_TARGET_FACTORY.newCreator(creatorScopeId);
-                jobTargetCreator.setJobId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobTargetCreator.getJobId()));
-                jobTargetCreator.setJobTargetId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobTargetCreator.getJobTargetId()));
+                Device device = DEVICE_REGISTRY_SERVICE.find(KapuaEid.parseCompactId(gwtJobTargetCreator.getScopeId()), KapuaEid.parseCompactId(gwtJobTargetCreator.getJobTargetId()));
+                if (device != null) {
+                    KapuaId creatorScopeId = KapuaEid.parseCompactId(gwtJobTargetCreator.getScopeId());
+                    JobTargetCreator jobTargetCreator = JOB_TARGET_FACTORY.newCreator(creatorScopeId);
+                    jobTargetCreator.setJobId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobTargetCreator.getJobId()));
+                    jobTargetCreator.setJobTargetId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobTargetCreator.getJobTargetId()));
 
-                //
-                // Create the Job Target
-                JobTarget jobTarget = JOB_TARGET_SERVICE.create(jobTargetCreator);
+                    // Create the Job Target
+                    JobTarget jobTarget = JOB_TARGET_SERVICE.create(jobTargetCreator);
 
-                // convert to GwtJobTarget and return
-                gwtJobTargetList.add(KapuaGwtJobModelConverter.convertJobTarget(jobTarget));
+                    // convert to GwtJobTarget and return
+                    gwtJobTargetList.add(KapuaGwtJobModelConverter.convertJobTarget(jobTarget));
+                    //
+                } else {
+                    throw new KapuaEntityNotFoundException(Device.TYPE, gwtJobTargetCreator.getClientId());
+                }
             }
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
-
         return gwtJobTargetList;
     }
 
