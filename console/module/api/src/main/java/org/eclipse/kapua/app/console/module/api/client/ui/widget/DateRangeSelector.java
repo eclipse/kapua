@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -278,33 +278,39 @@ public class DateRangeSelector extends LayoutContainer {
         form.add(endTimeField, formData);
         startDateField.addListener(Events.OnBlur, new Listener<BaseEvent>() {
 
-                @Override
-                public void handleEvent(BaseEvent be) {
-                   startDateField.setValidator(new Validator() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                startDateField.setValidator(new Validator() {
+
                     @Override
                     public String validate(Field<?> field, String value) {
                         if (startDateField.getValue().after(endDateField.getValue())) {
-                        return MSGS.dataDateRangeInvalidStartDate();
+                            return MSGS.dataDateRangeInvalidStartDate();
+                        } else {
+                            endDateField.clearInvalid();
                         }
                         return null;
                     }
-                 });
+                });
 
             }
         });
         endDateField.addListener(Events.OnBlur, new Listener<BaseEvent>() {
 
-                @Override
-                public void handleEvent(BaseEvent be) {
-                    endDateField.setValidator(new Validator() {
-                        @Override
-                        public String validate(Field<?> field, String value) {
-                            if (endDateField.getValue().before(startDateField.getValue())) {
-                                return MSGS.dataDateRangeInvalidStopDate();
-                            }
-                            return null;
+            @Override
+            public void handleEvent(BaseEvent be) {
+                endDateField.setValidator(new Validator() {
+
+                    @Override
+                    public String validate(Field<?> field, String value) {
+                        if (endDateField.getValue().before(startDateField.getValue())) {
+                            return MSGS.dataDateRangeInvalidStopDate();
+                        } else {
+                            startDateField.clearInvalid();
                         }
-                    });
+                        return null;
+                    }
+                });
             }
         });
 
@@ -315,6 +321,8 @@ public class DateRangeSelector extends LayoutContainer {
                 if (startDateField.getValue().equals(endDateField.getValue()) &&
                         startTimeField.getDateValue().after(endTimeField.getDateValue())) {
                     return MSGS.dataDateRangeInvalidStartTime();
+                } else {
+                    endTimeField.clearInvalid();
                 }
                 return null;
             }
@@ -326,6 +334,8 @@ public class DateRangeSelector extends LayoutContainer {
                 if (startDateField.getValue().equals(endDateField.getValue()) &&
                         endTimeField.getDateValue().before(startTimeField.getDateValue())) {
                     return MSGS.dataDateRangeInvalidStopTime();
+                } else {
+                    startTimeField.clearInvalid();
                 }
                 return null;
             }
