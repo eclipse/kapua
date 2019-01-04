@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.user.client.dialog;
 
-import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
@@ -262,8 +261,13 @@ public class UserAddDialog extends EntityAddEditDialog {
                 cancelButton.enable();
                 if (cause instanceof GwtKapuaException) {
                     GwtKapuaException gwtCause = (GwtKapuaException) cause;
-                    if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
+                    switch (gwtCause.getCode()) {
+                    case DUPLICATE_NAME:
+                    case ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT:
                         username.markInvalid(gwtCause.getMessage());
+                        break;
+                    default:
+                        break;
                     }
                 }
             }
