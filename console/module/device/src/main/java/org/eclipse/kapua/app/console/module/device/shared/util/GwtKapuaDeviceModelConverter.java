@@ -23,6 +23,7 @@ import org.eclipse.kapua.app.console.module.device.shared.model.device.managemen
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssetChannel;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssetChannel.GwtDeviceAssetChannelMode;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssets;
+import org.eclipse.kapua.app.console.module.device.shared.model.device.management.registry.GwtDeviceManagementOperationQuery;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
@@ -38,12 +39,15 @@ import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannelMode;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
-import org.eclipse.kapua.service.device.registry.DeviceFactory;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationAttributes;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationQuery;
 import org.eclipse.kapua.service.device.registry.DeviceAttributes;
+import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionAttributes;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 
@@ -52,13 +56,20 @@ import java.util.List;
 
 public class GwtKapuaDeviceModelConverter {
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final DeviceFactory DEVICE_FACTORY = LOCATOR.getFactory(DeviceFactory.class);
+    private static final DeviceConnectionFactory DEVICE_CONNECTION_FACTORY = LOCATOR.getFactory(DeviceConnectionFactory.class);
+    private static final DeviceManagementOperationFactory DEVICE_MANAGEMENT_OPERATION_FACTORY = LOCATOR.getFactory(DeviceManagementOperationFactory.class);
+
+    private static final DeviceAssetFactory ASSET_FACTORY = LOCATOR.getFactory(DeviceAssetFactory.class);
+
+
     private GwtKapuaDeviceModelConverter() {
     }
 
     public static DeviceConnectionQuery convertConnectionQuery(PagingLoadConfig loadConfig, GwtDeviceConnectionQuery gwtDeviceConnectionQuery) {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceConnectionFactory factory = locator.getFactory(DeviceConnectionFactory.class);
-        DeviceConnectionQuery query = factory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtDeviceConnectionQuery.getScopeId()));
+        DeviceConnectionQuery query = DEVICE_CONNECTION_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtDeviceConnectionQuery.getScopeId()));
         AndPredicateImpl predicate = new AndPredicateImpl();
 
         if (gwtDeviceConnectionQuery.getClientId() != null && !gwtDeviceConnectionQuery.getClientId().trim().isEmpty()) {
@@ -74,15 +85,15 @@ public class GwtKapuaDeviceModelConverter {
             predicate.and(new AttributePredicateImpl<String>(DeviceConnectionAttributes.USER_ID, gwtDeviceConnectionQuery.getUserName(), Operator.LIKE));
         }
         if (gwtDeviceConnectionQuery.getGwtDeviceConnectionUser() != null) {
-                predicate = predicate.and(new AttributePredicateImpl<KapuaId>(DeviceConnectionAttributes.USER_ID, KapuaEid.parseCompactId(gwtDeviceConnectionQuery.getUserId())));
+            predicate = predicate.and(new AttributePredicateImpl<KapuaId>(DeviceConnectionAttributes.USER_ID, KapuaEid.parseCompactId(gwtDeviceConnectionQuery.getUserId())));
         }
         if (gwtDeviceConnectionQuery.getGwtDeviceConnectionReservedUser() != null) {
             switch (gwtDeviceConnectionQuery.getGwtDeviceConnectionReservedUser()) {
-            case NONE:
-                predicate = predicate.and(new AttributePredicateImpl<KapuaId>(DeviceConnectionAttributes.RESERVED_USER_ID, null, Operator.IS_NULL));
-                break;
-            default:
-                predicate = predicate.and(new AttributePredicateImpl<KapuaId>(DeviceConnectionAttributes.RESERVED_USER_ID, KapuaEid.parseCompactId(gwtDeviceConnectionQuery.getReservedUserId())));
+                case NONE:
+                    predicate = predicate.and(new AttributePredicateImpl<KapuaId>(DeviceConnectionAttributes.RESERVED_USER_ID, null, Operator.IS_NULL));
+                    break;
+                default:
+                    predicate = predicate.and(new AttributePredicateImpl<KapuaId>(DeviceConnectionAttributes.RESERVED_USER_ID, KapuaEid.parseCompactId(gwtDeviceConnectionQuery.getReservedUserId())));
             }
         }
 
@@ -111,9 +122,7 @@ public class GwtKapuaDeviceModelConverter {
     }
 
     public static DeviceAssets convertDeviceAssets(GwtDeviceAssets deviceAssets) {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceAssetFactory assetFactory = locator.getFactory(DeviceAssetFactory.class);
-        DeviceAssets assets = assetFactory.newAssetListResult();
+        DeviceAssets assets = ASSET_FACTORY.newAssetListResult();
         List<DeviceAsset> assetList = new ArrayList<DeviceAsset>();
         for (GwtDeviceAsset gwtDeviceAsset : deviceAssets.getAssets()) {
             assetList.add(convertDeviceAsset(gwtDeviceAsset));
@@ -123,9 +132,8 @@ public class GwtKapuaDeviceModelConverter {
     }
 
     public static DeviceAsset convertDeviceAsset(GwtDeviceAsset gwtDeviceAsset) {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceAssetFactory assetFactory = locator.getFactory(DeviceAssetFactory.class);
-        DeviceAsset deviceAsset = assetFactory.newDeviceAsset();
+
+        DeviceAsset deviceAsset = ASSET_FACTORY.newDeviceAsset();
         deviceAsset.setName(gwtDeviceAsset.getName());
         for (GwtDeviceAssetChannel gwtDeviceAssetChannel : gwtDeviceAsset.getChannels()) {
             deviceAsset.getChannels().add(convertDeviceAssetChannel(gwtDeviceAssetChannel));
@@ -134,9 +142,8 @@ public class GwtKapuaDeviceModelConverter {
     }
 
     public static DeviceAssetChannel convertDeviceAssetChannel(GwtDeviceAssetChannel gwtDeviceAssetChannel) {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceAssetFactory assetFactory = locator.getFactory(DeviceAssetFactory.class);
-        DeviceAssetChannel channel = assetFactory.newDeviceAssetChannel();
+
+        DeviceAssetChannel channel = ASSET_FACTORY.newDeviceAssetChannel();
         channel.setName(gwtDeviceAssetChannel.getName());
         try {
             channel.setType(ObjectTypeConverter.fromString(gwtDeviceAssetChannel.getType()));
@@ -156,10 +163,7 @@ public class GwtKapuaDeviceModelConverter {
     }
 
     public static DeviceQuery convertDeviceQuery(PagingLoadConfig loadConfig, GwtDeviceQuery gwtDeviceQuery) {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceFactory deviceFactory = locator.getFactory(DeviceFactory.class);
-
-        DeviceQuery deviceQuery = deviceFactory.newQuery(KapuaEid.parseCompactId(gwtDeviceQuery.getScopeId()));
+        DeviceQuery deviceQuery = DEVICE_FACTORY.newQuery(KapuaEid.parseCompactId(gwtDeviceQuery.getScopeId()));
         if (loadConfig != null) {
             deviceQuery.setLimit(loadConfig.getLimit());
             deviceQuery.setOffset(loadConfig.getOffset());
@@ -194,26 +198,26 @@ public class GwtKapuaDeviceModelConverter {
         }
         if (predicates.getDeviceConnectionStatus() != null) {
             switch (predicates.getDeviceConnectionStatusEnum()) {
-            case UNKNOWN:
-                andPred = andPred.and(new AttributePredicateImpl<DeviceConnectionStatus>(DeviceAttributes.CONNECTION_ID, DeviceConnectionStatus.NULL, Operator.IS_NULL));
-                break;
-            default:
-                andPred = andPred.and(new AttributePredicateImpl<DeviceConnectionStatus>(DeviceAttributes.CONNECTION_STATUS, DeviceConnectionStatus.valueOf(predicates.getDeviceConnectionStatus())));
+                case UNKNOWN:
+                    andPred = andPred.and(new AttributePredicateImpl<DeviceConnectionStatus>(DeviceAttributes.CONNECTION_ID, DeviceConnectionStatus.NULL, Operator.IS_NULL));
+                    break;
+                default:
+                    andPred = andPred.and(new AttributePredicateImpl<DeviceConnectionStatus>(DeviceAttributes.CONNECTION_STATUS, DeviceConnectionStatus.valueOf(predicates.getDeviceConnectionStatus())));
             }
         }
         if (predicates.getGroupDevice() != null) {
             switch (predicates.getGroupDeviceEnum()) {
-            case NO_GROUP:
-                andPred = andPred.and(new AttributePredicateImpl<KapuaId>(DeviceAttributes.GROUP_ID, null, Operator.IS_NULL));
-                break;
-            default:
-                if (predicates.getGroupId() != null) {
-                    andPred = andPred.and(new AttributePredicateImpl<KapuaId>(DeviceAttributes.GROUP_ID, KapuaEid.parseCompactId(predicates.getGroupId())));
-                }
+                case NO_GROUP:
+                    andPred = andPred.and(new AttributePredicateImpl<KapuaId>(DeviceAttributes.GROUP_ID, null, Operator.IS_NULL));
+                    break;
+                default:
+                    if (predicates.getGroupId() != null) {
+                        andPred = andPred.and(new AttributePredicateImpl<KapuaId>(DeviceAttributes.GROUP_ID, KapuaEid.parseCompactId(predicates.getGroupId())));
+                    }
             }
         }
-        if(predicates.getTagId() != null) {
-            andPred = andPred.and(new AttributePredicateImpl<KapuaId[]>(DeviceAttributes.TAG_IDS, new KapuaId[] { GwtKapuaCommonsModelConverter.convertKapuaId(predicates.getTagId()) }));
+        if (predicates.getTagId() != null) {
+            andPred = andPred.and(new AttributePredicateImpl<KapuaId[]>(DeviceAttributes.TAG_IDS, new KapuaId[]{GwtKapuaCommonsModelConverter.convertKapuaId(predicates.getTagId())}));
         }
         if (predicates.getSortAttribute() != null && loadConfig != null) {
             String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? DeviceAttributes.CLIENT_ID : loadConfig.getSortField();
@@ -229,5 +233,33 @@ public class GwtKapuaDeviceModelConverter {
         deviceQuery.setPredicate(andPred);
 
         return deviceQuery;
+    }
+
+
+    public static DeviceManagementOperationQuery convertDeviceManagementOperationQuery(PagingLoadConfig loadConfig, GwtDeviceManagementOperationQuery gwtQuery) {
+        DeviceManagementOperationQuery query = DEVICE_MANAGEMENT_OPERATION_FACTORY.newQuery(KapuaEid.parseCompactId(gwtQuery.getScopeId()));
+        if (loadConfig != null) {
+            query.setLimit(loadConfig.getLimit());
+            query.setOffset(loadConfig.getOffset());
+        }
+
+        String deviceId = gwtQuery.getDeviceId();
+        if (deviceId != null) {
+            query.setPredicate(new AttributePredicateImpl<KapuaId>(DeviceManagementOperationAttributes.DEVICE_ID, KapuaEid.parseCompactId(gwtQuery.getDeviceId())));
+        }
+
+        if (loadConfig != null && loadConfig.getSortField() != null) {
+            String sortField = loadConfig.getSortField();
+            SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
+
+            if (sortField.equals("startedOnFormatted")) {
+                sortField = DeviceManagementOperationAttributes.STARTED_ON;
+            }
+            query.setSortCriteria(new FieldSortCriteria(sortField, sortOrder));
+        } else {
+            query.setSortCriteria(new FieldSortCriteria(DeviceManagementOperationAttributes.STARTED_ON, SortOrder.DESCENDING));
+        }
+
+        return query;
     }
 }

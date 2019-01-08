@@ -127,7 +127,8 @@ import org.eclipse.kapua.service.device.management.command.DeviceCommandXmlRegis
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationXmlRegistry;
-import org.eclipse.kapua.service.device.management.message.RequestMessageXmlRegistry;
+import org.eclipse.kapua.service.device.management.message.request.xml.RequestMessageXmlRegistry;
+import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
@@ -141,6 +142,16 @@ import org.eclipse.kapua.service.device.management.packages.model.DevicePackages
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationCreator;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationListResult;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationQuery;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationXmlRegistry;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationCreator;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationListResult;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationQuery;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationXmlRegistry;
 import org.eclipse.kapua.service.device.management.request.GenericRequestXmlRegistry;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestChannel;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestMessage;
@@ -350,7 +361,22 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     KapuaRequestPayload.class,
                     RequestMessageXmlRegistry.class,
 
-                    // Device Generic Request
+                    // Device Management Registry
+                    DeviceManagementOperation.class,
+                    DeviceManagementOperationCreator.class,
+                    DeviceManagementOperationListResult.class,
+                    DeviceManagementOperationQuery.class,
+                    DeviceManagementOperationXmlRegistry.class,
+                    OperationStatus.class,
+
+                    // Device Management Registry Notification
+                    ManagementOperationNotification.class,
+                    ManagementOperationNotificationCreator.class,
+                    ManagementOperationNotificationListResult.class,
+                    ManagementOperationNotificationQuery.class,
+                    ManagementOperationNotificationXmlRegistry.class,
+
+                    // Device Management Generic Request
                     GenericRequestChannel.class,
                     GenericRequestPayload.class,
                     GenericRequestMessage.class,

@@ -18,9 +18,9 @@ import org.eclipse.kapua.service.device.management.commons.message.request.Kapua
 import org.eclipse.kapua.service.device.management.commons.message.request.KapuaRequestMessageImpl;
 import org.eclipse.kapua.service.device.management.commons.message.request.KapuaRequestPayloadImpl;
 import org.eclipse.kapua.service.device.management.message.KapuaAppProperties;
-import org.eclipse.kapua.service.device.management.message.KapuaRequestMessageFactory;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessageFactory;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
 
 @KapuaProvider

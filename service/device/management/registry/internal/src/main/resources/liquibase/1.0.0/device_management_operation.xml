@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2018 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+-->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+
+        logicalFilePath="KapuaDB/changelog-device-management-registry-1.0.0.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml"/>
+
+    <changeSet id="changelog-dvcm-mgt-operation-1.0.0_createTable" author="eurotech">
+        <createTable tableName="dvcm_device_management_operation">
+            <column name="scope_id" type="bigint(21) unsigned"/>
+            <column name="id" type="bigint(21) unsigned">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column name="created_on" type="timestamp(3)" defaultValueComputed="${now}"/>
+            <column name="created_by" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_on" type="timestamp(3)" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="started_on" type="timestamp(3)" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ended_on" type="timestamp(3)"/>
+            <column name="device_id" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operation_id" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+            <column name="app_id" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="resource" type="varchar(255)"/>
+            <column name="action" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="optlock" type="int unsigned"/>
+            <column name="attributes" type="text"/>
+            <column name="properties" type="text"/>
+        </createTable>
+
+        <sql dbms="h2">ALTER TABLE dvcm_device_management_operation ADD CHECK scope_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE dvcm_device_management_operation ADD CHECK id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE dvcm_device_management_operation ADD CHECK created_by >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE dvcm_device_management_operation ADD CHECK modified_by >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE dvcm_device_management_operation ADD CHECK device_id >= 0;</sql>
+
+        <createIndex tableName="dvcm_device_management_operation" indexName="idx_dvcm_device_management_operation_scope_id">
+            <column name="scope_id"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex tableName="dvcm_device_management_operation" indexName="idx_dvcm_device_management_operation_scope_id"/>
+            <dropTable tableName="dvcm_device_management_operation"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

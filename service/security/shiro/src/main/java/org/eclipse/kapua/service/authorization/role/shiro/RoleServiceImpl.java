@@ -162,7 +162,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Do update
-        return entityManagerSession.onTransactedInsert(em -> RoleDAO.update(em, role));
+        return entityManagerSession.onTransactedResult(em -> RoleDAO.update(em, role));
     }
 
     @Override

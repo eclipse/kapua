@@ -196,6 +196,10 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         packageRequestMessage.setChannel(packageRequestChannel);
 
         //
+        // Create device management operation
+        createManagementOperation(scopeId, deviceId, operationId, 1, packageRequestMessage);
+
+        //
         // Do get
         DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(packageRequestMessage, timeout);
         PackageResponseMessage responseMessage = (PackageResponseMessage) deviceApplicationCall.send();
@@ -338,6 +342,10 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         packageRequestMessage.setChannel(packageRequestChannel);
 
         //
+        // Create device management operation
+        createManagementOperation(scopeId, deviceId, operationId, packageDownloadRequest.getInstall() ? 2 : 1, packageRequestMessage);
+
+        //
         // Do exec
         DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(packageRequestMessage, timeout);
         PackageResponseMessage responseMessage = (PackageResponseMessage) deviceApplicationCall.send();
@@ -350,6 +358,8 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         // Check response
         if (!responseMessage.getResponseCode().isAccepted()) {
             KapuaResponsePayload responsePayload = responseMessage.getPayload();
+
+            closeManagementOperation(scopeId, deviceId, operationId, responseMessage);
 
             throw new PackageDownloadExecuteManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
         }
@@ -511,6 +521,10 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         packageRequestMessage.setChannel(packageRequestChannel);
 
         //
+        // Create device management operation
+        createManagementOperation(scopeId, deviceId, operationId, 1, packageRequestMessage);
+
+        //
         // Do get
         DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(packageRequestMessage, timeout);
         PackageResponseMessage responseMessage = (PackageResponseMessage) deviceApplicationCall.send();
@@ -523,6 +537,8 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         // Check response
         if (!responseMessage.getResponseCode().isAccepted()) {
             KapuaResponsePayload responsePayload = responseMessage.getPayload();
+
+            closeManagementOperation(scopeId, deviceId, operationId, responseMessage);
 
             throw new PackageUninstallExecuteManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
         }

@@ -20,15 +20,16 @@ public enum KuraResponseMetrics implements DeviceResponseMetrics {
     /**
      * Response exit code
      */
-    RESP_METRIC_EXIT_CODE("response.code"),
+    EXIT_CODE("response.code"),
     /**
      * Response exception message
      */
-    RESP_METRIC_EXCEPTION_MESSAGE("response.exception.message"),
+    EXCEPTION_MESSAGE("response.exception.message"),
     /**
      * Response exception stack trace
      */
-    RESP_METRIC_EXCEPTION_STACK("response.exception.stack"),;
+    EXCEPTION_STACK("response.exception.stack"),
+    ;
 
     private String value;
 

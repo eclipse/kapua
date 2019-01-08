@@ -60,11 +60,13 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
     private TabPanel tabsPanel;
     private DeviceTabPackagesInstalled installedPackageTab;
-    //    private DeviceTabPackagesInProgress inProgressPackageTab;
+    private DeviceTabPackagesInProgress inProgressPackageTab;
+    private DeviceTabPackagesHistory historyPackageTab;
 
-    public DeviceTabPackages(GwtSession currentSession,
-            DeviceView deviceTabs) {
+
+    public DeviceTabPackages(GwtSession currentSession, DeviceView deviceTabs) {
         super(currentSession, MSGS.tabPackages(), new KapuaIcon(IconSet.INBOX));
+
         this.deviceTabs = deviceTabs;
         setEnabled(false);
     }
@@ -79,8 +81,12 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
                 currentSession.hasPermission(DeviceManagementSessionPermission.read()) &&
                 (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V1) || (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V2))));
 
-        if (initialized) {
+        if (initialized && tabsPanel.getSelectedItem() == null) {
             tabsPanel.setSelection(installedPackageTab);
+        }
+
+        if (initialized) {
+            historyPackageTab.setEntity(gwtDevice);
         }
 
         doRefresh();
@@ -125,8 +131,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (selectedEntity != null &&
-                        selectedEntity.isOnline()) {
+                if (selectedEntity != null && selectedEntity.isOnline()) {
                     setDirty();
                     setEntity(selectedEntity);
                     refresh();
@@ -140,8 +145,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (selectedEntity != null &&
-                        selectedEntity.isOnline()) {
+                if (selectedEntity != null && selectedEntity.isOnline()) {
                     openInstallDialog();
                 } else {
                     openDeviceOfflineAlertDialog();
@@ -153,8 +157,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (selectedEntity != null &&
-                        selectedEntity.isOnline()) {
+                if (selectedEntity != null && selectedEntity.isOnline()) {
                     openUninstallDialog();
                 } else {
                     openDeviceOfflineAlertDialog();
@@ -194,19 +197,36 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
         //
         // In progress packages install tab
-        //        inProgressPackageTab = new DeviceTabPackagesInProgress(this);
-        //        inProgressPackageTab.setBorders(false);
-        //        inProgressPackageTab.setLayout(new FitLayout());
-        //
-        //        inProgressPackageTab.addListener(Events.Select, new Listener<ComponentEvent>() {
-        //
-        //            @Override
-        //            public void handleEvent(ComponentEvent be) {
-        //                refresh();
-        //            }
-        //        });
-        //        tabsPanel.add(inProgressPackageTab);
+        inProgressPackageTab = new DeviceTabPackagesInProgress(this);
+        inProgressPackageTab.setBorders(false);
+        inProgressPackageTab.setLayout(new FitLayout());
 
+        inProgressPackageTab.addListener(Events.Select, new Listener<ComponentEvent>() {
+
+            @Override
+            public void handleEvent(ComponentEvent be) {
+                refresh();
+            }
+        });
+        tabsPanel.add(inProgressPackageTab);
+
+        //
+        // History packages tab
+        historyPackageTab = new DeviceTabPackagesHistory(currentSession);
+        historyPackageTab.setBorders(false);
+        historyPackageTab.setLayout(new FitLayout());
+
+        historyPackageTab.addListener(Events.Select, new Listener<ComponentEvent>() {
+
+            @Override
+            public void handleEvent(ComponentEvent be) {
+                refresh();
+            }
+        });
+        tabsPanel.add(historyPackageTab);
+
+        //
+        // Tabs
         add(tabsPanel);
         layout(true);
         Node node0 = tabsPanel.getElement();
@@ -254,8 +274,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
                     //
                     // Exit dialog
-                    InfoDialog exitDialog = new InfoDialog(exitDialogType,
-                            exitMessage);
+                    InfoDialog exitDialog = new InfoDialog(exitDialogType, exitMessage);
 
                     exitDialog.show();
 
@@ -298,8 +317,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
                         //
                         // Exit dialog
-                        InfoDialog exitDialog = new InfoDialog(exitDialogType,
-                                exitMessage);
+                        InfoDialog exitDialog = new InfoDialog(exitDialogType, exitMessage);
 
                         exitDialog.show();
 
@@ -315,8 +333,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
     }
 
     public void openDeviceOfflineAlertDialog() {
-        InfoDialog errorDialog = new InfoDialog(InfoDialogType.INFO,
-                MSGS.deviceOffline());
+        InfoDialog errorDialog = new InfoDialog(InfoDialogType.INFO, MSGS.deviceOffline());
         errorDialog.show();
     }
 
@@ -330,17 +347,18 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
             // Refresh the installed tab if selected
             if (tabsPanel.getSelectedItem().equals(installedPackageTab)) {
                 installedPackageTab.refresh();
-            }/* else {
+            }
+            if (tabsPanel.getSelectedItem().equals(inProgressPackageTab)) {
                 inProgressPackageTab.refresh();
-            }*/
+            } else {
+                historyPackageTab.refresh();
+            }
 
             //
             // Manage buttons
             if (selectedEntity != null && selectedEntity.isOnline()) {
                 toolBar.enable();
                 uninstallButton.disable();
-                installButton.disable();
-                refreshButton.disable();
             } else {
                 toolBar.disable();
             }
@@ -358,8 +376,10 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
     public void setDirty() {
         if (initialized) {
             setDirty(true);
+
             installedPackageTab.setDirty(true);
-            //            inProgressPackageTab.setDirty(true);
+            inProgressPackageTab.setDirty(true);
+            historyPackageTab.setDirty(true);
         }
     }
 

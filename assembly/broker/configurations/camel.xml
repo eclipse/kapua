@@ -50,14 +50,14 @@
     </bean>
     <!-- Converter -->
     <bean id="kapuaDataConverter" class="org.eclipse.kapua.broker.core.converter.KapuaDataConverter"/>
+    <bean id="deviceManagementNotificationConverter" class="org.eclipse.kapua.broker.core.converter.DeviceManagementNotificationConverter"/>
     <bean id="kapuaLifeCycleConverter" class="org.eclipse.kapua.broker.core.converter.KapuaLifeCycleConverter"/>
 
     <!-- Consumer -->
     <!-- ASSISTANTS -->
-    <bean id="deviceMessageListener" class="org.eclipse.kapua.broker.core.listener.DeviceMessageListener">
-    </bean>
-    <bean id="dataStorageMessageProcessor" class="org.eclipse.kapua.broker.core.listener.DataStorageMessageProcessor">
-    </bean>
+    <bean id="deviceMessageListener" class="org.eclipse.kapua.broker.core.listener.DeviceMessageListener"></bean>
+    <bean id="dataStorageMessageProcessor" class="org.eclipse.kapua.broker.core.listener.DataStorageMessageProcessor"></bean>
+    <bean id="deviceManagementNotificationMessageProcessor" class="org.eclipse.kapua.broker.core.listener.DeviceManagementNotificationMessageProcessor"></bean>
     <!-- ERROR -->
     <bean id="errorMessageListener" class="org.eclipse.kapua.broker.core.listener.ErrorMessageListener">
     </bean>

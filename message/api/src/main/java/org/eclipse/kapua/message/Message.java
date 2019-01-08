@@ -14,7 +14,7 @@ package org.eclipse.kapua.message;
 import org.eclipse.kapua.KapuaSerializable;
 
 /**
- * Message definition.
+ * {@link Message} definition.
  *
  * @param <C> channel type
  * @param <P> payload type

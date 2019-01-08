@@ -21,11 +21,12 @@ public enum KuraRequestMetrics implements DeviceRequestMetrics {
     /**
      * Request identifier
      */
-    REQ_METRIC_REQUEST_ID("request.id"),
+    REQUEST_ID("request.id"),
     /**
      * Requester client identifier
      */
-    REQ_METRIC_REQUESTER_CLIENT_ID("requester.client.id"),;
+    REQUESTER_CLIENT_ID("requester.client.id"),
+    ;
 
     private String value;
 

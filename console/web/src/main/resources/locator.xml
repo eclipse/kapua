@@ -80,6 +80,9 @@
         <api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService</api>
         <api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory</api>
 
+        <api>org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService</api>
+        <api>org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory</api>
+
         <api>org.eclipse.kapua.service.endpoint.EndpointInfoService</api>
         <api>org.eclipse.kapua.service.endpoint.EndpointInfoFactory</api>
 

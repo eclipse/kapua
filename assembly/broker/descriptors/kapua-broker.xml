@@ -238,6 +238,8 @@
                 <include>${pom.groupId}:kapua-device-management-packages-internal</include>
                 <include>${pom.groupId}:kapua-device-management-request-api</include>
                 <include>${pom.groupId}:kapua-device-management-request-internal</include>
+                <include>${pom.groupId}:kapua-device-management-registry-api</include>
+                <include>${pom.groupId}:kapua-device-management-registry-internal</include>
                 <include>${pom.groupId}:kapua-device-registry-api</include>
                 <include>${pom.groupId}:kapua-device-registry-internal</include>
                 <include>${pom.groupId}:kapua-foreignkeys</include>

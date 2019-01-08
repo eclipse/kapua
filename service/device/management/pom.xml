@@ -32,6 +32,9 @@
         <module>packages</module>
         <module>request</module>
         <module>api</module>
+
+        <module>registry</module>
+
         <module>all</module>
     </modules>
 </project>

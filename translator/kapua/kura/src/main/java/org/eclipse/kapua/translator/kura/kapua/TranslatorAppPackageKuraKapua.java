@@ -22,6 +22,7 @@ import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraBundleInfo;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackages;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseCode;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMetrics;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
@@ -107,41 +108,71 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
         PackageResponsePayload responsePayload = new PackageResponsePayload();
 
         Map<String, Object> metrics = kuraResponsePayload.getMetrics();
-        responsePayload.setExceptionMessage((String) metrics.get(KuraResponseMetrics.RESP_METRIC_EXCEPTION_MESSAGE.getValue()));
-        responsePayload.setExceptionStack((String) metrics.get(KuraResponseMetrics.RESP_METRIC_EXCEPTION_STACK.getValue()));
+        responsePayload.setExceptionMessage((String) metrics.get(KuraResponseMetrics.EXCEPTION_MESSAGE.getValue()));
+        responsePayload.setExceptionStack((String) metrics.get(KuraResponseMetrics.EXCEPTION_STACK.getValue()));
 
-        if (metrics.get(PackageMetrics.APP_METRIC_PACKAGE_OPERATION_ID.getValue()) != null) {
-            responsePayload.setPackageDownloadOperationId(new KapuaEid(new BigInteger(metrics.get(PackageMetrics.APP_METRIC_PACKAGE_OPERATION_ID.getValue()).toString())));
-        }
+        KuraResponseCode responseCode = KuraResponseCode.fromResponseCode((Integer) metrics.get(KuraResponseMetrics.EXIT_CODE.getValue()));
 
-        if (metrics.get(PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_STATUS.getValue()) != null) {
-            responsePayload.setPackageDownloadOperationStatus(DevicePackageDownloadStatus.valueOf((String) metrics.get(PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_STATUS.getValue())));
-        }
-        responsePayload.setPackageDownloadOperationSize((Integer) metrics.get(PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_SIZE.getValue()));
-        responsePayload.setPackageDownloadOperationProgress((Integer) metrics.get(PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_PROGRESS.getValue()));
+        if (!KuraResponseCode.INTERNAL_ERROR.equals(responseCode)) {
+            if (metrics.get(PackageMetrics.APP_METRIC_PACKAGE_OPERATION_ID.getValue()) != null) {
+                responsePayload.setPackageDownloadOperationId(new KapuaEid(new BigInteger(metrics.get(PackageMetrics.APP_METRIC_PACKAGE_OPERATION_ID.getValue()).toString())));
 
-        String body;
-        if (kuraResponsePayload.getBody() != null) {
-            DeviceManagementSetting config = DeviceManagementSetting.getInstance();
-            String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
+                if (metrics.get(PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_STATUS.getValue()) != null) {
+                    DevicePackageDownloadStatus status;
 
-            try {
-                body = new String(kuraResponsePayload.getBody(), charEncoding);
-            } catch (Exception e) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD,
-                        e,
-                        (Object) kuraResponsePayload.getBody());
+                    String kuraStatus = (String) metrics.get(PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_STATUS.getValue());
+                    switch (kuraStatus) {
+                        case "IN_PROGRESS":
+                            status = DevicePackageDownloadStatus.IN_PROGRESS;
+                            break;
+                        case "FAILED":
+                            status = DevicePackageDownloadStatus.FAILED;
+                            break;
+                        case "COMPLETED":
+                        case "ALREADY DONE":
+                            status = DevicePackageDownloadStatus.COMPLETED;
+                            break;
+                        default:
+                            throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, null, kuraStatus);
+                    }
+                    responsePayload.setPackageDownloadOperationStatus(status);
+                }
+
+                responsePayload.setPackageDownloadOperationSize((Integer) metrics.get(PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_SIZE.getValue()));
+                responsePayload.setPackageDownloadOperationProgress((Integer) metrics.get(PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_PROGRESS.getValue()));
+            } else {
+                responsePayload.setPackageDownloadOperationStatus(DevicePackageDownloadStatus.NONE);
             }
 
-            KuraDeploymentPackages kuraDeploymentPackages = null;
-            try {
-                kuraDeploymentPackages = XmlUtil.unmarshal(body, KuraDeploymentPackages.class);
-            } catch (Exception e) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD,
-                        e,
-                        body);
+            String body;
+            if (kuraResponsePayload.getBody() != null) {
+                DeviceManagementSetting config = DeviceManagementSetting.getInstance();
+                String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
+
+                try {
+                    body = new String(kuraResponsePayload.getBody(), charEncoding);
+                } catch (Exception e) {
+                    throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD,
+                            e,
+                            (Object) kuraResponsePayload.getBody());
+                }
+
+                KuraDeploymentPackages kuraDeploymentPackages = null;
+                try {
+                    kuraDeploymentPackages = XmlUtil.unmarshal(body, KuraDeploymentPackages.class);
+                } catch (Exception e) {
+                    throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD,
+                            e,
+                            body);
+                }
+                translate(responsePayload, charEncoding, kuraDeploymentPackages);
             }
-            translate(responsePayload, charEncoding, kuraDeploymentPackages);
+        } else {
+            if (kuraResponsePayload.getBody() != null) {
+                String errorMessage = new String(kuraResponsePayload.getBody());
+
+                responsePayload.setExceptionMessage(errorMessage);
+            }
         }
 
         //
@@ -150,8 +181,8 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
     }
 
     private void translate(PackageResponsePayload packageResponsePayload,
-            String charEncoding,
-            KuraDeploymentPackages kuraDeploymentPackages)
+                           String charEncoding,
+                           KuraDeploymentPackages kuraDeploymentPackages)
             throws KapuaException {
         try {
 

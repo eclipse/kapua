@@ -13,11 +13,13 @@ package org.eclipse.kapua.service.device.management.packages.message.internal;
 
 import org.eclipse.kapua.service.device.management.commons.message.request.KapuaRequestChannelImpl;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Package request message channel.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class PackageRequestChannel extends KapuaRequestChannelImpl {
 
@@ -25,7 +27,7 @@ public class PackageRequestChannel extends KapuaRequestChannelImpl {
 
     /**
      * Get package resource
-     * 
+     *
      * @return
      */
     public PackageResource getResource() {
@@ -34,10 +36,15 @@ public class PackageRequestChannel extends KapuaRequestChannelImpl {
 
     /**
      * Set package resource
-     * 
+     *
      * @param packageResource
      */
     public void setPackageResource(PackageResource packageResource) {
         this.packageResource = packageResource;
+    }
+
+    @Override
+    public List<String> getSemanticParts() {
+        return Arrays.asList(packageResource.name());
     }
 }

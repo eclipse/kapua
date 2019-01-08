@@ -150,7 +150,11 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-management-all-internal</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-registry-internal</artifactId>
+        </dependency>
+        
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-user-api</artifactId>

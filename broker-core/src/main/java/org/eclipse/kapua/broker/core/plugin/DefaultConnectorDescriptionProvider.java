@@ -17,6 +17,8 @@ import org.eclipse.kapua.broker.core.setting.BrokerSetting;
 import org.eclipse.kapua.broker.core.setting.BrokerSettingKey;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.service.device.call.message.DeviceMessage;
+import org.eclipse.kapua.service.device.call.message.kura.app.notification.KuraNotifyMessage;
+import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyMessage;
 import org.elasticsearch.common.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,7 +126,6 @@ class DefaultConnectorDescriptionProvider implements ConnectorDescriptorProvider
                 String key = String.format("%s.device.%s", transport, mt.name());
                 String clazzName = p.getProperty(key);
                 if (clazzName != null && !clazzName.isEmpty()) {
-                    @SuppressWarnings("unchecked")
                     Class<? extends DeviceMessage<?, ?>> clazz = (Class<? extends DeviceMessage<?, ?>>) Class.forName(clazzName).asSubclass(DeviceMessage.class);
                     deviceClasses.put(mt, clazz);
                 } else {
@@ -136,7 +137,6 @@ class DefaultConnectorDescriptionProvider implements ConnectorDescriptorProvider
                 String key = String.format("%s.kapua.%s", transport, mt.name());
                 String clazzName = p.getProperty(key);
                 if (clazzName != null && !clazzName.isEmpty()) {
-                    @SuppressWarnings("unchecked")
                     Class<? extends KapuaMessage<?, ?>> clazz = (Class<? extends KapuaMessage<?, ?>>) Class.forName(clazzName).asSubclass(KapuaMessage.class);
                     kapuaClasses.put(mt, clazz);
                 } else {
@@ -160,7 +160,7 @@ class DefaultConnectorDescriptionProvider implements ConnectorDescriptorProvider
         deviceClass.put(MessageType.BIRTH, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraBirthMessage.class);
         deviceClass.put(MessageType.DISCONNECT, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraDisconnectMessage.class);
         deviceClass.put(MessageType.MISSING, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraMissingMessage.class);
-        deviceClass.put(MessageType.NOTIFY, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraNotifyMessage.class);
+        deviceClass.put(MessageType.NOTIFY, KuraNotifyMessage.class);
         deviceClass.put(MessageType.UNMATCHED, org.eclipse.kapua.service.device.call.message.kura.others.KuraUnmatchedMessage.class);
         deviceClass.put(MessageType.DATA, org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage.class);
 
@@ -169,7 +169,7 @@ class DefaultConnectorDescriptionProvider implements ConnectorDescriptorProvider
         kapuaClass.put(MessageType.BIRTH, org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage.class);
         kapuaClass.put(MessageType.DISCONNECT, org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage.class);
         kapuaClass.put(MessageType.MISSING, org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage.class);
-        kapuaClass.put(MessageType.NOTIFY, org.eclipse.kapua.message.device.lifecycle.KapuaNotifyMessage.class);
+        kapuaClass.put(MessageType.NOTIFY, KapuaNotifyMessage.class);
         kapuaClass.put(MessageType.UNMATCHED, org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedMessage.class);
         kapuaClass.put(MessageType.DATA, org.eclipse.kapua.message.device.data.KapuaDataMessage.class);
 

@@ -45,8 +45,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelector;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelectorListener;
@@ -72,8 +72,6 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
 
     private static final int DEVICE_PAGE_SIZE = 250;
 
-    private GwtSession currentSession;
-
     private boolean initialized;
 
     private ToolBar toolBar;
@@ -90,7 +88,7 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
 
     public DeviceTabHistory(GwtSession currentSession) {
         super(currentSession, DEVICES_MSGS.tabHistory(), new KapuaIcon(IconSet.HISTORY));
-        this.currentSession = currentSession;
+
         initialized = false;
         setEnabled(false);
     }

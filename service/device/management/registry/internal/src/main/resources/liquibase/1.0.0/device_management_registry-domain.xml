@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2018 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="KapuaDB/changelog-device_management_registry-1.0.0.xml">
+
+    <property name="selectDeviceManagementRegistryDomainQuery" value="(SELECT id FROM athz_domain WHERE name = 'device_management_registry')"/>
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml"/>
+
+    <changeSet id="changelog-device_management_registry-domain-1.0.0" author="eurotech">
+
+        <preConditions onFail="CONTINUE">
+            <and>
+                <tableExists tableName="athz_domain"/>
+                <tableExists tableName="athz_domain_actions"/>
+            </and>
+        </preConditions>
+
+        <!-- Seed values -->
+        <insert tableName="athz_domain">
+            <column name="created_on" valueComputed="${now}"/>
+            <column name="created_by" value="1"/>
+            <column name="name" value="device_management_registry"/>
+            <column name="serviceName" value="deviceManagementRegistryDomainService"/>
+        </insert>
+
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" valueComputed="${selectDeviceManagementRegistryDomainQuery}"/>
+            <column name="action" value="read"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" valueComputed="${selectDeviceManagementRegistryDomainQuery}"/>
+            <column name="action" value="write"/>
+        </insert>
+        <insert tableName="athz_domain_actions">
+            <column name="domain_id" valueComputed="${selectDeviceManagementRegistryDomainQuery}"/>
+            <column name="action" value="delete"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>
