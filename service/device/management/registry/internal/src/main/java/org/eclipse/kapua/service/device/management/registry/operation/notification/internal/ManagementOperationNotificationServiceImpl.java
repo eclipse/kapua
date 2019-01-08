@@ -130,7 +130,7 @@ public class ManagementOperationNotificationServiceImpl extends AbstractKapuaSer
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.delete, null));
 
         //
         // Do delete
