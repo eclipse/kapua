@@ -37,31 +37,31 @@ import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobAttributes;
+import org.eclipse.kapua.service.job.execution.JobExecution;
+import org.eclipse.kapua.service.job.execution.JobExecutionCreator;
+import org.eclipse.kapua.service.job.execution.JobExecutionFactory;
+import org.eclipse.kapua.service.job.execution.JobExecutionListResult;
+import org.eclipse.kapua.service.job.execution.JobExecutionQuery;
+import org.eclipse.kapua.service.job.execution.JobExecutionService;
+import org.eclipse.kapua.service.job.execution.internal.JobExecutionFactoryImpl;
+import org.eclipse.kapua.service.job.execution.internal.JobExecutionServiceImpl;
 import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
-import org.eclipse.kapua.service.job.step.JobStep;
-import org.eclipse.kapua.service.job.step.JobStepCreator;
-import org.eclipse.kapua.service.job.step.JobStepFactory;
-import org.eclipse.kapua.service.job.step.JobStepListResult;
-import org.eclipse.kapua.service.job.step.JobStepQuery;
-import org.eclipse.kapua.service.job.step.JobStepService;
-import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
-import org.eclipse.kapua.service.job.step.internal.JobStepFactoryImpl;
-import org.eclipse.kapua.service.job.step.internal.JobStepServiceImpl;
 import org.eclipse.kapua.test.MockedLocator;
+import org.joda.time.DateTime;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 // ****************************************************************************************
-// * Implementation of Gherkin steps used in JobStepService.feature scenarios.     *
+// * Implementation of Gherkin steps used in JobExecutionService.feature scenarios.       *
 // *                                                                                      *
 // * MockedLocator is used for Location Service. Mockito is used to mock other            *
 // * services that the Account services dependent on. Dependent services are:             *
@@ -69,17 +69,17 @@ import java.util.Map;
 // ****************************************************************************************
 
 @ScenarioScoped
-public class JobStepServiceSteps extends TestBase {
+public class JobExecutionServiceSteps extends TestBase {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JobStepServiceSteps.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobExecutionServiceSteps.class);
 
     // Step service objects
-    private JobStepService jobStepService;
-    private JobStepFactory jobStepFactory;
+    private JobExecutionService jobExecutionService;
+    private JobExecutionFactory jobExecutionFactory;
 
     // Default constructor
     @Inject
-    public JobStepServiceSteps(StepData stepData, DBHelper dbHelper) {
+    public JobExecutionServiceSteps(StepData stepData, DBHelper dbHelper) {
 
         this.stepData = stepData;
         this.database = dbHelper;
@@ -115,8 +115,8 @@ public class JobStepServiceSteps extends TestBase {
                 // Inject actual user service related services
                 JobEntityManagerFactory jobEntityManagerFactory = JobEntityManagerFactory.getInstance();
                 bind(JobEntityManagerFactory.class).toInstance(jobEntityManagerFactory);
-                bind(JobStepService.class).toInstance(new JobStepServiceImpl());
-                bind(JobStepFactory.class).toInstance(new JobStepFactoryImpl());
+                bind(JobExecutionService.class).toInstance(new JobExecutionServiceImpl());
+                bind(JobExecutionFactory.class).toInstance(new JobExecutionFactoryImpl());
             }
         };
 
@@ -146,8 +146,8 @@ public class JobStepServiceSteps extends TestBase {
         stepData.clear();
 
         locator = KapuaLocator.getInstance();
-        jobStepService = locator.getService(JobStepService.class);
-        jobStepFactory = locator.getFactory(JobStepFactory.class);
+        jobExecutionService = locator.getService(JobExecutionService.class);
+        jobExecutionFactory = locator.getFactory(JobExecutionFactory.class);
 
         if (isUnitTest()) {
             // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
@@ -184,7 +184,7 @@ public class JobStepServiceSteps extends TestBase {
     // * Cucumber Test steps                                                              *
     // ************************************************************************************
 
-    @When("^I configure the job step service$")
+    @When("^I configure the job execution service$")
     public void setConfigurationValue(List<CucConfig> cucConfigs) throws Exception {
 
         Map<String, Object> valueMap = new HashMap<>();
@@ -202,186 +202,208 @@ public class JobStepServiceSteps extends TestBase {
         }
         try {
             primeException();
-            jobStepService.setConfigValues(accId, scopeId, valueMap);
+            jobExecutionService.setConfigValues(accId, scopeId, valueMap);
         } catch (KapuaException ke) {
             verifyException(ke);
         }
     }
 
-    @Given("^A regular step creator with the name \"(.*)\" and the following properties$")
-    public void prepareARegularStepCreatorWithPropertyList(String name, List<CucStepProperty> list) {
+    @Given("^A regular job execution item$")
+    public void createARegularExecution() throws Exception {
 
-        JobStepCreator stepCreator;
-        KapuaId currentStepDefId = (KapuaId) stepData.get("CurrentJobStepDefinitionId");
+        JobExecutionCreator executionCreator = prepareDefaultCreator();
+        stepData.put("JobExecutionCreator", executionCreator);
 
-        stepCreator = prepareDefaultCreator();
-        stepCreator.setName(name);
-        stepCreator.setJobStepDefinitionId(currentStepDefId);
-
-        List<JobStepProperty> tmpPropLst = new ArrayList<>();
-        for (CucStepProperty prop : list) {
-            tmpPropLst.add(jobStepFactory.newStepProperty(prop.getName(), prop.getType(), prop.getValue()));
+        primeException();
+        try {
+            stepData.remove("JobExecution");
+            JobExecution execution = jobExecutionService.create(executionCreator);
+            stepData.put("JobExecution", execution);
+        } catch (KapuaException ex) {
+            verifyException(ex);
         }
-        stepCreator.setJobStepProperties(tmpPropLst);
-
-        stepData.put("JobStepCreator", stepCreator);
     }
 
-    @When("^I create a new step entity from the existing creator$")
-    public void createAStepFromTheCreator()
+    @When("^I update the job id for the execution item$")
+    public void updateJobIdForExecution()
             throws Exception {
+
+        Job job = (Job) stepData.get("Job");
+        JobExecution execution = (JobExecution) stepData.get("JobExecution");
+        execution.setJobId(job.getId());
+
+        primeException();
+        try {
+            execution = jobExecutionService.update(execution);
+            stepData.put("JobExecution", execution);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I update the end time of the execution item$")
+    public void updateJobExecutionEndTime()
+            throws Exception {
+
+        JobExecution execution = (JobExecution) stepData.get("JobExecution");
+
+        primeException();
+        try {
+            execution.setEndedOn(DateTime.now().toDate());
+            execution = jobExecutionService.update(execution);
+            stepData.put("JobExecution", execution);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I search for the last job execution in the database$")
+    public void findLastJobExecution()
+            throws Exception {
+
+        JobExecution execution = (JobExecution) stepData.get("JobExecution");
+
+        primeException();
+        try {
+            stepData.remove("JobExecutionFound");
+            JobExecution foundExecution = jobExecutionService.find(execution.getScopeId(), execution.getId());
+            stepData.put("JobExecutionFound", foundExecution);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I delete the last job execution in the database$")
+    public void deleteLastJobExecution()
+            throws Exception {
+
+        JobExecution execution = (JobExecution) stepData.get("JobExecution");
+
+        primeException();
+        try {
+            jobExecutionService.delete(execution.getScopeId(), execution.getId());
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I count the execution items for the current job$")
+    public void countExecutionsForJob()
+            throws Exception {
+
+        Job job = (Job) stepData.get("Job");
+        JobExecutionQuery tmpQuery = jobExecutionFactory.newQuery(getCurrentScopeId());
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobAttributes.ENTITY_ID, job.getId()));
+
+        primeException();
+        try {
+            stepData.remove("Count");
+            Long itemCount = jobExecutionService.count(tmpQuery);
+            stepData.put("Count", itemCount);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I query for the execution items for the current job$")
+    public void queryExecutionsForJob()
+            throws Exception {
+
+        Job job = (Job) stepData.get("Job");
+        JobExecutionQuery tmpQuery = jobExecutionFactory.newQuery(getCurrentScopeId());
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobAttributes.ENTITY_ID, job.getId()));
+
+        primeException();
+        try {
+            stepData.remove("JobExecutionList");
+            stepData.remove("Count");
+            JobExecutionListResult resultList = jobExecutionService.query(tmpQuery);
+            Long itemCount = (long) resultList.getSize();
+            stepData.put("JobExecutionList", resultList);
+            stepData.put("Count", itemCount);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+//    @When("^I update the job target target id$")
+//    public void updateJobTargetTargetId() throws Exception {
+//
+//        targetData.targetCreator.setJobTargetId(commonData.getRandomId());
+//        targetData.target.setJobTargetId(targetData.targetCreator.getJobTargetId());
+//
+//        try {
+//            primeException();
+//            targetData.target = targetService.update(targetData.target);
+//        } catch (KapuaException ex) {
+//            verifyException(ex);
+//        }
+//    }
+//
+//    @When("^I query the targets for the current job$")
+//    public void queryTargetsForJob()
+//            throws Exception {
+//
+//        JobTargetQuery tmpQuery = targetFactory.newQuery(commonData.currentScopeId);
+//        tmpQuery.setPredicate(attributeIsEqualTo("jobId", jobData.job.getId()));
+//
+//        try {
+//            primeException();
+//            targetData.targetList = targetService.query(tmpQuery);
+//            commonData.itemCount = targetData.targetList.getSize();
+//        } catch (KapuaException ex) {
+//            verifyException(ex);
+//        }
+//    }
+
+    @Then("^The job execution matches the creator$")
+    public void checkJobExecutionItemAgainstCreator() {
+
+        JobExecutionCreator executionCreator = (JobExecutionCreator) stepData.get("JobExecutionCreator");
+        JobExecution execution = (JobExecution) stepData.get("JobExecution");
+
+        assertEquals(executionCreator.getScopeId(), execution.getScopeId());
+        assertEquals(executionCreator.getJobId(), execution.getJobId());
+        assertEquals(executionCreator.getStartedOn(), execution.getStartedOn());
+    }
+
+    @Then("^The job execution items match$")
+    public void checkJobExecutionItems() {
+
+        JobExecution execution = (JobExecution) stepData.get("JobExecution");
+        JobExecution foundExecution = (JobExecution) stepData.get("JobExecutionFound");
+
+        assertEquals(execution.getScopeId(), foundExecution.getScopeId());
+        assertEquals(execution.getJobId(), foundExecution.getJobId());
+        assertEquals(execution.getStartedOn(), foundExecution.getStartedOn());
+        assertEquals(execution.getEndedOn(), foundExecution.getEndedOn());
+    }
+
+    @Then("^There is no such job execution item in the database$")
+    public void checkThatNoExecutionWasFound() {
+        assertNull("Unexpected job execution item found!", stepData.get("JobExecutionFound"));
+    }
+
+    @When("^I test the sanity of the job execution factory$")
+    public void testTheJobExecutionFactory() {
+
+        assertNotNull(jobExecutionFactory.newCreator(SYS_SCOPE_ID));
+        assertNotNull(jobExecutionFactory.newEntity(SYS_SCOPE_ID));
+        assertNotNull(jobExecutionFactory.newListResult());
+        assertNotNull(jobExecutionFactory.newQuery(SYS_SCOPE_ID));
+    }
+
+// ************************************************************************************
+// * Private helper functions                                                         *
+// ************************************************************************************
+
+    private JobExecutionCreator prepareDefaultCreator() {
 
         KapuaId currentJobId = (KapuaId) stepData.get("CurrentJobId");
-        JobStepCreator stepCreator = (JobStepCreator) stepData.get("JobStepCreator");
-        stepCreator.setJobId(currentJobId);
+        JobExecutionCreator tmpCr = jobExecutionFactory.newCreator(getCurrentScopeId());
 
-        primeException();
-        try {
-            stepData.remove("JobStep");
-            stepData.remove("CurrentStepId");
-            JobStep step = jobStepService.create(stepCreator);
-            stepData.put("JobStep", step);
-            stepData.put("CurrentStepId", step.getId());
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("^I change the step name to \"(.+)\"$")
-    public void updateStepName(String name)
-            throws Exception {
-
-        JobStep step = (JobStep) stepData.get("JobStep");
-        step.setName(name);
-
-        primeException();
-        try {
-            step = jobStepService.update(step);
-            stepData.put("JobStep", step);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("^I update the step with a new definition$")
-    public void updateStepDefinition() throws Exception {
-
-        JobStep step = (JobStep) stepData.get("JobStep");
-        KapuaId currentStepDefId = (KapuaId) stepData.get("CurrentJobStepDefinitionId");
-        step.setJobStepDefinitionId(currentStepDefId);
-
-        primeException();
-        try {
-            step = jobStepService.update(step);
-            stepData.put("JobStep", step);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("^I search for the last step in the database$")
-    public void findLastStep()
-            throws Exception {
-
-        JobStep step = (JobStep) stepData.get("JobStep");
-
-        primeException();
-        try {
-            JobStep newStep = jobStepService.find(step.getScopeId(), step.getId());
-            stepData.put("JobStep", newStep);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("^I query for a step with the name \"(.+)\"$")
-    public void queryForNamedStep(String name)
-            throws Exception {
-
-        JobStepQuery tmpQuery = jobStepFactory.newQuery(getCurrentScopeId());
-        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobAttributes.NAME, name));
-
-        primeException();
-        try {
-            stepData.remove("JobStepList");
-            stepData.remove("Count");
-            JobStepListResult stepList = jobStepService.query(tmpQuery);
-            Long itemCount = (long) stepList.getSize();
-            stepData.put("JobStepList", stepList);
-            stepData.put("Count", itemCount);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("^I count the steps in the scope$")
-    public void countStepsInScope()
-            throws Exception {
-
-        JobStepQuery tmpQuery = jobStepFactory.newQuery(getCurrentScopeId());
-
-        primeException();
-        try {
-            stepData.remove("Count");
-            Long itemCount = jobStepService.count(tmpQuery);
-            stepData.put("Count", itemCount);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("^I delete the last step$")
-    public void deleteLastStep() throws Exception {
-
-        JobStep step = (JobStep) stepData.get("JobStep");
-
-        primeException();
-        try {
-            jobStepService.delete(step.getScopeId(), step.getId());
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @Then("^The step item matches the creator$")
-    public void checkStepItemAgainstCreator() {
-
-        JobStep step = (JobStep) stepData.get("JobStep");
-        JobStepCreator stepCreator = (JobStepCreator) stepData.get("JobStepCreator");
-
-        assertEquals(stepCreator.getJobId(), step.getJobId());
-        assertEquals(stepCreator.getJobStepDefinitionId(), step.getJobStepDefinitionId());
-        assertEquals(stepCreator.getName(), step.getName());
-        assertEquals(stepCreator.getDescription(), step.getDescription());
-        assertEquals(stepCreator.getStepIndex(), (Integer) step.getStepIndex());
-        assertEquals(stepCreator.getStepProperties().size(), step.getStepProperties().size());
-    }
-
-    @Then("^There is no such step item in the database$")
-    public void checkThatNoStepWasFound() {
-        assertNull("Unexpected step item found!", stepData.get("JobStep"));
-    }
-
-    @When("^I test the sanity of the step factory$")
-    public void testTheStepFactory() {
-
-        assertNotNull(jobStepFactory.newCreator(SYS_SCOPE_ID));
-        assertNotNull(jobStepFactory.newEntity(SYS_SCOPE_ID));
-        assertNotNull(jobStepFactory.newListResult());
-        assertNotNull(jobStepFactory.newQuery(SYS_SCOPE_ID));
-        assertNotNull(jobStepFactory.newStepProperty("TestName", "TestType", "TestValue"));
-    }
-
-    // ************************************************************************************
-    // * Private helper functions                                                         *
-    // ************************************************************************************
-
-    private JobStepCreator prepareDefaultCreator() {
-
-        JobStepCreator tmpCr = jobStepFactory.newCreator(getCurrentScopeId());
-        tmpCr.setName(String.format("StepName_%d", random.nextInt()));
-        tmpCr.setDescription("StepDescription");
-        //        tmpCr.setStepIndex(0);
+        tmpCr.setJobId(currentJobId);
+        tmpCr.setStartedOn(DateTime.now().toDate());
 
         return tmpCr;
     }

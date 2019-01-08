@@ -195,9 +195,9 @@ public class JobStepDefinitionServiceSteps extends TestBase {
         stepDefinitionCreator.setName(name);
 
         List<JobStepProperty> tmpPropLst = new ArrayList<>();
-        tmpPropLst.add(jobStepDefinitionFactory.newStepProperty("Property1", "Type1", null));
-        tmpPropLst.add(jobStepDefinitionFactory.newStepProperty("Property2", "Type2", null));
-        tmpPropLst.add(jobStepDefinitionFactory.newStepProperty("Property3", "Type3", null));
+        tmpPropLst.add(jobStepDefinitionFactory.newStepProperty("Property1", "Type1", null, null));
+        tmpPropLst.add(jobStepDefinitionFactory.newStepProperty("Property2", "Type2", null, null));
+        tmpPropLst.add(jobStepDefinitionFactory.newStepProperty("Property3", "Type3", null, null));
         stepDefinitionCreator.setStepProperties(tmpPropLst);
 
         stepData.put("JobStepDefinitionCreator", stepDefinitionCreator);
@@ -211,7 +211,7 @@ public class JobStepDefinitionServiceSteps extends TestBase {
 
         List<JobStepProperty> tmpPropLst = new ArrayList<>();
         for(CucStepProperty prop : list) {
-            tmpPropLst.add(jobStepDefinitionFactory.newStepProperty(prop.getName(), prop.getType(), null));
+            tmpPropLst.add(jobStepDefinitionFactory.newStepProperty(prop.getName(), prop.getType(), null, null));
         }
         stepDefinitionCreator.setStepProperties(tmpPropLst);
 
@@ -465,7 +465,7 @@ public class JobStepDefinitionServiceSteps extends TestBase {
         assertNotNull(jobStepDefinitionFactory.newEntity(SYS_SCOPE_ID));
         assertNotNull(jobStepDefinitionFactory.newListResult());
         assertNotNull(jobStepDefinitionFactory.newQuery(SYS_SCOPE_ID));
-        assertNotNull(jobStepDefinitionFactory.newStepProperty("TestName", "TestType", "TestValue"));
+        assertNotNull(jobStepDefinitionFactory.newStepProperty("TestName", "TestType", "TestValue", "TestExampleValue"));
     }
 
     // ************************************************************************************

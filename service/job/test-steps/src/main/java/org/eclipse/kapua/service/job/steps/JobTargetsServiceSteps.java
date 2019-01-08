@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -37,17 +37,18 @@ import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobAttributes;
 import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
-import org.eclipse.kapua.service.job.step.JobStep;
-import org.eclipse.kapua.service.job.step.JobStepCreator;
-import org.eclipse.kapua.service.job.step.JobStepFactory;
-import org.eclipse.kapua.service.job.step.JobStepListResult;
-import org.eclipse.kapua.service.job.step.JobStepQuery;
-import org.eclipse.kapua.service.job.step.JobStepService;
-import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
-import org.eclipse.kapua.service.job.step.internal.JobStepFactoryImpl;
-import org.eclipse.kapua.service.job.step.internal.JobStepServiceImpl;
+import org.eclipse.kapua.service.job.targets.JobTarget;
+import org.eclipse.kapua.service.job.targets.JobTargetCreator;
+import org.eclipse.kapua.service.job.targets.JobTargetFactory;
+import org.eclipse.kapua.service.job.targets.JobTargetListResult;
+import org.eclipse.kapua.service.job.targets.JobTargetQuery;
+import org.eclipse.kapua.service.job.targets.JobTargetService;
+import org.eclipse.kapua.service.job.targets.JobTargetStatus;
+import org.eclipse.kapua.service.job.targets.internal.JobTargetFactoryImpl;
+import org.eclipse.kapua.service.job.targets.internal.JobTargetServiceImpl;
 import org.eclipse.kapua.test.MockedLocator;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -55,7 +56,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,17 +69,17 @@ import java.util.Map;
 // ****************************************************************************************
 
 @ScenarioScoped
-public class JobStepServiceSteps extends TestBase {
+public class JobTargetsServiceSteps extends TestBase {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JobStepServiceSteps.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobTargetsServiceSteps.class);
 
     // Step service objects
-    private JobStepService jobStepService;
-    private JobStepFactory jobStepFactory;
+    private JobTargetService jobTargetService;
+    private JobTargetFactory jobTargetFactory;
 
     // Default constructor
     @Inject
-    public JobStepServiceSteps(StepData stepData, DBHelper dbHelper) {
+    public JobTargetsServiceSteps(StepData stepData, DBHelper dbHelper) {
 
         this.stepData = stepData;
         this.database = dbHelper;
@@ -115,8 +115,8 @@ public class JobStepServiceSteps extends TestBase {
                 // Inject actual user service related services
                 JobEntityManagerFactory jobEntityManagerFactory = JobEntityManagerFactory.getInstance();
                 bind(JobEntityManagerFactory.class).toInstance(jobEntityManagerFactory);
-                bind(JobStepService.class).toInstance(new JobStepServiceImpl());
-                bind(JobStepFactory.class).toInstance(new JobStepFactoryImpl());
+                bind(JobTargetService.class).toInstance(new JobTargetServiceImpl());
+                bind(JobTargetFactory.class).toInstance(new JobTargetFactoryImpl());
             }
         };
 
@@ -146,8 +146,8 @@ public class JobStepServiceSteps extends TestBase {
         stepData.clear();
 
         locator = KapuaLocator.getInstance();
-        jobStepService = locator.getService(JobStepService.class);
-        jobStepFactory = locator.getFactory(JobStepFactory.class);
+        jobTargetService = locator.getService(JobTargetService.class);
+        jobTargetFactory = locator.getFactory(JobTargetFactory.class);
 
         if (isUnitTest()) {
             // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
@@ -184,7 +184,7 @@ public class JobStepServiceSteps extends TestBase {
     // * Cucumber Test steps                                                              *
     // ************************************************************************************
 
-    @When("^I configure the job step service$")
+    @When("^I configure the job target service$")
     public void setConfigurationValue(List<CucConfig> cucConfigs) throws Exception {
 
         Map<String, Object> valueMap = new HashMap<>();
@@ -200,189 +200,235 @@ public class JobStepServiceSteps extends TestBase {
                 accId = getKapuaId(config.getScopeId());
             }
         }
+
+        primeException();
         try {
-            primeException();
-            jobStepService.setConfigValues(accId, scopeId, valueMap);
+            jobTargetService.setConfigValues(accId, scopeId, valueMap);
         } catch (KapuaException ke) {
             verifyException(ke);
         }
     }
 
-    @Given("^A regular step creator with the name \"(.*)\" and the following properties$")
-    public void prepareARegularStepCreatorWithPropertyList(String name, List<CucStepProperty> list) {
+    @Given("^A regular job target item$")
+    public void createARegularTarget()
+            throws Exception {
 
-        JobStepCreator stepCreator;
-        KapuaId currentStepDefId = (KapuaId) stepData.get("CurrentJobStepDefinitionId");
+        JobTargetCreator targetCreator = prepareDefaultCreator();
+        stepData.put("JobTargetCreator", targetCreator);
 
-        stepCreator = prepareDefaultCreator();
-        stepCreator.setName(name);
-        stepCreator.setJobStepDefinitionId(currentStepDefId);
-
-        List<JobStepProperty> tmpPropLst = new ArrayList<>();
-        for (CucStepProperty prop : list) {
-            tmpPropLst.add(jobStepFactory.newStepProperty(prop.getName(), prop.getType(), prop.getValue()));
+        primeException();
+        try {
+            stepData.remove("JobTarget");
+            JobTarget target = jobTargetService.create(targetCreator);
+            stepData.put("JobTarget", target);
+        } catch (KapuaException ex) {
+            verifyException(ex);
         }
-        stepCreator.setJobStepProperties(tmpPropLst);
-
-        stepData.put("JobStepCreator", stepCreator);
     }
 
-    @When("^I create a new step entity from the existing creator$")
-    public void createAStepFromTheCreator()
+    @When("^I search for the last job target in the database$")
+    public void findLastJobTarget()
             throws Exception {
+
+        JobTarget target = (JobTarget) stepData.get("JobTarget");
+
+        primeException();
+        try {
+            stepData.remove("JobTarget");
+            JobTarget targetFound = jobTargetService.find(target.getScopeId(), target.getId());
+            stepData.put("JobTarget", targetFound);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I delete the last job target in the database$")
+    public void deleteLastJobTarget()
+            throws Exception {
+
+        JobTarget target = (JobTarget) stepData.get("JobTarget");
+
+        primeException();
+        try {
+            jobTargetService.delete(target.getScopeId(), target.getId());
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I update the job target target id$")
+    public void updateJobTargetTargetId()
+            throws Exception {
+
+        JobTarget target = (JobTarget) stepData.get("JobTarget");
+        JobTargetCreator targetCreator = (JobTargetCreator) stepData.get("JobTargetCreator");
+
+        targetCreator.setJobTargetId(getKapuaId());
+        stepData.put("JobTargetCreator", targetCreator);
+        target.setJobTargetId(targetCreator.getJobTargetId());
+
+        primeException();
+        try {
+            target = jobTargetService.update(target);
+            stepData.put("JobTarget", target);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I update the job target step number to (\\d+)$")
+    public void setTargetStepIndex(int i)
+            throws Exception {
+
+        JobTarget target = (JobTarget) stepData.get("JobTarget");
+        target.setStepIndex(i);
+
+        primeException();
+        try {
+            target = jobTargetService.update(target);
+            stepData.put("JobTarget", target);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I update the job target step status to \"(.+)\"$")
+    public void setTargetStepStatus(String stat)
+            throws Exception {
+
+        JobTarget target = (JobTarget) stepData.get("JobTarget");
+        target.setStatus(parseJobTargetStatusFromString(stat));
+
+        primeException();
+        try {
+            target = jobTargetService.update(target);
+            stepData.put("JobTarget", target);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I update the job target step exception message to \"(.+)\"$")
+    public void setTargetStepExceptionMessage(String text)
+            throws Exception {
+
+        JobTarget target = (JobTarget) stepData.get("JobTarget");
+        Exception kex = new Exception(text);
+        target.setException(kex);
+
+        primeException();
+        try {
+            target = jobTargetService.update(target);
+            stepData.put("JobTarget", target);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I count the targets in the current scope$")
+    public void countTargetsForJob()
+            throws Exception {
+
+        JobTargetQuery tmpQuery = jobTargetFactory.newQuery(getCurrentScopeId());
+
+        primeException();
+        try {
+            stepData.remove("Count");
+            Long itemCount = jobTargetService.count(tmpQuery);
+            stepData.put("Count", itemCount);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I query the targets for the current job$")
+    public void queryTargetsForJob()
+            throws Exception {
+
+        Job job = (Job) stepData.get("Job");
+        JobTargetQuery tmpQuery = jobTargetFactory.newQuery(getCurrentScopeId());
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobAttributes.ENTITY_ID, job.getId()));
+
+        primeException();
+        try {
+            stepData.remove("JobTargetList");
+            stepData.remove("Count");
+            JobTargetListResult targetList = jobTargetService.query(tmpQuery);
+            stepData.put("JobTargetList", targetList);
+            stepData.put("Count", targetList.getSize());
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @Then("^The target step index is indeed (\\d+)$")
+    public void checkTargetStepIndex(int i) {
+
+        JobTarget target = (JobTarget) stepData.get("JobTarget");
+        assertEquals(String.format("The step index should be %d but is in fact %d.", i, target.getStepIndex()), i, target.getStepIndex());
+    }
+
+    @Then("^The target step exception message is indeed \"(.+)\"$")
+    public void checkTargetStepExceptionMessage(String text) {
+
+        JobTarget target = (JobTarget) stepData.get("JobTarget");
+        assertEquals(text, target.getException().getMessage());
+    }
+
+    @Then("^The target step status is indeed \"(.+)\"$")
+    public void checkTargetStepStatus(String stat) {
+
+        JobTarget target = (JobTarget) stepData.get("JobTarget");
+        assertEquals(parseJobTargetStatusFromString(stat), target.getStatus());
+    }
+
+    @Then("^The job target matches the creator$")
+    public void checkJobTargetItemAgainstCreator() {
+
+        JobTarget target = (JobTarget) stepData.get("JobTarget");
+        JobTargetCreator targetCreator = (JobTargetCreator) stepData.get("JobTargetCreator");
+
+        assertEquals(targetCreator.getJobId(), target.getJobId());
+        assertEquals(targetCreator.getJobTargetId(), target.getJobTargetId());
+        assertEquals(targetCreator.getScopeId(), target.getScopeId());
+    }
+
+    @Then("^There is no such job target item in the database$")
+    public void checkThatNoTargetWasFound() {
+        assertNull("Unexpected job target item found!", stepData.get("JobTarget"));
+    }
+
+    @When("^I test the sanity of the job target factory$")
+    public void testTheJobTargetFactory() {
+
+        assertNotNull(jobTargetFactory.newCreator(SYS_SCOPE_ID));
+        assertNotNull(jobTargetFactory.newEntity(SYS_SCOPE_ID));
+        assertNotNull(jobTargetFactory.newListResult());
+        assertNotNull(jobTargetFactory.newQuery(SYS_SCOPE_ID));
+    }
+
+// ************************************************************************************
+// * Private helper functions                                                         *
+// ************************************************************************************
+
+    private JobTargetCreator prepareDefaultCreator() {
 
         KapuaId currentJobId = (KapuaId) stepData.get("CurrentJobId");
-        JobStepCreator stepCreator = (JobStepCreator) stepData.get("JobStepCreator");
-        stepCreator.setJobId(currentJobId);
+        JobTargetCreator tmpCr = jobTargetFactory.newCreator(getCurrentScopeId());
 
-        primeException();
-        try {
-            stepData.remove("JobStep");
-            stepData.remove("CurrentStepId");
-            JobStep step = jobStepService.create(stepCreator);
-            stepData.put("JobStep", step);
-            stepData.put("CurrentStepId", step.getId());
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("^I change the step name to \"(.+)\"$")
-    public void updateStepName(String name)
-            throws Exception {
-
-        JobStep step = (JobStep) stepData.get("JobStep");
-        step.setName(name);
-
-        primeException();
-        try {
-            step = jobStepService.update(step);
-            stepData.put("JobStep", step);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("^I update the step with a new definition$")
-    public void updateStepDefinition() throws Exception {
-
-        JobStep step = (JobStep) stepData.get("JobStep");
-        KapuaId currentStepDefId = (KapuaId) stepData.get("CurrentJobStepDefinitionId");
-        step.setJobStepDefinitionId(currentStepDefId);
-
-        primeException();
-        try {
-            step = jobStepService.update(step);
-            stepData.put("JobStep", step);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("^I search for the last step in the database$")
-    public void findLastStep()
-            throws Exception {
-
-        JobStep step = (JobStep) stepData.get("JobStep");
-
-        primeException();
-        try {
-            JobStep newStep = jobStepService.find(step.getScopeId(), step.getId());
-            stepData.put("JobStep", newStep);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("^I query for a step with the name \"(.+)\"$")
-    public void queryForNamedStep(String name)
-            throws Exception {
-
-        JobStepQuery tmpQuery = jobStepFactory.newQuery(getCurrentScopeId());
-        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobAttributes.NAME, name));
-
-        primeException();
-        try {
-            stepData.remove("JobStepList");
-            stepData.remove("Count");
-            JobStepListResult stepList = jobStepService.query(tmpQuery);
-            Long itemCount = (long) stepList.getSize();
-            stepData.put("JobStepList", stepList);
-            stepData.put("Count", itemCount);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("^I count the steps in the scope$")
-    public void countStepsInScope()
-            throws Exception {
-
-        JobStepQuery tmpQuery = jobStepFactory.newQuery(getCurrentScopeId());
-
-        primeException();
-        try {
-            stepData.remove("Count");
-            Long itemCount = jobStepService.count(tmpQuery);
-            stepData.put("Count", itemCount);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("^I delete the last step$")
-    public void deleteLastStep() throws Exception {
-
-        JobStep step = (JobStep) stepData.get("JobStep");
-
-        primeException();
-        try {
-            jobStepService.delete(step.getScopeId(), step.getId());
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @Then("^The step item matches the creator$")
-    public void checkStepItemAgainstCreator() {
-
-        JobStep step = (JobStep) stepData.get("JobStep");
-        JobStepCreator stepCreator = (JobStepCreator) stepData.get("JobStepCreator");
-
-        assertEquals(stepCreator.getJobId(), step.getJobId());
-        assertEquals(stepCreator.getJobStepDefinitionId(), step.getJobStepDefinitionId());
-        assertEquals(stepCreator.getName(), step.getName());
-        assertEquals(stepCreator.getDescription(), step.getDescription());
-        assertEquals(stepCreator.getStepIndex(), (Integer) step.getStepIndex());
-        assertEquals(stepCreator.getStepProperties().size(), step.getStepProperties().size());
-    }
-
-    @Then("^There is no such step item in the database$")
-    public void checkThatNoStepWasFound() {
-        assertNull("Unexpected step item found!", stepData.get("JobStep"));
-    }
-
-    @When("^I test the sanity of the step factory$")
-    public void testTheStepFactory() {
-
-        assertNotNull(jobStepFactory.newCreator(SYS_SCOPE_ID));
-        assertNotNull(jobStepFactory.newEntity(SYS_SCOPE_ID));
-        assertNotNull(jobStepFactory.newListResult());
-        assertNotNull(jobStepFactory.newQuery(SYS_SCOPE_ID));
-        assertNotNull(jobStepFactory.newStepProperty("TestName", "TestType", "TestValue"));
-    }
-
-    // ************************************************************************************
-    // * Private helper functions                                                         *
-    // ************************************************************************************
-
-    private JobStepCreator prepareDefaultCreator() {
-
-        JobStepCreator tmpCr = jobStepFactory.newCreator(getCurrentScopeId());
-        tmpCr.setName(String.format("StepName_%d", random.nextInt()));
-        tmpCr.setDescription("StepDescription");
-        //        tmpCr.setStepIndex(0);
+        tmpCr.setJobId(currentJobId);
+        tmpCr.setJobTargetId(getKapuaId());
 
         return tmpCr;
+    }
+
+    private JobTargetStatus parseJobTargetStatusFromString(String stat) {
+
+        switch (stat.toUpperCase().trim()) {
+            case "PROCESS_AWAITING": return JobTargetStatus.PROCESS_AWAITING;
+            case "PROCESS_FAILED": return JobTargetStatus.PROCESS_FAILED;
+            case "PROCESS_OK": return JobTargetStatus.PROCESS_OK;
+            default: return JobTargetStatus.PROCESS_FAILED;
+        }
     }
 }

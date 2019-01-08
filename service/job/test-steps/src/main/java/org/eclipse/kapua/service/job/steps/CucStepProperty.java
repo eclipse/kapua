@@ -21,6 +21,7 @@ public class CucStepProperty {
     private String name;
     private String type;
     private String value;
+    private String exampleValue;
 
     public String getName() {
         return name;
@@ -44,5 +45,13 @@ public class CucStepProperty {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public String getExampleValue() {
+        return exampleValue;
+    }
+
+    public void setExampleValue(String exampleValue) {
+        this.exampleValue = exampleValue;
     }
 }
