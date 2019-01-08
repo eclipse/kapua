@@ -11,10 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
@@ -43,7 +41,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Api(value = "Devices Operations", authorizations = {@Authorization(value = "kapuaAccessToken")})
+//@Api(value = "Devices Operations", authorizations = {@Authorization(value = "kapuaAccessToken")})
 @Path("{scopeId}/devices/{deviceId}/operations/{operationId}/notifications")
 public class DeviceManagementOperationNotifications extends AbstractKapuaResource {
 

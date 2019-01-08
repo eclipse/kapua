@@ -12,10 +12,8 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
@@ -50,7 +48,7 @@ import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.Date;
 
-@Api(value = "Devices Operations", authorizations = {@Authorization(value = "kapuaAccessToken")})
+//@Api(value = "Devices Operations", authorizations = {@Authorization(value = "kapuaAccessToken")})
 @Path("{scopeId}/devices/{deviceId}/operations")
 public class DeviceManagementOperations extends AbstractKapuaResource {
 
