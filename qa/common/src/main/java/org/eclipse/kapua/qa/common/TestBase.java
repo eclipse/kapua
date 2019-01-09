@@ -80,11 +80,15 @@ public class TestBase extends Assert {
     }
 
     public KapuaId getKapuaId() {
-        return new KapuaEid(BigInteger.valueOf(random.nextLong()));
+        return new KapuaEid(BigInteger.valueOf(random.nextLong()).abs());
     }
 
-    public KapuaId getKapuaId(int i) {
-        return new KapuaEid(BigInteger.valueOf(i));
+    public KapuaId getKapuaId(int id) {
+        return new KapuaEid(BigInteger.valueOf(id));
+    }
+
+    public KapuaId getKapuaId(String id) {
+        return new KapuaEid(new BigInteger(id));
     }
 
     public KapuaId getCurrentScopeId() {
@@ -104,6 +108,17 @@ public class TestBase extends Assert {
             return ((Account)stepData.get("LastAccount")).getScopeId();
         } else {
             return SYS_SCOPE_ID;
+        }
+    }
+
+    public KapuaId getCurrentUserId() {
+
+        if (stepData.contains("LastUserId")) {
+            return (KapuaId) stepData.get("LastUserId");
+        } else if (stepData.get("LastUser") != null) {
+            return ((Account)stepData.get("LastUser")).getId();
+        } else {
+            return SYS_USER_ID;
         }
     }
 
@@ -174,5 +189,10 @@ public class TestBase extends Assert {
         }
 
         return expDate;
+    }
+
+    public String getRandomString() {
+
+        return String.valueOf(random.nextInt());
     }
 }

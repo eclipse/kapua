@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,13 +19,12 @@ import cucumber.api.CucumberOptions;
 
 @RunWith(CucumberWithProperties.class)
 @CucumberOptions(
-        features = {"classpath:features/device/DeviceServiceI9n.feature"
+        features = {"classpath:features/device/DeviceEventI9n.feature"
                    },
         glue = {"org.eclipse.kapua.qa.common",
+                "org.eclipse.kapua.service.device.registry.steps",
                 "org.eclipse.kapua.service.account.steps",
-                "org.eclipse.kapua.service.user.steps",
-                "org.eclipse.kapua.service.device.steps",
-                "org.eclipse.kapua.service.tag.steps"
+                "org.eclipse.kapua.service.user.steps"
                },
         plugin = {"pretty", 
                   "html:target/cucumber/DeviceI9n",
@@ -35,4 +34,4 @@ import cucumber.api.CucumberOptions;
         monochrome = true )
 @CucumberProperty(key="broker.ip", value="192.168.33.10")
 @CucumberProperty(key="kapua.config.url", value="")
-public class RunDeviceI9nTest {}
+public class RunDeviceCRUDI9nTest {}

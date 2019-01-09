@@ -213,17 +213,6 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @Given("^Scope ID (\\d+)$")
-    public void givenAccount(int scopeId) {
-
-        stepData.put("LastAccountId", getKapuaId(scopeId));
-    }
-
-    @Given("^Using kapua-sys account$")
-    public void usingSysAccount() {
-        stepData.put("LastAccount", null);
-    }
-
     @When("^I create a generic account with name \"(.*)\"$")
     public void createGenericAccount(String name)
             throws Exception {

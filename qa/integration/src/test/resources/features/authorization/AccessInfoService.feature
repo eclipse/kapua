@@ -18,7 +18,7 @@ Feature: Access Info Service CRUD tests
   match the creator parameters.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 1
+    Given Scope with ID 1
     When I configure the user service for the account with the id 1
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -41,7 +41,7 @@ Feature: Access Info Service CRUD tests
   supplied too. The entry must match the creator parameters.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 1
+    Given Scope with ID 1
     When I configure the user service for the account with the id 1
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -66,7 +66,7 @@ Feature: Access Info Service CRUD tests
   an access role are supplied. The entry must match the creator parameters.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 1
+    Given Scope with ID 1
     When I configure the user service for the account with the id 1
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -94,7 +94,7 @@ Feature: Access Info Service CRUD tests
   Such an attempt must result in an exception.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 1
+    Given Scope with ID 1
     When I configure the user service for the account with the id 1
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -117,7 +117,7 @@ Feature: Access Info Service CRUD tests
   based on its ID.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 1
+    Given Scope with ID 1
     When I configure the user service for the account with the id 1
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -137,7 +137,7 @@ Feature: Access Info Service CRUD tests
   based on the entity user ID.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 1
+    Given Scope with ID 1
     When I configure the user service for the account with the id 1
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -156,7 +156,7 @@ Feature: Access Info Service CRUD tests
   must be returned. No exception must be thrown.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 1
+    Given Scope with ID 1
     When I configure the user service for the account with the id 1
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -177,7 +177,7 @@ Feature: Access Info Service CRUD tests
   It must be possible to delete an existing entity from the database.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 1
+    Given Scope with ID 1
     When I configure the user service for the account with the id 1
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -197,7 +197,7 @@ Feature: Access Info Service CRUD tests
   It must be possible to delete an existing entity from the database.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 1
+    Given Scope with ID 1
     When I configure the user service for the account with the id 1
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -225,7 +225,7 @@ Feature: Access Info Service CRUD tests
   in an exception.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 1
+    Given Scope with ID 1
     When I configure the user service for the account with the id 1
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -245,7 +245,7 @@ Feature: Access Info Service CRUD tests
   in an exception.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 1
+    Given Scope with ID 1
     When I configure the user service for the account with the id 1
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -254,7 +254,7 @@ Feature: Access Info Service CRUD tests
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And I create the access info entity
-    Given Scope ID 20
+    Given Scope with ID 20
     Given I expect the exception "KapuaEntityNotFoundException" with the text "The entity of type accessInfo"
     When I delete the existing access info entity
     Then An exception was thrown
@@ -265,7 +265,7 @@ Feature: Access Info Service CRUD tests
   scopes.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 10
+    Given Scope with ID 10
     When I configure the user service for the account with the id 10
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -276,14 +276,14 @@ Feature: Access Info Service CRUD tests
     Then I create the access info entity
     Then I create the access info entity
     Then I create the access info entity
-    Given Scope ID 20
+    Given Scope with ID 20
     When I configure the user service for the account with the id 20
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
       | integer | maxNumberChildEntities     | 5     |
     Then I create the access info entity
     Then I create the access info entity
-    Given Scope ID 30
+    Given Scope with ID 30
     When I configure the user service for the account with the id 30
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -304,7 +304,7 @@ Feature: Access Info Service CRUD tests
   to a specific user.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 1
+    Given Scope with ID 1
     When I configure the user service for the account with the id 1
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -333,7 +333,7 @@ Feature: Access Info Service CRUD tests
   No exceptions should be thrown.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 1
+    Given Scope with ID 1
     When I configure the user service for the account with the id 1
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -354,7 +354,7 @@ Feature: Access Info Service CRUD tests
     Given I create the domain
       | name        | actions             |
       | test        | read,write, execute |
-    Given Scope ID 10
+    Given Scope with ID 10
     When I configure the user service for the account with the id 10
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -365,7 +365,7 @@ Feature: Access Info Service CRUD tests
     When I create the access info entity
     And The permissions "read, write, execute"
     And I create the permissions
-    Given Scope ID 20
+    Given Scope with ID 20
     When I configure the user service for the account with the id 20
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -386,7 +386,7 @@ Feature: Access Info Service CRUD tests
   It must be possible to find a specific permission entry based on its ID.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 10
+    Given Scope with ID 10
     When I configure the user service for the account with the id 10
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -408,7 +408,7 @@ Feature: Access Info Service CRUD tests
   It must be possibel to delete a specific permission entry.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 10
+    Given Scope with ID 10
     When I configure the user service for the account with the id 10
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -434,7 +434,7 @@ Feature: Access Info Service CRUD tests
   an exception. In this case this is achieved by deleting the same entry twice.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 10
+    Given Scope with ID 10
     When I configure the user service for the account with the id 10
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -460,7 +460,7 @@ Feature: Access Info Service CRUD tests
   It must be possible to create a regular role entity in the dataabse.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 10
+    Given Scope with ID 10
     When I configure the user service for the account with the id 10
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -485,7 +485,7 @@ Feature: Access Info Service CRUD tests
   entry is permitted.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 10
+    Given Scope with ID 10
     When I configure the user service for the account with the id 10
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -508,7 +508,7 @@ Feature: Access Info Service CRUD tests
   entries is permitted.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 10
+    Given Scope with ID 10
     When I configure the user service for the account with the id 10
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -531,7 +531,7 @@ Feature: Access Info Service CRUD tests
   based on its ID.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 10
+    Given Scope with ID 10
     When I configure the user service for the account with the id 10
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -556,7 +556,7 @@ Feature: Access Info Service CRUD tests
   result list must be returned. No exception must be thrown.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 10
+    Given Scope with ID 10
     When I configure the user service for the account with the id 10
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -576,7 +576,7 @@ Feature: Access Info Service CRUD tests
     And The role "test_role_3"
     And I create the access role
 
-    Given Scope ID 20
+    Given Scope with ID 20
     When I configure the user service for the account with the id 20
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -591,7 +591,7 @@ Feature: Access Info Service CRUD tests
     And The role "test_role_2"
     And I create the access role
 
-    Given Scope ID 30
+    Given Scope with ID 30
     When I configure the user service for the account with the id 30
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -618,7 +618,7 @@ Feature: Access Info Service CRUD tests
   It must be possible to delete an existing access role entry from the database.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 10
+    Given Scope with ID 10
     When I configure the user service for the account with the id 10
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -651,7 +651,7 @@ Feature: Access Info Service CRUD tests
   this case this is achieved by trying to delete the same entry twice.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 10
+    Given Scope with ID 10
     When I configure the user service for the account with the id 10
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -680,7 +680,7 @@ Feature: Access Info Service CRUD tests
   Such a scenario must cause an exception to be thrown.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
-    Given Scope ID 10
+    Given Scope with ID 10
     When I configure the user service for the account with the id 10
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -692,13 +692,13 @@ Feature: Access Info Service CRUD tests
       | name     | displayName  | email              | phoneNumber     |
       | kapua-u1 | Kapua User 1 | kapua_u1@kapua.com | +386 31 323 555 |
     And The permissions "read, write, execute"
-    Given Scope ID 20
+    Given Scope with ID 20
     When I configure the role service for the account with the id 20
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
       | integer | maxNumberChildEntities     | 5     |
     And The role "test_role_1"
-    Given Scope ID 10
+    Given Scope with ID 10
     Given I expect the exception "KapuaAuthorizationException" with the text "Role not found in the scope:"
     When I create the access info entity
     Then An exception was thrown

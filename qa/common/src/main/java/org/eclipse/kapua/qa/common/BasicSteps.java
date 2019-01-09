@@ -52,10 +52,34 @@ public class BasicSteps extends TestBase {
         stepData.put("LastAccountId", getKapuaId(id));
     }
 
+    @Given("^The KAPUA-SYS scope$")
+    public void setRootScope() {
+
+        stepData.put("LastAccountId", SYS_SCOPE_ID);
+    }
+
     @Given("^A null scope$")
     public void setNullScope() {
 
         stepData.put("LastAccountId", null);
+    }
+
+    @Given("^The User ID (\\d+)$")
+    public void setSpecificUserId(Integer id) {
+
+        stepData.put("LastUserId", getKapuaId(id));
+    }
+
+    @Given("^The KAPUA-SYS user$")
+    public void setRootUserId() {
+
+        stepData.put("LastUserId", SYS_USER_ID);
+    }
+
+    @Given("^A null user")
+    public void setNullUser() {
+
+        stepData.put("LastUserId", null);
     }
 
     @Given("^I expect the exception \"(.+)\" with the text \"(.+)\"$")
