@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,11 +15,15 @@ import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.messages.ValidationMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.validator.RegexFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaNumberField;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
@@ -34,6 +38,8 @@ public class EndpointAddDialog extends EntityAddEditDialog {
 
     private static final GwtEndpointServiceAsync GWT_ENDPOINT_SERVICE = GWT.create(GwtEndpointService.class);
     private static final ConsoleEndpointMessages MSGS = GWT.create(ConsoleEndpointMessages.class);
+    private static final ConsoleMessages CMSGS = GWT.create(ConsoleMessages.class);
+    private static final ValidationMessages VAL_MSGS = GWT.create(ValidationMessages.class);
 
     protected KapuaTextField<String> endpointSchemaField;
     protected KapuaTextField<String> endpointDnsField;
@@ -93,6 +99,24 @@ public class EndpointAddDialog extends EntityAddEditDialog {
         bodyPanel.add(endpointFormPanel);
     }
 
+    public void validateEndPoint() {
+        if (endpointSchemaField.getValue() == null || endpointDnsField.getValue() == null || endpointPortField.getValue() == null) {
+            ConsoleInfo.display("Error", CMSGS.allFieldsRequired());
+        } else if (!endpointSchemaField.isValid()) {
+            ConsoleInfo.display("Error", endpointSchemaField.getErrorMessage());
+        } else if (!endpointDnsField.isValid()) {
+            ConsoleInfo.display("Error", endpointDnsField.getErrorMessage());
+        } else if (!endpointPortField.isValid()) {
+            ConsoleInfo.display("Error", endpointPortField.getErrorMessage());
+        }
+    }
+
+    @Override
+    protected void preSubmit() {
+        validateEndPoint();
+        super.preSubmit();
+    }
+
     @Override
     public void submit() {
         GwtEndpointCreator gwtEndpointCreator = new GwtEndpointCreator();
@@ -119,6 +143,9 @@ public class EndpointAddDialog extends EntityAddEditDialog {
                 unmask();
                 submitButton.enable();
                 cancelButton.enable();
+                endpointDnsField.markInvalid(VAL_MSGS.DUPLICATE_NAME());
+                endpointSchemaField.markInvalid(VAL_MSGS.DUPLICATE_NAME());
+                endpointPortField.markInvalid(VAL_MSGS.DUPLICATE_NAME());
             }
         });
 
