@@ -302,6 +302,7 @@ public class LoginDialog extends Dialog {
         status.hide();
         getButtonBar().enable();
         login.disable();
+        password.clearInvalid();
     }
 
 }
