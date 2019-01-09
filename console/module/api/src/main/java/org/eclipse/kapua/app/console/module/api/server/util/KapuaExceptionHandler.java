@@ -131,6 +131,10 @@ public class KapuaExceptionHandler {
             throw new GwtKapuaException(GwtKapuaErrorCode.MAX_NUMBER_OF_ITEMS_REACHED, t, ((KapuaMaxNumberOfItemsReachedException) t).getArgValue());
         } else if (t instanceof DeviceMenagementException) {
             throw new GwtKapuaException(GwtKapuaErrorCode.valueOf(((DeviceMenagementException)t).getCode().name()), t, t.getLocalizedMessage());
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode() == (KapuaErrorCodes.SAME_START_AND_DATE)){
+            throw new GwtKapuaException(GwtKapuaErrorCode.SAME_START_AND_DATE, t, t.getLocalizedMessage());
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode() == (KapuaErrorCodes.RETRY_AND_CRON_BOTH_SELECTED)){
+            throw new GwtKapuaException(GwtKapuaErrorCode.RETRY_AND_CRON_BOTH_SELECTED, t, t.getLocalizedMessage());
         } else {
             // all others => log and throw internal error code
             logger.warn("RPC service non-application error", t);
