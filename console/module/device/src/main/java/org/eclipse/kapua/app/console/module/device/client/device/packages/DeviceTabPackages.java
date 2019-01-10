@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.packages;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
+
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -106,7 +106,6 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
         devicesConfigurationPanel.setBodyBorder(false);
         devicesConfigurationPanel.setHeaderVisible(false);
         devicesConfigurationPanel.setLayout(new FitLayout());
-        devicesConfigurationPanel.setScrollMode(Scroll.AUTO);
         devicesConfigurationPanel.setTopComponent(toolBar);
         devicesConfigurationPanel.add(tabsPanel);
 
