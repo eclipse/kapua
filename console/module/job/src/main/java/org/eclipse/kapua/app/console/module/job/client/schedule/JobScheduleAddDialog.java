@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -138,7 +138,8 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         endsOn.setEmptyText(JOB_MSGS.dialogAddScheduleDatePlaceholder());
         endsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         endsOn.setToolTip(JOB_MSGS.dialogAddScheduleEndsOnTooltip());
-        endsOnLabel.setText("* " + JOB_MSGS.dialogAddScheduleEndsOnLabel());
+        endsOnLabel.setText(JOB_MSGS.dialogAddScheduleEndsOnLabel());
+        endsOnLabel.setStyleAttribute("margin-left", "10px");
         endsOnLabel.setWidth(FORM_LABEL_WIDTH);
         endsOnLabel.setStyleAttribute("padding", "0px 96px 0px 0px");
         endsOn.getDatePicker().addListener(Events.Select, listener);
