@@ -13,11 +13,11 @@ package org.eclipse.kapua.job.engine.jbatch.exception;
 
 import org.eclipse.kapua.model.id.KapuaId;
 
-import java.util.List;
+import java.util.Set;
 
 public class JobInvalidTargetException extends JobEngineException {
 
-    public JobInvalidTargetException(KapuaId scopeId, KapuaId jobId, List<KapuaId> targetSublist) {
+    public JobInvalidTargetException(KapuaId scopeId, KapuaId jobId, Set<KapuaId> targetSublist) {
         super(KapuaJobEngineErrorCodes.JOB_TARGET_INVALID, scopeId, jobId, targetSublist);
     }
 }

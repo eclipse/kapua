@@ -60,7 +60,9 @@ import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class GwtKapuaJobModelConverter {
 
@@ -317,8 +319,8 @@ public class GwtKapuaJobModelConverter {
         return jobStartOptions;
     }
 
-    private static List<KapuaId> convertTargetIdSublist(List<String> gwtTargetIdSublist) {
-        List<KapuaId> targetIdSublist = new ArrayList<KapuaId>();
+    private static Set<KapuaId> convertTargetIdSublist(List<String> gwtTargetIdSublist) {
+        Set<KapuaId> targetIdSublist = new HashSet<KapuaId>();
         for (String gwtKapuaId : gwtTargetIdSublist) {
             targetIdSublist.add(GwtKapuaCommonsModelConverter.convertKapuaId(gwtKapuaId));
         }

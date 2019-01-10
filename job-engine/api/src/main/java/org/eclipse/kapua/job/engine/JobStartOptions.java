@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.util.List;
+import java.util.Set;
 
 @XmlRootElement(name = "jobStartOptions")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -33,9 +33,9 @@ public interface JobStartOptions extends KapuaSerializable {
     @XmlElementWrapper(name = "targetIdSublist")
     @XmlElement(name = "targetId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    List<KapuaId> getTargetIdSublist();
+    Set<KapuaId> getTargetIdSublist();
 
-    void setTargetIdSublist(List<KapuaId> targetSublist);
+    void setTargetIdSublist(Set<KapuaId> targetSublist);
 
     @XmlTransient
     void removeTargetIdToSublist(KapuaId targetId);

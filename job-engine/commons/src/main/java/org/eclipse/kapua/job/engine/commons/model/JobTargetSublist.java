@@ -20,9 +20,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
 @XmlRootElement(name = "jobTargetSublist")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -31,24 +31,24 @@ public class JobTargetSublist implements Iterable<KapuaId> {
 
     @XmlElement(name = "targetId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    private List<KapuaId> targetIds = new ArrayList<>();
+    private Set<KapuaId> targetIds = new HashSet<>();
 
     public JobTargetSublist() {
     }
 
-    public JobTargetSublist(List<KapuaId> targetIds) {
+    public JobTargetSublist(Set<KapuaId> targetIds) {
         this.targetIds.addAll(targetIds);
     }
 
-    public List<KapuaId> getTargetIds() {
+    public Set<KapuaId> getTargetIds() {
         if (targetIds == null) {
-            targetIds = new ArrayList<>();
+            targetIds = new HashSet<>();
         }
 
         return targetIds;
     }
 
-    public void setTargetIds(List<KapuaId> targetIds) {
+    public void setTargetIds(Set<KapuaId> targetIds) {
         this.targetIds = targetIds;
     }
 

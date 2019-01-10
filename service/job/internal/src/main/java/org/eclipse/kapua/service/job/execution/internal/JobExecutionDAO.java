@@ -23,9 +23,8 @@ import org.eclipse.kapua.service.job.execution.JobExecutionListResult;
 
 /**
  * JobExecution DAO
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class JobExecutionDAO {
 
@@ -34,7 +33,7 @@ public class JobExecutionDAO {
 
     /**
      * Creates and return new JobExecution
-     * 
+     *
      * @param em
      * @param jobExecutionCreator
      * @return
@@ -49,13 +48,14 @@ public class JobExecutionDAO {
         jobExecutionImpl.setJobId(jobExecutionCreator.getJobId());
         jobExecutionImpl.setStartedOn(jobExecutionCreator.getStartedOn());
         jobExecutionImpl.setEntityAttributes(jobExecutionCreator.getEntityAttributes());
+        jobExecutionImpl.setTargetIds(jobExecutionCreator.getTargetIds());
 
         return ServiceDAO.create(em, jobExecutionImpl);
     }
 
     /**
      * Updates the provided jobExecution
-     * 
+     *
      * @param em
      * @param jobExecution
      * @return
@@ -125,8 +125,7 @@ public class JobExecutionDAO {
      * @param em
      * @param scopeId
      * @param jobExecutionId
-     * @throws KapuaEntityNotFoundException
-     *             If the {@link JobExecution} is not found
+     * @throws KapuaEntityNotFoundException If the {@link JobExecution} is not found
      */
     public static void delete(EntityManager em, KapuaId scopeId, KapuaId jobExecutionId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, JobExecutionImpl.class, scopeId, jobExecutionId);

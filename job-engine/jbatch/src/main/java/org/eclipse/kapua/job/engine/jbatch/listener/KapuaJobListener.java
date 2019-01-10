@@ -56,6 +56,7 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
         jobExecutionCreator.setJobId(jobContextWrapper.getJobId());
         jobExecutionCreator.setStartedOn(new Date());
         jobExecutionCreator.getEntityAttributes().put(JBATCH_EXECUTION_ID, Long.toString(jobContextWrapper.getExecutionId()));
+        jobExecutionCreator.setTargetIds(jobContextWrapper.getTargetSublist().getTargetIds());
 
         JobExecution jobExecution = KapuaSecurityUtils.doPrivileged(() -> JOB_EXECUTION_SERVICE.create(jobExecutionCreator));
 
@@ -64,7 +65,7 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
         // prevent another instance running for the same job name (once a job is submitted its status is changed to STARTING by jbatch so,
         // at that point, if there are more than 1 job execution in running state (so STARTING, STARTED, STOPPING) it means that another instance is already running.
         List<Long> runningExecutionsIds = BatchRuntime.getJobOperator().getRunningExecutions(jobContextWrapper.getJobName());
-        if (runningExecutionsIds != null && runningExecutionsIds.size() > 1) {
+        if (runningExecutionsIds.size() > 1) {
             throw new KapuaIllegalStateException(String.format("Cannot start job [%s]. Another instance of this job is running.", jobContextWrapper.getJobName()));
         }
 

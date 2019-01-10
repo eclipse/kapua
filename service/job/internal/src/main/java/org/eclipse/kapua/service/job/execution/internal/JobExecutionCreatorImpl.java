@@ -11,13 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.execution.internal;
 
-import java.util.Date;
-
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntityCreator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.execution.JobExecution;
 import org.eclipse.kapua.service.job.execution.JobExecutionCreator;
+
+import java.util.Date;
+import java.util.Set;
 
 @KapuaProvider
 public class JobExecutionCreatorImpl extends AbstractKapuaUpdatableEntityCreator<JobExecution> implements JobExecutionCreator {
@@ -26,6 +27,7 @@ public class JobExecutionCreatorImpl extends AbstractKapuaUpdatableEntityCreator
 
     private KapuaId jobId;
     private Date startedOn;
+    private Set<KapuaId> targetIds;
 
     protected JobExecutionCreatorImpl(KapuaId scopeId) {
         super(scopeId);
@@ -49,5 +51,15 @@ public class JobExecutionCreatorImpl extends AbstractKapuaUpdatableEntityCreator
     @Override
     public void setStartedOn(Date startedOn) {
         this.startedOn = startedOn;
+    }
+
+    @Override
+    public Set<KapuaId> getTargetIds() {
+        return targetIds;
+    }
+
+    @Override
+    public void setTargetIds(Set<KapuaId> targetIds) {
+        this.targetIds = targetIds;
     }
 }

@@ -14,12 +14,12 @@ package org.eclipse.kapua.job.engine.jbatch;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.model.id.KapuaId;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class JobStartOptionsImpl implements JobStartOptions {
 
-    private List<KapuaId> targetIdSublist;
+    private Set<KapuaId> targetIdSublist;
 
     private Integer fromStepIndex;
 
@@ -27,16 +27,16 @@ public class JobStartOptionsImpl implements JobStartOptions {
     }
 
     @Override
-    public List<KapuaId> getTargetIdSublist() {
+    public Set<KapuaId> getTargetIdSublist() {
         if (targetIdSublist == null) {
-            targetIdSublist = new ArrayList<>();
+            targetIdSublist = new HashSet<>();
         }
 
         return targetIdSublist;
     }
 
     @Override
-    public void setTargetIdSublist(List<KapuaId> targetIdSublist) {
+    public void setTargetIdSublist(Set<KapuaId> targetIdSublist) {
         this.targetIdSublist = targetIdSublist;
     }
 

@@ -18,4 +18,5 @@ public class JobExecutionAttributes extends KapuaUpdatableEntityAttributes {
     public static final String JOB_ID = "jobId";
     public static final String STARTED_ON = "startedOn";
     public static final String ENDED_ON = "endedOn";
+    public static final String TARGET_IDS = "targetIds";
 }

@@ -11,14 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.execution;
 
+import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * {@link JobExecution} entity.
@@ -49,4 +54,10 @@ public interface JobExecution extends KapuaUpdatableEntity {
 
     void setEndedOn(Date endedOn);
 
+    @XmlElement(name = "targetIds")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    @ApiModelProperty(dataType = "string")
+    <I extends KapuaId> Set<I> getTargetIds();
+
+    void setTargetIds(Set<KapuaId> tagTargetIds);
 }
