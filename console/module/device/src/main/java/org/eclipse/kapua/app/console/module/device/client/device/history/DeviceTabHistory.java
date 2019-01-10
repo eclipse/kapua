@@ -12,7 +12,6 @@
 package org.eclipse.kapua.app.console.module.device.client.device.history;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
@@ -115,7 +114,6 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
         devicesHistoryPanel.setBodyBorder(true);
         devicesHistoryPanel.setHeaderVisible(false);
         devicesHistoryPanel.setLayout(new FitLayout());
-        devicesHistoryPanel.setScrollMode(Scroll.AUTO);
         devicesHistoryPanel.setTopComponent(toolBar);
         devicesHistoryPanel.add(grid);
         devicesHistoryPanel.setBottomComponent(pagingToolBar);
