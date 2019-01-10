@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -39,7 +39,6 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
@@ -218,11 +217,10 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
                     String errorMessage = htmlResult.substring(errorMessageStartIndex, errorMessageEndIndex);
 
                     if (UNDEFINED_ERROR.equals(errorMessage)) {
-                        errorMessage = DEVICE_MSGS.deviceConnectionError();
+                        errorMessage = DEVICE_MSGS.deviceCommandCommunicationError();
                     } else if (errorMessage.contains(INTERNAL_ERROR)) {
                         errorMessage = DEVICE_MSGS.deviceCommandExecutionErrorMessage();
                     }
-                    StyleInjector.inject(".x-window-dlg .ext-mb-icon {width: 50px; height: 50px;}"); 
                     MessageBox.alert(MSGS.error(), MSGS.commandExecutionFailure() + ":<br/>" + errorMessage, null).getDialog().addStyleName("x-window-dlg .ext-mb-icon" );
                     commandInput.unmask();
                 } else {
