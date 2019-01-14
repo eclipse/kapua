@@ -10,23 +10,11 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @integration
-@device
 @deviceRegistry
 @deviceEvents
 Feature: Device Event CRUD tests
     The Device Event service is responsible for handling the incoming device
     events.
-
-#Background:
-#    When I login as user with name "kapua-sys" and password "kapua-password"
-#    Given Scope with ID 12
-#    And I configure the device registry service
-#      | type    | name                   | value |
-#      | boolean | infiniteChildEntities  | true  |
-#      | integer | maxNumberChildEntities |  10   |
-#    And A device named "first"
-#    And A device named "second"
-#    And I logout
 
 Scenario: Create a regular event
     Create a regular event. The event should not be null and should

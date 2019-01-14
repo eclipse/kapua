@@ -14,7 +14,7 @@
 Feature: Domain Service tests
 
   Scenario: Count domains in a blank database
-  The default domain table must contain 8 preset entries.
+  The default domain table must contain 20 preset entries.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
     When I count the domain entries in the database

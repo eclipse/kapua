@@ -19,7 +19,9 @@ import cucumber.api.CucumberOptions;
 
 @RunWith(CucumberWithProperties.class)
 @CucumberOptions(
-        features = {"classpath:features/device/DeviceEventI9n.feature"
+        features = {"classpath:features/device/DeviceRegistryValidationI9n.feature",
+                    "classpath:features/device/DeviceRegistryI9n.feature",
+                    "classpath:features/device/DeviceEventI9n.feature"
                    },
         glue = {"org.eclipse.kapua.qa.common",
                 "org.eclipse.kapua.service.device.registry.steps",
