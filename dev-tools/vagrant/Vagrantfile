@@ -15,7 +15,7 @@ network_address = '192.168.33.10'
 # Environment variables used in the scripts
 env_vars = {
   'BINDING_IP'            => network_address,
-  'ELASTICSEARCH_VERSION' => '5.4.0',
+  'ELASTICSEARCH_VERSION' => '6.3.2',
   'H2DB_VERSION'          => '1.4.192',
   'ACTIVEMQ_VERSION'      => '5.14.5',
   'ARTEMIS_VERSION'       => '2.2.0',

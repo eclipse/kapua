@@ -23,7 +23,7 @@ import org.eclipse.kapua.service.elasticsearch.client.utils.InetAddressParser;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.cluster.ClusterName;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,7 +116,7 @@ public class TransportElasticsearchClientProvider implements ElasticsearchClient
                 InetAddressParser
                         .parseAddresses(getClientConfiguration().getNodes())
                         .stream()
-                        .map(InetSocketTransportAddress::new)
+                        .map(TransportAddress::new)
                         .forEachOrdered(internalElasticsearchTransportClient::addTransportAddress);
             } catch (Exception e) {
                 throw new ClientProviderInitException(e, "Error while parsing node addresses!");
