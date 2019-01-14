@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -104,13 +104,6 @@ public class DeviceTabPackagesInProgress extends TabItem {
         ColumnConfig column = new ColumnConfig();
         column.setId("operation");
         column.setHeader(MSGS.deviceInstallTabInProgressTableOperation());
-        column.setAlignment(HorizontalAlignment.CENTER);
-        column.setWidth(60);
-        column.setRenderer(renderer);
-        configs.add(column);
-
-        column.setId("id");
-        column.setHeader(MSGS.deviceInstallTabInProgressTableOperationId());
         column.setAlignment(HorizontalAlignment.CENTER);
         column.setWidth(60);
         column.setRenderer(renderer);
