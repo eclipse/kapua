@@ -48,7 +48,6 @@
         <cucumber.version>1.2.4</cucumber.version>
         <dropwizard-metrics.version>3.2.2</dropwizard-metrics.version>
         <eclipselink.version>2.7.7</eclipselink.version>
-        <elasticsearch.version>2.3.4</elasticsearch.version>
         <findbugs.version>2.0.1</findbugs.version>
         <gson.version>2.7</gson.version>
         <guava.version>27.1-jre</guava.version>
@@ -84,10 +83,9 @@
         <snakeyaml.version>1.15</snakeyaml.version>
         <cucumber.version>1.2.4</cucumber.version>
         <spotify.version>8.15.1</spotify.version>
-        <elasticsearch.version>5.3.0</elasticsearch.version>
-        <elasticsearch-client-transport.version>5.3.0</elasticsearch-client-transport.version>
-        <elasticsearch-client-rest.version>5.3.0</elasticsearch-client-rest.version>
-        <elasticsearch-netty-3.version>3.10.6.Final</elasticsearch-netty-3.version>
+        <elasticsearch.version>6.3.2</elasticsearch.version>
+        <elasticsearch-client-transport.version>6.3.2</elasticsearch-client-transport.version>
+        <elasticsearch-client-rest.version>6.3.2</elasticsearch-client-rest.version>
         <jackson.version>2.10.1</jackson.version> <!-- Elastic Search uses 2.8.6 -->
         <log4j-api.version>2.8.2</log4j-api.version> <!-- same version used by elasticsearch -->
         <log4j-to-slf4j.version>2.8.2</log4j-to-slf4j.version> <!-- same version used by elasticsearch -->
@@ -1423,24 +1421,24 @@
                 <version>${elasticsearch.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch-x-content</artifactId>
+                <version>${elasticsearch.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.elasticsearch.client</groupId>
                 <artifactId>transport</artifactId>
-                <version>${elasticsearch-client-transport.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.elasticsearch.client</groupId>
-                <artifactId>rest</artifactId>
-                <version>${elasticsearch-client-rest.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.elasticsearch.plugin</groupId>
-                <artifactId>transport-netty3-client</artifactId>
                 <version>${elasticsearch-client-transport.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.elasticsearch.plugin</groupId>
                 <artifactId>transport-netty4-client</artifactId>
                 <version>${elasticsearch-client-transport.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch.client</groupId>
+                <artifactId>elasticsearch-rest-client</artifactId>
+                <version>${elasticsearch-client-rest.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.elasticsearch.plugin</groupId>

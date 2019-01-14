@@ -204,14 +204,14 @@
                 <include>org.eclipse.persistence:org.eclipse.persistence.moxy</include>
                 <include>org.eclipse.persistence:org.eclipse.persistence.extension</include>
                 <include>org.eclipse.persistence:javax.persistence</include>
-                <include>org.elasticsearch.client:rest</include>
+                <include>org.elasticsearch.client:elasticsearch-rest-client</include>
                 <include>org.elasticsearch.client:transport</include>
                 <include>org.elasticsearch.plugin:lang-mustache-client</include>
                 <include>org.elasticsearch.plugin:percolator-client</include>
                 <include>org.elasticsearch.plugin:reindex-client</include>
-                <include>org.elasticsearch.plugin:transport-netty3-client</include>
                 <include>org.elasticsearch.plugin:transport-netty4-client</include>
                 <include>org.elasticsearch:elasticsearch</include>
+                <include>org.elasticsearch:elasticsearch-x-content</include>
                 <include>org.elasticsearch:securesm</include>
                 <include>org.hdrhistogram:HdrHistogram</include>
                 <include>org.javassist:javassist</include>
