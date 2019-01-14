@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -28,7 +29,6 @@ import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.scheduler.SchedulerDomains;
-import org.eclipse.kapua.service.scheduler.trigger.RetryIntervalAndCronSelectedException;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
@@ -98,7 +98,11 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         }
 
         if (triggerCreator.getRetryInterval() != null && triggerCreator.getCronScheduling() != null) {
-            throw new RetryIntervalAndCronSelectedException(triggerCreator.getScopeId());
+            throw new KapuaException(KapuaErrorCodes.RETRY_AND_CRON_BOTH_SELECTED);
+        }
+
+        if (triggerCreator.getStartsOn().equals(triggerCreator.getEndsOn()) && triggerCreator.getStartsOn().getTime() == (triggerCreator.getEndsOn().getTime())) {
+            throw new KapuaException(KapuaErrorCodes.SAME_START_AND_DATE);
         }
 
         //

@@ -97,4 +97,14 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
      */
     MAX_NUMBER_OF_ITEMS_REACHED,
 
+    /**
+     * Same values start and end date and time
+     */
+    SAME_START_AND_DATE,
+
+    /**
+     * retry interval and cron expression both selected
+     */
+    RETRY_AND_CRON_BOTH_SELECTED;
+
 }
