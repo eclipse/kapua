@@ -200,9 +200,9 @@ public class JbatchDriver {
 
         //
         // Check job running
-        if (isRunningJob(scopeId, jobId)) {
-            throw new JobExecutionIsRunningDriverException(JbatchDriver.getJbatchJobName(scopeId, jobId));
-        }
+//        if (isRunningJob(scopeId, jobId)) {
+//            throw new JobExecutionIsRunningDriverException(JbatchDriver.getJbatchJobName(scopeId, jobId));
+//        }
 
         //
         // Start job

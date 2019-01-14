@@ -18,7 +18,6 @@ import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.jbatch.driver.JbatchDriver;
 import org.eclipse.kapua.job.engine.jbatch.exception.CleanJobDataException;
-import org.eclipse.kapua.job.engine.jbatch.exception.JobAlreadyRunningException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobCheckRunningException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobInvalidTargetException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobNotRunningException;
@@ -114,12 +113,6 @@ public class JobEngineServiceJbatch implements JobEngineService {
         jobStepQuery.setPredicate(jobStepQuery.attributePredicate(JobStepAttributes.JOB_ID, jobId));
         if (JOB_STEP_SERVICE.count(jobStepQuery) <= 0) {
             throw new KapuaJobEngineException(KapuaJobEngineErrorCodes.JOB_STEP_MISSING);
-        }
-
-        //
-        // Check job running
-        if (JbatchDriver.isRunningJob(scopeId, jobId)) {
-            throw new JobAlreadyRunningException(scopeId, jobId);
         }
 
         //

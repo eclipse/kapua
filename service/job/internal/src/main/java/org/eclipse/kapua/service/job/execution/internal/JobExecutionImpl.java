@@ -46,11 +46,11 @@ public class JobExecutionImpl extends AbstractKapuaUpdatableEntity implements Jo
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "started_on", nullable = false, updatable = false)
-    public Date startedOn;
+    private Date startedOn;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "ended_on", nullable = true, updatable = true)
-    public Date endedOn;
+    private Date endedOn;
 
     @ElementCollection
     @CollectionTable(name = "job_job_execution_target", joinColumns = @JoinColumn(name = "execution_id", referencedColumnName = "id"))
