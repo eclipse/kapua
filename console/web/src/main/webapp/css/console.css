@@ -271,3 +271,11 @@ button::-moz-focus-inner, button::-moz-focus-outer, button:-moz-focusring, butto
 	display: block; 
 	overflow: hidden;
 }
+
+.x-form-cb-label, .x-form-item-label, .x-form-check-wrap {
+	pointer-events: none;
+}
+
+.x-form-radio {
+	pointer-events: all;
+}
