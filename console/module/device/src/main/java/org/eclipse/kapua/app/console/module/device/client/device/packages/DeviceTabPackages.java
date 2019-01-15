@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -57,6 +57,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
     private Button refreshButton;
     private Button installButton;
     private Button uninstallButton;
+    private SeparatorToolItem separator;
 
     private TabPanel tabsPanel;
     private DeviceTabPackagesInstalled installedPackageTab;
@@ -168,7 +169,8 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
         toolBar.add(refreshButton);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(installButton);
-        toolBar.add(new SeparatorToolItem());
+        separator = new SeparatorToolItem();
+        toolBar.add(separator);
         toolBar.add(uninstallButton);
 
         toolBar.disable();
@@ -190,6 +192,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
             @Override
             public void handleEvent(ComponentEvent be) {
+                showUninstallButton();
                 refresh();
             }
         });
@@ -205,6 +208,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
             @Override
             public void handleEvent(ComponentEvent be) {
+                hideUninstallButton();
                 refresh();
             }
         });
@@ -220,6 +224,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
             @Override
             public void handleEvent(ComponentEvent be) {
+                hideUninstallButton();
                 refresh();
             }
         });
@@ -393,5 +398,15 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
     public Button getInstallButton() {
         return installButton;
+    }
+
+    private void showUninstallButton() {
+        uninstallButton.show();
+        separator.show();
+    }
+
+    private void hideUninstallButton() {
+        uninstallButton.hide();
+        separator.hide();
     }
 }
