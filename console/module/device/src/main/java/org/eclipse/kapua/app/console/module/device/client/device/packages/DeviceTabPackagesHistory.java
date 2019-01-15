@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -118,15 +118,6 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         ColumnConfig column = new ColumnConfig();
-        column.setId("id");
-        column.setHeader(DEVICES_MSGS.deviceInstallTabHistoryTableId());
-        column.setAlignment(HorizontalAlignment.CENTER);
-        column.setWidth(60);
-        column.setSortable(false);
-        column.setHidden(true);
-        configs.add(column);
-
-        column = new ColumnConfig();
         column.setId("startedOnFormatted");
         column.setHeader(DEVICES_MSGS.deviceInstallTabHistoryTableStartedOn());
         column.setWidth(200);
