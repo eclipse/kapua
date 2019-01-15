@@ -13,7 +13,8 @@ package org.eclipse.kapua.app.console.module.job.server;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
+
+import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
@@ -37,6 +38,7 @@ import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetListResult;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
+
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
@@ -51,6 +53,8 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
     private static final JobTargetFactory JOB_TARGET_FACTORY = LOCATOR.getFactory(JobTargetFactory.class);
 
     private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
+
+    private GwtJobTarget gwtJobTarget;
 
     @Override
     public PagingLoadResult<GwtJobTarget> query(PagingLoadConfig loadConfig, GwtJobTargetQuery gwtJobTargetQuery) throws GwtKapuaException {
@@ -110,6 +114,7 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
         checkXSRFToken(xsrfToken);
         List<GwtJobTarget> existingTargets = findByJobId(scopeId, jobId, false);
         List<GwtJobTarget> gwtJobTargetList = new ArrayList<GwtJobTarget>();
+        List<Device> devices = new ArrayList<Device>();
         try {
             for (GwtJobTargetCreator gwtJobTargetCreator : gwtJobTargetCreatorList) {
                 if (findExtistingTarget(gwtJobTargetCreator.getJobTargetId(), existingTargets)) {
@@ -117,20 +122,22 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
                 }
                 Device device = DEVICE_REGISTRY_SERVICE.find(KapuaEid.parseCompactId(gwtJobTargetCreator.getScopeId()), KapuaEid.parseCompactId(gwtJobTargetCreator.getJobTargetId()));
                 if (device != null) {
-                    KapuaId creatorScopeId = KapuaEid.parseCompactId(gwtJobTargetCreator.getScopeId());
-                    JobTargetCreator jobTargetCreator = JOB_TARGET_FACTORY.newCreator(creatorScopeId);
-                    jobTargetCreator.setJobId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobTargetCreator.getJobId()));
-                    jobTargetCreator.setJobTargetId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobTargetCreator.getJobTargetId()));
-
-                    // Create the Job Target
-                    JobTarget jobTarget = JOB_TARGET_SERVICE.create(jobTargetCreator);
-
-                    // convert to GwtJobTarget and return
-                    gwtJobTargetList.add(KapuaGwtJobModelConverter.convertJobTarget(jobTarget));
-                    //
-                } else {
-                    throw new KapuaEntityNotFoundException(Device.TYPE, gwtJobTargetCreator.getClientId());
+                    devices.add(device);
                 }
+                KapuaId creatorScopeId = KapuaEid.parseCompactId(gwtJobTargetCreator.getScopeId());
+                JobTargetCreator jobTargetCreator = JOB_TARGET_FACTORY.newCreator(creatorScopeId);
+                jobTargetCreator.setJobId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobTargetCreator.getJobId()));
+                jobTargetCreator.setJobTargetId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobTargetCreator.getJobTargetId()));
+
+                // Create the Job Target
+                JobTarget jobTarget = JOB_TARGET_SERVICE.create(jobTargetCreator);
+
+                // convert to GwtJobTarget and return
+                gwtJobTargetList.add(KapuaGwtJobModelConverter.convertJobTarget(jobTarget));
+            }
+
+            if (devices.isEmpty()) {
+                throw new KapuaException(KapuaErrorCodes.DEVICE_NOT_FOUND);
             }
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
