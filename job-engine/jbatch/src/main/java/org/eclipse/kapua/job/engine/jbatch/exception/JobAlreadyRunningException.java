@@ -13,9 +13,11 @@ package org.eclipse.kapua.job.engine.jbatch.exception;
 
 import org.eclipse.kapua.model.id.KapuaId;
 
+import java.util.Set;
+
 public class JobAlreadyRunningException extends JobEngineException {
 
-    public JobAlreadyRunningException(KapuaId scopeId, KapuaId jobId) {
-        super(KapuaJobEngineErrorCodes.JOB_ALREADY_RUNNING, scopeId, jobId);
+    public JobAlreadyRunningException(KapuaId scopeId, KapuaId jobId, Set<KapuaId> jobTargetIdSubset) {
+        super(KapuaJobEngineErrorCodes.JOB_ALREADY_RUNNING, scopeId, jobId, jobTargetIdSubset);
     }
 }
