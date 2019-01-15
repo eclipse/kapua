@@ -9,7 +9,7 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@integration
+@unit
 @deviceRegistry
 @device
 Feature: Device Registry CRUD tests
@@ -20,7 +20,6 @@ Scenario: Create a single device
     Create a single test device. The resulting device must have a unique ID assigned
     by the creation process.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given The KAPUA-SYS scope
     And I configure the device registry service
         | type    | name                   | value |
@@ -28,13 +27,11 @@ Scenario: Create a single device
         | integer | maxNumberChildEntities |  10   |
     Given A device named "test_device"
     Then The device has a non-null ID
-    And I logout
 
 Scenario: All device parameters must match the device creator
     Create a test device and check whether it was created correctly. All the device
     parameters must match the device creator specifications.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given The KAPUA-SYS scope
     And I configure the device registry service
         | type    | name                   | value |
@@ -42,12 +39,10 @@ Scenario: All device parameters must match the device creator
         | integer | maxNumberChildEntities |  10   |
     Given A device named "test_device"
     Then The device matches the creator parameters
-    And I logout
 
 Scenario: Case sensitivness of named device searches
     Searching by client ID is case sensitive.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given The KAPUA-SYS scope
     And I configure the device registry service
         | type    | name                   | value |
@@ -55,12 +50,10 @@ Scenario: Case sensitivness of named device searches
         | integer | maxNumberChildEntities |  10   |
     Given A device named "CaseSensitiveTestName"
     Then Named device registry searches are case sensitive
-    And I logout
 
 Scenario: Find device by registry ID
     It must be possible to find a device in the registry by its registry ID.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given The KAPUA-SYS scope
     And I configure the device registry service
         | type    | name                   | value |
@@ -69,12 +62,10 @@ Scenario: Find device by registry ID
     Given A device named "TestDevice"
     When I search for a device with the remembered ID
     Then The device matches the creator parameters
-    And I logout
 
 Scenario: Find device by client ID
     It must be possible to find a device in the registry by its Client ID.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given The KAPUA-SYS scope
     And I configure the device registry service
         | type    | name                   | value |
@@ -82,13 +73,11 @@ Scenario: Find device by client ID
         | integer | maxNumberChildEntities |  10   |
     Given A device named "TestDevice"
     Then It is possible to find the device based on its client ID
-    And I logout
 
 Scenario: Try to find a device with an invalid registry ID
     Searching for a nonexistent device should not raise any exception. Only a null
     device should be returned.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given The KAPUA-SYS scope
     And I configure the device registry service
         | type    | name                   | value |
@@ -96,13 +85,11 @@ Scenario: Try to find a device with an invalid registry ID
         | integer | maxNumberChildEntities |  10   |
     When I search for a device with a random ID
     Then There is no such device
-    And I logout
 
 Scenario: Try to find a device with an invalid client ID
     Searching for a nonexistent device should not raise any exception. Only a null
     device should be returned.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given The KAPUA-SYS scope
     And I configure the device registry service
         | type    | name                   | value |
@@ -110,14 +97,12 @@ Scenario: Try to find a device with an invalid client ID
         | integer | maxNumberChildEntities |  10   |
     When I search for a device with a random client ID
     Then There is no such device
-    And I logout
 
 Scenario: Device query - find by BIOS version
     It must be possible to construct arbitrary device registry queries. In this case
     several test devices are created with different BIOS version values.
     A query based on the BIOS version must only return the corect device.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given The KAPUA-SYS scope
     And I configure the device registry service
         | type    | name                   | value |
@@ -129,12 +114,10 @@ Scenario: Device query - find by BIOS version
     When I query for devices with BIOS version "1.2.0"
     And I extract the first device
     Then The device client id is "TestDevice2"
-    And I logout
 
 Scenario: Device queries
     Test several variants of device registry queries.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given The KAPUA-SYS scope
     And I configure the device registry service
         | type    | name                   | value |
@@ -152,14 +135,12 @@ Scenario: Device queries
     Then I find 201 devices
     When I query for devices with Client Id "TestDevice"
     Then I find 1 device
-    And I logout
 
 Scenario: Count devices in a specific scope
     It must be possible to count all the devices in a specific scope.
     To this end several devices are created in 3 different scopes. When
     counted, only the number of devices in the specified scope must be returned.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given The KAPUA-SYS scope
     When I configure the device registry service
         | type    | name                       | value | scopeId |
@@ -180,7 +161,6 @@ Scenario: Count devices in a specific scope
     Then I count 30
     When I count the devices in scope 5
     Then I count 20
-    And I logout
 
 Scenario: Count devices with a specific BIOS version
     It must be possible to count devices based on arbitrary rules.
@@ -189,7 +169,6 @@ Scenario: Count devices with a specific BIOS version
     the number of devices that match the specified BIOS version is
     returned.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given The KAPUA-SYS scope
     And I configure the device registry service
         | type    | name                   | value |
@@ -200,12 +179,10 @@ Scenario: Count devices with a specific BIOS version
     Given I create 35 randomly named devices with BIOS version "1.3.0"
     When I count devices with BIOS version "1.2.0"
     Then I count 25
-    And I logout
 
 Scenario: Update an existing device
     Most of the parameters of an existing device are updatable.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given The KAPUA-SYS scope
     And I configure the device registry service
         | type    | name                   | value |
@@ -214,13 +191,11 @@ Scenario: Update an existing device
     Given A device named "TestDevice"
     When I update some device parameters
     Then The device was correctly updated
-    And I logout
 
 Scenario: Try to update the device client ID
     The Client ID of a defice cannot be changed after creation. Any attempt to
     alter this ID must be silently ignored. No exception must be raised.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given The KAPUA-SYS scope
     And I configure the device registry service
         | type    | name                   | value |
@@ -229,12 +204,10 @@ Scenario: Try to update the device client ID
     Given A device named "TestDevice"
     When I update the device cleint ID to "NewClientId"
     Then The client ID was not changed
-    And I logout
 
 Scenario: Update a non existing device
     An attempt to update a non existing device should raise an exception.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given The KAPUA-SYS scope
     And I configure the device registry service
         | type    | name                   | value |
@@ -244,14 +217,12 @@ Scenario: Update a non existing device
     And I expect the exception "KapuaEntityNotFoundException" with the text "The entity of type device with id/name"
     When I update a device with an invalid ID
     Then An exception was thrown
-    And I logout
 
 Scenario: Delete an existing device from the registry
     It must be possible to delete a device from theregistry. To this
     end a test device is created and subsequently deleted.
     A search for this device should yield a null but no exception.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given The KAPUA-SYS scope
     And I configure the device registry service
         | type    | name                   | value |
@@ -260,13 +231,11 @@ Scenario: Delete an existing device from the registry
     Given A device named "TestDevice"
     When I delete the device with the cleint id "TestDevice"
     Then There is no device with the client ID "TestDevice"
-    And I logout
 
 Scenario: Try to delete a non existing device from the registry
     If a user tries to delete a non existing device from the registry an
     exception must be raised.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given The KAPUA-SYS scope
     And I configure the device registry service
         | type    | name                   | value |
@@ -275,7 +244,6 @@ Scenario: Try to delete a non existing device from the registry
     Given I expect the exception "KapuaEntityNotFoundException" with the text "The entity of type DeviceImpl with id/name"
     When I delete a device with random IDs
     Then An exception was thrown
-    And I logout
 
 Scenario: Device factory sanity checks
     The Account factory must instantiate and return valid items. For this test it is enough

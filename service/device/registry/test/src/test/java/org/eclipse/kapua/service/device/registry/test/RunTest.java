@@ -18,7 +18,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(CucumberWithProperties.class)
 @CucumberOptions(
-        features = { "classpath:features/DeviceConnection.feature"
+        features = { "classpath:features/DeviceRegistryConnection.feature"
                    },
         glue = { "org.eclipse.kapua.service.device.registry.steps",
                  "org.eclipse.kapua.qa.common"

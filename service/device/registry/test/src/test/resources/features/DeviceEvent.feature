@@ -9,7 +9,7 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@integration
+@unit
 @deviceRegistry
 @deviceEvents
 Feature: Device Event CRUD tests
@@ -21,7 +21,6 @@ Scenario: Create a regular event
     have a regular entity ID. Also the event entity shoould match the event
     creator parameters.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 12
     And I configure the device registry service
         | type    | name                   | value |
@@ -35,13 +34,11 @@ Scenario: Create a regular event
     And A "CREATE" event from device "first"
     Then No exception was thrown
     And The event matches the creator parameters
-    And I logout
 
 Scenario: Create an event with a null scope ID
     It should be impossible to create an event with a null scope ID. Such attempt
     must raise an exception.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 12
     And I configure the device registry service
         | type    | name                   | value |
@@ -54,13 +51,11 @@ Scenario: Create an event with a null scope ID
     And I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When A "CREATE" event from device "first"
     Then An exception was thrown
-    And I logout
 
 Scenario: Create an event with a null action
     The database should reject any ebvent entity that has a null action parameter.
     In such cases an exception must be thrown.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 12
     And I configure the device registry service
         | type    | name                   | value |
@@ -73,12 +68,10 @@ Scenario: Create an event with a null action
     And An event creator with null action
     When I create an event from the existing creator
     Then An exception was thrown
-    And I logout
 
 Scenario: Find an event by its ID
     It must be possible to find an event entity based on the event ID.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 12
     And I configure the device registry service
         | type    | name                   | value |
@@ -90,13 +83,11 @@ Scenario: Find an event by its ID
     And A "CREATE" event from device "first"
     When I search for an event with the remembered ID
     Then The event matches the creator parameters
-    And I logout
 
 Scenario: Find a non existing event
     Searching for an event with a non existing entity ID should return null. No
     exception must be thrown.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 12
     And I configure the device registry service
         | type    | name                   | value |
@@ -108,12 +99,10 @@ Scenario: Find a non existing event
     And A "CREATE" event from device "first"
     When I search for an event with a random ID
     Then There is no such event
-    And I logout
 
 Scenario: Delete an existing event
     It must be possible to delete an existing event entity from the database.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 12
     And I configure the device registry service
         | type    | name                   | value |
@@ -128,13 +117,11 @@ Scenario: Delete an existing event
     When I delete the event with the remembered ID
     And I search for an event with the remembered ID
     Then There is no such event
-    And I logout
 
 Scenario: Delete a non existent event
     Trying to delete a non existent event (no matching entity ID) must cause an
     exception to be thrown.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 12
     And I configure the device registry service
         | type    | name                   | value |
@@ -147,13 +134,11 @@ Scenario: Delete a non existent event
     And A "CREATE" event from device "first"
     When I delete an event with a random ID
     Then An exception was thrown
-    And I logout
 
 Scenario: Count events in scope
     It must be possible to count all events in a given scope. Only the events for this
     scope should counted, all other events must be ignored.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 12
     And I configure the device registry service
         | type    | name                   | value |
@@ -173,13 +158,11 @@ Scenario: Count events in scope
     And I have 25 "READ" events from device "third"
     When I count events for scope 12
     Then I count 15
-    And I logout
 
 Scenario: Count events in empty scope
     Counting events in an empty (non existing) scope must return a count of 0. No
     exception must be thrown.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 12
     And I configure the device registry service
         | type    | name                   | value |
@@ -191,12 +174,10 @@ Scenario: Count events in empty scope
     And I have 15 "CREATE" events from device "first"
     When I count events for scope 42
     Then I count 0
-    And I logout
 
 Scenario: Basic Device Event queries
     It must be possible to perform basic event entity queries.
 
-    When I login as user with name "kapua-sys" and password "kapua-password"
     Given Scope with ID 12
     And I configure the device registry service
         | type    | name                   | value |
@@ -212,7 +193,6 @@ Scenario: Basic Device Event queries
     Then I find 15 device events
     When I query for "WRITE" events
     Then I find 10 device events
-    And I logout
 
 Scenario: Event factory sanity checks
     Then All device event factory functions must return non null objects
