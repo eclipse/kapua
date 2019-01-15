@@ -23,6 +23,14 @@
     <packaging>pom</packaging>
     <artifactId>kapua-qa</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-rest-api-web</artifactId>
+            <type>war</type>
+        </dependency>
+    </dependencies>
+
     <modules>
         <module>common</module>
         <module>integration</module>
