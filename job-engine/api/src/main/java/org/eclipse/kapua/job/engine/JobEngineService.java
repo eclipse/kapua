@@ -50,11 +50,11 @@ public interface JobEngineService extends KapuaService {
     boolean isRunning(KapuaId scopeId, KapuaId jobId) throws KapuaException;
 
     /**
-     * Stops the {@link org.eclipse.kapua.service.job.Job}.
+     * Stops all the running {@link org.eclipse.kapua.service.job.execution.JobExecution} of the {@link org.eclipse.kapua.service.job.Job}.
      * <p>
-     * This method does not wait fot the {@link org.eclipse.kapua.service.job.Job} to completely stop.
-     * It ask the {@link org.eclipse.kapua.service.job.Job} to stop but it can take some time to completely stop,
-     * depending on the current status of the {@link org.eclipse.kapua.service.job.Job}.
+     * This method does not wait for the {@link org.eclipse.kapua.service.job.execution.JobExecution} to completely stop.
+     * It ask the {@link org.eclipse.kapua.service.job.execution.JobExecution} to stop but it can take some time to completely stop,
+     * depending on the current status of the {@link org.eclipse.kapua.service.job.execution.JobExecution}.
      * <p>
      * {@link JobEngineService#isRunning(KapuaId, KapuaId)} can be used to check the actual running status of the {@link org.eclipse.kapua.service.job.Job}
      *
