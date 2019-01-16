@@ -242,7 +242,7 @@ public class DeviceConfigComponents extends LayoutContainer {
             protected void load(Object loadConfig, AsyncCallback<List<GwtConfigComponent>> callback) {
                 if (selectedDevice != null && dirty && initialized) {
                     if (selectedDevice.isOnline()) {
-                        tree.mask(MSGS.loading());
+                        configPanel.mask(MSGS.loading());
                         gwtDeviceManagementService.findDeviceConfigurations(selectedDevice, callback);
                     } else {
                         List<GwtConfigComponent> comps = new ArrayList<GwtConfigComponent>();
@@ -481,8 +481,7 @@ public class DeviceConfigComponents extends LayoutContainer {
                         Dialog dialog = ce.getDialog();
                         if (dialog.yesText.equals(ce.getButtonClicked().getText())) {
 
-                            finalDevConfPanel.mask(MSGS.applying());
-                            tree.mask();
+                            configPanel.mask(MSGS.loading());
                             apply.setEnabled(false);
                             reset.setEnabled(false);
                             refreshButton.setEnabled(false);
@@ -621,7 +620,7 @@ public class DeviceConfigComponents extends LayoutContainer {
             if (le.exception != null) {
                 FailureHandler.handle(le.exception);
             }
-            tree.unmask();
+            configPanel.unmask();
             refreshButton.enable();
         }
 
@@ -641,7 +640,7 @@ public class DeviceConfigComponents extends LayoutContainer {
             treeStore.removeAll();
             treeStore.add(comps, false);
 
-            tree.unmask();
+            configPanel.unmask();
             refreshButton.enable();
         }
     }
