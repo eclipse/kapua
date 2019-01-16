@@ -276,6 +276,6 @@ button::-moz-focus-inner, button::-moz-focus-outer, button:-moz-focusring, butto
 	pointer-events: none;
 }
 
-.x-form-radio {
+.x-form-radio, .x-form-checkbox {
 	pointer-events: all;
 }
