@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -81,6 +81,9 @@ public class KapuaExceptionHandler {
         } else if (t instanceof KapuaException && ((KapuaException) t).getCode().equals(KapuaErrorCodes.INTERNAL_ERROR)) {
             logger.error("internal service error", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, t, t.getLocalizedMessage());
+        } else if ( t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.END_BEFORE_START_TIME_ERROR.name())) {
+            logger.error("End before start time error");
+            throw new GwtKapuaException(GwtKapuaErrorCode.END_BEFORE_START_TIME_ERROR, t, t.getLocalizedMessage());
         } else if(t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.PARENT_LIMIT_EXCEEDED_IN_CONFIG.name())) {
             logger.warn("Child accounts limitation error", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.PARENT_LIMIT_EXCEEDED_IN_CONFIG, t, t.getLocalizedMessage());
