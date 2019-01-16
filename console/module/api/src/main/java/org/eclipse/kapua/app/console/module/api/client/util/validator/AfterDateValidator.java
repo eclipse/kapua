@@ -17,12 +17,12 @@ import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.module.api.client.messages.ValidationMessages;
 
-public class BeforeDateValidator implements Validator {
+public class AfterDateValidator implements Validator {
 
     private final DateField otherDateField;
     private static final ValidationMessages VAL_MSGS = GWT.create(ValidationMessages.class);
 
-    public BeforeDateValidator(DateField otherDateField) {
+    public AfterDateValidator(DateField otherDateField) {
         this.otherDateField = otherDateField;
     }
 
@@ -30,12 +30,13 @@ public class BeforeDateValidator implements Validator {
     public String validate(Field<?> field, String s) {
         if (otherDateField.getValue() != null) {
             DateField thisDateField = (DateField) field;
-            if (thisDateField.getValue().after(otherDateField.getValue())) {
+            if (thisDateField.getValue().before(otherDateField.getValue())) {
                 otherDateField.clearInvalid();
             } else {
-                return VAL_MSGS.endsOnDateEarlierThanStartsOn();
+                return VAL_MSGS.startsOnDateLaterThanEndsOn();
             }
         }
         return null;
     }
 }
+

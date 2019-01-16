@@ -11,16 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.client.schedule;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.form.TimeField;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ValidationMessages;
@@ -32,6 +25,8 @@ import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.client.util.validator.AfterDateValidator;
+import org.eclipse.kapua.app.console.module.api.client.util.validator.BeforeDateValidator;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
 import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTrigger;
@@ -39,10 +34,16 @@ import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTrigge
 import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTriggerProperty;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtTriggerService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtTriggerServiceAsync;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.TimeField;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class JobScheduleAddDialog extends EntityAddEditDialog {
 
@@ -113,6 +114,8 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         startsOn.setEmptyText(JOB_MSGS.dialogAddScheduleDatePlaceholder());
         startsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         startsOn.setToolTip(JOB_MSGS.dialogAddScheduleStartsOnTooltip());
+        startsOn.setValidator(new AfterDateValidator(endsOn));
+
         startsOn.getDatePicker().addListener(Events.Select, listener);
         startsOnLabel.setText("* " + JOB_MSGS.dialogAddScheduleStartsOnLabel());
         startsOnLabel.setWidth(FORM_LABEL_WIDTH);
@@ -140,6 +143,8 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         endsOn.setToolTip(JOB_MSGS.dialogAddScheduleEndsOnTooltip());
         endsOnLabel.setText(JOB_MSGS.dialogAddScheduleEndsOnLabel());
         endsOnLabel.setStyleAttribute("margin-left", "10px");
+        endsOn.setValidator(new BeforeDateValidator(startsOn));
+
         endsOnLabel.setWidth(FORM_LABEL_WIDTH);
         endsOnLabel.setStyleAttribute("padding", "0px 96px 0px 0px");
         endsOn.getDatePicker().addListener(Events.Select, listener);
@@ -224,6 +229,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
                 } else {
                     endsOn.clearInvalid();
                     endsOnTime.clearInvalid();
+                    startsOn.clearInvalid();
                 }
             }
         } else {
