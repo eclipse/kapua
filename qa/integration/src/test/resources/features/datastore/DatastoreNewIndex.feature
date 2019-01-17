@@ -186,7 +186,7 @@ Feature: Datastore tests
       | integer | lockoutPolicy.maxFailures  | 3     |
       | integer | lockoutPolicy.resetAfter   | 300   |
       | integer | lockoutPolicy.lockDuration | 3     |
-    And I configure the device service
+    And I configure the device registry service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities |  10   |

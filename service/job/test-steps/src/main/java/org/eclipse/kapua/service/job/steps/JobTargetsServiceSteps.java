@@ -34,6 +34,7 @@ import org.eclipse.kapua.qa.common.CucConfig;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
+import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -158,7 +159,7 @@ public class JobTargetsServiceSteps extends TestBase {
         }
 
         // Setup JAXB context
-        XmlUtil.setContextProvider(new JobJAXBContextProvider());
+        XmlUtil.setContextProvider(new TestJAXBContextProvider());
     }
 
     @After

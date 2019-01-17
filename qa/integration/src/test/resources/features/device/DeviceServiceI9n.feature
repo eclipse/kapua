@@ -9,8 +9,8 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@device
 @integration
+@deviceRegistry
 Feature: Device Registry Integration
     Device Registy integration test scenarios. These scenarios test higher level device service functionality
     with all services live.
@@ -32,6 +32,7 @@ Feature: Device Registry Integration
   Scenario: Start broker for all scenarios
 
     Given Start Broker
+
 Scenario: Birth message handling from a new device
     A birth message is received. The referenced device does not yet exist and is created on-the-fly. After the
     message is processed a new device must be created and a BIRTH event inserted in the database.
@@ -51,7 +52,7 @@ Scenario: Birth message handling from a new device
     Given User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | UserA   | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And I configure the device service
+    And I configure the device registry service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities |  10   |
@@ -59,7 +60,7 @@ Scenario: Birth message handling from a new device
     When I search for the device "device_1" in account "AccountA"
     Then I find 1 device
     When I search for events from device "device_1" in account "AccountA"
-    Then I find 1 event
+    Then I find 1 device event
     And The type of the last event is "BIRTH"
     And I logout
 
@@ -82,7 +83,7 @@ Scenario: Birth message handling from an existing device
     Given User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | UserA   | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And I configure the device service
+    And I configure the device registry service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities |  10   |
@@ -91,7 +92,7 @@ Scenario: Birth message handling from an existing device
       | device_1 | testGateway | ReliaGate 10-20 | 12341234ABC  |
     And A birth message from device "device_1"
     When I search for events from device "device_1" in account "AccountA"
-    Then I find 1 event
+    Then I find 1 device event
     And The type of the last event is "BIRTH"
     And I logout
 
@@ -114,14 +115,14 @@ Scenario: Handling of 2 birth messages
     Given User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | UserA   | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And I configure the device service
+    And I configure the device registry service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities |  10   |
     And A birth message from device "device_1"
     And A birth message from device "device_1"
     When I search for events from device "device_1" in account "AccountA"
-    Then I find 2 events
+    Then I find 2 device events
     And The type of the last event is "BIRTH"
     And I logout
 
@@ -143,7 +144,7 @@ Scenario: Handling of a disconnect message from a non existing device
     Given User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | UserA   | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And I configure the device service
+    And I configure the device registry service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities |  10   |
@@ -173,14 +174,14 @@ Scenario: Birth and death message handling
     Given User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | UserA   | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And I configure the device service
+    And I configure the device registry service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities |  10   |
     Given A birth message from device "device_1"
     And A disconnect message from device "device_1"
     When I search for events from device "device_1" in account "AccountA"
-    Then I find 2 events
+    Then I find 2 device events
     And The type of the last event is "DEATH"
     And I logout
 
@@ -205,14 +206,14 @@ Scenario: Birth and missing event handling
     Given User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | UserA   | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And I configure the device service
+    And I configure the device registry service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities |  10   |
     Given A birth message from device "device_1"
     And A missing message from device "device_1"
     When I search for events from device "device_1" in account "AccountA"
-    Then I find 2 events
+    Then I find 2 device events
     And The type of the last event is "MISSING"
     And I logout
 
@@ -237,14 +238,14 @@ Scenario: Birth and applications event handling
     Given User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | UserA   | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And I configure the device service
+    And I configure the device registry service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities |  10   |
     Given A birth message from device "device_1"
     And An application message from device "device_1"
     When I search for events from device "device_1" in account "AccountA"
-    Then I find 2 events
+    Then I find 2 device events
     And The type of the last event is "APPLICATION"
     And I logout
 
@@ -263,7 +264,7 @@ Scenario: Creating new device and tagging it with specific Tag
     Given User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | UserA   | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And I configure the device service
+    And I configure the device registry service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities |  10   |
@@ -295,7 +296,7 @@ Scenario: Creating new device, tagging it with specific Tag and then deleting th
     Given User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | UserA   | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And I configure the device service
+    And I configure the device registry service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities |  10   |

@@ -9,19 +9,30 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service;
+package org.eclipse.kapua.qa.common;
 
 import javax.xml.bind.JAXBContext;
 
-import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.broker.core.router.EndChainEndPoint;
+import org.eclipse.kapua.broker.core.router.EndPointContainer;
+import org.eclipse.kapua.broker.core.router.ParentEndPoint;
+import org.eclipse.kapua.broker.core.router.SimpleEndPoint;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
+import org.eclipse.kapua.model.config.metatype.KapuaTdesignate;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
 import org.eclipse.kapua.model.config.metatype.KapuaTmetadata;
+import org.eclipse.kapua.model.config.metatype.KapuaTobject;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.config.metatype.KapuaToption;
 import org.eclipse.kapua.model.config.metatype.MetatypeXmlRegistry;
+import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountCreator;
+import org.eclipse.kapua.service.account.AccountListResult;
+import org.eclipse.kapua.service.account.AccountXmlRegistry;
+import org.eclipse.kapua.service.account.Organization;
+import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundle;
 import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundles;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceComponentConfiguration;
@@ -36,6 +47,17 @@ import org.eclipse.kapua.service.device.management.configuration.DeviceComponent
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
+import org.eclipse.kapua.service.job.Job;
+import org.eclipse.kapua.service.job.JobListResult;
+import org.eclipse.kapua.service.job.JobXmlRegistry;
+import org.eclipse.kapua.service.tag.Tag;
+import org.eclipse.kapua.service.tag.TagListResult;
+import org.eclipse.kapua.service.tag.TagXmlRegistry;
+import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserCreator;
+import org.eclipse.kapua.service.user.UserListResult;
+import org.eclipse.kapua.service.user.UserQuery;
+import org.eclipse.kapua.service.user.UserXmlRegistry;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 
 /**
@@ -49,10 +71,21 @@ public class TestJAXBContextProvider implements JAXBContextProvider {
     private JAXBContext context;
 
     @Override
-    public JAXBContext getJAXBContext() throws KapuaException {
+    public JAXBContext getJAXBContext() {
         try {
             if (context == null) {
                 context = JAXBContextFactory.createContext(new Class<?>[]{
+                        // General
+                        KapuaTmetadata.class,
+                        KapuaTocd.class,
+                        KapuaTad.class,
+                        KapuaTicon.class,
+                        TscalarImpl.class,
+                        KapuaToption.class,
+                        KapuaTdesignate.class,
+                        KapuaTobject.class,
+                        MetatypeXmlRegistry.class,
+                        // Device
                         KuraDeviceComponentConfiguration.class,
                         KuraDeviceConfiguration.class,
                         KuraDeploymentPackage.class,
@@ -67,13 +100,33 @@ public class TestJAXBContextProvider implements JAXBContextProvider {
                         DeviceComponentConfiguration.class,
                         KuraSnapshotIds.class,
                         DeviceSnapshots.class,
-                        KapuaTocd.class,
-                        KapuaTad.class,
-                        KapuaTicon.class,
-                        KapuaToption.class,
-                        TscalarImpl.class,
-                        MetatypeXmlRegistry.class,
-                        KapuaTmetadata.class
+                        // Authorization
+                        AccessToken.class,
+                        // User
+                        User.class,
+                        UserCreator.class,
+                        UserListResult.class,
+                        UserQuery.class,
+                        UserXmlRegistry.class,
+                        // Account
+                        Account.class,
+                        AccountCreator.class,
+                        AccountListResult.class,
+                        Organization.class,
+                        AccountXmlRegistry.class,
+                        // Tag
+                        Tag.class,
+                        TagListResult.class,
+                        TagXmlRegistry.class,
+                        // Jobs
+                        Job.class,
+                        JobListResult.class,
+                        JobXmlRegistry.class,
+                        // Broker core
+                        EndPointContainer.class,
+                        SimpleEndPoint.class,
+                        ParentEndPoint.class,
+                        EndChainEndPoint.class
                 }, null);
             }
             return context;

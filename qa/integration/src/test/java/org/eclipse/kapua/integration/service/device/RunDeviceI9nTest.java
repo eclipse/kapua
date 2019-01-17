@@ -25,7 +25,8 @@ import cucumber.api.CucumberOptions;
                 "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.service.device.steps",
-                "org.eclipse.kapua.service.tag.steps"
+                "org.eclipse.kapua.service.tag.steps",
+                "org.eclipse.kapua.service.device.registry.steps"
                },
         plugin = {"pretty", 
                   "html:target/cucumber/DeviceI9n",

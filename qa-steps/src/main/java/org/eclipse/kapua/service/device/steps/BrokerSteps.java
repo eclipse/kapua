@@ -24,9 +24,11 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.qa.common.DBHelper;
+import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.utils.EmbeddedBroker;
 import org.eclipse.kapua.qa.common.StepData;
-import org.eclipse.kapua.service.TestJAXBContextProvider;
+import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
@@ -65,7 +67,7 @@ import org.junit.Assert;
  * commands on Mocked Kura.
  */
 @ScenarioScoped
-public class BrokerSteps extends Assert {
+public class BrokerSteps extends TestBase {
 
     /**
      * Embedded broker configuration file from classpath resources.
@@ -136,15 +138,19 @@ public class BrokerSteps extends Assert {
     /**
      * Scenario scoped step data.
      */
-    private StepData stepData;
+//    private StepData stepData;
 
     @Inject
-    public BrokerSteps(/* dependency */ EmbeddedBroker broker, StepData stepData) {
+    public BrokerSteps(/* dependency */ EmbeddedBroker broker, DBHelper database, StepData stepData) {
+
         this.stepData = stepData;
+        this.database = database;
     }
 
     @Before
     public void beforeScenario(Scenario scenario) throws Exception {
+
+        this.scenario = scenario;
 
         BrokerSetting.resetInstance();
 

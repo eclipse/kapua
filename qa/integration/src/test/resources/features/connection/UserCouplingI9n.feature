@@ -23,6 +23,7 @@ Feature: User Coupling
 
   Scenario: Test LOOSE user coupling on single connection
 
+    When I login as user with name "kapua-sys" and password "kapua-password"
     Given Account
       | name        | scopeId |
       | test-acc-1  | 1       |
@@ -63,6 +64,7 @@ Feature: User Coupling
 
   Scenario: New connection with reserved ID
 
+    When I login as user with name "kapua-sys" and password "kapua-password"
     Given Account
       | name        | scopeId |
       | test-acc-1  | 1       |
@@ -110,6 +112,7 @@ Feature: User Coupling
 
   Scenario: Test STRICT user coupling on single connection
 
+    When I login as user with name "kapua-sys" and password "kapua-password"
     Given Account
       | name        | scopeId |
       | test-acc-1  | 1       |
@@ -147,6 +150,7 @@ Feature: User Coupling
 
   Scenario: Test STRICT user coupling with user change allowed on single connection
 
+    When I login as user with name "kapua-sys" and password "kapua-password"
     Given Account
       | name        | scopeId |
       | test-acc-1  | 1       |
@@ -197,6 +201,7 @@ Feature: User Coupling
 
   Scenario: Test LOOSE user coupling with 3 connections
 
+    When I login as user with name "kapua-sys" and password "kapua-password"
     Given Account
       | name        | scopeId |
       | test-acc-1  | 1       |
@@ -253,6 +258,7 @@ Feature: User Coupling
 
   Scenario: Test STRICT user coupling with 3 connections and a reserved user
 
+    When I login as user with name "kapua-sys" and password "kapua-password"
     Given Account
       | name       | scopeId |
       | test-acc-1 | 1       |
@@ -338,6 +344,7 @@ Feature: User Coupling
 
   Scenario: Extra long continuous test with multiple subscenarios with LOOSE default connection mode
 
+    When I login as user with name "kapua-sys" and password "kapua-password"
     Given Account
       | name        | scopeId |
       | test-acc-1  | 1       |
@@ -833,6 +840,7 @@ Feature: User Coupling
 
   Scenario: Extra long continuous test with multiple subscenarios with STRICT default connection mode
 
+    When I login as user with name "kapua-sys" and password "kapua-password"
     Given Account
       | name       | scopeId |
       | test-acc-1 | 1       |
@@ -1304,6 +1312,7 @@ Feature: User Coupling
 
   Scenario: Extra long continuous test with multiple subscenarios with STRICT default connection mode and no previously defined devices
 
+    When I login as user with name "kapua-sys" and password "kapua-password"
     Given Account
       | name       | scopeId |
       | test-acc-1 | 1       |

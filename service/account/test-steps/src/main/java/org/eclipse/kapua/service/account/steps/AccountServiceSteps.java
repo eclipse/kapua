@@ -43,6 +43,7 @@ import org.eclipse.kapua.qa.common.CucConfig;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
+import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountFactory;
@@ -53,7 +54,6 @@ import org.eclipse.kapua.service.account.Organization;
 import org.eclipse.kapua.service.account.internal.AccountEntityManagerFactory;
 import org.eclipse.kapua.service.account.internal.AccountFactoryImpl;
 import org.eclipse.kapua.service.account.internal.AccountServiceImpl;
-import org.eclipse.kapua.service.account.internal.AccountsJAXBContextProvider;
 import org.eclipse.kapua.service.account.internal.KapuaAccountException;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
@@ -166,7 +166,7 @@ public class AccountServiceSteps extends TestBase {
             KapuaSecurityUtils.setSession(kapuaSession);
         }
 
-        XmlUtil.setContextProvider(new AccountsJAXBContextProvider());
+        XmlUtil.setContextProvider(new TestJAXBContextProvider());
     }
 
     @After

@@ -24,14 +24,17 @@ import cucumber.api.CucumberOptions;
         glue = {"org.eclipse.kapua.qa.common",
                 "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps",
+                "org.eclipse.kapua.service.tag.steps",
+                "org.eclipse.kapua.service.device.registry.steps",
                 "org.eclipse.kapua.service.device.steps"
-               },
-        plugin = {"pretty", 
-                  "html:target/cucumber/DeviceBrokerI9n",
-                  "json:target/DeviceBrokerI9n_cucumber.json"
-                 },
+        },
+        plugin = {"pretty",
+                "html:target/cucumber/DeviceBrokerI9n",
+                "json:target/DeviceBrokerI9n_cucumber.json"
+        },
         strict = true,
         monochrome = true )
 @CucumberProperty(key="broker.ip", value="localhost")
 @CucumberProperty(key="kapua.config.url", value="")
 public class RunDeviceBrokerI9nTest {}
+

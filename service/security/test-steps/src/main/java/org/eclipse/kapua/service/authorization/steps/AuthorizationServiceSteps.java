@@ -36,8 +36,8 @@ import org.eclipse.kapua.qa.common.CucConfig;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
+import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.authorization.AuthorizationJAXBContextProvider;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoAttributes;
@@ -238,7 +238,7 @@ public class AuthorizationServiceSteps extends TestBase {
             KapuaSecurityUtils.setSession(kapuaSession);
         }
 
-        XmlUtil.setContextProvider(new AuthorizationJAXBContextProvider());
+        XmlUtil.setContextProvider(new TestJAXBContextProvider());
     }
 
     @After

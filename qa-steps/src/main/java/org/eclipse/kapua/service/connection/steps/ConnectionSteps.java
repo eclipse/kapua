@@ -28,7 +28,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
-import org.eclipse.kapua.service.TestJAXBContextProvider;
+import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
@@ -242,26 +242,6 @@ public class ConnectionSteps extends TestBase {
             }
             stepData.put("DeviceConnectionList", tmpConnLst);
         });
-    }
-
-    @Then("^I find (\\d+) connections?$")
-    public void countNumberOfConnections(int cnt) {
-
-        DeviceConnectionListResult tmpConnLst = (DeviceConnectionListResult) stepData.get("DeviceConnectionList");
-        Assert.assertEquals(cnt, tmpConnLst.getSize());
-    }
-
-    @Then("^The connection status is \"(.+)\"$")
-    public void checkDeviceConnectionStatus(String status) {
-
-        DeviceConnectionStatus tmpStat = parseConnectionStatusString(status);
-        DeviceConnectionListResult tmpConnLst = (DeviceConnectionListResult) stepData.get("DeviceConnectionList");
-
-        Assert.assertNotNull(tmpConnLst);
-        Assert.assertNotEquals(0, tmpConnLst.getSize());
-
-        DeviceConnection tmpConnection = tmpConnLst.getFirstItem();
-        Assert.assertEquals(tmpStat, tmpConnection.getStatus());
     }
 
     @Then("^The connection user is \"(.+)\"$")

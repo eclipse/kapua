@@ -27,20 +27,49 @@ import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaPosition;
+import org.eclipse.kapua.message.device.lifecycle.KapuaAppsChannel;
+import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
+import org.eclipse.kapua.message.device.lifecycle.KapuaAppsPayload;
+import org.eclipse.kapua.message.device.lifecycle.KapuaBirthChannel;
+import org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage;
+import org.eclipse.kapua.message.device.lifecycle.KapuaBirthPayload;
+import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectChannel;
+import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage;
+import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectPayload;
+import org.eclipse.kapua.message.device.lifecycle.KapuaMissingChannel;
+import org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage;
+import org.eclipse.kapua.message.device.lifecycle.KapuaMissingPayload;
 import org.eclipse.kapua.message.internal.KapuaPositionImpl;
+import org.eclipse.kapua.message.internal.device.lifecycle.KapuaAppsChannelImpl;
+import org.eclipse.kapua.message.internal.device.lifecycle.KapuaAppsMessageImpl;
+import org.eclipse.kapua.message.internal.device.lifecycle.KapuaAppsPayloadImpl;
+import org.eclipse.kapua.message.internal.device.lifecycle.KapuaBirthChannelImpl;
+import org.eclipse.kapua.message.internal.device.lifecycle.KapuaBirthMessageImpl;
+import org.eclipse.kapua.message.internal.device.lifecycle.KapuaBirthPayloadImpl;
+import org.eclipse.kapua.message.internal.device.lifecycle.KapuaDisconnectChannelImpl;
+import org.eclipse.kapua.message.internal.device.lifecycle.KapuaDisconnectMessageImpl;
+import org.eclipse.kapua.message.internal.device.lifecycle.KapuaDisconnectPayloadImpl;
+import org.eclipse.kapua.message.internal.device.lifecycle.KapuaMissingChannelImpl;
+import org.eclipse.kapua.message.internal.device.lifecycle.KapuaMissingMessageImpl;
+import org.eclipse.kapua.message.internal.device.lifecycle.KapuaMissingPayloadImpl;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.qa.common.CucConfig;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
+import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
+import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainImpl;
@@ -50,6 +79,7 @@ import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
 import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
 import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
@@ -78,7 +108,16 @@ import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventServi
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
+import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
+import org.eclipse.kapua.service.tag.Tag;
+import org.eclipse.kapua.service.tag.TagAttributes;
+import org.eclipse.kapua.service.tag.TagCreator;
+import org.eclipse.kapua.service.tag.TagFactory;
+import org.eclipse.kapua.service.tag.TagListResult;
+import org.eclipse.kapua.service.tag.TagQuery;
+import org.eclipse.kapua.service.tag.TagService;
 import org.eclipse.kapua.test.MockedLocator;
+import org.junit.Assert;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -86,11 +125,15 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.Vector;
 
 /**
  * Implementation of Gherkin steps used in DeviceRegistry.feature scenarios.
@@ -133,6 +176,12 @@ public class DeviceRegistrySteps extends TestBase {
     // Various device event service related references
     private DeviceEventService eventService;
     private DeviceEventFactory eventFactory;
+
+    // Additional service references for integration testing
+    private AccountService accountService;
+    private DeviceLifeCycleService deviceLifeCycleService;
+    private TagService tagService;
+    private TagFactory tagFactory;
 
     // Default constructor
     @Inject
@@ -223,6 +272,11 @@ public class DeviceRegistrySteps extends TestBase {
         eventService = locator.getService(DeviceEventService.class);
         eventFactory = locator.getFactory(DeviceEventFactory.class);
 
+        accountService = locator.getService(AccountService.class);
+        deviceLifeCycleService = locator.getService(DeviceLifeCycleService.class);
+        tagService = locator.getService(TagService.class);
+        tagFactory = locator.getFactory(TagFactory.class);
+
         if (isUnitTest()) {
             // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
             // All operations on database are performed using system user.
@@ -232,7 +286,7 @@ public class DeviceRegistrySteps extends TestBase {
         }
 
         // Setup JAXB context
-        XmlUtil.setContextProvider(new DeviceRegistryJAXBContextProvider());
+        XmlUtil.setContextProvider(new TestJAXBContextProvider());
     }
 
     @After
@@ -321,6 +375,25 @@ public class DeviceRegistrySteps extends TestBase {
 
         Device device = prepareRegularDevice(getCurrentParentId(), getKapuaId());
         stepData.put("Device", device);
+    }
+
+    @Given("^(?:A d|D)evices? such as$")
+    public void createADevicesAsSpecified(List<CucDevice> devLst)
+            throws Exception {
+
+        primeException();
+        try {
+            stepData.remove("LastDevice");
+            Device tmpDevice = null;
+            for (CucDevice tmpCDev : devLst) {
+                tmpCDev.parse();
+                DeviceCreator devCr = prepareDeviceCreatorFromCucDevice(tmpCDev);
+                tmpDevice = deviceRegistryService.create(devCr);
+            }
+            stepData.put("LastDevice", tmpDevice);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
     }
 
     @Given("^A null device$")
@@ -833,6 +906,16 @@ public class DeviceRegistrySteps extends TestBase {
         assertEquals(number, deviceList.getSize());
     }
 
+    @Then("^I find device \"([^\"]*)\"$")
+    public void iFindDeviceWithTag(String deviceName) {
+
+        DeviceListResult deviceList = (DeviceListResult) stepData.get("DeviceList");
+        Device device = deviceList.getFirstItem();
+
+        Assert.assertNotNull(device);
+        Assert.assertEquals(deviceName, device.getClientId());
+    }
+
     @Then("^The client ID was not changed$")
     public void checkDeviceClientIdForChanges()
             throws Exception {
@@ -1089,6 +1172,7 @@ public class DeviceRegistrySteps extends TestBase {
             DeviceConnection connection = null;
             stepData.remove("DeviceConnection");
             stepData.remove("DeviceConnectionId");
+            stepData.remove("DeviceConnectionList");
 
             for (CucConnection connItem : connections) {
                 connectionCreator = deviceConnectionFactory.newCreator(scopeId);
@@ -1106,6 +1190,11 @@ public class DeviceRegistrySteps extends TestBase {
             stepData.put("DeviceConnectionCreator", connectionCreator);
             stepData.put("DeviceConnection", connection);
             stepData.put("DeviceConnectionId", connection.getId());
+            DeviceConnectionListResult connList = deviceConnectionFactory.newListResult();
+            Vector<DeviceConnection> vec = new Vector<>();
+            vec.add(connection);
+            connList.addItems(vec);
+            stepData.put("DeviceConnectionList", connList);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -1235,19 +1324,16 @@ public class DeviceRegistrySteps extends TestBase {
     }
 
     @Then("^The connection status is \"(.+)\"$")
-    public void checkConnectionStatus(String status) {
+    public void checkDeviceConnectionStatus(String status) {
 
-        DeviceConnection connection = (DeviceConnection) stepData.get("DeviceConnection");
+        DeviceConnectionStatus tmpStat = parseConnectionStatusString(status);
+        DeviceConnectionListResult tmpConnLst = (DeviceConnectionListResult) stepData.get("DeviceConnectionList");
 
-        if (status.trim().toUpperCase().equals("CONNECTED")) {
-            assertEquals(DeviceConnectionStatus.CONNECTED, connection.getStatus());
-        } else if (status.trim().toUpperCase().equals("DISCONNECTED")) {
-            assertEquals(DeviceConnectionStatus.DISCONNECTED, connection.getStatus());
-        } else if (status.trim().toUpperCase().equals("MISSING")) {
-            assertEquals(DeviceConnectionStatus.MISSING, connection.getStatus());
-        } else {
-            fail();
-        }
+        Assert.assertNotNull(tmpConnLst);
+        Assert.assertNotEquals(0, tmpConnLst.getSize());
+
+        DeviceConnection tmpConnection = tmpConnLst.getFirstItem();
+        Assert.assertEquals(tmpStat, tmpConnection.getStatus());
     }
 
     @Then("^I count (\\d+) connections in scope (-?\\d+)$")
@@ -1356,7 +1442,7 @@ public class DeviceRegistrySteps extends TestBase {
         }
     }
 
-    @Then("^I find (\\d+) connection(?:|s)$")
+    @Then("^I find (\\d+) connections?$")
     public void checkResultListLength(int num) {
 
         DeviceConnectionListResult connectionList = (DeviceConnectionListResult) stepData.get("DeviceConnectionList");
@@ -1600,12 +1686,60 @@ public class DeviceRegistrySteps extends TestBase {
 
         primeException();
         try {
-            stepData.remove("EventList");
+            stepData.remove("DeviceEventList");
             DeviceEventListResult eventList = eventService.query(tmpQuery);
-            stepData.put("EventList", eventList);
+            stepData.put("DeviceEventList", eventList);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
+    }
+
+    @And("^I untag device with \"([^\"]*)\" tag$")
+    public void iDeleteTag(String deviceTagName) throws Throwable {
+
+        Tag foundTag = (Tag) stepData.get("tag");
+        Assert.assertEquals(deviceTagName, foundTag.getName());
+        Device device = (Device) stepData.get("Device");
+        stepData.remove("tag");
+        stepData.remove("tags");
+        Set<KapuaId> tags = new HashSet<>();
+        device.setTagIds(tags);
+        Device updatedDevice = deviceRegistryService.update(device);
+        stepData.put("Device", updatedDevice);
+        Assert.assertEquals(device.getTagIds().isEmpty(), true);
+    }
+
+    @And("^I verify that tag \"([^\"]*)\" is deleted$")
+    public void iVerifyTagIsDeleted(String deviceTagName) throws Throwable {
+
+        Tag foundTag = (Tag) stepData.get("tag");
+        Assert.assertEquals(null, foundTag);
+    }
+
+    @When("^I search for events from device \"(.+)\" in account \"(.+)\"$")
+    public void searchForEventsFromDeviceWithClientID(String clientId, String account)
+            throws KapuaException {
+
+        DeviceEventQuery tmpQuery;
+        Device tmpDev;
+        DeviceEventListResult tmpList;
+        Account tmpAcc;
+
+        tmpAcc = accountService.findByName(account);
+        Assert.assertNotNull(tmpAcc);
+        Assert.assertNotNull(tmpAcc.getId());
+
+        tmpDev = deviceRegistryService.findByClientId(tmpAcc.getId(), clientId);
+        Assert.assertNotNull(tmpDev);
+        Assert.assertNotNull(tmpDev.getId());
+
+        tmpQuery = eventFactory.newQuery(tmpAcc.getId());
+        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("deviceId", tmpDev.getId()));
+        tmpQuery.setSortCriteria(new FieldSortCriteria("receivedOn", FieldSortCriteria.SortOrder.ASCENDING));
+        tmpList = eventService.query(tmpQuery);
+
+        Assert.assertNotNull(tmpList);
+        stepData.put("DeviceEventList", tmpList);
     }
 
     @Then("^The event matches the creator parameters$")
@@ -1627,10 +1761,21 @@ public class DeviceRegistrySteps extends TestBase {
                 event.getPosition().toDisplayString());
     }
 
+    @Then("^The type of the last event is \"(.+)\"$")
+    public void checkLastEventType(String type) {
+
+        DeviceEventListResult tmpList;
+
+        Assert.assertNotNull(stepData.get("DeviceEventList"));
+        Assert.assertNotEquals(0, ((DeviceEventListResult) stepData.get("DeviceEventList")).getSize());
+        tmpList = (DeviceEventListResult) stepData.get("DeviceEventList");
+        Assert.assertEquals(type.trim().toUpperCase(), tmpList.getItem(tmpList.getSize() - 1).getResource().trim().toUpperCase());
+    }
+
     @Then("^I find (\\d+) device events?$")
     public void checkEventListForNumberOfItems(int number) {
 
-        DeviceEventListResult eventList = (DeviceEventListResult) stepData.get("EventList");
+        DeviceEventListResult eventList = (DeviceEventListResult) stepData.get("DeviceEventList");
         assertEquals(number, eventList.getSize());
     }
 
@@ -1669,6 +1814,235 @@ public class DeviceRegistrySteps extends TestBase {
         assertEquals(2, tmpDomain.getActions().size());
         assertTrue(tmpDomain.getActions().contains(Actions.connect));
         assertTrue(tmpDomain.getActions().contains(Actions.execute));
+    }
+
+    // ************************************************************************************
+    // * Device integration steps                                                         *
+    // ************************************************************************************
+
+    @When("^I search for the device \"(.+)\" in account \"(.+)\"$")
+    public void searchForDeviceWithClientID(String clientId, String account)
+            throws Exception {
+
+        DeviceListResult tmpList = deviceFactory.newListResult();
+
+        primeException();
+        try {
+            stepData.remove("Device");
+            stepData.remove("DeviceList");
+            Account tmpAcc = accountService.findByName(account);
+            Device tmpDev = deviceRegistryService.findByClientId(tmpAcc.getId(), clientId);
+            if (tmpDev != null) {
+                Vector<Device> dv = new Vector<>();
+                dv.add(tmpDev);
+                tmpList.addItems(dv);
+            }
+            stepData.put("Device", tmpDev);
+            stepData.put("DeviceList", tmpList);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @And("^I tag device with \"([^\"]*)\" tag$")
+    public void iTagDeviceWithTag(String deviceTagName)
+            throws Exception {
+
+        Account account = (Account) stepData.get("LastAccount");
+        Device device = (Device) stepData.get("Device");
+
+        primeException();
+        try {
+            TagCreator tagCreator = tagFactory.newCreator(account.getId());
+            tagCreator.setName(deviceTagName);
+            Tag tag = tagService.create(tagCreator);
+            Set<KapuaId> tags = new HashSet<>();
+            tags.add(tag.getId());
+            device.setTagIds(tags);
+            Device updatedDevice = deviceRegistryService.update(device);
+            stepData.put("tag", tag);
+            stepData.put("tags", tags);
+            stepData.put("Device", updatedDevice);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I search for device with tag \"([^\"]*)\"$")
+    public void iSearchForDeviceWithTag(String deviceTagName)
+            throws Exception {
+
+        Account lastAcc = (Account) stepData.get("LastAccount");
+        DeviceQuery deviceQuery = deviceFactory.newQuery(lastAcc.getId());
+        TagQuery tagQuery = tagFactory.newQuery(lastAcc.getId());
+        tagQuery.setPredicate(new AttributePredicateImpl<>(TagAttributes.NAME, deviceTagName, AttributePredicate.Operator.EQUAL));
+
+        primeException();
+        try {
+            stepData.remove("DeviceList");
+            TagListResult tagQueryResult = tagService.query(tagQuery);
+            Tag tag = tagQueryResult.getFirstItem();
+            deviceQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo(DeviceAttributes.TAG_IDS, tag.getId()));
+            DeviceListResult deviceList = deviceRegistryService.query(deviceQuery);
+            stepData.put("DeviceList", deviceList);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @Given("^A birth message from device \"(.+)\"$")
+    public void createABirthMessage(String clientId)
+            throws KapuaException {
+
+        Account tmpAccount = (Account) stepData.get("LastAccount");
+
+        Assert.assertNotNull(clientId);
+        Assert.assertFalse(clientId.isEmpty());
+        Assert.assertNotNull(tmpAccount);
+        Assert.assertNotNull(tmpAccount.getId());
+
+        Device tmpDev;
+        List<String> tmpSemParts = new ArrayList<>();
+        KapuaBirthMessage tmpMsg = new KapuaBirthMessageImpl();
+        KapuaBirthChannel tmpChan = new KapuaBirthChannelImpl();
+        KapuaBirthPayload tmpPayload = prepareDefaultBirthPayload();
+
+        tmpChan.setClientId(clientId);
+        tmpSemParts.add("part1");
+        tmpSemParts.add("part2");
+        tmpChan.setSemanticParts(tmpSemParts);
+
+        tmpMsg.setChannel(tmpChan);
+        tmpMsg.setPayload(tmpPayload);
+        tmpMsg.setScopeId(tmpAccount.getId());
+        tmpMsg.setClientId(clientId);
+        tmpMsg.setId(UUID.randomUUID());
+        tmpMsg.setReceivedOn(new Date());
+        tmpMsg.setPosition(getDefaultPosition());
+
+        tmpDev = deviceRegistryService.findByClientId(tmpAccount.getId(), clientId);
+        if (tmpDev != null) {
+            tmpMsg.setDeviceId(tmpDev.getId());
+        } else {
+            tmpMsg.setDeviceId(null);
+        }
+
+        deviceLifeCycleService.birth(getKapuaId(), tmpMsg);
+    }
+
+    @Given("^A disconnect message from device \"(.+)\"$")
+    public void createADeathMessage(String clientId)
+            throws Exception {
+
+        Account tmpAccount = (Account) stepData.get("LastAccount");
+        Device tmpDev;
+        List<String> tmpSemParts = new ArrayList<>();
+        KapuaDisconnectMessage tmpMsg = new KapuaDisconnectMessageImpl();
+        KapuaDisconnectChannel tmpChan = new KapuaDisconnectChannelImpl();
+        KapuaDisconnectPayload tmpPayload = prepareDefaultDeathPayload();
+
+        tmpChan.setClientId(clientId);
+        tmpSemParts.add("part1");
+        tmpSemParts.add("part2");
+        tmpChan.setSemanticParts(tmpSemParts);
+
+        tmpMsg.setChannel(tmpChan);
+        tmpMsg.setPayload(tmpPayload);
+        tmpMsg.setScopeId(tmpAccount.getId());
+        tmpMsg.setClientId(clientId);
+        tmpMsg.setId(UUID.randomUUID());
+        tmpMsg.setReceivedOn(new Date());
+        tmpMsg.setPosition(getDefaultPosition());
+
+        tmpDev = deviceRegistryService.findByClientId(tmpAccount.getId(), clientId);
+        if (tmpDev != null) {
+            tmpMsg.setDeviceId(tmpDev.getId());
+        } else {
+            tmpMsg.setDeviceId(null);
+        }
+
+        try {
+            primeException();
+            deviceLifeCycleService.death(getKapuaId(), tmpMsg);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @Given("^A missing message from device \"(.+)\"$")
+    public void createAMissingMessage(String clientId)
+            throws Exception {
+
+        Account tmpAccount = (Account) stepData.get("LastAccount");
+        Device tmpDev;
+        List<String> tmpSemParts = new ArrayList<>();
+        KapuaMissingMessage tmpMsg = new KapuaMissingMessageImpl();
+        KapuaMissingChannel tmpChan = new KapuaMissingChannelImpl();
+        KapuaMissingPayload tmpPayload = prepareDefaultMissingPayload();
+
+        tmpChan.setClientId(clientId);
+        tmpSemParts.add("part1");
+        tmpSemParts.add("part2");
+        tmpChan.setSemanticParts(tmpSemParts);
+
+        tmpMsg.setChannel(tmpChan);
+        tmpMsg.setPayload(tmpPayload);
+        tmpMsg.setScopeId(tmpAccount.getId());
+        tmpMsg.setId(UUID.randomUUID());
+        tmpMsg.setReceivedOn(new Date());
+        tmpMsg.setPosition(getDefaultPosition());
+
+        tmpDev = deviceRegistryService.findByClientId(tmpAccount.getId(), clientId);
+        if (tmpDev != null) {
+            tmpMsg.setDeviceId(tmpDev.getId());
+        } else {
+            tmpMsg.setDeviceId(null);
+        }
+
+        try {
+            primeException();
+            deviceLifeCycleService.missing(getKapuaId(), tmpMsg);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @Given("^An application message from device \"(.+)\"$")
+    public void createAnApplicationMessage(String clientId)
+            throws Exception {
+
+        Account tmpAccount = (Account) stepData.get("LastAccount");
+        Device tmpDev;
+        List<String> tmpSemParts = new ArrayList<>();
+        KapuaAppsMessage tmpMsg = new KapuaAppsMessageImpl();
+        KapuaAppsChannel tmpChan = new KapuaAppsChannelImpl();
+        KapuaAppsPayload tmpPayload = prepareDefaultApplicationPayload();
+
+        tmpChan.setClientId(clientId);
+        tmpSemParts.add("part1");
+        tmpSemParts.add("part2");
+        tmpChan.setSemanticParts(tmpSemParts);
+
+        tmpMsg.setChannel(tmpChan);
+        tmpMsg.setPayload(tmpPayload);
+        tmpMsg.setScopeId(tmpAccount.getId());
+        tmpMsg.setId(UUID.randomUUID());
+        tmpMsg.setReceivedOn(new Date());
+        tmpMsg.setPosition(getDefaultPosition());
+
+        tmpDev = deviceRegistryService.findByClientId(tmpAccount.getId(), clientId);
+        if (tmpDev != null) {
+            tmpMsg.setDeviceId(tmpDev.getId());
+        } else {
+            tmpMsg.setDeviceId(null);
+        }
+
+        try {
+            primeException();
+            deviceLifeCycleService.applications(getKapuaId(), tmpMsg);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
     }
 
     // *******************
@@ -1821,5 +2195,187 @@ public class DeviceRegistrySteps extends TestBase {
         DeviceListResult deviceList = deviceRegistryService.query(tmpQuery);
 
         return deviceList.getFirstItem();
+    }
+
+    private KapuaPosition getDefaultPosition() {
+        KapuaPosition tmpPos = new KapuaPositionImpl();
+
+        tmpPos.setAltitude(250.0);
+        tmpPos.setHeading(90.0);
+        tmpPos.setLatitude(45.5);
+        tmpPos.setLongitude(13.6);
+        tmpPos.setPrecision(0.3);
+        tmpPos.setSatellites(12);
+        tmpPos.setSpeed(120.0);
+        tmpPos.setStatus(2);
+        tmpPos.setTimestamp(new Date());
+
+        return tmpPos;
+    }
+
+    private KapuaBirthPayload prepareDefaultBirthPayload() {
+        return new KapuaBirthPayloadImpl(
+                "500", // uptime
+                "ReliaGate 10-20", // displayName
+                "ReliaGate", // modelName
+                "ReliaGate 10-20", // modelId
+                "ABC123456", // partNumber
+                "12312312312", // serialNumber
+                "Kura", // firmware
+                "2.0", // firmwareVersion
+                "BIOStm", // bios
+                "1.2.3", // biosVersion
+                "linux", // os
+                "4.9.18", // osVersion
+                "J9", // jvm
+                "2.4", // jvmVersion
+                "J8SE", // jvmProfile
+                "OSGi", // containerFramework
+                "1.2.3", // containerFrameworkVersion
+                "Kura", // applicationFramework
+                "2.0", // applicationFrameworkVersion
+                "eth0", // connectionInterface
+                "192.168.1.2", // connectionIp
+                "gzip", // acceptEncoding
+                "CLOUD-V1", // applicationIdentifiers
+                "1", // availableProcessors
+                "1024", // totalMemory
+                "linux", // osArch
+                "123456789ABCDEF", // modemImei
+                "123456789", // modemImsi
+                "ABCDEF" // modemIccid
+        );
+
+    }
+
+    private KapuaDisconnectPayload prepareDefaultDeathPayload() {
+        return new KapuaDisconnectPayloadImpl(
+                "1000", // uptime
+                "ReliaGate 10-20" // displayName
+        );
+    }
+
+    private KapuaMissingPayload prepareDefaultMissingPayload() {
+        KapuaMissingPayload tmpPayload = new KapuaMissingPayloadImpl();
+        return tmpPayload;
+    }
+
+    private KapuaAppsPayload prepareDefaultApplicationPayload() {
+        return new KapuaAppsPayloadImpl(
+                "500", // uptime
+                "ReliaGate 10-20", // displayName
+                "ReliaGate", // modelName
+                "ReliaGate 10-20", // modelId
+                "ABC123456", // partNumber
+                "12312312312", // serialNumber
+                "Kura", // firmware
+                "2.0", // firmwareVersion
+                "BIOStm", // bios
+                "1.2.3", // biosVersion
+                "linux", // os
+                "4.9.18", // osVersion
+                "J9", // jvm
+                "2.4", // jvmVersion
+                "J8SE", // jvmProfile
+                "OSGi", // containerFramework
+                "1.2.3", // containerFrameworkVersion
+                "Kura", // applicationFramework
+                "2.0", // applicationFrameworkVersion
+                "eth0", // connectionInterface
+                "192.168.1.2", // connectionIp
+                "gzip", // acceptEncoding
+                "CLOUD-V1", // applicationIdentifiers
+                "1", // availableProcessors
+                "1024", // totalMemory
+                "linux", // osArch
+                "123456789ABCDEF", // modemImei
+                "123456789", // modemImsi
+                "ABCDEF" // modemIccid
+        );
+    }
+
+    private DeviceCreator prepareDeviceCreatorFromCucDevice(CucDevice dev) {
+        Account tmpAccount = (Account) stepData.get("LastAccount");
+        DeviceCreator tmpCr;
+        KapuaId tmpScope;
+
+        if (dev.scopeId != null) {
+            tmpScope = dev.getScopeId();
+        } else {
+            Assert.assertNotNull(tmpAccount);
+            Assert.assertNotNull(tmpAccount.getId());
+            tmpScope = tmpAccount.getId();
+        }
+
+        Assert.assertNotNull(dev.clientId);
+        Assert.assertNotEquals(0, dev.clientId.length());
+
+        tmpCr = prepareRegularDeviceCreator(tmpScope, dev.clientId);
+
+        if (dev.groupId != null) {
+            tmpCr.setGroupId(dev.getGroupId());
+        }
+        if (dev.connectionId != null) {
+            tmpCr.setConnectionId(dev.getConnectionId());
+        }
+        if (dev.displayName != null) {
+            tmpCr.setDisplayName(dev.displayName);
+        }
+        if (dev.status != null) {
+            tmpCr.setStatus(dev.getStatus());
+        }
+        if (dev.modelId != null) {
+            tmpCr.setModelId(dev.modelId);
+        }
+        if (dev.serialNumber != null) {
+            tmpCr.setSerialNumber(dev.serialNumber);
+        }
+        if (dev.imei != null) {
+            tmpCr.setImei(dev.imei);
+        }
+        if (dev.imsi != null) {
+            tmpCr.setImsi(dev.imsi);
+        }
+        if (dev.iccid != null) {
+            tmpCr.setIccid(dev.iccid);
+        }
+        if (dev.biosVersion != null) {
+            tmpCr.setBiosVersion(dev.biosVersion);
+        }
+        if (dev.firmwareVersion != null) {
+            tmpCr.setFirmwareVersion(dev.firmwareVersion);
+        }
+        if (dev.osVersion != null) {
+            tmpCr.setOsVersion(dev.osVersion);
+        }
+        if (dev.jvmVersion != null) {
+            tmpCr.setJvmVersion(dev.jvmVersion);
+        }
+        if (dev.osgiFrameworkVersion != null) {
+            tmpCr.setOsgiFrameworkVersion(dev.osgiFrameworkVersion);
+        }
+        if (dev.applicationFrameworkVersion != null) {
+            tmpCr.setApplicationFrameworkVersion(dev.applicationFrameworkVersion);
+        }
+        if (dev.applicationIdentifiers != null) {
+            tmpCr.setApplicationIdentifiers(dev.applicationIdentifiers);
+        }
+        if (dev.acceptEncoding != null) {
+            tmpCr.setAcceptEncoding(dev.acceptEncoding);
+        }
+
+        return tmpCr;
+    }
+
+    DeviceConnectionStatus parseConnectionStatusString(String stat) {
+        switch (stat.trim().toUpperCase()) {
+            case "CONNECTED":
+                return DeviceConnectionStatus.CONNECTED;
+            case "DISCONNECTED":
+                return DeviceConnectionStatus.DISCONNECTED;
+            case "MISSING":
+                return DeviceConnectionStatus.MISSING;
+        }
+        return null;
     }
 }

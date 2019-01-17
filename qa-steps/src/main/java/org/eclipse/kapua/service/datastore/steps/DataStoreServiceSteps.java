@@ -35,11 +35,11 @@ import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.qa.common.StepData;
+import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
 import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
-import org.eclipse.kapua.service.datastore.DatastoreJAXBContextProvider;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
 import org.eclipse.kapua.service.datastore.internal.ChannelInfoRegistryServiceProxy;
@@ -167,7 +167,7 @@ public class DataStoreServiceSteps extends KapuaTest {
         clientInfoRegistryServiceProxy = new ClientInfoRegistryServiceProxy();
 
         // JAXB Context
-        XmlUtil.setContextProvider(new DatastoreJAXBContextProvider());
+        XmlUtil.setContextProvider(new TestJAXBContextProvider());
     }
 
     @After

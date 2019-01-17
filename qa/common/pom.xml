@@ -44,6 +44,10 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-registry-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-job-api</artifactId>
+        </dependency>
 
         <!-- Internal dependencies -->
         <dependency>

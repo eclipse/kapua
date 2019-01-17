@@ -42,7 +42,7 @@ import org.eclipse.kapua.qa.common.utils.EmbeddedBroker;
 import org.eclipse.kapua.qa.common.Starting;
 import org.eclipse.kapua.qa.common.Suppressed;
 import org.eclipse.kapua.qa.common.Wait;
-import org.eclipse.kapua.service.TestJAXBContextProvider;
+import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;

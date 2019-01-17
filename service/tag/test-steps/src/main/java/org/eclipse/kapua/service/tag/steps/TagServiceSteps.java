@@ -22,38 +22,37 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.apache.shiro.SecurityUtils;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
-import org.eclipse.kapua.qa.common.DBHelper;
-import org.eclipse.kapua.qa.common.TestBase;
-import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.permission.Permission;
-import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.tag.internal.TagEntityManagerFactory;
-import org.eclipse.kapua.service.tag.internal.TagJAXBContextProvider;
-import org.eclipse.kapua.service.tag.internal.TagServiceImpl;
-import org.eclipse.kapua.test.MockedLocator;
-import org.junit.Assert;
-
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.qa.common.CucConfig;
+import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
+import org.eclipse.kapua.qa.common.TestBase;
+import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.Permission;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.tag.Tag;
+import org.eclipse.kapua.service.tag.TagAttributes;
 import org.eclipse.kapua.service.tag.TagCreator;
 import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagListResult;
 import org.eclipse.kapua.service.tag.TagService;
+import org.eclipse.kapua.service.tag.internal.TagEntityManagerFactory;
 import org.eclipse.kapua.service.tag.internal.TagFactoryImpl;
-import org.eclipse.kapua.service.tag.TagAttributes;
-import org.eclipse.kapua.qa.common.CucConfig;
+import org.eclipse.kapua.service.tag.internal.TagServiceImpl;
+import org.eclipse.kapua.test.MockedLocator;
+import org.junit.Assert;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -154,7 +153,7 @@ public class TagServiceSteps extends TestBase {
         }
 
         // Setup JAXB context
-        XmlUtil.setContextProvider(new TagJAXBContextProvider());
+        XmlUtil.setContextProvider(new TestJAXBContextProvider());
     }
 
     @After
@@ -176,7 +175,7 @@ public class TagServiceSteps extends TestBase {
         }
     }
 
-    @Given("^Tag Service configuration$")
+    @Given("^I configure the tag service$")
     public void setConfigurationValue(List<CucConfig> testConfigs)
             throws Exception {
 

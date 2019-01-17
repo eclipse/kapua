@@ -39,6 +39,7 @@ import org.eclipse.kapua.qa.common.CucConfig;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
+import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
@@ -66,7 +67,6 @@ import org.eclipse.kapua.service.user.UserStatus;
 import org.eclipse.kapua.service.user.internal.UserEntityManagerFactory;
 import org.eclipse.kapua.service.user.internal.UserFactoryImpl;
 import org.eclipse.kapua.service.user.internal.UserServiceImpl;
-import org.eclipse.kapua.service.user.internal.UsersJAXBContextProvider;
 import org.eclipse.kapua.test.MockedLocator;
 import org.junit.Assert;
 import org.mockito.Matchers;
@@ -106,12 +106,6 @@ public class UserServiceSteps extends TestBase {
      * User factory by locator.
      */
     private UserFactory userFactory;
-
-    /**
-     * Account service by locator.
-     */
-//    private AccountService accountService;
-//    private AccountFactory accountFactory;
 
     /**
      * Security services services by locator.
@@ -204,7 +198,7 @@ public class UserServiceSteps extends TestBase {
         }
 
         // Setup JAXB context
-        XmlUtil.setContextProvider(new UsersJAXBContextProvider());
+        XmlUtil.setContextProvider(new TestJAXBContextProvider());
     }
 
     @After
