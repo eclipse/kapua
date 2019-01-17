@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,6 +32,7 @@ import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
@@ -283,6 +284,18 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         formPanel.add(fieldSetCustomAttributes);
 
         bodyPanel.add(formPanel);
+    }
+
+    public void validateDeviceInput() {
+        if (clientIdField.getValue() == null || displayNameField.getValue() == null || statusCombo.getValue() == null || groupCombo.getValue() == null) {
+            ConsoleInfo.display("Error", MSGS.allFieldsRequired());
+        }
+    }
+
+    @Override
+    protected void preSubmit() {
+        validateDeviceInput();
+        super.preSubmit();
     }
 
     @Override

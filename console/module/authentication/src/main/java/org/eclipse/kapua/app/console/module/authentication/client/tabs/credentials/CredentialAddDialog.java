@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -41,6 +41,7 @@ import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCrede
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialService;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialServiceAsync;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaDateField;
+
 
 public class CredentialAddDialog extends EntityAddEditDialog {
 
@@ -206,6 +207,22 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         credentialFormPanel.add(optlock);
 
         bodyPanel.add(credentialFormPanel);
+    }
+
+    public void validateUserCredential() {
+        if (!password.isValid()) {
+            ConsoleInfo.display("Error", password.getErrorMessage());
+        } else if (password.getValue() != null && !password.getValue().equals(confirmPassword.getValue())) {
+            ConsoleInfo.display("Error", confirmPassword.getErrorMessage());
+        } else if (!expirationDate.isValid()) {
+            ConsoleInfo.display("Error", expirationDate.getErrorMessage());
+        }
+    }
+
+    @Override
+    protected void preSubmit() {
+        validateUserCredential();
+        super.preSubmit();
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,6 +32,7 @@ import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountSer
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaDateField;
@@ -47,6 +48,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
 
     protected static final ConsoleAccountMessages MSGS = GWT.create(ConsoleAccountMessages.class);
     protected static final GwtAccountServiceAsync GWT_ACCOUNT_SERVICE = GWT.create(GwtAccountService.class);
+    protected static final ConsoleMessages CMSGS = GWT.create(ConsoleMessages.class);
 
     private static final int LABEL_WIDTH_FORM = 150;
 
@@ -284,6 +286,24 @@ public class AccountAddDialog extends EntityAddEditDialog {
         bodyPanel.add(accountFormPanel);
     }
 
+    public void validateAccount() {
+        if (accountNameField.getValue() == null || organizationName.getValue() == null || organizationEmail.getValue() == null) {
+            ConsoleInfo.display("Error", CMSGS.allFieldsRequired());
+        } else if (!expirationDateField.isValid()) {
+            ConsoleInfo.display("Error", expirationDateField.getErrorMessage());
+        } else if (!organizationEmail.isValid()) {
+            ConsoleInfo.display("Error", organizationEmail.getErrorMessage());
+        } else if (!organizationPhoneNumber.isValid()) {
+            ConsoleInfo.display("Error", organizationPhoneNumber.getErrorMessage());
+        }
+    }
+
+    @Override
+    protected void preSubmit() {
+        validateAccount();
+        super.preSubmit();
+    }
+
     @Override
     public void submit() {
         GwtAccountCreator gwtAccountCreator = new GwtAccountCreator();
@@ -319,7 +339,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
                         cancelButton.enable();
                         if (cause instanceof GwtKapuaException) {
                             GwtKapuaException gwtCause = (GwtKapuaException) cause;
-                            if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME) 
+                            if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)
                                     || gwtCause.getCode().equals(GwtKapuaErrorCode.ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT)) {
                                 accountNameField.markInvalid(gwtCause.getMessage());
                             } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.ILLEGAL_ARGUMENT) && gwtCause.getArguments()[0].equals("expirationDate")) {

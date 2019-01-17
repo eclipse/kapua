@@ -13,6 +13,8 @@ package org.eclipse.kapua.app.console.module.endpoint.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import org.eclipse.kapua.app.console.module.api.client.messages.ValidationMessages;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.endpoint.client.messages.ConsoleEndpointMessages;
@@ -24,6 +26,7 @@ public class EndpointEditDialog extends EndpointAddDialog {
 
     private static final GwtEndpointServiceAsync GWT_ENDPOINT_SERVICE = GWT.create(GwtEndpointService.class);
     private static final ConsoleEndpointMessages MSGS = GWT.create(ConsoleEndpointMessages.class);
+    private static final ValidationMessages VAL_MSGS = GWT.create(ValidationMessages.class);
     private GwtEndpoint selectedEndpoint;
 
     public EndpointEditDialog(GwtSession currentSession, GwtEndpoint selectedEndpoint) {
@@ -56,6 +59,9 @@ public class EndpointEditDialog extends EndpointAddDialog {
                 unmask();
                 submitButton.enable();
                 cancelButton.enable();
+                endpointDnsField.markInvalid(VAL_MSGS.DUPLICATE_NAME());
+                endpointSchemaField.markInvalid(VAL_MSGS.DUPLICATE_NAME());
+                endpointPortField.markInvalid(VAL_MSGS.DUPLICATE_NAME());
             }
 
             @Override

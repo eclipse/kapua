@@ -12,10 +12,12 @@
 package org.eclipse.kapua.app.console.module.user.client.dialog;
 
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaDateField;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
@@ -49,6 +51,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class UserAddDialog extends EntityAddEditDialog {
 
     protected static final ConsoleUserMessages USER_MSGS = GWT.create(ConsoleUserMessages.class);
+    protected static final ConsoleMessages CMSGS = GWT.create(ConsoleMessages.class);
 
     protected FieldSet infoFieldSet;
     protected KapuaTextField<String> username;
@@ -223,6 +226,28 @@ public class UserAddDialog extends EntityAddEditDialog {
         userFormPanel.add(statusFieldSet, subFormData);
 
         bodyPanel.add(userFormPanel);
+    }
+
+    public void validateUser() {
+        if (username.getValue() == null || (password.getValue() == null && password.isVisible()) || (confirmPassword.getValue() == null && confirmPassword.isVisible())) {
+            ConsoleInfo.display("Error", CMSGS.allFieldsRequired());
+        } else if (!password.isValid()) {
+            ConsoleInfo.display("Error", password.getErrorMessage());
+        } else if ((password.isVisible() && confirmPassword.isVisible()) && !password.getValue().equals(confirmPassword.getValue())) {
+            ConsoleInfo.display("Error", confirmPassword.getErrorMessage());
+        } else if (!email.isValid()) {
+            ConsoleInfo.display("Error", email.getErrorMessage());
+        } else if (!phoneNumber.isValid()) {
+            ConsoleInfo.display("Error", phoneNumber.getErrorMessage());
+        } else if (!expirationDate.isValid()) {
+            ConsoleInfo.display("Error", expirationDate.getErrorMessage());
+        }
+    }
+
+    @Override
+    protected void preSubmit() {
+        validateUser();
+        super.preSubmit();
     }
 
     @Override
