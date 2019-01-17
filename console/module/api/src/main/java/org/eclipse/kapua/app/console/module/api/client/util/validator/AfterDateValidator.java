@@ -30,7 +30,7 @@ public class AfterDateValidator implements Validator {
     public String validate(Field<?> field, String s) {
         if (otherDateField.getValue() != null) {
             DateField thisDateField = (DateField) field;
-            if (thisDateField.getValue().before(otherDateField.getValue())) {
+            if (thisDateField.getValue().before(otherDateField.getValue()) || thisDateField.getValue().equals(otherDateField.getValue())) {
                 otherDateField.clearInvalid();
             } else {
                 return VAL_MSGS.startsOnDateLaterThanEndsOn();
