@@ -16,6 +16,10 @@ import org.eclipse.kapua.model.id.KapuaId;
 public class JobStopppingException extends JobEngineException {
 
     public JobStopppingException(Throwable t, KapuaId scopeId, KapuaId jobId) {
-        super(KapuaJobEngineErrorCodes.JOB_STOPPING, t, scopeId, jobId);
+        this(t, scopeId, jobId, null);
+    }
+
+    public JobStopppingException(Throwable t, KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) {
+        super(KapuaJobEngineErrorCodes.JOB_STOPPING, t, scopeId, jobId, jobExecutionId);
     }
 }

@@ -390,7 +390,7 @@
 
     <servlet>
         <servlet-name>executionServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.module.job.server.GwtExecutionServiceImpl</servlet-class>
+        <servlet-class>org.eclipse.kapua.app.console.module.job.server.GwtJobExecutionServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>executionServlet</servlet-name>

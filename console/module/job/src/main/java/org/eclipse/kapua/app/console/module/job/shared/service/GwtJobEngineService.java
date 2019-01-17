@@ -28,6 +28,9 @@ public interface GwtJobEngineService extends RemoteService {
     void stop(String gwtScopeId, String gwtJobId)
             throws GwtKapuaException;
 
+    void stopExecution(String gwtScopeId, String gwtJobId, String gwtJobExecutionId)
+            throws GwtKapuaException;
+
     void restart(String gwtScopeId, String gwtJobId)
             throws GwtKapuaException;
 }

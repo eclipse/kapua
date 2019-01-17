@@ -34,40 +34,40 @@ import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingTool
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
-import org.eclipse.kapua.app.console.module.job.shared.model.GwtExecution;
-import org.eclipse.kapua.app.console.module.job.shared.model.GwtExecutionQuery;
-import org.eclipse.kapua.app.console.module.job.shared.service.GwtExecutionService;
-import org.eclipse.kapua.app.console.module.job.shared.service.GwtExecutionServiceAsync;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobExecution;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobExecutionQuery;
+import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobExecutionService;
+import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobExecutionServiceAsync;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class JobTabExecutionsGrid extends EntityGrid<GwtExecution> {
+public class JobTabExecutionsGrid extends EntityGrid<GwtJobExecution> {
 
-    private static final GwtExecutionServiceAsync EXECUTION_SERVICE = GWT.create(GwtExecutionService.class);
+    private static final GwtJobExecutionServiceAsync EXECUTION_SERVICE = GWT.create(GwtJobExecutionService.class);
     private static final ConsoleJobMessages JOB_MSGS = GWT.create(ConsoleJobMessages.class);
     private static final ConsoleMessages C_MSGS = GWT.create(ConsoleMessages.class);
     private static final String EXECUTION = "execution";
 
     private String jobId;
-    private GwtExecutionQuery query;
+    private GwtJobExecutionQuery query;
 
     private JobTabExecutionsToolbar toolbar;
 
-    public JobTabExecutionsGrid(AbstractEntityView<GwtExecution> entityView, GwtSession currentSession) {
+    public JobTabExecutionsGrid(AbstractEntityView<GwtJobExecution> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
     }
 
     @Override
-    protected RpcProxy<PagingLoadResult<GwtExecution>> getDataProxy() {
-        return new RpcProxy<PagingLoadResult<GwtExecution>>() {
+    protected RpcProxy<PagingLoadResult<GwtJobExecution>> getDataProxy() {
+        return new RpcProxy<PagingLoadResult<GwtJobExecution>>() {
 
             @Override
-            protected void load(Object o, AsyncCallback<PagingLoadResult<GwtExecution>> asyncCallback) {
+            protected void load(Object o, AsyncCallback<PagingLoadResult<GwtJobExecution>> asyncCallback) {
                 if (jobId != null) {
                     EXECUTION_SERVICE.findByJobId((PagingLoadConfig) o, currentSession.getSelectedAccountId(), jobId, asyncCallback);
                 } else {
-                    asyncCallback.onSuccess(new BasePagingLoadResult<GwtExecution>(new ArrayList<GwtExecution>()));
+                    asyncCallback.onSuccess(new BasePagingLoadResult<GwtJobExecution>(new ArrayList<GwtJobExecution>()));
                 }
             }
         };
@@ -79,13 +79,13 @@ public class JobTabExecutionsGrid extends EntityGrid<GwtExecution> {
 
         ColumnConfig columnConfig = new ColumnConfig("status", JOB_MSGS.gridJobExecutionColumnHeaderStatus(), 30);
         columnConfig.setSortable(false);
-        columnConfig.setRenderer(new GridCellRenderer<GwtExecution>() {
+        columnConfig.setRenderer(new GridCellRenderer<GwtJobExecution>() {
 
             @Override
-            public Object render(GwtExecution gwtExecution, String s, ColumnData columnData, int i, int i1, ListStore listStore, Grid grid) {
+            public Object render(GwtJobExecution gwtJobExecution, String s, ColumnData columnData, int i, int i1, ListStore listStore, Grid grid) {
                 KapuaIcon icon;
 
-                if (gwtExecution.getEndedOn() == null) {
+                if (gwtJobExecution.getEndedOn() == null) {
                     icon = new KapuaIcon(IconSet.CIRCLE_O_NOTCH);
                     icon.setSpin(true);
                 } else {
@@ -115,7 +115,7 @@ public class JobTabExecutionsGrid extends EntityGrid<GwtExecution> {
 
     @Override
     public void setFilterQuery(GwtQuery filterQuery) {
-        this.query = (GwtExecutionQuery) filterQuery;
+        this.query = (GwtJobExecutionQuery) filterQuery;
     }
 
     public String getJobId() {
@@ -138,7 +138,7 @@ public class JobTabExecutionsGrid extends EntityGrid<GwtExecution> {
     }
 
     @Override
-    protected void selectionChangedEvent(GwtExecution selectedItem) {
+    protected void selectionChangedEvent(GwtJobExecution selectedItem) {
         super.selectionChangedEvent(selectedItem);
     }
 

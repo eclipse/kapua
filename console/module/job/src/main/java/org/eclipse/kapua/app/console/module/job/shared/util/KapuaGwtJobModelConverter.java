@@ -12,8 +12,8 @@
 package org.eclipse.kapua.app.console.module.job.shared.util;
 
 import org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter;
-import org.eclipse.kapua.app.console.module.job.shared.model.GwtExecution;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobExecution;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStep;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStepDefinition;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStepProperty;
@@ -127,12 +127,15 @@ public class KapuaGwtJobModelConverter {
         return gwtTriggerPropertyList;
     }
 
-    public static GwtExecution convertJobExecution(JobExecution jobExecution) {
-        GwtExecution gwtExecution = new GwtExecution();
-        KapuaGwtCommonsModelConverter.convertUpdatableEntity(jobExecution, gwtExecution);
-        gwtExecution.setStartedOn(jobExecution.getStartedOn());
-        gwtExecution.setEndedOn(jobExecution.getEndedOn());
-        return gwtExecution;
+    public static GwtJobExecution convertJobExecution(JobExecution jobExecution) {
+        GwtJobExecution gwtJobExecution = new GwtJobExecution();
+        KapuaGwtCommonsModelConverter.convertUpdatableEntity(jobExecution, gwtJobExecution);
+
+        gwtJobExecution.setJobId(KapuaGwtCommonsModelConverter.convertKapuaId(jobExecution.getJobId()));
+        gwtJobExecution.setStartedOn(jobExecution.getStartedOn());
+        gwtJobExecution.setEndedOn(jobExecution.getEndedOn());
+
+        return gwtJobExecution;
     }
 
 }

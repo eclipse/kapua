@@ -19,6 +19,7 @@ import com.ibm.jbatch.jsl.model.JSLJob;
 import com.ibm.jbatch.jsl.model.Step;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.CannotBuildJobDefDriverException;
@@ -39,6 +40,7 @@ import org.eclipse.kapua.job.engine.jbatch.setting.KapuaJobEngineSettingKeys;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.Job;
+import org.eclipse.kapua.service.job.execution.JobExecutionService;
 import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.JobStepAttributes;
 import org.eclipse.kapua.service.job.step.JobStepFactory;
@@ -80,11 +82,15 @@ public class JbatchDriver {
 
     private static final Logger LOG = LoggerFactory.getLogger(JbatchDriver.class);
 
+    private static final String JBATCH_EXECUTION_ID = "JBATCH_EXECUTION_ID";
+
     private static final KapuaJobEngineSetting JOB_ENGINE_SETTING = KapuaJobEngineSetting.getInstance();
 
     private static final JobOperator JOB_OPERATOR = BatchRuntime.getJobOperator();
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final JobExecutionService JOB_EXECUTION_SERVICE = LOCATOR.getService(JobExecutionService.class);
 
     private static final JobStepService JOB_STEP_SERVICE = LOCATOR.getService(JobStepService.class);
     private static final JobStepFactory JOB_STEP_FACTORY = LOCATOR.getFactory(JobStepFactory.class);
@@ -217,12 +223,13 @@ public class JbatchDriver {
      * <p>
      * A jBatch job cannot be resumed after this method is invoked on it.
      *
-     * @param scopeId The scopeId of the {@link Job}
-     * @param jobId   The id of the {@link Job}
+     * @param scopeId              The scopeId of the {@link Job}
+     * @param jobId                The id of the {@link Job}
+     * @param toStopJobExecutionId The optional {@link org.eclipse.kapua.service.job.execution.JobExecution#getId()} to stop.
      * @throws ExecutionNotFoundDriverException   when there isn't a corresponding job execution in jBatch tables
      * @throws ExecutionNotRunningDriverException when the corresponding job execution is not running.
      */
-    public static void stopJob(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) throws JbatchDriverException {
+    public static void stopJob(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, KapuaId toStopJobExecutionId) throws JbatchDriverException, KapuaException {
 
         String jobName = getJbatchJobName(scopeId, jobId);
 
@@ -231,6 +238,16 @@ public class JbatchDriver {
         List<JobExecution> runningExecutions = getRunningJobExecutions(scopeId, jobId);
         if (runningExecutions.isEmpty()) {
             throw new ExecutionNotRunningDriverException(jobName);
+        }
+
+        //
+        // Filter execution to stop
+        if (toStopJobExecutionId != null) {
+            org.eclipse.kapua.service.job.execution.JobExecution je = JOB_EXECUTION_SERVICE.find(scopeId, toStopJobExecutionId);
+
+            long toStopJbatchExecutionId = Long.parseLong((String) je.getEntityAttributes().get(JBATCH_EXECUTION_ID));
+
+            runningExecutions = runningExecutions.stream().filter(re -> re.getExecutionId() == toStopJbatchExecutionId).collect(Collectors.toList());
         }
 
         //
