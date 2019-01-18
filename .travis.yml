@@ -1,7 +1,7 @@
 language: java
 
 jdk:
-  - oraclejdk8
+  - openjdk8
 
 sudo: false
 dist: trusty
@@ -91,4 +91,4 @@ jobs:
 addons:
   apt:
     packages:
-      - oracle-java8-installer
+      - openjdk-8-jdk
