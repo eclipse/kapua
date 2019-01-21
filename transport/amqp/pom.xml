@@ -51,5 +51,12 @@
             <artifactId>logback-classic</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+          <groupId>org.eclipse.kapua</groupId>
+          <artifactId>marker-api</artifactId>
+          <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

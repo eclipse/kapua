@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,6 +18,7 @@ import org.apache.qpid.proton.amqp.messaging.Section;
 import org.apache.qpid.proton.message.Message;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.broker.client.amqp.AmqpBridgeFactory;
 import org.eclipse.kapua.broker.client.amqp.AmqpClient;
 import org.eclipse.kapua.broker.client.amqp.ClientOptions;
 import org.eclipse.kapua.broker.client.amqp.DestinationTranslator;
@@ -30,6 +31,11 @@ import org.eclipse.kapua.transport.amqp.message.AmqpTopic;
 import org.eclipse.kapua.transport.amqp.setting.AmqpClientSetting;
 import org.eclipse.kapua.transport.amqp.setting.AmqpClientSettingKeys;
 import org.eclipse.kapua.transport.utils.ClientIdGenerator;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import io.vertx.amqpbridge.AmqpConstants;
+import io.vertx.core.json.JsonObject;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -78,7 +84,7 @@ public class AmqpFacade implements TransportFacade<AmqpTopic, AmqpPayload, AmqpM
             connectionOptions.setUsername(username);
             connectionOptions.setPassword(password);
             connectionOptions.setEndpointURI(URI.create(nodeUri));
-            client = AmqpSessionFactory.getInstance(nodeUri, wrapOptions(connectionOptions));
+            client = AmqpBridgeFactory.getInstance(nodeUri, wrapOptions(connectionOptions));
         } catch (Exception e) {
             // FIXME use appropriate exception for this
             throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e, (Object[]) null);
@@ -164,7 +170,7 @@ public class AmqpFacade implements TransportFacade<AmqpTopic, AmqpPayload, AmqpM
             // Publish message
             AmqpTopic amqpTopic = amqpMessage.getRequestTopic();
             AmqpPayload amqpPayload = amqpMessage.getPayload();
-            client.send(createMesage(amqpPayload.getBody(), amqpTopic.getTopic()), amqpTopic.getTopic());
+            client.send(createMesage(amqpMessage, amqpTopic.getTopic()), amqpTopic.getTopic());
 
             // Wait if required
             if (amqpMessage.getResponseTopic() != null &&
@@ -222,11 +228,16 @@ public class AmqpFacade implements TransportFacade<AmqpTopic, AmqpPayload, AmqpM
         client = null;
     }
 
-    private Message createMesage(byte[] payload, String destination) {
-        Message msg = Proton.message();
-        Section s = new Data(new Binary(payload));
-        msg.setBody(s);
-        msg.setAddress(destination);
-        return msg;
+    private JsonObject createMesage(AmqpMessage amqpMessage, String destination) throws JsonProcessingException {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.put(AmqpConstants.BODY_TYPE, AmqpConstants.BODY_TYPE_DATA);
+        jsonObject.put(AmqpConstants.BODY, amqpMessage.getPayload().getBody());//amqpMessage.getPayload().getBody());
+        return jsonObject;
+//        String json = writer.writeValueAsString(amqpMessage);
+//        JsonObject jsonObject = new JsonObject(json);
+//        JsonArray array = new JsonArray();
+//        for (byte b : amqpMessage.getPayload().getBody()) {
+//            array.add(b);
+//        }
     }
 }
