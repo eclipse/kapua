@@ -123,8 +123,10 @@ public class AccountEditDialog extends AccountAddDialog {
                             case ILLEGAL_ARGUMENT:
                                 if (gwtCause.getArguments()[0].equals("expirationDate")) {
                                     expirationDateField.markInvalid(MSGS.conflictingExpirationDate());
+                                    ConsoleInfo.display("Error", MSGS.conflictingExpirationDate());
                                 } else if (gwtCause.getArguments()[0].equals("notAllowedExpirationDate")) {
                                     expirationDateField.markInvalid(MSGS.notAllowedExpirationDate());
+                                    ConsoleInfo.display("Error", MSGS.notAllowedExpirationDate());
                                 }
                                 break;
                             default:
