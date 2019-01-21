@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,5 +32,6 @@ public enum KapuaAuthorizationErrorCodes implements KapuaErrorCode {
     /**
      * One or more embedded entities is not found or does not match the scopeId of the root entity
      */
-    ENTITY_SCOPE_MISSMATCH
+    ENTITY_SCOPE_MISSMATCH,
+    USER_NO_PERMISSION
 }
