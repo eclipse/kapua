@@ -38,7 +38,7 @@
             <version>8</version>
         </provides>
         <configuration>
-            <jdkHome>/usr/lib/jvm/java-8-oracle/jre</jdkHome>
+            <jdkHome>/usr/lib/jvm/java-8-openjdk-amd64/jre</jdkHome>
         </configuration>
     </toolchain>
 </toolchains>
