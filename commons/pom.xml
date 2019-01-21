@@ -60,7 +60,7 @@
         <!-- External JPA dependencies -->
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
-            <artifactId>eclipselink</artifactId>
+            <artifactId>org.eclipse.persistence.jpa</artifactId>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
