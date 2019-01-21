@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+    Copyright (c) 2011, 2020 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -79,33 +79,4 @@
         </cookie-config>
     </session-config>
 
-    <!-- | | Error Pages | -->
-    <error-page>
-        <error-code>400</error-code>
-        <location>/errorPages/400.html</location>
-    </error-page>
-    <error-page>
-        <error-code>401</error-code>
-        <location>/errorPages/401.html</location>
-    </error-page>
-    <error-page>
-        <error-code>403</error-code>
-        <location>/errorPages/403.html</location>
-    </error-page>
-    <error-page>
-        <error-code>404</error-code>
-        <location>/errorPages/404.html</location>
-    </error-page>
-    <error-page>
-        <error-code>405</error-code>
-        <location>/errorPages/405.html</location>
-    </error-page>
-    <error-page>
-        <error-code>500</error-code>
-        <location>/errorPages/500.html</location>
-    </error-page>
-    <error-page>
-        <exception-type>java.lang.Throwable</exception-type>
-        <location>/errorPages/error.jsp</location>
-    </error-page>
 </web-app>
