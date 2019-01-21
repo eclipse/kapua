@@ -42,7 +42,7 @@ Feature: Device Broker Cluster tests
         This is pure positive scenario.
 
     Given Client with name "client-1" with client id "client-1" user "kapua-broker" password "kapua-password" is connected
-        And topic "$EDC/kapua-sys/client-1/MQTT/BIRTH" content "src/test/resources/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-1"
+        And topic "$EDC/kapua-sys/client-1/MQTT/BIRTH" content "/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-1"
         And I wait 2 seconds for system to receive and process that message
         And Client with name "client-2" with client id "client-2" user "kapua-broker" password "kapua-password" is connected
         And Client with name "client-3" with client id "client-3" user "kapua-broker" password "kapua-password" is connected
@@ -62,24 +62,24 @@ Feature: Device Broker Cluster tests
 
     Given Client with name "client-1" with client id "client-1" user "kapua-broker" password "kapua-password" is connected
         And Client with name "client-sys" with client id "client-sys" user "kapua-sys" password "kapua-password" is connected
-        And topic "$EDC/kapua-sys/client-1/MQTT/BIRTH" content "src/test/resources/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-1"
+        And topic "$EDC/kapua-sys/client-1/MQTT/BIRTH" content "/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-1"
         And I wait 2 seconds for system to receive and process that message
         And Client with name "client-2" with client id "client-2" user "kapua-broker" password "kapua-password" is connected
         And Client with name "client-3" with client id "client-3" user "kapua-broker" password "kapua-password" is connected
     Then Client named "client-1" is connected
         And Client named "client-2" is connected
         And Client named "client-3" is connected
-    Given topic "$EDC/kapua-sys/client-2/MQTT/CONNECT" content "src/test/resources/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-sys"
+    Given topic "$EDC/kapua-sys/client-2/MQTT/CONNECT" content "/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-sys"
         And I wait 2 seconds for system to receive and process that message
     Then Client named "client-1" is connected
         And Client named "client-2" is not connected
         And Client named "client-3" is connected
-    Given topic "$EDC/kapua-sys/client-1/MQTT/CONNECT" content "src/test/resources/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-sys"
+    Given topic "$EDC/kapua-sys/client-1/MQTT/CONNECT" content "/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-sys"
         And I wait 2 seconds for system to receive and process that message
     Then Client named "client-1" is not connected
         And Client named "client-2" is not connected
         And Client named "client-3" is connected
-    Given topic "$EDC/kapua-sys/client-3/MQTT/CONNECT" content "src/test/resources/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-sys"
+    Given topic "$EDC/kapua-sys/client-3/MQTT/CONNECT" content "/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-sys"
         And I wait 2 seconds for system to receive and process that message
     Then Client named "client-1" is not connected
         And Client named "client-2" is not connected
@@ -94,11 +94,10 @@ Feature: Device Broker Cluster tests
         This disconnects first client.
 
     Given Client with name "client-1-1" with client id "client-1" user "kapua-broker" password "kapua-password" is connected
-        And topic "$EDC/kapua-sys/client-1/MQTT/BIRTH" content "src/test/resources/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-1-1"
-        And topic "$EDC/kapua-sys/client-1/MQTT/CONNECT" content "src/test/resources/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-1-1"
+        And topic "$EDC/kapua-sys/client-1/MQTT/BIRTH" content "/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-1-1"
+        And topic "$EDC/kapua-sys/client-1/MQTT/CONNECT" content "/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-1-1"
         And I wait 2 seconds for system to receive and process that message
         And Client with name "client-1-2" with client id "client-1" user "kapua-broker" password "kapua-password" is connected
-#        And topic "$EDC/kapua-sys/client-1/MQTT/CONNECT" content "" is published by client named "client-1-2"
         And I wait 2 seconds for system to receive and process that message
     Then Client named "client-1-1" is not connected
         And Client named "client-1-2" is connected

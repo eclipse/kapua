@@ -32,33 +32,33 @@ Feature: Datastore tests
 
     Given All indices are deleted
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     And The device "test-device-1"
     And I prepare a random message and save it as "RandomDataMessage"
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
-    And I refresh all database indices
+    And I refresh all indices
     When I search for a data message with ID "RandomDataMessageId" and remember it as "DataStoreMessage"
     Then The datastore message "DataStoreMessage" matches the prepared message "RandomDataMessage"
     When I delete the datastore message with ID "RandomDataMessageId"
-    And I refresh all database indices
+    And I refresh all indices
     When I search for a data message with ID "RandomDataMessageId" and remember it as "ShouldBeNull"
     Then Message "ShouldBeNull" is null
     When I query for the current account channels and store them as "AccountChannelList"
     Then There is exactly 1 channel in the list "AccountChannelList"
     When I delete all channels from the list "AccountChannelList"
-    And I refresh all database indices
+    And I refresh all indices
     When I count the current account channels and store the count as "AccountChannelCount"
     Then The value of "AccountChannelCount" is exactly 0
     When I query for the current account metrics and store them as "AccountMetriclList"
     Then There is exactly 12 metrics in the list "AccountMetriclList"
     When I delete all metrics from the list "AccountMetriclList"
-    And I refresh all database indices
+    And I refresh all indices
     When I count the current account metrics and store the count as "AccountMetricCount"
     Then The value of "AccountMetricCount" is exactly 0
     When I query for the current account clients and store them as "AccountClientlList"
     Then There is exactly 1 client in the list "AccountClientlList"
     When I delete all clients from the list "AccountClientlList"
-    And I refresh all database indices
+    And I refresh all indices
     When I count the current account clients and store the count as "AccountClientCount"
     Then The value of "AccountClientCount" is exactly 0
     And All indices are deleted
@@ -67,7 +67,7 @@ Feature: Datastore tests
 
     Given All indices are deleted
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     And The device "test-device-1"
     Given I prepare a number of messages with the following details and remember the list as "TestMessages1"
       |topic                   |
@@ -83,19 +83,19 @@ Feature: Datastore tests
     Then I store the messages from list "TestMessages1" and remember the IDs as "StoredMessageIDs1"
     Then I store the messages from list "TestMessages2" and remember the IDs as "StoredMessageIDs2"
     Then I store the messages from list "TestMessages3" and remember the IDs as "StoredMessageIDs3"
-    And I refresh all database indices
+    And I refresh all indices
     When I search for messages with IDs from the list "StoredMessageIDs1" and store them in the list "StoredMessagesList"
     Then The datastore messages in list "StoredMessagesList" matches the prepared messages in list "TestMessages1"
     When I pick the ID number 0 from the list "StoredMessageIDs1" and remember it as "SelectedMessageId"
     When I delete the datastore message with ID "SelectedMessageId"
-    And I refresh all database indices
+    And I refresh all indices
     When I search for a data message with ID "SelectedMessageId" and remember it as "ShouldBeNull"
     Then Message "ShouldBeNull" is null
     When I query for the current account channels and store them as "AccountChannelList"
     Then There are exactly 3 channels in the list "AccountChannelList"
     When I pick the ID of the channel number 0 in the list "AccountChannelList" and remember it as "FirstAccountId"
     And I delete the channel with the ID "FirstAccountId"
-    And I refresh all database indices
+    And I refresh all indices
     When I query for the current account channels and store them as "AccountChannelList"
     Then There are exactly 2 channels in the list "AccountChannelList"
     When I query for the current account metrics and store them as "AccountMetriclList"
@@ -103,13 +103,13 @@ Feature: Datastore tests
     When I query for the metrics in topic "delete/by/query/test/1" and store them as "TopicMetricList"
     Then There are exactly 12 metrics in the list "TopicMetricList"
     When I delete the metric info data based on the last query
-    And I refresh all database indices
+    And I refresh all indices
     When I query for the metrics in topic "delete/by/query/test/1" and store them as "TopicMetricList2x"
 #    Then There are exactly 0 metrics in the list "TopicMetricList2x"
     When I query for the current account clients and store them as "AccountClientlList"
     Then There are exactly 3 clients in the list "AccountClientlList"
     And I delete client number 1 from the list "AccountClientlList"
-    And I refresh all database indices
+    And I refresh all indices
     When I query for the current account clients and store them as "AccountClientlList2"
     Then There are exactly 2 clients in the list "AccountClientlList2"
     And All indices are deleted
@@ -118,7 +118,7 @@ Feature: Datastore tests
 
     Given All indices are deleted
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     And The device "test-device-1"
     Given I prepare a number of messages with the following details and remember the list as "TestMessages"
       |topic                             |
@@ -126,7 +126,7 @@ Feature: Datastore tests
       |same/metric/name/different/type/2 |
       |same/metric/name/different/type/3 |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
-    And I refresh all database indices
+    And I refresh all indices
     When I count the current account messages and store the count as "AccountMessageCount"
     Then The value of "AccountMessageCount" is exactly 3
     When I count the current account metrics and store the count as "AccountMetricCount"
@@ -144,7 +144,7 @@ Feature: Datastore tests
     doesn't exist it is not deleted.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    Given Account for "kapua-sys"
+    Given I select account "kapua-sys"
       When I search for data message with id "fake-id"
         Then I don't find message
       When I search for channel info with id "fake-id"
@@ -190,16 +190,16 @@ Feature: Datastore tests
     the previous value)
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     And The device "test-device-1"
     And I prepare a random message and save it as "RandomDataMessage1"
     Then I store the message "RandomDataMessage1" and remember its ID as "RandomDataMessage1Id"
-    And I refresh all database indices
+    And I refresh all indices
     When I search for a data message with ID "RandomDataMessage1Id" and remember it as "DataStoreMessage"
     Then The datastore message "DataStoreMessage" matches the prepared message "RandomDataMessage1"
     Then I clear all the database caches
     And I store the message "RandomDataMessage1" and remember its ID as "RandomDataMessage2Id"
-    When I refresh all database indices
+    When I refresh all indices
     And I search for a data message with ID "RandomDataMessage1Id" and remember it as "DataStoreMessageNew"
     Then The datastore messages "DataStoreMessage" and "DataStoreMessageNew" match
     And All indices are deleted
@@ -209,11 +209,11 @@ Feature: Datastore tests
     if the stored message (retrieved by id) has all the fields correctly set.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     And The device "test-device-1"
     When I prepare 15 random messages and remember the list as "RandomMessagesList"
     And I store the messages from list "RandomMessagesList" and remember the IDs as "StoredMessageIDs"
-    And I refresh all database indices
+    And I refresh all indices
     When I search for messages with IDs from the list "StoredMessageIDs" and store them in the list "StoredMessagesList"
     Then The datastore messages in list "StoredMessagesList" matches the prepared messages in list "RandomMessagesList"
     And All indices are deleted
@@ -223,7 +223,7 @@ Feature: Datastore tests
     string descending) for messages
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     And I set the database to device timestamp indexing
     Given I prepare 100 randomly ordered messages and remember the list as "TestMessageList"
       |topic           |
@@ -234,7 +234,7 @@ Feature: Datastore tests
       |tram/route/one  |
       |car/one         |
     And I store the messages from list "TestMessageList" and remember the IDs as "StoredMessageIDs"
-    Then I refresh all database indices
+    Then I refresh all indices
     When I perform an ordered query for messages and store the results as "QueriedMessageList"
     Then The messages in the list "QueriedMessageList" are stored in the default order
     And All indices are deleted
@@ -245,12 +245,12 @@ Feature: Datastore tests
 
     And All indices are deleted
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     And The device "test-device-1"
     When I prepare a random message with null payload and save it as "TestMessageWithNullPayload"
     And I set the database to device timestamp indexing
     And I store the message "TestMessageWithNullPayload" and remember its ID as "TestMessageId"
-    Then I refresh all database indices
+    Then I refresh all indices
     When I perform a default query for the account messages and store the results as "AccountMessages"
     And I pick message number 0 from the list "AccountMessages" and remember it as "QueriedMessage"
     Then The datastore message "QueriedMessage" matches the prepared message "TestMessageWithNullPayload"
@@ -262,12 +262,12 @@ Feature: Datastore tests
 
     Given All indices are deleted
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     And The device "test-device-1"
     When I prepare a random message with null payload and save it as "TestMessageWithNullPayload"
     And I set the database to server timestamp indexing
     And I store the message "TestMessageWithNullPayload" with the server time and remember its ID as "TestMessageId"
-    Then I refresh all database indices
+    Then I refresh all indices
     When I perform a default query for the account messages and store the results as "AccountMessages"
     And I pick message number 0 from the list "AccountMessages" and remember it as "QueriedMessage"
     Then The datastore message "QueriedMessage" matches the prepared message "TestMessageWithNullPayload"
@@ -279,7 +279,7 @@ Feature: Datastore tests
 
     Given All indices are deleted
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     When I prepare a number of messages with the following details and remember the list as "TestMessages"
@@ -291,7 +291,7 @@ Feature: Datastore tests
       |test-client-4 |ci_client_by_account/1/2/3 |
       |test-client-4 |ci_client_by_account/1/2/3 |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
-    And I refresh all database indices
+    And I refresh all indices
     When I query for the current account channels and store them as "AccountChannelList"
     Then There are exactly 4 channels in the list "AccountChannelList"
     And The channel info items "AccountChannelList" match the prepared messages in "TestMessages"
@@ -302,7 +302,7 @@ Feature: Datastore tests
     channel info by account and time window.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     When I prepare a number of messages with the following details and remember the list as "TestMessages"
@@ -312,7 +312,7 @@ Feature: Datastore tests
       |test-client-2 |ci_client_by_pd_by_account/1/2/3 |2017-07-03T09:00:10.000Z |
       |test-client-2 |ci_client_by_pd_by_account/1/2/3 |2017-07-03T09:00:20.000Z |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
-    And I refresh all database indices
+    And I refresh all indices
     When I query for the current account channels in the date range "2017-07-03T09:00:00.000Z" to "2017-07-03T09:00:20.000Z" and store them as "ChannelList"
     Then There are exactly 2 channels in the list "ChannelList"
     And Client "test-client-1" first published on a channel in the list "ChannelList" on "2017-07-03T09:00:00.000Z"
@@ -327,7 +327,7 @@ Feature: Datastore tests
 
     Given All indices are deleted
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     When I prepare a number of messages with the following details and remember the list as "TestMessages"
@@ -339,7 +339,7 @@ Feature: Datastore tests
       |test-client-2 |ci_topic_by_account/1/2/3 |
       |test-client-2 |ci_topic_by_account/1/2/4 |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
-    And I refresh all database indices
+    And I refresh all indices
     When I query for the current account channels and store them as "AccountChannelList"
     Then There are exactly 6 channels in the list "AccountChannelList"
     And The channel info items "AccountChannelList" match the prepared messages in "TestMessages"
@@ -350,7 +350,7 @@ Feature: Datastore tests
     channel info by client id
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     And I set the database to device timestamp indexing
     And The device "test-device-1"
     When I prepare a number of messages with the following details and remember the list as "TestMessages1"
@@ -366,7 +366,7 @@ Feature: Datastore tests
       |test-client-2 |bus/route/four    |
       |test-client-2 |bus/route/four/a  |
     Then I store the messages from list "TestMessages2" and remember the IDs as "StoredMessageIDs2"
-    And I refresh all database indices
+    And I refresh all indices
     When I query for the channel info of the client "test-client-1" and store the result as "ClientInfoList"
     Then There are exactly 4 channels in the list "ClientInfoList"
     And The channel info items "ClientInfoList" match the prepared messages in "TestMessages1"
@@ -376,7 +376,7 @@ Feature: Datastore tests
     Check the correctness of the metric info data stored by retrieving the metrics information by account.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     Then I prepare a number of messages with the following details and remember the list as "TestMessages"
@@ -392,7 +392,7 @@ Feature: Datastore tests
       |tst-metric-3  |string    |123   |
       |tst-metric-4  |bool      |true  |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
-    And I refresh all database indices
+    And I refresh all indices
     When I query for the current account metrics and store them as "AccountMetrics"
     Then There are exactly 4 metrics in the list "AccountMetrics"
     And The metric info items "AccountMetrics" match the prepared messages in "TestMessages"
@@ -403,7 +403,7 @@ Feature: Datastore tests
     metrics info published in a defined time window.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     When I prepare a number of messages with the following details and remember the list as "TestMessages"
@@ -429,7 +429,7 @@ Feature: Datastore tests
       |tst-metric-3  |string |123   |
       |tst-metric-4  |bool   |true  |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
-    And I refresh all database indices
+    And I refresh all indices
     When I query for the current account metrics in the date range "2017-07-03T09:00:00.000Z" to "2017-07-03T09:00:20.000Z" and store them as "AccountMetrics"
     Then There are exactly 4 metrics in the list "AccountMetrics"
     And The metric info items "AccountMetrics" match the prepared messages in "TestMessages"
@@ -448,7 +448,7 @@ Feature: Datastore tests
     metric info by client id.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     Then I prepare a number of messages with the following details and remember the list as "TestMessages"
@@ -472,7 +472,7 @@ Feature: Datastore tests
       |tst-metric-4  |int       |123   |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     Then I store the messages from list "TestMessages2" and remember the IDs as "StoredMessageIDs2"
-    And I refresh all database indices
+    And I refresh all indices
     When I query for the metrics from client "test-client-1" and store them as "Client1Metrics"
     Then There are exactly 4 metrics in the list "Client1Metrics"
     And The metric info items "Client1Metrics" match the prepared messages in "TestMessages"
@@ -483,7 +483,7 @@ Feature: Datastore tests
     string descending) for the metrics
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     And I set the database to device timestamp indexing
     Given I prepare 100 randomly ordered messages and remember the list as "TestMessageList"
       |topic           |
@@ -494,7 +494,7 @@ Feature: Datastore tests
       |tram/route/one  |
       |car/one         |
     And I store the messages from list "TestMessageList" and remember the IDs as "StoredMessageIDs"
-    Then I refresh all database indices
+    Then I refresh all indices
     When I perform an ordered query for metrics and store the results as "QueriedMetricList"
     Then The metrics in the list "QueriedMetricList" are ordered by name
     And All indices are deleted
@@ -503,7 +503,7 @@ Feature: Datastore tests
     Check the correctness of the client info data stored by retrieving the client information by account.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     When I prepare a number of messages with the following details and remember the list as "TestMessages"
@@ -513,7 +513,7 @@ Feature: Datastore tests
       |test-client-2 |test_topic/1/2/3 |
       |test-client-2 |test_topic/1/2/3 |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
-    And I refresh all database indices
+    And I refresh all indices
     When I query for the current account clients and store them as "AccountClients"
     Then There are exactly 2 clients in the list "AccountClients"
     And The client info items "AccountClients" match the prepared messages in "TestMessages"
@@ -524,7 +524,7 @@ Feature: Datastore tests
     on the Captured date.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     When I prepare a number of messages with the following details and remember the list as "TestMessages"
@@ -534,7 +534,7 @@ Feature: Datastore tests
       |test-client-2 |test_topic/1/2/3 |2017-07-03T09:00:10.000Z |
       |test-client-2 |test_topic/1/2/3 |2017-07-03T09:00:20.000Z |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
-    And I refresh all database indices
+    And I refresh all indices
     When I query for current account clients in the date range "2017-07-03T09:00:00.000Z" to "2017-07-03T09:00:20.000Z" and store them as "ClientInfos"
     Then There are exactly 2 clients in the list "ClientInfos"
     And Client "test-client-1" first message in the list "ClientInfos" is on "2017-07-03T09:00:00.000Z"
@@ -548,7 +548,7 @@ Feature: Datastore tests
     on the Client Id.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     When I prepare a number of messages with the following details and remember the list as "TestMessages1"
@@ -561,7 +561,7 @@ Feature: Datastore tests
       |test-client-3 |test_topic/1/2/3 |
       |test-client-4 |test_topic/1/2/4 |
     Then I store the messages from list "TestMessages2" and remember the IDs as "StoredMessageIDs2"
-    And I refresh all database indices
+    And I refresh all indices
     When I query for the current account client with the Id "test-client-1" and store it as "ClientInfo"
     Then There is exactly 1 client in the list "ClientInfo"
     And The client info items "ClientInfo" match the prepared messages in "TestMessages1"
@@ -572,7 +572,7 @@ Feature: Datastore tests
     channel info items.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     When I prepare a number of messages with the following details and remember the list as "TestMessages"
@@ -602,7 +602,7 @@ Feature: Datastore tests
       |test-client-1 |tba_2/2/2/2 |
       |test-client-1 |tba_2/2/2/3 |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
-    And I refresh all database indices
+    And I refresh all indices
     When I query for the current account channels and store them as "AccountChannelList"
     Then There are exactly 24 channels in the list "AccountChannelList"
     When I query for the current account channels with the filter "1/#" and store them as "QueryResult1"

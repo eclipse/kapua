@@ -23,7 +23,6 @@ import org.junit.runner.RunWith;
                 "org.eclipse.kapua.service.datastore.steps",
                 "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps",
-                "org.eclipse.kapua.service.device.steps",
                 "org.eclipse.kapua.service.device.registry.steps"},
         plugin = {"pretty",
                   "html:target/cucumber/DatastoreTransportI9n",

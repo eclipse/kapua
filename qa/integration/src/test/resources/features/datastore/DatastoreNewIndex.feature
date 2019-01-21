@@ -42,11 +42,11 @@ Feature: Datastore tests
     Given Server with host "127.0.0.1" on port "9200"
     When All indices are deleted
     And I login as user with name "kapua-sys" and password "kapua-password"
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     Given The device "test-device-1"
     When I prepare a random message with capture date "2018-01-01T10:21:32.123Z" and save it as "RandomDataMessage"
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
-    And I refresh all database indices
+    And I refresh all indices
     When REST GET call at "/_cat/indices/"
     Then REST response containing text "1-2018-01"
     And All indices are deleted
@@ -61,11 +61,11 @@ Feature: Datastore tests
     Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP"
     And System property "datastore.index.window" with value "day"
     When All indices are deleted
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     Given The device "test-device-1"
     When I prepare a random message with capture date "2018-01-01T10:21:32.123Z" and save it as "RandomDataMessage"
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
-    And I refresh all database indices
+    And I refresh all indices
     When REST GET call at "/_cat/indices/"
     And REST response containing text "1-2018-01-02"
     And All indices are deleted
@@ -80,11 +80,11 @@ Feature: Datastore tests
     Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP"
     And System property "datastore.index.window" with value "hour"
     When All indices are deleted
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     Given The device "test-device-1"
     When I prepare a random message with capture date "2018-01-01T10:21:32.123Z" and save it as "RandomDataMessage"
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
-    And I refresh all database indices
+    And I refresh all indices
     When REST GET call at "/_cat/indices/"
     And REST response containing text "1-2018-01-02-10"
     And All indices are deleted
@@ -98,13 +98,13 @@ Feature: Datastore tests
     Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP"
     And System property "datastore.index.window" with value "week"
     When All indices are deleted
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     Given The device "test-device-1"
     When I prepare a random message with capture date "2018-01-01T10:21:32.123Z" and save it as "RandomDataMessage"
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
     And I prepare a random message with capture date "2018-01-07T10:21:32.123Z" and save it as "RandomDataMessage"
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
-    And I refresh all database indices
+    And I refresh all indices
     When REST GET call at "/_cat/indices/"
     And REST response containing text "1-2018-01"
     And REST response containing text "1-2018-02"
@@ -119,13 +119,13 @@ Feature: Datastore tests
     Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP"
     And System property "datastore.index.window" with value "day"
     When All indices are deleted
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     Given The device "test-device-1"
     When I prepare a random message with capture date "2018-01-01T10:21:32.123Z" and save it as "RandomDataMessage"
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
     And I prepare a random message with capture date "2018-01-02T10:21:32.123Z" and save it as "RandomDataMessage"
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
-    And I refresh all database indices
+    And I refresh all indices
     When REST GET call at "/_cat/indices/"
     And REST response containing text "1-2018-01-02"
     And REST response containing text "1-2018-01-03"
@@ -140,13 +140,13 @@ Feature: Datastore tests
     Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP"
     And System property "datastore.index.window" with value "hour"
     When All indices are deleted
-    And Account for "kapua-sys"
+    And I select account "kapua-sys"
     Given The device "test-device-1"
     When I prepare a random message with capture date "2018-01-01T10:21:32.123Z" and save it as "RandomDataMessage"
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
     And I prepare a random message with capture date "2018-01-01T15:21:32.123Z" and save it as "RandomDataMessage"
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
-    And I refresh all database indices
+    And I refresh all indices
     When REST GET call at "/_cat/indices/"
     And REST response containing text "1-2018-01-02-10"
     And REST response containing text "1-2018-01-02-15"
@@ -200,11 +200,11 @@ Feature: Datastore tests
     And All indices are deleted
     And I logout
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
-    And Account for "account-a"
+    And I select account "account-a"
     Given The device "test-device-1"
     When I prepare a random message with capture date "2018-01-01T10:21:32.123Z" and save it as "RandomDataMessage"
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
-    And I refresh all database indices
+    And I refresh all indices
     When REST GET call at "/_cat/indices/"
     And REST response containing "-2018-01" with prefix account "LastAccount"
     And All indices are deleted

@@ -33,11 +33,12 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
-import org.eclipse.kapua.qa.common.CucConfig;
+import org.eclipse.kapua.qa.common.cucumber.CucConfig;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
+import org.eclipse.kapua.qa.common.cucumber.CucJobStepProperty;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -650,13 +651,13 @@ public class JobServiceSteps extends TestBase {
     }
 
     @Given("^A regular step definition creator with the name \"(.*)\" and the following properties$")
-    public void prepareARegularStepDefinitionCreatorWithPropertyList(String name, List<CucStepProperty> list) {
+    public void prepareARegularStepDefinitionCreatorWithPropertyList(String name, List<CucJobStepProperty> list) {
 
         JobStepDefinitionCreator stepDefinitionCreator = prepareDefaultJobStepDefinitionCreator();
         stepDefinitionCreator.setName(name);
 
         List<JobStepProperty> tmpPropLst = new ArrayList<>();
-        for(CucStepProperty prop : list) {
+        for(CucJobStepProperty prop : list) {
             tmpPropLst.add(jobStepDefinitionFactory.newStepProperty(prop.getName(), prop.getType(), null));
         }
         stepDefinitionCreator.setStepProperties(tmpPropLst);
@@ -665,7 +666,7 @@ public class JobServiceSteps extends TestBase {
     }
 
     @Given("^A regular step definition with the name \"(.*)\" and the following properties$")
-    public void createARegularStepDefinitionWithProperties(String name, List<CucStepProperty> list)
+    public void createARegularStepDefinitionWithProperties(String name, List<CucJobStepProperty> list)
             throws Exception {
 
         prepareARegularStepDefinitionCreatorWithPropertyList(name, list);
@@ -944,7 +945,7 @@ public class JobServiceSteps extends TestBase {
     }
 
     @Given("^A regular step creator with the name \"(.*)\" and the following properties$")
-    public void prepareARegularStepCreatorWithPropertyList(String name, List<CucStepProperty> list) {
+    public void prepareARegularStepCreatorWithPropertyList(String name, List<CucJobStepProperty> list) {
 
         JobStepCreator stepCreator;
         KapuaId currentStepDefId = (KapuaId) stepData.get("CurrentJobStepDefinitionId");
@@ -954,7 +955,7 @@ public class JobServiceSteps extends TestBase {
         stepCreator.setJobStepDefinitionId(currentStepDefId);
 
         List<JobStepProperty> tmpPropLst = new ArrayList<>();
-        for (CucStepProperty prop : list) {
+        for (CucJobStepProperty prop : list) {
             tmpPropLst.add(jobStepFactory.newStepProperty(prop.getName(), prop.getType(), prop.getValue()));
         }
         stepCreator.setJobStepProperties(tmpPropLst);

@@ -23,7 +23,6 @@ import org.junit.runner.RunWith;
         glue = {"org.eclipse.kapua.qa.common",
                 "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps",
-                "org.eclipse.kapua.service.device.steps",
                 "org.eclipse.kapua.service.tag.steps",
                 "org.eclipse.kapua.service.device.registry.steps"
                },

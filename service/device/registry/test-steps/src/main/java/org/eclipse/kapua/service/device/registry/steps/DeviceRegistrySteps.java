@@ -63,14 +63,21 @@ import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
-import org.eclipse.kapua.qa.common.CucConfig;
+import org.eclipse.kapua.qa.common.cucumber.CucConfig;
+import org.eclipse.kapua.qa.common.cucumber.CucConnection;
+import org.eclipse.kapua.qa.common.cucumber.CucDevice;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
+import org.eclipse.kapua.qa.common.cucumber.CucUser;
 import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
+import org.eclipse.kapua.service.authentication.AuthenticationService;
+import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainImpl;
 import org.eclipse.kapua.service.authorization.permission.Permission;
@@ -96,6 +103,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuer
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionFactoryImpl;
+import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionListResultImpl;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionServiceImpl;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
@@ -116,6 +124,9 @@ import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagListResult;
 import org.eclipse.kapua.service.tag.TagQuery;
 import org.eclipse.kapua.service.tag.TagService;
+import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserFactory;
+import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.test.MockedLocator;
 import org.junit.Assert;
 import org.mockito.Matchers;
@@ -178,10 +189,18 @@ public class DeviceRegistrySteps extends TestBase {
     private DeviceEventFactory eventFactory;
 
     // Additional service references for integration testing
-    private AccountService accountService;
     private DeviceLifeCycleService deviceLifeCycleService;
+    private AuthenticationService authenticationService;
+    private AccountService accountService;
+    private AccountFactory accountFactory;
+    private UserService userService;
+    private UserFactory userFactory;
+    private CredentialService credentialService;
+    private AccessInfoService accessInfoService;
     private TagService tagService;
     private TagFactory tagFactory;
+
+    private AclCreator aclCreator;
 
     // Default constructor
     @Inject
@@ -272,10 +291,18 @@ public class DeviceRegistrySteps extends TestBase {
         eventService = locator.getService(DeviceEventService.class);
         eventFactory = locator.getFactory(DeviceEventFactory.class);
 
-        accountService = locator.getService(AccountService.class);
         deviceLifeCycleService = locator.getService(DeviceLifeCycleService.class);
+        authenticationService = locator.getService(AuthenticationService.class);
+        accountService = locator.getService(AccountService.class);
+        accountFactory = locator.getFactory(AccountFactory.class);
+        userService = locator.getService(UserService.class);
+        userFactory = locator.getFactory(UserFactory.class);
+        credentialService = locator.getService(CredentialService.class);
+        accessInfoService = locator.getService(AccessInfoService.class);
         tagService = locator.getService(TagService.class);
         tagFactory = locator.getFactory(TagFactory.class);
+
+        aclCreator = new AclCreator(accountService, accountFactory, userService, accessInfoService, credentialService);
 
         if (isUnitTest()) {
             // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
@@ -394,6 +421,15 @@ public class DeviceRegistrySteps extends TestBase {
         } catch (KapuaException ex) {
             verifyException(ex);
         }
+    }
+
+    @Given("^The device \"(.*)\"$")
+    public void createDeviceWithName(String clientId) throws KapuaException {
+
+        Account tmpAcc = (Account) stepData.get("LastAccount");
+        DeviceCreator tmpDevCr = deviceFactory.newCreator(tmpAcc.getId(), clientId);
+        Device tmpDev = deviceRegistryService.create(tmpDevCr);
+        stepData.put("LastDevice", tmpDev);
     }
 
     @Given("^A null device$")
@@ -2045,6 +2081,211 @@ public class DeviceRegistrySteps extends TestBase {
         }
     }
 
+
+    @Given("^Such a set of privileged users for account \"(.+)\"$")
+    public void createPrivilegedUsers(String accName, List<CucUser> users) throws Throwable {
+
+        KapuaSecurityUtils.doPrivileged(() -> {
+            Account account = accountService.findByName(accName);
+
+            for (CucUser tmpTestUsr : users) {
+                User tmpUser = aclCreator.createUser(account, tmpTestUsr.getName());
+                if ((tmpTestUsr.getPassword() != null) && !tmpTestUsr.getPassword().isEmpty()) {
+                    aclCreator.attachUserCredentials(account, tmpUser, tmpTestUsr.getPassword());
+                } else {
+                    aclCreator.attachUserCredentials(account, tmpUser);
+                }
+                aclCreator.attachFullPermissions(account, tmpUser);
+            }
+        });
+    }
+
+    @Given("^A full set of device privileges for account \"(.+)\"$")
+    public void setAccountDevicePrivileges(String name) throws KapuaException {
+
+        KapuaSecurityUtils.doPrivileged(() -> {
+            Account account = accountService.findByName(name);
+
+            Map<String, Object> valueMap = new HashMap<>();
+            valueMap.put("infiniteChildEntities", true);
+            valueMap.put("maxNumberChildEntities", 1000);
+
+            deviceRegistryService.setConfigValues(account.getId(), account.getScopeId(), valueMap);
+        });
+    }
+
+    @Given("^The default connection coupling mode for account \"(.+)\" is set to \"(.+)\"$")
+    public void setDeviceConnectionCouplingMode(String name, String mode) throws KapuaException {
+
+        KapuaSecurityUtils.doPrivileged(() -> {
+            Account account = accountService.findByName(name);
+
+            Map<String, Object> valueMap = new HashMap<>();
+            //            valueMap.put("infiniteChildEntities", true);
+            //            valueMap.put("maxNumberChildEntities", 1000);
+            valueMap.put("deviceConnectionUserCouplingDefaultMode", mode);
+
+            deviceConnectionService.setConfigValues(account.getId(), account.getScopeId(), valueMap);
+        });
+    }
+
+    @Given("^The following device connections?$")
+    public void createConnectionForDevice(List<CucConnection> connections) throws KapuaException {
+
+        KapuaSecurityUtils.doPrivileged(() -> {
+            for (CucConnection tmpConn : connections) {
+                DeviceConnectionCreator tmpCreator = deviceConnectionFactory.newCreator(tmpConn.getScopeId());
+                tmpCreator.setStatus(DeviceConnectionStatus.CONNECTED);
+                tmpCreator.setClientId(tmpConn.getClientId());
+                tmpCreator.setUserId(tmpConn.getUserId());
+                tmpCreator.setReservedUserId(tmpConn.getReservedUserId());
+                tmpCreator.setAllowUserChange(tmpConn.getAllowUserChange());
+                tmpCreator.setUserCouplingMode(tmpConn.getUserCouplingMode());
+
+                DeviceConnection tmpDevConn = deviceConnectionService.create(tmpCreator);
+
+                tmpDevConn.setStatus(DeviceConnectionStatus.DISCONNECTED);
+                deviceConnectionService.update(tmpDevConn);
+            }
+        });
+    }
+
+    @Given("^I wait for (\\d+) seconds?$")
+    public void waitForSpecifiedTime(int delay) throws InterruptedException {
+
+        Thread.sleep(delay * 1000);
+    }
+
+    @When("^I search for a connection from the device \"(.+)\" in account \"(.+)\"$")
+    public void searchForConnectionFromDeviceWithClientID(String clientId, String account)
+            throws KapuaException {
+
+        KapuaSecurityUtils.doPrivileged(() -> {
+            Account tmpAcc;
+            DeviceConnection tmpConn;
+            DeviceConnectionListResult tmpConnLst = new DeviceConnectionListResultImpl();
+
+            tmpAcc = accountService.findByName(account);
+            Assert.assertNotNull(tmpAcc);
+            Assert.assertNotNull(tmpAcc.getId());
+
+            tmpConn = deviceConnectionService.findByClientId(tmpAcc.getId(), clientId);
+            Map<String, Object> props = deviceRegistryService.getConfigValues(tmpAcc.getId());
+            stepData.put("DeviceConnection", tmpConn);
+            if (tmpConn != null) {
+                Vector<DeviceConnection> dcv = new Vector<>();
+                dcv.add(tmpConn);
+                tmpConnLst.addItems(dcv);
+            }
+            stepData.put("DeviceConnectionList", tmpConnLst);
+        });
+    }
+
+    @Then("^The connection user is \"(.+)\"$")
+    public void checkDeviceConnectionUser(String user) throws KapuaException {
+
+        KapuaSecurityUtils.doPrivileged(() -> {
+            DeviceConnectionListResult tmpConnLst = (DeviceConnectionListResult) stepData.get("DeviceConnectionList");
+            User tmpUsr = userService.findByName(user);
+
+            Assert.assertNotNull(tmpConnLst);
+            Assert.assertNotEquals(0, tmpConnLst.getSize());
+
+            DeviceConnection tmpConnection = tmpConnLst.getFirstItem();
+            Assert.assertEquals(tmpUsr.getId(), tmpConnection.getUserId());
+        });
+    }
+
+    @When("^I set the connection status from the device \"(.+)\" in account \"(.+)\" to \"(.+)\"$")
+    public void modifyDeviceConnectionStatus(String device, String account, String status) throws KapuaException {
+
+        KapuaSecurityUtils.doPrivileged(() -> {
+            Account tmpAcc = accountService.findByName(account);
+            DeviceConnection tmpConn = deviceConnectionService.findByClientId(tmpAcc.getId(), device);
+            DeviceConnectionStatus tmpStat = parseConnectionStatusString(status);
+
+            Assert.assertNotNull(tmpStat);
+            Assert.assertNotNull(tmpConn);
+
+            tmpConn.setStatus(tmpStat);
+            deviceConnectionService.update(tmpConn);
+        });
+    }
+
+    @When("^I set the user coupling mode for the connection from device \"(.+)\" in account \"(.+)\" to \"(.+)\"$")
+    public void modifyDeviceConnectionCouplingMode(String device, String account, String mode) throws KapuaException {
+
+        KapuaSecurityUtils.doPrivileged(() -> {
+            ConnectionUserCouplingMode tmpMode = parseConnectionCouplingString(mode);
+            Assert.assertNotNull(tmpMode);
+
+            Account tmpAcc = accountService.findByName(account);
+            DeviceConnection tmpConn = deviceConnectionService.findByClientId(tmpAcc.getId(), device);
+
+            Assert.assertNotNull(tmpConn);
+
+            tmpConn.setUserCouplingMode(tmpMode);
+            deviceConnectionService.update(tmpConn);
+        });
+    }
+
+    @When("^I set the user change flag for the connection from device \"(.+)\" in account \"(.+)\" to \"(.+)\"$")
+    public void modifyDeviceConnectionUserChangeFlag(String device, String account, String flag) throws KapuaException {
+
+        KapuaSecurityUtils.doPrivileged(() -> {
+            Account tmpAcc = accountService.findByName(account);
+            DeviceConnection tmpConn = deviceConnectionService.findByClientId(tmpAcc.getId(), device);
+
+            Assert.assertNotNull(tmpConn);
+
+            tmpConn.setAllowUserChange(parseBooleanFromString(flag));
+            deviceConnectionService.update(tmpConn);
+        });
+    }
+
+    @When("^I set the reserved user for the connection from device \"(.+)\" in account \"(.+)\" to \"(.*)\"$")
+    public void modifyDeviceConnectionReservedUser(String device, String scope, String resUser) throws KapuaException {
+
+        KapuaSecurityUtils.doPrivileged(() -> {
+            Account tmpAcc = accountService.findByName(scope);
+            DeviceConnection tmpConn = deviceConnectionService.findByClientId(tmpAcc.getId(), device);
+            KapuaId userId;
+
+            Assert.assertNotNull(tmpConn);
+
+            if (resUser.isEmpty() || resUser.trim().toLowerCase().contains("null")) {
+                userId = null;
+            } else {
+                userId = userService.findByName(resUser).getId();
+            }
+
+            tmpConn.setReservedUserId(userId);
+            stepData.put("ExceptionCaught", false);
+            try {
+                primeException();
+                deviceConnectionService.update(tmpConn);
+            } catch (KapuaException ex) {
+                verifyException(ex);
+            } catch (Exception e) {
+                int a = 10;
+            }
+        });
+    }
+
+    @Then("^The user for the connection from device \"(.+)\" in scope \"(.+)\" is \"(.+)\"$")
+    public void checkUserForExistingConnection(String device, String scope, String name) throws KapuaException {
+
+        KapuaSecurityUtils.doPrivileged(() -> {
+            Account account = accountService.findByName(scope);
+            DeviceConnection connection = deviceConnectionService.findByClientId(account.getId(), device);
+            User user = userService.findByName(name);
+
+            Assert.assertNotNull(connection);
+            Assert.assertNotNull(user);
+            Assert.assertEquals(user.getId(), connection.getUserId());
+        });
+    }
+
     // *******************
     // * Private Helpers *
     // *******************
@@ -2299,7 +2540,7 @@ public class DeviceRegistrySteps extends TestBase {
         DeviceCreator tmpCr;
         KapuaId tmpScope;
 
-        if (dev.scopeId != null) {
+        if (dev.getScopeId() != null) {
             tmpScope = dev.getScopeId();
         } else {
             Assert.assertNotNull(tmpAccount);
@@ -2307,61 +2548,61 @@ public class DeviceRegistrySteps extends TestBase {
             tmpScope = tmpAccount.getId();
         }
 
-        Assert.assertNotNull(dev.clientId);
-        Assert.assertNotEquals(0, dev.clientId.length());
+        Assert.assertNotNull(dev.getClientId());
+        Assert.assertNotEquals(0, dev.getClientId().length());
 
-        tmpCr = prepareRegularDeviceCreator(tmpScope, dev.clientId);
+        tmpCr = prepareRegularDeviceCreator(tmpScope, dev.getClientId());
 
-        if (dev.groupId != null) {
+        if (dev.getGroupId() != null) {
             tmpCr.setGroupId(dev.getGroupId());
         }
-        if (dev.connectionId != null) {
+        if (dev.getConnectionId() != null) {
             tmpCr.setConnectionId(dev.getConnectionId());
         }
-        if (dev.displayName != null) {
-            tmpCr.setDisplayName(dev.displayName);
+        if (dev.getDisplayName() != null) {
+            tmpCr.setDisplayName(dev.getDisplayName());
         }
-        if (dev.status != null) {
+        if (dev.getStatus() != null) {
             tmpCr.setStatus(dev.getStatus());
         }
-        if (dev.modelId != null) {
-            tmpCr.setModelId(dev.modelId);
+        if (dev.getModelId() != null) {
+            tmpCr.setModelId(dev.getModelId());
         }
-        if (dev.serialNumber != null) {
-            tmpCr.setSerialNumber(dev.serialNumber);
+        if (dev.getSerialNumber() != null) {
+            tmpCr.setSerialNumber(dev.getSerialNumber());
         }
-        if (dev.imei != null) {
-            tmpCr.setImei(dev.imei);
+        if (dev.getImei() != null) {
+            tmpCr.setImei(dev.getImei());
         }
-        if (dev.imsi != null) {
-            tmpCr.setImsi(dev.imsi);
+        if (dev.getImsi() != null) {
+            tmpCr.setImsi(dev.getImsi());
         }
-        if (dev.iccid != null) {
-            tmpCr.setIccid(dev.iccid);
+        if (dev.getIccid() != null) {
+            tmpCr.setIccid(dev.getIccid());
         }
-        if (dev.biosVersion != null) {
-            tmpCr.setBiosVersion(dev.biosVersion);
+        if (dev.getBiosVersion() != null) {
+            tmpCr.setBiosVersion(dev.getBiosVersion());
         }
-        if (dev.firmwareVersion != null) {
-            tmpCr.setFirmwareVersion(dev.firmwareVersion);
+        if (dev.getFirmwareVersion() != null) {
+            tmpCr.setFirmwareVersion(dev.getFirmwareVersion());
         }
-        if (dev.osVersion != null) {
-            tmpCr.setOsVersion(dev.osVersion);
+        if (dev.getOsVersion() != null) {
+            tmpCr.setOsVersion(dev.getOsVersion());
         }
-        if (dev.jvmVersion != null) {
-            tmpCr.setJvmVersion(dev.jvmVersion);
+        if (dev.getJvmVersion() != null) {
+            tmpCr.setJvmVersion(dev.getJvmVersion());
         }
-        if (dev.osgiFrameworkVersion != null) {
-            tmpCr.setOsgiFrameworkVersion(dev.osgiFrameworkVersion);
+        if (dev.getOsgiFrameworkVersion() != null) {
+            tmpCr.setOsgiFrameworkVersion(dev.getOsgiFrameworkVersion());
         }
-        if (dev.applicationFrameworkVersion != null) {
-            tmpCr.setApplicationFrameworkVersion(dev.applicationFrameworkVersion);
+        if (dev.getApplicationFrameworkVersion() != null) {
+            tmpCr.setApplicationFrameworkVersion(dev.getApplicationFrameworkVersion());
         }
-        if (dev.applicationIdentifiers != null) {
-            tmpCr.setApplicationIdentifiers(dev.applicationIdentifiers);
+        if (dev.getApplicationIdentifiers() != null) {
+            tmpCr.setApplicationIdentifiers(dev.getApplicationIdentifiers());
         }
-        if (dev.acceptEncoding != null) {
-            tmpCr.setAcceptEncoding(dev.acceptEncoding);
+        if (dev.getAcceptEncoding() != null) {
+            tmpCr.setAcceptEncoding(dev.getAcceptEncoding());
         }
 
         return tmpCr;
@@ -2377,5 +2618,27 @@ public class DeviceRegistrySteps extends TestBase {
                 return DeviceConnectionStatus.MISSING;
         }
         return null;
+    }
+
+    ConnectionUserCouplingMode parseConnectionCouplingString(String mode) {
+        switch (mode.trim().toUpperCase()) {
+            case "INHERITED":
+                return ConnectionUserCouplingMode.INHERITED;
+            case "LOOSE":
+                return ConnectionUserCouplingMode.LOOSE;
+            case "STRICT":
+                return ConnectionUserCouplingMode.STRICT;
+        }
+        return null;
+    }
+
+    boolean parseBooleanFromString(String value) {
+        switch (value.trim().toLowerCase()) {
+            case "true":
+                return true;
+            case "false":
+                return false;
+        }
+        return false;
     }
 }
