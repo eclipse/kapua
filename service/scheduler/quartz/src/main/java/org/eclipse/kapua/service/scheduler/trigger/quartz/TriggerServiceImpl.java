@@ -96,7 +96,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         query.setPredicate(new AttributePredicateImpl<>(TriggerAttributes.NAME, triggerCreator.getName()));
 
         if (count(query) > 0) {
-            throw new KapuaDuplicateNameException(triggerCreator.getName());
+            throw new KapuaDuplicateNameException();
         }
 
         if (triggerCreator.getRetryInterval() != null && triggerCreator.getCronScheduling() != null) {
