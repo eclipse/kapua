@@ -127,8 +127,10 @@ public class JobExecutionImpl extends AbstractKapuaUpdatableEntity implements Jo
     public void setTargetIds(Set<KapuaId> tagIds) {
         this.targetIds = new HashSet<>();
 
-        for (KapuaId id : tagIds) {
-            this.targetIds.add(KapuaEid.parseKapuaId(id));
+        if (tagIds != null) {
+            for (KapuaId id : tagIds) {
+                this.targetIds.add(KapuaEid.parseKapuaId(id));
+            }
         }
     }
 

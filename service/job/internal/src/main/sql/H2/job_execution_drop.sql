@@ -10,6 +10,7 @@
  *     Eurotech - initial API and implementation
  *******************************************************************************/
 
+DROP TABLE IF EXISTS job_job_execution_target;
 DROP TABLE IF EXISTS job_job_execution;
 
 DROP TABLE IF EXISTS DATABASECHANGELOG;

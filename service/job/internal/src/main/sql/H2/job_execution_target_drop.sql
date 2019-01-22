@@ -10,12 +10,6 @@
  *     Eurotech - initial API and implementation
  *******************************************************************************/
 
-DROP TABLE IF EXISTS job_job_step_properties;
-DROP TABLE IF EXISTS sys_configuration;
 DROP TABLE IF EXISTS job_job_execution_target;
-DROP TABLE IF EXISTS job_job_execution;
-DROP TABLE IF EXISTS job_job_step;
-DROP TABLE IF EXISTS job_job_target;
-DROP TABLE IF EXISTS job_job;
 
 DROP TABLE IF EXISTS DATABASECHANGELOG;
