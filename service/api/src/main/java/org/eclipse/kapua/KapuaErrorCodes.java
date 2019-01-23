@@ -93,6 +93,11 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
     BUNDLE_STOP_ERROR,
 
     /**
+     * Syntax error in Package URI
+     */
+    PACKAGE_URI_SYNTAX_ERROR,
+
+    /**
      * Max number of items is reached
      */
     MAX_NUMBER_OF_ITEMS_REACHED,
