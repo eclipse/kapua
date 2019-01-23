@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.job.engine.commons.context;
+package org.eclipse.kapua.job.engine.commons.wrappers;
 
 import com.google.common.base.Strings;
 import org.eclipse.kapua.commons.model.id.KapuaEid;

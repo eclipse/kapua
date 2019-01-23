@@ -52,8 +52,16 @@ public interface JobTarget extends KapuaUpdatableEntity {
 
     void setStepIndex(int stepIndex);
 
+    /**
+     * @deprecated No longer used.
+     */
+    @Deprecated
     Exception getException();
 
+    /**
+     * @deprecated No longer used.
+     */
+    @Deprecated
     void setException(Exception e);
 
 }

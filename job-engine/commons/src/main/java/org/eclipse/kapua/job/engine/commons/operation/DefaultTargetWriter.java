@@ -12,8 +12,9 @@
 package org.eclipse.kapua.job.engine.commons.operation;
 
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.job.engine.commons.context.JobContextWrapper;
-import org.eclipse.kapua.job.engine.commons.context.StepContextWrapper;
+import org.eclipse.kapua.job.engine.commons.wrappers.JobContextWrapper;
+import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
+import org.eclipse.kapua.job.engine.commons.wrappers.StepContextWrapper;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.job.operation.TargetWriter;
 import org.eclipse.kapua.service.job.targets.JobTarget;
@@ -49,13 +50,13 @@ public class DefaultTargetWriter extends AbstractItemWriter implements TargetWri
         LOG.info("JOB {} - Writing items...", jobContextWrapper.getJobId());
 
         for (Object item : items) {
-            JobTarget processedJobTarget = (JobTarget) item;
+            JobTargetWrapper processedWrappedJobTarget = (JobTargetWrapper) item;
+            JobTarget processedJobTarget = processedWrappedJobTarget.getJobTarget();
 
             JobTarget jobTarget = KapuaSecurityUtils.doPrivileged(() -> JOB_TARGET_SERVICE.find(processedJobTarget.getScopeId(), processedJobTarget.getId()));
 
             jobTarget.setStepIndex(stepContextWrapper.getStepIndex());
             jobTarget.setStatus(processedJobTarget.getStatus());
-            jobTarget.setException(processedJobTarget.getException());
 
             if (JobTargetStatus.PROCESS_OK.equals(jobTarget.getStatus())) {
 

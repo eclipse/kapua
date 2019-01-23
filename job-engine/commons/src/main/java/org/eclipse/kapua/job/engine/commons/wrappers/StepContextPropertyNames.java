@@ -9,15 +9,12 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.job.engine.commons.context;
+package org.eclipse.kapua.job.engine.commons.wrappers;
 
-public interface JobContextPropertyNames {
+public interface StepContextPropertyNames {
 
-    String JOB_SCOPE_ID = "job.scopeId";
+    String STEP_INDEX = "step.stepIndex";
 
-    String JOB_ID = "job.id";
+    String STEP_NEXT_INDEX = "step.nextStepIndex";
 
-    String JOB_TARGET_SUBLIST = "job.target.sublist";
-
-    String JOB_STEP_FROM_INDEX = "job.step.fromIndex";
 }
