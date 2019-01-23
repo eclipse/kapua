@@ -24,14 +24,16 @@ import java.util.Map;
 public class Metadata {
 
     // Info fields does not change within the same account name
-    private String dataIndexName;
-    private String registryIndexName;
+    private final String dataIndexName;
+    private final String channelRegistryIndexName;
+    private final String clientRegistryIndexName;
+    private final String metricRegistryIndexName;
     //
 
     // Custom mappings can only increase within the same account
     // No removal of existing cached mappings or changes in the
     // existing mappings.
-    private Map<String, Metric> messageMappingsCache;
+    private final Map<String, Metric> messageMappingsCache;
     //
 
     /**
@@ -45,14 +47,16 @@ public class Metadata {
     }
 
     /**
-     * Contructor.
+     * Constructor.
      *
      * @since 1.0.0
      */
-    public Metadata(String dataIndexName, String registryIndexName) {
-        messageMappingsCache = new HashMap<>(100);
+    public Metadata(String dataIndexName, String channelRegistryIndexName, String clientRegistryIndexName, String metricRegistryIndexName) {
+        this.messageMappingsCache = new HashMap<>(100);
         this.dataIndexName = dataIndexName;
-        this.registryIndexName = registryIndexName;
+        this.channelRegistryIndexName = channelRegistryIndexName;
+        this.clientRegistryIndexName = clientRegistryIndexName;
+        this.metricRegistryIndexName = metricRegistryIndexName;
     }
 
     /**
@@ -66,12 +70,32 @@ public class Metadata {
     }
 
     /**
-     * Get the Kapua data index name
+     * Get the Kapua channel index name
      *
      * @return
-     * @since 1.0.0
+     * @since 1.4.0
      */
-    public String getRegistryIndexName() {
-        return registryIndexName;
+    public String getChannelRegistryIndexName() {
+        return channelRegistryIndexName;
+    }
+
+    /**
+     * Get the Kapua client index name
+     *
+     * @return
+     * @since 1.4.0
+     */
+    public String getClientRegistryIndexName() {
+        return clientRegistryIndexName;
+    }
+
+    /**
+     * Get the Kapua metric index name
+     *
+     * @return
+     * @since 1.4.0
+     */
+    public String getMetricRegistryIndexName() {
+        return metricRegistryIndexName;
     }
 }

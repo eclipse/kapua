@@ -99,9 +99,9 @@ public class MetricInfoRegistryFacade extends AbstractRegistryFacade {
             if (storedField == null) {
                 Metadata metadata = mediator.getMetadata(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
 
-                String kapuaIndexName = metadata.getRegistryIndexName();
+                String kapuaIndexName = metadata.getMetricRegistryIndexName();
 
-                UpdateRequest request = new UpdateRequest(metricInfo.getId().toString(), new TypeDescriptor(metadata.getRegistryIndexName(), MetricInfoSchema.METRIC_TYPE_NAME), metricInfo);
+                UpdateRequest request = new UpdateRequest(metricInfo.getId().toString(), new TypeDescriptor(metadata.getMetricRegistryIndexName(), MetricInfoSchema.METRIC_TYPE_NAME), metricInfo);
                 response = getElasticsearchClient().upsert(request);
 
                 LOG.debug("Upsert on metric successfully executed [{}.{}, {} - {}]", kapuaIndexName, MetricInfoSchema.METRIC_TYPE_NAME, metricInfoId, response.getId());
@@ -147,7 +147,7 @@ public class MetricInfoRegistryFacade extends AbstractRegistryFacade {
                 bulkRequest.add(
                         new UpdateRequest(
                                 metricInfo.getId().toString(),
-                                new TypeDescriptor(metadata.getRegistryIndexName(),
+                                new TypeDescriptor(metadata.getMetricRegistryIndexName(),
                                         MetricInfoSchema.METRIC_TYPE_NAME),
                                 metricInfo)
                 );
@@ -207,7 +207,7 @@ public class MetricInfoRegistryFacade extends AbstractRegistryFacade {
             return;
         }
 
-        String indexName = SchemaUtil.getKapuaIndexName(scopeId);
+        String indexName = SchemaUtil.getMetricIndexName(scopeId);
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MetricInfoSchema.METRIC_TYPE_NAME);
         getElasticsearchClient().delete(typeDescriptor, id.toString());
     }
@@ -255,7 +255,7 @@ public class MetricInfoRegistryFacade extends AbstractRegistryFacade {
             return new MetricInfoListResultImpl();
         }
 
-        String indexNme = SchemaUtil.getKapuaIndexName(query.getScopeId());
+        String indexNme = SchemaUtil.getMetricIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexNme, MetricInfoSchema.METRIC_TYPE_NAME);
         ResultList<MetricInfo> result = getElasticsearchClient().query(typeDescriptor, query, MetricInfo.class);
         return new MetricInfoListResultImpl(result);
@@ -279,7 +279,7 @@ public class MetricInfoRegistryFacade extends AbstractRegistryFacade {
             return 0;
         }
 
-        String indexName = SchemaUtil.getKapuaIndexName(query.getScopeId());
+        String indexName = SchemaUtil.getMetricIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MetricInfoSchema.METRIC_TYPE_NAME);
         return getElasticsearchClient().count(typeDescriptor, query);
     }
@@ -303,7 +303,7 @@ public class MetricInfoRegistryFacade extends AbstractRegistryFacade {
             return;
         }
 
-        String indexName = SchemaUtil.getKapuaIndexName(query.getScopeId());
+        String indexName = SchemaUtil.getMetricIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MetricInfoSchema.METRIC_TYPE_NAME);
         getElasticsearchClient().deleteByQuery(typeDescriptor, query);
     }

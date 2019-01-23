@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.datastore.internal.schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.message.Message;
 import org.eclipse.kapua.service.elasticsearch.client.SchemaKeys;
@@ -277,72 +278,72 @@ public class MessageSchema {
     public static JsonNode getMesageTypeSchema(boolean allEnable, boolean sourceEnable) throws MappingException {
         ObjectNode messageNode = MappingUtils.newObjectNode();
         {
-            ObjectNode sourceMessage = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_ENABLED, sourceEnable)});
+            ObjectNode sourceMessage = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_ENABLED, sourceEnable) });
             messageNode.set(SchemaKeys.KEY_SOURCE, sourceMessage);
 
-            ObjectNode allMessage = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_ENABLED, allEnable)});
+            ObjectNode allMessage = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_ENABLED, allEnable) });
             messageNode.set(SchemaKeys.KEY_ALL, allMessage);
 
             ObjectNode propertiesNode = MappingUtils.newObjectNode();
             {
-                ObjectNode messageId = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
+                ObjectNode messageId = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
                 propertiesNode.set(MESSAGE_ID, messageId);
 
-                ObjectNode messageTimestamp = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN)});
+                ObjectNode messageTimestamp = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
                 propertiesNode.set(MESSAGE_TIMESTAMP, messageTimestamp);
 
-                ObjectNode messageReceivedOn = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN)});
+                ObjectNode messageReceivedOn = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
                 propertiesNode.set(MESSAGE_RECEIVED_ON, messageReceivedOn);
 
-                ObjectNode messageIp = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_IP)});
+                ObjectNode messageIp = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_IP) });
                 propertiesNode.set(MESSAGE_IP_ADDRESS, messageIp);
 
-                ObjectNode messageScopeId = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
+                ObjectNode messageScopeId = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
                 propertiesNode.set(MESSAGE_SCOPE_ID, messageScopeId);
 
-                ObjectNode messageDeviceId = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
+                ObjectNode messageDeviceId = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
                 propertiesNode.set(MESSAGE_DEVICE_ID, messageDeviceId);
 
-                ObjectNode messageClientId = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
+                ObjectNode messageClientId = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
                 propertiesNode.set(MESSAGE_CLIENT_ID, messageClientId);
 
-                ObjectNode messageChannel = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
+                ObjectNode messageChannel = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
                 propertiesNode.set(MESSAGE_CHANNEL, messageChannel);
 
-                ObjectNode messageCapturedOn = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN)});
+                ObjectNode messageCapturedOn = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
                 propertiesNode.set(MESSAGE_CAPTURED_ON, messageCapturedOn);
 
-                ObjectNode messageSentOn = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN)});
+                ObjectNode messageSentOn = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
                 propertiesNode.set(MESSAGE_SENT_ON, messageSentOn);
 
                 ObjectNode positionNode = MappingUtils.newObjectNode(
-                        new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_OBJECT), new KeyValueEntry(SchemaKeys.KEY_ENABLED, true),
-                                new KeyValueEntry(SchemaKeys.KEY_DYNAMIC, false), new KeyValueEntry(SchemaKeys.KEY_INCLUDE_IN_ALL, false)});
+                        new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_OBJECT), new KeyValueEntry(SchemaKeys.KEY_ENABLED, true),
+                                new KeyValueEntry(SchemaKeys.KEY_DYNAMIC, false), new KeyValueEntry(SchemaKeys.KEY_INCLUDE_IN_ALL, false) });
 
                 ObjectNode positionPropertiesNode = MappingUtils.newObjectNode();
                 {
-                    ObjectNode messagePositionPropLocation = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_GEO_POINT)});
+                    ObjectNode messagePositionPropLocation = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_GEO_POINT) });
                     positionPropertiesNode.set(MESSAGE_POS_LOCATION, messagePositionPropLocation);
 
-                    ObjectNode messagePositionPropAlt = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DOUBLE)});
+                    ObjectNode messagePositionPropAlt = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DOUBLE) });
                     positionPropertiesNode.set(MESSAGE_POS_ALT, messagePositionPropAlt);
 
-                    ObjectNode messagePositionPropPrec = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DOUBLE)});
+                    ObjectNode messagePositionPropPrec = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DOUBLE) });
                     positionPropertiesNode.set(MESSAGE_POS_PRECISION, messagePositionPropPrec);
 
-                    ObjectNode messagePositionPropHead = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DOUBLE)});
+                    ObjectNode messagePositionPropHead = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DOUBLE) });
                     positionPropertiesNode.set(MESSAGE_POS_HEADING, messagePositionPropHead);
 
-                    ObjectNode messagePositionPropSpeed = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DOUBLE)});
+                    ObjectNode messagePositionPropSpeed = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DOUBLE) });
                     positionPropertiesNode.set(MESSAGE_POS_SPEED, messagePositionPropSpeed);
 
-                    ObjectNode messagePositionPropTime = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN)});
+                    ObjectNode messagePositionPropTime = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
                     positionPropertiesNode.set(MESSAGE_POS_TIMESTAMP, messagePositionPropTime);
 
-                    ObjectNode messagePositionPropSat = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_INTEGER)});
+                    ObjectNode messagePositionPropSat = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_INTEGER) });
                     positionPropertiesNode.set(MESSAGE_POS_SATELLITES, messagePositionPropSat);
 
-                    ObjectNode messagePositionPropStat = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_INTEGER)});
+                    ObjectNode messagePositionPropStat = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_INTEGER) });
                     positionPropertiesNode.set(MESSAGE_POS_STATUS, messagePositionPropStat);
                 }
                 positionNode.set(SchemaKeys.FIELD_NAME_PROPERTIES, positionPropertiesNode);
@@ -352,11 +353,11 @@ public class MessageSchema {
             messageNode.set(SchemaKeys.FIELD_NAME_PROPERTIES, propertiesNode);
 
             ObjectNode messageMetrics = MappingUtils.newObjectNode(
-                    new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_OBJECT), new KeyValueEntry(SchemaKeys.KEY_ENABLED, true),
-                            new KeyValueEntry(SchemaKeys.KEY_DYNAMIC, true), new KeyValueEntry(SchemaKeys.KEY_INCLUDE_IN_ALL, false)});
+                    new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_OBJECT), new KeyValueEntry(SchemaKeys.KEY_ENABLED, true),
+                            new KeyValueEntry(SchemaKeys.KEY_DYNAMIC, true), new KeyValueEntry(SchemaKeys.KEY_INCLUDE_IN_ALL, false) });
             propertiesNode.set(MESSAGE_METRICS, messageMetrics);
 
-            ObjectNode messageBody = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_BINARY), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_FALSE)});
+            ObjectNode messageBody = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_BINARY), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_FALSE) });
             propertiesNode.set(MESSAGE_BODY, messageBody);
         }
         return messageNode;

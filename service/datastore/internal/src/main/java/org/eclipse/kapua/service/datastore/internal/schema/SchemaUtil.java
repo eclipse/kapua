@@ -69,8 +69,28 @@ public class SchemaUtil {
      * @return
      * @since 1.0.0
      */
-    public static String getKapuaIndexName(KapuaId scopeId) {
-        return DatastoreUtils.getRegistryIndexName(scopeId);
+    public static String getChannelIndexName(KapuaId scopeId) {
+        return DatastoreUtils.getChannelIndexName(scopeId);
+    }
+
+    /**
+     * Get the Kapua data index name
+     *
+     * @param scopeId
+     * @return
+     */
+    public static String getClientIndexName(KapuaId scopeId) {
+        return DatastoreUtils.getClientIndexName(scopeId);
+    }
+
+    /**
+     * Get the Kapua data index name
+     *
+     * @param scopeId
+     * @return
+     */
+    public static String getMetricIndexName(KapuaId scopeId) {
+        return DatastoreUtils.getMetricIndexName(scopeId);
     }
 
 }
