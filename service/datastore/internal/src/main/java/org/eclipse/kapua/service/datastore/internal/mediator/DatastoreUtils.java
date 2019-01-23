@@ -54,6 +54,8 @@ public class DatastoreUtils {
     private static final Logger LOG = LoggerFactory.getLogger(DatastoreUtils.class);
 //    private static final MessageStoreService MESSAGE_STORE_SERVICE = KapuaLocator.getInstance().getService(MessageStoreService.class);
 
+    private enum IndexType { CHANNEL, CLIENT, METRIC }
+
     private DatastoreUtils() {
     }
 
@@ -290,6 +292,18 @@ public class DatastoreUtils {
         return sb.toString();
     }
 
+    public static String getChannelIndexName(KapuaId scopeId) {
+        return getRegistryIndexName(scopeId, IndexType.CHANNEL);
+    }
+
+    public static String getClientIndexName(KapuaId scopeId) {
+        return getRegistryIndexName(scopeId, IndexType.CLIENT);
+    }
+
+    public static String getMetricIndexName(KapuaId scopeId) {
+        return getRegistryIndexName(scopeId, IndexType.METRIC);
+    }
+
     /**
      * Get the Kapua index name for the specified base name
      *
@@ -297,7 +311,7 @@ public class DatastoreUtils {
      * @return
      * @since 1.0.0
      */
-    public static String getRegistryIndexName(KapuaId scopeId) {
+    private static String getRegistryIndexName(KapuaId scopeId, IndexType indexType) {
         final StringBuilder sb = new StringBuilder();
         final String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingsKey.INDEX_PREFIX);
         if (StringUtils.isNotEmpty(prefix)) {
@@ -305,6 +319,7 @@ public class DatastoreUtils {
         }
         String indexName = DatastoreUtils.normalizedIndexName(scopeId.toStringId());
         sb.append(".").append(indexName);
+        sb.append("-").append(indexType.name().toLowerCase());
         return sb.toString();
     }
 
