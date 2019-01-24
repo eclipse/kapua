@@ -58,8 +58,6 @@ import org.eclipse.kapua.app.console.module.device.shared.model.permission.Devic
 
 public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
 
-    private static final String UNDEFINED_ERROR = "Error: ";
-    private static final String INTERNAL_ERROR = "Error: INTERNAL_ERROR";
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private static final ConsoleDeviceMessages DEVICE_MSGS = GWT.create(ConsoleDeviceMessages.class);
 
@@ -216,12 +214,10 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
 
                     String errorMessage = htmlResult.substring(errorMessageStartIndex, errorMessageEndIndex);
 
-                    if (UNDEFINED_ERROR.equals(errorMessage)) {
+                    if (!errorMessage.isEmpty()) {
                         errorMessage = DEVICE_MSGS.deviceCommandCommunicationError();
-                    } else if (errorMessage.contains(INTERNAL_ERROR)) {
-                        errorMessage = DEVICE_MSGS.deviceCommandExecutionErrorMessage();
-                    }
-                    MessageBox.alert(MSGS.error(), MSGS.commandExecutionFailure() + ":<br/>" + errorMessage, null).getDialog().addStyleName("x-window-dlg .ext-mb-icon" );
+                        MessageBox.alert(MSGS.error(), MSGS.commandExecutionFailure() + ":<br/>" + errorMessage, null).getDialog().addStyleName("x-window-dlg .ext-mb-icon" );
+                    } 
                     commandInput.unmask();
                 } else {
                     int outputMessageStartIndex = htmlResult.indexOf("<pre");
