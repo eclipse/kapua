@@ -96,6 +96,9 @@ public class KapuaExceptionHandler {
         } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.DUPLICATE_NAME.name())) {
             logger.warn("Entity already exist with the same name", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.DUPLICATE_NAME, t, t.getLocalizedMessage());
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.SCHEDULE_DUPLICATE_NAME.name())) {
+            logger.warn("Entity already exist with the same name", t);
+            throw new GwtKapuaException(GwtKapuaErrorCode.SCHEDULE_DUPLICATE_NAME, t, t.getLocalizedMessage());
         } else if(t instanceof KapuaConfigurationException && ((KapuaConfigurationException) t).getCode().name().equals(KapuaConfigurationErrorCodes.SELF_LIMIT_EXCEEDED_IN_CONFIG.name())) {
             logger.warn("Parent account limitation error", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.SELF_LIMIT_EXCEEDED_IN_CONFIG, t, t.getLocalizedMessage());

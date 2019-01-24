@@ -327,7 +327,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
                 cancelButton.enable();
                 if (cause instanceof GwtKapuaException) {
                     GwtKapuaException gwtCause = (GwtKapuaException) cause;
-                    if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
+                    if (gwtCause.getCode().equals(GwtKapuaErrorCode.SCHEDULE_DUPLICATE_NAME)) {
                         triggerName.markInvalid(gwtCause.getMessage());
                     } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.RETRY_AND_CRON_BOTH_SELECTED)) {
                         cronExpression.markInvalid(gwtCause.getMessage());
