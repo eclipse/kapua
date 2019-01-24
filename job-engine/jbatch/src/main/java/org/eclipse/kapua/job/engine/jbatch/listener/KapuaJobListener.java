@@ -90,7 +90,6 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
         LOG.info("JOB {} - {} - Running before job... DONE!", jobContextWrapper.getJobId(), jobContextWrapper.getJobName());
     }
 
-
     /**
      * Close the {@link JobExecution} setting the {@link JobExecution#getEndedOn()}.
      */

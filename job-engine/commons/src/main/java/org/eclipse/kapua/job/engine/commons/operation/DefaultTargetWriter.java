@@ -57,6 +57,7 @@ public class DefaultTargetWriter extends AbstractItemWriter implements TargetWri
 
             jobTarget.setStepIndex(stepContextWrapper.getStepIndex());
             jobTarget.setStatus(processedJobTarget.getStatus());
+            jobTarget.setStatusMessage(processedWrappedJobTarget.getProcessingException() != null ? processedWrappedJobTarget.getProcessingException().getMessage() : null);
 
             if (JobTargetStatus.PROCESS_OK.equals(jobTarget.getStatus())) {
 

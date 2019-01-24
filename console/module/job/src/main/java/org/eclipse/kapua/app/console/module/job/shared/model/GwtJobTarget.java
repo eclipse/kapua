@@ -20,7 +20,6 @@ public class GwtJobTarget extends GwtUpdatableEntityModel {
     }
 
     @Override
-    @SuppressWarnings({ "unchecked" })
     public <X> X get(String property) {
         if ("statusEnum".equals(property)) {
             return (X) GwtJobTargetStatus.valueOf(getStatus());
@@ -65,14 +64,17 @@ public class GwtJobTarget extends GwtUpdatableEntityModel {
         set("stepIndex", stepIndex);
     }
 
-    public String getErrorMessage() {
-        return get("errorMessage");
+    public String getStatusMessage() {
+        return get("statusMessage");
     }
 
-    public void setErrorMessage(String errorMessage) {
-        set("errorMessage", errorMessage);
+    public void setStatusMessage(String statusMessage) {
+        set("statusMessage", statusMessage);
     }
 
+    //
+    // Additional fields
+    //
     public String getClientId() {
         return get("clientId");
     }

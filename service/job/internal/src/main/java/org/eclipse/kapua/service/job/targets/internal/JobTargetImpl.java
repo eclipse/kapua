@@ -60,6 +60,10 @@ public class JobTargetImpl extends AbstractKapuaUpdatableEntity implements JobTa
     @Column(name = "status", nullable = false, updatable = true)
     private JobTargetStatus status;
 
+    @Basic
+    @Column(name = "status_message", nullable = true, updatable = true)
+    private String statusMessage;
+
     @Transient
     private Exception e;
 
@@ -135,6 +139,16 @@ public class JobTargetImpl extends AbstractKapuaUpdatableEntity implements JobTa
     @Override
     public void setStatus(JobTargetStatus status) {
         this.status = status;
+    }
+
+    @Override
+    public String getStatusMessage() {
+        return statusMessage;
+    }
+
+    @Override
+    public void setStatusMessage(String statusMessage) {
+        this.statusMessage = statusMessage;
     }
 
     @Override
