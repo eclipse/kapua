@@ -130,6 +130,8 @@ public class KapuaExceptionHandler {
         } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.BUNDLE_STOP_ERROR)){
             logger.warn("Bundle could not be stoped", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.BUNDLE_STOP_ERROR, t, t.getLocalizedMessage());
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().equals(KapuaErrorCodes.PACKAGE_URI_SYNTAX_ERROR)){
+            throw new GwtKapuaException(GwtKapuaErrorCode.PACKAGE_URI_SYNTAX_ERROR, t, t.getLocalizedMessage());
         } else if (t instanceof KapuaMaxNumberOfItemsReachedException){
             throw new GwtKapuaException(GwtKapuaErrorCode.MAX_NUMBER_OF_ITEMS_REACHED, t, ((KapuaMaxNumberOfItemsReachedException) t).getArgValue());
         } else if (t instanceof DeviceMenagementException) {
