@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,29 +11,122 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
+import com.google.common.base.MoreObjects;
+import org.apache.commons.lang.RandomStringUtils;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.test.KapuaTest;
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authentication.AuthenticationService;
+import org.eclipse.kapua.service.authentication.CredentialsFactory;
+import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.junit.JUnitTests;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Optional;
+import java.util.Random;
 
 @Category(JUnitTests.class)
-public abstract class AbstractMessageStoreServiceTest extends KapuaTest {
+public abstract class AbstractMessageStoreServiceTest extends Assert {
 
+    private static final Logger logger = LoggerFactory.getLogger(AbstractMessageStoreServiceTest.class);
 
-    public static final String DEFAULT_COMMONS_PATH = "../../../commons";
+    protected static Random random = new Random();
+    protected static KapuaLocator locator = KapuaLocator.getInstance();
 
-    @BeforeClass
-    public static void tearUpGlobal()
-            throws KapuaException {
-//        KapuaConfigurableServiceSchemaUtils.createSchemaObjects(DEFAULT_COMMONS_PATH);
-        XmlUtil.setContextProvider(new DatastoreJAXBContextProvider());
+    protected static KapuaId adminUserId;
+    protected static KapuaId adminScopeId;
+
+    private Connection connection;
+
+    @Before
+    public void setUp() throws SQLException {
+        logger.debug("Setting up test...");
+        try {
+            System.setProperty(SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER.key(), "H2");
+            SystemSetting config = SystemSetting.getInstance();
+            String dbUsername = config.getString(SystemSettingKey.DB_USERNAME);
+            String dbPassword = config.getString(SystemSettingKey.DB_PASSWORD);
+            String jdbcUrl = JdbcConnectionUrlResolvers.resolveJdbcUrl();
+            String schema = MoreObjects.firstNonNull(config.getString(SystemSettingKey.DB_SCHEMA_ENV), config.getString(SystemSettingKey.DB_SCHEMA));
+
+            connection = DriverManager.getConnection(jdbcUrl, dbUsername, dbPassword);
+
+            new KapuaLiquibaseClient(jdbcUrl, dbUsername, dbPassword, Optional.ofNullable(schema)).update();
+
+            //
+            // Login
+            String username = "kapua-sys";
+            String password = "kapua-password";
+
+            AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
+            CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
+            authenticationService.login(credentialsFactory.newUsernamePasswordCredentials(username, password));
+
+            //
+            // Get current user Id
+            adminUserId = KapuaSecurityUtils.getSession().getUserId();
+            adminScopeId = KapuaSecurityUtils.getSession().getScopeId();
+
+            XmlUtil.setContextProvider(new DatastoreJAXBContextProvider());
+        } catch (KapuaException exc) {
+            exc.printStackTrace();
+        }
     }
 
-    @AfterClass
-    public static void tearDownGlobal() {
-//        KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(DEFAULT_COMMONS_PATH);
+    @After
+    public void tearDown() {
+        logger.debug("Stopping Kapua test context.");
+
+        try {
+            if (connection != null) {
+                connection.close();
+                connection = null;
+            }
+        } catch (SQLException e) {
+            logger.warn("Failed to close database", e);
+        }
+
+        try {
+            KapuaLocator locator = KapuaLocator.getInstance();
+            AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
+
+            authenticationService.logout();
+        } catch (KapuaException exc) {
+            exc.printStackTrace();
+        }
     }
+
+    //
+    // Test utility methods
+    //
+
+    /**
+     * Generates a random {@link String} from the given parameters
+     *
+     * @param chars
+     *            length of the generated {@link String}
+     * @param letters
+     *            whether or not use chars
+     * @param numbers
+     *            whether or not use numbers
+     *
+     * @return the generated {@link String}
+     */
+    private static String generateRandomString(int chars, boolean letters, boolean numbers) {
+        return RandomStringUtils.random(chars, 0, 0, letters, numbers, null, random);
+    }
+
 }

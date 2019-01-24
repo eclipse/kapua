@@ -82,6 +82,12 @@ public class BasicSteps extends TestBase {
         stepData.put("LastUserId", null);
     }
 
+    @Given("^Server with host \"(.+)\" on port \"(.+)\"$")
+    public void setHostPort(String host, String port) {
+        stepData.put("host", host);
+        stepData.put("port", port);
+    }
+
     @Given("^I expect the exception \"(.+)\" with the text \"(.+)\"$")
     public void setExpectedExceptionDetails(String name, String text) {
         stepData.put("ExceptionExpected", true);

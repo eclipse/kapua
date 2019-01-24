@@ -20,7 +20,7 @@ import org.junit.runner.RunWith;
 @CucumberOptions(
         features = "classpath:features/datastore/DatastoreNewIndexCustomPrefix.feature",
         glue = {"org.eclipse.kapua.qa.common",
-                "org.eclipse.kapua.rest.steps",
+                "org.eclipse.kapua.qa.integration.steps",
                 "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.service.datastore.steps",

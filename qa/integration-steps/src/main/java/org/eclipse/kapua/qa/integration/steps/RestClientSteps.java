@@ -56,12 +56,6 @@ public class RestClientSteps extends Assert {
         this.stepData = stepData;
     }
 
-    @Given("^Server with host \"(.+)\" on port \"(.+)\"$")
-    public void setHostPort(String host, String port) {
-        stepData.put("host", host);
-        stepData.put("port", port);
-    }
-
     @When("^REST GET call at \"(.*)\"")
     public void restGetCall(String resource) throws Exception {
 
