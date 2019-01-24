@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,8 @@ import com.extjs.gxt.ui.client.data.ListLoadResult;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.sanselan.ImageFormat;
 import org.apache.sanselan.Sanselan;
+import org.eclipse.kapua.KapuaErrorCodes;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
@@ -78,6 +80,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.MessageDigest;
@@ -163,7 +166,13 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             DevicePackageFactory devicePackageFactory = locator.getFactory(DevicePackageFactory.class);
 
             DevicePackageDownloadRequest packageDownloadRequest = devicePackageFactory.newPackageDownloadRequest();
-            packageDownloadRequest.setUri(new URI(gwtPackageInstallRequest.getPackageURI()));
+            URI packageUri = null;
+            try {
+                packageUri = new URI(gwtPackageInstallRequest.getPackageURI());
+            } catch (URISyntaxException e) {
+                throw new KapuaException(KapuaErrorCodes.PACKAGE_URI_SYNTAX_ERROR);
+            }
+            packageDownloadRequest.setUri(packageUri);
             packageDownloadRequest.setName(gwtPackageInstallRequest.getPackageName());
             packageDownloadRequest.setVersion(gwtPackageInstallRequest.getPackageVersion());
             packageDownloadRequest.setInstall(true); // Always install
