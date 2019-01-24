@@ -969,6 +969,11 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-qa-integration-steps</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-rest-api-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -1409,7 +1414,6 @@
         <module>broker-core</module>
         <module>test</module>
         <module>qa</module>
-        <module>qa-steps</module>
         <module>qa-openshift</module>
 
         <module>sso</module>

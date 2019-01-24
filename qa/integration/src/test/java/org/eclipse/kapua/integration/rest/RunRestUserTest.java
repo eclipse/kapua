@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,8 +20,7 @@ import org.junit.runner.RunWith;
 @CucumberOptions(
         features = "classpath:features/rest/user/RestUser.feature",
         glue = {"org.eclipse.kapua.qa.common",
-                "org.eclipse.kapua.rest.steps",
-
+                "org.eclipse.kapua.qa.integration.steps",
                 "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps"
         },
@@ -38,7 +37,6 @@ import org.junit.runner.RunWith;
 @CucumberProperty(key="commons.db.schema.update", value="true")
 @CucumberProperty(key="commons.db.connection.host", value="localhost")
 @CucumberProperty(key="commons.db.connection.port", value="3306")
-@CucumberProperty(key="test.h2.server", value="false")
 @CucumberProperty(key="test.h2.server", value="false")
 @CucumberProperty(key="h2.bindAddress", value="127.0.0.1")
 public class RunRestUserTest {
