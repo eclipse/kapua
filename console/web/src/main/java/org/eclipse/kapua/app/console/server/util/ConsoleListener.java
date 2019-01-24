@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.server.util;
 import com.google.common.base.MoreObjects;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.ConsoleJAXBContextProvider;
+import org.eclipse.kapua.broker.client.amqp.AmqpBridgeFactory;
 import org.eclipse.kapua.commons.core.ServiceModuleBundle;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -99,6 +100,10 @@ public class ConsoleListener implements ServletContextListener {
         LOG.info("Stopping job scheduler...");
         SchedulerServiceInit.close();
         LOG.info("Stopping job scheduler... DONE");
+        //shutdown the Amqp bridges
+        LOG.info("Stopping Amqp bridges...");
+        AmqpBridgeFactory.cleanUp();
+        LOG.info("Stopping Amqp bridges... DONE");
     }
 
 }

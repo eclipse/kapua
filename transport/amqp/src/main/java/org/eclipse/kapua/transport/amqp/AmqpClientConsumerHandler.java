@@ -13,9 +13,7 @@ package org.eclipse.kapua.transport.amqp;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.kapua.transport.amqp.message.AmqpMessage;
 import org.eclipse.kapua.transport.amqp.message.AmqpPayload;
@@ -30,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vertx.amqpbridge.AmqpConstants;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
+import io.vertx.rxjava.core.eventbus.Message;
 
 /**
  * Generic implementation of {@link ConsumerHandler} interface.
@@ -41,7 +40,7 @@ import io.vertx.core.json.JsonObject;
  * 
  * @since 1.0.0
  */
-public class AmqpClientConsumerHandler implements Handler<io.vertx.core.eventbus.Message<JsonObject>> {
+public class AmqpClientConsumerHandler implements Handler<Message<JsonObject>> {
 
     private static final Logger logger = LoggerFactory.getLogger(AmqpClientConsumerHandler.class);
 
@@ -87,7 +86,7 @@ public class AmqpClientConsumerHandler implements Handler<io.vertx.core.eventbus
     }
 
     @Override
-    public void handle(io.vertx.core.eventbus.Message<JsonObject> event) {
+    public void handle(Message<JsonObject> event) {
         JsonObject message = event.body();
         if (message==null) {
             logger.warn("Received empty message from address {}", event.address());
@@ -95,44 +94,33 @@ public class AmqpClientConsumerHandler implements Handler<io.vertx.core.eventbus
         else {
             try {
                 JsonFactory factory = new JsonFactory();
-
                 ObjectMapper mapper = new ObjectMapper(factory);
                 JsonNode rootNode = mapper.readTree(message.toString());
                 byte[] payload = null;
-                Iterator<Map.Entry<String,JsonNode>> fieldsIterator = rootNode.fields();
-                while (fieldsIterator.hasNext()) {
-
-                    Map.Entry<String,JsonNode> field = fieldsIterator.next();
-                    if (field.getKey().equals(AmqpConstants.BODY)) {
-                        payload = field.getValue().binaryValue();
+                JsonNode body = rootNode.get(AmqpConstants.BODY);
+                if (body!=null) {
+                    payload = body.binaryValue();
+                }
+                else {
+                    logger.warn("Received empty message from topic {}!", event.address());
+                    payload = new byte[0];
+                }
+                JsonNode properties = rootNode.get(AmqpConstants.PROPERTIES);
+                String topic = null;
+                if (properties!=null) {
+                    JsonNode topicNode = properties.get(AmqpConstants.PROPERTIES_TO);
+                    if (topicNode!=null) {
+                        topic = topicNode.textValue();
                     }
-                    logger.info("Key: {}  -  Value: {}", field.getKey(), field.getValue());
+                }
+                if (!event.address().equals(topic)) {
+                    logger.warn("received message on topic {} is different from those contained in the message properties ({})", event.address(), topic);
                 }
                 AmqpTopic amqpTopic = new AmqpTopic(event.address());
-                //TODO get topic from message metrics (to check the consistency with the real address)
+
                 AmqpMessage amqpMessage = new AmqpMessage(amqpTopic,
                       new Date(),
                       new AmqpPayload(payload));
-//                Section body = message;
-//                byte[] payload = null;
-//                if (body instanceof Data) {
-//                    Binary data = ((Data) body).getValue();
-//                    logger.info("Received DATA message: size {}", data.getLength());
-//                    payload = data.getArray();
-//                } else if (body instanceof AmqpValue) {
-//                    String content = (String) ((AmqpValue) body).getValue();
-//                    logger.info("Received message with content: {}", content);
-//                    payload = content.getBytes();
-//                } else {
-//                    logger.warn("Received message with unknown message type! ({})", body != null ? body.getClass() : "NULL");
-//                    //TODO throw runtime exception?
-//                    payload = new byte[0];
-//                }
-//                AmqpMessage amqpMessage = new AmqpMessage(amqpTopic,
-//                        new Date(),
-//                        new AmqpPayload(payload));
-                //
-                // Add to the received responses
                 if (responses == null) {
                     responses = new ArrayList<AmqpMessage>();
                 }
@@ -140,13 +128,8 @@ public class AmqpClientConsumerHandler implements Handler<io.vertx.core.eventbus
                 if (amqpMessage.getChannel().getTopic().toString().startsWith(VT_TOPIC_PREFIX)) {
                     amqpMessage.setChannel(new AmqpTopic(amqpMessage.getChannel().getTopic().toString().substring(VT_TOPIC_PREFIX.length()).replaceAll("\\.", "/")));
                 }
-                //
-                // Convert MqttMessage to the given device-levelMessage
-                logger.info("Converted message {}", amqpMessage.getPayload());
+                logger.debug("Converted message {}", amqpMessage.getPayload());
                 responses.add(amqpMessage);
-
-                //
-                // notify if all expected responses arrived
                 if (expectedResponses == responses.size()) {
                     synchronized (this) {
                         notifyAll();

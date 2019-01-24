@@ -12,6 +12,7 @@
 package org.eclipse.kapua.broker.client.amqp;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -23,18 +24,18 @@ import org.eclipse.kapua.broker.client.amqp.ClientOptions.AmqpClientOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.vertx.amqpbridge.AmqpBridge;
-import io.vertx.core.Context;
-import io.vertx.core.Vertx;
-import io.vertx.core.eventbus.MessageConsumer;
-import io.vertx.core.eventbus.MessageProducer;
 import io.vertx.core.json.JsonObject;
+import io.vertx.rxjava.amqpbridge.AmqpBridge;
+import io.vertx.rxjava.core.Context;
+import io.vertx.rxjava.core.eventbus.MessageConsumer;
+import io.vertx.rxjava.core.eventbus.MessageProducer;
+import io.vertx.rxjava.core.Vertx;
 
 /**
- * Vertx Proton session factory.
- * Creates the connection for the specified endpoint, if doesn't exist, and bound a new session on this connection.
- * To be used for the device management operations.
- *
+ * {@link AmqpClient} factory.
+ * The factory creates a new Vertx {@link AmqpBridge} instance (if doesn't exist for the specified endpoint) and keeps it in a map.
+ * Then, once the {@link AmqpClient} asks for a {@link MessageConsumer} or a MessageProducer, the {@link AmqpBridge} will be used to create them.
+ * TODO a cleanup method for no more used endpoint could be implemented.
  */
 public class AmqpBridgeFactory {
 
@@ -48,15 +49,27 @@ public class AmqpBridgeFactory {
     private AmqpBridgeFactory() {
     }
 
+    /**
+     * Return the {@link AmqpClient} instance for the specified uri.
+     * @param nodeUri
+     * @param clientOptions
+     * @return
+     * @throws InterruptedException
+     * @throws KapuaException
+     */
     public static AmqpClient getInstance(String nodeUri, ClientOptions clientOptions) throws InterruptedException, KapuaException {
         return new AmqpClient(getAmqpBridge(nodeUri, clientOptions), clientOptions);
     }
 
-    public static void cleanClient(AmqpClient client) {
-        client.clean();
-    }
-
-    private static AmqpBridge getAmqpBridge(String nodeUri, ClientOptions clientOptions) throws InterruptedException, KapuaException {
+    /**
+     * Create the {@link AmqpBridge} for the specified uri (or return the existing one).
+     * @param nodeUri
+     * @param clientOptions
+     * @return
+     * @throws InterruptedException
+     * @throws KapuaException
+     */
+    private static AmqpBridge getAmqpBridge(final String nodeUri, ClientOptions clientOptions) throws InterruptedException, KapuaException {
         AmqpBridgeContainer amqpBridgeContainer = bridgeMap.get(nodeUri);
         if (amqpBridgeContainer != null) {
             return amqpBridgeContainer.getAmqpBridge();
@@ -72,7 +85,14 @@ public class AmqpBridgeFactory {
                     String host = clientOptions.getString(AmqpClientOptions.BROKER_HOST);
                     int port = clientOptions.getInt(AmqpClientOptions.BROKER_PORT, DEFAULT_PORT);
                     currentContext.runOnContext(han -> {
-                        ctx.setBridge(AmqpBridge.create(VERTX));
+                        AmqpBridge amqpBridge = AmqpBridge.create(VERTX);
+                        ctx.setBridge(amqpBridge);
+                        ctx.getBridge().endHandler(endHan -> {
+                            logger.info("BRIDGE: closed bridge for uri {}... removing the bridge from the internal map...", nodeUri);
+                            bridgeMapByBridge.remove(amqpBridge.hashCode());
+                            bridgeMap.remove(nodeUri);
+                            logger.info("BRIDGE: closed bridge for uri {}... removing the bridge from the internal map... DONE", nodeUri);
+                        });
                         ctx.getBridge().start(host, port, res -> {
                             if (res.failed()) {
                                 logger.error("BRIDGE: Return bridge to {}... ERROR", clientOptions.get(AmqpClientOptions.BROKER_HOST), res.cause());
@@ -90,10 +110,10 @@ public class AmqpBridgeFactory {
                         logger.debug("BRIDGE: Wait interrupted");
                     }
                     if (operationSucceed) {
-                        logger.info("BRIDGE: Bridge creation {} after: {}ms {} DONE", amqpBridgeContainer, (System.currentTimeMillis() - startTime), Thread.currentThread().getId(), Thread.currentThread().getName());
+                        logger.info("BRIDGE: Bridge creation {} after: {}ms DONE", amqpBridgeContainer, (System.currentTimeMillis() - startTime));
                     }
                     else {
-                        logger.info("BRIDGE: Bridge creation {} after: {}ms {} FAILED", amqpBridgeContainer, (System.currentTimeMillis() - startTime), Thread.currentThread().getId(), Thread.currentThread().getName());
+                        logger.info("BRIDGE: Bridge creation {} after: {}ms FAILED", amqpBridgeContainer, (System.currentTimeMillis() - startTime));
                     }
                     amqpBridgeContainer = new AmqpBridgeContainer(ctx.getBridge(), currentContext);
                     bridgeMap.put(nodeUri, amqpBridgeContainer);
@@ -104,6 +124,12 @@ public class AmqpBridgeFactory {
         return amqpBridgeContainer.getAmqpBridge();
     }
 
+    /**
+     * Return a {@link MessageProducer} from the provided {@link AmqpBridge}.
+     * @param amqpBridge
+     * @param destination
+     * @return
+     */
     public static MessageProducer<JsonObject> createProducer(AmqpBridge amqpBridge, String destination) {
         long startTime = System.currentTimeMillis();
         CountDownLatch countDown = new CountDownLatch(1);
@@ -141,14 +167,20 @@ public class AmqpBridgeFactory {
             logger.debug("BRIDGE: Wait interrupted");
         }
         if (operationSucceed) {
-            logger.info("BRIDGE: Producer creation {} after: {}ms {} DONE", amqpBridgeContainer, (System.currentTimeMillis() - startTime), Thread.currentThread().getId(), Thread.currentThread().getName());
+            logger.info("BRIDGE: Producer creation {} after: {}ms DONE", amqpBridgeContainer, (System.currentTimeMillis() - startTime));
         }
         else {
-            logger.info("BRIDGE: Producer creation {} after: {}ms {} FAILED", amqpBridgeContainer, (System.currentTimeMillis() - startTime), Thread.currentThread().getId(), Thread.currentThread().getName());
+            logger.info("BRIDGE: Producer creation {} after: {}ms FAILED", amqpBridgeContainer, (System.currentTimeMillis() - startTime));
         }
         return ctx.getProducer();
     }
 
+    /**
+     * Return a {@link MessageConsumer} from the provided {@link AmqpBridge}.
+     * @param amqpBridge
+     * @param destination
+     * @return
+     */
     public static MessageConsumer<JsonObject> createConsumer(AmqpBridge amqpBridge, String destination) {
         long startTime = System.currentTimeMillis();
         CountDownLatch countDown = new CountDownLatch(1);
@@ -173,17 +205,47 @@ public class AmqpBridgeFactory {
             logger.debug("BRIDGE: Wait interrupted");
         }
         if (operationSucceed) {
-            logger.info("BRIDGE: Consumer creation {} after: {}ms {} DONE", amqpBridgeContainer, (System.currentTimeMillis() - startTime), Thread.currentThread().getId(), Thread.currentThread().getName());
+            logger.info("BRIDGE: Consumer creation {} after: {}ms DONE", amqpBridgeContainer, (System.currentTimeMillis() - startTime));
         }
         else {
-            logger.info("BRIDGE: Consumer creation {} after: {}ms {} FAILED", amqpBridgeContainer, (System.currentTimeMillis() - startTime), Thread.currentThread().getId(), Thread.currentThread().getName());
+            logger.info("BRIDGE: Consumer creation {} after: {}ms FAILED", amqpBridgeContainer, (System.currentTimeMillis() - startTime));
         }
         return ctx.getConsumer();
     }
 
-    //TODO to be conected to the application lifecycle
+    /**
+     * Close all the registered {@link AmqpBridge}.
+     */
     public static void cleanUp() {
-        //TODO
+        long startTime = System.currentTimeMillis();
+        CountDownLatch countDown = new CountDownLatch(bridgeMap.size());
+        Iterator<Map.Entry<String, AmqpBridgeContainer>> ctxIterator = bridgeMap.entrySet().iterator();
+        while (ctxIterator.hasNext()) {
+            Map.Entry<String, AmqpBridgeContainer> field = ctxIterator.next();
+            logger.info("BRIDGE: closing... endpoint {}", field.getKey());
+            field.getValue().getAmqpBridge().close(ar -> {
+                if (ar.succeeded() ) {
+                    logger.info("BRIDGE: closed... DONE");
+                }
+                else {
+                    logger.info("BRIDGE: closed... ERROR", ar.cause());
+                }
+                //anyway decrement the countDown
+                countDown.countDown();
+            });
+        }
+        boolean operationSucceed = true;
+        try {
+            operationSucceed = countDown.await(AmqpClient.maxWait, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            logger.debug("BRIDGE: Wait interrupted");
+        }
+        if (operationSucceed) {
+            logger.info("BRIDGE: cleanup after: {}ms DONE", (System.currentTimeMillis() - startTime));
+        }
+        else {
+            logger.info("BRIDGE: cleanup after: {}ms FAILED", (System.currentTimeMillis() - startTime));
+        }
     }
 
 }

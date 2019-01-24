@@ -39,5 +39,10 @@
             <artifactId>marker-api</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

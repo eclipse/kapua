@@ -13,6 +13,7 @@ package org.eclipse.kapua.broker.client.amqp;
 
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.qpid.proton.message.Message;
@@ -35,17 +36,19 @@ import io.vertx.proton.ProtonSender;
 import io.vertx.proton.ProtonSession;
 
 /**
- * Create and handle a Vertx Proton connection (reconnecting it if something wrong happens)
+ * Create and handle a Vertx Proton connection (reconnecting it if something wrong happens).
+ * Using this class outside a Verticle instance could be unsafe
  *
  */
 public class AmqpConnection {
 
     private static final Logger logger = LoggerFactory.getLogger(AmqpConnection.class);
 
+    private final static int MAX_FRAME_SIZE = 1024*1024;
     private Vertx vertx;
 
-    private boolean disconnecting;
-    private boolean connected;
+    private AtomicBoolean disconnecting = new AtomicBoolean(false);
+    private AtomicBoolean connected = new AtomicBoolean(false);
     private AtomicInteger reconnectionFaultCount = new AtomicInteger();
     private Long reconnectTaskId;
 
@@ -61,6 +64,11 @@ public class AmqpConnection {
 
     protected ProtonConnection connection;
 
+    /**
+     * Configure the {@link ProtonClient} options
+     * @param vertx
+     * @param clientOptions
+     */
     public AmqpConnection(Vertx vertx, ClientOptions clientOptions) {
         logger.info("Creating connection. Vertx: {}", vertx);
         this.vertx = vertx;
@@ -92,30 +100,41 @@ public class AmqpConnection {
         else {
             waitBetweenReconnect = new Integer(1000);
         }
-        options.setMaxFrameSize(1024*1024);
+        options.setMaxFrameSize(MAX_FRAME_SIZE);
         logger.info("Created client {}", client);
     }
 
+    /**
+     * Return the client id
+     * @return
+     */
     public String getClientId() {
         return clientId;
     }
 
-    public ProtonSession createSession() {
-        return connection.createSession();
-    }
-
     protected void setDisconnected() {
-        connected = false;
+        connected.set(false);
     }
 
     protected void setConnected() {
-        connected = true;
+        connected.set(true);
     }
 
-    public Boolean isConnected() {
-        return connected;
+    protected Boolean isConnected() {
+        return connected.get();
     }
 
+    /**
+     * Creates a {@link ProtonReceiver}.
+     * @param session
+     * @param destination
+     * @param prefetch
+     * @param autoAccept
+     * @param qos
+     * @param receiverCountDown
+     * @param messageHandler
+     * @return
+     */
     protected ProtonReceiver createReceiver(ProtonSession session, String destination, int prefetch, boolean autoAccept, ProtonQoS qos, CountDownLatch receiverCountDown, ProtonMessageHandler messageHandler) {
         ProtonReceiver receiver = null;
         try {
@@ -157,6 +176,15 @@ public class AmqpConnection {
         return receiver;
     }
 
+    /**
+     * Creates a {@link ProtonSender}.
+     * @param session
+     * @param destination
+     * @param autoSettle
+     * @param qos
+     * @param senderCountDown
+     * @return
+     */
     protected ProtonSender createSender(ProtonSession session, String destination, boolean autoSettle, ProtonQoS qos, CountDownLatch senderCountDown) {
         ProtonSender sender = null;
         try {
@@ -196,6 +224,13 @@ public class AmqpConnection {
         return sender;
     }
 
+    /**
+     * Send the message using the provided {@link ProtonSender}.
+     * @param sender
+     * @param message
+     * @param destination
+     * @param deliveryHandler
+     */
     protected void send(ProtonSender sender, Message message, String destination, Handler<ProtonDelivery> deliveryHandler) {
         message.setAddress(destination);
         sender.send(message, deliveryHandler);
@@ -207,6 +242,10 @@ public class AmqpConnection {
 //        protonSender.send(msg, deliveryHandler);
     }
 
+    /**
+     * Connect the {@link ProtonClient}.
+     * @param startFuture
+     */
     public void connect(Future<Void> startFuture) {
         logger.info("Connecting to broker {}:{}... (client: {})", brokerHost, brokerPort, client);
         // make sure connection is already closed
@@ -265,6 +304,10 @@ public class AmqpConnection {
             });
     }
 
+    /**
+     * After connect operations. To be used by subclasses to perform actions once the connection is established (i.e. by the {@link AmqpReceiver} to initialize the consumer or the {@link AmqpSender} to initialize the sender).
+     * @param startFuture
+     */
     protected void doAfterConnect(Future<Void> startFuture) {
         //in any case complete with a positive result the future
         if (!startFuture.isComplete()) {
@@ -272,14 +315,20 @@ public class AmqpConnection {
         }
     }
 
+    /**
+     * Notify that a connection lost event happens.
+     */
     protected void notifyConnectionLost() {
         logger.info("Notify disconnection... (client: {})", client);
         setDisconnected();
         doReconnect();
     }
 
+    /**
+     * Perform the reconnection.
+     */
     protected void doReconnect() {
-        if (disconnecting) {
+        if (disconnecting.get()) {
             logger.info("Notify disconnection... shutdown in progress - skipping reconnection! (client: {})", client);
             return;
         }
@@ -327,8 +376,12 @@ public class AmqpConnection {
         return (1 + reconnectionFaultCount.get()) * waitBetweenReconnect + (long)((double)waitBetweenReconnect * Math.random());
     }
 
+    /**
+     * Disconnect the connection.
+     * @param stopFuture
+     */
     public void disconnect(Future<Void> stopFuture) {
-        disconnecting = true;
+        disconnecting.set(true);
         logger.info("Closing connection {} for client {}", connection, client);
         if (connection != null) {
             connection.disconnect();

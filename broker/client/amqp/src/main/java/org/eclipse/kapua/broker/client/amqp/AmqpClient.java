@@ -1,3 +1,4 @@
+/*******************************************************************************
  * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
@@ -19,12 +20,16 @@ import org.eclipse.kapua.broker.client.amqp.ClientOptions.AmqpClientOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.vertx.amqpbridge.AmqpBridge;
 import io.vertx.core.Handler;
-import io.vertx.core.eventbus.MessageConsumer;
-import io.vertx.core.eventbus.MessageProducer;
 import io.vertx.core.json.JsonObject;
+import io.vertx.rxjava.amqpbridge.AmqpBridge;
+import io.vertx.rxjava.core.eventbus.MessageConsumer;
+import io.vertx.rxjava.core.eventbus.MessageProducer;
 
+/**
+ * Amqp client implementation for device command operation.
+ *
+ */
 public class AmqpClient {
 
     private static final Logger logger = LoggerFactory.getLogger(AmqpClient.class);
@@ -39,20 +44,39 @@ public class AmqpClient {
     private MessageConsumer<JsonObject> consumer;
     protected Handler<io.vertx.core.eventbus.Message<Message>> messageHandler;
 
+    /**
+     * Instantiate the client using the provided {@link AmqpBridge}.
+     * @param bridge
+     * @param clientOptions
+     */
     public AmqpClient(AmqpBridge bridge, ClientOptions clientOptions) {
         this.bridge = bridge;
         clientId = clientOptions.getString(AmqpClientOptions.CLIENT_ID);
         destinationTranslator = (DestinationTranslator)clientOptions.get(AmqpClientOptions.DESTINATION_TRANSLATOR);
     }
 
+    /**
+     * Return the client id
+     * @return
+     */
     public String getClientId() {
         return clientId;
     }
 
+    /**
+     * Set the message handler to be used for the incoming messages.
+     * @param messageHandler
+     */
     public void messageHandler(Handler<io.vertx.core.eventbus.Message<Message>> messageHandler) {
         this.messageHandler = messageHandler;
     }
 
+    /**
+     * Send the message to the specified destination.
+     * @param message
+     * @param destination
+     * @throws KapuaException
+     */
     public void send(JsonObject message, String destination) throws KapuaException {
         String senderDestination = destination;
         if (destinationTranslator!=null) {
@@ -62,7 +86,13 @@ public class AmqpClient {
         producer.send(message);
     }
 
-    public void subscribe(String destination, Handler<io.vertx.core.eventbus.Message<JsonObject>> messageHandler) throws KapuaException {
+    /**
+     * Subscribe to the specified destination.
+     * @param destination
+     * @param messageHandler
+     * @throws KapuaException
+     */
+    public void subscribe(String destination, Handler<io.vertx.rxjava.core.eventbus.Message<JsonObject>> messageHandler) throws KapuaException {
         String receiverDestination = destination;
         if (destinationTranslator!=null) {
             receiverDestination = destinationTranslator.translate(destination);
@@ -71,6 +101,9 @@ public class AmqpClient {
         consumer.handler(messageHandler);
     }
 
+    /**
+     * Cleanup the client so close the {@link MessageConsumer} and {@link MessageConsumer} if initialized.
+     */
     public void clean() {
         CountDownLatch countDown = new CountDownLatch(1);
         long startTime = System.currentTimeMillis();

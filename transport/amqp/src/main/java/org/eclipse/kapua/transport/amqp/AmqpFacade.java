@@ -11,11 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.transport.amqp;
 
-import org.apache.qpid.proton.Proton;
-import org.apache.qpid.proton.amqp.Binary;
-import org.apache.qpid.proton.amqp.messaging.Data;
-import org.apache.qpid.proton.amqp.messaging.Section;
-import org.apache.qpid.proton.message.Message;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.client.amqp.AmqpBridgeFactory;
@@ -93,9 +88,8 @@ public class AmqpFacade implements TransportFacade<AmqpTopic, AmqpPayload, AmqpM
 
     private ClientOptions wrapOptions(TransportClientConnectOptions options) {
         ClientOptions clientOptions = new ClientOptions();
-        clientOptions.put(AmqpClientOptions.BROKER_HOST, "127.0.0.1");
-        //the connection port is a deployment parameter so read it from configuration
-        clientOptions.put(AmqpClientOptions.BROKER_PORT, AmqpClientSetting.getInstance().getInt(AmqpClientSettingKeys.TRANSPORT_CONNECTION_PORT));
+        clientOptions.put(AmqpClientOptions.BROKER_HOST, options.getEndpointURI().getHost());
+        clientOptions.put(AmqpClientOptions.BROKER_PORT, options.getEndpointURI().getPort());
         clientOptions.put(AmqpClientOptions.PASSWORD, options.getPassword());
         clientOptions.put(AmqpClientOptions.USERNAME, options.getUsername());
         clientOptions.put(AmqpClientOptions.CLIENT_ID, options.getClientId());
@@ -169,7 +163,6 @@ public class AmqpFacade implements TransportFacade<AmqpTopic, AmqpPayload, AmqpM
             }
             // Publish message
             AmqpTopic amqpTopic = amqpMessage.getRequestTopic();
-            AmqpPayload amqpPayload = amqpMessage.getPayload();
             client.send(createMesage(amqpMessage, amqpTopic.getTopic()), amqpTopic.getTopic());
 
             // Wait if required

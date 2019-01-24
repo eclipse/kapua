@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,6 +22,12 @@ import io.vertx.proton.ProtonQoS;
 import io.vertx.proton.ProtonSender;
 import io.vertx.proton.ProtonSession;
 
+/**
+ * Amqp sender implementation to be used by the external consumers.
+ * This class creates a new Vertx Proton connection using the Proton libraries.
+ * Using this class outside a Verticle instance could be unsafe
+ *
+ */
 public class AmqpSender extends AmqpConnection {
 
     private static final Logger logger = LoggerFactory.getLogger(AmqpSender.class);
@@ -33,6 +39,11 @@ public class AmqpSender extends AmqpConnection {
     private ProtonSender sender;
     private String destination;
 
+    /**
+     * Instantiate the sender
+     * @param vertx
+     * @param clientOptions
+     */
     public AmqpSender(Vertx vertx, ClientOptions clientOptions) {
         super(vertx, clientOptions);
         destination = clientOptions.getString(AmqpClientOptions.DESTINATION);
@@ -64,9 +75,14 @@ public class AmqpSender extends AmqpConnection {
         session.open();
     }
 
+    /**
+     * Send the message
+     * @param message
+     */
     public void send(Message message) {
         super.send(sender, message, destination, ar -> {
             logger.debug("Message sent to destination: {} - Message: {}", destination, message);
         });
-}
+    }
+
 }
