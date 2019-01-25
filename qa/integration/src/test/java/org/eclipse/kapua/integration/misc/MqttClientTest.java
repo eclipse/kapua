@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech
  *******************************************************************************/
-package org.eclipse.kapua.service.device.registry.steps;
+package org.eclipse.kapua.integration.misc;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
