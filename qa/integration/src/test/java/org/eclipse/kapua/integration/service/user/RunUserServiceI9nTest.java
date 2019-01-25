@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.integration.service.user;
 
-import org.eclipse.kapua.test.cucumber.CucumberProperty;
-import org.eclipse.kapua.test.cucumber.CucumberWithProperties;
+import org.eclipse.kapua.qa.common.cucumber.CucumberProperty;
+import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
 import org.junit.runner.RunWith;
 
 import cucumber.api.CucumberOptions;

@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.test.cucumber;
+package org.eclipse.kapua.qa.common.cucumber;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

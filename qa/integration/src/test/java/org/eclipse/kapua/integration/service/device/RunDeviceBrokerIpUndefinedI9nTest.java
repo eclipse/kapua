@@ -13,8 +13,8 @@
 package org.eclipse.kapua.integration.service.device;
 
 import cucumber.api.CucumberOptions;
-import org.eclipse.kapua.test.cucumber.CucumberProperty;
-import org.eclipse.kapua.test.cucumber.CucumberWithProperties;
+import org.eclipse.kapua.qa.common.cucumber.CucumberProperty;
+import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
 import org.junit.runner.RunWith;
 
 @RunWith(CucumberWithProperties.class)

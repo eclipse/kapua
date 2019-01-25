@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.test.cucumber;
+package org.eclipse.kapua.qa.common.cucumber;
 
 import cucumber.api.junit.Cucumber;
 import org.junit.runners.model.InitializationError;
