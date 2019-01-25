@@ -329,6 +329,7 @@ public class DeviceConfigPanel extends LayoutContainer {
         multiField.setFieldLabel(param.getName());
         multiField.addPlugin(dirtyPlugin);
         multiField.setOrientation(Orientation.VERTICAL);
+        multiField.setResizeFields(true);
         if (param.isRequired()) {
             multiField.setFieldLabel("* " + param.getName());
         }
