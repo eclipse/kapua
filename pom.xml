@@ -1414,7 +1414,6 @@
         <module>broker-core</module>
         <module>test</module>
         <module>qa</module>
-        <module>qa-openshift</module>
 
         <module>sso</module>
 
