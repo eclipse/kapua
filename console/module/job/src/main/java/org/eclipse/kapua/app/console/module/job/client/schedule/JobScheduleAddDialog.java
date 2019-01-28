@@ -68,12 +68,12 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         this.jobId = jobId;
 
         triggerName = new KapuaTextField<String>();
-        startsOn = new KapuaDateField();
+        startsOn = new KapuaDateField(this);
         startsOn.setMaxLength(10);
         startsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         startsOnTime = new TimeField();
         startsOnTime.setEditable(false);
-        endsOn = new KapuaDateField();
+        endsOn = new KapuaDateField(this);
         endsOn.setMaxLength(10);
         endsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         endsOnTime = new TimeField();
