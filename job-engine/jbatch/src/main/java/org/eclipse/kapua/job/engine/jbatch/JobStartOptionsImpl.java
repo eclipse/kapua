@@ -27,6 +27,8 @@ public class JobStartOptionsImpl implements JobStartOptions {
     private Set<KapuaId> targetIdSublist;
     private Integer fromStepIndex;
 
+    private boolean enqueue;
+
     /**
      * Constructor.
      *
@@ -67,5 +69,15 @@ public class JobStartOptionsImpl implements JobStartOptions {
     @Override
     public void setFromStepIndex(Integer fromStepIndex) {
         this.fromStepIndex = fromStepIndex;
+    }
+
+    @Override
+    public boolean getEnqueue() {
+        return enqueue;
+    }
+
+    @Override
+    public void setEnqueue(boolean enqueue) {
+        this.enqueue = enqueue;
     }
 }

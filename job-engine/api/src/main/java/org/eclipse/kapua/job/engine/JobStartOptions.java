@@ -75,4 +75,8 @@ public interface JobStartOptions extends KapuaSerializable {
      * @since 1.0.0
      */
     void setFromStepIndex(Integer fromStepIndex);
+
+    boolean getEnqueue();
+
+    void setEnqueue(boolean enqueue);
 }
