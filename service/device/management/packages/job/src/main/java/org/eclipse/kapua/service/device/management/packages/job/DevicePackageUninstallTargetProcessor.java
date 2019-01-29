@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.management.packages.job;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.commons.operation.AbstractTargetProcessor;
+import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService;
 import org.eclipse.kapua.service.device.management.packages.job.definition.DevicePackageUninstallPropertyKeys;
@@ -37,8 +38,12 @@ public class DevicePackageUninstallTargetProcessor extends AbstractTargetProcess
     StepContext stepContext;
 
     @Override
-    public void processTarget(JobTarget jobTarget) throws KapuaException {
+    protected void initProcessing(JobTargetWrapper wrappedJobTarget) {
         setContext(jobContext, stepContext);
+    }
+
+    @Override
+    public void processTarget(JobTarget jobTarget) throws KapuaException {
 
         DevicePackageUninstallRequest packageUninstallRequest = stepContextWrapper.getStepProperty(DevicePackageUninstallPropertyKeys.PACKAGE_UNINSTALL_REQUEST, DevicePackageUninstallRequest.class);
         Long timeout = stepContextWrapper.getStepProperty(DevicePackageUninstallPropertyKeys.TIMEOUT, Long.class);

@@ -15,7 +15,9 @@ import com.google.common.base.Strings;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.commons.exception.ReadJobPropertyException;
+import org.eclipse.kapua.job.engine.commons.logger.JobLogger;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
+import org.eclipse.kapua.job.engine.commons.model.JobTransientUserData;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.xml.sax.SAXException;
 
@@ -68,6 +70,28 @@ public class JobContextWrapper {
         String fromStepIndexString = jobContextProperties.getProperty(JobContextPropertyNames.JOB_STEP_FROM_INDEX);
 
         return Strings.isNullOrEmpty(fromStepIndexString) ? null : Integer.valueOf(fromStepIndexString);
+    }
+
+    public JobTransientUserData getJobTransientUserData() {
+        JobTransientUserData transientUserData = (JobTransientUserData) getTransientUserData();
+
+        if (transientUserData == null) {
+            transientUserData = new JobTransientUserData();
+            setTransientUserData(transientUserData);
+        }
+        return transientUserData;
+    }
+
+    public JobLogger getJobLogger() {
+
+        JobLogger jobLogger = getJobTransientUserData().getJobLogger();
+
+        if (jobLogger == null) {
+            jobLogger = new JobLogger(getScopeId(), getJobId(), getJobName());
+            getJobTransientUserData().setJobLogger(jobLogger);
+        }
+
+        return jobLogger;
     }
 
     public String getJobName() {

@@ -12,6 +12,7 @@
 package org.eclipse.kapua.job.engine.commons.operation;
 
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.job.engine.commons.logger.JobLogger;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobContextWrapper;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
 import org.eclipse.kapua.job.engine.commons.wrappers.StepContextWrapper;
@@ -54,7 +55,11 @@ public class DefaultTargetWriter extends AbstractItemWriter implements TargetWri
 
         JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext);
         StepContextWrapper stepContextWrapper = new StepContextWrapper(stepContext);
-        LOG.info("JOB {} - Writing items...", jobContextWrapper.getJobId());
+
+        JobLogger jobLogger = jobContextWrapper.getJobLogger();
+        jobLogger.setClassLog(LOG);
+
+        jobLogger.info("Writing items...");
 
         for (Object item : items) {
             JobTargetWrapper processedWrappedJobTarget = (JobTargetWrapper) item;
@@ -79,6 +84,6 @@ public class DefaultTargetWriter extends AbstractItemWriter implements TargetWri
             KapuaSecurityUtils.doPrivileged(() -> JOB_TARGET_SERVICE.update(jobTarget));
         }
 
-        LOG.info("JOB {} - Writing items... Done!", jobContextWrapper.getJobId());
+        jobLogger.info("Writing items... Done!");
     }
 }

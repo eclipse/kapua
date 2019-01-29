@@ -12,6 +12,7 @@
 package org.eclipse.kapua.job.engine.commons.operation;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.job.engine.commons.logger.JobLogger;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobContextWrapper;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
 import org.eclipse.kapua.job.engine.commons.wrappers.StepContextWrapper;
@@ -43,22 +44,30 @@ public abstract class AbstractTargetProcessor implements TargetOperation {
     public final Object processItem(Object item) throws Exception {
         JobTargetWrapper wrappedJobTarget = (JobTargetWrapper) item;
 
+        initProcessing(wrappedJobTarget);
+
+        JobLogger jobLogger = jobContextWrapper.getJobLogger();
+        jobLogger.setClassLog(LOG);
+
         JobTarget jobTarget = wrappedJobTarget.getJobTarget();
-        LOG.info("Processing item: {}", wrappedJobTarget.getJobTarget().getId());
+        jobLogger.info("Processing item: {}", wrappedJobTarget.getJobTarget().getId());
         try {
             processTarget(jobTarget);
 
             jobTarget.setStatus(JobTargetStatus.PROCESS_OK);
 
-            LOG.info("Processing item: {} - Done!", jobTarget.getId());
+            jobLogger.info("Processing item: {} - Done!", jobTarget.getId());
         } catch (Exception e) {
-            LOG.info("Processing item: {} - Error!", jobTarget.getId(), e);
+            jobLogger.error(e, "Processing item: {} - Error!", jobTarget.getId());
+
             jobTarget.setStatus(JobTargetStatus.PROCESS_FAILED);
             wrappedJobTarget.setProcessingException(e);
         }
 
         return wrappedJobTarget;
     }
+
+    protected abstract void initProcessing(JobTargetWrapper wrappedJobTarget);
 
     public abstract void processTarget(JobTarget jobTarget) throws KapuaException;
 

@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.management.configuration.job;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.commons.operation.AbstractTargetProcessor;
+import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService;
@@ -37,8 +38,12 @@ public class DeviceConfigurationPutTargetProcessor extends AbstractTargetProcess
     StepContext stepContext;
 
     @Override
-    public void processTarget(JobTarget jobTarget) throws KapuaException {
+    protected void initProcessing(JobTargetWrapper wrappedJobTarget) {
         setContext(jobContext, stepContext);
+    }
+
+    @Override
+    public void processTarget(JobTarget jobTarget) throws KapuaException {
 
         DeviceConfiguration configuration = stepContextWrapper.getStepProperty(DeviceConfigurationPutPropertyKeys.CONFIGURATION, DeviceConfiguration.class);
         Long timeout = stepContextWrapper.getStepProperty(DeviceConfigurationPutPropertyKeys.TIMEOUT, Long.class);

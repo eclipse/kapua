@@ -14,6 +14,7 @@ package org.eclipse.kapua.job.engine.jbatch.listener;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.JobStartOptions;
+import org.eclipse.kapua.job.engine.commons.logger.JobLogger;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobContextWrapper;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobAlreadyRunningException;
@@ -69,7 +70,10 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
     public void beforeJob() throws Exception {
         JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext);
 
-        LOG.info("JOB {} - {} - Running before job...", jobContextWrapper.getJobId(), jobContextWrapper.getJobName());
+        JobLogger jobLogger = jobContextWrapper.getJobLogger();
+        jobLogger.setClassLog(LOG);
+
+        jobLogger.info("Running before job...");
 
         JobExecution jobExecution = createJobExecution(
                 jobContextWrapper.getScopeId(),
@@ -77,17 +81,22 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
                 jobContextWrapper.getTargetSublist(),
                 jobContextWrapper.getExecutionId());
 
+        jobLogger.setJobExecutionId(jobExecution.getId());
+
         jobContextWrapper.setKapuaExecutionId(jobExecution.getId());
 
-        // prevent another instance running for the same job name (once a job is submitted its status is changed to STARTING by jbatch so,
-        // at that point, if there are more than 1 job execution in running state (so STARTING, STARTED, STOPPING) it means that another instance is already running.
-        checkJobRunning(
-                jobExecution.getScopeId(),
-                jobExecution.getJobId(),
-                jobContextWrapper.getJobName(),
-                jobExecution.getTargetIds());
+        try {
+            checkJobRunning(
+                    jobExecution.getScopeId(),
+                    jobExecution.getJobId(),
+                    jobContextWrapper.getJobName(),
+                    jobExecution.getTargetIds());
+        } catch (JobAlreadyRunningException jare) {
+            jobLogger.error(jare, "Running before job... ERROR!");
+            throw jare;
+        }
 
-        LOG.info("JOB {} - {} - Running before job... DONE!", jobContextWrapper.getJobId(), jobContextWrapper.getJobName());
+        jobLogger.info("Running before job... DONE!");
     }
 
     /**
@@ -96,8 +105,9 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
     @Override
     public void afterJob() throws Exception {
         JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext);
+        JobLogger jobLogger = jobContextWrapper.getJobLogger();
 
-        LOG.info("JOB {} - {} - Running after job...", jobContextWrapper.getJobId(), jobContextWrapper.getJobName());
+        jobLogger.info("Running after job...");
 
         KapuaId kapuaExecutionId = jobContextWrapper.getKapuaExecutionId();
         if (kapuaExecutionId == null) {
@@ -107,11 +117,12 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
         } else {
             JobExecution jobExecution = KapuaSecurityUtils.doPrivileged(() -> JOB_EXECUTION_SERVICE.find(jobContextWrapper.getScopeId(), kapuaExecutionId));
 
+            jobExecution.setLog(jobLogger.flush());
             jobExecution.setEndedOn(new Date());
 
             KapuaSecurityUtils.doPrivileged(() -> JOB_EXECUTION_SERVICE.update(jobExecution));
         }
-        LOG.info("JOB {} - {} - Running after job... DONE!", jobContextWrapper.getJobId(), jobContextWrapper.getJobName());
+        jobLogger.info("Running after job... DONE!");
     }
 
     /**

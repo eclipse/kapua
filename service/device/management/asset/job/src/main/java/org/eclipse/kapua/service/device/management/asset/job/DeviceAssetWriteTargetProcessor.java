@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.management.asset.job;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.commons.operation.AbstractTargetProcessor;
+import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetManagementService;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
@@ -37,8 +38,12 @@ public class DeviceAssetWriteTargetProcessor extends AbstractTargetProcessor imp
     StepContext stepContext;
 
     @Override
-    public void processTarget(JobTarget jobTarget) throws KapuaException {
+    protected void initProcessing(JobTargetWrapper wrappedJobTarget) {
         setContext(jobContext, stepContext);
+    }
+
+    @Override
+    public void processTarget(JobTarget jobTarget) throws KapuaException {
 
         DeviceAssets assets = stepContextWrapper.getStepProperty(DeviceAssetWritePropertyKeys.ASSETS, DeviceAssets.class);
         Long timeout = stepContextWrapper.getStepProperty(DeviceAssetWritePropertyKeys.TIMEOUT, Long.class);
