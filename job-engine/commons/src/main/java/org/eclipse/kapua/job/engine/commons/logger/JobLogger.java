@@ -17,6 +17,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.execution.JobExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class JobLogger {
     private static final String PRE_STD_LOG_FORMAT_EXECUTION_ID = "ExecutionId: {} - ";
 
     private static final String PRE_EXEC_LOG_FORMAT_LEVEL_INFO = "[INFO] ";
+    private static final String PRE_EXEC_LOG_FORMAT_LEVEL_WARN = "[WARN] ";
     private static final String PRE_EXEC_LOG_FORMAT_LEVEL_ERROR = "[ERROR] ";
     private static final String PRE_EXEC_LOG_FORMAT_DATE = "{} - ";
     private static final String POST_EXEC_LOG_FORMAT_ERROR = " {}";
@@ -91,7 +93,7 @@ public class JobLogger {
     }
 
     /**
-     * Logs a log line of {@link java.util.logging.Level#INFO}.
+     * Logs a log line of {@link Level#INFO}.
      *
      * @param message The {@link String} to log.
      */
@@ -100,16 +102,15 @@ public class JobLogger {
     }
 
     /**
-     * Logs a log line of {@link java.util.logging.Level#INFO} with the given arguments.
+     * Logs a log line of {@link Level#INFO} with the given arguments.
      *
      * @param format    The {@link String} format for the log line.
      * @param arguments The {@link java.util.Objects}... to populate the given format.
      */
     public void info(String format, Object... arguments) {
 
-        if (StringUtils.countMatches(format, "{}") != arguments.length) {
-            LOG.warn("Format string tokens do not match number of arguments");
-        }
+        checkFormatAndArguments(format, arguments);
+
         try {
             //
             // Standard Logging
@@ -142,7 +143,79 @@ public class JobLogger {
     }
 
     /**
-     * Logs a log line of {@link java.util.logging.Level#SEVERE}.
+     * Logs a log line of {@link Level#WARN}.
+     *
+     * @param message The {@link String} to log.
+     */
+    public void warn(String message) {
+        warn(null, message);
+    }
+
+    /**
+     * Logs a log line of {@link Level#WARN} with the relative {@link Exception}.
+     * <p>
+     * Into the {@link JobExecution} log only {@link Exception#getMessage()} will be logged.
+     *
+     * @param exception The {@link Exception} to log.
+     * @param message   The {@link String} to log.
+     */
+    public void warn(Exception exception, String message) {
+        warn(exception, message, Collections.emptyList().toArray());
+    }
+
+    /**
+     * Logs a log line of {@link Level#WARN} with the relative {@link Exception} with the given arguments.
+     * <p>
+     * Into the {@link JobExecution} log only {@link Exception#getMessage()} will be logged.
+     *
+     * @param exception The {@link Exception} to log.
+     * @param format    The {@link String} to log.
+     * @param arguments The {@link java.util.Objects}... to populate the given format.
+     */
+    public void warn(Exception exception, String format, Object... arguments) {
+
+        checkFormatAndArguments(format, arguments);
+
+        try {
+            //
+            // Standard Logging
+            if (containerClassLog.isErrorEnabled()) {
+                StringBuilder formatSb = new StringBuilder();
+                List<Object> finalArguments = new ArrayList<>();
+
+                buildStdLogFormatArguments(format, arguments, formatSb, finalArguments);
+
+                tokenizeFormat(formatSb);
+
+                containerClassLog.warn(MessageFormat.format(formatSb.toString(), finalArguments.toArray()), exception);
+            }
+
+            //
+            // Job Execution Logging
+            StringBuilder formatSb = new StringBuilder();
+            formatSb.append(PRE_EXEC_LOG_FORMAT_LEVEL_WARN);
+            formatSb.append(PRE_EXEC_LOG_FORMAT_DATE);
+            formatSb.append(format);
+
+            List<Object> finalArguments = new ArrayList<>();
+            finalArguments.add(new Date());
+            finalArguments.addAll(Arrays.asList(arguments));
+
+            if (exception != null) {
+                formatSb.append(POST_EXEC_LOG_FORMAT_ERROR);
+                finalArguments.add(exception.getMessage());
+            }
+
+            tokenizeFormat(formatSb);
+
+            logSb.append(MessageFormat.format(formatSb.toString(), finalArguments.toArray())).append(LF);
+        } catch (Exception e) {
+            LOG.error("Cannot log this line: " + format, e);
+        }
+    }
+
+    /**
+     * Logs a log line of {@link Level#ERROR}.
      *
      * @param message The {@link String} to log.
      */
@@ -151,7 +224,7 @@ public class JobLogger {
     }
 
     /**
-     * Logs a log line of {@link java.util.logging.Level#SEVERE} with the relative {@link Exception}.
+     * Logs a log line of {@link Level#ERROR} with the relative {@link Exception}.
      * <p>
      * Into the {@link JobExecution} log only {@link Exception#getMessage()} will be logged.
      *
@@ -163,7 +236,7 @@ public class JobLogger {
     }
 
     /**
-     * Logs a log line of {@link java.util.logging.Level#SEVERE} with the relative {@link Exception} with the given arguments.
+     * Logs a log line of {@link Level#ERROR} with the relative {@link Exception} with the given arguments.
      * <p>
      * Into the {@link JobExecution} log only {@link Exception#getMessage()} will be logged.
      *
@@ -172,9 +245,8 @@ public class JobLogger {
      * @param arguments The {@link java.util.Objects}... to populate the given format.
      */
     public void error(Exception exception, String format, Object... arguments) {
-        if (StringUtils.countMatches(format, "{}") != arguments.length) {
-            LOG.warn("Format string tokens do not match number of arguments");
-        }
+
+        checkFormatAndArguments(format, arguments);
 
         try {
             //
@@ -227,9 +299,26 @@ public class JobLogger {
         return log;
     }
 
+
     //
     // Private methods
     //
+
+    /**
+     * Checks that the number of placeholders in the given format matches the number of arguments given.
+     * If they do not match, a {@link Logger#warn(String)} is printed in the {@link JobLogger#LOG}.
+     * <p>
+     * Counts occurrences of {@code {}} in the given {@code format} parameter and
+     * matches with the {@code length} of the {@code arguments} parameter.
+     *
+     * @param format    The {@link String} format to check.
+     * @param arguments The {@link List} of arguments to check.
+     */
+    private void checkFormatAndArguments(String format, Object... arguments) {
+        if (StringUtils.countMatches(format, "{}") != arguments.length) {
+            LOG.warn("Format string tokens do not match number of arguments");
+        }
+    }
 
     /**
      * Build the log line for the standard log of the application.
