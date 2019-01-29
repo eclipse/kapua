@@ -202,7 +202,7 @@ public class UserAddDialog extends EntityAddEditDialog {
         userStatus.setSimpleValue(GwtUserStatus.ENABLED);
         statusFieldSet.add(userStatus, subFieldsetFormData);
 
-        expirationDate = new KapuaDateField();
+        expirationDate = new KapuaDateField(this);
         expirationDate.setName("expirationDate");
         expirationDate.setFormatValue(true);
         expirationDate.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));

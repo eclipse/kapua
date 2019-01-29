@@ -60,7 +60,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
     protected final KapuaTextField<String> accountNameField = new KapuaTextField<String>();
     protected final KapuaTextField<String> accountPassword = new KapuaTextField<String>();
     protected final KapuaTextField<String> confirmPassword = new KapuaTextField<String>();
-    protected final KapuaDateField expirationDateField = new KapuaDateField();
+    protected final KapuaDateField expirationDateField = new KapuaDateField(this);
 
     // broker cluster
     protected final NumberField optlock = new NumberField();
