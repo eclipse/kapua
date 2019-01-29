@@ -164,7 +164,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         passwordTooltip.setStyleAttribute("font-size", "10px");
         credentialFormPanel.add(passwordTooltip);
         passwordTooltip.hide();
-        expirationDate = new KapuaDateField();
+        expirationDate = new KapuaDateField(this);
         expirationDate.setEmptyText(MSGS.dialogAddNoExpiration());
         expirationDate.setFieldLabel(MSGS.dialogAddFieldExpirationDate());
         expirationDate.setFormatValue(true);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -53,6 +53,7 @@ public abstract class ActionDialog extends KapuaDialog {
 
     protected Boolean exitStatus;
     protected String exitMessage;
+    private Boolean dateValueNotNull = false;
 
     public ActionDialog() {
         super();
@@ -221,10 +222,14 @@ public abstract class ActionDialog extends KapuaDialog {
     }
 
     public void setSubmitButtonState() {
-        if (formPanel.isDirty()) {
+        if (formPanel.isDirty() || dateValueNotNull) {
             submitButton.enable();
         } else {
             submitButton.disable();
         }
+    }
+
+    public void setDateValueNotNull(Boolean dateValueNotNull) {
+        this.dateValueNotNull = dateValueNotNull;
     }
 }
