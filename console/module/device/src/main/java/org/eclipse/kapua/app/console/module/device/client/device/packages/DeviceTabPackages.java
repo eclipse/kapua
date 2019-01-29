@@ -215,7 +215,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
         //
         // History packages tab
-        historyPackageTab = new DeviceTabPackagesHistory(currentSession);
+        historyPackageTab = new DeviceTabPackagesHistory(currentSession, this);
         historyPackageTab.setBorders(false);
         historyPackageTab.setLayout(new FitLayout());
 

@@ -17,9 +17,11 @@ import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
+import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -36,10 +38,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
-import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelector;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolBar;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
@@ -64,20 +65,20 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
 
     private ToolBar toolBar;
 
-    private Button refreshButton;
-    private Button export;
-
-    private DateRangeSelector dateRangeSelector;
     private Grid<GwtDeviceManagementOperation> grid;
     private KapuaPagingToolBar pagingToolBar;
     private BasePagingLoader<PagingLoadResult<GwtDeviceManagementOperation>> loader;
+    private DeviceTabPackages deviceTabPackages;
+    private boolean contentDirty = true;
+    private boolean loadingInProgress;
 
     protected boolean refreshProcess;
 
-    public DeviceTabPackagesHistory(GwtSession currentSession) {
+    public DeviceTabPackagesHistory(GwtSession currentSession, DeviceTabPackages deviceTabPackages) {
         super(currentSession, DEVICES_MSGS.deviceInstallTabHistory(), new KapuaIcon(IconSet.CLOCK_O));
 
         initialized = false;
+        this.deviceTabPackages = deviceTabPackages;
     }
 
     @Override
@@ -108,7 +109,6 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
         add(devicesPackageHistoryPanel);
         initialized = true;
 
-        loader.load();
         pagingToolBar.enable();
     }
 
@@ -241,6 +241,7 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
             }
         };
         loader = new BasePagingLoader<PagingLoadResult<GwtDeviceManagementOperation>>(proxy);
+        loader.addLoadListener(new HistoryLoadListener());
         loader.setSortDir(SortDir.DESC);
         loader.setSortField("startedOnFormatted");
         loader.setRemoteSort(true);
@@ -266,7 +267,8 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
         grid.setSelectionModel(selectionModel);
 
-        loader.load(0, PAGE_SIZE);
+        loader.load();
+        initialized = true;
     }
 
     // --------------------------------------------------------------------------------------
@@ -277,17 +279,50 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
 
     @Override
     public void doRefresh() {
-        if (initialized) {
+        if (contentDirty && initialized) {
             if (selectedEntity == null) {
                 // clear the table
                 grid.getStore().removeAll();
-            } else {
+            } else if (!loadingInProgress){
                 loader.load();
             }
+            contentDirty = false;
         }
     }
 
     public void reload() {
         loader.load();
+    }
+
+    public void refresh() {
+        doRefresh();
+    }
+
+    public void setDirty(boolean isDirty) {
+        contentDirty = isDirty;
+    }
+
+    private class HistoryLoadListener extends LoadListener {
+
+        @Override
+        public void loaderLoadException(LoadEvent le) {
+            loadingInProgress = false;
+            deviceTabPackages.getRefreshButton().unmask();
+            if (le.exception != null) {
+                FailureHandler.handle(le.exception);
+            }
+        }
+
+        @Override
+        public void loaderBeforeLoad(LoadEvent le) {
+            loadingInProgress = true;
+            deviceTabPackages.getRefreshButton().mask();
+        }
+
+        @Override
+        public void loaderLoad(LoadEvent le) {
+            loadingInProgress = false;
+            deviceTabPackages.getRefreshButton().unmask();
+        }
     }
 }
