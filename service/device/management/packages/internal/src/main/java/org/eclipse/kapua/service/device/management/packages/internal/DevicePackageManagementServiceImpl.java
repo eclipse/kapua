@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.internal;
 
+import java.util.Date;
+
+import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -32,7 +35,6 @@ import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagem
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService;
-import org.eclipse.kapua.service.device.management.packages.internal.exception.PackageDownloadExecuteManagementException;
 import org.eclipse.kapua.service.device.management.packages.internal.exception.PackageDownloadStatusManagementException;
 import org.eclipse.kapua.service.device.management.packages.internal.exception.PackageDownloadStopManagementException;
 import org.eclipse.kapua.service.device.management.packages.internal.exception.PackageGetManagementException;
@@ -58,8 +60,6 @@ import org.eclipse.kapua.service.device.management.packages.model.internal.Devic
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOperation;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.internal.DevicePackageUninstallOperationImpl;
-
-import java.util.Date;
 
 /**
  * Device package service implementation.
@@ -360,8 +360,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
             KapuaResponsePayload responsePayload = responseMessage.getPayload();
 
             closeManagementOperation(scopeId, deviceId, operationId, responseMessage);
-
-            throw new PackageDownloadExecuteManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
+              throw new KapuaException(KapuaErrorCodes.DOWNLOAD_PACKAGE_EXCEPTION);
         }
     }
 

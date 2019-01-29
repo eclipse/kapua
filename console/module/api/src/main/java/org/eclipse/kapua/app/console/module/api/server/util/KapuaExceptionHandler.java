@@ -102,6 +102,9 @@ public class KapuaExceptionHandler {
         } else if(t instanceof KapuaConfigurationException && ((KapuaConfigurationException) t).getCode().name().equals(KapuaConfigurationErrorCodes.SELF_LIMIT_EXCEEDED_IN_CONFIG.name())) {
             logger.warn("Parent account limitation error", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.SELF_LIMIT_EXCEEDED_IN_CONFIG, t, t.getLocalizedMessage());
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.DOWNLOAD_PACKAGE_EXCEPTION.name())) {
+            logger.warn("Another resource is currently downloading", t);
+            throw new GwtKapuaException(GwtKapuaErrorCode.DOWNLOAD_PACKAGE_EXCEPTION, t, t.getLocalizedMessage());
         } else if(t instanceof KapuaEntityNotFoundException) {
             logger.warn("Entity not found", t);
             KapuaEntityNotFoundException kapuaEntityNotFoundException = (KapuaEntityNotFoundException)t;
