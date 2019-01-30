@@ -30,6 +30,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAd
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.ConfirmPasswordFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.PasswordFieldValidator;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
@@ -216,7 +217,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         } else if (password.getValue() != null && !password.getValue().equals(confirmPassword.getValue())) {
             ConsoleInfo.display("Error", confirmPassword.getErrorMessage());
         } else if (!expirationDate.isValid()) {
-            ConsoleInfo.display("Error", expirationDate.getErrorMessage());
+            ConsoleInfo.display("Error", KapuaSafeHtmlUtils.htmlUnescape(expirationDate.getErrorMessage()));
         } else if (!credentialType.isValid()) {
             ConsoleInfo.display("Error", credentialType.getMessages().getBlankText());
         }
