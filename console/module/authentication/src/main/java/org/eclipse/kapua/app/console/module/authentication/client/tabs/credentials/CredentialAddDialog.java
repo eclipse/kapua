@@ -97,6 +97,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         credentialType.add(GwtCredentialType.PASSWORD);
         credentialType.add(GwtCredentialType.API_KEY);
         credentialType.setEmptyText(MSGS.credentialTypePlaceHolder());
+        credentialType.getMessages().setBlankText(MSGS.credentialTypeBlankText());
         credentialType.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<GwtCredentialType>>() {
 
             @Override
@@ -110,6 +111,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
                 if (password.isVisible() && confirmPassword.isVisible()) {
                     DialogUtils.resizeDialog(CredentialAddDialog.this, 400, 335);
                     passwordTooltip.show();
+                    password.setAllowBlank(false);
                 } else {
                     DialogUtils.resizeDialog(CredentialAddDialog.this, 400, 285);
                     passwordTooltip.hide();
@@ -124,7 +126,6 @@ public class CredentialAddDialog extends EntityAddEditDialog {
         credentialFormPanel.add(credentialType);
 
         password = new TextField<String>();
-        password.setAllowBlank(false);
         password.setName("password");
         password.setFieldLabel("* " + MSGS.dialogAddFieldPassword());
         password.setValidator(new PasswordFieldValidator(password));
@@ -216,6 +217,8 @@ public class CredentialAddDialog extends EntityAddEditDialog {
             ConsoleInfo.display("Error", confirmPassword.getErrorMessage());
         } else if (!expirationDate.isValid()) {
             ConsoleInfo.display("Error", expirationDate.getErrorMessage());
+        } else if (!credentialType.isValid()) {
+            ConsoleInfo.display("Error", credentialType.getMessages().getBlankText());
         }
     }
 
