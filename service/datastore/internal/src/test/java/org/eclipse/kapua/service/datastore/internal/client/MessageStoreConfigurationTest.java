@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.kapua.service.datastore.internal.AbstractMessageStoreServiceTest;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
 import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Assert;
@@ -26,7 +25,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 @Category(JUnitTests.class)
-public class MessageStoreConfigurationTest extends AbstractMessageStoreServiceTest {
+public class MessageStoreConfigurationTest extends Assert {
 
     @Test
     public void test1() {

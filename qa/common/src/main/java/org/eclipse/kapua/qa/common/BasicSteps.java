@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.time.Duration;
+import java.util.Properties;
 
 @ScenarioScoped
 public class BasicSteps extends TestBase {
@@ -44,6 +45,13 @@ public class BasicSteps extends TestBase {
         if (WAIT_MULTIPLIER != 1.0d) {
             logger.info("Wait multiplier active: {}", WAIT_MULTIPLIER);
         }
+    }
+
+    @Given("A placeholder step")
+    public void doNothing() {
+
+        Properties props = System.getProperties();
+        Integer a = 10;
     }
 
     @Given("^Scope with ID (\\d+)$")

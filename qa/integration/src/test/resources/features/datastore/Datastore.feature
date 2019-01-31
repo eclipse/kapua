@@ -26,6 +26,96 @@ Feature: Datastore tests
 
     Given Start Broker
 
+  Scenario: Delete items by date ranges
+    Delete previously stored messages based on a time interval. The number of deleted items should
+    depend on the index window. Only the items in whole hours/days/weeks of th einterval should be deleted.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And The device "test-client-1"
+    And I set the database to device timestamp indexing
+
+    When I set the datastore indexing window to "week"
+
+    When I prepare a number of messages in the specified ranges and remember the list as "TestMessages"
+      | clientId      | topic               | count | startDate                | endDate                  |
+      | test-client-1 | delete/by/date/test |   92  | 2018-10-01T12:00:00.000Z | 2018-12-31T12:00:00.000Z |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+
+    When I create message query for current account from "2018-10-01T00:00:00.000Z" to "2018-12-31T23:59:59.999Z" with limit 1000
+    And I count for data message
+    Then I get message count 92
+
+    When I delete the indexes from "2018-10-10T00:00:00.000Z" to "2018-10-31T23:59:59.999Z"
+    And I refresh all indices
+    And I count for data message
+    Then I get message count 78
+    When I delete the indexes from "2018-12-11T00:00:00.000Z" to "2018-12-22T23:59:59.999Z"
+    And I refresh all indices
+    And I count for data message
+    Then I get message count 78
+    When I delete the indexes from "2018-11-16T00:00:00.000Z" to "2018-12-17T23:59:59.999Z"
+    And I refresh all indices
+    And I count for data message
+    Then I get message count 50
+
+    Then All indices are deleted
+
+    When I set the datastore indexing window to "day"
+
+    When I prepare a number of messages in the specified ranges and remember the list as "TestMessages"
+      | clientId      | topic               | count | startDate                | endDate                  |
+      | test-client-1 | delete/by/date/test |  744  | 2018-12-01T00:30:00.000Z | 2018-12-31T23:30:00.000Z |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+
+    When I create message query for current account from "2018-12-01T00:00:00.000Z" to "2018-12-31T23:59:59.999Z" with limit 1000
+    And I count for data message
+    Then I get message count 744
+
+    When I delete the indexes from "2018-12-03T12:00:00.000Z" to "2018-12-08T12:00:00.000Z"
+    And I refresh all indices
+    And I count for data message
+    Then I get message count 648
+    When I delete the indexes from "2018-12-20T12:00:00.000Z" to "2018-12-21T12:00:00.000Z"
+    And I refresh all indices
+    And I count for data message
+    Then I get message count 648
+    When I delete the indexes from "2018-12-20T12:00:00.000Z" to "2018-12-24T12:00:00.000Z"
+    And I refresh all indices
+    And I count for data message
+    Then I get message count 576
+
+    Then All indices are deleted
+
+    When I set the datastore indexing window to "hour"
+
+    When I prepare a number of messages in the specified ranges and remember the list as "TestMessages"
+      | clientId      | topic               | count | startDate                | endDate                  |
+      | test-client-1 | delete/by/date/test |  1440 | 2018-12-01T00:00:30.000Z | 2018-12-01T23:59:30.000Z |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+
+    When I create message query for current account from "2018-12-01T00:00:00.000Z" to "2018-12-01T23:59:59.999Z" with limit 1000
+    And I count for data message
+    Then I get message count 1440
+
+    When I delete the indexes from "2018-12-01T05:00:00.000Z" to "2018-12-01T08:30:00.000Z"
+    And I refresh all indices
+    And I count for data message
+    Then I get message count 1260
+    When I delete the indexes from "2018-12-01T12:01:00.000Z" to "2018-12-01T13:59:00.000Z"
+    And I refresh all indices
+    And I count for data message
+    Then I get message count 1260
+    When I delete the indexes from "2018-12-01T15:10:00.000Z" to "2018-12-01T18:50:00.000Z"
+    And I refresh all indices
+    And I count for data message
+    Then I get message count 1140
+
+    Then I logout
+
   Scenario: Delete items by the datastore ID
     Delete a previously stored message and verify that it is not in the store any more. Also delete and check the
     message related channel, metric and client info entries.

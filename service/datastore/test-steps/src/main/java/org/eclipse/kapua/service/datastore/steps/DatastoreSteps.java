@@ -34,6 +34,7 @@ import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.Session;
 import org.eclipse.kapua.qa.common.SimulatedDevice;
 import org.eclipse.kapua.qa.common.SimulatedDeviceApplication;
@@ -41,6 +42,7 @@ import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.qa.common.With;
+import org.eclipse.kapua.qa.common.cucumber.CucMessageRange;
 import org.eclipse.kapua.qa.common.cucumber.CucMetric;
 import org.eclipse.kapua.qa.common.cucumber.CucTopic;
 import org.eclipse.kapua.service.account.Account;
@@ -49,14 +51,21 @@ import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
 import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
+import org.eclipse.kapua.service.datastore.client.ClientException;
+import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
+import org.eclipse.kapua.service.datastore.client.DatastoreClient;
+import org.eclipse.kapua.service.datastore.client.model.IndexRequest;
 import org.eclipse.kapua.service.datastore.internal.ChannelInfoRegistryServiceProxy;
 import org.eclipse.kapua.service.datastore.internal.ClientInfoRegistryServiceProxy;
 import org.eclipse.kapua.service.datastore.internal.DatastoreCacheManager;
 import org.eclipse.kapua.service.datastore.internal.MetricInfoRegistryServiceProxy;
+import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreChannel;
+import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
+import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
 import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoField;
@@ -70,6 +79,7 @@ import org.eclipse.kapua.service.datastore.internal.model.query.RangePredicateIm
 import org.eclipse.kapua.service.datastore.internal.model.query.TermPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.MetricInfoSchema;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
@@ -104,6 +114,7 @@ import javax.inject.Inject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -160,6 +171,8 @@ public class DatastoreSteps extends TestBase {
 
     private MessageStoreService messageStoreService;
 
+    private DatastoreClient datastoreClient;
+
     private StorablePredicateFactory storablePredicateFactory;
 
     private ChannelInfoRegistryService channelInfoRegistryService;
@@ -179,11 +192,12 @@ public class DatastoreSteps extends TestBase {
     private String currentApplication;
 
     @Inject
-    public DatastoreSteps(SimulatedDevice currentDevice, Session session, StepData stepData) throws KapuaException {
+    public DatastoreSteps(final SimulatedDevice currentDevice, final Session session, StepData stepData, DBHelper dbHelper) {
 
         this.currentDevice = currentDevice;
         this.session = session;
         this.stepData = stepData;
+        this.database = dbHelper;
     }
 
     // *************************************
@@ -191,7 +205,7 @@ public class DatastoreSteps extends TestBase {
     // *************************************
 
     @Before
-    public void beforeScenario(Scenario scenario) {
+    public void beforeScenario(Scenario scenario) throws ClientUnavailableException {
 
         this.scenario = scenario;
 
@@ -201,6 +215,7 @@ public class DatastoreSteps extends TestBase {
         deviceRegistryService = locator.getService(DeviceRegistryService.class);
         deviceFactory = locator.getFactory(DeviceFactory.class);
         messageStoreService = locator.getService(MessageStoreService.class);
+        datastoreClient = DatastoreClientFactory.getInstance();
         storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
         channelInfoRegistryService = locator.getService(ChannelInfoRegistryService.class);
         channelInfoRegistryServiceProxy = new ChannelInfoRegistryServiceProxy();
@@ -368,9 +383,15 @@ public class DatastoreSteps extends TestBase {
 
     @When("^I refresh all indices$")
     public void refreshIndeces() throws Throwable {
+
         DatastoreMediator.getInstance().refreshAllIndexes();
     }
 
+    @When("^I set the datastore indexing window to \"(.+)\"$")
+    public void setDatastoreIndexingWindowTo(String window) {
+
+        setDatastoreIndexingWindowOption(window);
+    }
 
     @Given("^I prepare a random message and save it as \"(.*)\"$")
     public void prepareAndRememberARandomMessage(String msgKey) throws Exception {
@@ -378,7 +399,7 @@ public class DatastoreSteps extends TestBase {
         KapuaDataMessage tmpMessage = createTestMessage(((Account) stepData.get("LastAccount")).getId(),
                 ((Device) stepData.get("LastDevice")).getId(),
                 ((Device) stepData.get("LastDevice")).getClientId(),
-                null, null);
+                "", "");
         stepData.put(msgKey, tmpMessage);
     }
 
@@ -399,7 +420,7 @@ public class DatastoreSteps extends TestBase {
                 ((Account) stepData.get("LastAccount")).getId(),
                 ((Device) stepData.get("LastDevice")).getId(),
                 ((Device) stepData.get("LastDevice")).getClientId(),
-                null, null);
+                "", "");
         tmpMessage.setPayload(null);
         stepData.put(msgKey, tmpMessage);
     }
@@ -418,6 +439,34 @@ public class DatastoreSteps extends TestBase {
                     tmpTopic.getTopic(),
                     tmpTopic.getCaptured());
             tmpList.add(tmpMsg);
+        }
+
+        stepData.put(listKey, tmpList);
+    }
+
+    @Given("^I prepare a number of messages in the specified ranges and remember the list as \"(.*)\"$")
+    public void prepareAListOfMessagesInTheSpecifiedRanges(String listKey, List<CucMessageRange> messages) throws Exception {
+
+        List<KapuaDataMessage> tmpList = new ArrayList<>();
+        KapuaDataMessage tmpMsg;
+        Calendar tmpCal = Calendar.getInstance();
+
+        for (CucMessageRange tmpMessage : messages) {
+            Date startDate = KapuaDateUtils.parseDate(tmpMessage.getStartDate());
+            Date endDate = KapuaDateUtils.parseDate(tmpMessage.getEndDate());
+            long stepSeconds = (endDate.getTime() - startDate.getTime()) / (1000L * (tmpMessage.getCount().longValue() - 1));
+
+            tmpCal.setTime(startDate);
+            for (int cnt = 0; cnt <= tmpMessage.getCount(); cnt++) {
+                tmpMsg = createTestMessage(
+                        ((Account) stepData.get("LastAccount")).getId(),
+                        ((Device) stepData.get("LastDevice")).getId(),
+                        tmpMessage.getClientId(),
+                        tmpMessage.getTopic(),
+                        tmpCal.getTime());
+                tmpList.add(tmpMsg);
+                tmpCal.add(Calendar.SECOND, (int) stepSeconds);
+            }
         }
 
         stepData.put(listKey, tmpList);
@@ -467,7 +516,7 @@ public class DatastoreSteps extends TestBase {
             tmpMsg = createTestMessage(((Account) stepData.get("LastAccount")).getId(),
                     ((Device) stepData.get("LastDevice")).getId(),
                     ((Device) stepData.get("LastDevice")).getClientId(),
-                    null, null);
+                    "", "");
             msgList.add(tmpMsg);
         }
 
@@ -546,7 +595,7 @@ public class DatastoreSteps extends TestBase {
                     tmpDev.getId(),
                     tmpDev.getClientId(),
                     tmpTopic.getTopic(),
-                    null);
+                    "");
             tmpMsg.setCapturedOn(capturedOn);
             tmpMsg.setSentOn(sentOn);
             tmpMsg.setReceivedOn(receivedOn);
@@ -1282,6 +1331,23 @@ public class DatastoreSteps extends TestBase {
         stepData.put("messageQuery", messageQuery);
     }
 
+    @Given("^I create message query for current account from \"(.+)\" to \"(.+)\" with limit (\\d+)$")
+    public void createMessageQueryForAccount(String fromDate, String toDate, Integer limit) throws Exception {
+
+        Account account = (Account) stepData.get("LastAccount");
+
+        try {
+            Date startDate = KapuaDateUtils.parseDate(fromDate);
+            Date endDate = KapuaDateUtils.parseDate(toDate);
+            MessageQuery messageQuery = DatastoreQueryFactory.createBaseMessageQuery(account.getId(), limit);
+            messageQuery.setPredicate(new RangePredicateImpl(MessageField.TIMESTAMP, startDate, endDate));
+
+            stepData.put("messageQuery", messageQuery);
+        } catch (Exception ex) {
+            verifyException(ex);
+        }
+    }
+
     @When("^I query for data message$")
     public void queryForDataMessage() throws KapuaException {
 
@@ -1311,7 +1377,7 @@ public class DatastoreSteps extends TestBase {
         assertTrue(result.isEmpty());
     }
 
-    @When("^I count for data message$")
+    @When("^I count for data messages?$")
     public void countForDataMessage() throws KapuaException {
 
         MessageQuery messageQuery = (MessageQuery) stepData.get("messageQuery");
@@ -1529,6 +1595,14 @@ public class DatastoreSteps extends TestBase {
         messageStoreService.setConfigValues(KapuaId.ONE, null, settings);
     }
 
+    @When("^I delete the indexes from \"(.+)\" to \"(.+)\"$")
+    public void deleteIndexesBetweenDates(String fromDate, String toDate) throws ParseException, ClientException, DatastoreException {
+
+        String[] indexes = DatastoreUtils.convertToDataIndexes(getDataIndexesByAccount(getCurrentScopeId()), KapuaDateUtils.parseDate(fromDate).toInstant(),
+                KapuaDateUtils.parseDate(toDate).toInstant());
+        datastoreClient.deleteIndexes(indexes);
+    }
+
     // *******************
     // * Private Helpers *
     // *******************
@@ -1634,7 +1708,7 @@ public class DatastoreSteps extends TestBase {
     private KapuaDataMessage createTestMessage(KapuaId scopeId, KapuaId deviceId, String clientId, String topic, String captured)
             throws Exception {
 
-        String tmpTopic = (topic != null) ? topic : "default/test/topic";
+        String tmpTopic = ((topic != null) && !topic.isEmpty()) ? topic : "default/test/topic";
         String tmpClientId = (clientId != null) ? clientId : ((Device) stepData.get("LastDevice")).getClientId();
         KapuaDataMessage tmpMessage = dataMessageFactory.newKapuaDataMessage();
 
@@ -1644,11 +1718,41 @@ public class DatastoreSteps extends TestBase {
         Date tmpSentDate = tmpCal.getTime();
 
         Date tmpCaptured = tmpRecDate;
-        if (captured != null) {
+        if ((captured != null) && !captured.isEmpty()) {
             tmpCaptured = KapuaDateUtils.parseDate(captured);
         }
 
         tmpMessage.setReceivedOn(tmpRecDate);
+        tmpMessage.setSentOn(tmpSentDate);
+        tmpMessage.setCapturedOn(tmpCaptured);
+        tmpMessage.setClientId(tmpClientId);
+        tmpMessage.setDeviceId(deviceId);
+        tmpMessage.setScopeId(scopeId);
+
+        KapuaDataChannel tmpChannel = dataMessageFactory.newKapuaDataChannel();
+        tmpChannel.setSemanticParts(new ArrayList<>(Arrays.asList(tmpTopic.split("/"))));
+        tmpMessage.setChannel(tmpChannel);
+
+        tmpMessage.setPayload(createRandomTestPayload());
+        tmpMessage.setPosition(createRandomTestPosition(tmpSentDate));
+
+        return tmpMessage;
+    }
+
+    private KapuaDataMessage createTestMessage(KapuaId scopeId, KapuaId deviceId, String clientId, String topic, Date captured)
+            throws Exception {
+
+        String tmpTopic = (topic != null) ? topic : "default/test/topic";
+        String tmpClientId = (clientId != null) ? clientId : ((Device) stepData.get("LastDevice")).getClientId();
+        KapuaDataMessage tmpMessage = dataMessageFactory.newKapuaDataMessage();
+
+        Date tmpCaptured = (captured != null) ? captured : new Date();
+        Calendar tmpCal = Calendar.getInstance();
+        tmpCal.setTime(tmpCaptured);
+        tmpCal.add(Calendar.MINUTE, -10);
+        Date tmpSentDate = tmpCal.getTime();
+
+        tmpMessage.setReceivedOn(tmpCaptured);
         tmpMessage.setSentOn(tmpSentDate);
         tmpMessage.setCapturedOn(tmpCaptured);
         tmpMessage.setClientId(tmpClientId);
@@ -2192,5 +2296,13 @@ public class DatastoreSteps extends TestBase {
         config.put(MessageStoreConfiguration.CONFIGURATION_DATA_TTL_KEY, dataTTL);
         config.put(MessageStoreConfiguration.CONFIGURATION_DATA_STORAGE_ENABLED_KEY, storageEnabled);
         messageStoreService.setConfigValues(scopeId, parentId, config);
+    }
+
+    private String[] getDataIndexesByAccount(KapuaId scopeId) throws ClientException {
+        return datastoreClient.findIndexes(new IndexRequest(scopeId.toStringId() + "-*")).getIndexes();
+    }
+
+    private void setDatastoreIndexingWindowOption(String windowOption) {
+        System.setProperty(DatastoreSettingKey.INDEXING_WINDOW_OPTION.key(), windowOption.trim().toLowerCase());
     }
 }

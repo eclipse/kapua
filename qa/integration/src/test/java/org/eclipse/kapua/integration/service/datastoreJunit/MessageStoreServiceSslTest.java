@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal;
+package org.eclipse.kapua.integration.service.datastoreJunit;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.kapua.KapuaException;
@@ -22,6 +22,7 @@ import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
@@ -95,7 +96,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        XmlUtil.setContextProvider(new DatastoreJAXBContextProvider());
+        XmlUtil.setContextProvider(new TestJAXBContextProvider());
     }
 
     @Test(expected = DatastoreException.class)

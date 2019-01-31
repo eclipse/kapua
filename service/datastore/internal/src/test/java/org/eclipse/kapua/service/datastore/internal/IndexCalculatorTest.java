@@ -15,14 +15,12 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.datastore.MessageStoreService;
-import org.eclipse.kapua.service.datastore.client.ClientException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 
 import org.eclipse.kapua.test.junit.JUnitTests;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -38,11 +36,10 @@ import java.util.List;
 import java.util.TimeZone;
 
 @Category(JUnitTests.class)
-public class IndexCalculatorTest extends AbstractMessageStoreServiceTest {
+public class IndexCalculatorTest extends Assert {
 
     private static final Logger LOG = LoggerFactory.getLogger(IndexCalculatorTest.class);
 
-    private final MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm Z");
 
     @BeforeClass
@@ -51,7 +48,7 @@ public class IndexCalculatorTest extends AbstractMessageStoreServiceTest {
     }
 
     @Test
-    public void testIndex() throws KapuaException, ParseException, InterruptedException {
+    public void testIndex() throws KapuaException, ParseException {
         // performTest(sdf.parse("01/01/2000 13:12 +0100"), sdf.parse("01/01/2020 13:12 +0100"), buildExpectedResult("1", 1, 2000, 1, 2020, new int[] {
         // 53,// 2000 for locale us - 52 for locale "Europe"
         // 52,// 2001
@@ -132,7 +129,7 @@ public class IndexCalculatorTest extends AbstractMessageStoreServiceTest {
         assertEquals(".1", DatastoreUtils.getRegistryIndexName(KapuaId.ONE));
     }
 
-    private void performTest(Date startDate, Date endDate, String[] expectedIndexes) throws DatastoreException, ClientException {
+    private void performTest(Date startDate, Date endDate, String[] expectedIndexes) throws DatastoreException {
         Calendar calStartDate = null;
         Calendar calEndDate = null;
         if (startDate != null) {
@@ -154,7 +151,7 @@ public class IndexCalculatorTest extends AbstractMessageStoreServiceTest {
         compareResult(expectedIndexes, index);
     }
 
-    private void performNullIndexTest(Date startDate, Date endDate) throws DatastoreException, ClientException {
+    private void performNullIndexTest(Date startDate, Date endDate) throws DatastoreException {
         Calendar calStartDate = null;
         Calendar calEndDate = null;
         if (startDate != null) {
@@ -205,7 +202,7 @@ public class IndexCalculatorTest extends AbstractMessageStoreServiceTest {
         }
     }
 
-    private String[] getDataIndexesByAccount(KapuaId scopeId) throws ClientException {
+    private String[] getDataIndexesByAccount(KapuaId scopeId) {
         return buildExpectedResult("1", 1, 2015, 52, 2018, new int[]{ 53, 52, 52, 52 });
     }
 }

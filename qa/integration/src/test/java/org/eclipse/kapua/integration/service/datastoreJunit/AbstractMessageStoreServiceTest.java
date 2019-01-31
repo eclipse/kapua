@@ -9,21 +9,22 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal;
+package org.eclipse.kapua.integration.service.datastoreJunit;
 
 import com.google.common.base.MoreObjects;
 import org.apache.commons.lang.RandomStringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
+import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
-import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.After;
 import org.junit.Assert;
@@ -80,7 +81,7 @@ public abstract class AbstractMessageStoreServiceTest extends Assert {
             adminUserId = KapuaSecurityUtils.getSession().getUserId();
             adminScopeId = KapuaSecurityUtils.getSession().getScopeId();
 
-            XmlUtil.setContextProvider(new DatastoreJAXBContextProvider());
+            XmlUtil.setContextProvider(new TestJAXBContextProvider());
         } catch (KapuaException exc) {
             exc.printStackTrace();
         }
