@@ -207,6 +207,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
             @Override
             public void handleEvent(ComponentEvent be) {
+                setEntity(selectedEntity);
                 hideUninstallButton();
                 refresh();
             }
@@ -223,6 +224,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
             @Override
             public void handleEvent(ComponentEvent be) {
+                setEntity(selectedEntity);
                 hideUninstallButton();
                 refresh();
             }
