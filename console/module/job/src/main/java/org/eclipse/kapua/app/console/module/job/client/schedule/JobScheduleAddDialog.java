@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.messages.ValidationMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
@@ -48,6 +49,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class JobScheduleAddDialog extends EntityAddEditDialog {
 
     protected static final ConsoleJobMessages JOB_MSGS = GWT.create(ConsoleJobMessages.class);
+    protected static final ConsoleMessages CONSOLE_MSGS = GWT.create(ConsoleMessages.class);
     private static final ValidationMessages VAL_MSGS = GWT.create(ValidationMessages.class);
     private static final GwtTriggerServiceAsync TRIGGER_SERVICE = GWT.create(GwtTriggerService.class);
     private static final String KAPUA_ID_CLASS_NAME = "org.eclipse.kapua.model.id.KapuaId";
@@ -178,8 +180,19 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         bodyPanel.add(mainPanel);
     }
 
+    public void validateJobSchedule() {
+        if (triggerName.getValue() == null || startsOn.getValue() == null || startsOnTime.getValue() == null || (retryInterval.getValue() == null && cronExpression.getValue() == null)) {
+            ConsoleInfo.display("Error", CONSOLE_MSGS.allFieldsRequired());
+        } else if (endsOn.getValue() != null && endsOnTime.getValue() == null) {
+            ConsoleInfo.display("Error", CONSOLE_MSGS.specifyEndTime());
+        } else if (endsOn.getValue() == null && endsOnTime.getValue() != null) {
+            ConsoleInfo.display("Error", CONSOLE_MSGS.specifyEndDate());
+        }
+    }
+
     @Override
     protected void preSubmit() {
+        validateJobSchedule();
         cronExpression.clearInvalid();
 
         if (triggerName.getValue() == null) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,9 +31,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
@@ -77,6 +79,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
     protected static final String PROPERTY_TYPE = "propertyType";
 
     protected static final ConsoleJobMessages JOB_MSGS = GWT.create(ConsoleJobMessages.class);
+    protected static final ConsoleMessages CONSOLE_MSGS = GWT.create(ConsoleMessages.class);
     private static final GwtJobStepDefinitionServiceAsync JOB_STEP_DEFINITION_SERVICE = GWT.create(GwtJobStepDefinitionService.class);
     private static final GwtJobStepServiceAsync JOB_STEP_SERVICE = GWT.create(GwtJobStepService.class);
 
@@ -153,6 +156,18 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         jobStepFormPanel.add(jobStepPropertiesFieldSet);
 
         bodyPanel.add(jobStepFormPanel);
+    }
+
+    public void validateJobStep() {
+        if (jobStepName.getValue() == null || jobStepDefinitionCombo.getValue() == null) {
+            ConsoleInfo.display("Error", CONSOLE_MSGS.allFieldsRequired());
+        } 
+    }
+
+    @Override
+    protected void preSubmit() {
+        validateJobStep();
+        super.preSubmit();
     }
 
     @Override
