@@ -16,12 +16,13 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
+import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.time.Duration;
-import java.util.Properties;
+import java.util.Date;
 
 @ScenarioScoped
 public class BasicSteps extends TestBase {
@@ -50,7 +51,8 @@ public class BasicSteps extends TestBase {
     @Given("A placeholder step")
     public void doNothing() {
 
-        Properties props = System.getProperties();
+        // An empty placeholder step. Just a breakpoint anchor point. Used to pause
+        // test execution by placing a breakpoint into.
         Integer a = 10;
     }
 
@@ -139,12 +141,29 @@ public class BasicSteps extends TestBase {
 
     @Then("^I get the boolean \"(.+)\"$")
     public void checkBoolResult(String val) {
-        assertEquals(Boolean.valueOf(val).booleanValue(), stepData.get("BoolValue"));
+        assertEquals(Boolean.valueOf(val), stepData.get("BoolValue"));
+    }
+
+    @Given("^The text \"(.+)\"$")
+    public void setCustomText(String text) {
+        stepData.put("Text", text);
     }
 
     @Then("^I get the text \"(.+)\"$")
     public void checkStringResult(String text) {
         assertEquals(text, stepData.get("Text"));
+    }
+
+    @Given("^The date \"(.+)\"$")
+    public void setCustomDate(String dateString) throws Exception {
+
+        primeException();
+        try {
+            Date date = KapuaDateUtils.parseDate(dateString);
+            stepData.put("Date", date);
+        } catch(Exception ex) {
+            verifyException(ex);
+        }
     }
 
     @Given("^System property \"(.*)\" with value \"(.*)\"$")

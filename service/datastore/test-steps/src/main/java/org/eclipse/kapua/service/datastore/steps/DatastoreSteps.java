@@ -391,6 +391,25 @@ public class DatastoreSteps extends TestBase {
     public void setDatastoreIndexingWindowTo(String window) {
 
         setDatastoreIndexingWindowOption(window);
+        stepData.put("IndexingWindow", window);
+    }
+
+    @Then("^The index name is \"(.+)\"$")
+    public void checkCurrentDateIndexName(String name) throws Exception {
+
+        Date currentDate = (Date) stepData.get("Date");
+        Instant instant = currentDate.toInstant();
+        String window = (String) stepData.get("IndexingWindow");
+        String indexName = "";
+
+        primeException();
+        try {
+            indexName = DatastoreUtils.getDataIndexName(SYS_SCOPE_ID, instant.toEpochMilli(), window);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+
+        Assert.assertEquals(name, indexName);
     }
 
     @Given("^I prepare a random message and save it as \"(.*)\"$")

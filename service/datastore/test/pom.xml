@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-    Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+    Copyright (c) 2019 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -13,26 +13,28 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>org.eclipse.kapua</groupId>
-        <artifactId>kapua-service</artifactId>
+        <artifactId>kapua-datastore</artifactId>
         <version>1.1.0-SNAPSHOT</version>
     </parent>
 
-    <packaging>pom</packaging>
+    <artifactId>kapua-datastore-test</artifactId>
+    <name>${project.artifactId}</name>
 
-    <artifactId>kapua-datastore</artifactId>
+    <dependencies>
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-datastore-test-steps</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-    <modules>
-        <module>api</module>
-        <module>internal</module>
-        <module>client-api</module>
-        <module>client-embedded</module>
-        <module>client-rest</module>
-        <module>client-transport</module>
-        <module>test</module>
-        <module>test-steps</module>
-    </modules>
+    </dependencies>
 
 </project>
