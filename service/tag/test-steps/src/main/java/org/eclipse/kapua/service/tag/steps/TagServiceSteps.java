@@ -51,7 +51,7 @@ import org.eclipse.kapua.service.tag.TagService;
 import org.eclipse.kapua.service.tag.internal.TagEntityManagerFactory;
 import org.eclipse.kapua.service.tag.internal.TagFactoryImpl;
 import org.eclipse.kapua.service.tag.internal.TagServiceImpl;
-import org.eclipse.kapua.test.MockedLocator;
+import org.eclipse.kapua.qa.common.MockedLocator;
 import org.junit.Assert;
 import org.mockito.Matchers;
 import org.mockito.Mockito;

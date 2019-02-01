@@ -954,11 +954,6 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-test</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-qa-steps</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -1417,7 +1412,6 @@
         <module>transport</module>
         <module>translator</module>
         <module>broker-core</module>
-        <module>test</module>
         <module>qa</module>
 
         <module>sso</module>

@@ -118,7 +118,7 @@ import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationServiceImpl;
 import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.test.MockedLocator;
+import org.eclipse.kapua.qa.common.MockedLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

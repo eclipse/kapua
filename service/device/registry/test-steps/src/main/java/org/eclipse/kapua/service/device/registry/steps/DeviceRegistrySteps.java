@@ -127,7 +127,7 @@ import org.eclipse.kapua.service.tag.TagService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserService;
-import org.eclipse.kapua.test.MockedLocator;
+import org.eclipse.kapua.qa.common.MockedLocator;
 import org.junit.Assert;
 import org.mockito.Matchers;
 import org.mockito.Mockito;

@@ -57,10 +57,6 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-qa-common</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-test</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.eclipse.kapua</groupId>

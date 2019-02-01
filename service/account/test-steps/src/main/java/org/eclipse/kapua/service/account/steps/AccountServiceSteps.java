@@ -59,7 +59,7 @@ import org.eclipse.kapua.service.account.internal.KapuaAccountException;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.test.MockedLocator;
+import org.eclipse.kapua.qa.common.MockedLocator;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.slf4j.Logger;

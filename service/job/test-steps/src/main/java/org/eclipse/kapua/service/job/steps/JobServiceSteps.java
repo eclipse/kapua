@@ -86,7 +86,7 @@ import org.eclipse.kapua.service.job.targets.JobTargetService;
 import org.eclipse.kapua.service.job.targets.JobTargetStatus;
 import org.eclipse.kapua.service.job.targets.internal.JobTargetFactoryImpl;
 import org.eclipse.kapua.service.job.targets.internal.JobTargetServiceImpl;
-import org.eclipse.kapua.test.MockedLocator;
+import org.eclipse.kapua.qa.common.MockedLocator;
 import org.joda.time.DateTime;
 import org.mockito.Matchers;
 import org.mockito.Mockito;

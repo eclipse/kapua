@@ -70,7 +70,7 @@ import org.eclipse.kapua.service.user.UserStatus;
 import org.eclipse.kapua.service.user.internal.UserEntityManagerFactory;
 import org.eclipse.kapua.service.user.internal.UserFactoryImpl;
 import org.eclipse.kapua.service.user.internal.UserServiceImpl;
-import org.eclipse.kapua.test.MockedLocator;
+import org.eclipse.kapua.qa.common.MockedLocator;
 import org.junit.Assert;
 import org.mockito.Matchers;
 import org.mockito.Mockito;

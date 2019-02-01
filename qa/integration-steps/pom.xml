@@ -140,10 +140,6 @@
 
         <!-- Test dependencies -->
         <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-test</artifactId>
-        </dependency>
-        <dependency>
             <groupId>info.cukes</groupId>
             <artifactId>cucumber-core</artifactId>
         </dependency>

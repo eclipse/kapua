@@ -78,11 +78,6 @@
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-datastore-client-embedded</artifactId>
             <scope>test</scope>
         </dependency>

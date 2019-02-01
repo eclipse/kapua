@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech
  *******************************************************************************/
-package org.eclipse.kapua.test;
+package org.eclipse.kapua.qa.common;
 
 import com.google.inject.ConfigurationException;
 import com.google.inject.Injector;
@@ -33,7 +33,7 @@ import java.util.Map;
  * <p>
  * Locator can be configured in maven pom file or command line as system parameter:
  * <p>
- * -Dlocator.class.impl=org.eclipse.kapua.test.MockedLocator
+ * -Dlocator.class.impl=org.eclipse.kapua.qa.common.MockedLocator
  * <p>
  * In cucumber setting is done in custom cucumber runner CucumberWithProperties.
  * <p>
