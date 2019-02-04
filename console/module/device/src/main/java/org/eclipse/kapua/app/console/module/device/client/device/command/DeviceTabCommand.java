@@ -44,6 +44,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog.InfoDialogType;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
@@ -216,8 +218,9 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
 
                     if (!errorMessage.isEmpty()) {
                         errorMessage = DEVICE_MSGS.deviceCommandCommunicationError();
-                        MessageBox.alert(MSGS.error(), MSGS.commandExecutionFailure() + ":<br/>" + errorMessage, null).getDialog().addStyleName("x-window-dlg .ext-mb-icon" );
-                    } 
+                    InfoDialog exitDialog = new InfoDialog(InfoDialogType.ERROR, MSGS.error() + MSGS.commandExecutionFailure() + ":<br/>" + errorMessage);
+                    exitDialog.show();
+                    }
                     commandInput.unmask();
                 } else {
                     int outputMessageStartIndex = htmlResult.indexOf("<pre");
