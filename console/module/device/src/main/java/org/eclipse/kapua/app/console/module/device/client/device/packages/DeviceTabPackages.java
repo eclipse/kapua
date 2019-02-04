@@ -183,7 +183,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
         //
         // Packages installed tab
-        installedPackageTab = new DeviceTabPackagesInstalled(this);
+        installedPackageTab = new DeviceTabPackagesInstalled(currentSession, this);
         installedPackageTab.setBorders(false);
         installedPackageTab.setLayout(new FitLayout());
 
@@ -362,6 +362,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
             // Manage buttons
             if (selectedEntity != null && selectedEntity.isOnline()) {
                 toolBar.enable();
+                installButton.disable();
                 uninstallButton.disable();
             } else {
                 toolBar.disable();
