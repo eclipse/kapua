@@ -50,6 +50,8 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon
 import org.eclipse.kapua.app.console.module.api.client.ui.button.DiscardButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.SaveButton;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog.InfoDialogType;
 import org.eclipse.kapua.app.console.module.api.client.ui.label.Label;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
@@ -463,10 +465,9 @@ public class DeviceConfigComponents extends LayoutContainer {
 
     public void apply() {
         if (!devConfPanel.isValid()) {
-            MessageBox mb = new MessageBox();
-            mb.setIcon(MessageBox.ERROR);
-            mb.setMessage(DEVICE_MSGS.deviceConfigError());
-            mb.show();
+            InfoDialog exitDialog = new InfoDialog(InfoDialogType.ERROR, DEVICE_MSGS.deviceConfigError());
+            exitDialog.show();
+
             return;
         }
 
