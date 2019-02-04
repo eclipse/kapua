@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -60,6 +60,7 @@ import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenS
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtSnapshot;
+import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceManagementSessionPermission;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementServiceAsync;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
@@ -523,7 +524,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
                 FailureHandler.handle(le.exception);
             }
             refreshButton.enable();
-            uploadButton.enable();
+            uploadButton.setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.write()));
         }
 
         @Override
@@ -536,7 +537,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
             grid.unmask();
             toolBar.enable();
             refreshButton.enable();
-            uploadButton.enable();
+            uploadButton.setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.write()));
         }
     }
 }
