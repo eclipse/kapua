@@ -21,6 +21,7 @@ import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.ConfirmPasswordFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.PasswordFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
@@ -240,7 +241,7 @@ public class UserAddDialog extends EntityAddEditDialog {
         } else if (!phoneNumber.isValid()) {
             ConsoleInfo.display("Error", phoneNumber.getErrorMessage());
         } else if (!expirationDate.isValid()) {
-            ConsoleInfo.display("Error", expirationDate.getErrorMessage());
+            ConsoleInfo.display("Error", KapuaSafeHtmlUtils.htmlUnescape(expirationDate.getErrorMessage()));
         }
     }
 

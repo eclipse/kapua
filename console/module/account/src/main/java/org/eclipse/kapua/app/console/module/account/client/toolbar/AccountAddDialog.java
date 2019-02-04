@@ -40,6 +40,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator.FieldType;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
@@ -290,7 +291,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         if (accountNameField.getValue() == null || organizationName.getValue() == null || organizationEmail.getValue() == null) {
             ConsoleInfo.display("Error", CMSGS.allFieldsRequired());
         } else if (!expirationDateField.isValid()) {
-            ConsoleInfo.display("Error", expirationDateField.getErrorMessage());
+            ConsoleInfo.display("Error", KapuaSafeHtmlUtils.htmlUnescape(expirationDateField.getErrorMessage()));
         } else if (!organizationEmail.isValid()) {
             ConsoleInfo.display("Error", organizationEmail.getErrorMessage());
         } else if (!organizationPhoneNumber.isValid()) {
