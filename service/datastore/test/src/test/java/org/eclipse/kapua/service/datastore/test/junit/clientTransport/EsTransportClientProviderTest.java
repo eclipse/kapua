@@ -9,12 +9,15 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.client.transport;
+package org.eclipse.kapua.service.datastore.test.junit.clientTransport;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.Condition;
 import org.eclipse.kapua.commons.setting.AbstractBaseKapuaSetting;
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
+import org.eclipse.kapua.service.datastore.client.transport.ClientSettingsKey;
+import org.eclipse.kapua.service.datastore.client.transport.EsTransportClientProvider;
+import org.eclipse.kapua.service.datastore.client.transport.EsTransportClientProviderProxy;
 import org.eclipse.kapua.test.junit.JUnitTests;
 import org.elasticsearch.client.Client;
 import org.junit.Ignore;
@@ -57,50 +60,50 @@ public class EsTransportClientProviderTest {
 
     @Test
     public void test1() {
-        InetSocketAddress result = EsTransportClientProvider.parseAddress("127.0.0.1");
+        InetSocketAddress result = EsTransportClientProviderProxy.parseAddress("127.0.0.1");
         assertThatResolvedAs(result, Inet4Address.class, "127.0.0.1", 9300);
     }
 
     @Test
     public void test2() {
-        InetSocketAddress result = EsTransportClientProvider.parseAddress("127.0.0.1:");
+        InetSocketAddress result = EsTransportClientProviderProxy.parseAddress("127.0.0.1:");
         assertThatResolvedAs(result, Inet4Address.class, "127.0.0.1", 9300);
     }
 
     @Test
     public void test3() {
-        InetSocketAddress result = EsTransportClientProvider.parseAddress("[::1]:");
+        InetSocketAddress result = EsTransportClientProviderProxy.parseAddress("[::1]:");
         assertThatResolvedAs(result, Inet6Address.class, "0:0:0:0:0:0:0:1", 9300);
     }
 
     @Test
     public void test4() {
-        InetSocketAddress result = EsTransportClientProvider.parseAddress("[::1]:1234");
+        InetSocketAddress result = EsTransportClientProviderProxy.parseAddress("[::1]:1234");
         assertThatResolvedAs(result, Inet6Address.class, "0:0:0:0:0:0:0:1", 1234);
     }
 
     @Test
     public void testEmpty1() {
-        InetSocketAddress result = EsTransportClientProvider.parseAddress("");
+        InetSocketAddress result = EsTransportClientProviderProxy.parseAddress("");
         Assertions.assertThat(result).isNull();
     }
 
     @Test
     public void testEmpty2() {
-        InetSocketAddress result = EsTransportClientProvider.parseAddress(null);
+        InetSocketAddress result = EsTransportClientProviderProxy.parseAddress(null);
         Assertions.assertThat(result).isNull();
     }
 
     @Test
     public void testHostNotFound1() {
-        InetSocketAddress result = EsTransportClientProvider.parseAddress(UNKWNON_HOST);
+        InetSocketAddress result = EsTransportClientProviderProxy.parseAddress(UNKWNON_HOST);
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result).has(UNRESOLVED);
     }
 
     @Test
     public void testHostNotFound2() {
-        InetSocketAddress result = EsTransportClientProvider.parseAddress(UNKWNON_HOST + ":123");
+        InetSocketAddress result = EsTransportClientProviderProxy.parseAddress(UNKWNON_HOST + ":123");
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result).has(UNRESOLVED);
     }
@@ -108,28 +111,28 @@ public class EsTransportClientProviderTest {
     @Test
     public void testHostsEmpty1() throws ClientUnavailableException {
         AbstractBaseKapuaSetting<ClientSettingsKey> settings = AbstractBaseKapuaSetting.fromMap(Collections.emptyMap());
-        List<InetSocketAddress> result = EsTransportClientProvider.parseAddresses(settings);
+        List<InetSocketAddress> result = EsTransportClientProviderProxy.parseAddresses(settings);
         Assertions.assertThat(result).isEmpty();
     }
 
     @Test
     public void testHostsEmpty2() throws ClientUnavailableException {
         AbstractBaseKapuaSetting<ClientSettingsKey> settings = AbstractBaseKapuaSetting.fromMap(Collections.singletonMap(ClientSettingsKey.ELASTICSEARCH_NODES.key(), ""));
-        List<InetSocketAddress> result = EsTransportClientProvider.parseAddresses(settings);
+        List<InetSocketAddress> result = EsTransportClientProviderProxy.parseAddresses(settings);
         Assertions.assertThat(result).isEmpty();
     }
 
     @Test
     public void testHostsEmpty3() throws ClientUnavailableException {
         AbstractBaseKapuaSetting<ClientSettingsKey> settings = AbstractBaseKapuaSetting.fromMap(Collections.singletonMap(ClientSettingsKey.ELASTICSEARCH_NODE.key() + ".01", ""));
-        List<InetSocketAddress> result = EsTransportClientProvider.parseAddresses(settings);
+        List<InetSocketAddress> result = EsTransportClientProviderProxy.parseAddresses(settings);
         Assertions.assertThat(result).isEmpty();
     }
 
     @Test
     public void testHostsEmpty4() throws ClientUnavailableException {
         AbstractBaseKapuaSetting<ClientSettingsKey> settings = AbstractBaseKapuaSetting.fromMap(Collections.singletonMap(ClientSettingsKey.ELASTICSEARCH_NODE.key(), ""));
-        List<InetSocketAddress> result = EsTransportClientProvider.parseAddresses(settings);
+        List<InetSocketAddress> result = EsTransportClientProviderProxy.parseAddresses(settings);
         Assertions.assertThat(result).isEmpty();
     }
 
@@ -137,7 +140,7 @@ public class EsTransportClientProviderTest {
     public void testHosts1() throws ClientUnavailableException {
         AbstractBaseKapuaSetting<ClientSettingsKey> settings = AbstractBaseKapuaSetting
                 .fromMap(Collections.singletonMap(ClientSettingsKey.ELASTICSEARCH_NODES.key(), "127.0.0.1,127.0.0.2:1234,[::1]:5678"));
-        List<InetSocketAddress> result = EsTransportClientProvider.parseAddresses(settings);
+        List<InetSocketAddress> result = EsTransportClientProviderProxy.parseAddresses(settings);
         Assertions.assertThat(result).hasSize(3);
 
         assertThatResolvedAs(result.get(0), Inet4Address.class, "127.0.0.1", 9300);
@@ -148,7 +151,7 @@ public class EsTransportClientProviderTest {
     @Test
     public void testHosts2() throws ClientUnavailableException {
         AbstractBaseKapuaSetting<ClientSettingsKey> settings = AbstractBaseKapuaSetting.fromMap(Collections.singletonMap(ClientSettingsKey.ELASTICSEARCH_NODE.key() + ".01", "127.0.0.1:1234"));
-        List<InetSocketAddress> result = EsTransportClientProvider.parseAddresses(settings);
+        List<InetSocketAddress> result = EsTransportClientProviderProxy.parseAddresses(settings);
 
         Assertions.assertThat(result).hasSize(1);
         assertThatResolvedAs(result.get(0), Inet4Address.class, "127.0.0.1", 1234);
@@ -157,7 +160,7 @@ public class EsTransportClientProviderTest {
     @Test
     public void testHosts3() throws ClientUnavailableException {
         AbstractBaseKapuaSetting<ClientSettingsKey> settings = AbstractBaseKapuaSetting.fromMap(Collections.singletonMap(ClientSettingsKey.ELASTICSEARCH_NODE.key(), "127.0.0.1:1234"));
-        List<InetSocketAddress> result = EsTransportClientProvider.parseAddresses(settings);
+        List<InetSocketAddress> result = EsTransportClientProviderProxy.parseAddresses(settings);
 
         Assertions.assertThat(result).hasSize(1);
         assertThatResolvedAs(result.get(0), Inet4Address.class, "127.0.0.1", 1234);
@@ -171,7 +174,7 @@ public class EsTransportClientProviderTest {
         map.put(ClientSettingsKey.ELASTICSEARCH_CLUSTER.key(), CLUSTER_NAME);
 
         AbstractBaseKapuaSetting<ClientSettingsKey> settings = AbstractBaseKapuaSetting.fromMap(map);
-        List<InetSocketAddress> result = EsTransportClientProvider.parseAddresses(settings);
+        List<InetSocketAddress> result = EsTransportClientProviderProxy.parseAddresses(settings);
 
         Assertions.assertThat(result).hasSize(1);
 
@@ -190,7 +193,7 @@ public class EsTransportClientProviderTest {
         map.put(ClientSettingsKey.ELASTICSEARCH_CLUSTER.key(), CLUSTER_NAME);
 
         AbstractBaseKapuaSetting<ClientSettingsKey> settings = AbstractBaseKapuaSetting.fromMap(map);
-        List<InetSocketAddress> result = EsTransportClientProvider.parseAddresses(settings);
+        List<InetSocketAddress> result = EsTransportClientProviderProxy.parseAddresses(settings);
 
         Assertions.assertThat(result).hasSize(1);
 

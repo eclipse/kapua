@@ -9,13 +9,14 @@
  * Contributors:
  *     Red Hat Inc - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.client.transport;
+package org.eclipse.kapua.service.datastore.test.junit.clientTransport;
 
 import java.net.UnknownHostException;
 
 import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
 
 import org.assertj.core.api.Assertions;
+import org.eclipse.kapua.service.datastore.client.transport.EsTransportClientProvider;
 import org.eclipse.kapua.test.junit.JUnitTests;
 import org.elasticsearch.client.transport.TransportClient;
 import org.junit.Ignore;
