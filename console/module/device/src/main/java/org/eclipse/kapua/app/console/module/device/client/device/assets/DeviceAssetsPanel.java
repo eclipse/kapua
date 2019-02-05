@@ -19,9 +19,11 @@ import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDevice
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
 import org.eclipse.kapua.app.console.module.api.client.util.FormUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.UserAgentUtils;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAsset;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssetChannel;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssetChannel.GwtDeviceAssetChannelMode;
+import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceManagementSessionPermission;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -63,13 +65,15 @@ public class DeviceAssetsPanel extends LayoutContainer {
     private FieldSet actionFieldSet;
 
     private ComponentPlugin dirtyPlugin;
+    private GwtSession currentSession;
 
-    public DeviceAssetsPanel(GwtDeviceAsset asset) {
+    public DeviceAssetsPanel(GwtDeviceAsset asset, GwtSession currentSession) {
         super(new FitLayout());
         setScrollMode(Scroll.AUTO);
         setBorders(false);
 
         this.asset = asset;
+        this.currentSession = currentSession;
 
         final DeviceAssetsPanel thePanel = this;
         dirtyPlugin = new ComponentPlugin() {
@@ -234,6 +238,7 @@ public class DeviceAssetsPanel extends LayoutContainer {
         if (asset != null) {
             for (GwtDeviceAssetChannel channel : asset.getChannels()) {
                 field = paintChannel(channel);
+                field.setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.write()));
                 actionFieldSet.add(field, formData);
             }
         }
