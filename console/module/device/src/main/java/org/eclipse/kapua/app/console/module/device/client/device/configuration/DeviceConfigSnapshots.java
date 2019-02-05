@@ -519,6 +519,8 @@ public class DeviceConfigSnapshots extends LayoutContainer {
             if (le.exception != null) {
                 FailureHandler.handle(le.exception);
             }
+            refreshButton.enable();
+            uploadButton.setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.write()));
         }
 
         @Override
@@ -530,6 +532,8 @@ public class DeviceConfigSnapshots extends LayoutContainer {
             store.removeAll();
             grid.unmask();
             toolBar.enable();
+            refreshButton.enable();
+            uploadButton.setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.write()));
         }
     }
 }
