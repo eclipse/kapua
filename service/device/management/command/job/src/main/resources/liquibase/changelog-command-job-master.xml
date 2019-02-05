@@ -17,5 +17,6 @@
 
     <include relativeToChangelogFile="true" file="./0.3.0/changelog-command-job-0.3.0.xml"/>
     <include relativeToChangelogFile="true" file="./1.0.0/changelog-command-job-1.0.0.xml"/>
+    <include relativeToChangelogFile="true" file="./1.0.4/changelog-command-job-1.0.4.xml"/>
 
 </databaseChangeLog>

@@ -31,7 +31,7 @@ public class DeviceAssetWriteStepDefinition extends AbstractTargetJobStepDefinit
 
     @Override
     public String getName() {
-        return "Device Asset Management Write";
+        return "Asset Write";
     }
 
     @Override

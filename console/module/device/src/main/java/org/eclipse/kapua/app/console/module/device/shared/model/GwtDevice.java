@@ -23,7 +23,14 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
 
-    private static final long serialVersionUID = -7670819589361945552L;
+    private static final String CLIENT_ID = "clientId";
+    private static final String GROUP_ID = "groupId";
+    private static final String DISPLAY_NAME = "displayName";
+    private static final String CUSTOM_ATTRIBUTE_1 = "customAttribute1";
+    private static final String CUSTOM_ATTRIBUTE_2 = "customAttribute2";
+    private static final String CUSTOM_ATTRIBUTE_3 = "customAttribute3";
+    private static final String CUSTOM_ATTRIBUTE_4 = "customAttribute4";
+    private static final String CUSTOM_ATTRIBUTE_5 = "customAttribute5";
 
     public enum GwtDeviceApplication implements IsSerializable {
 
@@ -72,31 +79,28 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
         }
     }
 
-    public GwtDevice() {
-    }
-
     public String getClientId() {
-        return (String) get("clientId");
+        return get(CLIENT_ID);
     }
 
     public String getUnescapedClientId() {
-        return (String) getUnescaped("clientId");
+        return getUnescaped(CLIENT_ID);
     }
 
     public void setClientId(String clientId) {
-        set("clientId", clientId);
+        set(CLIENT_ID, clientId);
     }
 
     public String getGroupId() {
-        return (String) get("groupId");
+        return get(GROUP_ID);
     }
 
     public String getUnescapedGroupId() {
-        return (String) getUnescaped("groupId");
+        return getUnescaped(GROUP_ID);
     }
 
     public void setGroupId(String groupId) {
-        set("groupId", groupId);
+        set(GROUP_ID, groupId);
     }
 
     public List<String> getTagIds() {
@@ -108,11 +112,11 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public Long getUptime() {
-        return (Long) get("uptime");
+        return get("uptime");
     }
 
     public String getUptimeFormatted() {
-        return (String) get("uptimeFormatted");
+        return get("uptimeFormatted");
     }
 
     public void setUptime(Long uptime) {
@@ -120,7 +124,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getGwtDeviceStatus() {
-        return (String) get("gwtDeviceStatus");
+        return get("gwtDeviceStatus");
     }
 
     public void setGwtDeviceStatus(String gwtDeviceStatus) {
@@ -152,19 +156,19 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getDisplayName() {
-        return (String) get("displayName");
+        return get(DISPLAY_NAME);
     }
 
     public String getUnescapedDisplayName() {
-        return (String) getUnescaped("displayName");
+        return getUnescaped(DISPLAY_NAME);
     }
 
     public void setDisplayName(String displayName) {
-        set("displayName", displayName);
+        set(DISPLAY_NAME, displayName);
     }
 
     public String getModelName() {
-        return (String) get("modelName");
+        return get("modelName");
     }
 
     public void setModelName(String modelName) {
@@ -172,7 +176,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getModelId() {
-        return (String) get("modelId");
+        return get("modelId");
     }
 
     public void setModelId(String modelId) {
@@ -180,7 +184,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getPartNumber() {
-        return (String) get("partNumber");
+        return get("partNumber");
     }
 
     public void setPartNumber(String partNumber) {
@@ -188,7 +192,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getSerialNumber() {
-        return (String) get("serialNumber");
+        return get("serialNumber");
     }
 
     public void setSerialNumber(String serialNumber) {
@@ -196,7 +200,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getAvailableProcessors() {
-        return (String) get("availableProcessors");
+        return get("availableProcessors");
     }
 
     public void setAvailableProcessors(String availableProcessors) {
@@ -204,7 +208,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getTotalMemory() {
-        return (String) get("totalMemory");
+        return get("totalMemory");
     }
 
     public void setTotalMemory(String totalMemory) {
@@ -212,7 +216,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getFirmwareVersion() {
-        return (String) get("firmwareVersion");
+        return get("firmwareVersion");
     }
 
     public void setFirmwareVersion(String firmwareVersion) {
@@ -220,7 +224,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getBiosVersion() {
-        return (String) get("biosVersion");
+        return get("biosVersion");
     }
 
     public void setBiosVersion(String biosVersion) {
@@ -228,7 +232,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getOs() {
-        return (String) get("os");
+        return get("os");
     }
 
     public void setOs(String os) {
@@ -236,7 +240,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getOsVersion() {
-        return (String) get("osVersion");
+        return get("osVersion");
     }
 
     public void setOsVersion(String osVersion) {
@@ -244,7 +248,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getOsArch() {
-        return (String) get("osArch");
+        return get("osArch");
     }
 
     public void setOsArch(String osArch) {
@@ -252,7 +256,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getJvmName() {
-        return (String) get("jvmName");
+        return get("jvmName");
     }
 
     public void setJvmName(String jvmName) {
@@ -260,7 +264,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getJvmVersion() {
-        return (String) get("jvmVersion");
+        return get("jvmVersion");
     }
 
     public void setJvmVersion(String jvmVersion) {
@@ -268,7 +272,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getJvmProfile() {
-        return (String) get("jvmProfile");
+        return get("jvmProfile");
     }
 
     public void setJvmProfile(String jvmProfile) {
@@ -276,7 +280,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getIotFrameworkVersion() {
-        return (String) get("iotFrameworkVersion");
+        return get("iotFrameworkVersion");
     }
 
     public void setIotFrameworkVersion(String iotFrameworkVersion) {
@@ -284,7 +288,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getOsgiFramework() {
-        return (String) get("osgiFramework");
+        return get("osgiFramework");
     }
 
     public void setOsgiFramework(String osgiFramework) {
@@ -292,7 +296,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getOsgiVersion() {
-        return (String) get("osgiVersion");
+        return get("osgiVersion");
     }
 
     public void setOsgiVersion(String osgiFrameworkVersion) {
@@ -300,7 +304,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getClientIp() {
-        return (String) get("clientIp");
+        return get("clientIp");
     }
 
     public void setClientIp(String clientIp) {
@@ -308,7 +312,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getConnectionInterface() {
-        return (String) get("connectionInterface");
+        return get("connectionInterface");
     }
 
     public void setConnectionInterface(String connectionInterface) {
@@ -316,7 +320,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getConnectionIp() {
-        return (String) get("connectionIp");
+        return get("connectionIp");
     }
 
     public void setConnectionIp(String connectionIp) {
@@ -324,7 +328,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getAcceptEncoding() {
-        return (String) get("acceptEncoding");
+        return get("acceptEncoding");
     }
 
     public void setAcceptEncoding(String acceptEncoding) {
@@ -332,7 +336,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getApplicationIdentifiers() {
-        return (String) get("applicationIdentifiers");
+        return get("applicationIdentifiers");
     }
 
     public void setApplicationIdentifiers(String applicationIdentifiers) {
@@ -340,7 +344,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public Double getGpsLatitude() {
-        return (Double) get("gpsLatitude");
+        return get("gpsLatitude");
     }
 
     public void setGpsLatitude(Double gpsLatitude) {
@@ -348,7 +352,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public Double getGpsLongitude() {
-        return (Double) get("gpsLongitude");
+        return get("gpsLongitude");
     }
 
     public void setGpsLongitude(Double gpsLongitude) {
@@ -356,7 +360,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public Double getGpsAltitude() {
-        return (Double) get("gpsAltitude");
+        return get("gpsAltitude");
     }
 
     public void setGpsAltitude(Double gpsAltitude) {
@@ -364,7 +368,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getGpsAddress() {
-        return (String) get("gpsAddress");
+        return get("gpsAddress");
     }
 
     public void setGpsAddress(String gpsAddress) {
@@ -372,11 +376,11 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public Date getLastEventOn() {
-        return (Date) get("lastEventOn");
+        return get("lastEventOn");
     }
 
     public String getLastEventOnFormatted() {
-        return (String) get("lastEventOnFormatted");
+        return get("lastEventOnFormatted");
     }
 
     public void setLastEventOn(Date lastEventDate) {
@@ -384,7 +388,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getLastEventType() {
-        return (String) get("lastEventType");
+        return get("lastEventType");
     }
 
     public void setLastEventType(String lastEventType) {
@@ -392,7 +396,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getDeviceUserId() {
-        return (String) get("deviceUserId");
+        return get("deviceUserId");
     }
 
     public void setDeviceUserId(String deviceUserId) {
@@ -400,7 +404,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getIccid() {
-        return (String) get("iccid");
+        return get("iccid");
     }
 
     public void setIccid(String iccid) {
@@ -408,7 +412,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getImei() {
-        return (String) get("imei");
+        return get("imei");
     }
 
     public void setImei(String imei) {
@@ -416,7 +420,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getImsi() {
-        return (String) get("imsi");
+        return get("imsi");
     }
 
     public void setCertificateCommonName(String certificateCommonName) {
@@ -424,7 +428,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getCertificateCommonName() {
-        return (String) get("certificateCommonName");
+        return get("certificateCommonName");
     }
 
     public void setImsi(String imsi) {
@@ -432,7 +436,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public Long getBrokerClusterId() {
-        return (Long) get("brokerClusterId");
+        return get("brokerClusterId");
     }
 
     public void setBrokerClusterId(long brokerClusterId) {
@@ -440,7 +444,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getBrokerNodeId() {
-        return (String) get("brokerNodeId");
+        return get("brokerNodeId");
     }
 
     public void setBrokerNodeId(String brokerNodeId) {
@@ -448,63 +452,63 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     public String getCustomAttribute1() {
-        return (String) get("customAttribute1");
+        return get(CUSTOM_ATTRIBUTE_1);
     }
 
     public String getUnescapedCustomAttribute1() {
-        return (String) getUnescaped("customAttribute1");
+        return getUnescaped(CUSTOM_ATTRIBUTE_1);
     }
 
     public void setCustomAttribute1(String customAttribute1) {
-        set("customAttribute1", customAttribute1);
+        set(CUSTOM_ATTRIBUTE_1, customAttribute1);
     }
 
     public String getCustomAttribute2() {
-        return (String) get("customAttribute2");
+        return get(CUSTOM_ATTRIBUTE_2);
     }
 
     public String getUnescapedCustomAttribute2() {
-        return (String) getUnescaped("customAttribute2");
+        return getUnescaped(CUSTOM_ATTRIBUTE_2);
     }
 
     public void setCustomAttribute2(String customAttribute2) {
-        set("customAttribute2", customAttribute2);
+        set(CUSTOM_ATTRIBUTE_2, customAttribute2);
     }
 
     public String getCustomAttribute3() {
-        return (String) get("customAttribute3");
+        return get(CUSTOM_ATTRIBUTE_3);
     }
 
     public String getUnescapedCustomAttribute3() {
-        return (String) getUnescaped("customAttribute3");
+        return getUnescaped(CUSTOM_ATTRIBUTE_3);
     }
 
     public void setCustomAttribute3(String customAttribute3) {
-        set("customAttribute3", customAttribute3);
+        set(CUSTOM_ATTRIBUTE_3, customAttribute3);
     }
 
     public String getCustomAttribute4() {
-        return (String) get("customAttribute4");
+        return get(CUSTOM_ATTRIBUTE_4);
     }
 
     public String getUnescapedCustomAttribute4() {
-        return (String) getUnescaped("customAttribute4");
+        return getUnescaped(CUSTOM_ATTRIBUTE_4);
     }
 
     public void setCustomAttribute4(String customAttribute4) {
-        set("customAttribute4", customAttribute4);
+        set(CUSTOM_ATTRIBUTE_4, customAttribute4);
     }
 
     public String getCustomAttribute5() {
-        return (String) get("customAttribute5");
+        return get(CUSTOM_ATTRIBUTE_5);
     }
 
     public String getUnescapedCustomAttribute5() {
-        return (String) getUnescaped("customAttribute5");
+        return getUnescaped(CUSTOM_ATTRIBUTE_5);
     }
 
     public void setCustomAttribute5(String customAttribute5) {
-        set("customAttribute5", customAttribute5);
+        set(CUSTOM_ATTRIBUTE_5, customAttribute5);
     }
 
     public boolean isOnline() {
@@ -514,7 +518,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     // CertificateID
 
     public Long getSignedCertificateId() {
-        return (Long) get("signedCertificateId");
+        return get("signedCertificateId");
     }
 
     public void setSignedCertificateId(Long accountId) {
@@ -539,5 +543,18 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
         }
 
         return false;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof GwtDevice) {
+            return ((GwtDevice)obj).getId().equals(getId());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
     }
 }

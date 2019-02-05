@@ -110,7 +110,9 @@ public class TagSubjectGrid extends EntityGrid<GwtDevice> {
         if (gwtTag != null) {
             selectedTag = gwtTag;
             GwtDeviceQueryPredicates predicates = new GwtDeviceQueryPredicates();
-            predicates.setTagId(selectedTag.getId());
+            List<String> tagIds = new ArrayList<String>();
+            tagIds.add(selectedTag.getId());
+            predicates.setTagIds(tagIds);
             query.setPredicates(predicates);
         }
         refresh();
