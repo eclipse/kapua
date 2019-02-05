@@ -232,4 +232,5 @@ public abstract class ActionDialog extends KapuaDialog {
     public void setDateValueNotNull(Boolean dateValueNotNull) {
         this.dateValueNotNull = dateValueNotNull;
     }
+
 }
