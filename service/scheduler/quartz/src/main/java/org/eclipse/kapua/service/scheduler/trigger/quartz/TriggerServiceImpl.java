@@ -177,7 +177,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
                 scheduler.scheduleJob(quarztTrigger);
             } catch (SchedulerException se) {
                 se.printStackTrace();
-                throw new RuntimeException(se);
+                throw new KapuaException(KapuaErrorCodes.TRIGGER_NEVER_FIRE);
             }
             return trigger;
         });

@@ -146,6 +146,8 @@ public class KapuaExceptionHandler {
             throw new GwtKapuaException(GwtKapuaErrorCode.SAME_START_AND_DATE, t, t.getLocalizedMessage());
         } else if (t instanceof KapuaException && ((KapuaException) t).getCode() == (KapuaErrorCodes.RETRY_AND_CRON_BOTH_SELECTED)){
             throw new GwtKapuaException(GwtKapuaErrorCode.RETRY_AND_CRON_BOTH_SELECTED, t, t.getLocalizedMessage());
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode() == (KapuaErrorCodes.TRIGGER_NEVER_FIRE)){
+            throw new GwtKapuaException(GwtKapuaErrorCode.TRIGGER_NEVER_FIRE, t, t.getLocalizedMessage());
         } else {
             // all others => log and throw internal error code
             logger.warn("RPC service non-application error", t);

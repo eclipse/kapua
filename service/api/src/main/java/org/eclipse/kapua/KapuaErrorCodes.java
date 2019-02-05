@@ -118,6 +118,11 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
     RETRY_AND_CRON_BOTH_SELECTED,
     DEVICE_NOT_FOUND,
     SCHEDULE_DUPLICATE_NAME,
-    DOWNLOAD_PACKAGE_EXCEPTION;
+    DOWNLOAD_PACKAGE_EXCEPTION,
+
+    /**
+     * trigger will never be fired
+     */
+    TRIGGER_NEVER_FIRE;
 
 }
