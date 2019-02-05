@@ -40,6 +40,7 @@ import org.eclipse.kapua.app.console.module.tag.shared.model.permission.TagSessi
 import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagService;
 import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagServiceAsync;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
@@ -431,7 +432,9 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
             predicates.setGroupDevice("NO_GROUP");
         }
         if (tagsCombo != null && !tagsCombo.getValue().equals(allTag)) {
-            predicates.setTagId(tagsCombo.getValue().getId());
+            List<String> tagIds = new ArrayList<String>();
+            tagIds.add(tagsCombo.getValue().getId());
+            predicates.setTagIds(tagIds);
         }
 
         query.setPredicates(predicates);

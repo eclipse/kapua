@@ -17,13 +17,20 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.MarginData;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
+import org.eclipse.kapua.app.console.module.api.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQuery;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceServiceAsync;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
@@ -32,6 +39,7 @@ import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobTarget;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobTargetCreator;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobTargetService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobTargetServiceAsync;
+import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -47,7 +55,8 @@ public class JobTargetAddDialog extends EntityAddEditDialog {
     private final GwtJob gwtSelectedJob;
 
     private final RadioGroup targetRadioGroup = new RadioGroup();
-    private JobTargetAddGrid targetGrid;
+    private JobTargetAddDeviceGrid targetDeviceGrid;
+    private JobTargetAddTagGrid targetTagGrid;
 
     private enum RadioGroupStatus {
         ALL, SELECTED
@@ -58,7 +67,7 @@ public class JobTargetAddDialog extends EntityAddEditDialog {
 
         this.gwtSelectedJob = gwtSelectedJob;
 
-        DialogUtils.resizeDialog(this, 600, 400);
+        DialogUtils.resizeDialog(this, 600, 733);
     }
 
     @Override
@@ -73,9 +82,11 @@ public class JobTargetAddDialog extends EntityAddEditDialog {
             public void handleEvent(BaseEvent baseEvent) {
                 Radio radio = ((RadioGroup) baseEvent.getSource()).getValue();
                 if (radio.getValueAttribute().equals(RadioGroupStatus.SELECTED.name())) {
-                    targetGrid.enable();
+                    targetDeviceGrid.enable();
+                    targetTagGrid.enable();
                 } else if (radio.getValueAttribute().equals(RadioGroupStatus.ALL.name())) {
-                    targetGrid.disable();
+                    targetDeviceGrid.disable();
+                    targetTagGrid.disable();
                 }
             }
         });
@@ -90,20 +101,77 @@ public class JobTargetAddDialog extends EntityAddEditDialog {
 
         targetRadioGroup.add(allRadio);
         targetRadioGroup.add(selectedRadio);
-
-        targetGrid = new JobTargetAddGrid(currentSession, gwtSelectedJob);
-        targetGrid.setDeselectable();
-        targetGrid.disable();
-        targetGrid.setHeight(255);
-
         bodyPanel.add(targetRadioGroup);
-        bodyPanel.add(targetGrid);
+
+        targetDeviceGrid = new JobTargetAddDeviceGrid(currentSession, gwtSelectedJob);
+        targetDeviceGrid.setDeselectable();
+        targetDeviceGrid.disable();
+        targetDeviceGrid.setHeight(255);
+
+        ContentPanel targetDevicePanel = new ContentPanel(new FitLayout());
+        targetDevicePanel.add(targetDeviceGrid);
+        targetDevicePanel.setHeading("Devices");
+        targetDevicePanel.setIcon(new KapuaIcon(IconSet.HDD_O));
+        targetDevicePanel.setBorders(false);
+        targetDevicePanel.setBodyBorder(false);
+        bodyPanel.add(targetDevicePanel, new MarginData(10, 0, 10, 0));
+
+        targetTagGrid = new JobTargetAddTagGrid(currentSession, gwtSelectedJob);
+        targetTagGrid.setDeselectable();
+        targetTagGrid.disable();
+        targetTagGrid.setHeight(255);
+
+        ContentPanel targetTagPanel = new ContentPanel(new FitLayout());
+        targetTagPanel.add(targetTagGrid);
+        targetTagPanel.setHeading("Tags");
+        targetTagPanel.setIcon(new KapuaIcon(IconSet.SORT_AMOUNT_ASC));
+        targetTagPanel.setBorders(false);
+        targetTagPanel.setBodyBorder(false);
+        bodyPanel.add(targetTagPanel, new MarginData(20, 0, 0, 0));
+
     }
 
     @Override
     public void submit() {
         if (targetRadioGroup.getValue().getValueAttribute().equals(RadioGroupStatus.SELECTED.name())) {
-            doSubmitWithExistenceCheck(targetGrid.getSelectionModel().getSelectedItems());
+            if (!targetTagGrid.getSelectionModel().getSelectedItems().isEmpty()) {
+                List<String> tagIds = new ArrayList<String>();
+                for (GwtTag gwtTag : targetTagGrid.getSelectionModel().getSelectedItems()) {
+                    tagIds.add(gwtTag.getId());
+                }
+                GwtDeviceQuery devicesForTagsQuery = new GwtDeviceQuery(currentSession.getSelectedAccountId());
+                GwtDeviceQueryPredicates devicesForTagsPredicates = new GwtDeviceQueryPredicates();
+                devicesForTagsPredicates.setTagIds(tagIds);
+                devicesForTagsQuery.setPredicates(devicesForTagsPredicates);
+                GWT_DEVICE_SERVICE.query(devicesForTagsQuery, new AsyncCallback<List<GwtDevice>>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        unmask();
+
+                        submitButton.enable();
+                        cancelButton.enable();
+                        status.hide();
+
+                        exitStatus = false;
+                        exitMessage = JOB_MSGS.dialogGetTargetError(caught.getLocalizedMessage());
+
+                        hide();
+                    }
+
+                    @Override
+                    public void onSuccess(List<GwtDevice> result) {
+                        List<GwtDevice> finalList = new ArrayList<GwtDevice>(result);
+                        for(GwtDevice gwtDevice : targetDeviceGrid.getSelectionModel().getSelectedItems()) {
+                            if (!finalList.contains(gwtDevice)) {
+                                finalList.add(gwtDevice);
+                            }
+                        }
+                        doSubmitWithExistenceCheck(finalList);
+                    }
+                });
+            } else {
+                doSubmitWithExistenceCheck(targetDeviceGrid.getSelectionModel().getSelectedItems());
+            }
         } else {
             GWT_DEVICE_SERVICE.query(new GwtDeviceQuery(currentSession.getSelectedAccountId()), new AsyncCallback<List<GwtDevice>>() {
 

@@ -31,7 +31,7 @@ public class DeviceConfigurationPutStepDefinition extends AbstractTargetJobStepD
 
     @Override
     public String getName() {
-        return "Device Configuration Management Configuration";
+        return "Configuration Put";
     }
 
     @Override

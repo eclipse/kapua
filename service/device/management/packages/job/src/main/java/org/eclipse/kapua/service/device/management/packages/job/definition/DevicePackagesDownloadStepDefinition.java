@@ -31,7 +31,7 @@ public class DevicePackagesDownloadStepDefinition extends AbstractTargetJobStepD
 
     @Override
     public String getName() {
-        return "Device Packages Management Download Execution";
+        return "Package Download / Install";
     }
 
     @Override

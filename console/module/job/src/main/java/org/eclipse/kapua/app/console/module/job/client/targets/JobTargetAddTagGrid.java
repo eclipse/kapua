@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,6 +10,23 @@
  *     Eurotech - initial API and implementation
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.client.targets;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGridCheckBoxSelectionModel;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolBar;
+import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
+import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
+import org.eclipse.kapua.app.console.module.tag.client.messages.ConsoleTagMessages;
+import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
+import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagQuery;
+import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagService;
+import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagServiceAsync;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
@@ -26,41 +43,25 @@ import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGridCheckBoxSelectionModel;
-import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
-import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolBar;
-import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
-import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
-import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQuery;
-import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
-import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceServiceAsync;
-import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
 
-import java.util.ArrayList;
-import java.util.List;
+public class JobTargetAddTagGrid extends EntityGrid<GwtTag> {
 
-public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
+    private static final GwtTagServiceAsync GWT_TAG_SERVICE = GWT.create(GwtTagService.class);
+    private static final ConsoleTagMessages TAG_MSGS = GWT.create(ConsoleTagMessages.class);
 
-    private static final GwtDeviceServiceAsync GWT_DEVICE_SERVICE = GWT.create(GwtDeviceService.class);
-    private static final ConsoleDeviceMessages DVC_MSGS = GWT.create(ConsoleDeviceMessages.class);
-
-    private final EntityGridCheckBoxSelectionModel<GwtDevice> selectionModel = new EntityGridCheckBoxSelectionModel<GwtDevice>();
+    private final EntityGridCheckBoxSelectionModel<GwtTag> selectionModel = new EntityGridCheckBoxSelectionModel<GwtTag>();
 
     private static final int ENTITY_PAGE_SIZE = 10;
 
     private final GwtJob gwtSelectedJob;
-    private GwtDeviceQuery query;
+    private GwtTagQuery query;
 
-    public JobTargetAddGrid(GwtSession currentSession, GwtJob gwtSelectedJob) {
+    public JobTargetAddTagGrid(GwtSession currentSession, GwtJob gwtSelectedJob) {
         super(null, currentSession);
 
         this.gwtSelectedJob = gwtSelectedJob;
 
-        query = new GwtDeviceQuery();
+        query = new GwtTagQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
 
         // Configure grid options
@@ -69,17 +70,17 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
     }
 
     @Override
-    public CheckBoxSelectionModel<GwtDevice> getSelectionModel() {
+    public CheckBoxSelectionModel<GwtTag> getSelectionModel() {
         return selectionModel;
     }
 
     @Override
-    protected RpcProxy<PagingLoadResult<GwtDevice>> getDataProxy() {
-        return new RpcProxy<PagingLoadResult<GwtDevice>>() {
+    protected RpcProxy<PagingLoadResult<GwtTag>> getDataProxy() {
+        return new RpcProxy<PagingLoadResult<GwtTag>>() {
 
             @Override
-            protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtDevice>> callback) {
-                GWT_DEVICE_SERVICE.query((PagingLoadConfig) loadConfig, query, callback);
+            protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GwtTag>> callback) {
+                GWT_TAG_SERVICE.query((PagingLoadConfig) loadConfig, query, callback);
             }
 
         };
@@ -91,8 +92,8 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
     }
 
     @Override
-    protected EntityCRUDToolbar<GwtDevice> getToolbar() {
-        EntityCRUDToolbar<GwtDevice> toolbar = super.getToolbar();
+    protected EntityCRUDToolbar<GwtTag> getToolbar() {
+        EntityCRUDToolbar<GwtTag> toolbar = super.getToolbar();
         toolbar.setAddButtonVisible(false);
         toolbar.setEditButtonVisible(false);
         toolbar.setDeleteButtonVisible(false);
@@ -108,12 +109,7 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
         ColumnConfig column = selectionModel.getColumn();
         columnConfigs.add(column);
 
-        column = new ColumnConfig("clientId", DVC_MSGS.deviceTableClientID(), 175);
-        column.setSortable(true);
-        columnConfigs.add(column);
-        column.setRenderer(gridCellRenderer);
-
-        column = new ColumnConfig("displayName", DVC_MSGS.deviceTableDisplayName(), 150);
+        column = new ColumnConfig("tagName", TAG_MSGS.gridTagColumnHeaderTagName(), 175);
         column.setSortable(true);
         columnConfigs.add(column);
         column.setRenderer(gridCellRenderer);
@@ -138,7 +134,7 @@ public class JobTargetAddGrid extends EntityGrid<GwtDevice> {
 
     @Override
     public void setFilterQuery(GwtQuery filterQuery) {
-        this.query = (GwtDeviceQuery) filterQuery;
+        this.query = (GwtTagQuery) filterQuery;
     }
 
     GridCellRenderer<ModelData> gridCellRenderer = new GridCellRenderer<ModelData>() {

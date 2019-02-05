@@ -31,7 +31,7 @@ public class DeviceBundleStopStepDefinition extends AbstractTargetJobStepDefinit
 
     @Override
     public String getName() {
-        return "Device Bundle Management Stop";
+        return "Bundle Stop";
     }
 
     @Override

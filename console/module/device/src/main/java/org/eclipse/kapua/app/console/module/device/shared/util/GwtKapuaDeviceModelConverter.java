@@ -212,8 +212,12 @@ public class GwtKapuaDeviceModelConverter {
                 }
             }
         }
-        if(predicates.getTagId() != null) {
-            andPred = andPred.and(new AttributePredicateImpl<KapuaId[]>(DeviceAttributes.TAG_IDS, new KapuaId[] { GwtKapuaCommonsModelConverter.convertKapuaId(predicates.getTagId()) }));
+        if (predicates.getTagIds() != null) {
+            List<KapuaId> tagIds = new ArrayList<KapuaId>();
+            for (String gwtTagId : predicates.getTagIds()) {
+                tagIds.add(GwtKapuaCommonsModelConverter.convertKapuaId(gwtTagId));
+            }
+            andPred = andPred.and(new AttributePredicateImpl<KapuaId[]>(DeviceAttributes.TAG_IDS, tagIds.toArray(new KapuaId[0])));
         }
         if (predicates.getSortAttribute() != null && loadConfig != null) {
             String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? DeviceAttributes.CLIENT_ID : loadConfig.getSortField();
