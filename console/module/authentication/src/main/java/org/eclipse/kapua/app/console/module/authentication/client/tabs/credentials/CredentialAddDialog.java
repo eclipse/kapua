@@ -212,7 +212,9 @@ public class CredentialAddDialog extends EntityAddEditDialog {
     }
 
     public void validateUserCredential() {
-        if (!password.isValid()) {
+        if(credentialType.getValue() == null || (password.isVisible() && password.getValue() == null) || (confirmPassword.isVisible() && confirmPassword.getValue() == null)) {
+            ConsoleInfo.display("Error", CMSGS.allFieldsRequired());
+        } else if (!password.isValid()) {
             ConsoleInfo.display("Error", password.getErrorMessage());
         } else if (password.getValue() != null && !password.getValue().equals(confirmPassword.getValue())) {
             ConsoleInfo.display("Error", confirmPassword.getErrorMessage());

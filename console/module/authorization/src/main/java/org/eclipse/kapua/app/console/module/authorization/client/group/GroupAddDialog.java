@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,9 +15,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
@@ -32,6 +34,7 @@ import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtGrou
 public class GroupAddDialog extends EntityAddEditDialog {
 
     private static final ConsoleGroupMessages MSGS = GWT.create(ConsoleGroupMessages.class);
+    private static final ConsoleMessages CONSOLE_MSGS = GWT.create(ConsoleMessages.class);
 
     private static final GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
 
@@ -55,6 +58,19 @@ public class GroupAddDialog extends EntityAddEditDialog {
         groupFormPanel.add(groupNameField);
         bodyPanel.add(groupFormPanel);
     }
+
+    public void validateGroups() {
+        if (groupNameField.getValue() == null) {
+            ConsoleInfo.display("Error", CONSOLE_MSGS.allFieldsRequired());
+        } 
+    }
+
+    @Override
+    protected void preSubmit() {
+        validateGroups();
+        super.preSubmit();
+    }
+
 
     @Override
     public void submit() {
