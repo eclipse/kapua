@@ -44,6 +44,8 @@ import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
@@ -507,7 +509,9 @@ public class DeviceConfigComponents extends LayoutContainer {
 
                                                 @Override
                                                 public void onFailure(Throwable caught) {
-                                                    ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceConnectionError());
+                                                    if(!selectedDevice.isOnline()) {
+                                                        ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceConnectionError());
+                                                    }
                                                     dirty = true;
                                                     refresh();
                                                 }
@@ -628,9 +632,11 @@ public class DeviceConfigComponents extends LayoutContainer {
         @Override
         public void loaderLoadException(LoadEvent le) {
 
-            if (le.exception != null) {
-                ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceConnectionError());
-            }
+                if(le.exception != null && le.exception instanceof GwtKapuaException) {
+                    FailureHandler.handle(le.exception);
+                } else {
+                    ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceConnectionError());
+                }
 
             List<ModelData> comps = new ArrayList<ModelData>();
             GwtConfigComponent comp = new GwtConfigComponent();
