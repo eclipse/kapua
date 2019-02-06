@@ -17,6 +17,7 @@ import com.codahale.metrics.Histogram;
 import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.JmxReporter.Builder;
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.SharedMetricRegistries;
 import com.codahale.metrics.Timer;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -39,7 +40,7 @@ public class MetricsServiceImpl implements MetricsService {
 
     public static final String METRICS_NAME_FORMAT = "{0}.{1}.{2}";
 
-    private final MetricRegistry metricRegistry;
+    private MetricRegistry metricRegistry;
 
     private JmxReporter jmxReporter;
 
@@ -47,7 +48,13 @@ public class MetricsServiceImpl implements MetricsService {
      * Default metric service constructor
      */
     MetricsServiceImpl() {
-        metricRegistry = new MetricRegistry();
+        try {
+            metricRegistry = SharedMetricRegistries.getDefault();
+            logger.info("Default Metric Registry loaded");
+        } catch (IllegalStateException e) {
+            metricRegistry = new MetricRegistry();
+            logger.warn("Unable to load Default Metric Registry - creating a new one");
+        }
 
         if (isJmxEnabled()) {
             enableJmxSupport();
