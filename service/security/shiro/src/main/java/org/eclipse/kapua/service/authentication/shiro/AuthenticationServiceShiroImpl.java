@@ -489,6 +489,9 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         return jwt;
     }
 
+    /**
+     * Method for checking the lockout state of the user credential
+     */
     private Boolean checkIfCredentialHasJustBeenLocked(AuthenticationToken authenticationToken) throws KapuaException {
         String principal = (String) authenticationToken.getPrincipal();
         User user = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(principal));
@@ -497,7 +500,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             credential = KapuaSecurityUtils.doPrivileged(() -> {
                 CredentialListResult credentialList = credentialService.findByUserId(user.getScopeId(), user.getId());
 
-                if (credentialList != null && !credentialList.isEmpty()) {
+                if (!credentialList.isEmpty()) {
                     Credential credentialMatched = null;
                     for (Credential c : credentialList.getItems()) {
                         if (CredentialType.PASSWORD.equals(c.getCredentialType())) {
@@ -513,10 +516,6 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
         }
         Date now = new Date();
-        if (credential != null && credential.getLockoutReset() != null && now.before(credential.getLockoutReset())) {
-            return true;
-        } else {
-            return false;
-        }
+        return (credential != null && credential.getLockoutReset() != null && now.before(credential.getLockoutReset()));
     }
 }
