@@ -51,6 +51,8 @@
         <api>org.eclipse.kapua.service.datastore.ClientInfoRegistryService</api>
         <api>org.eclipse.kapua.service.datastore.ChannelInfoRegistryService</api>
         <api>org.eclipse.kapua.service.datastore.MetricInfoRegistryService</api>
+        <api>org.eclipse.kapua.service.datastore.model.StorableIdFactory</api>
+
         <!-- datastore scope configuration -->
         <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
         <api>org.eclipse.kapua.service.datastore.DatastoreObjectFactory</api>
