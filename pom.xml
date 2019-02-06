@@ -39,7 +39,7 @@
         <commons-lang.version>3.4</commons-lang.version>
         <commons-pool.version>2.3</commons-pool.version>
         <cucumber.version>1.2.4</cucumber.version>
-        <dropwizard.version>3.1.2</dropwizard.version>
+        <dropwizard-metrics.version>3.2.2</dropwizard-metrics.version>
         <eclipselink.version>2.6.3</eclipselink.version>
         <elasticsearch.version>2.3.4</elasticsearch.version>
         <findbugs.version>2.0.1</findbugs.version>
@@ -1189,7 +1189,7 @@
             <dependency>
                 <groupId>io.dropwizard.metrics</groupId>
                 <artifactId>metrics-core</artifactId>
-                <version>${dropwizard.version}</version>
+                <version>${dropwizard-metrics.version}</version>
             </dependency>
 
             <dependency>
