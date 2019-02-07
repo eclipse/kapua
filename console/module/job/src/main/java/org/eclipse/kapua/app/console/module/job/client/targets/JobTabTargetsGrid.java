@@ -27,6 +27,7 @@ import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessag
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobTarget;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobTargetQuery;
+import org.eclipse.kapua.app.console.module.job.shared.model.permission.JobSessionPermission;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobServiceAsync;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobTargetService;
@@ -143,11 +144,11 @@ public class JobTabTargetsGrid extends EntityGrid<GwtJobTarget> {
             @Override
             public void onSuccess(GwtJob result) {
                 if (result.getJobXmlDefinition() == null) {
-                    JobTabTargetsGrid.this.toolbar.getAddEntityButton().enable();
+                    JobTabTargetsGrid.this.toolbar.getAddEntityButton().setEnabled(currentSession.hasPermission(JobSessionPermission.write()));
                     if (selectedItem == null) {
                         JobTabTargetsGrid.this.toolbar.getDeleteEntityButton().disable();
                     } else {
-                        JobTabTargetsGrid.this.toolbar.getDeleteEntityButton().enable();
+                        JobTabTargetsGrid.this.toolbar.getDeleteEntityButton().setEnabled(currentSession.hasPermission(JobSessionPermission.delete()));
                     }
                 } else {
                     JobTabTargetsGrid.this.toolbar.getAddEntityButton().disable();
