@@ -43,6 +43,7 @@ import org.eclipse.kapua.app.console.module.device.client.device.packages.button
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeploymentPackage;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceManagementRegistrySessionPermission;
 import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceManagementSessionPermission;
 
 public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
@@ -229,7 +230,9 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
                 refresh();
             }
         });
-        tabsPanel.add(historyPackageTab);
+        if (currentSession.hasPermission(DeviceManagementRegistrySessionPermission.read())) {
+            tabsPanel.add(historyPackageTab);
+        }
 
         //
         // Tabs
