@@ -40,6 +40,7 @@ import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobTargetCreator
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobTargetService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobTargetServiceAsync;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
+import org.eclipse.kapua.app.console.module.tag.shared.model.permission.TagSessionPermission;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -117,17 +118,21 @@ public class JobTargetAddDialog extends EntityAddEditDialog {
         bodyPanel.add(targetDevicePanel, new MarginData(10, 0, 10, 0));
 
         targetTagGrid = new JobTargetAddTagGrid(currentSession, gwtSelectedJob);
-        targetTagGrid.setDeselectable();
-        targetTagGrid.disable();
-        targetTagGrid.setHeight(255);
+        if (currentSession.hasPermission(TagSessionPermission.read())) {
+            targetTagGrid.setDeselectable();
+            targetTagGrid.disable();
+            targetTagGrid.setHeight(255);
 
-        ContentPanel targetTagPanel = new ContentPanel(new FitLayout());
-        targetTagPanel.add(targetTagGrid);
-        targetTagPanel.setHeading("Tags");
-        targetTagPanel.setIcon(new KapuaIcon(IconSet.SORT_AMOUNT_ASC));
-        targetTagPanel.setBorders(false);
-        targetTagPanel.setBodyBorder(false);
-        bodyPanel.add(targetTagPanel, new MarginData(20, 0, 0, 0));
+            ContentPanel targetTagPanel = new ContentPanel(new FitLayout());
+            targetTagPanel.add(targetTagGrid);
+            targetTagPanel.setHeading("Tags");
+            targetTagPanel.setIcon(new KapuaIcon(IconSet.SORT_AMOUNT_ASC));
+            targetTagPanel.setBorders(false);
+            targetTagPanel.setBodyBorder(false);
+            bodyPanel.add(targetTagPanel, new MarginData(20, 0, 0, 0));
+        } else {
+            DialogUtils.resizeDialog(this, 600, 432);
+        }
 
     }
 
