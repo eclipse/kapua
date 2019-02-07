@@ -375,7 +375,7 @@ public class DeviceAssetsValues extends LayoutContainer {
         }
         if (asset != null) {
 
-            assetValuesPanel = new DeviceAssetsPanel(asset);
+            assetValuesPanel = new DeviceAssetsPanel(asset, currentSession);
             assetValuesPanel.addListener(Events.Change, new Listener<BaseEvent>() {
 
                 @Override
@@ -386,7 +386,7 @@ public class DeviceAssetsValues extends LayoutContainer {
             });
 
         } else {
-            assetValuesPanel = new DeviceAssetsPanel(null);
+            assetValuesPanel = new DeviceAssetsPanel(null, currentSession);
         }
         assetValuesContainer.add(assetValuesPanel, centerData);
         assetValuesContainer.layout();
