@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.steps;
+package org.eclipse.kapua.qa.common;
 
 import com.google.common.collect.Lists;
 import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
@@ -31,6 +31,12 @@ public class TestDomain extends AbstractKapuaEntity implements Domain, org.eclip
     private String name = "test";
     private Set<Actions> actions = new HashSet<>(Lists.newArrayList(Actions.read, Actions.delete, Actions.write));
     private boolean groupable;
+
+    public TestDomain() {}
+
+    public TestDomain(String name) {
+        this.name = name;
+    }
 
     @Override
     public void setName(String name) {

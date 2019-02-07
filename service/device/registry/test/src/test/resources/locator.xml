@@ -33,6 +33,7 @@
         <api>org.eclipse.kapua.service.user.UserService</api>
 
         <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
+        <api>org.eclipse.kapua.message.KapuaMessageFactory</api>
     </provided>
 
     <packages>

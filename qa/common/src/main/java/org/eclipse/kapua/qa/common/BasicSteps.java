@@ -105,7 +105,7 @@ public class BasicSteps extends TestBase {
         stepData.put("ExceptionMessage", text);
     }
 
-    @When("I wait (\\d+) seconds?.*")
+    @When("^I wait (\\d+) seconds?$")
     public void waitSeconds(int seconds) throws InterruptedException {
         double effectiveSeconds = ((double) seconds) * WAIT_MULTIPLIER;
         Thread.sleep(Duration.ofSeconds((long) Math.ceil(effectiveSeconds)).toMillis());

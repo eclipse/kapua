@@ -33,6 +33,7 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
@@ -46,7 +47,6 @@ import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectPayload;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingPayload;
-import org.eclipse.kapua.message.internal.KapuaPositionImpl;
 import org.eclipse.kapua.message.internal.device.lifecycle.KapuaAppsChannelImpl;
 import org.eclipse.kapua.message.internal.device.lifecycle.KapuaAppsMessageImpl;
 import org.eclipse.kapua.message.internal.device.lifecycle.KapuaAppsPayloadImpl;
@@ -63,6 +63,7 @@ import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.qa.common.TestDomain;
 import org.eclipse.kapua.qa.common.cucumber.CucConfig;
 import org.eclipse.kapua.qa.common.cucumber.CucConnection;
 import org.eclipse.kapua.qa.common.cucumber.CucDevice;
@@ -79,7 +80,7 @@ import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
-import org.eclipse.kapua.service.authorization.domain.shiro.DomainImpl;
+import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
@@ -103,7 +104,6 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuer
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionFactoryImpl;
-import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionListResultImpl;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionServiceImpl;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
@@ -188,9 +188,11 @@ public class DeviceRegistrySteps extends TestBase {
     private DeviceEventService eventService;
     private DeviceEventFactory eventFactory;
 
+
     // Additional service references for integration testing
     private DeviceLifeCycleService deviceLifeCycleService;
     private AuthenticationService authenticationService;
+    private DomainFactory domainFactory;
     private AccountService accountService;
     private AccountFactory accountFactory;
     private UserService userService;
@@ -199,6 +201,7 @@ public class DeviceRegistrySteps extends TestBase {
     private AccessInfoService accessInfoService;
     private TagService tagService;
     private TagFactory tagFactory;
+    private KapuaMessageFactory messageFactory;
 
     private AclCreator aclCreator;
 
@@ -291,8 +294,11 @@ public class DeviceRegistrySteps extends TestBase {
         eventService = locator.getService(DeviceEventService.class);
         eventFactory = locator.getFactory(DeviceEventFactory.class);
 
+        messageFactory = locator.getFactory(KapuaMessageFactory.class);
+
         deviceLifeCycleService = locator.getService(DeviceLifeCycleService.class);
         authenticationService = locator.getService(AuthenticationService.class);
+        domainFactory = locator.getFactory(DomainFactory.class);
         accountService = locator.getService(AccountService.class);
         accountFactory = locator.getFactory(AccountFactory.class);
         userService = locator.getService(UserService.class);
@@ -302,7 +308,7 @@ public class DeviceRegistrySteps extends TestBase {
         tagService = locator.getService(TagService.class);
         tagFactory = locator.getFactory(TagFactory.class);
 
-        aclCreator = new AclCreator(accountService, accountFactory, userService, accessInfoService, credentialService);
+        aclCreator = new AclCreator();
 
         if (isUnitTest()) {
             // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
@@ -1549,8 +1555,8 @@ public class DeviceRegistrySteps extends TestBase {
 
     @Then("^The device connection domain data can be updated$")
     public void checkDeviceConnectionDomainUpdate() {
-        Domain tmpDomain = new DomainImpl();
 
+        Domain tmpDomain = new TestDomain();
         tmpDomain.setName("test_name");
         tmpDomain.setActions(new HashSet<>(Lists.newArrayList(Actions.connect, Actions.execute)));
 
@@ -1841,7 +1847,7 @@ public class DeviceRegistrySteps extends TestBase {
 
     @Then("^The device event domain data can be updated$")
     public void checkDeviceEventDomainUpdate() {
-        Domain tmpDomain = new DomainImpl();
+        Domain tmpDomain = new TestDomain();
 
         tmpDomain.setName("test_name");
         tmpDomain.setActions(new HashSet<>(Lists.newArrayList(Actions.connect, Actions.execute)));
@@ -2163,7 +2169,7 @@ public class DeviceRegistrySteps extends TestBase {
         KapuaSecurityUtils.doPrivileged(() -> {
             Account tmpAcc;
             DeviceConnection tmpConn;
-            DeviceConnectionListResult tmpConnLst = new DeviceConnectionListResultImpl();
+            DeviceConnectionListResult tmpConnLst = deviceConnectionFactory.newListResult();
 
             tmpAcc = accountService.findByName(account);
             Assert.assertNotNull(tmpAcc);
@@ -2372,7 +2378,7 @@ public class DeviceRegistrySteps extends TestBase {
     private DeviceEventCreator prepareRegularDeviceEventCreator(KapuaId accountId, KapuaId deviceId) {
 
         DeviceEventCreator tmpCreator = eventFactory.newCreator(accountId);
-        KapuaPosition tmpPosition = new KapuaPositionImpl();
+        KapuaPosition tmpPosition = messageFactory.newPosition();
         Date timeReceived = new Date();
         Date timeSent = new Date(System.currentTimeMillis() - 5 * 60 * 1000);
 
@@ -2439,7 +2445,7 @@ public class DeviceRegistrySteps extends TestBase {
     }
 
     private KapuaPosition getDefaultPosition() {
-        KapuaPosition tmpPos = new KapuaPositionImpl();
+        KapuaPosition tmpPos = messageFactory.newPosition();
 
         tmpPos.setAltitude(250.0);
         tmpPos.setHeading(90.0);

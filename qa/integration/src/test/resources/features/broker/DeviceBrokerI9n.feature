@@ -40,7 +40,7 @@ Feature: Device Broker Integration
 
     When I start the Kura Mock
     And Device birth message is sent
-    And I wait 5 seconds for system to receive and process that message
+    And I wait 5 seconds
     And I login as user with name "kapua-sys" and password "kapua-password"
     And Packages are requested
     Then Packages are received

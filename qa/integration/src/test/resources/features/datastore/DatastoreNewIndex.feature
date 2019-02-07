@@ -40,7 +40,7 @@ Feature: Datastore tests
   capture date, which is set to specific value, this value determines index name.
 
     Given Server with host "127.0.0.1" on port "9200"
-    When All indices are deleted
+    When I delete all indices
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
     Given The device "test-device-1"
@@ -49,7 +49,7 @@ Feature: Datastore tests
     And I refresh all indices
     When REST GET call at "/_cat/indices/"
     Then REST response containing text "1-2018-01"
-    And All indices are deleted
+    And I delete all indices
 
   Scenario: Simple positive scenario for creating daily index
   Create elasticsearch index with setting for daily index creation. Index gets created when
@@ -60,7 +60,7 @@ Feature: Datastore tests
     And I login as user with name "kapua-sys" and password "kapua-password"
     Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP"
     And System property "datastore.index.window" with value "day"
-    When All indices are deleted
+    When I delete all indices
     And I select account "kapua-sys"
     Given The device "test-device-1"
     When I prepare a random message with capture date "2018-01-01T10:21:32.123Z" and save it as "RandomDataMessage"
@@ -68,7 +68,7 @@ Feature: Datastore tests
     And I refresh all indices
     When REST GET call at "/_cat/indices/"
     And REST response containing text "1-2018-01-02"
-    And All indices are deleted
+    And I delete all indices
 
   Scenario: Simple positive scenario for creating hourly index
   Create elasticsearch index with setting for hour index creation. Index gets created when
@@ -79,7 +79,7 @@ Feature: Datastore tests
     And I login as user with name "kapua-sys" and password "kapua-password"
     Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP"
     And System property "datastore.index.window" with value "hour"
-    When All indices are deleted
+    When I delete all indices
     And I select account "kapua-sys"
     Given The device "test-device-1"
     When I prepare a random message with capture date "2018-01-01T10:21:32.123Z" and save it as "RandomDataMessage"
@@ -87,7 +87,7 @@ Feature: Datastore tests
     And I refresh all indices
     When REST GET call at "/_cat/indices/"
     And REST response containing text "1-2018-01-02-10"
-    And All indices are deleted
+    And I delete all indices
 
   Scenario: Creating two indexes with weekly index
   Creation of two indexes by publishing data with different capture date. As creation date if responsible
@@ -97,7 +97,7 @@ Feature: Datastore tests
     And I login as user with name "kapua-sys" and password "kapua-password"
     Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP"
     And System property "datastore.index.window" with value "week"
-    When All indices are deleted
+    When I delete all indices
     And I select account "kapua-sys"
     Given The device "test-device-1"
     When I prepare a random message with capture date "2018-01-01T10:21:32.123Z" and save it as "RandomDataMessage"
@@ -108,7 +108,7 @@ Feature: Datastore tests
     When REST GET call at "/_cat/indices/"
     And REST response containing text "1-2018-01"
     And REST response containing text "1-2018-02"
-    And All indices are deleted
+    And I delete all indices
 
   Scenario: Creating two indexes with daily index
   Creation of two indexes by publishing data with different capture date. As creation date if responsible
@@ -118,7 +118,7 @@ Feature: Datastore tests
     And I login as user with name "kapua-sys" and password "kapua-password"
     Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP"
     And System property "datastore.index.window" with value "day"
-    When All indices are deleted
+    When I delete all indices
     And I select account "kapua-sys"
     Given The device "test-device-1"
     When I prepare a random message with capture date "2018-01-01T10:21:32.123Z" and save it as "RandomDataMessage"
@@ -129,7 +129,7 @@ Feature: Datastore tests
     When REST GET call at "/_cat/indices/"
     And REST response containing text "1-2018-01-02"
     And REST response containing text "1-2018-01-03"
-    And All indices are deleted
+    And I delete all indices
 
   Scenario: Creating two indexes with hourly index
   Creation of two indexes by publishing data with different capture date. As creation date if responsible
@@ -139,7 +139,7 @@ Feature: Datastore tests
     And I login as user with name "kapua-sys" and password "kapua-password"
     Given Dataservice config enabled "true", dataTTL 30, rxByteLimit 0, dataIndexBy "DEVICE_TIMESTAMP"
     And System property "datastore.index.window" with value "hour"
-    When All indices are deleted
+    When I delete all indices
     And I select account "kapua-sys"
     Given The device "test-device-1"
     When I prepare a random message with capture date "2018-01-01T10:21:32.123Z" and save it as "RandomDataMessage"
@@ -150,7 +150,7 @@ Feature: Datastore tests
     When REST GET call at "/_cat/indices/"
     And REST response containing text "1-2018-01-02-10"
     And REST response containing text "1-2018-01-02-15"
-    And All indices are deleted
+    And I delete all indices
 
   Scenario: Creating index with regular user
   Creating single
@@ -197,7 +197,7 @@ Feature: Datastore tests
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Full permissions
-    And All indices are deleted
+    And I delete all indices
     And I logout
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     And I select account "account-a"
@@ -207,7 +207,7 @@ Feature: Datastore tests
     And I refresh all indices
     When REST GET call at "/_cat/indices/"
     And REST response containing "-2018-01" with prefix account "LastAccount"
-    And All indices are deleted
+    And I delete all indices
 
   Scenario: Stop broker after all scenarios
 

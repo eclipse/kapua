@@ -40,7 +40,7 @@ Feature: Datastore tests
   Index gets created when user publishes data.
 
     Given Server with host "127.0.0.1" on port "9200"
-    When All indices are deleted
+    When I delete all indices
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
     Given The device "test-device-1"
@@ -50,7 +50,7 @@ Feature: Datastore tests
     When REST GET call at "/_cat/indices/"
     Then REST response containing text "green open"
 #    And REST response containing text "custom-prefix-1-2018-01"
-    And All indices are deleted
+    And I delete all indices
 
   Scenario: Stop broker after all scenarios
 

@@ -64,8 +64,8 @@ Scenario: Connect to the system and publish some data
   And  I publish on the topic "my-topic-5/data" timestamped now
     | key | type | value |
     | foo.boolean| BOOLEAN | true |
-  
-  And  I wait 5 seconds for the broker to process its data
+
+  And  I wait 5 seconds
   And  I refresh all indices
   
   Then I expect the number of messages for this device to be 5

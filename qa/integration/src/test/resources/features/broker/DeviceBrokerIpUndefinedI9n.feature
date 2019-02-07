@@ -39,9 +39,9 @@ Feature: Device Broker connection ip not set
 
     When I start the Kura Mock
     And Device birth message is sent
-    And I wait 5 seconds for system to receive and process that message
+    And I wait 5 seconds
     And Device death message is sent
-    And I wait 5 seconds for system to receive and process that message
+    And I wait 5 seconds
 
   Scenario: Stop broker after all scenarios
 

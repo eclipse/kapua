@@ -55,7 +55,6 @@ import org.eclipse.kapua.service.account.Organization;
 import org.eclipse.kapua.service.account.internal.AccountEntityManagerFactory;
 import org.eclipse.kapua.service.account.internal.AccountFactoryImpl;
 import org.eclipse.kapua.service.account.internal.AccountServiceImpl;
-import org.eclipse.kapua.service.account.internal.KapuaAccountException;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -417,7 +416,7 @@ public class AccountServiceSteps extends TestBase {
         try {
             primeException();
             accountService.update(tmpAcc);
-        } catch (KapuaAccountException ex) {
+        } catch (KapuaException ex) {
             verifyException(ex);
         }
     }

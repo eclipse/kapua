@@ -131,7 +131,7 @@ public class AclSteps extends TestBase {
 
         this.scenario = scenario;
 
-        aclCreator = new AclCreator(accountService, accountFactory, userService, accessInfoService, credentialService);
+        aclCreator = new AclCreator();
     }
 
     @Given("string \"(.*)\" is published to topic \"(.*)\" with client \"(.*)\"$")

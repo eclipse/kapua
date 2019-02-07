@@ -39,7 +39,7 @@ Feature: Device Broker connection ip with config file
 
     When I start the Kura Mock
     And Device birth message is sent
-    And I wait 5 seconds for system to receive and process that message
+    And I wait 5 seconds
     And I login as user with name "kapua-sys" and password "kapua-password"
     Then Device is connected with "localhost" server ip
     And I logout

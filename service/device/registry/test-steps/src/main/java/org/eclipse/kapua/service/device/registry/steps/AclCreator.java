@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.BrokerDomains;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -24,23 +25,22 @@ import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
+import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
-import org.eclipse.kapua.service.authentication.credential.shiro.CredentialFactoryImpl;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
+import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
-import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoFactoryImpl;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactoryImpl;
 import org.eclipse.kapua.service.datastore.DatastoreDomains;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.registry.DeviceDomains;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
+import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserService;
-import org.eclipse.kapua.service.user.internal.UserFactoryImpl;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -63,16 +63,20 @@ public class AclCreator {
      * Credential service.
      */
     private CredentialService credentialService;
+    private CredentialFactory credentialFactory;
+    private PermissionFactory permissionFactory;
 
     /**
      * User service.
      */
     private UserService userService;
+    private UserFactory userFactory;
 
     /**
      * Accessinfo service.
      */
     private AccessInfoService accessInfoService;
+    private AccessInfoFactory accessInfoFactory;
 
     /**
      * Account service.
@@ -84,25 +88,25 @@ public class AclCreator {
      */
     private AccountFactory accountFactory;
 
+
     /**
      * Constructor with all support services.
-     *
-     * @param accountService
-     * @param accountFactory
-     * @param userService
-     * @param accessInfoService
-     * @param credentialService
      */
-    public AclCreator(AccountService accountService,
-            AccountFactory accountFactory,
-            UserService userService,
-            AccessInfoService accessInfoService,
-            CredentialService credentialService) {
-        this.accountService = accountService;
-        this.accountFactory = accountFactory;
-        this.userService = userService;
-        this.accessInfoService = accessInfoService;
-        this.credentialService = credentialService;
+    public AclCreator() {
+        KapuaLocator locator = KapuaLocator.getInstance();
+
+        accountService = locator.getService(AccountService.class);
+        accountFactory = locator.getFactory(AccountFactory.class);
+
+        userService = locator.getService(UserService.class);
+        userFactory = locator.getFactory(UserFactory.class);
+
+        accessInfoService = locator.getService(AccessInfoService.class);
+        accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
+
+        credentialService = locator.getService(CredentialService.class);
+        credentialFactory = locator.getFactory(CredentialFactory.class);
+        permissionFactory = locator.getFactory(PermissionFactory.class);
     }
 
     /**
@@ -183,8 +187,7 @@ public class AclCreator {
     private AccessInfoCreator accessInfoCreatorCreator(List<AclPermission> permissionList,
             User user, Account account) {
 
-        PermissionFactory permissionFactory = new PermissionFactoryImpl();
-        AccessInfoCreator accessInfoCreator = new AccessInfoFactoryImpl().newCreator(account.getId());
+        AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(account.getId());
         accessInfoCreator.setUserId(user.getId());
         accessInfoCreator.setScopeId(user.getScopeId());
         Set<Permission> permissions = new HashSet<>();
@@ -206,7 +209,7 @@ public class AclCreator {
     public void attachUserCredentials(Account account, User user) throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
             CredentialCreator credentialCreator;
-            credentialCreator = new CredentialFactoryImpl().newCreator(account.getId(), user.getId(), CredentialType.PASSWORD, "KeepCalm123.", CredentialStatus.ENABLED, null);
+            credentialCreator = credentialFactory.newCreator(account.getId(), user.getId(), CredentialType.PASSWORD, "KeepCalm123.", CredentialStatus.ENABLED, null);
             try {
                 credentialService.create(credentialCreator);
             } catch (KapuaException ke) {
@@ -220,7 +223,7 @@ public class AclCreator {
     public void attachUserCredentials(Account account, User user, String password) throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
             CredentialCreator credentialCreator;
-            credentialCreator = new CredentialFactoryImpl().newCreator(account.getId(), user.getId(), CredentialType.PASSWORD, password, CredentialStatus.ENABLED, null);
+            credentialCreator = credentialFactory.newCreator(account.getId(), user.getId(), CredentialType.PASSWORD, password, CredentialStatus.ENABLED, null);
             try {
                 credentialService.create(credentialCreator);
             } catch (KapuaException ke) {
@@ -233,7 +236,7 @@ public class AclCreator {
 
     public User createUser(Account account, String name) throws KapuaException {
         configureUserService(account.getId(), SYS_ID);
-        UserCreator userCreator = new UserFactoryImpl().newCreator(account.getId(), name);
+        UserCreator userCreator = userFactory.newCreator(account.getId(), name);
         return userService.create(userCreator);
     }
 
