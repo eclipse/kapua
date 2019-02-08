@@ -92,6 +92,12 @@ public class JobDefinitionBuildUtils {
             jslPropertyList.add(stepFromIndexProperty);
         }
 
+        // Enqueue
+        Property enqueueProperty = new Property();
+        enqueueProperty.setName(JobContextPropertyNames.ENQUEUE);
+        enqueueProperty.setValue(String.valueOf(jobStartOptions.getEnqueue()));
+        jslPropertyList.add(enqueueProperty);
+
         //
         // Add them to the JBatch properties
         JSLProperties jslProperties = new JSLProperties();

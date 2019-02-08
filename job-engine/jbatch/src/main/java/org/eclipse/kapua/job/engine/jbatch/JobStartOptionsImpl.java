@@ -26,7 +26,6 @@ public class JobStartOptionsImpl implements JobStartOptions {
 
     private Set<KapuaId> targetIdSublist;
     private Integer fromStepIndex;
-
     private boolean enqueue;
 
     /**
@@ -35,6 +34,14 @@ public class JobStartOptionsImpl implements JobStartOptions {
      * @since 1.0.0
      */
     public JobStartOptionsImpl() {
+    }
+
+    public JobStartOptionsImpl(JobStartOptions jobStartOptions) {
+        this();
+
+        setTargetIdSublist(jobStartOptions.getTargetIdSublist());
+        setFromStepIndex(jobStartOptions.getFromStepIndex());
+        setEnqueue(jobStartOptions.getEnqueue());
     }
 
     @Override
@@ -79,5 +86,9 @@ public class JobStartOptionsImpl implements JobStartOptions {
     @Override
     public void setEnqueue(boolean enqueue) {
         this.enqueue = enqueue;
+    }
+
+    public static JobStartOptionsImpl parse(JobStartOptions jobStartOptions) {
+        return jobStartOptions != null ? (jobStartOptions instanceof JobStartOptionsImpl ? (JobStartOptionsImpl) jobStartOptions : new JobStartOptionsImpl(jobStartOptions)) : null;
     }
 }

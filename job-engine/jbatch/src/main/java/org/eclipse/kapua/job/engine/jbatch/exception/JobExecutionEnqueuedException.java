@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,11 +13,9 @@ package org.eclipse.kapua.job.engine.jbatch.exception;
 
 import org.eclipse.kapua.model.id.KapuaId;
 
-import java.util.Set;
+public class JobExecutionEnqueuedException extends JobEngineException {
 
-public class JobAlreadyRunningException extends JobEngineException {
-
-    public JobAlreadyRunningException(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId, Set<KapuaId> jobTargetIdSubset) {
-        super(KapuaJobEngineErrorCodes.JOB_ALREADY_RUNNING, scopeId, jobId, jobExecutionId, jobTargetIdSubset);
+    public JobExecutionEnqueuedException(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId, KapuaId enqueuedJobId) {
+        super(KapuaJobEngineErrorCodes.JOB_EXECUTION_ENQUEUED, scopeId, jobId, jobExecutionId, enqueuedJobId);
     }
 }

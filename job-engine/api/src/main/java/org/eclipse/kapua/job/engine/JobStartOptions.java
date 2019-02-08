@@ -45,10 +45,10 @@ public interface JobStartOptions extends KapuaSerializable {
     Set<KapuaId> getTargetIdSublist();
 
     /**
-     * @param targetSublist
+     * @param targetIdSublist
      * @since 1.0.0
      */
-    void setTargetIdSublist(Set<KapuaId> targetSublist);
+    void setTargetIdSublist(Set<KapuaId> targetIdSublist);
 
     /**
      * @param targetId

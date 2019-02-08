@@ -19,6 +19,7 @@ import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModel
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStartOptions;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobEngineService;
 import org.eclipse.kapua.app.console.module.job.shared.util.GwtKapuaJobModelConverter;
+import org.eclipse.kapua.job.engine.JobEngineFactory;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -29,7 +30,9 @@ import java.util.ArrayList;
 public class GwtJobEngineServiceImpl extends KapuaRemoteServiceServlet implements GwtJobEngineService {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
     private static final JobEngineService JOB_ENGINE_SERVICE = LOCATOR.getService(JobEngineService.class);
+    private static final JobEngineFactory JOB_ENGINE_FACTORY = LOCATOR.getFactory(JobEngineFactory.class);
 
     @Override
     public void start(String gwtScopeId, String gwtJobId) throws GwtKapuaException {
@@ -43,12 +46,17 @@ public class GwtJobEngineServiceImpl extends KapuaRemoteServiceServlet implement
         KapuaId jobId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobId);
 
         try {
-            if (gwtJobStartOptions == null) {
-                JOB_ENGINE_SERVICE.startJob(scopeId, jobId);
+            JobStartOptions jobStartOptions;
+            if (gwtJobStartOptions != null) {
+                jobStartOptions = GwtKapuaJobModelConverter.convertJobStartOptions(gwtJobStartOptions);
             } else {
-                JobStartOptions jobStartOptions = GwtKapuaJobModelConverter.convertJobStartOptions(gwtJobStartOptions);
-                JOB_ENGINE_SERVICE.startJob(scopeId, jobId, jobStartOptions);
+                jobStartOptions = JOB_ENGINE_FACTORY.newJobStartOptions();
+
             }
+
+            jobStartOptions.setEnqueue(true);
+
+            JOB_ENGINE_SERVICE.startJob(scopeId, jobId, jobStartOptions);
         } catch (KapuaException kaex) {
             KapuaExceptionHandler.handle(kaex);
         }

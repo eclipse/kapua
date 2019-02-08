@@ -105,6 +105,12 @@ public class JobContextWrapper {
         return Strings.isNullOrEmpty(fromStepIndexString) ? null : Integer.valueOf(fromStepIndexString);
     }
 
+    public boolean getEnqueue() {
+        Properties jobContextProperties = jobContext.getProperties();
+        String enqueueString = jobContextProperties.getProperty(JobContextPropertyNames.ENQUEUE);
+        return enqueueString != null ? Boolean.valueOf(enqueueString) : false;
+    }
+
     /**
      * Gets the {@link JobTransientUserData}.
      *

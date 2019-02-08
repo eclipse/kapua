@@ -41,6 +41,11 @@ public enum KapuaJobEngineErrorCodes implements KapuaErrorCode {
     JOB_ALREADY_RUNNING,
 
     /**
+     * The {@link org.eclipse.kapua.service.job.execution.JobExecution} requested to start cannot be started now but ahs been enqueued.
+     */
+    JOB_EXECUTION_ENQUEUED,
+
+    /**
      * The {@link org.eclipse.kapua.service.job.Job} start has thrown an error.
      */
     JOB_STARTING,

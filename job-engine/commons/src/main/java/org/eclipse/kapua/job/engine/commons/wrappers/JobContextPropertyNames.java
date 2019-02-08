@@ -37,4 +37,6 @@ public interface JobContextPropertyNames {
      * @since 1.0.0
      */
     String JOB_STEP_FROM_INDEX = "job.step.fromIndex";
+
+    String ENQUEUE = "job.enqueue";
 }

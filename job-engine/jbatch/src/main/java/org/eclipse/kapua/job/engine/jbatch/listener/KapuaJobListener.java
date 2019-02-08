@@ -17,7 +17,13 @@ import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.commons.logger.JobLogger;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobContextWrapper;
+import org.eclipse.kapua.job.engine.jbatch.driver.JbatchDriver;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobAlreadyRunningException;
+import org.eclipse.kapua.job.engine.jbatch.exception.JobExecutionEnqueuedException;
+import org.eclipse.kapua.job.engine.queue.QueuedJobExecution;
+import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionCreator;
+import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionFactory;
+import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionService;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.Job;
@@ -66,12 +72,23 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
     private static final JobTargetService JOB_TARGET_SERVICE = LOCATOR.getService(JobTargetService.class);
     private static final JobTargetFactory JOB_TARGET_FACTORY = LOCATOR.getFactory(JobTargetFactory.class);
 
+    private static final QueuedJobExecutionService QUEUED_JOB_SERVICE = LOCATOR.getService(QueuedJobExecutionService.class);
+    private static final QueuedJobExecutionFactory QUEUED_JOB_FACTORY = LOCATOR.getFactory(QueuedJobExecutionFactory.class);
+
+
     @Inject
     private JobContext jobContext;
 
     /**
      * Before starting the actual {@link org.eclipse.kapua.service.job.Job} processing, create the {@link JobExecution} to track progress and
      * check if there are other {@link JobExecution} running with the same {@link JobExecution#getTargetIds()}.
+     * <p>
+     * If there are {@link JobExecution} running with matching {@link JobTargetSublist} the current  {@link JobExecution} is stopped.
+     * According to the {@code JobStartOptions#getEnqueue} parameter, the {@link JobExecution} can be:
+     * <ul>
+     * <li>if ({@code enqueue} = {@code false}) then {@link JobAlreadyRunningException} is {@code throw}n </li>
+     * <li>if ({@code enqueue} = {@code true}) then a new {@link QueuedJobExecution} is created and {@link JobExecutionEnqueuedException} is {@code throw}n</li>
+     * *</ul>
      */
     @Override
     public void beforeJob() throws Exception {
@@ -92,15 +109,39 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
 
         jobContextWrapper.setKapuaExecutionId(jobExecution.getId());
 
-        try {
-            checkJobRunning(
-                    jobExecution.getScopeId(),
-                    jobExecution.getJobId(),
-                    jobContextWrapper.getJobName(),
-                    jobExecution.getTargetIds());
-        } catch (JobAlreadyRunningException jare) {
-            jobLogger.error(jare, "Running before job... ERROR!");
-            throw jare;
+        boolean anotherJobExecutionRunning = checkAnotherJobExecutionRunning(
+                jobExecution.getScopeId(),
+                jobExecution.getJobId(),
+                jobContextWrapper.getJobName(),
+                jobExecution.getTargetIds(),
+                jobContextWrapper.getEnqueue());
+
+        if (anotherJobExecutionRunning) {
+
+            if (jobContextWrapper.getEnqueue()) {
+                jobLogger.info("Another execution is running! Enqueuing this execution...");
+
+                QueuedJobExecution queuedJobExecution;
+                try {
+                    queuedJobExecution = enqueueJobExecution(
+                            jobExecution.getScopeId(),
+                            jobExecution.getJobId(),
+                            jobExecution.getId(),
+                            jobExecution.getTargetIds(),
+                            jobContextWrapper.getFromStepIndex(),
+                            jobContextWrapper.getEnqueue());
+                } catch (Exception e) {
+                    jobLogger.error(e, "Another execution is running! Enqueuing this execution... Error!");
+                    throw e;
+                }
+
+                KapuaSecurityUtils.doPrivileged(() -> JbatchDriver.stopJob(jobExecution.getScopeId(), jobExecution.getJobId(), jobExecution.getId()));
+                jobLogger.info("Another execution is running! Stopping and enqueuing this execution... Done! EnqueuedJob id : {}", queuedJobExecution.getJobId());
+
+            } else {
+                jobLogger.error("Another execution is running! Aborting this execution...");
+                throw new JobAlreadyRunningException(jobExecution.getScopeId(), jobExecution.getJobId(), jobExecution.getId(), jobExecution.getTargetIds());
+            }
         }
 
         jobLogger.info("Running before job... DONE!");
@@ -181,21 +222,23 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
      * First it checks for an execution running from the {@link BatchRuntime}.
      * This will return the jBatch execution ids that are currently active.
      * <p>
-     * If 0, no execution is currently running so the new execution can continue.
+     * If 0, no {@link JobExecution} is currently running, returns {@code false}.
      * <p>
      * If greater than 0, it checks if the running {@link JobExecution} has a subset of {@link org.eclipse.kapua.service.job.targets.JobTarget}s compatible with the current {@link JobTargetSublist}.
-     * If the current {@link JobTargetSublist} doesn't match {@link org.eclipse.kapua.service.job.targets.JobTarget}s of any other running JobExecution, this execution can continue.
+     * If the current {@link JobTargetSublist} doesn't match {@link org.eclipse.kapua.service.job.targets.JobTarget}s of any other running JobExecution, returns {@code false}.
      * <p>
-     * In any other case, {@link JobAlreadyRunningException} is thrown.
+     * In other all other cases returns {@code true}.
      *
      * @param scopeId           The current {@link JobExecution#getScopeId()}
      * @param jobId             The current {@link JobExecution#getJobId()}
      * @param jobName           The current {@link JobContextWrapper#getJobName()}
      * @param jobTargetIdSubset The current {@link JobExecution#getTargetIds()} }
+     * @param enqueue           The current {@link JobContextWrapper#getEnqueue()}
+     * @return {@code true} if there are other {@link JobExecution}s running, {@code false} otherwise. If {@code true} is returned the current {@link JobExecution} <b>MUST</b> be aborted.
      * @throws KapuaException If any error happens during the processing.
      * @since 1.1.0
      */
-    private void checkJobRunning(KapuaId scopeId, KapuaId jobId, String jobName, Set<KapuaId> jobTargetIdSubset) throws KapuaException {
+    private boolean checkAnotherJobExecutionRunning(KapuaId scopeId, KapuaId jobId, String jobName, Set<KapuaId> jobTargetIdSubset, boolean enqueue) throws KapuaException {
         List<Long> runningExecutionsIds = BatchRuntime.getJobOperator().getRunningExecutions(jobName);
         if (runningExecutionsIds.size() > 1) {
 
@@ -211,9 +254,18 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
 
             long runningExecutionWithTargets = KapuaSecurityUtils.doPrivileged(() -> JOB_EXECUTION_SERVICE.count(jobExecutionQuery));
 
-            if (runningExecutionWithTargets > 1) {
-                throw new JobAlreadyRunningException(scopeId, jobId, jobTargetIdSubset);
-            }
+            return runningExecutionWithTargets > 0;
         }
+
+        return false;
+    }
+
+    private QueuedJobExecution enqueueJobExecution(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId, Set<KapuaId> targetIds, Integer fromStepIndex, boolean enqueue) throws KapuaException {
+
+        QueuedJobExecutionCreator queuedJobExecutionCreator = QUEUED_JOB_FACTORY.newCreator(scopeId);
+        queuedJobExecutionCreator.setJobId(jobId);
+        queuedJobExecutionCreator.setJobExecutionId(jobExecutionId);
+
+        return KapuaSecurityUtils.doPrivileged(() -> QUEUED_JOB_SERVICE.create(queuedJobExecutionCreator));
     }
 }
