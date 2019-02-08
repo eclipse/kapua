@@ -12,6 +12,7 @@
 package org.eclipse.kapua.app.console.module.device.shared.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseModel;
@@ -291,12 +292,12 @@ public class GwtDeviceQueryPredicates extends KapuaBaseModel implements Serializ
         set("groupId", groupId);
     }
 
-    public String getTagId() {
-        return (String) get("tagId");
+    public List<String> getTagIds() {
+        return (List<String>) get("tagIds");
     }
 
-    public void setTagId(String tagId) {
-        set("tagId", tagId);
+    public void setTagIds(List<String> tagIds) {
+        set("tagIds", tagIds);
     }
 
 }

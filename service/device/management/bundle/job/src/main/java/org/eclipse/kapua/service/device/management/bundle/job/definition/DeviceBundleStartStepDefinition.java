@@ -31,7 +31,7 @@ public class DeviceBundleStartStepDefinition extends AbstractTargetJobStepDefini
 
     @Override
     public String getName() {
-        return "Device Bundle Management Start";
+        return "Bundle Start";
     }
 
     @Override

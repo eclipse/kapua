@@ -31,7 +31,7 @@ public class DevicePackagesUninstallStepDefinition extends AbstractTargetJobStep
 
     @Override
     public String getName() {
-        return "Device Packages Management Uninstall Execution";
+        return "Package Uninstall";
     }
 
     @Override

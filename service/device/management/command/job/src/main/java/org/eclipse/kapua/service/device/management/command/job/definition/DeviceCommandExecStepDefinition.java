@@ -31,7 +31,7 @@ public class DeviceCommandExecStepDefinition extends AbstractTargetJobStepDefini
 
     @Override
     public String getName() {
-        return "Device Command Management Execution";
+        return "Command Execution";
     }
 
     @Override

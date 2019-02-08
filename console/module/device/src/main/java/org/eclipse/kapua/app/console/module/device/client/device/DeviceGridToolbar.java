@@ -130,9 +130,9 @@ public class DeviceGridToolbar extends EntityCRUDToolbar<GwtDevice> {
                     .append(URL.encodeQueryString(query.getPredicates().getGroupId()));
         }
 
-        if (query.getPredicates().getTagId() != null) {
+        if (query.getPredicates().getTagIds().get(0) != null) {
             sbUrl.append("&tag=")
-                    .append(URL.encodeQueryString(query.getPredicates().getTagId()));
+                    .append(URL.encodeQueryString(query.getPredicates().getTagIds().get(0)));
         }
 
         Window.open(sbUrl.toString(), "_blank", "location=no");

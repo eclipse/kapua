@@ -25,6 +25,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobTarget;
+import org.eclipse.kapua.app.console.module.job.shared.model.permission.JobSessionPermission;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobServiceAsync;
 
@@ -90,6 +91,8 @@ public class JobTabTargetsToolbar extends EntityCRUDToolbar<GwtJobTarget> {
         super.updateButtonEnablement();
 
         jobStartTargetButton.setEnabled(selectedEntity != null);
+        addEntityButton.setEnabled(selectedEntity != null && currentSession.hasPermission(JobSessionPermission.write()));
+        deleteEntityButton.setEnabled(selectedEntity != null && currentSession.hasPermission(JobSessionPermission.delete()));
     }
 
     private void checkButtons() {
@@ -104,11 +107,11 @@ public class JobTabTargetsToolbar extends EntityCRUDToolbar<GwtJobTarget> {
                 @Override
                 public void onSuccess(GwtJob result) {
                     if (addEntityButton != null) {
-                        addEntityButton.setEnabled(result.getJobXmlDefinition() == null);
+                        addEntityButton.setEnabled(result.getJobXmlDefinition() == null && currentSession.hasPermission(JobSessionPermission.write()));
                     }
 
                     if (deleteEntityButton != null) {
-                        deleteEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null && result.getJobXmlDefinition() == null);
+                        deleteEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null && result.getJobXmlDefinition() == null && currentSession.hasPermission(JobSessionPermission.delete()));
                     }
 
                     if (jobStartTargetButton != null) {
