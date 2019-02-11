@@ -19,7 +19,7 @@
     
     <groupId>org.eclipse.kapua.external</groupId>
     <artifactId>kapua-external</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5-SNAPSHOT</version>
     <name>kapua-externals</name>
     <packaging>pom</packaging>
 
