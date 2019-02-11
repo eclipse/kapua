@@ -126,7 +126,7 @@ public class JobTargetAddDialog extends EntityAddEditDialog {
             ContentPanel targetTagPanel = new ContentPanel(new FitLayout());
             targetTagPanel.add(targetTagGrid);
             targetTagPanel.setHeading("Tags");
-            targetTagPanel.setIcon(new KapuaIcon(IconSet.SORT_AMOUNT_ASC));
+            targetTagPanel.setIcon(new KapuaIcon(IconSet.TAG));
             targetTagPanel.setBorders(false);
             targetTagPanel.setBodyBorder(false);
             bodyPanel.add(targetTagPanel, new MarginData(20, 0, 0, 0));
