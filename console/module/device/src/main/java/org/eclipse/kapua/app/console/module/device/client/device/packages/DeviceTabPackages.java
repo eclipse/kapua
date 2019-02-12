@@ -367,7 +367,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
             // Manage buttons
             if (selectedEntity != null && selectedEntity.isOnline()) {
                 toolBar.enable();
-                installButton.disable();
+                installButton.setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.write()));
                 uninstallButton.disable();
             } else {
                 toolBar.disable();
