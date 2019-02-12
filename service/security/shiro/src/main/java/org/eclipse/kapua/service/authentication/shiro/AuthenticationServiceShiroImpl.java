@@ -39,6 +39,10 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.SessionCredentials;
+import org.eclipse.kapua.service.authentication.credential.Credential;
+import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
+import org.eclipse.kapua.service.authentication.credential.CredentialService;
+import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
@@ -52,6 +56,8 @@ import org.eclipse.kapua.service.certificate.CertificateQuery;
 import org.eclipse.kapua.service.certificate.CertificateService;
 import org.eclipse.kapua.service.certificate.CertificateStatus;
 import org.eclipse.kapua.service.certificate.util.CertificateUtils;
+import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserService;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
@@ -75,6 +81,8 @@ import java.util.UUID;
 public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(AuthenticationServiceShiroImpl.class);
+    private UserService userService = KapuaLocator.getInstance().getService(UserService.class);
+    private CredentialService credentialService = KapuaLocator.getInstance().getService(CredentialService.class);
 
     static {
         // Make the SecurityManager instance available to the entire application:
@@ -351,7 +359,11 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         } else if (se instanceof DisabledAccountException) {
             kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.DISABLED_LOGIN_CREDENTIAL, se, authenticationToken.getPrincipal());
         } else if (se instanceof IncorrectCredentialsException) {
-            kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS, se, authenticationToken.getPrincipal());
+            if (checkIfCredentialHasJustBeenLocked(authenticationToken)) {
+                kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.LOCKED_LOGIN_CREDENTIAL, se, authenticationToken.getPrincipal());
+            } else {
+                kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS, se, authenticationToken.getPrincipal());
+            }
         } else if (se instanceof ExpiredCredentialsException) {
             kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.EXPIRED_LOGIN_CREDENTIALS, se, authenticationToken.getPrincipal());
         } else {
@@ -477,4 +489,33 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         return jwt;
     }
 
+    /**
+     * Method for checking the lockout state of the user credential
+     */
+    private Boolean checkIfCredentialHasJustBeenLocked(AuthenticationToken authenticationToken) throws KapuaException {
+        String principal = (String) authenticationToken.getPrincipal();
+        User user = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(principal));
+        Credential credential = null;
+        if (user != null) {
+            credential = KapuaSecurityUtils.doPrivileged(() -> {
+                CredentialListResult credentialList = credentialService.findByUserId(user.getScopeId(), user.getId());
+
+                if (!credentialList.isEmpty()) {
+                    Credential credentialMatched = null;
+                    for (Credential c : credentialList.getItems()) {
+                        if (CredentialType.PASSWORD.equals(c.getCredentialType())) {
+                            credentialMatched = c;
+                            break;
+                        }
+                    }
+                    return credentialMatched;
+                } else {
+                    return null;
+                }
+            });
+
+        }
+        Date now = new Date();
+        return (credential != null && credential.getLockoutReset() != null && now.before(credential.getLockoutReset()));
+    }
 }
