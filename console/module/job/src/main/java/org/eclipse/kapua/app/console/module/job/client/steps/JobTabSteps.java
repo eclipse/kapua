@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,6 +19,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
+import org.eclipse.kapua.app.console.module.job.shared.model.permission.JobSessionPermission;
 
 public class JobTabSteps extends KapuaTabItem<GwtJob> {
 
@@ -56,7 +57,9 @@ public class JobTabSteps extends KapuaTabItem<GwtJob> {
     @Override
     protected void doRefresh() {
         stepsGrid.refresh();
-        stepsGrid.getToolbar().getAddEntityButton().setEnabled(selectedEntity != null && selectedEntity.getJobXmlDefinition() == null);
+        stepsGrid.getToolbar().getAddEntityButton()
+                .setEnabled(selectedEntity != null && selectedEntity.getJobXmlDefinition() == null
+                        && currentSession.hasPermission(JobSessionPermission.write()));
         stepsGrid.getToolbar().getRefreshEntityButton().setEnabled(selectedEntity != null);
     }
 }
