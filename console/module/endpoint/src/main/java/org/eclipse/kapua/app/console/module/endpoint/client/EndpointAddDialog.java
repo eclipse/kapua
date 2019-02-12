@@ -11,11 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.endpoint.client;
 
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.messages.ValidationMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
@@ -33,6 +28,11 @@ import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpointCre
 import org.eclipse.kapua.app.console.module.endpoint.shared.model.validation.GwtEndpointValidationRegex;
 import org.eclipse.kapua.app.console.module.endpoint.shared.service.GwtEndpointService;
 import org.eclipse.kapua.app.console.module.endpoint.shared.service.GwtEndpointServiceAsync;
+
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class EndpointAddDialog extends EntityAddEditDialog {
 
@@ -100,8 +100,10 @@ public class EndpointAddDialog extends EntityAddEditDialog {
     }
 
     public void validateEndPoint() {
-        if (endpointSchemaField.getValue() == null || endpointDnsField.getValue() == null || endpointPortField.getValue() == null) {
+        if (endpointSchemaField.getValue() == null || endpointDnsField.getValue() == null) {
             ConsoleInfo.display("Error", CMSGS.allFieldsRequired());
+        } else if (endpointPortField.getValue() == null) {
+            ConsoleInfo.display("Error", MSGS.portFieldEmptyOrInvalid());
         } else if (!endpointSchemaField.isValid()) {
             ConsoleInfo.display("Error", endpointSchemaField.getErrorMessage());
         } else if (!endpointDnsField.isValid()) {
