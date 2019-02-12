@@ -237,7 +237,7 @@ public class DatastoreSteps extends TestBase {
         // Clean up the database
         try {
             LOGGER.info("Logging out in cleanup");
-            deleteAllIndices();
+            deleteIndices();
             SecurityUtils.getSubject().logout();
             KapuaSecurityUtils.clearSession();
         } catch (Exception e) {
@@ -2303,14 +2303,7 @@ public class DatastoreSteps extends TestBase {
     }
 
     private String[] getDataIndexesByAccount(KapuaId scopeId) throws ClientException {
-        String idxs[] = datastoreClient.findIndexes(new IndexRequest(scopeId.toStringId() + "-*")).getIndexes();
-        String idxsSerialized = "";
-        for(String id : idxs) {
-            idxsSerialized += id + ", ";
-        }
-        LOGGER.error("There are {} indexes, which are: {}", idxs.length, idxsSerialized);
-//        return datastoreClient.findIndexes(new IndexRequest(scopeId.toStringId() + "-*")).getIndexes();
-        return idxs;
+        return datastoreClient.findIndexes(new IndexRequest(scopeId.toStringId() + "-*")).getIndexes();
     }
 
     private void setDatastoreIndexingWindowOption(String windowOption) {

@@ -38,5 +38,7 @@ import org.junit.runner.RunWith;
 @CucumberProperty(key="org.eclipse.kapua.qa.broker.extraStartupDelay", value="23")
 @CucumberProperty(key="commons.settings.hotswap", value="true")
 @CucumberProperty(key="commons.db.schema", value="kapuadb")
+@CucumberProperty(key="datastore.index.prefix", value="")
+@CucumberProperty(key="commons.settings.hotswap", value="true")
 public class RunDatastoreRestI9nTest {
 }
