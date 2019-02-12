@@ -188,20 +188,20 @@ public class DeviceAddDialog extends EntityAddEditDialog {
 
         fieldSet.add(statusCombo, formData);
 
+        groupCombo = new ComboBox<GwtGroup>();
+        groupCombo.setStore(new ListStore<GwtGroup>());
+        groupCombo.setFieldLabel("* " + DEVICE_MSGS.deviceFormGroup());
+        groupCombo.setToolTip(DEVICE_MSGS.deviceFormGroupTooltip());
+        groupCombo.setForceSelection(true);
+        groupCombo.setTypeAhead(false);
+        groupCombo.setTriggerAction(TriggerAction.ALL);
+        groupCombo.setAllowBlank(false);
+        groupCombo.setEditable(false);
+        groupCombo.setDisplayField("groupName");
+        groupCombo.setTemplate("<tpl for=\".\"><div role=\"listitem\" class=\"x-combo-list-item\" title={groupName}>{groupName}</div></tpl>");
+        groupCombo.setValueField("id");
+        groupCombo.setEmptyText(DEVICE_MSGS.deviceFilteringPanelGroupEmptyText());
         if (currentSession.hasPermission(GroupSessionPermission.read())) {
-            groupCombo = new ComboBox<GwtGroup>();
-            groupCombo.setStore(new ListStore<GwtGroup>());
-            groupCombo.setFieldLabel("* " + DEVICE_MSGS.deviceFormGroup());
-            groupCombo.setToolTip(DEVICE_MSGS.deviceFormGroupTooltip());
-            groupCombo.setForceSelection(true);
-            groupCombo.setTypeAhead(false);
-            groupCombo.setTriggerAction(TriggerAction.ALL);
-            groupCombo.setAllowBlank(false);
-            groupCombo.setEditable(false);
-            groupCombo.setDisplayField("groupName");
-            groupCombo.setTemplate("<tpl for=\".\"><div role=\"listitem\" class=\"x-combo-list-item\" title={groupName}>{groupName}</div></tpl>");
-            groupCombo.setValueField("id");
-            groupCombo.setEmptyText(DEVICE_MSGS.deviceFilteringPanelGroupEmptyText());
             groupCombo.addListener(Events.Select, comboBoxListener);
 
             gwtGroupService.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtGroup>>() {
@@ -219,6 +219,10 @@ public class DeviceAddDialog extends EntityAddEditDialog {
                 }
             });
             fieldSet.add(groupCombo, formData);
+        } else {
+            groupCombo.getStore().removeAll();
+            groupCombo.getStore().add(NO_GROUP);
+            groupCombo.setValue(NO_GROUP);
         }
 
         // Device Custom attributes fieldset
@@ -304,9 +308,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         gwtDeviceCreator.setScopeId(currentSession.getSelectedAccountId());
 
         gwtDeviceCreator.setClientId(clientIdField.getValue());
-        if (currentSession.hasPermission(GroupSessionPermission.read())) {
-            gwtDeviceCreator.setGroupId(groupCombo.getValue().getId());
-        }
+        gwtDeviceCreator.setGroupId(groupCombo.getValue().getId());
         gwtDeviceCreator.setDisplayName(displayNameField.getValue());
         gwtDeviceCreator.setDeviceStatus(statusCombo.getSimpleValue().name());
 

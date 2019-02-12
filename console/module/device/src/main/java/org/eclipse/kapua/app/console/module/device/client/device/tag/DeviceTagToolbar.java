@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,8 +17,8 @@ import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceSessionPermission;
 import org.eclipse.kapua.app.console.module.tag.client.TagToolbarGrid;
-import org.eclipse.kapua.app.console.module.tag.shared.model.permission.TagSessionPermission;
 
 public class DeviceTagToolbar extends TagToolbarGrid {
 
@@ -57,10 +57,12 @@ public class DeviceTagToolbar extends TagToolbarGrid {
     @Override
     protected void updateButtonEnablement() {
         if (addEntityButton != null) {
-            addEntityButton.setEnabled(selectedDevice != null);
+            addEntityButton.setEnabled(selectedDevice != null 
+                    && currentSession.hasPermission(DeviceSessionPermission.write()));
         }
         if (deleteEntityButton != null) {
-            deleteEntityButton.setEnabled(selectedDevice != null && selectedEntity != null && currentSession.hasPermission(TagSessionPermission.delete()));
+            deleteEntityButton.setEnabled(selectedDevice != null && selectedEntity != null
+                    && currentSession.hasPermission(DeviceSessionPermission.write()));
         }
         if (addEntityButton != null) {
             refreshEntityButton.setEnabled(selectedDevice != null);
@@ -73,5 +75,7 @@ public class DeviceTagToolbar extends TagToolbarGrid {
         setBorders(true);
         addEntityButton.setText(DEVICE_MSGS.tabTagsAddButton());
         deleteEntityButton.setText(DEVICE_MSGS.tabTagsDeleteButton());
+        addEntityButton.setEnabled(selectedDevice != null 
+                && currentSession.hasPermission(DeviceSessionPermission.write()));
     }
 }
