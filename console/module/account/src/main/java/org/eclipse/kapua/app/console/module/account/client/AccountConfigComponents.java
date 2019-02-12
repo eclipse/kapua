@@ -564,7 +564,7 @@ public class AccountConfigComponents extends LayoutContainer {
             GwtConfigComponent comp = new GwtConfigComponent();
             comp.setId(DEVICES_MSGS.deviceNoDeviceSelected());
             comp.setName(DEVICES_MSGS.deviceNoComponents());
-            comp.setDescription(DEVICES_MSGS.deviceNoConfigSupported());
+            comp.setDescription(MSGS.accountNoConfigSupported());
             comps.add(comp);
             treeStore.removeAll();
             treeStore.add(comps, false);
