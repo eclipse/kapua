@@ -160,6 +160,16 @@ public class JobLogger {
     }
 
     /**
+     * Logs a log line of {@link Level#WARN}.
+     *
+     * @param message   The {@link String} to log.
+     * @param arguments The {@link java.util.Objects}... to populate the given format.
+     */
+    public void warn(String message, Object... arguments) {
+        warn(null, message, arguments);
+    }
+
+    /**
      * Logs a log line of {@link Level#WARN} with the relative {@link Exception}.
      * <p>
      * Into the {@link JobExecution} log only {@link Exception#getMessage()} will be logged.
@@ -232,6 +242,16 @@ public class JobLogger {
      */
     public void error(String message) {
         error(null, message);
+    }
+
+    /**
+     * Logs a log line of {@link Level#ERROR}.
+     *
+     * @param message   The {@link String} to log.
+     * @param arguments The {@link java.util.Objects}... to populate the given format.
+     */
+    public void error(String message, Object... arguments) {
+        error(null, message, arguments);
     }
 
     /**

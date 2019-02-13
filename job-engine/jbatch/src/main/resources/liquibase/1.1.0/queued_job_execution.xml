@@ -44,6 +44,9 @@
             <column name="job_execution_id" type="bigint(21) unsigned">
                 <constraints nullable="false"/>
             </column>
+            <column name="wait_for_job_execution_id" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
 
             <column name="optlock" type="int unsigned"/>
             <column name="attributes" type="text"/>
@@ -56,6 +59,7 @@
         <sql dbms="h2">ALTER TABLE job_queued_job_execution ADD CHECK modified_by >= 0;</sql>
         <sql dbms="h2">ALTER TABLE job_queued_job_execution ADD CHECK job_id >= 0;</sql>
         <sql dbms="h2">ALTER TABLE job_queued_job_execution ADD CHECK job_execution_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE job_queued_job_execution ADD CHECK wait_for_job_execution_id >= 0;</sql>
 
         <rollback>
             <dropTable tableName="job_queued_job_execution"/>

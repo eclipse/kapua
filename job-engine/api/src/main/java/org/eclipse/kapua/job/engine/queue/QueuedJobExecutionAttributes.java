@@ -18,4 +18,6 @@ public class QueuedJobExecutionAttributes extends KapuaUpdatableEntityAttributes
     public static final String JOB_ID = "jobId";
 
     public static final String JOB_EXECUTION_ID = "jobExecutionId";
+
+    public static final String WAIT_FOR_JOB_EXECUTION_ID = "waitForJobExecutionId";
 }

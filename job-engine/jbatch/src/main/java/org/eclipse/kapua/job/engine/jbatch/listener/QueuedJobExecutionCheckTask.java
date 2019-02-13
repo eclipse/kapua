@@ -1,0 +1,90 @@
+/*******************************************************************************
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.kapua.job.engine.jbatch.listener;
+
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.job.engine.JobEngineFactory;
+import org.eclipse.kapua.job.engine.JobEngineService;
+import org.eclipse.kapua.job.engine.queue.QueuedJobExecution;
+import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionAttributes;
+import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionFactory;
+import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionListResult;
+import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionQuery;
+import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionService;
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.TimerTask;
+
+public class QueuedJobExecutionCheckTask extends TimerTask {
+
+    private static final Logger LOG = LoggerFactory.getLogger(QueuedJobExecutionCheckTask.class);
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final JobEngineService JOB_ENGINE_SERVICE = LOCATOR.getService(JobEngineService.class);
+    private static final JobEngineFactory JOB_ENGINE_FACTORY = LOCATOR.getFactory(JobEngineFactory.class);
+
+    private static final QueuedJobExecutionService QUEUED_JOB_EXECUTION_SERVICE = LOCATOR.getService(QueuedJobExecutionService.class);
+    private static final QueuedJobExecutionFactory QUEUED_JOB_EXECUTION_FACTORY = LOCATOR.getFactory(QueuedJobExecutionFactory.class);
+
+
+    private KapuaId scopeId;
+    private KapuaId jobId;
+    private KapuaId jobExecutionId;
+
+    public QueuedJobExecutionCheckTask(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) {
+        this.scopeId = scopeId;
+        this.jobId = jobId;
+        this.jobExecutionId = jobExecutionId;
+    }
+
+    @Override
+    public void run() {
+        LOG.info("Checking Job Execution queue for: {}...", jobExecutionId);
+
+        try {
+            QueuedJobExecutionQuery query = QUEUED_JOB_EXECUTION_FACTORY.newQuery(scopeId);
+
+            query.setPredicate(
+                    new AndPredicateImpl(
+                            new AttributePredicateImpl<>(QueuedJobExecutionAttributes.JOB_ID, jobId),
+                            new AttributePredicateImpl<>(QueuedJobExecutionAttributes.WAIT_FOR_JOB_EXECUTION_ID, jobExecutionId)
+                    )
+            );
+
+            QueuedJobExecutionListResult queuedJobExecutions = KapuaSecurityUtils.doPrivileged(() -> QUEUED_JOB_EXECUTION_SERVICE.query(query));
+
+            for (QueuedJobExecution qje : queuedJobExecutions.getItems()) {
+                LOG.info("Resuming Job Execution: {}...", qje.getJobExecutionId());
+
+                try {
+                    KapuaSecurityUtils.doPrivileged(() -> JOB_ENGINE_SERVICE.resumeJobExecution(qje.getScopeId(), qje.getJobId(), qje.getJobExecutionId()));
+                } catch (Exception e) {
+                    LOG.error("Resuming Job Execution: {}... ERROR!", qje.getJobExecutionId(), e);
+                }
+
+                LOG.info("Resuming Job Execution: {}... DONE!", qje.getJobExecutionId());
+
+                Thread.sleep(500);
+            }
+
+        } catch (Exception e) {
+            LOG.error("Checking Job Execution queue for: {}... DONE!", jobExecutionId, e);
+        }
+        LOG.info("Checking Job Execution queue for: {}... DONE!", jobExecutionId);
+    }
+}

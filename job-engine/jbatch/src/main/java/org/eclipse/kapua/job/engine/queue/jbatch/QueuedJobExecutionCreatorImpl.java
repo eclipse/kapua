@@ -24,6 +24,7 @@ public class QueuedJobExecutionCreatorImpl extends AbstractKapuaUpdatableEntityC
 
     private KapuaId jobId;
     private KapuaId jobExecutionId;
+    private KapuaId waitForJobExecutionId;
 
     protected QueuedJobExecutionCreatorImpl(KapuaId scopeId) {
         super(scopeId);
@@ -49,4 +50,13 @@ public class QueuedJobExecutionCreatorImpl extends AbstractKapuaUpdatableEntityC
         this.jobExecutionId = jobExecutionId;
     }
 
+    @Override
+    public KapuaId getWaitForJobExecutionId() {
+        return waitForJobExecutionId;
+    }
+
+    @Override
+    public void setWaitForJobExecutionId(KapuaId waitForJobExecutionId) {
+        this.waitForJobExecutionId = waitForJobExecutionId;
+    }
 }

@@ -41,6 +41,12 @@ public class QueuedJobExecutionImpl extends AbstractKapuaUpdatableEntity impleme
     })
     private KapuaEid jobExecutionId;
 
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "eid", column = @Column(name = "wait_for_job_execution_id", nullable = false, updatable = false))
+    })
+    private KapuaEid waitForJobExecutionId;
+
     public QueuedJobExecutionImpl() {
     }
 
@@ -67,4 +73,16 @@ public class QueuedJobExecutionImpl extends AbstractKapuaUpdatableEntity impleme
     public void setJobExecutionId(KapuaId jobExecutionId) {
         this.jobExecutionId = KapuaEid.parseKapuaId(jobExecutionId);
     }
+
+    @Override
+    public KapuaId getWaitForJobExecutionId() {
+        return waitForJobExecutionId;
+    }
+
+    @Override
+    public void setWaitForJobExecutionId(KapuaId waitForJobExecutionId) {
+        this.waitForJobExecutionId = KapuaEid.parseKapuaId(waitForJobExecutionId);
+    }
+
+
 }

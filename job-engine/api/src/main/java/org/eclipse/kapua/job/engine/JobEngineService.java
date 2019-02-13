@@ -87,6 +87,8 @@ public interface JobEngineService extends KapuaService {
      */
     void stopJobExecution(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) throws KapuaException;
 
+    void resumeJobExecution(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) throws KapuaException;
+
     /**
      * Cleans all the Job related data from the data structures supporting the {@link JobEngineService}
      *

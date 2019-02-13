@@ -46,6 +46,7 @@ public class QueuedJobExecutionDAO {
         QueuedJobExecutionImpl queuedJobExecutionImpl = new QueuedJobExecutionImpl(queuedJobExecutionCreator.getScopeId());
         queuedJobExecutionImpl.setJobId(queuedJobExecutionCreator.getJobId());
         queuedJobExecutionImpl.setJobExecutionId(queuedJobExecutionCreator.getJobExecutionId());
+        queuedJobExecutionImpl.setWaitForJobExecutionId(queuedJobExecutionCreator.getWaitForJobExecutionId());
 
         return ServiceDAO.create(em, queuedJobExecutionImpl);
     }
