@@ -19,7 +19,7 @@ import org.eclipse.kapua.service.certificate.Certificate;
  *
  * @since 1.0.0
  */
-public class CertificateImpl extends PublicCertificateImpl implements Certificate {
+public class CertificateImpl extends CertificateInfoImpl implements Certificate {
 
     private String privateKey;
     private String password;

@@ -17,33 +17,33 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.certificate.CertificateUsage;
 import org.eclipse.kapua.service.certificate.KeyUsage;
 import org.eclipse.kapua.service.certificate.KeyUsageSetting;
-import org.eclipse.kapua.service.certificate.PublicCertificate;
-import org.eclipse.kapua.service.certificate.PublicCertificateCreator;
-import org.eclipse.kapua.service.certificate.PublicCertificateFactory;
-import org.eclipse.kapua.service.certificate.PublicCertificateListResult;
-import org.eclipse.kapua.service.certificate.PublicCertificateQuery;
+import org.eclipse.kapua.service.certificate.CertificateInfo;
+import org.eclipse.kapua.service.certificate.CertificateInfoCreator;
+import org.eclipse.kapua.service.certificate.CertificateInfoFactory;
+import org.eclipse.kapua.service.certificate.CertificateInfoListResult;
+import org.eclipse.kapua.service.certificate.CertificateInfoQuery;
 
 @KapuaProvider
-public class PublicCertificateFactoryImpl implements PublicCertificateFactory {
+public class CertificateInfoFactoryImpl implements CertificateInfoFactory {
 
     @Override
-    public PublicCertificate newEntity(KapuaId scopeId) {
-        return new PublicCertificateImpl(scopeId);
+    public CertificateInfo newEntity(KapuaId scopeId) {
+        return new CertificateInfoImpl(scopeId);
     }
 
     @Override
-    public PublicCertificateCreator newCreator(KapuaId scopeId) {
+    public CertificateInfoCreator newCreator(KapuaId scopeId) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public PublicCertificateQuery newQuery(KapuaId scopeId) {
-        return new PublicCertificateQueryImpl(scopeId);
+    public CertificateInfoQuery newQuery(KapuaId scopeId) {
+        return new CertificateInfoQueryImpl(scopeId);
     }
 
     @Override
-    public PublicCertificateListResult newListResult() {
-        return new PublicCertificateListResultImpl();
+    public CertificateInfoListResult newListResult() {
+        return new CertificateInfoListResultImpl();
     }
 
     @Override
@@ -62,11 +62,11 @@ public class PublicCertificateFactoryImpl implements PublicCertificateFactory {
     }
 
     @Override
-    public PublicCertificate clone(PublicCertificate publicCertificate) throws KapuaEntityCloneException {
+    public CertificateInfo clone(CertificateInfo certificateInfo) throws KapuaEntityCloneException {
         try {
-            return new PublicCertificateImpl(publicCertificate);
+            return new CertificateInfoImpl(certificateInfo);
         } catch (Exception e) {
-            throw new KapuaEntityCloneException(e, PublicCertificate.TYPE, publicCertificate);
+            throw new KapuaEntityCloneException(e, CertificateInfo.TYPE, certificateInfo);
         }
     }
 }

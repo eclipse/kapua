@@ -16,28 +16,28 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.certificate.CertificateStatus;
 import org.eclipse.kapua.service.certificate.CertificateUsage;
 import org.eclipse.kapua.service.certificate.KeyUsageSetting;
-import org.eclipse.kapua.service.certificate.PublicCertificate;
+import org.eclipse.kapua.service.certificate.CertificateInfo;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-public class PublicCertificateImpl extends AbstractKapuaNamedEntity implements PublicCertificate {
+public class CertificateInfoImpl extends AbstractKapuaNamedEntity implements CertificateInfo {
 
     private String certificate;
     private Set<KeyUsageSettingImpl> keyUsageSettings;
     private Set<CertificateUsageImpl> certificateUsages;
 
-    public PublicCertificateImpl() { }
+    public CertificateInfoImpl() { }
 
-    public PublicCertificateImpl(KapuaId scopeId) {
+    public CertificateInfoImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
-    public PublicCertificateImpl(PublicCertificate certificate) {
-        setCertificate(certificate.getCertificate());
-        setKeyUsageSettings(certificate.getKeyUsageSettings());
-        setCertificateUsages(certificate.getCertificateUsages());
+    public CertificateInfoImpl(CertificateInfo certificateInfo) {
+        setCertificate(certificateInfo.getCertificate());
+        setKeyUsageSettings(certificateInfo.getKeyUsageSettings());
+        setCertificateUsages(certificateInfo.getCertificateUsages());
     }
 
     @Override

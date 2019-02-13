@@ -21,49 +21,49 @@ import org.eclipse.kapua.service.certificate.CertificateGenerator;
 import org.eclipse.kapua.service.certificate.CertificateUsage;
 import org.eclipse.kapua.service.certificate.CertificateQuery;
 import org.eclipse.kapua.service.certificate.CertificateService;
-import org.eclipse.kapua.service.certificate.PublicCertificate;
-import org.eclipse.kapua.service.certificate.PublicCertificateCreator;
-import org.eclipse.kapua.service.certificate.PublicCertificateListResult;
-import org.eclipse.kapua.service.certificate.PublicCertificateQuery;
-import org.eclipse.kapua.service.certificate.PublicCertificateService;
+import org.eclipse.kapua.service.certificate.CertificateInfo;
+import org.eclipse.kapua.service.certificate.CertificateInfoCreator;
+import org.eclipse.kapua.service.certificate.CertificateInfoListResult;
+import org.eclipse.kapua.service.certificate.CertificateInfoQuery;
+import org.eclipse.kapua.service.certificate.CertificateInfoService;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 @KapuaProvider
-public class PublicCertificateServiceImpl implements PublicCertificateService {
+public class CertificateInfoServiceImpl implements CertificateInfoService {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final CertificateService PRIVATE_CERTIFICATE_SERVICE = LOCATOR.getService(CertificateService.class);
 
     @Override
-    public PublicCertificate create(PublicCertificateCreator creator) {
+    public CertificateInfo create(CertificateInfoCreator creator) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public PublicCertificate find(KapuaId scopeId, KapuaId entityId) {
+    public CertificateInfo find(KapuaId scopeId, KapuaId entityId) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public PublicCertificateListResult query(KapuaQuery<PublicCertificate> query) throws KapuaException {
+    public CertificateInfoListResult query(KapuaQuery<CertificateInfo> query) throws KapuaException {
 
         CertificateQuery privateQuery = new CertificateQueryImpl(query);
-        privateQuery.setIncludeInherited(((PublicCertificateQuery) query).getIncludeInherited());
+        privateQuery.setIncludeInherited(((CertificateInfoQuery) query).getIncludeInherited());
 
-        PublicCertificateListResult publicCertificates = new PublicCertificateListResultImpl();
+        CertificateInfoListResult publicCertificates = new CertificateInfoListResultImpl();
         publicCertificates.addItem(PRIVATE_CERTIFICATE_SERVICE.query(privateQuery).getFirstItem());
 
         return publicCertificates;
     }
 
     @Override
-    public long count(KapuaQuery<PublicCertificate> query) throws KapuaException {
+    public long count(KapuaQuery<CertificateInfo> query) throws KapuaException {
 
         CertificateQuery privateQuery = new CertificateQueryImpl(query);
-        privateQuery.setIncludeInherited(((PublicCertificateQuery) query).getIncludeInherited());
+        privateQuery.setIncludeInherited(((CertificateInfoQuery) query).getIncludeInherited());
 
         return PRIVATE_CERTIFICATE_SERVICE.count(privateQuery);
     }
@@ -74,22 +74,22 @@ public class PublicCertificateServiceImpl implements PublicCertificateService {
     }
 
     @Override
-    public PublicCertificate findByName(String name) {
+    public CertificateInfo findByName(String name) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public PublicCertificate update(PublicCertificate entity) {
+    public CertificateInfo update(CertificateInfo entity) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public PublicCertificate generate(CertificateGenerator generator) {
+    public CertificateInfo generate(CertificateGenerator generator) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public List<PublicCertificate> findAncestorsCertificates(KapuaId scopeId, CertificateUsage usage) {
+    public List<CertificateInfo> findAncestorsCertificates(KapuaId scopeId, CertificateUsage usage) {
         throw new UnsupportedOperationException();
     }
 

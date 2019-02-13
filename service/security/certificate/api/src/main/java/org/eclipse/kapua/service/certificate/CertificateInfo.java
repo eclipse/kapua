@@ -17,7 +17,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.xml.BinaryXmlAdapter;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
-import org.eclipse.kapua.service.certificate.xml.PublicCertificateXmlRegistry;
+import org.eclipse.kapua.service.certificate.xml.CertificateInfoXmlRegistry;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -29,12 +29,12 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Date;
 import java.util.Set;
 
-@XmlRootElement(name = "publicCertificate")
+@XmlRootElement(name = "certificateInfo")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = PublicCertificateXmlRegistry.class, factoryMethod = "newPublicCertificate")
-public interface PublicCertificate extends KapuaNamedEntity {
+@XmlType(factoryClass = CertificateInfoXmlRegistry.class, factoryMethod = "newCertificateInfo")
+public interface CertificateInfo extends KapuaNamedEntity {
 
-    String TYPE = "publicCertificate";
+    String TYPE = "CertificateInfo";
 
     @Override
     default String getType() {

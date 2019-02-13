@@ -13,7 +13,7 @@ package org.eclipse.kapua.service.certificate;
 
 import org.eclipse.kapua.model.KapuaEntityFactory;
 
-public interface PublicCertificateFactory extends KapuaEntityFactory<PublicCertificate, PublicCertificateCreator, PublicCertificateQuery, PublicCertificateListResult> {
+public interface CertificateInfoFactory extends KapuaEntityFactory<CertificateInfo, CertificateInfoCreator, CertificateInfoQuery, CertificateInfoListResult> {
 
     CertificateUsage newCertificateUsage(String name);
 

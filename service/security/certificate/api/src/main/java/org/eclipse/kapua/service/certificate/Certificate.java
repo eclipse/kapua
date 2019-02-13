@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "certificate")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = CertificateXmlRegistry.class, factoryMethod = "newCertificate")
-public interface Certificate extends PublicCertificate {
+public interface Certificate extends CertificateInfo {
 
     String TYPE = "certificate";
 
