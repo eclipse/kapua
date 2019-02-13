@@ -32,11 +32,11 @@ import org.eclipse.kapua.service.certificate.CertificateGenerator;
 import org.eclipse.kapua.service.certificate.CertificateUsage;
 import org.eclipse.kapua.service.certificate.KeyUsage;
 import org.eclipse.kapua.service.certificate.KeyUsageSetting;
-import org.eclipse.kapua.service.certificate.PrivateCertificate;
-import org.eclipse.kapua.service.certificate.PrivateCertificateCreator;
-import org.eclipse.kapua.service.certificate.PrivateCertificateFactory;
-import org.eclipse.kapua.service.certificate.PrivateCertificateListResult;
-import org.eclipse.kapua.service.certificate.PrivateCertificateService;
+import org.eclipse.kapua.service.certificate.Certificate;
+import org.eclipse.kapua.service.certificate.CertificateCreator;
+import org.eclipse.kapua.service.certificate.CertificateFactory;
+import org.eclipse.kapua.service.certificate.CertificateListResult;
+import org.eclipse.kapua.service.certificate.CertificateService;
 import org.eclipse.kapua.service.certificate.exception.KapuaCertificateErrorCodes;
 import org.eclipse.kapua.service.certificate.exception.KapuaCertificateException;
 import org.eclipse.kapua.service.certificate.internal.setting.KapuaCertificateSetting;
@@ -52,16 +52,16 @@ import java.util.Map;
 import java.util.Set;
 
 @KapuaProvider
-public class PrivateCertificateServiceImpl implements PrivateCertificateService {
+public class CertificateServiceImpl implements CertificateService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PrivateCertificateServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CertificateServiceImpl.class);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
-    private static final PrivateCertificateFactory CERTIFICATE_FACTORY = LOCATOR.getFactory(PrivateCertificateFactory.class);
+    private static final CertificateFactory CERTIFICATE_FACTORY = LOCATOR.getFactory(CertificateFactory.class);
 
     private String certificate;
     private String privateKey;
@@ -69,7 +69,7 @@ public class PrivateCertificateServiceImpl implements PrivateCertificateService 
     /**
      * Constructor
      */
-    public PrivateCertificateServiceImpl() throws KapuaException {
+    public CertificateServiceImpl() throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
             KapuaCertificateSetting setting = KapuaCertificateSetting.getInstance();
 
@@ -87,17 +87,17 @@ public class PrivateCertificateServiceImpl implements PrivateCertificateService 
     }
 
     @Override
-    public PrivateCertificate create(PrivateCertificateCreator creator) throws KapuaException {
+    public Certificate create(CertificateCreator creator) throws KapuaException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public PrivateCertificate find(KapuaId scopeId, KapuaId entityId) throws KapuaException {
+    public Certificate find(KapuaId scopeId, KapuaId entityId) throws KapuaException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public PrivateCertificateListResult query(KapuaQuery<PrivateCertificate> query) throws KapuaException {
+    public CertificateListResult query(KapuaQuery<Certificate> query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
@@ -118,21 +118,21 @@ public class PrivateCertificateServiceImpl implements PrivateCertificateService 
 
         KapuaCertificateSetting setting = KapuaCertificateSetting.getInstance();
 
-        PrivateCertificate kapuaPrivateCertificate = new PrivateCertificateImpl(KapuaId.ONE);
-        kapuaPrivateCertificate.setPrivateKey(privateKey);
-        kapuaPrivateCertificate.setCertificate(certificate);
-        kapuaPrivateCertificate.getKeyUsageSettings().add(keyUsageSetting);
-        kapuaPrivateCertificate.setCertificateUsages(certificateUsages);
-        kapuaPrivateCertificate.setPassword(setting.getString(KapuaCertificateSettingKeys.CERTIFICATE_JWT_PRIVATE_KEY_PASSWORD));
+        Certificate kapuaCertificate = new CertificateImpl(KapuaId.ONE);
+        kapuaCertificate.setPrivateKey(privateKey);
+        kapuaCertificate.setCertificate(certificate);
+        kapuaCertificate.getKeyUsageSettings().add(keyUsageSetting);
+        kapuaCertificate.setCertificateUsages(certificateUsages);
+        kapuaCertificate.setPassword(setting.getString(KapuaCertificateSettingKeys.CERTIFICATE_JWT_PRIVATE_KEY_PASSWORD));
 
-        PrivateCertificateListResult result = CERTIFICATE_FACTORY.newListResult();
-        result.addItem(kapuaPrivateCertificate);
+        CertificateListResult result = CERTIFICATE_FACTORY.newListResult();
+        result.addItem(kapuaCertificate);
 
         return result;
     }
 
     @Override
-    public long count(KapuaQuery<PrivateCertificate> query) {
+    public long count(KapuaQuery<Certificate> query) {
         return 1L;
     }
 
@@ -142,22 +142,22 @@ public class PrivateCertificateServiceImpl implements PrivateCertificateService 
     }
 
     @Override
-    public PrivateCertificate findByName(String name) throws KapuaException {
+    public Certificate findByName(String name) throws KapuaException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public PrivateCertificate update(PrivateCertificate entity) throws KapuaException {
+    public Certificate update(Certificate entity) throws KapuaException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public PrivateCertificate generate(CertificateGenerator generator) throws KapuaException {
+    public Certificate generate(CertificateGenerator generator) throws KapuaException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public List<PrivateCertificate> findAncestorsCertificates(KapuaId scopeId, CertificateUsage usage) {
+    public List<Certificate> findAncestorsCertificates(KapuaId scopeId, CertificateUsage usage) {
         throw new UnsupportedOperationException();
     }
 
@@ -229,12 +229,12 @@ public class PrivateCertificateServiceImpl implements PrivateCertificateService 
 
         @Override
         public String getName() {
-            return PrivateCertificateService.class.getSimpleName();
+            return CertificateService.class.getSimpleName();
         }
 
         @Override
         public String getId() {
-            return PrivateCertificateService.class.getName();
+            return CertificateService.class.getName();
         }
 
         @Override

@@ -20,8 +20,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * {@link PrivateCertificate} domain.<br>
- * Used to describe the {@link PrivateCertificate} {@link Domain} in the {@link PrivateCertificateService} and {@link PrivateCertificateService}.
+ * {@link Certificate} domain.<br>
+ * Used to describe the {@link Certificate} {@link Domain} in the {@link CertificateService} and {@link CertificateService}.
  *
  * @since 1.0.0
  */

@@ -12,7 +12,7 @@
 package org.eclipse.kapua.service.authentication.shiro.exceptions;
 
 import org.eclipse.kapua.KapuaErrorCode;
-import org.eclipse.kapua.service.certificate.PrivateCertificate;
+import org.eclipse.kapua.service.certificate.Certificate;
 
 /**
  * {@link org.eclipse.kapua.service.authentication.AuthenticationService} error codes
@@ -22,7 +22,7 @@ import org.eclipse.kapua.service.certificate.PrivateCertificate;
 public enum AuthenticationErrorCodes implements KapuaErrorCode {
 
     /**
-     * A {@link PrivateCertificate} with {@link org.eclipse.kapua.service.certificate.CertificateUsage} equal to {@code JWT} is not present in the database.
+     * A {@link Certificate} with {@link org.eclipse.kapua.service.certificate.CertificateUsage} equal to {@code JWT} is not present in the database.
      * This certificate must be installed at deployment time.
      */
     JWT_CERTIFICATE_NOT_FOUND

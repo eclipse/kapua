@@ -14,17 +14,17 @@ package org.eclipse.kapua.service.certificate.internal;
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.certificate.PrivateCertificate;
-import org.eclipse.kapua.service.certificate.PrivateCertificateQuery;
+import org.eclipse.kapua.service.certificate.Certificate;
+import org.eclipse.kapua.service.certificate.CertificateQuery;
 
-public class PrivateCertificateQueryImpl extends AbstractKapuaQuery<PrivateCertificate> implements PrivateCertificateQuery {
+public class CertificateQueryImpl extends AbstractKapuaQuery<Certificate> implements CertificateQuery {
 
     private Boolean includeInherited = Boolean.FALSE;
 
     /**
      * Constructor
      */
-    private PrivateCertificateQueryImpl() {
+    private CertificateQueryImpl() {
         super();
     }
 
@@ -33,7 +33,7 @@ public class PrivateCertificateQueryImpl extends AbstractKapuaQuery<PrivateCerti
      *
      * @param scopeId The scopeId of the {@link KapuaQuery}
      */
-    public PrivateCertificateQueryImpl(KapuaId scopeId) {
+    public CertificateQueryImpl(KapuaId scopeId) {
         this();
         setScopeId(scopeId);
     }
@@ -41,11 +41,11 @@ public class PrivateCertificateQueryImpl extends AbstractKapuaQuery<PrivateCerti
     /**
      * Constructor
      * <p>
-     * This deeply clones the given {@link PrivateCertificateQuery}
+     * This deeply clones the given {@link CertificateQuery}
      *
      * @param query the query to clone
      */
-    public PrivateCertificateQueryImpl(KapuaQuery query) {
+    public CertificateQueryImpl(KapuaQuery query) {
         super(query);
     }
 

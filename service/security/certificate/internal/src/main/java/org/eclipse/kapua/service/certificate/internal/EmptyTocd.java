@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.certificate.internal;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
-import org.eclipse.kapua.service.certificate.PrivateCertificateService;
+import org.eclipse.kapua.service.certificate.CertificateService;
 
 import javax.xml.namespace.QName;
 import java.util.Collections;
@@ -74,12 +74,12 @@ public class EmptyTocd implements KapuaTocd {
 
     @Override
     public String getName() {
-        return PrivateCertificateService.class.getSimpleName();
+        return CertificateService.class.getSimpleName();
     }
 
     @Override
     public String getId() {
-        return PrivateCertificateService.class.getName();
+        return CertificateService.class.getName();
     }
 
     @Override

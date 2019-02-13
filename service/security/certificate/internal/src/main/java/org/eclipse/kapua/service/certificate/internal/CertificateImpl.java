@@ -12,23 +12,23 @@
 package org.eclipse.kapua.service.certificate.internal;
 
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.certificate.PrivateCertificate;
+import org.eclipse.kapua.service.certificate.Certificate;
 
 /**
- * {@link PrivateCertificate} implementation
+ * {@link Certificate} implementation
  *
  * @since 1.0.0
  */
-public class PrivateCertificateImpl extends PublicCertificateImpl implements PrivateCertificate {
+public class CertificateImpl extends PublicCertificateImpl implements Certificate {
 
     private String privateKey;
     private String password;
 
-    public PrivateCertificateImpl(KapuaId scopeId) {
+    public CertificateImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
-    public PrivateCertificateImpl(PrivateCertificate certificate) {
+    public CertificateImpl(Certificate certificate) {
         throw new UnsupportedOperationException();
     }
 

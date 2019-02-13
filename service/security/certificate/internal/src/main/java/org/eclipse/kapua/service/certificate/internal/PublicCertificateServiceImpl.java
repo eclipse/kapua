@@ -19,8 +19,8 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.certificate.CertificateGenerator;
 import org.eclipse.kapua.service.certificate.CertificateUsage;
-import org.eclipse.kapua.service.certificate.PrivateCertificateQuery;
-import org.eclipse.kapua.service.certificate.PrivateCertificateService;
+import org.eclipse.kapua.service.certificate.CertificateQuery;
+import org.eclipse.kapua.service.certificate.CertificateService;
 import org.eclipse.kapua.service.certificate.PublicCertificate;
 import org.eclipse.kapua.service.certificate.PublicCertificateCreator;
 import org.eclipse.kapua.service.certificate.PublicCertificateListResult;
@@ -35,7 +35,7 @@ import java.util.Map;
 public class PublicCertificateServiceImpl implements PublicCertificateService {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final PrivateCertificateService PRIVATE_CERTIFICATE_SERVICE = LOCATOR.getService(PrivateCertificateService.class);
+    private static final CertificateService PRIVATE_CERTIFICATE_SERVICE = LOCATOR.getService(CertificateService.class);
 
     @Override
     public PublicCertificate create(PublicCertificateCreator creator) {
@@ -50,7 +50,7 @@ public class PublicCertificateServiceImpl implements PublicCertificateService {
     @Override
     public PublicCertificateListResult query(KapuaQuery<PublicCertificate> query) throws KapuaException {
 
-        PrivateCertificateQuery privateQuery = new PrivateCertificateQueryImpl(query);
+        CertificateQuery privateQuery = new CertificateQueryImpl(query);
         privateQuery.setIncludeInherited(((PublicCertificateQuery) query).getIncludeInherited());
 
         PublicCertificateListResult publicCertificates = new PublicCertificateListResultImpl();
@@ -62,7 +62,7 @@ public class PublicCertificateServiceImpl implements PublicCertificateService {
     @Override
     public long count(KapuaQuery<PublicCertificate> query) throws KapuaException {
 
-        PrivateCertificateQuery privateQuery = new PrivateCertificateQueryImpl(query);
+        CertificateQuery privateQuery = new CertificateQueryImpl(query);
         privateQuery.setIncludeInherited(((PublicCertificateQuery) query).getIncludeInherited());
 
         return PRIVATE_CERTIFICATE_SERVICE.count(privateQuery);

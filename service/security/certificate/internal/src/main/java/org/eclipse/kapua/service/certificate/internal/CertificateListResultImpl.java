@@ -12,15 +12,15 @@
 package org.eclipse.kapua.service.certificate.internal;
 
 import org.eclipse.kapua.commons.model.query.KapuaListResultImpl;
-import org.eclipse.kapua.service.certificate.PrivateCertificate;
-import org.eclipse.kapua.service.certificate.PrivateCertificateListResult;
+import org.eclipse.kapua.service.certificate.Certificate;
+import org.eclipse.kapua.service.certificate.CertificateListResult;
 
 /**
- * {@link PrivateCertificateListResult} implementation.
+ * {@link CertificateListResult} implementation.
  *
  * @since 1.0
  */
 
-public class PrivateCertificateListResultImpl extends KapuaListResultImpl<PrivateCertificate> implements PrivateCertificateListResult {
+public class CertificateListResultImpl extends KapuaListResultImpl<Certificate> implements CertificateListResult {
 
 }
