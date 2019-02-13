@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -132,6 +132,8 @@ public class JobTabStepsGrid extends EntityGrid<GwtJobStep> {
     @Override
     protected void selectionChangedEvent(final GwtJobStep selectedItem) {
         super.selectionChangedEvent(selectedItem);
+        JobTabStepsGrid.this.toolbar.getEditEntityButton().setEnabled(false);
+        JobTabStepsGrid.this.toolbar.getDeleteEntityButton().setEnabled(false);
         JOB_SERVICE.find(currentSession.getSelectedAccountId(), jobId, new AsyncCallback<GwtJob>() {
 
             @Override
