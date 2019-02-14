@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -35,6 +35,8 @@ import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
 import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagService;
 import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagServiceAsync;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class DeviceTagAddDialog extends EntityAddEditDialog {
@@ -141,6 +143,13 @@ public class DeviceTagAddDialog extends EntityAddEditDialog {
 
             @Override
             public void onSuccess(List<GwtTag> result) {
+                Collections.sort(result, new Comparator<GwtTag>() {
+
+                    @Override
+                    public int compare(GwtTag tag1, GwtTag tag2) {
+                        return tag1.getTagName().compareTo(tag2.getTagName());
+                    }
+                });
                 tagsCombo.getStore().add(result);
 
                 tagsCombo.setEmptyText(result.isEmpty() ? MSGS.dialogDeviceTagAddFieldTagEmptyTextNoTags() : MSGS.dialogDeviceTagAddFieldTagEmptyText());
