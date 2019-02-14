@@ -54,6 +54,7 @@ public abstract class ActionDialog extends KapuaDialog {
     protected Boolean exitStatus;
     protected String exitMessage;
     private Boolean dateValueNotNull = false;
+    private Boolean disabledFormPanelEvents = false;
 
     public ActionDialog() {
         super();
@@ -117,6 +118,10 @@ public abstract class ActionDialog extends KapuaDialog {
         formPanel.addListener(Events.OnKeyUp, listener);
         formPanel.addListener(Events.OnPaste, pasteEventListener);
         sinkEvents(Event.ONPASTE);
+
+        if (disabledFormPanelEvents) {
+            formPanel.disableEvents(true);
+        }
 
         //
         // Buttons setup
@@ -233,4 +238,7 @@ public abstract class ActionDialog extends KapuaDialog {
         this.dateValueNotNull = dateValueNotNull;
     }
 
+    public void setDisabledFormPanelEvents(Boolean disabledFormPanelEvents) {
+        this.disabledFormPanelEvents = disabledFormPanelEvents;
+    }
 }
