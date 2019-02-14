@@ -58,7 +58,7 @@ public class DeviceGridToolbar extends EntityCRUDToolbar<GwtDevice> {
         addExtraButton(export);
         super.onRender(target, index);
         getAddEntityButton().setEnabled(currentSession.hasPermission(DeviceSessionPermission.write()));
-        getEditEntityButton().setEnabled(currentSession.hasPermission(DeviceSessionPermission.write()));
+        getEditEntityButton().disable();
     }
 
     @Override
