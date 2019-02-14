@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,7 +20,6 @@ import org.eclipse.kapua.app.console.module.authorization.client.messages.Consol
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.AccessInfoSessionPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.DomainSessionPermission;
-import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.GroupSessionPermission;
 
 public class UserTabPermissionToolbar extends EntityCRUDToolbar<GwtAccessPermission> {
 
@@ -59,9 +58,10 @@ public class UserTabPermissionToolbar extends EntityCRUDToolbar<GwtAccessPermiss
         super.onRender(target, index);
         addEntityButton.setText(PERMISSION_MSGS.dialogAddPermissionButton());
         deleteEntityButton.setText(PERMISSION_MSGS.dialogDeletePermissionButton());
-        addEntityButton.setEnabled(userId != null && currentSession.hasPermission(AccessInfoSessionPermission.read())
-                && currentSession.hasPermission(AccessInfoSessionPermission.write()) && currentSession.hasPermission(DomainSessionPermission.read()) 
-                && currentSession.hasPermission(DomainSessionPermission.write()) && currentSession.hasPermission(GroupSessionPermission.read()));
+        addEntityButton.setEnabled(userId != null 
+                && currentSession.hasPermission(AccessInfoSessionPermission.read())
+                && currentSession.hasPermission(AccessInfoSessionPermission.write()) 
+                && currentSession.hasPermission(DomainSessionPermission.read()));
         deleteEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
         refreshEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
     }
@@ -70,7 +70,7 @@ public class UserTabPermissionToolbar extends EntityCRUDToolbar<GwtAccessPermiss
     protected void updateButtonEnablement() {
         super.updateButtonEnablement();
         addEntityButton.setEnabled(userId != null && currentSession.hasPermission(AccessInfoSessionPermission.read())
-                && currentSession.hasPermission(AccessInfoSessionPermission.write()) && currentSession.hasPermission(DomainSessionPermission.read()) 
-                && currentSession.hasPermission(DomainSessionPermission.write()) && currentSession.hasPermission(GroupSessionPermission.read()));
+                && currentSession.hasPermission(AccessInfoSessionPermission.write())
+                && currentSession.hasPermission(DomainSessionPermission.read()));
     }
 }

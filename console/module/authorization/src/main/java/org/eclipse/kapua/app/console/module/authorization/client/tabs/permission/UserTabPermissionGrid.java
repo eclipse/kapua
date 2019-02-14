@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,7 +32,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsolePermissionMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccessPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.AccessInfoSessionPermission;
-import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.DomainSessionPermission;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.GroupSessionPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessPermissionService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessPermissionServiceAsync;
 
@@ -74,7 +74,7 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
         if (selectedItem == null) {
             toolbar.getDeleteEntityButton().disable();
         } else {
-            toolbar.getDeleteEntityButton().setEnabled(currentSession.hasPermission(AccessInfoSessionPermission.delete()) && currentSession.hasPermission(DomainSessionPermission.delete()));
+            toolbar.getDeleteEntityButton().setEnabled(currentSession.hasPermission(AccessInfoSessionPermission.delete()));
         }
     }
 
@@ -96,9 +96,11 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("groupName", PERMISSION_MSGS.gridAccessRoleColumnHeaderGroupName(), 200);
-        columnConfig.setSortable(false);
-        columnConfigs.add(columnConfig);
+        if (currentSession.hasPermission(GroupSessionPermission.read())) {
+            columnConfig = new ColumnConfig("groupName", PERMISSION_MSGS.gridAccessRoleColumnHeaderGroupName(), 200);
+            columnConfig.setSortable(false);
+            columnConfigs.add(columnConfig);
+        }
 
         columnConfig = new ColumnConfig("permissionForwardable", PERMISSION_MSGS.gridAccessRoleColumnHeaderForwardable(), 200);
         columnConfig.setRenderer(new GridCellRenderer<GwtAccessPermission>() {

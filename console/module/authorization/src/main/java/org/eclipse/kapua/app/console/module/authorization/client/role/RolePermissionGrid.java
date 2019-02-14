@@ -34,6 +34,7 @@ import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.AccessInfoSessionPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.DomainSessionPermission;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.GroupSessionPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.RoleSessionPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleServiceAsync;
@@ -102,9 +103,11 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("groupName", ROLE_MSGS.gridRolePermissionColumnHeaderTargetGroup(), 100);
-        columnConfig.setSortable(false);
-        columnConfigs.add(columnConfig);
+        if (currentSession.hasPermission(GroupSessionPermission.read())) {
+            columnConfig = new ColumnConfig("groupName", ROLE_MSGS.gridRolePermissionColumnHeaderTargetGroup(), 100);
+            columnConfig.setSortable(false);
+            columnConfigs.add(columnConfig);
+        }
 
         columnConfig = new ColumnConfig("forwardable", ROLE_MSGS.gridRolePermissionColumnHeaderForwardable(), 200);
         columnConfig.setRenderer(new GridCellRenderer<GwtRolePermission>() {
