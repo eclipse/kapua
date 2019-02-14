@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,6 +20,8 @@ import org.eclipse.kapua.app.console.module.authorization.client.role.dialog.Rol
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.AccessInfoSessionPermission;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.DomainSessionPermission;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.RoleSessionPermission;
 
 public class RolePermissionToolbar extends EntityCRUDToolbar<GwtRolePermission> {
 
@@ -54,7 +56,11 @@ public class RolePermissionToolbar extends EntityCRUDToolbar<GwtRolePermission> 
 
     private void checkAddButton() {
         if (getAddEntityButton() != null) {
-            getAddEntityButton().setEnabled(selectedRole != null && currentSession.hasPermission(AccessInfoSessionPermission.write()));
+            getAddEntityButton().setEnabled(selectedRole != null 
+                    && currentSession.hasPermission(AccessInfoSessionPermission.read())
+                    && currentSession.hasPermission(AccessInfoSessionPermission.write())
+                    && currentSession.hasPermission(DomainSessionPermission.read())
+                    && currentSession.hasPermission(RoleSessionPermission.write()));
         }
     }
 
