@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.steps;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -23,27 +20,24 @@ import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.qa.common.TestDomain;
-import org.eclipse.kapua.qa.common.cucumber.CucConfig;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
+import org.eclipse.kapua.qa.common.TestDomain;
 import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
+import org.eclipse.kapua.qa.common.cucumber.CucConfig;
 import org.eclipse.kapua.qa.common.cucumber.CucDomain;
 import org.eclipse.kapua.qa.common.cucumber.CucGroup;
 import org.eclipse.kapua.qa.common.cucumber.CucRole;
 import org.eclipse.kapua.qa.common.cucumber.CucRolePermission;
 import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
@@ -63,12 +57,6 @@ import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
-import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoFactoryImpl;
-import org.eclipse.kapua.service.authorization.access.shiro.AccessInfoServiceImpl;
-import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionFactoryImpl;
-import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionServiceImpl;
-import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleFactoryImpl;
-import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleServiceImpl;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.domain.DomainCreator;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
@@ -76,8 +64,6 @@ import org.eclipse.kapua.service.authorization.domain.DomainListResult;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.domain.DomainAttributes;
-import org.eclipse.kapua.service.authorization.domain.shiro.DomainFactoryImpl;
-import org.eclipse.kapua.service.authorization.domain.shiro.DomainRegistryServiceImpl;
 import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupAttributes;
 import org.eclipse.kapua.service.authorization.group.GroupCreator;
@@ -85,11 +71,8 @@ import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupListResult;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
 import org.eclipse.kapua.service.authorization.group.GroupService;
-import org.eclipse.kapua.service.authorization.group.shiro.GroupFactoryImpl;
-import org.eclipse.kapua.service.authorization.group.shiro.GroupServiceImpl;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleAttributes;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
@@ -103,15 +86,8 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
-import org.eclipse.kapua.service.authorization.role.shiro.RoleFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleImpl;
-import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionFactoryImpl;
-import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionServiceImpl;
-import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
-import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
-import org.eclipse.kapua.service.authorization.shiro.AuthorizationServiceImpl;
 import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.qa.common.MockedLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -155,56 +131,9 @@ public class AuthorizationServiceSteps extends TestBase {
         this.database = dbHelper;
     }
 
-    /**
-     * Setup DI with Google Guice DI.
-     * Create mocked and non mocked service under test and bind them with Guice.
-     * It is based on custom MockedLocator locator that is meant for sevice unit tests.
-     */
-    private void setupDI() {
-
-        MockedLocator mockedLocator = (MockedLocator) KapuaLocator.getInstance();
-
-        AbstractModule module = new AbstractModule() {
-
-            @Override
-            protected void configure() {
-
-                // Set KapuaMetatypeFactory for Metatype configuration
-                bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
-
-                // Inject actual account related services
-                bind(AuthorizationEntityManagerFactory.class).toInstance(AuthorizationEntityManagerFactory.getInstance());
-
-                bind(AuthorizationService.class).toInstance(new AuthorizationServiceImpl());
-                bind(AccessInfoService.class).toInstance(new AccessInfoServiceImpl());
-                bind(AccessInfoFactory.class).toInstance(new AccessInfoFactoryImpl());
-                bind(AccessPermissionService.class).toInstance(new AccessPermissionServiceImpl());
-                bind(AccessPermissionFactory.class).toInstance(new AccessPermissionFactoryImpl());
-                bind(AccessRoleService.class).toInstance(new AccessRoleServiceImpl());
-                bind(AccessRoleFactory.class).toInstance(new AccessRoleFactoryImpl());
-                bind(DomainRegistryService.class).toInstance(new DomainRegistryServiceImpl());
-                bind(DomainFactory.class).toInstance(new DomainFactoryImpl());
-                bind(GroupService.class).toInstance(new GroupServiceImpl());
-                bind(GroupFactory.class).toInstance(new GroupFactoryImpl());
-                bind(RoleService.class).toInstance(new RoleServiceImpl());
-                bind(RoleFactory.class).toInstance(new RoleFactoryImpl());
-                bind(RolePermissionService.class).toInstance(new RolePermissionServiceImpl());
-                bind(RolePermissionFactory.class).toInstance(new RolePermissionFactoryImpl());
-                bind(PermissionFactory.class).toInstance(new PermissionFactoryImpl());
-            }
-        };
-
-        Injector injector = Guice.createInjector(module);
-        mockedLocator.setInjector(injector);
-    }
-
     // Database setup and tear-down steps
     @Before
     public void beforeScenario(Scenario scenario) {
-
-        if (isUnitTest()) {
-            setupDI();
-        }
 
         this.scenario = scenario;
         database.setup();

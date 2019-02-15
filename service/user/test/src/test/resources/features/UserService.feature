@@ -10,7 +10,8 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @default
-@userCRUD
+@unit
+@user
 Feature: User Service
     User Service is responsible for CRUD operations on User objects in Kapua
     database.

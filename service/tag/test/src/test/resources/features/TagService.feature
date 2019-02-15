@@ -10,7 +10,8 @@
 #     Eurotech
 ###############################################################################
 @default
-@tagCRUD
+@unit
+@tag
 Feature: Tag Service
   Tag Service is responsible for CRUD operations on Tags. This service is currently
   used to attach tags to Devices, but could be used to tag eny kapua entity, like

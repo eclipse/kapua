@@ -10,7 +10,8 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @default
-@accountCRUD
+@unit
+@account
 Feature: User Account Service
     The User Account Service is responsible for CRUD operations for user accounts in the Kapua
     database.

@@ -12,9 +12,6 @@
 package org.eclipse.kapua.service.device.registry.steps;
 
 import com.google.common.collect.Lists;
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -25,7 +22,6 @@ import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
@@ -59,30 +55,26 @@ import org.eclipse.kapua.message.internal.device.lifecycle.KapuaDisconnectPayloa
 import org.eclipse.kapua.message.internal.device.lifecycle.KapuaMissingChannelImpl;
 import org.eclipse.kapua.message.internal.device.lifecycle.KapuaMissingMessageImpl;
 import org.eclipse.kapua.message.internal.device.lifecycle.KapuaMissingPayloadImpl;
-import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
-import org.eclipse.kapua.qa.common.TestDomain;
-import org.eclipse.kapua.qa.common.cucumber.CucConfig;
-import org.eclipse.kapua.qa.common.cucumber.CucConnection;
-import org.eclipse.kapua.qa.common.cucumber.CucDevice;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
+import org.eclipse.kapua.qa.common.TestDomain;
 import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
+import org.eclipse.kapua.qa.common.cucumber.CucConfig;
+import org.eclipse.kapua.qa.common.cucumber.CucConnection;
+import org.eclipse.kapua.qa.common.cucumber.CucDevice;
 import org.eclipse.kapua.qa.common.cucumber.CucUser;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
-import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
-import org.eclipse.kapua.service.authorization.permission.Permission;
-import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
 import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
@@ -103,19 +95,12 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionList
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
-import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionFactoryImpl;
-import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionServiceImpl;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
-import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventFactoryImpl;
-import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventServiceImpl;
-import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
-import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
-import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagAttributes;
@@ -127,10 +112,7 @@ import org.eclipse.kapua.service.tag.TagService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserService;
-import org.eclipse.kapua.qa.common.MockedLocator;
 import org.junit.Assert;
-import org.mockito.Matchers;
-import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -213,56 +195,6 @@ public class DeviceRegistrySteps extends TestBase {
         this.database = dbHelper;
     }
 
-    // *************************************
-    // Definition of Cucumber scenario steps
-    // *************************************
-
-    /**
-     * Setup DI with Google Guice DI.
-     * Create mocked and non mocked service under test and bind them with Guice.
-     * It is based on custom MockedLocator locator that is meant for sevice unit tests.
-     */
-    private void setupDI() {
-
-        MockedLocator mockedLocator = (MockedLocator) KapuaLocator.getInstance();
-
-        AbstractModule module = new AbstractModule() {
-
-            @Override
-            protected void configure() {
-
-                // Inject mocked Authorization Service method checkPermission
-                AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
-                try {
-                    Mockito.doNothing().when(mockedAuthorization).checkPermission(Matchers.any(Permission.class));
-                } catch (KapuaException e) {
-                    // skip
-                }
-                bind(AuthorizationService.class).toInstance(mockedAuthorization);
-                // Inject mocked Permission Factory
-                bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
-                // Set KapuaMetatypeFactory for Metatype configuration
-                bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
-
-                // Inject actual Device registry service related services
-                DeviceEntityManagerFactory deviceEntityManagerFactory = DeviceEntityManagerFactory.instance();
-                bind(DeviceEntityManagerFactory.class).toInstance(deviceEntityManagerFactory);
-
-                bind(DeviceRegistryService.class).toInstance(new DeviceRegistryServiceImpl());
-                bind(DeviceFactory.class).toInstance(new DeviceFactoryImpl());
-
-                bind(DeviceConnectionService.class).toInstance(new DeviceConnectionServiceImpl());
-                bind(DeviceConnectionFactory.class).toInstance(new DeviceConnectionFactoryImpl());
-
-                bind(DeviceEventService.class).toInstance(new DeviceEventServiceImpl());
-                bind(DeviceEventFactory.class).toInstance(new DeviceEventFactoryImpl());
-            }
-        };
-
-        Injector injector = Guice.createInjector(module);
-        mockedLocator.setInjector(injector);
-    }
-
     // ************************************************************************************
     // ************************************************************************************
     // * Definition of Cucumber scenario steps                                            *
@@ -275,10 +207,6 @@ public class DeviceRegistrySteps extends TestBase {
 
     @Before
     public void beforeScenario(Scenario scenario) {
-
-        if (isUnitTest()) {
-            setupDI();
-        }
 
         this.scenario = scenario;
         database.setup();

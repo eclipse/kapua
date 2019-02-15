@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.steps;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -24,24 +21,19 @@ import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
-import org.eclipse.kapua.qa.common.cucumber.CucConfig;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
+import org.eclipse.kapua.qa.common.cucumber.CucConfig;
 import org.eclipse.kapua.qa.common.cucumber.CucJobStepProperty;
-import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.permission.Permission;
-import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobAttributes;
 import org.eclipse.kapua.service.job.JobCreator;
@@ -55,11 +47,6 @@ import org.eclipse.kapua.service.job.execution.JobExecutionFactory;
 import org.eclipse.kapua.service.job.execution.JobExecutionListResult;
 import org.eclipse.kapua.service.job.execution.JobExecutionQuery;
 import org.eclipse.kapua.service.job.execution.JobExecutionService;
-import org.eclipse.kapua.service.job.execution.internal.JobExecutionFactoryImpl;
-import org.eclipse.kapua.service.job.execution.internal.JobExecutionServiceImpl;
-import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
-import org.eclipse.kapua.service.job.internal.JobFactoryImpl;
-import org.eclipse.kapua.service.job.internal.JobServiceImpl;
 import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.JobStepCreator;
 import org.eclipse.kapua.service.job.step.JobStepFactory;
@@ -73,10 +60,6 @@ import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionQuery;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 import org.eclipse.kapua.service.job.step.definition.JobStepType;
-import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionFactoryImpl;
-import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionServiceImpl;
-import org.eclipse.kapua.service.job.step.internal.JobStepFactoryImpl;
-import org.eclipse.kapua.service.job.step.internal.JobStepServiceImpl;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetCreator;
 import org.eclipse.kapua.service.job.targets.JobTargetFactory;
@@ -84,12 +67,7 @@ import org.eclipse.kapua.service.job.targets.JobTargetListResult;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
 import org.eclipse.kapua.service.job.targets.JobTargetStatus;
-import org.eclipse.kapua.service.job.targets.internal.JobTargetFactoryImpl;
-import org.eclipse.kapua.service.job.targets.internal.JobTargetServiceImpl;
-import org.eclipse.kapua.qa.common.MockedLocator;
 import org.joda.time.DateTime;
-import org.mockito.Matchers;
-import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -140,58 +118,6 @@ public class JobServiceSteps extends TestBase {
         this.database = dbHelper;
     }
 
-    /**
-     * Setup DI with Google Guice DI.
-     * Create mocked and non mocked service under test and bind them with Guice.
-     * It is based on custom MockedLocator locator that is meant for sevice unit tests.
-     */
-    private void setupDI() {
-
-        MockedLocator mockedLocator = (MockedLocator) KapuaLocator.getInstance();
-
-        AbstractModule module = new AbstractModule() {
-
-            @Override
-            protected void configure() {
-
-                // Inject mocked Authorization Service method checkPermission
-                AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
-                try {
-                    Mockito.doNothing().when(mockedAuthorization).checkPermission(Matchers.any(Permission.class));
-                } catch (KapuaException e) {
-                    // skip
-                }
-                bind(AuthorizationService.class).toInstance(mockedAuthorization);
-                // Inject mocked Permission Factory
-                bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
-                // Set KapuaMetatypeFactory for Metatype configuration
-                bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
-
-                // Inject actual user service related services
-                JobEntityManagerFactory jobEntityManagerFactory = JobEntityManagerFactory.getInstance();
-                bind(JobEntityManagerFactory.class).toInstance(jobEntityManagerFactory);
-
-                bind(JobService.class).toInstance(new JobServiceImpl());
-                bind(JobFactory.class).toInstance(new JobFactoryImpl());
-
-                bind(JobStepDefinitionService.class).toInstance(new JobStepDefinitionServiceImpl());
-                bind(JobStepDefinitionFactory.class).toInstance(new JobStepDefinitionFactoryImpl());
-
-                bind(JobStepService.class).toInstance(new JobStepServiceImpl());
-                bind(JobStepFactory.class).toInstance(new JobStepFactoryImpl());
-
-                bind(JobTargetService.class).toInstance(new JobTargetServiceImpl());
-                bind(JobTargetFactory.class).toInstance(new JobTargetFactoryImpl());
-
-                bind(JobExecutionService.class).toInstance(new JobExecutionServiceImpl());
-                bind(JobExecutionFactory.class).toInstance(new JobExecutionFactoryImpl());
-            }
-        };
-
-        Injector injector = Guice.createInjector(module);
-        mockedLocator.setInjector(injector);
-    }
-
     // ************************************************************************************
     // ************************************************************************************
     // * Definition of Cucumber scenario steps                                            *
@@ -204,10 +130,6 @@ public class JobServiceSteps extends TestBase {
 
     @Before
     public void beforeScenario(Scenario scenario) {
-
-        if (isUnitTest()) {
-            setupDI();
-        }
 
         this.scenario = scenario;
         database.setup();

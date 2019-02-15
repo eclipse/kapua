@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,18 +9,18 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.tag.test;
+package org.eclipse.kapua.service.account.test;
 
 import cucumber.api.CucumberOptions;
 import org.eclipse.kapua.qa.common.cucumber.CucumberProperty;
-import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
 import org.junit.runner.RunWith;
 
-@RunWith(CucumberWithProperties.class)
+@RunWith(CucumberWithPropertiesForAccount.class)
+
 @CucumberOptions(
-        features = { "classpath:features/TagService.feature"
+        features = { "classpath:features/AccountService.feature"
                    },
-        glue = { "org.eclipse.kapua.service.tag.steps",
+        glue = { "org.eclipse.kapua.service.account.steps",
                  "org.eclipse.kapua.qa.common"
                },
         plugin = { "pretty", 
@@ -28,9 +28,11 @@ import org.junit.runner.RunWith;
                    "json:target/cucumber.json" },
         strict = true,
         monochrome = true)
+
 @CucumberProperty(key="locator.class.impl", value="org.eclipse.kapua.qa.common.MockedLocator")
 @CucumberProperty(key="test.type", value="unit")
 @CucumberProperty(key="commons.db.schema", value="kapuadb")
 @CucumberProperty(key="commons.db.schema.update", value="true")
-public class RunTest {
+
+public class RunAccountUnitTest {
 }

@@ -44,10 +44,6 @@
         <!-- Internal dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-tag-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-commons</artifactId>
         </dependency>
         <dependency>

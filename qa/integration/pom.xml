@@ -48,7 +48,15 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-security-shiro</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-test-steps</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-user-internal</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -56,11 +64,23 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-account-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-account-test-steps</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-registry-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-registry-test-steps</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-job-internal</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -104,10 +124,6 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-commons</artifactId>
         </dependency>
         <dependency>
@@ -116,19 +132,11 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-datastore-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-datastore-internal</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-datastore-test-steps</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-datastore-client-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -145,10 +153,6 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-simulator-kura</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-tag-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>

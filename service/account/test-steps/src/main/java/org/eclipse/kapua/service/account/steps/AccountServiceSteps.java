@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.steps;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -26,7 +23,6 @@ import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
-import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -35,16 +31,15 @@ import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.qa.common.cucumber.CucAccount;
-import org.eclipse.kapua.qa.common.cucumber.CucConfig;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
+import org.eclipse.kapua.qa.common.cucumber.CucAccount;
+import org.eclipse.kapua.qa.common.cucumber.CucConfig;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountFactory;
@@ -52,15 +47,6 @@ import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.Organization;
-import org.eclipse.kapua.service.account.internal.AccountEntityManagerFactory;
-import org.eclipse.kapua.service.account.internal.AccountFactoryImpl;
-import org.eclipse.kapua.service.account.internal.AccountServiceImpl;
-import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.permission.Permission;
-import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.qa.common.MockedLocator;
-import org.mockito.Matchers;
-import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,52 +89,10 @@ public class AccountServiceSteps extends TestBase {
     // Definition of Cucumber scenario steps
     // *************************************
 
-    /**
-     * Setup DI with Google Guice DI.
-     * Create mocked and non mocked service under test and bind them with Guice.
-     * It is based on custom MockedLocator locator that is meant for sevice unit tests.
-     */
-    private void setupDI() {
-
-        MockedLocator mockedLocator = (MockedLocator) KapuaLocator.getInstance();
-
-        AbstractModule module = new AbstractModule() {
-
-            @Override
-            protected void configure() {
-
-                // Inject mocked Authorization Service method checkPermission
-                AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
-                try {
-                    Mockito.doNothing().when(mockedAuthorization).checkPermission(Matchers.any(Permission.class));
-                } catch (KapuaException e) {
-                    // skip
-                }
-                bind(AuthorizationService.class).toInstance(mockedAuthorization);
-                // Inject mocked Permission Factory
-                bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
-                // Set KapuaMetatypeFactory for Metatype configuration
-                bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
-
-                // Inject actual account related services
-                bind(AccountEntityManagerFactory.class).toInstance(AccountEntityManagerFactory.getInstance());
-                bind(AccountService.class).toInstance(new AccountServiceImpl());
-                bind(AccountFactory.class).toInstance(new AccountFactoryImpl());
-            }
-        };
-
-        Injector injector = Guice.createInjector(module);
-        mockedLocator.setInjector(injector);
-    }
-
     // Setup and tear-down steps
 
     @Before
     public void beforeScenario(Scenario scenario) {
-
-        if (isUnitTest()) {
-            setupDI();
-        }
 
         this.scenario = scenario;
         database.setup();
