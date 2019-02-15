@@ -47,6 +47,9 @@
             <column name="wait_for_job_execution_id" type="bigint(21) unsigned">
                 <constraints nullable="false"/>
             </column>
+            <column name="status" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
 
             <column name="optlock" type="int unsigned"/>
             <column name="attributes" type="text"/>

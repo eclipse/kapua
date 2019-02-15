@@ -47,4 +47,8 @@ public interface QueuedJobExecution extends KapuaUpdatableEntity {
     KapuaId getWaitForJobExecutionId();
 
     void setWaitForJobExecutionId(KapuaId waitForJobExecutionId);
+
+    QueuedJobExecutionStatus getStatus();
+
+    void setStatus(QueuedJobExecutionStatus status);
 }

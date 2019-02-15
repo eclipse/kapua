@@ -23,6 +23,7 @@ import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionFactory;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionListResult;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionQuery;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionService;
+import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionStatus;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.slf4j.Logger;
@@ -77,6 +78,9 @@ public class QueuedJobExecutionCheckTask extends TimerTask {
 
                 try {
                     KapuaSecurityUtils.doPrivileged(() -> JOB_ENGINE_SERVICE.resumeJobExecution(qje.getScopeId(), qje.getJobId(), qje.getJobExecutionId()));
+
+                    qje.setStatus(QueuedJobExecutionStatus.PROCESSED);
+                    KapuaSecurityUtils.doPrivileged(() -> QUEUED_JOB_EXECUTION_SERVICE.update(qje));
                 } catch (Exception e) {
                     LOG.error("Resuming Job Execution: {}... ERROR!", qje.getJobExecutionId(), e);
                 }

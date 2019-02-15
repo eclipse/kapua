@@ -14,6 +14,7 @@ package org.eclipse.kapua.job.engine.queue.jbatch;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecution;
+import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionStatus;
 import org.eclipse.kapua.model.id.KapuaId;
 
 import javax.persistence.AttributeOverride;
@@ -21,6 +22,8 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 @Entity(name = "QueuedJobExecution")
@@ -46,6 +49,10 @@ public class QueuedJobExecutionImpl extends AbstractKapuaUpdatableEntity impleme
             @AttributeOverride(name = "eid", column = @Column(name = "wait_for_job_execution_id", nullable = false, updatable = false))
     })
     private KapuaEid waitForJobExecutionId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, updatable = true)
+    private QueuedJobExecutionStatus status;
 
     public QueuedJobExecutionImpl() {
     }
@@ -84,5 +91,13 @@ public class QueuedJobExecutionImpl extends AbstractKapuaUpdatableEntity impleme
         this.waitForJobExecutionId = KapuaEid.parseKapuaId(waitForJobExecutionId);
     }
 
+    @Override
+    public QueuedJobExecutionStatus getStatus() {
+        return status;
+    }
 
+    @Override
+    public void setStatus(QueuedJobExecutionStatus status) {
+        this.status = status;
+    }
 }

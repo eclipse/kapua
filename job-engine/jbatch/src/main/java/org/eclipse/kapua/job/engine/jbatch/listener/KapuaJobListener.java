@@ -26,6 +26,7 @@ import org.eclipse.kapua.job.engine.queue.QueuedJobExecution;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionCreator;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionFactory;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionService;
+import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionStatus;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.Job;
@@ -304,6 +305,7 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
         queuedJobExecutionCreator.setJobId(jobId);
         queuedJobExecutionCreator.setJobExecutionId(jobExecutionId);
         queuedJobExecutionCreator.setWaitForJobExecutionId(runningJobExecutionId);
+        queuedJobExecutionCreator.setStatus(QueuedJobExecutionStatus.QUEUED);
 
         return KapuaSecurityUtils.doPrivileged(() -> QUEUED_JOB_SERVICE.create(queuedJobExecutionCreator));
     }

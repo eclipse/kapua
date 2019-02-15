@@ -41,4 +41,8 @@ public interface QueuedJobExecutionCreator extends KapuaUpdatableEntityCreator<Q
     KapuaId getWaitForJobExecutionId();
 
     void setWaitForJobExecutionId(KapuaId waitForJobExecutionId);
+
+    QueuedJobExecutionStatus getStatus();
+
+    void setStatus(QueuedJobExecutionStatus status);
 }

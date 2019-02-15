@@ -14,6 +14,7 @@ package org.eclipse.kapua.job.engine.queue.jbatch;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntityCreator;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecution;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionCreator;
+import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionStatus;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 
@@ -25,6 +26,7 @@ public class QueuedJobExecutionCreatorImpl extends AbstractKapuaUpdatableEntityC
     private KapuaId jobId;
     private KapuaId jobExecutionId;
     private KapuaId waitForJobExecutionId;
+    private QueuedJobExecutionStatus status;
 
     protected QueuedJobExecutionCreatorImpl(KapuaId scopeId) {
         super(scopeId);
@@ -58,5 +60,15 @@ public class QueuedJobExecutionCreatorImpl extends AbstractKapuaUpdatableEntityC
     @Override
     public void setWaitForJobExecutionId(KapuaId waitForJobExecutionId) {
         this.waitForJobExecutionId = waitForJobExecutionId;
+    }
+
+    @Override
+    public QueuedJobExecutionStatus getStatus() {
+        return status;
+    }
+
+    @Override
+    public void setStatus(QueuedJobExecutionStatus status) {
+        this.status = status;
     }
 }
