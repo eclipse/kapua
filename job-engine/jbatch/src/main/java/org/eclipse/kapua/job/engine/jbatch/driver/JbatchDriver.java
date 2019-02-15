@@ -35,7 +35,7 @@ import org.eclipse.kapua.job.engine.jbatch.driver.exception.JobExecutionIsRunnin
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.JobStartingDriverException;
 import org.eclipse.kapua.job.engine.jbatch.driver.utils.JobDefinitionBuildUtils;
 import org.eclipse.kapua.job.engine.jbatch.persistence.KapuaJDBCPersistenceManagerImpl;
-import org.eclipse.kapua.job.engine.jbatch.setting.KapuaJobEngineSettingKeys;
+import org.eclipse.kapua.job.engine.jbatch.setting.JobEngineSettingKeys;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.Job;
@@ -216,7 +216,7 @@ public class JbatchDriver {
      * Stops completely the jBatch job.
      * <p>
      * First invokes the {@link JobOperator#stop(long)} on the running execution, which stop the running execution.
-     * Secondly, according to the {@link KapuaJobEngineSettingKeys#JOB_ENGINE_STOP_WAIT_CHECK} value, it waits asynchronously the complete stop of the job
+     * Secondly, according to the {@link JobEngineSettingKeys#JOB_ENGINE_STOP_WAIT_CHECK} value, it waits asynchronously the complete stop of the job
      * to be able to invoke {@link JobOperator#abandon(long)} which terminate the jBatch Job.
      * <p>
      * A jBatch job cannot be resumed after this method is invoked on it.
@@ -255,7 +255,7 @@ public class JbatchDriver {
             runningExecutions.forEach((runningExecution -> {
                 JOB_OPERATOR.stop(runningExecution.getExecutionId());
 
-//                if (JOB_ENGINE_SETTING.getBoolean(KapuaJobEngineSettingKeys.JOB_ENGINE_STOP_WAIT_CHECK)) {
+//                if (JOB_ENGINE_SETTING.getBoolean(JobEngineSettingKeys.JOB_ENGINE_STOP_WAIT_CHECK)) {
 //                    JbatchUtil.waitForStop(runningExecution, () -> JOB_OPERATOR.abandon(runningExecution.getExecutionId()));
 //                }
             }));

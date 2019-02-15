@@ -16,18 +16,23 @@ import org.eclipse.kapua.commons.setting.SettingKey;
 /**
  * Authorization setting key
  */
-public enum KapuaJobEngineSettingKeys implements SettingKey {
+public enum JobEngineSettingKeys implements SettingKey {
     JOB_ENGINE_KEY("jobEngine.key"),
 
     JOB_ENGINE_STOP_WAIT_CHECK("jobEngine.stop.wait.check"),
 
     JOB_ENGINE_STOP_WAIT_CHECK_TIME_MAX("jobEngine.stop.wait.check.time.max"),
 
-    JOB_ENGINE_STOP_WAIT_CHECK_TIME_INTERVAL("jobEngine.stop.wait.check.time.interval");
+    JOB_ENGINE_STOP_WAIT_CHECK_TIME_INTERVAL("jobEngine.stop.wait.check.time.interval"),
+
+    JOB_ENGINE_QUEUE_CHECK_DELAY("jobEngine.queue.check.delay"),
+
+    JOB_ENGINE_QUEUE_PROCESSING_RUN_DELAY("jobEngine.queue.processing.run.delay");
+
 
     private String key;
 
-    private KapuaJobEngineSettingKeys(String key) {
+    private JobEngineSettingKeys(String key) {
         this.key = key;
     }
 

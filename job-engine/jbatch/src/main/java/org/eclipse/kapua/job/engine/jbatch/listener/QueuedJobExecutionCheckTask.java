@@ -14,8 +14,9 @@ package org.eclipse.kapua.job.engine.jbatch.listener;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.job.engine.JobEngineFactory;
 import org.eclipse.kapua.job.engine.JobEngineService;
+import org.eclipse.kapua.job.engine.jbatch.setting.JobEngineSetting;
+import org.eclipse.kapua.job.engine.jbatch.setting.JobEngineSettingKeys;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecution;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionAttributes;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionFactory;
@@ -33,10 +34,11 @@ public class QueuedJobExecutionCheckTask extends TimerTask {
 
     private static final Logger LOG = LoggerFactory.getLogger(QueuedJobExecutionCheckTask.class);
 
+    private static final JobEngineSetting JOB_ENGINE_SETTING = JobEngineSetting.getInstance();
+
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
     private static final JobEngineService JOB_ENGINE_SERVICE = LOCATOR.getService(JobEngineService.class);
-    private static final JobEngineFactory JOB_ENGINE_FACTORY = LOCATOR.getFactory(JobEngineFactory.class);
 
     private static final QueuedJobExecutionService QUEUED_JOB_EXECUTION_SERVICE = LOCATOR.getService(QueuedJobExecutionService.class);
     private static final QueuedJobExecutionFactory QUEUED_JOB_EXECUTION_FACTORY = LOCATOR.getFactory(QueuedJobExecutionFactory.class);
@@ -69,6 +71,8 @@ public class QueuedJobExecutionCheckTask extends TimerTask {
             QueuedJobExecutionListResult queuedJobExecutions = KapuaSecurityUtils.doPrivileged(() -> QUEUED_JOB_EXECUTION_SERVICE.query(query));
 
             for (QueuedJobExecution qje : queuedJobExecutions.getItems()) {
+                Thread.sleep(JOB_ENGINE_SETTING.getInt(JobEngineSettingKeys.JOB_ENGINE_QUEUE_PROCESSING_RUN_DELAY));
+
                 LOG.info("Resuming Job Execution: {}...", qje.getJobExecutionId());
 
                 try {
@@ -78,12 +82,10 @@ public class QueuedJobExecutionCheckTask extends TimerTask {
                 }
 
                 LOG.info("Resuming Job Execution: {}... DONE!", qje.getJobExecutionId());
-
-                Thread.sleep(500);
             }
 
         } catch (Exception e) {
-            LOG.error("Checking Job Execution queue for: {}... DONE!", jobExecutionId, e);
+            LOG.error("Checking Job Execution queue for: {}... ERROR!", jobExecutionId, e);
         }
         LOG.info("Checking Job Execution queue for: {}... DONE!", jobExecutionId);
     }

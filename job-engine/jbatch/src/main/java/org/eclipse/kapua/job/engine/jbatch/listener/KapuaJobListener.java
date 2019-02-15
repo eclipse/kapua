@@ -20,6 +20,8 @@ import org.eclipse.kapua.job.engine.commons.wrappers.JobContextWrapper;
 import org.eclipse.kapua.job.engine.jbatch.driver.JbatchDriver;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobAlreadyRunningException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobExecutionEnqueuedException;
+import org.eclipse.kapua.job.engine.jbatch.setting.JobEngineSetting;
+import org.eclipse.kapua.job.engine.jbatch.setting.JobEngineSettingKeys;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecution;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionCreator;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionFactory;
@@ -66,6 +68,8 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
 
     private static final String JBATCH_EXECUTION_ID = "JBATCH_EXECUTION_ID";
 
+    private static final JobEngineSetting JOB_ENGINE_SETTING = JobEngineSetting.getInstance();
+
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
     private static final JobExecutionService JOB_EXECUTION_SERVICE = LOCATOR.getService(JobExecutionService.class);
@@ -77,20 +81,19 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
     private static final QueuedJobExecutionService QUEUED_JOB_SERVICE = LOCATOR.getService(QueuedJobExecutionService.class);
     private static final QueuedJobExecutionFactory QUEUED_JOB_FACTORY = LOCATOR.getFactory(QueuedJobExecutionFactory.class);
 
-
     @Inject
     private JobContext jobContext;
 
     /**
      * Before starting the actual {@link org.eclipse.kapua.service.job.Job} processing, create the {@link JobExecution} to track progress and
-     * check if there are other {@link JobExecution} running with the same {@link JobExecution#getTargetIds()}.
+     * check if there are other {@link JobExecution}s running with the same {@link JobExecution#getTargetIds()}.
      * <p>
      * If there are {@link JobExecution} running with matching {@link JobTargetSublist} the current  {@link JobExecution} is stopped.
-     * According to the {@code JobStartOptions#getEnqueue} parameter, the {@link JobExecution} can be:
+     * According to the {@link JobStartOptions#getEnqueue()} parameter, the {@link JobExecution} can be:
      * <ul>
      * <li>if ({@code enqueue} = {@code false}) then {@link JobAlreadyRunningException} is {@code throw}n </li>
      * <li>if ({@code enqueue} = {@code true}) then a new {@link QueuedJobExecution} is created and {@link JobExecutionEnqueuedException} is {@code throw}n</li>
-     * *</ul>
+     * </ul>
      */
     @Override
     public void beforeJob() throws Exception {
@@ -120,7 +123,7 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
                 jobContextWrapper.getTargetSublist(),
                 jobContextWrapper.getExecutionId());
             } catch (Exception e) {
-                jobLogger.error(e, "Creating job execution... ERROR! ");
+                jobLogger.error(e, "Creating job execution... ERROR!");
                 throw e;
             }
             jobLogger.info("Creating job execution... DONE!");
@@ -149,7 +152,7 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
                             jobExecution.getId(),
                             runningJobExecution.getId());
                 } catch (Exception e) {
-                    jobLogger.error(e, "Another execution is running! Enqueuing this execution... Error!");
+                    jobLogger.error(e, "Another execution is running! Enqueuing this execution... ERROR!");
                     throw e;
                 }
 
@@ -315,6 +318,6 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
 
         Timer queuedCheckTimer = new Timer(timerName, true);
 
-        queuedCheckTimer.schedule(new QueuedJobExecutionCheckTask(scopeId, jobId, jobExecutionId), 5000);
+        queuedCheckTimer.schedule(new QueuedJobExecutionCheckTask(scopeId, jobId, jobExecutionId), JOB_ENGINE_SETTING.getLong(JobEngineSettingKeys.JOB_ENGINE_QUEUE_CHECK_DELAY));
     }
 }
