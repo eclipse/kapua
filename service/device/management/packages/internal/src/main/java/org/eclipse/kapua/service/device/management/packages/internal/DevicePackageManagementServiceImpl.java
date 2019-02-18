@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.internal;
 
-import java.util.Date;
-
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
@@ -34,6 +32,7 @@ import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagem
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
+import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService;
 import org.eclipse.kapua.service.device.management.packages.internal.exception.PackageDownloadStatusManagementException;
 import org.eclipse.kapua.service.device.management.packages.internal.exception.PackageDownloadStopManagementException;
@@ -51,23 +50,32 @@ import org.eclipse.kapua.service.device.management.packages.message.internal.Pac
 import org.eclipse.kapua.service.device.management.packages.message.internal.PackageResponsePayload;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOperation;
+import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOptions;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
 import org.eclipse.kapua.service.device.management.packages.model.download.internal.DevicePackageDownloadOperationImpl;
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallOperation;
+import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallOptions;
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
 import org.eclipse.kapua.service.device.management.packages.model.install.internal.DevicePackageInstallOperationImpl;
 import org.eclipse.kapua.service.device.management.packages.model.internal.DevicePackagesImpl;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOperation;
+import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOptions;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.internal.DevicePackageUninstallOperationImpl;
+
+import java.util.Date;
 
 /**
  * Device package service implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @KapuaProvider
 public class DevicePackageManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DevicePackageManagementService {
+
+    private static final KapuaLocator KAPUA_LOCATOR = KapuaLocator.getInstance();
+
+    private static final DevicePackageFactory DEVICE_PACKAGE_FACTORY = KAPUA_LOCATOR.getFactory(DevicePackageFactory.class);
 
     //
     // Installed
@@ -150,152 +158,19 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
     }
 
     //
-    // Install
-    //
-
-    @Override
-    public void installExec(KapuaId scopeId, KapuaId deviceId, DevicePackageInstallRequest deployInstallRequest, Long timeout)
-            throws KapuaException {
-        //
-        // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(deviceId, "deviceId");
-        ArgumentValidator.notNull(deployInstallRequest, "deployInstallRequest");
-
-        //
-        // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
-
-        //
-        // Generate requestId
-        KapuaId operationId = new KapuaEid(IdGenerator.generate());
-
-        //
-        // Prepare the request
-        PackageRequestChannel packageRequestChannel = new PackageRequestChannel();
-        packageRequestChannel.setAppName(PackageAppProperties.APP_NAME);
-        packageRequestChannel.setVersion(PackageAppProperties.APP_VERSION);
-        packageRequestChannel.setMethod(KapuaMethod.EXECUTE);
-        packageRequestChannel.setPackageResource(PackageResource.INSTALL);
-
-        PackageRequestPayload packageRequestPayload = new PackageRequestPayload();
-        packageRequestPayload.setOperationId(operationId);
-        packageRequestPayload.setPackageDownloadName(deployInstallRequest.getName());
-        packageRequestPayload.setPackageDownloadVersion(deployInstallRequest.getVersion());
-        packageRequestPayload.setReboot(deployInstallRequest.isReboot());
-        packageRequestPayload.setRebootDelay(deployInstallRequest.getRebootDelay());
-
-        PackageRequestMessage packageRequestMessage = new PackageRequestMessage();
-        packageRequestMessage.setScopeId(scopeId);
-        packageRequestMessage.setDeviceId(deviceId);
-        packageRequestMessage.setCapturedOn(new Date());
-        packageRequestMessage.setPayload(packageRequestPayload);
-        packageRequestMessage.setChannel(packageRequestChannel);
-
-        //
-        // Create device management operation
-        createManagementOperation(scopeId, deviceId, operationId, 1, packageRequestMessage);
-
-        //
-        // Do get
-        DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(packageRequestMessage, timeout);
-        PackageResponseMessage responseMessage = (PackageResponseMessage) deviceApplicationCall.send();
-
-        //
-        // Create event
-        createDeviceEvent(scopeId, deviceId, packageRequestMessage, responseMessage);
-
-        //
-        // Check response
-        if (!responseMessage.getResponseCode().isAccepted()) {
-            KapuaResponsePayload responsePayload = responseMessage.getPayload();
-
-            throw new PackageInstallExecuteManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
-        }
-    }
-
-    @Override
-    public DevicePackageInstallOperation installStatus(KapuaId scopeId, KapuaId deviceId, Long timeout)
-            throws KapuaException {
-        //
-        // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(deviceId, "deviceId");
-
-        //
-        // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
-
-        //
-        // Prepare the request
-        PackageRequestChannel packageRequestChannel = new PackageRequestChannel();
-        packageRequestChannel.setAppName(PackageAppProperties.APP_NAME);
-        packageRequestChannel.setVersion(PackageAppProperties.APP_VERSION);
-        packageRequestChannel.setMethod(KapuaMethod.READ);
-        packageRequestChannel.setPackageResource(PackageResource.INSTALL);
-
-        PackageRequestPayload packageRequestPayload = new PackageRequestPayload();
-
-        PackageRequestMessage packageRequestMessage = new PackageRequestMessage();
-        packageRequestMessage.setScopeId(scopeId);
-        packageRequestMessage.setDeviceId(deviceId);
-        packageRequestMessage.setCapturedOn(new Date());
-        packageRequestMessage.setPayload(packageRequestPayload);
-        packageRequestMessage.setChannel(packageRequestChannel);
-
-        //
-        // Do get
-        DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(packageRequestMessage, timeout);
-        PackageResponseMessage responseMessage = (PackageResponseMessage) deviceApplicationCall.send();
-
-        //
-        // Create event
-        createDeviceEvent(scopeId, deviceId, packageRequestMessage, responseMessage);
-
-        //
-        // Check response
-        if (responseMessage.getResponseCode().isAccepted()) {
-            PackageResponsePayload responsePayload = responseMessage.getPayload();
-
-            DeviceManagementSetting config = DeviceManagementSetting.getInstance();
-            String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
-
-            String body = null;
-            try {
-                body = new String(responsePayload.getBody(), charEncoding);
-            } catch (Exception e) {
-                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, responsePayload.getBody());
-
-            }
-
-            DevicePackageInstallOperation installOperation = null;
-            try {
-                installOperation = XmlUtil.unmarshal(body, DevicePackageInstallOperationImpl.class);
-            } catch (Exception e) {
-                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, body);
-
-            }
-
-            return installOperation;
-        } else {
-            KapuaResponsePayload responsePayload = responseMessage.getPayload();
-
-            throw new PackageInstallStatusManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
-        }
-    }
-
-    //
     // Download
     //
 
     @Override
-    public void downloadExec(KapuaId scopeId, KapuaId deviceId, DevicePackageDownloadRequest packageDownloadRequest, Long timeout)
+    public void downloadExec(KapuaId scopeId, KapuaId deviceId, DevicePackageDownloadRequest packageDownloadRequest, Long timeout) throws KapuaException {
+        DevicePackageDownloadOptions packageDownloadOptions = DEVICE_PACKAGE_FACTORY.newDevicePackageDownloadOptions();
+        packageDownloadOptions.setTimeout(timeout);
+
+        downloadExec(scopeId, deviceId, packageDownloadRequest, packageDownloadOptions);
+    }
+
+    @Override
+    public void downloadExec(KapuaId scopeId, KapuaId deviceId, DevicePackageDownloadRequest packageDownloadRequest, DevicePackageDownloadOptions packageDownloadOptions)
             throws KapuaException {
         //
         // Argument Validation
@@ -305,6 +180,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         ArgumentValidator.notNull(packageDownloadRequest.getUri(), "packageDownloadRequest.uri");
         ArgumentValidator.notNull(packageDownloadRequest.getName(), "packageDownloadRequest.name");
         ArgumentValidator.notNull(packageDownloadRequest.getVersion(), "packageDownloadRequest.version");
+        ArgumentValidator.notNull(packageDownloadOptions, "packageDownloadOptions");
 
         //
         // Check Access
@@ -347,7 +223,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
         //
         // Do exec
-        DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(packageRequestMessage, timeout);
+        DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(packageRequestMessage, packageDownloadOptions.getTimeout());
         PackageResponseMessage responseMessage = (PackageResponseMessage) deviceApplicationCall.send();
 
         //
@@ -360,7 +236,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
             KapuaResponsePayload responsePayload = responseMessage.getPayload();
 
             closeManagementOperation(scopeId, deviceId, operationId, responseMessage);
-              throw new KapuaException(KapuaErrorCodes.DOWNLOAD_PACKAGE_EXCEPTION);
+            throw new KapuaException(KapuaErrorCodes.DOWNLOAD_PACKAGE_EXCEPTION);
         }
     }
 
@@ -475,16 +351,175 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
     }
 
     //
-    // Uninstall
+    // Install
     //
 
     @Override
-    public void uninstallExec(KapuaId scopeId, KapuaId deviceId, DevicePackageUninstallRequest deployUninstallRequest, Long timeout) throws KapuaException {
+    public void installExec(KapuaId scopeId, KapuaId deviceId, DevicePackageInstallRequest packageInstallRequest, Long timeout) throws KapuaException {
+        DevicePackageInstallOptions packageInstallOptions = DEVICE_PACKAGE_FACTORY.newDevicePackageInstallOptions();
+        packageInstallOptions.setTimeout(timeout);
+
+        installExec(scopeId, deviceId, packageInstallRequest, packageInstallOptions);
+    }
+
+    @Override
+    public void installExec(KapuaId scopeId, KapuaId deviceId, DevicePackageInstallRequest deployInstallRequest, DevicePackageInstallOptions packageInstallOptions)
+            throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(deviceId, "deviceId");
-        ArgumentValidator.notNull(deployUninstallRequest, "deployUninstallRequest");
+        ArgumentValidator.notNull(deployInstallRequest, "deployInstallRequest");
+        ArgumentValidator.notNull(packageInstallOptions, "packageInstallOptions");
+
+        //
+        // Check Access
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
+        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
+
+        //
+        // Generate requestId
+        KapuaId operationId = new KapuaEid(IdGenerator.generate());
+
+        //
+        // Prepare the request
+        PackageRequestChannel packageRequestChannel = new PackageRequestChannel();
+        packageRequestChannel.setAppName(PackageAppProperties.APP_NAME);
+        packageRequestChannel.setVersion(PackageAppProperties.APP_VERSION);
+        packageRequestChannel.setMethod(KapuaMethod.EXECUTE);
+        packageRequestChannel.setPackageResource(PackageResource.INSTALL);
+
+        PackageRequestPayload packageRequestPayload = new PackageRequestPayload();
+        packageRequestPayload.setOperationId(operationId);
+        packageRequestPayload.setPackageDownloadName(deployInstallRequest.getName());
+        packageRequestPayload.setPackageDownloadVersion(deployInstallRequest.getVersion());
+        packageRequestPayload.setReboot(deployInstallRequest.isReboot());
+        packageRequestPayload.setRebootDelay(deployInstallRequest.getRebootDelay());
+
+        PackageRequestMessage packageRequestMessage = new PackageRequestMessage();
+        packageRequestMessage.setScopeId(scopeId);
+        packageRequestMessage.setDeviceId(deviceId);
+        packageRequestMessage.setCapturedOn(new Date());
+        packageRequestMessage.setPayload(packageRequestPayload);
+        packageRequestMessage.setChannel(packageRequestChannel);
+
+        //
+        // Create device management operation
+        createManagementOperation(scopeId, deviceId, operationId, 1, packageRequestMessage);
+
+        //
+        // Do get
+        DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(packageRequestMessage, packageInstallOptions.getTimeout());
+        PackageResponseMessage responseMessage = (PackageResponseMessage) deviceApplicationCall.send();
+
+        //
+        // Create event
+        createDeviceEvent(scopeId, deviceId, packageRequestMessage, responseMessage);
+
+        //
+        // Check response
+        if (!responseMessage.getResponseCode().isAccepted()) {
+            KapuaResponsePayload responsePayload = responseMessage.getPayload();
+
+            throw new PackageInstallExecuteManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
+        }
+    }
+
+    @Override
+    public DevicePackageInstallOperation installStatus(KapuaId scopeId, KapuaId deviceId, Long timeout)
+            throws KapuaException {
+        //
+        // Argument Validation
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(deviceId, "deviceId");
+
+        //
+        // Check Access
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
+        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.read, scopeId));
+
+        //
+        // Prepare the request
+        PackageRequestChannel packageRequestChannel = new PackageRequestChannel();
+        packageRequestChannel.setAppName(PackageAppProperties.APP_NAME);
+        packageRequestChannel.setVersion(PackageAppProperties.APP_VERSION);
+        packageRequestChannel.setMethod(KapuaMethod.READ);
+        packageRequestChannel.setPackageResource(PackageResource.INSTALL);
+
+        PackageRequestPayload packageRequestPayload = new PackageRequestPayload();
+
+        PackageRequestMessage packageRequestMessage = new PackageRequestMessage();
+        packageRequestMessage.setScopeId(scopeId);
+        packageRequestMessage.setDeviceId(deviceId);
+        packageRequestMessage.setCapturedOn(new Date());
+        packageRequestMessage.setPayload(packageRequestPayload);
+        packageRequestMessage.setChannel(packageRequestChannel);
+
+        //
+        // Do get
+        DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(packageRequestMessage, timeout);
+        PackageResponseMessage responseMessage = (PackageResponseMessage) deviceApplicationCall.send();
+
+        //
+        // Create event
+        createDeviceEvent(scopeId, deviceId, packageRequestMessage, responseMessage);
+
+        //
+        // Check response
+        if (responseMessage.getResponseCode().isAccepted()) {
+            PackageResponsePayload responsePayload = responseMessage.getPayload();
+
+            DeviceManagementSetting config = DeviceManagementSetting.getInstance();
+            String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
+
+            String body = null;
+            try {
+                body = new String(responsePayload.getBody(), charEncoding);
+            } catch (Exception e) {
+                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, responsePayload.getBody());
+
+            }
+
+            DevicePackageInstallOperation installOperation = null;
+            try {
+                installOperation = XmlUtil.unmarshal(body, DevicePackageInstallOperationImpl.class);
+            } catch (Exception e) {
+                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, body);
+
+            }
+
+            return installOperation;
+        } else {
+            KapuaResponsePayload responsePayload = responseMessage.getPayload();
+
+            throw new PackageInstallStatusManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
+        }
+    }
+
+    //
+    // Uninstall
+    //
+
+    @Override
+    public void uninstallExec(KapuaId scopeId, KapuaId deviceId, DevicePackageUninstallRequest packageUninstallRequest, Long timeout) throws KapuaException {
+        DevicePackageUninstallOptions packageUninstallOptions = DEVICE_PACKAGE_FACTORY.newDevicePackageUninstallOptions();
+        packageUninstallOptions.setTimeout(timeout);
+
+        uninstallExec(scopeId, deviceId, packageUninstallRequest, packageUninstallOptions);
+    }
+
+    @Override
+    public void uninstallExec(KapuaId scopeId, KapuaId deviceId, DevicePackageUninstallRequest packageUninstallRequest, DevicePackageUninstallOptions packageUninstallOptions) throws KapuaException {
+        //
+        // Argument Validation
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(deviceId, "deviceId");
+        ArgumentValidator.notNull(packageUninstallRequest, "packageUninstallRequest");
+        ArgumentValidator.notNull(packageUninstallOptions, "packageUninstallOptions");
 
         //
         // Check Access
@@ -507,10 +542,10 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
         PackageRequestPayload packageRequestPayload = new PackageRequestPayload();
         packageRequestPayload.setOperationId(operationId);
-        packageRequestPayload.setPackageUninstallName(deployUninstallRequest.getName());
-        packageRequestPayload.setPackageUninstallVersion(deployUninstallRequest.getVersion());
-        packageRequestPayload.setReboot(deployUninstallRequest.isReboot());
-        packageRequestPayload.setRebootDelay(deployUninstallRequest.getRebootDelay());
+        packageRequestPayload.setPackageUninstallName(packageUninstallRequest.getName());
+        packageRequestPayload.setPackageUninstallVersion(packageUninstallRequest.getVersion());
+        packageRequestPayload.setReboot(packageUninstallRequest.isReboot());
+        packageRequestPayload.setRebootDelay(packageUninstallRequest.getRebootDelay());
 
         PackageRequestMessage packageRequestMessage = new PackageRequestMessage();
         packageRequestMessage.setScopeId(scopeId);
@@ -525,7 +560,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
         //
         // Do get
-        DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(packageRequestMessage, timeout);
+        DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(packageRequestMessage, packageUninstallOptions.getTimeout());
         PackageResponseMessage responseMessage = (PackageResponseMessage) deviceApplicationCall.send();
 
         //
