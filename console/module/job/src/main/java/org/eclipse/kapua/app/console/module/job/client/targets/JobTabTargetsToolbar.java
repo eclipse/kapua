@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -90,7 +90,7 @@ public class JobTabTargetsToolbar extends EntityCRUDToolbar<GwtJobTarget> {
     protected void updateButtonEnablement() {
         super.updateButtonEnablement();
 
-        jobStartTargetButton.setEnabled(selectedEntity != null);
+        jobStartTargetButton.setEnabled(selectedEntity != null && currentSession.hasPermission(JobSessionPermission.execute()));
         addEntityButton.setEnabled(selectedEntity != null && currentSession.hasPermission(JobSessionPermission.write()));
         deleteEntityButton.setEnabled(selectedEntity != null && currentSession.hasPermission(JobSessionPermission.delete()));
     }
@@ -115,7 +115,7 @@ public class JobTabTargetsToolbar extends EntityCRUDToolbar<GwtJobTarget> {
                     }
 
                     if (jobStartTargetButton != null) {
-                        jobStartTargetButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
+                        jobStartTargetButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null && currentSession.hasPermission(JobSessionPermission.execute()));
                     }
                 }
             });
