@@ -15,14 +15,13 @@ package org.eclipse.kapua.service.device.management.request.internal;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
-import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
+import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
 import org.eclipse.kapua.service.device.management.request.DeviceRequestManagementService;
 import org.eclipse.kapua.service.device.management.request.GenericRequestFactory;
@@ -30,51 +29,48 @@ import org.eclipse.kapua.service.device.management.request.message.request.Gener
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestMessage;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestPayload;
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseMessage;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 
 import java.util.Date;
 
 @KapuaProvider
-public class DeviceRequestManagementServiceImpl implements DeviceRequestManagementService {
+public class DeviceRequestManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceRequestManagementService {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final GenericRequestFactory FACTORY = LOCATOR.getFactory(GenericRequestFactory.class);
 
     @Override
-    public GenericResponseMessage exec(
-            GenericRequestMessage requestInput,
-            Long timeout) throws KapuaException {
+    public GenericResponseMessage exec(GenericRequestMessage requestInput, Long timeout) throws KapuaException {
+        return exec(requestInput.getScopeId(), requestInput.getDeviceId(), requestInput, timeout);
+    }
+
+    @Override
+    public GenericResponseMessage exec(KapuaId scopeId, KapuaId deviceId, GenericRequestMessage requestInput, Long timeout) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(requestInput, "requestInput");
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         Actions action;
         switch (requestInput.getChannel().getMethod()) {
-        case EXECUTE:
-            action = Actions.execute;
-            break;
-        case READ:
-        case OPTIONS:
-            action = Actions.read;
-            break;
-        case CREATE:
-        case WRITE:
-            action = Actions.write;
-            break;
-        case DELETE:
-            action = Actions.delete;
-            break;
-        default:
-            throw new KapuaRuntimeException(KapuaErrorCodes.OPERATION_NOT_SUPPORTED);
+            case EXECUTE:
+                action = Actions.execute;
+                break;
+            case READ:
+            case OPTIONS:
+                action = Actions.read;
+                break;
+            case CREATE:
+            case WRITE:
+                action = Actions.write;
+                break;
+            case DELETE:
+                action = Actions.delete;
+                break;
+            default:
+                throw new KapuaRuntimeException(KapuaErrorCodes.OPERATION_NOT_SUPPORTED);
         }
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, action, requestInput.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, action, requestInput.getScopeId()));
 
         //
         // Prepare the request
@@ -103,18 +99,7 @@ public class DeviceRequestManagementServiceImpl implements DeviceRequestManageme
 
         //
         // Create event
-        DeviceEventService deviceEventService = locator.getService(DeviceEventService.class);
-        DeviceEventFactory deviceEventFactory = locator.getFactory(DeviceEventFactory.class);
-
-        DeviceEventCreator deviceEventCreator = deviceEventFactory
-                .newCreator(requestInput.getScopeId(), requestInput.getDeviceId(), responseMessage.getReceivedOn(), requestInput.getChannel().getAppName().getValue());
-        deviceEventCreator.setPosition(responseMessage.getPosition());
-        deviceEventCreator.setSentOn(responseMessage.getSentOn());
-        deviceEventCreator.setAction(genericRequestChannel.getMethod());
-        deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
-        deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
-
-        KapuaSecurityUtils.doPrivileged(() -> deviceEventService.create(deviceEventCreator));
+        createDeviceEvent(scopeId, deviceId, genericRequestMessage, responseMessage);
 
         return responseMessage;
     }
