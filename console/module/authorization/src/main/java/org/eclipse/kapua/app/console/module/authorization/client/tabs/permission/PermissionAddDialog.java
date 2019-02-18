@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -39,6 +39,7 @@ import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtDomain
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtPermission.GwtAction;
+import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.GroupSessionPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessInfoService;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessInfoServiceAsync;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtAccessPermissionService;
@@ -216,35 +217,41 @@ public class PermissionAddDialog extends EntityAddEditDialog {
         groupsCombo.setTriggerAction(TriggerAction.ALL);
         groupsCombo.setEmptyText(MSGS.dialogAddPermissionLoading());
         groupsCombo.disable();
-        GWT_GROUP_SERVICE.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtGroup>>() {
+        if (currentSession.hasPermission(GroupSessionPermission.read())) {
+            GWT_GROUP_SERVICE.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtGroup>>() {
 
-            @Override
-            public void onFailure(Throwable caught) {
-                exitMessage = MSGS.dialogAddPermissionErrorGroups(caught.getLocalizedMessage());
-                exitStatus = false;
-                hide();
-            }
+                @Override
+                public void onFailure(Throwable caught) {
+                    exitMessage = MSGS.dialogAddPermissionErrorGroups(caught.getLocalizedMessage());
+                    exitStatus = false;
+                    hide();
+                }
 
-            @Override
-            public void onSuccess(List<GwtGroup> result) {
-                groupsCombo.getStore().removeAll();
-                groupsCombo.getStore().add(allGroup);
-                groupsCombo.getStore().add(result);
-                groupsCombo.setValue(allGroup);
-                groupsCombo.enable();
-            }
-        });
+                @Override
+                public void onSuccess(List<GwtGroup> result) {
+                    groupsCombo.getStore().removeAll();
+                    groupsCombo.getStore().add(allGroup);
+                    groupsCombo.getStore().add(result);
+                    groupsCombo.setValue(allGroup);
+                    groupsCombo.enable();
+                }
+            });
 
-        groupsCombo.addSelectionChangedListener(new SelectionChangedListener<GwtGroup>() {
+            groupsCombo.addSelectionChangedListener(new SelectionChangedListener<GwtGroup>() {
 
-            @Override
-            public void selectionChanged(SelectionChangedEvent<GwtGroup> se) {
-                domainsCombo.clearInvalid();
-                actionsCombo.clearInvalid();
-                groupsCombo.clearInvalid();
-            }
-        });
-        permissionFormPanel.add(groupsCombo);
+                @Override
+                public void selectionChanged(SelectionChangedEvent<GwtGroup> se) {
+                    domainsCombo.clearInvalid();
+                    actionsCombo.clearInvalid();
+                    groupsCombo.clearInvalid();
+                }
+            });
+            permissionFormPanel.add(groupsCombo);
+        } else {
+            groupsCombo.getStore().removeAll();
+            groupsCombo.getStore().add(allGroup);
+            groupsCombo.setValue(allGroup);
+        }
 
         //
         // Forwardable

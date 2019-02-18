@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,7 +22,6 @@ import org.eclipse.kapua.app.console.module.authorization.client.tabs.permission
 import org.eclipse.kapua.app.console.module.authorization.client.tabs.permission.UserTabPermissionToolbar;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.AccessInfoSessionPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.DomainSessionPermission;
-import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.GroupSessionPermission;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 
 public class UserTabItemPermission extends KapuaTabItem<GwtUser> {
@@ -67,9 +66,10 @@ public class UserTabItemPermission extends KapuaTabItem<GwtUser> {
     @Override
     protected void doRefresh() {
         permissionGrid.refresh();
-        permissionGrid.getToolbar().getAddEntityButton().setEnabled(selectedEntity != null && currentSession.hasPermission(AccessInfoSessionPermission.read())
-                && currentSession.hasPermission(AccessInfoSessionPermission.write()) && currentSession.hasPermission(DomainSessionPermission.read()) 
-                && currentSession.hasPermission(DomainSessionPermission.write()) && currentSession.hasPermission(GroupSessionPermission.read()));
+        permissionGrid.getToolbar().getAddEntityButton().setEnabled(selectedEntity != null 
+                && currentSession.hasPermission(AccessInfoSessionPermission.read())
+                && currentSession.hasPermission(AccessInfoSessionPermission.write()) 
+                && currentSession.hasPermission(DomainSessionPermission.read()));
         permissionGrid.getToolbar().getRefreshEntityButton().setEnabled(selectedEntity != null);
     }
 
