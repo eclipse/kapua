@@ -52,6 +52,8 @@ import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPr
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceServiceAsync;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class DeviceAddDialog extends EntityAddEditDialog {
@@ -215,6 +217,14 @@ public class DeviceAddDialog extends EntityAddEditDialog {
                 public void onSuccess(List<GwtGroup> result) {
                     groupCombo.getStore().removeAll();
                     groupCombo.getStore().add(NO_GROUP);
+
+                    Collections.sort(result, new Comparator<GwtGroup>() {
+
+                        @Override
+                        public int compare(GwtGroup group1, GwtGroup group2) {
+                            return group1.getGroupName().compareTo(group2.getGroupName());
+                        }
+                    });
                     groupCombo.getStore().add(result);
                 }
             });
