@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,6 +24,7 @@ import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnect
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionQueryPredicates.GwtDeviceConnectionUser;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.permission.UserSessionPermission;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAsync;
 
@@ -116,10 +117,12 @@ public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection
         clientIPFilter.setStyleAttribute("margin-bottom", "10px");
         fieldsPanel.add(clientIPFilter);
 
-        Label userLabel = new Label(MSGS.connectionFilterUser());
-        userLabel.setWidth(WIDTH);
-        userLabel.setStyleAttribute("margin", "5px");
-        fieldsPanel.add(userLabel);
+        if (currentSession.hasPermission(UserSessionPermission.read())) {
+            Label userLabel = new Label(MSGS.connectionFilterUser());
+            userLabel.setWidth(WIDTH);
+            userLabel.setStyleAttribute("margin", "5px");
+            fieldsPanel.add(userLabel);
+        }
 
         noUser = new GwtUser();
         noUser.setUsername("NO USER");
@@ -144,25 +147,27 @@ public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection
         userCombo.setStyleAttribute("margin-bottom", "10px");
         userCombo.setTriggerAction(TriggerAction.ALL);
         userCombo.setValue(anyUser);
-        userService.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<ListLoadResult<GwtUser>>() {
+        if (currentSession.hasPermission(UserSessionPermission.read())) {
+            userService.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<ListLoadResult<GwtUser>>() {
 
-            @Override
-            public void onSuccess(ListLoadResult<GwtUser> arg0) {
-                userCombo.getStore().removeAll();
-                userCombo.getStore().add(anyUser);
-                userCombo.getStore().add(arg0.getData());
-                userCombo.setValue(anyUser);
-                userCombo.enable();
+                @Override
+                public void onSuccess(ListLoadResult<GwtUser> arg0) {
+                    userCombo.getStore().removeAll();
+                    userCombo.getStore().add(anyUser);
+                    userCombo.getStore().add(arg0.getData());
+                    userCombo.setValue(anyUser);
+                    userCombo.enable();
 
-            }
+                }
 
-            @Override
-            public void onFailure(Throwable arg0) {
-                ConsoleInfo.display(MSGS.connectionFilteringPopUpError(), MSGS.connectionFilteringUsersError());
+                @Override
+                public void onFailure(Throwable arg0) {
+                    ConsoleInfo.display(MSGS.connectionFilteringPopUpError(), MSGS.connectionFilteringUsersError());
 
-            }
-        });
-        fieldsPanel.add(userCombo);
+                }
+            });
+            fieldsPanel.add(userCombo);
+}
 
         Label protocolLabel = new Label(MSGS.connectionFilterProtocolLabel());
         protocolLabel.setWidth(WIDTH);
@@ -179,10 +184,12 @@ public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection
         protocolField.setStyleAttribute("margin-bottom", "10px");
         fieldsPanel.add(protocolField);
 
-        Label reservedUserLabel = new Label(MSGS.connectionFilterReservedUserLabel());
-        reservedUserLabel.setWidth(WIDTH);
-        reservedUserLabel.setStyleAttribute("margin", "5px");
-        fieldsPanel.add(reservedUserLabel);
+        if (currentSession.hasPermission(UserSessionPermission.read())) {
+            Label reservedUserLabel = new Label(MSGS.connectionFilterReservedUserLabel());
+            reservedUserLabel.setWidth(WIDTH);
+            reservedUserLabel.setStyleAttribute("margin", "5px");
+            fieldsPanel.add(reservedUserLabel);
+        }
 
         reservedUserCombo = new ComboBox<GwtUser>();
         reservedUserCombo.setStore(new ListStore<GwtUser>());
@@ -199,26 +206,28 @@ public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection
         reservedUserCombo.setStyleAttribute("margin-bottom", "10px");
         reservedUserCombo.setTriggerAction(TriggerAction.ALL);
         reservedUserCombo.setValue(anyUser);
-        userService.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<ListLoadResult<GwtUser>>() {
+        if (currentSession.hasPermission(UserSessionPermission.read())) {
+            userService.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<ListLoadResult<GwtUser>>() {
 
-            @Override
-            public void onSuccess(ListLoadResult<GwtUser> arg0) {
-                reservedUserCombo.getStore().removeAll();
-                reservedUserCombo.getStore().add(noUser);
-                reservedUserCombo.getStore().add(anyUser);
-                reservedUserCombo.getStore().add(arg0.getData());
-                reservedUserCombo.setValue(anyUser);
-                reservedUserCombo.enable();
+                @Override
+                public void onSuccess(ListLoadResult<GwtUser> arg0) {
+                    reservedUserCombo.getStore().removeAll();
+                    reservedUserCombo.getStore().add(noUser);
+                    reservedUserCombo.getStore().add(anyUser);
+                    reservedUserCombo.getStore().add(arg0.getData());
+                    reservedUserCombo.setValue(anyUser);
+                    reservedUserCombo.enable();
 
-            }
+                }
 
-            @Override
-            public void onFailure(Throwable arg0) {
-                ConsoleInfo.display(MSGS.connectionFilteringPopUpError(), MSGS.connectionFilteringUsersError());
+                @Override
+                public void onFailure(Throwable arg0) {
+                    ConsoleInfo.display(MSGS.connectionFilteringPopUpError(), MSGS.connectionFilteringUsersError());
 
-            }
-        });
-        fieldsPanel.add(reservedUserCombo);
+                }
+            });
+            fieldsPanel.add(reservedUserCombo);
+        }
     }
 
     @Override
