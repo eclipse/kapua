@@ -24,11 +24,13 @@ import org.eclipse.kapua.service.device.management.packages.model.install.Device
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOperation;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOptions;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
+import org.eclipse.kapua.service.device.registry.Device;
 
 /**
  * {@link DevicePackageManagementService} definition.
  * <p>
- * The {@link DevicePackageManagementService} is used to interact with the DEPLOY-V2 device application.
+ * The {@link DevicePackageManagementService} is used to interact with the DEPLOY-V2 {@link org.eclipse.kapua.service.device.registry.Device} application.
  *
  * @since 1.0.0
  */
@@ -37,8 +39,8 @@ public interface DevicePackageManagementService extends KapuaService {
     /**
      * Gets the installed {@link DevicePackages}s
      *
-     * @param scopeId  The scope {@link KapuaId} of the target device
-     * @param deviceId The device {@link KapuaId} of the target device
+     * @param scopeId  The scope {@link KapuaId} of the target {@link Device}
+     * @param deviceId The {@link KapuaId} of the target {@link Device}
      * @param timeout  The timeout in milliseconds for the request to complete
      * @return The {@link DevicePackages}
      * @throws KapuaException if error occurs during processing
@@ -53,34 +55,36 @@ public interface DevicePackageManagementService extends KapuaService {
     /**
      * Downloads a {@link org.eclipse.kapua.service.device.management.packages.model.DevicePackage}
      *
-     * @param scopeId                The scope {@link KapuaId} of the target device
-     * @param deviceId               The device {@link KapuaId} of the target device
+     * @param scopeId                The scope {@link KapuaId} of the target {@link Device}
+     * @param deviceId               The {@link KapuaId} of the target {@link Device}
      * @param packageDownloadRequest The {@link DevicePackageDownloadRequest} for this request
      * @param timeout                The timeout in milliseconds for the request to complete
+     * @return the {@link KapuaId} of the {@link DeviceManagementOperation} of this download
      * @throws KapuaException if error occurs during processing
      * @since 1.0.0
      * @deprecated since 1.1.0. Please make use of {@link #downloadExec(KapuaId, KapuaId, DevicePackageDownloadRequest, DevicePackageDownloadOptions)}.
      */
     @Deprecated
-    void downloadExec(KapuaId scopeId, KapuaId deviceId, DevicePackageDownloadRequest packageDownloadRequest, Long timeout) throws KapuaException;
+    KapuaId downloadExec(KapuaId scopeId, KapuaId deviceId, DevicePackageDownloadRequest packageDownloadRequest, Long timeout) throws KapuaException;
 
     /**
      * Downloads a {@link org.eclipse.kapua.service.device.management.packages.model.DevicePackage}
      *
-     * @param scopeId                The scope {@link KapuaId} of the target device
-     * @param deviceId               The device {@link KapuaId} of the target device
+     * @param scopeId                The scope {@link KapuaId} of the target {@link Device}
+     * @param deviceId               The {@link KapuaId} of the target {@link Device}
      * @param packageDownloadRequest The {@link DevicePackageDownloadRequest} for this request
      * @param packageDownloadOptions The {@link DevicePackageDownloadOptions} for this request
+     * @return the {@link KapuaId} of the {@link DeviceManagementOperation} of this download
      * @throws KapuaException if error occurs during processing
      * @since 1.1.0
      */
-    void downloadExec(KapuaId scopeId, KapuaId deviceId, DevicePackageDownloadRequest packageDownloadRequest, DevicePackageDownloadOptions packageDownloadOptions) throws KapuaException;
+    KapuaId downloadExec(KapuaId scopeId, KapuaId deviceId, DevicePackageDownloadRequest packageDownloadRequest, DevicePackageDownloadOptions packageDownloadOptions) throws KapuaException;
 
     /**
      * Interrupts a {@link org.eclipse.kapua.service.device.management.packages.model.DevicePackage} download operation
      *
-     * @param scopeId  The scope {@link KapuaId} of the target device
-     * @param deviceId The device {@link KapuaId} of the target device
+     * @param scopeId  The scope {@link KapuaId} of the target {@link Device}
+     * @param deviceId The {@link KapuaId} of the target {@link Device}
      * @param timeout  The timeout in milliseconds for the request to complete
      * @throws KapuaException
      * @since 1.0.0
@@ -90,10 +94,10 @@ public interface DevicePackageManagementService extends KapuaService {
     /**
      * Gets the {@link DevicePackageDownloadOperation} status.
      *
-     * @param scopeId  The scope {@link KapuaId} of the target device
-     * @param deviceId The device {@link KapuaId} of the target device
+     * @param scopeId  The scope {@link KapuaId} of the target {@link Device}
+     * @param deviceId The {@link KapuaId} of the target {@link Device}
      * @param timeout  The timeout in milliseconds for the request to complete
-     * @return
+     * @return The {@link DevicePackageDownloadOperation} from the {@link Device}
      * @throws KapuaException if error occurs during processing
      * @since 1.0.0
      */
@@ -106,36 +110,38 @@ public interface DevicePackageManagementService extends KapuaService {
     /**
      * Installs a {@link org.eclipse.kapua.service.device.management.packages.model.DevicePackage}
      *
-     * @param scopeId               The scope {@link KapuaId} of the target device
-     * @param deviceId              The device {@link KapuaId} of the target device
+     * @param scopeId               The scope {@link KapuaId} of the target {@link Device}
+     * @param deviceId              The {@link KapuaId} of the target {@link Device}
      * @param packageInstallRequest The {@link DevicePackageInstallRequest} for this request
      * @param timeout               The timeout in milliseconds for the request to complete
+     * @return the {@link KapuaId} of the {@link DeviceManagementOperation} of this install
      * @throws KapuaException if error occurs during processing
      * @since 1.0.0
      * @deprecated since 1.1.0. Please make use of {@link #installExec(KapuaId, KapuaId, DevicePackageInstallRequest, DevicePackageInstallOptions)}.
      */
     @Deprecated
-    void installExec(KapuaId scopeId, KapuaId deviceId, DevicePackageInstallRequest packageInstallRequest, Long timeout) throws KapuaException;
+    KapuaId installExec(KapuaId scopeId, KapuaId deviceId, DevicePackageInstallRequest packageInstallRequest, Long timeout) throws KapuaException;
 
     /**
      * Installs a {@link org.eclipse.kapua.service.device.management.packages.model.DevicePackage}
      *
-     * @param scopeId               The scope {@link KapuaId} of the target device
-     * @param deviceId              The device {@link KapuaId} of the target device
+     * @param scopeId               The scope {@link KapuaId} of the target {@link Device}
+     * @param deviceId              The {@link KapuaId} of the target {@link Device}
      * @param packageInstallRequest The {@link DevicePackageInstallRequest} for this request
      * @param packageInstallOptions The {@link DevicePackageInstallOptions} for this request
+     * @return the {@link KapuaId} of the {@link DeviceManagementOperation} of this install
      * @throws KapuaException if error occurs during processing
      * @since 1.1.0
      */
-    void installExec(KapuaId scopeId, KapuaId deviceId, DevicePackageInstallRequest packageInstallRequest, DevicePackageInstallOptions packageInstallOptions) throws KapuaException;
+    KapuaId installExec(KapuaId scopeId, KapuaId deviceId, DevicePackageInstallRequest packageInstallRequest, DevicePackageInstallOptions packageInstallOptions) throws KapuaException;
 
     /**
      * Gets the {@link DevicePackageInstallOperation} status.
      *
-     * @param scopeId  The scope {@link KapuaId} of the target device
-     * @param deviceId The device {@link KapuaId} of the target device
+     * @param scopeId  The scope {@link KapuaId} of the target {@link Device}
+     * @param deviceId The {@link KapuaId} of the target {@link Device}
      * @param timeout  The timeout in milliseconds for the request to complete
-     * @return
+     * @return The {@link DevicePackageInstallOperation} from the {@link Device}.
      * @throws KapuaException if error occurs during processing
      * @since 1.0.0
      */
@@ -148,36 +154,38 @@ public interface DevicePackageManagementService extends KapuaService {
     /**
      * Uninstalls a {@link org.eclipse.kapua.service.device.management.packages.model.DevicePackage}
      *
-     * @param scopeId                 The scope {@link KapuaId} of the target device
-     * @param deviceId                The device {@link KapuaId} of the target device
+     * @param scopeId                 The scope {@link KapuaId} of the target {@link Device}
+     * @param deviceId                The {@link KapuaId} of the target {@link Device}
      * @param packageUninstallRequest The {@link DevicePackageUninstallRequest} for this request
      * @param timeout                 The timeout in milliseconds for the request to complete
+     * @return the {@link KapuaId} of the {@link DeviceManagementOperation} of this uninstall
      * @throws KapuaException if error occurs during processing
      * @since 1.0.0
      * @deprecated since 1.1.0. Please make use of {@link #uninstallExec(KapuaId, KapuaId, DevicePackageUninstallRequest, DevicePackageUninstallOptions)}.
      */
     @Deprecated
-    void uninstallExec(KapuaId scopeId, KapuaId deviceId, DevicePackageUninstallRequest packageUninstallRequest, Long timeout) throws KapuaException;
+    KapuaId uninstallExec(KapuaId scopeId, KapuaId deviceId, DevicePackageUninstallRequest packageUninstallRequest, Long timeout) throws KapuaException;
 
     /**
      * Uninstalls a {@link org.eclipse.kapua.service.device.management.packages.model.DevicePackage}
      *
-     * @param scopeId                 The scope {@link KapuaId} of the target device
-     * @param deviceId                The device {@link KapuaId} of the target device
+     * @param scopeId                 The scope {@link KapuaId} of the target {@link Device}
+     * @param deviceId                The {@link KapuaId} of the target {@link Device}
      * @param packageUninstallRequest The {@link DevicePackageUninstallRequest} for this request
      * @param packageUninstallOptions The The {@link DevicePackageUninstallOptions} for this request
+     * @return the {@link KapuaId} of the {@link DeviceManagementOperation} of this uninstall
      * @throws KapuaException if error occurs during processing
      * @since 1.1.0
      */
-    void uninstallExec(KapuaId scopeId, KapuaId deviceId, DevicePackageUninstallRequest packageUninstallRequest, DevicePackageUninstallOptions packageUninstallOptions) throws KapuaException;
+    KapuaId uninstallExec(KapuaId scopeId, KapuaId deviceId, DevicePackageUninstallRequest packageUninstallRequest, DevicePackageUninstallOptions packageUninstallOptions) throws KapuaException;
 
     /**
      * Gets the {@link DevicePackageUninstallOperation}.
      *
-     * @param scopeId  The scope {@link KapuaId} of the target device
-     * @param deviceId The device {@link KapuaId} of the target device
+     * @param scopeId  The scope {@link KapuaId} of the target {@link Device}
+     * @param deviceId The {@link KapuaId} of the target {@link Device}
      * @param timeout  The timeout in milliseconds for the request to complete
-     * @return
+     * @return the {@link DevicePackageUninstallOperation} from the {@link Device}
      * @throws KapuaException if error occurs during processing
      * @since 1.0.0
      */
