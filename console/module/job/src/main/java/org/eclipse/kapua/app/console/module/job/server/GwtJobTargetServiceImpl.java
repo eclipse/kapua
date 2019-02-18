@@ -93,8 +93,11 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
 
             for (JobTarget jt : jobTargetList.getItems()) {
                 GwtJobTarget gwtJobTarget = KapuaGwtJobModelConverter.convertJobTarget(jt);
-                insertClientId(gwtJobTarget, deviceMap.get(jt.getJobTargetId()));
-                gwtJobTargetList.add(gwtJobTarget);
+                Device device = DEVICE_REGISTRY_SERVICE.find(KapuaEid.parseCompactId(gwtJobTarget.getScopeId()), KapuaEid.parseCompactId(gwtJobTarget.getJobTargetId()));
+                if (device != null) {
+                    insertClientId(gwtJobTarget, deviceMap.get(jt.getJobTargetId()));
+                    gwtJobTargetList.add(gwtJobTarget);
+                }
             }
 
         } catch (Exception e) {
