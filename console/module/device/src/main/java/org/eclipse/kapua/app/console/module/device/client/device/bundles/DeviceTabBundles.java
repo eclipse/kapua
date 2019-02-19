@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -234,7 +234,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
                 }
             }
         });
-        startButton.setEnabled(true);
+        startButton.setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.execute()));
         toolBar.add(startButton);
         toolBar.add(new SeparatorToolItem());
 
@@ -293,7 +293,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
                 }
             }
         });
-        stopButton.setEnabled(true);
+        stopButton.setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.execute()));
         toolBar.add(stopButton);
         toolBar.add(new SeparatorToolItem());
 
@@ -354,10 +354,10 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
                     GwtBundle selectedBundle = grid.getSelectionModel().getSelectedItem();
                     if ("bndActive".equals(selectedBundle.getStatus())) {
                         startButton.disable();
-                        stopButton.enable();
+                        stopButton.setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.execute()));
                     } else {
                         stopButton.disable();
-                        startButton.enable();
+                        startButton.setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.execute()));
                     }
                 } else {
                     startButton.disable();
