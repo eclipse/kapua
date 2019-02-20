@@ -126,6 +126,13 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
         reservedUserCombo.setValueField("id");
         reservedUserCombo.addListener(Events.Select, comboBoxListener);
 
+        // Allow credential change
+        allowUserChangeCheckbox = new CheckBox();
+        allowUserChangeCheckbox.setName("connectionUserAllowUserChangeCheckbox");
+        allowUserChangeCheckbox.setFieldLabel(MSGS.connectionFormAllowUserChange());
+        allowUserChangeCheckbox.setToolTip(MSGS.connectionFormAllowUserChangeTooltip());
+        allowUserChangeCheckbox.setBoxLabel("");
+
         if (currentSession.hasPermission(UserSessionPermission.read())) {
             // Device User
             GWT_USER_SERVICE.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<ListLoadResult<GwtUser>>() {
@@ -148,20 +155,14 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
             });
 
             groupFormPanel.add(reservedUserCombo);
+            groupFormPanel.add(allowUserChangeCheckbox);
+
         } else {
             GwtUser selectedUser = new GwtUser();
             selectedUser.setId(selectedDeviceConnection.getReservedUserId());
             reservedUserCombo.getStore().add(selectedUser);
             reservedUserCombo.setValue(selectedUser);
         }
-
-        // Allow credential change
-        allowUserChangeCheckbox = new CheckBox();
-        allowUserChangeCheckbox.setName("connectionUserAllowUserChangeCheckbox");
-        allowUserChangeCheckbox.setFieldLabel(MSGS.connectionFormAllowUserChange());
-        allowUserChangeCheckbox.setToolTip(MSGS.connectionFormAllowUserChangeTooltip());
-        allowUserChangeCheckbox.setBoxLabel("");
-        groupFormPanel.add(allowUserChangeCheckbox);
 
         bodyPanel.add(groupFormPanel);
         populateEditDialog(selectedDeviceConnection);
