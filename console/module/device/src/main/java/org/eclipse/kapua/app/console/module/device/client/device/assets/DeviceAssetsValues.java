@@ -522,6 +522,7 @@ public class DeviceAssetsValues extends LayoutContainer {
             List<ModelData> assets = new ArrayList<ModelData>();
             GwtDeviceAsset asset = new GwtDeviceAsset();
             asset.setName(DEVICE_MSGS.assetNoAssets());
+            asset.setDescription(DEVICE_MSGS.noAsset());
             assets.add(asset);
             treeStore.removeAll();
             treeStore.add(assets, false);
