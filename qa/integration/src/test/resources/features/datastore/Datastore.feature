@@ -35,7 +35,8 @@ Feature: Datastore tests
     And The device "test-client-1"
     And I set the database to device timestamp indexing
 
-    When I set the datastore indexing window to "week"
+    Given System property "datastore.index.prefix" with value ""
+    And I set the datastore indexing window to "week"
 
     When I prepare a number of messages in the specified ranges and remember the list as "TestMessages"
       | clientId      | topic               | count | startDate                | endDate                  |
