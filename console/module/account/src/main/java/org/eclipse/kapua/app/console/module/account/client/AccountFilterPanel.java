@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,6 +14,8 @@ package org.eclipse.kapua.app.console.module.account.client;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
+
 import org.eclipse.kapua.app.console.module.account.client.messages.ConsoleAccountMessages;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
@@ -108,6 +110,8 @@ public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
         expirationDateField = new KapuaDateField();
         expirationDateField.setName("expirationDate");
         expirationDateField.setWidth(WIDTH);
+        expirationDateField.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
+        expirationDateField.setMaxLength(10);
         expirationDateField.setStyleAttribute("margin-top", "0px");
         expirationDateField.setStyleAttribute("margin-left", "5px");
         expirationDateField.setStyleAttribute("margin-right", "5px");
