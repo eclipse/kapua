@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,6 +15,7 @@ import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.job.shared.model.permission.SchedulerSessionPermission;
 import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTrigger;
 
 public class JobTabSchedulesToolbar extends EntityCRUDToolbar<GwtTrigger> {
@@ -64,5 +65,7 @@ public class JobTabSchedulesToolbar extends EntityCRUDToolbar<GwtTrigger> {
     protected void updateButtonEnablement() {
         super.updateButtonEnablement();
         addEntityButton.setEnabled(jobId != null);
+        deleteEntityButton.setEnabled(
+                selectedEntity != null && currentSession.hasPermission(SchedulerSessionPermission.delete()));
     }
 }
