@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.assets;
 
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaMessageBox;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
@@ -398,7 +399,7 @@ public class DeviceAssetsValues extends LayoutContainer {
         String assetName = assetValuesPanel.getAsset().getName();
         String message = DEVICE_MSGS.deviceAssetConfirmation(assetName);
 
-        MessageBox.confirm(MSGS.confirm(),
+        KapuaMessageBox.confirm(MSGS.confirm(),
                 message,
                 new Listener<MessageBoxEvent>() {
 
@@ -460,7 +461,7 @@ public class DeviceAssetsValues extends LayoutContainer {
     public void reset() {
         final GwtDeviceAsset asset = (GwtDeviceAsset) tree.getSelectionModel().getSelectedItem();
         if (assetValuesPanel != null && asset != null) {
-            MessageBox.confirm(MSGS.confirm(),
+            KapuaMessageBox.confirm(MSGS.confirm(),
                     DEVICE_MSGS.deviceConfigDirty(),
                     new Listener<MessageBoxEvent>() {
 

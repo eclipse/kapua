@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.client;
 
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaMessageBox;
+
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
@@ -65,7 +67,6 @@ import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleService
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -412,7 +413,7 @@ public class AccountConfigComponents extends LayoutContainer {
         String componentName = devConfPanel.getConfiguration().getComponentName();
         String message = DEVICES_MSGS.deviceConfigConfirmation(componentName);
 
-        MessageBox.confirm(MSGS.confirm(),
+        KapuaMessageBox.confirm(MSGS.confirm(),
                 message,
                 new Listener<MessageBoxEvent>() {
 
@@ -457,7 +458,7 @@ public class AccountConfigComponents extends LayoutContainer {
     public void reset() {
         final GwtConfigComponent comp = (GwtConfigComponent) tree.getSelectionModel().getSelectedItem();
         if (devConfPanel != null && comp != null) {
-            MessageBox.confirm(MSGS.confirm(),
+            KapuaMessageBox.confirm(MSGS.confirm(),
                     DEVICES_MSGS.deviceConfigDirty(),
                     new Listener<MessageBoxEvent>() {
 

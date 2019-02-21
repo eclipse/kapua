@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -43,6 +43,7 @@ import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaMessageBox;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
@@ -247,7 +248,7 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
                 if (selectedEntity.isOnline()) {
                     final GwtBundle gwtBundle = grid.getSelectionModel().getSelectedItem();
                     String bundleName = gwtBundle.getName();
-                    MessageBox.confirm(MSGS.confirm(),
+                    KapuaMessageBox.confirm(MSGS.confirm(),
                             DEVICE_MSGS.deviceStopBundle(bundleName),
                             new Listener<MessageBoxEvent>() {
 
