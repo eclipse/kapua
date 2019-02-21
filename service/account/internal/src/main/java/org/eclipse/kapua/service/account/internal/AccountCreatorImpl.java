@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,74 +11,44 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
-import java.util.Date;
-
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
 
+import java.util.Date;
+
 /**
- * Account creator service implementation.
- * 
- * @since 1.0
- * 
+ * {@link AccountCreator} implementation.
+ *
+ * @since 1.0.0
  */
 public class AccountCreatorImpl extends AbstractKapuaNamedEntityCreator<Account> implements AccountCreator {
 
     private static final long serialVersionUID = -2460883485294616032L;
 
-    private String accountName;
-
     private String organizationName;
-
     private String organizationPersonName;
-
     private String organizationEmail;
-
     private String organizationPhoneNumber;
-
     private String organizationAddressLine1;
-
     private String organizationAddressLine2;
-
     private String organizationCity;
-
     private String organizationZipPostCode;
-
     private String organizationStateProvinceCounty;
-
     private String organizationCountry;
 
     private Date expirationDate;
 
     /**
      * Constructor
-     * 
-     * @param scopeId
-     * @param name
-     *            account name
+     *
+     * @param scopeId the scope {@link KapuaId}
+     * @param name    the name
+     * @since 1.0.0
      */
     public AccountCreatorImpl(KapuaId scopeId, String name) {
         super(scopeId, name);
-    }
-
-    /**
-     * Get the account name
-     * 
-     * @return
-     */
-    public String getAccountName() {
-        return accountName;
-    }
-
-    /**
-     * Set the account name
-     * 
-     * @param accountName
-     */
-    public void setAccountName(String accountName) {
-        this.accountName = accountName;
     }
 
     @Override

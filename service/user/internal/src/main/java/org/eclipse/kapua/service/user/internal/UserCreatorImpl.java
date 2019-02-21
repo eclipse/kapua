@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,9 +21,9 @@ import org.eclipse.kapua.service.user.UserType;
 import java.util.Date;
 
 /**
- * User creator service implementation.
+ * {@link UserCreator} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class UserCreatorImpl extends AbstractKapuaNamedEntityCreator<User> implements UserCreator {
 
@@ -82,18 +82,22 @@ public class UserCreatorImpl extends AbstractKapuaNamedEntityCreator<User> imple
         this.phoneNumber = phoneNumber;
     }
 
+    @Override
     public UserType getUserType() {
         return userType;
     }
 
+    @Override
     public void setUserType(UserType userType) {
         this.userType = userType;
     }
 
+    @Override
     public String getExternalId() {
         return externalId;
     }
 
+    @Override
     public void setExternalId(String externalId) {
         this.externalId = externalId;
     }

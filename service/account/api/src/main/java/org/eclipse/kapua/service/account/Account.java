@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,9 +24,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * {@link Account} {@link org.eclipse.kapua.model.KapuaEntity}.
+ * {@link Account} {@link org.eclipse.kapua.model.KapuaEntity} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlRootElement(name = "account")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -41,53 +41,70 @@ public interface Account extends KapuaNamedEntity {
     }
 
     /**
-     * Get the account's organization
+     * Gets the account's {@link Organization}
      *
-     * @return
+     * @return the account's {@link Organization}
+     * @since 1.0.0
      */
     @XmlElement(name = "organization")
     Organization getOrganization();
 
     /**
-     * Set the account's organization
+     * Sets the account's {@link Organization}
      *
-     * @param organization
+     * @param organization the account's {@link Organization}
+     * @since 1.0.0
      */
     void setOrganization(Organization organization);
 
     /**
-     * Return the parent account path.<br>
-     * The account path is a '/' separated list of the parents account identifiers in reverse order (so it should be read from right to left).<br>
-     * e.g. The parent account path 7/14/15 mens that the current account has 15 as parent, then 15 has 14 as parent and 14 has 7 as parent.
+     * Return the parent account path
+     * <p>
+     * The account path is a '/' separated list of the parents {@link Account} identifiers in reverse order (so it should be read from right to left).<br>
+     * e.g. The parent account path 7/14/15 means that the current account has 15 as parent, then 15 has 14 as parent and 14 has 7 as parent.
      *
-     * @return
+     * @return the parent account path
+     * @since 1.0.0
      */
     @XmlElement(name = "parentAccountPath")
     String getParentAccountPath();
 
     /**
-     * Set the parent account path.
+     * Set the parent account path
+     * <p>
+     * The account path is a '/' separated list of the parents {@link Account} identifiers in reverse order (so it should be read from right to left).<br>
+     * e.g. The parent account path 7/14/15 means that the current account has 15 as parent, then 15 has 14 as parent and 14 has 7 as parent.
      *
-     * @param parentAccountPath
+     * @param parentAccountPath the parent account path
+     * @since 1.0.0
      */
     void setParentAccountPath(String parentAccountPath);
 
-    List<Account> getChildAccounts();
 
     /**
-     * Gets the current Account expiration date
+     * Gets the expiration date
      *
-     * @return the current Account expiration date
+     * @return the expiration date
+     * @since 1.0.0
      */
     @XmlElement(name = "expirationDate")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
     Date getExpirationDate();
 
     /**
-     * Sets the current Account expiration date
+     * Sets the expiration date
      *
-     * @param expirationDate the current Account expiration date
+     * @param expirationDate the expiration date
+     * @since 1.0.0
      */
     void setExpirationDate(Date expirationDate);
+
+    /**
+     * Gets the {@link List} of {@link Account} that are children of this {@link Account}
+     *
+     * @return the {@link List} of {@link Account} that are children of this {@link Account}
+     * @since 1.0.0
+     */
+    List<Account> getChildAccounts();
 
 }

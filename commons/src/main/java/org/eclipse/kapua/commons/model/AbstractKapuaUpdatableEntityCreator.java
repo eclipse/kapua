@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,41 +11,29 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.model;
 
-import java.util.Properties;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaUpdatableEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 
+import java.util.Properties;
+
 /**
- * Kapua updatable entity creator service (reference abstract implementation).
+ * {@link KapuaUpdatableEntityCreator} {@code abstract} implementation
  *
- * @param <E>
- *            entity type
- * 
- * @since 1.0
- *
+ * @param <E> the {@link KapuaEntity} for which this {@link AbstractKapuaEntityCreator} is for
+ * @since 1.0.0
  */
-@SuppressWarnings("serial")
 public abstract class AbstractKapuaUpdatableEntityCreator<E extends KapuaEntity> extends AbstractKapuaEntityCreator<E> implements KapuaUpdatableEntityCreator<E> {
 
-    protected String name;
     protected Properties entityAttributes;
 
     /**
      * Constructor
-     * 
-     * @param scopeId
-     * @param name
+     *
+     * @param scopeId the scope {@link KapuaId}
+     * @since 1.0.0
      */
-    protected AbstractKapuaUpdatableEntityCreator(KapuaId scopeId,
-            String name) {
-        super(scopeId);
-        this.name = name;
-        entityAttributes = new Properties();
-    }
-
     public AbstractKapuaUpdatableEntityCreator(KapuaId scopeId) {
         super(scopeId);
         entityAttributes = new Properties();

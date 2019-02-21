@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,14 +23,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Date;
 
 /**
- * AccountCreator encapsulates all the information needed to create a new Account in the system.<br>
- * The data provided will be used to seed the new Account and its related information such as the associated organization and users.
+ * {@link AccountCreator} {@link org.eclipse.kapua.model.KapuaEntityCreator} definition
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlRootElement(name = "accountCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "organizationName",
+@XmlType(propOrder = {"organizationName",
         "organizationPersonName",
         "organizationEmail",
         "organizationPhoneNumber",
@@ -40,7 +39,7 @@ import java.util.Date;
         "organizationZipPostCode",
         "organizationStateProvinceCounty",
         "organizationCountry",
-        "expirationDate" }, factoryClass = AccountXmlRegistry.class, factoryMethod = "newAccountCreator")
+        "expirationDate"}, factoryClass = AccountXmlRegistry.class, factoryMethod = "newAccountCreator")
 public interface AccountCreator extends KapuaNamedEntityCreator<Account> {
 
     /**

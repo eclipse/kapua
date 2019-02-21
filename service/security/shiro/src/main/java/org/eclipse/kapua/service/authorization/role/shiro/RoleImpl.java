@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,65 +11,49 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
+import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.role.Role;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * {@link Role} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @Entity(name = "Role")
 @Table(name = "athz_role")
-public class RoleImpl extends AbstractKapuaUpdatableEntity implements Role {
+public class RoleImpl extends AbstractKapuaNamedEntity implements Role {
 
     private static final long serialVersionUID = -3760818776351242930L;
-
-    @Basic
-    @Column(name = "name")
-    private String name;
 
     protected RoleImpl() {
         super();
     }
 
     /**
-     * Constructor.<br>
-     * Creates a soft clone.
-     *
-     * @param role
-     * @throws KapuaException
-     */
-    public RoleImpl(Role role) throws KapuaException {
-        super(role);
-
-        setName(role.getName());
-    }
-
-    /**
      * Constructor
      *
-     * @param scopeId
+     * @param scopeId The scope {@link KapuaId}
+     * @since 1.0.0
      */
     public RoleImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getName() {
-        return name;
+    /**
+     * Constructor.
+     * <p>
+     * Creates a soft clone.
+     *
+     * @param role The {@link Role} to clone
+     * @throws KapuaException
+     */
+    public RoleImpl(Role role) throws KapuaException {
+        super(role);
     }
 
     @Override
@@ -101,5 +85,4 @@ public class RoleImpl extends AbstractKapuaUpdatableEntity implements Role {
         }
         return true;
     }
-
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,12 +21,11 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * TriggerCreator encapsulates all the information needed to create a new Trigger in the system.<br>
- * The data provided will be used to seed the new Trigger and its related information such as the associated organization and users.
+ * {@link TriggerCreator} {@link org.eclipse.kapua.model.KapuaEntityCreator} definition
  *
- * @since 1.0
+ * @since 1.0.0
  */
-@XmlRootElement(name = "accountCreator")
+@XmlRootElement(name = "triggerCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = TriggerXmlRegistry.class, factoryMethod = "newTriggerCreator")
 public interface TriggerCreator extends KapuaNamedEntityCreator<Trigger> {

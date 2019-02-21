@@ -14,14 +14,15 @@ CREATE TABLE collision_entity_test (
   scope_id             		BIGINT(21) 	  UNSIGNED NOT NULL,
   id                     	BIGINT(21) 	  UNSIGNED NOT NULL,
   name               	    VARCHAR(255)  NOT NULL,
+  description        	    TEXT,
   created_on             	TIMESTAMP(3)  NOT NULL,
   created_by             	BIGINT(21)    UNSIGNED NOT NULL,
   modified_on            	TIMESTAMP(3),
   modified_by            	BIGINT(21)    UNSIGNED,
-  optlock                   INT UNSIGNED,
+  optlock                 INT UNSIGNED,
   test_field             	VARCHAR(255) NOT NULL UNIQUE,
-  attributes				TEXT,
-  properties                TEXT,
+  attributes				      TEXT,
+  properties              TEXT,
 
   PRIMARY KEY (id),
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,41 +11,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.tag;
 
-import org.eclipse.kapua.model.KapuaEntityCreator;
+import org.eclipse.kapua.model.KapuaNamedEntityCreator;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * {@link Tag} creator definition.<br>
+ * {@link TagCreator} definition
+ * <p>
  * It is used to create a new {@link Tag}.
  *
  * @since 1.0.0
  */
 @XmlRootElement(name = "tagCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "name" }, //
-        factoryClass = TagXmlRegistry.class, //
-        factoryMethod = "newTagCreator")
-public interface TagCreator extends KapuaEntityCreator<Tag> {
-
-    /**
-     * Sets the {@link Tag} name.
-     *
-     * @param name The {@link Tag} name.
-     * @since 1.0.0
-     */
-    void setName(String name);
-
-    /**
-     * Gets the {@link Tag} name.
-     *
-     * @return The {@link Tag} name.
-     * @since 1.0.0
-     */
-    @XmlElement(name = "name")
-    String getName();
+@XmlType(factoryClass = TagXmlRegistry.class, factoryMethod = "newTagCreator")
+public interface TagCreator extends KapuaNamedEntityCreator<Tag> {
 }

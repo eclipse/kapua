@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and others.
+ * Copyright (c) 2017, 2019 Eurotech and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,33 +22,47 @@ import java.util.Properties;
 
 public class UserCreatorMock implements UserCreator {
 
-    private String name;
     private KapuaId scopeId;
+    private String name;
+    private String description;
     private String displayName;
     private String email;
     private String phoneNumber;
     private UserType userType;
     private Date expiarionDate;
-
     private UserStatus userStatus;
+    private String externalId;
 
+
+    @Override
     public UserType getUserType() {
         return userType;
     }
 
+    @Override
     public void setUserType(UserType userType) {
         this.userType = userType;
     }
 
+    @Override
     public String getExternalId() {
         return externalId;
     }
 
+    @Override
     public void setExternalId(String externalId) {
         this.externalId = externalId;
     }
 
-    private String externalId;
+    @Override
+    public KapuaId getScopeId() {
+        return scopeId;
+    }
+
+    @Override
+    public void setScopeId(KapuaId scopeId) {
+        this.scopeId = scopeId;
+    }
 
     @Override
     public String getName() {
@@ -61,13 +75,13 @@ public class UserCreatorMock implements UserCreator {
     }
 
     @Override
-    public KapuaId getScopeId() {
-        return scopeId;
+    public String getDescription() {
+        return description;
     }
 
     @Override
-    public void setScopeId(KapuaId scopeId) {
-        this.scopeId = scopeId;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
@@ -122,13 +136,11 @@ public class UserCreatorMock implements UserCreator {
 
     @Override
     public Properties getEntityAttributes() throws KapuaException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setEntityAttributes(Properties entityAttributes) throws KapuaException {
-        // TODO Auto-generated method stub
-
+        // Not used
     }
 }
