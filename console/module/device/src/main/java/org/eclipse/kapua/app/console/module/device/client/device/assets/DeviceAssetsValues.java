@@ -43,6 +43,8 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanelSelectionModel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.DiscardButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
@@ -514,8 +516,9 @@ public class DeviceAssetsValues extends LayoutContainer {
 
         @Override
         public void loaderLoadException(LoadEvent le) {
-
-            if (le.exception != null) {
+            if (le.exception != null && le.exception instanceof GwtKapuaException) {
+                FailureHandler.handle(le.exception);
+            } else {
                 ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.assetNoAssetsErrorMessage());
             }
 

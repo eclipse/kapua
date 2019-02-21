@@ -39,6 +39,8 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
@@ -418,9 +420,12 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
         @Override
         public void loaderLoadException(LoadEvent le) {
 
-            if (le.exception != null) {
-                ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceConnectionError());
-            }
+                if (le.exception != null && le.exception instanceof GwtKapuaException) {
+                    FailureHandler.handle(le.exception);
+                } else {
+                    ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceConnectionError());
+                }
+
             startButton.disable();
             stopButton.disable();
             grid.unmask();
