@@ -123,6 +123,7 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
     /**
      * trigger will never be fired
      */
-    TRIGGER_NEVER_FIRE;
+    TRIGGER_NEVER_FIRE,
+    ERROR_JOB_STARTING;
 
 }
