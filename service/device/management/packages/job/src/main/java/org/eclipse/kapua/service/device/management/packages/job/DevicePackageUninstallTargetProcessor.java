@@ -19,6 +19,9 @@ import org.eclipse.kapua.job.engine.commons.operation.AbstractTargetProcessor;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationCreator;
+import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationFactory;
+import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationService;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService;
 import org.eclipse.kapua.service.device.management.packages.job.definition.DevicePackageUninstallPropertyKeys;
@@ -43,6 +46,9 @@ public class DevicePackageUninstallTargetProcessor extends AbstractTargetProcess
     private static final DevicePackageManagementService PACKAGES_MANAGEMENT_SERVICE = LOCATOR.getService(DevicePackageManagementService.class);
     private static final DevicePackageFactory DEVICE_PACKAGE_FACTORY = LOCATOR.getFactory(DevicePackageFactory.class);
 
+    private static final JobDeviceManagementOperationService JOB_DEVICE_MANAGEMENT_OPERATION_SERVICE = LOCATOR.getService(JobDeviceManagementOperationService.class);
+    private static final JobDeviceManagementOperationFactory JOB_DEVICE_MANAGEMENT_OPERATION_FACTORY = LOCATOR.getFactory(JobDeviceManagementOperationFactory.class);
+
     @Inject
     JobContext jobContext;
 
@@ -57,7 +63,17 @@ public class DevicePackageUninstallTargetProcessor extends AbstractTargetProcess
     @Override
     public void processTarget(JobTarget jobTarget) throws KapuaException {
 
+        KapuaId scopeId = jobTarget.getScopeId();
+        KapuaId jobId = jobTarget.getJobId();
         KapuaId operationId = new KapuaEid(IdGenerator.generate());
+
+        //
+        // Save the jobId-deviceManementOperationId pair to track resuming
+        JobDeviceManagementOperationCreator jobDeviceManagementOperationCreator = JOB_DEVICE_MANAGEMENT_OPERATION_FACTORY.newCreator(scopeId);
+        jobDeviceManagementOperationCreator.setJobId(jobId);
+        jobDeviceManagementOperationCreator.setDeviceManagementOperationId(operationId);
+
+        KapuaSecurityUtils.doPrivileged(() -> JOB_DEVICE_MANAGEMENT_OPERATION_SERVICE.create(jobDeviceManagementOperationCreator));
 
         //
         // Extract parameters from context
@@ -70,6 +86,6 @@ public class DevicePackageUninstallTargetProcessor extends AbstractTargetProcess
         packageUninstallOptions.setTimeout(timeout);
         packageUninstallOptions.setForcedOperationId(operationId);
 
-        KapuaSecurityUtils.doPrivileged(() -> PACKAGES_MANAGEMENT_SERVICE.uninstallExec(jobTarget.getScopeId(), jobTarget.getJobTargetId(), packageUninstallRequest, packageUninstallOptions));
+        KapuaSecurityUtils.doPrivileged(() -> PACKAGES_MANAGEMENT_SERVICE.uninstallExec(scopeId, jobTarget.getJobTargetId(), packageUninstallRequest, packageUninstallOptions));
     }
 }
