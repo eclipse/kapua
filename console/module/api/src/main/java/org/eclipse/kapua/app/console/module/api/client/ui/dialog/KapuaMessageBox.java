@@ -18,7 +18,7 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 
 public class KapuaMessageBox extends MessageBox{
 
-    public static String question = "fa fa-question-circle fa-3x";
+    public static final String QUESTION = "fa fa-question-circle fa-3x";
     private Dialog dialog;
     public static final String YESNO = Dialog.YESNO;
 
@@ -28,16 +28,15 @@ public class KapuaMessageBox extends MessageBox{
           box.setMessage(msg);
           box.addCallback(callback);
           box.setButtons(YESNO);
-          box.setIcon(question);
+          box.setIcon(QUESTION);
           box.show();
 
         return box;
       }
 
-    @Override
     public Dialog getDialog() {
         dialog = super.getDialog();
-        dialog.setIconStyle(question);
+        dialog.setIconStyle(QUESTION);
         return dialog;
     }
 
