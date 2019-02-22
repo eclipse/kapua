@@ -47,7 +47,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaDateField;
 public class CredentialAddDialog extends EntityAddEditDialog {
 
     protected static final ConsoleCredentialMessages MSGS = GWT.create(ConsoleCredentialMessages.class);
-    private static final ConsoleMessages CMSGS = GWT.create(ConsoleMessages.class);
+    protected static final ConsoleMessages CMSGS = GWT.create(ConsoleMessages.class);
 
     protected FormPanel credentialFormPanel;
     private String selectedUserId;
@@ -212,16 +212,14 @@ public class CredentialAddDialog extends EntityAddEditDialog {
     }
 
     public void validateUserCredential() {
-        if(credentialType.getValue() == null || (password.isVisible() && password.getValue() == null) || (confirmPassword.isVisible() && confirmPassword.getValue() == null)) {
-            ConsoleInfo.display("Error", CMSGS.allFieldsRequired());
+        if (credentialType.getValue() == null || (password.isVisible() && password.getValue() == null) || (confirmPassword.isVisible() && confirmPassword.getValue() == null)) {
+            ConsoleInfo.display(CMSGS.popupError(), CMSGS.allFieldsRequired());
         } else if (!password.isValid()) {
-            ConsoleInfo.display("Error", password.getErrorMessage());
+            ConsoleInfo.display(CMSGS.popupError(), password.getErrorMessage());
         } else if (password.getValue() != null && !password.getValue().equals(confirmPassword.getValue())) {
-            ConsoleInfo.display("Error", confirmPassword.getErrorMessage());
+            ConsoleInfo.display(CMSGS.popupError(), confirmPassword.getErrorMessage());
         } else if (!expirationDate.isValid()) {
-            ConsoleInfo.display("Error", KapuaSafeHtmlUtils.htmlUnescape(expirationDate.getErrorMessage()));
-        } else if (!credentialType.isValid()) {
-            ConsoleInfo.display("Error", credentialType.getMessages().getBlankText());
+            ConsoleInfo.display(CMSGS.popupError(), KapuaSafeHtmlUtils.htmlUnescape(expirationDate.getErrorMessage()));
         }
     }
 
