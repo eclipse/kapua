@@ -38,7 +38,7 @@ public class JobTabSchedulesToolbar extends EntityCRUDToolbar<GwtTrigger> {
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
         if (jobId != null) {
-            addEntityButton.setEnabled(true);
+            addEntityButton.setEnabled(currentSession.hasPermission(SchedulerSessionPermission.write()));
             refreshEntityButton.setEnabled(true);
         } else {
             addEntityButton.setEnabled(false);
@@ -64,7 +64,7 @@ public class JobTabSchedulesToolbar extends EntityCRUDToolbar<GwtTrigger> {
     @Override
     protected void updateButtonEnablement() {
         super.updateButtonEnablement();
-        addEntityButton.setEnabled(jobId != null);
+        addEntityButton.setEnabled(jobId != null && currentSession.hasPermission(SchedulerSessionPermission.write()));
         deleteEntityButton.setEnabled(
                 selectedEntity != null && currentSession.hasPermission(SchedulerSessionPermission.delete()));
     }
