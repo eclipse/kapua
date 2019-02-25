@@ -17,7 +17,6 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -28,25 +27,18 @@ import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.scheduler.SchedulerDomains;
+import org.eclipse.kapua.service.scheduler.quartz.SchedulerEntityManagerFactory;
+import org.eclipse.kapua.service.scheduler.quartz.utils.QuartzTriggerUtils;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
-import org.eclipse.kapua.service.scheduler.trigger.quartz.job.KapuaJobLauncer;
-import org.quartz.CronScheduleBuilder;
-import org.quartz.JobBuilder;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
-import org.quartz.SimpleScheduleBuilder;
-import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 
@@ -121,63 +113,8 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
             Trigger trigger = TriggerDAO.create(em, triggerCreator);
 
             // Quartz Job definition and creation
-            JobKey jobkey = JobKey.jobKey(KapuaJobLauncer.class.getName(), "USER");
+            QuartzTriggerUtils.createQuartzTrigger(trigger);
 
-            SchedulerFactory sf = new StdSchedulerFactory();
-            Scheduler scheduler;
-            try {
-                scheduler = sf.getScheduler();
-            } catch (SchedulerException se) {
-                se.printStackTrace();
-                throw new RuntimeException(se);
-            }
-
-            JobDetail kapuaJobLauncherJobDetail;
-            try {
-                kapuaJobLauncherJobDetail = scheduler.getJobDetail(jobkey);
-
-                if (kapuaJobLauncherJobDetail == null) {
-                    kapuaJobLauncherJobDetail = JobBuilder.newJob(KapuaJobLauncer.class)
-                            .withIdentity(jobkey)
-                            .storeDurably()
-                            .build();
-
-                    scheduler.addJob(kapuaJobLauncherJobDetail, false);
-                }
-            } catch (SchedulerException se) {
-                se.printStackTrace();
-                throw new RuntimeException(se);
-            }
-
-            // Quartz Trigger data map definition
-            TriggerKey triggerKey = TriggerKey.triggerKey(trigger.getId().toCompactId(), trigger.getScopeId().toCompactId());
-
-            JobDataMap triggerDataMap = new JobDataMap();
-            for (TriggerProperty tp : trigger.getTriggerProperties()) {
-                triggerDataMap.put(tp.getName(), KapuaEid.parseCompactId(tp.getPropertyValue()));
-            }
-
-            // Quartz Trigger definition
-            TriggerBuilder<org.quartz.Trigger> triggerBuilder = TriggerBuilder.newTrigger()
-                    .forJob(kapuaJobLauncherJobDetail)
-                    .withIdentity(triggerKey)
-                    .usingJobData(triggerDataMap)
-                    .startAt(trigger.getStartsOn())
-                    .endAt(trigger.getEndsOn());
-
-            if (trigger.getRetryInterval() != null) {
-                triggerBuilder.withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(trigger.getRetryInterval().intValue()));
-            } else {
-                triggerBuilder.withSchedule(CronScheduleBuilder.cronSchedule(trigger.getCronScheduling()).inTimeZone(TimeZone.getTimeZone("UTC")));
-            }
-
-            org.quartz.Trigger quarztTrigger = triggerBuilder.build();
-            try {
-                scheduler.scheduleJob(quarztTrigger);
-            } catch (SchedulerException se) {
-                se.printStackTrace();
-                throw new KapuaException(KapuaErrorCodes.TRIGGER_NEVER_FIRE);
-            }
             return trigger;
         });
     }

@@ -17,7 +17,11 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
         logicalFilePath="KapuaDB/changelog-scheduler-1.1.0.xml">
 
-    <include relativeToChangelogFile="true" file="./scheduler-engine-quartz-update_job_launcher.xml"/>
-    <include relativeToChangelogFile="true" file="./trigger-description.xml"/>
+    <changeSet id="changelog-scheduler-quarz-engine-1.1.0" author="eurotech">
+        <update tableName="athz_domain">
+            <column name="schdl_qrtz_job_details" value="org.eclipse.kapua.service.scheduler.quartz.job.KapuaJobLauncher"/>
+            <where>schdl_qrtz_job_details = 'org.eclipse.kapua.service.scheduler.trigger.quartz.job.KapuaJobLauncer'</where>
+        </update>
+    </changeSet>
 
 </databaseChangeLog>

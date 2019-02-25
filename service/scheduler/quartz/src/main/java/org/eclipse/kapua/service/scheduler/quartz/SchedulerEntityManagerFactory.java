@@ -9,20 +9,19 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.scheduler.trigger.quartz;
-
-import java.util.HashMap;
-import java.util.Map;
+package org.eclipse.kapua.service.scheduler.quartz;
 
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Entity manager factory for the scheduler module.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class SchedulerEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
 
@@ -43,7 +42,7 @@ public class SchedulerEntityManagerFactory extends AbstractEntityManagerFactory 
 
     /**
      * Return the {@link EntityManager} singleton instance
-     * 
+     *
      * @return
      */
     public static SchedulerEntityManagerFactory getInstance() {
