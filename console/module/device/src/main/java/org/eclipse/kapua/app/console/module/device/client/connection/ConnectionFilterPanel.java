@@ -55,6 +55,8 @@ public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection
     private GwtUser anyUser;
     private KapuaTextField<String> protocolField;
     private final ComboBox<GwtUser> reservedUserCombo;
+    Label userLabel;
+    Label reservedUserLabel;
 
     public ConnectionFilterPanel(AbstractEntityView<GwtDeviceConnection> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
@@ -118,7 +120,7 @@ public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection
         fieldsPanel.add(clientIPFilter);
 
         if (currentSession.hasPermission(UserSessionPermission.read())) {
-            Label userLabel = new Label(MSGS.connectionFilterUser());
+            userLabel = new Label(MSGS.connectionFilterUser());
             userLabel.setWidth(WIDTH);
             userLabel.setStyleAttribute("margin", "5px");
             fieldsPanel.add(userLabel);
@@ -162,7 +164,11 @@ public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection
 
                 @Override
                 public void onFailure(Throwable arg0) {
-                    ConsoleInfo.display(MSGS.connectionFilteringPopUpError(), MSGS.connectionFilteringUsersError());
+                    userLabel.setVisible(false);
+                    userCombo.setVisible(false);
+                    if (userCombo.isVisible()) {
+                        ConsoleInfo.display(MSGS.connectionFilteringPopUpError(), MSGS.connectionFilteringUsersError());
+                    }
 
                 }
             });
@@ -185,7 +191,7 @@ public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection
         fieldsPanel.add(protocolField);
 
         if (currentSession.hasPermission(UserSessionPermission.read())) {
-            Label reservedUserLabel = new Label(MSGS.connectionFilterReservedUserLabel());
+            reservedUserLabel = new Label(MSGS.connectionFilterReservedUserLabel());
             reservedUserLabel.setWidth(WIDTH);
             reservedUserLabel.setStyleAttribute("margin", "5px");
             fieldsPanel.add(reservedUserLabel);
@@ -222,7 +228,11 @@ public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection
 
                 @Override
                 public void onFailure(Throwable arg0) {
-                    ConsoleInfo.display(MSGS.connectionFilteringPopUpError(), MSGS.connectionFilteringUsersError());
+                    reservedUserLabel.setVisible(false);
+                    reservedUserCombo.setVisible(false);
+                    if (reservedUserCombo.isVisible()) {
+                        ConsoleInfo.display(MSGS.connectionFilteringPopUpError(), MSGS.connectionFilteringUsersError());
+                    }
 
                 }
             });
