@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -57,6 +57,7 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
     private static final Logger logger = LoggerFactory.getLogger(KapuaAuthorizingRealm.class);
 
     public static final String REALM_NAME = "kapuaAuthorizingRealm";
+    public static final String UNKNOWN_USER = "This user could not be found in the database. Please refresh browser window and contact your system administrator.";
 
     public KapuaAuthorizingRealm() throws KapuaException {
         setName(REALM_NAME);
@@ -94,7 +95,7 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
         //
         // Check existence
         if (user == null) {
-            throw new UnknownAccountException();
+            throw new UnknownAccountException(UNKNOWN_USER);
         }
 
         //
