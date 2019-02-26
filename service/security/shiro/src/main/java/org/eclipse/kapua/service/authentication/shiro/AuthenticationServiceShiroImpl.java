@@ -26,6 +26,7 @@ import org.apache.shiro.session.mgt.AbstractSessionManager;
 import org.apache.shiro.session.mgt.AbstractValidatingSessionManager;
 import org.apache.shiro.session.mgt.SimpleSession;
 import org.apache.shiro.subject.Subject;
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -274,6 +275,8 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
                 }
             }
             currentUser.logout();
+        } catch (KapuaEntityNotFoundException kenfe) {
+            // Exception should not be propagated it is sometimes expected behaviour
         } catch (Exception e) {
             throw KapuaException.internalError(e);
         } finally {
@@ -315,7 +318,11 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.REFRESH_ERROR);
         }
         KapuaSecurityUtils.doPrivileged(() -> {
-            accessTokenService.invalidate(expiredAccessToken.getScopeId(), expiredAccessToken.getId());
+            try {
+                accessTokenService.invalidate(expiredAccessToken.getScopeId(), expiredAccessToken.getId());
+            } catch (KapuaEntityNotFoundException kenfe) {
+                // Exception should not be propagated it is sometimes expected behaviour
+            }
             return null;
         });
         return createAccessToken((KapuaEid) expiredAccessToken.getScopeId(), (KapuaEid) expiredAccessToken.getUserId());

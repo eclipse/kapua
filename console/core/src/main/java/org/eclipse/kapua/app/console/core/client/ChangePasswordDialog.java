@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.client;
 
+import org.eclipse.kapua.app.console.core.client.util.Logout;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
@@ -104,6 +105,10 @@ public class ChangePasswordDialog extends SimpleDialog {
                     if (gwtCaught.getCode().equals(GwtKapuaErrorCode.INVALID_USERNAME_PASSWORD)) {
                         ConsoleInfo.display("Error", ActionDialog.MSGS.changePasswordError(MSGS.changePasswordErrorWrongOldPassword()));
                         oldPassword.markInvalid(MSGS.changePasswordErrorWrongOldPassword());
+                    } else if (gwtCaught.getCode().equals(GwtKapuaErrorCode.UNAUTHENTICATED)) {
+                        ConsoleInfo.display("Error", ActionDialog.MSGS.changePasswordError(caught.getLocalizedMessage()));
+                        hide();
+                        Logout.logout();
                     } else {
                         ConsoleInfo.display("Error", ActionDialog.MSGS.changePasswordError(caught.getLocalizedMessage()));
                     }

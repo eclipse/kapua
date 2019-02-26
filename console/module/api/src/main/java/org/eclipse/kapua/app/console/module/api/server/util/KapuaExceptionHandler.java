@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.server.util;
 
+import org.apache.shiro.authc.AuthenticationException;
 import org.eclipse.kapua.DeviceMenagementException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaEntityUniquenessException;
@@ -74,6 +75,8 @@ public class KapuaExceptionHandler {
 
             // default
             throw new GwtKapuaException(GwtKapuaErrorCode.INVALID_USERNAME_PASSWORD, t);
+        } else if (t instanceof AuthenticationException) {
+            throw new GwtKapuaException(GwtKapuaErrorCode.UNAUTHENTICATED, t);
         } else if (t instanceof KapuaRuntimeException && ((KapuaRuntimeException) t).getCode().equals(KapuaErrorCodes.ENTITY_ALREADY_EXISTS) ||
                    t.getCause() instanceof KapuaRuntimeException && ((KapuaRuntimeException) t.getCause()).getCode().equals(KapuaErrorCodes.ENTITY_ALREADY_EXISTS)) {
             logger.error("entity already exists", t);
