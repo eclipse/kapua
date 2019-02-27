@@ -34,12 +34,6 @@ public class KapuaMessageBox extends MessageBox{
         return box;
       }
 
-    public Dialog getDialog() {
-        dialog = super.getDialog();
-        dialog.setIconStyle(QUESTION);
-        return dialog;
-    }
-
     @Override
     public void show() {
         dialog = getDialog();
