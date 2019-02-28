@@ -90,9 +90,6 @@ public class KapuaExceptionHandler {
         } else if(t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.SUBJECT_UNAUTHORIZED.name())) {
             logger.warn("User unauthorize", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.SUBJECT_UNAUTHORIZED, t, ((SubjectUnauthorizedException)t).getPermission().toString());
-        } else if(t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.PERMISSIONS_REVOKED.name())) {
-            logger.warn("Permisions revoked", t);
-            throw new GwtKapuaException(GwtKapuaErrorCode.PERMISSIONS_REVOKED, t, t.getLocalizedMessage());
         } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT.name())) {
             logger.warn("Entity already exist in another account", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT, t, t.getLocalizedMessage());

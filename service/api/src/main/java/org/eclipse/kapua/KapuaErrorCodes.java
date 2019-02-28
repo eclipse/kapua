@@ -119,7 +119,7 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
     DEVICE_NOT_FOUND,
     SCHEDULE_DUPLICATE_NAME,
     DOWNLOAD_PACKAGE_EXCEPTION,
-    PERMISSIONS_REVOKED,
+
     /**
      * trigger will never be fired
      */
