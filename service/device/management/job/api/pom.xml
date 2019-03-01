@@ -27,5 +27,16 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-service-api</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-registry-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-job-engine-api</artifactId>
+        </dependency>
     </dependencies>
+
 </project>

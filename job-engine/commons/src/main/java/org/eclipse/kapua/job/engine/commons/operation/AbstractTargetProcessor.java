@@ -56,7 +56,7 @@ public abstract class AbstractTargetProcessor implements TargetOperation {
 
             jobTarget.setStatus(getCompletedStatus(jobTarget));
 
-            jobLogger.info("Processing item: {} - Done!", jobTarget.getId());
+            jobLogger.info("Processing item: {} - DONE!", jobTarget.getId());
         } catch (Exception e) {
             jobLogger.error(e, "Processing item: {} - Error!", jobTarget.getId());
 

@@ -772,7 +772,7 @@
                 <artifactId>kapua-job-internal</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
+                        <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-job-test</artifactId>
                 <version>${project.version}</version>
@@ -783,13 +783,14 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+            <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-job-engine-commons</artifactId>
+                <artifactId>kapua-job-engine</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-job-engine</artifactId>
+                <artifactId>kapua-job-engine-commons</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -800,6 +801,11 @@
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-job-engine-jbatch</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-job-engine-remote</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

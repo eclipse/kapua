@@ -29,6 +29,7 @@ import org.eclipse.kapua.service.device.management.packages.model.uninstall.Devi
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 import org.eclipse.kapua.service.job.operation.TargetOperation;
 import org.eclipse.kapua.service.job.targets.JobTarget;
+import org.eclipse.kapua.service.job.targets.JobTargetStatus;
 
 import javax.batch.runtime.context.JobContext;
 import javax.batch.runtime.context.StepContext;
@@ -87,5 +88,15 @@ public class DevicePackageUninstallTargetProcessor extends AbstractTargetProcess
         packageUninstallOptions.setForcedOperationId(operationId);
 
         KapuaSecurityUtils.doPrivileged(() -> PACKAGES_MANAGEMENT_SERVICE.uninstallExec(scopeId, jobTarget.getJobTargetId(), packageUninstallRequest, packageUninstallOptions));
+    }
+
+    @Override
+    protected JobTargetStatus getCompletedStatus(JobTarget jobTarget) {
+
+        if (JobTargetStatus.PROCESS_AWAITING.equals(jobTarget.getStatus())) {
+            return JobTargetStatus.AWAITING_COMPLETION;
+        }
+
+        return super.getCompletedStatus(jobTarget);
     }
 }

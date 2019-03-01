@@ -101,7 +101,7 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
         // Wrap the JobTargets in a wrapper object to store additional informations
         jobTargets.getItems().forEach(jt -> wrappedJobTargets.add(new JobTargetWrapper(jt)));
 
-        jobLogger.info("Opening cursor... Done!");
+        jobLogger.info("Opening cursor... DONE!");
     }
 
     @Override
@@ -118,7 +118,7 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
             currentWrappedJobTarget = wrappedJobTargets.get(jobTargetIndex++);
         }
 
-        jobLogger.info("Reading item... Done!");
+        jobLogger.info("Reading item... DONE!");
         return currentWrappedJobTarget;
     }
 

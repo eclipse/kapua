@@ -29,6 +29,7 @@ import org.eclipse.kapua.service.device.management.packages.model.download.Devic
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
 import org.eclipse.kapua.service.job.operation.TargetOperation;
 import org.eclipse.kapua.service.job.targets.JobTarget;
+import org.eclipse.kapua.service.job.targets.JobTargetStatus;
 
 import javax.batch.runtime.context.JobContext;
 import javax.batch.runtime.context.StepContext;
@@ -63,6 +64,10 @@ public class DevicePackageDownloadTargetProcessor extends AbstractTargetProcesso
     @Override
     public void processTarget(JobTarget jobTarget) throws KapuaException {
 
+        if (JobTargetStatus.AWAITING_COMPLETION.equals(jobTarget.getStatus()) || JobTargetStatus.NOTIFIED_COMPLETION.equals(jobTarget.getStatus())) {
+            return;
+        }
+
         KapuaId scopeId = jobTarget.getScopeId();
         KapuaId jobId = jobTarget.getJobId();
         KapuaId operationId = new KapuaEid(IdGenerator.generate());
@@ -87,5 +92,14 @@ public class DevicePackageDownloadTargetProcessor extends AbstractTargetProcesso
         packageDownloadOptions.setForcedOperationId(operationId);
 
         KapuaSecurityUtils.doPrivileged(() -> PACKAGES_MANAGEMENT_SERVICE.downloadExec(scopeId, jobTarget.getJobTargetId(), packageDownloadRequest, packageDownloadOptions));
+    }
+
+    @Override
+    protected JobTargetStatus getCompletedStatus(JobTarget jobTarget) {
+        if (JobTargetStatus.NOTIFIED_COMPLETION.equals(jobTarget.getStatus())) {
+            return super.getCompletedStatus(jobTarget);
+        }
+
+        return JobTargetStatus.AWAITING_COMPLETION;
     }
 }

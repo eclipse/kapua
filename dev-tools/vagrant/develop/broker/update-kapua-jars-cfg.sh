@@ -34,7 +34,7 @@ for name in $(ls  ${BROKER_CORE_DEPENDENCY_DIR} | grep -Ev 'qa|jaxb-|activemq-|k
 echo "    Copy dependencies for broker-core... DONE!"
 
 echo '    Copy Kapua modules...'
-for name in $(find /kapua -name 'kapua-*.jar' | grep target | grep -Ev 'qa|bin|test|console|WEB-INF|dependency|mysql|assembly|dev-tool|job|scheduler');
+for name in $(find /kapua -name 'kapua-*.jar' | grep target | grep -Ev 'qa|bin|test|console|WEB-INF|dependency|mysql|assembly|dev-tools');
     do
         jar_name=$(echo - ${name} - ${name} | awk -F"/" '{print $NF}');
         echo "        Create symbolic link from ./lib/extra/${jar_name} ${name}";

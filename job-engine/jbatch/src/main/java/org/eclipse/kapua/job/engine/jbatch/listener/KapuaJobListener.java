@@ -106,9 +106,9 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
 
         jobLogger.info("Running before job...");
         jobLogger.info("Run configuration:");
-        jobLogger.info("\tTarget count:           {}", jobContextWrapper.getTargetSublist().size());
-        jobLogger.info("\tFrom step index:        {}", jobContextWrapper.getFromStepIndex());
-        jobLogger.info("\tResuming job execution: {}", jobContextWrapper.getResumedJobExecutionId());
+        jobLogger.info("\tTarget count:           {}", jobContextWrapper.getTargetSublist().size() != 0 ? jobContextWrapper.getTargetSublist().size() : "all");
+        jobLogger.info("\tFrom step index:        {}", jobContextWrapper.getFromStepIndex() != null ? jobContextWrapper.getFromStepIndex() : 0);
+        jobLogger.info("\tResuming job execution: {}", jobContextWrapper.getResumedJobExecutionId() != null ? jobContextWrapper.getResumedJobExecutionId() : "none");
         jobLogger.info("\tEnqueue:                {}", jobContextWrapper.getEnqueue());
 
         JobExecution jobExecution;
@@ -164,7 +164,7 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
                 }
 
                 KapuaSecurityUtils.doPrivileged(() -> JbatchDriver.stopJob(jobExecution.getScopeId(), jobExecution.getJobId(), jobExecution.getId()));
-                jobLogger.warn("Another execution is running! Stopping and enqueuing this execution... Done! EnqueuedJob id : {}", queuedJobExecution.getJobId());
+                jobLogger.warn("Another execution is running! Stopping and enqueuing this execution... DONE! EnqueuedJob id : {}", queuedJobExecution.getJobId());
 
             } else {
                 jobLogger.error("Another execution is running! Aborting this execution...");

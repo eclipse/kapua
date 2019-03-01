@@ -43,7 +43,6 @@ public class KapuaJobLauncher implements Job {
                 throw new KapuaEntityNotFoundException(org.eclipse.kapua.service.job.Job.class.getName(), jobId);
             }
 
-
             if (jobStartOptions == null) {
                 KapuaSecurityUtils.doPrivileged(() -> jobEngineService.startJob(scopeId, jobId));
             } else {
@@ -71,4 +70,11 @@ public class KapuaJobLauncher implements Job {
         this.jobId = jobId;
     }
 
+    public JobStartOptions getJobStartOptions() {
+        return jobStartOptions;
+    }
+
+    public void setJobStartOptions(JobStartOptions jobStartOptions) {
+        this.jobStartOptions = jobStartOptions;
+    }
 }

@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.commons.operation;
 
+import org.eclipse.kapua.KapuaOptimisticLockingException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.commons.logger.JobLogger;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobContextWrapper;
@@ -70,6 +71,7 @@ public class DefaultTargetWriter extends AbstractItemWriter implements TargetWri
             jobTarget.setStepIndex(stepContextWrapper.getStepIndex());
             jobTarget.setStatus(processedJobTarget.getStatus());
             jobTarget.setStatusMessage(processedWrappedJobTarget.getProcessingException() != null ? processedWrappedJobTarget.getProcessingException().getMessage() : null);
+            jobTarget.setOptlock(processedJobTarget.getOptlock());
 
             if (JobTargetStatus.PROCESS_OK.equals(jobTarget.getStatus())) {
 
@@ -81,9 +83,13 @@ public class DefaultTargetWriter extends AbstractItemWriter implements TargetWri
                 }
             }
 
-            KapuaSecurityUtils.doPrivileged(() -> JOB_TARGET_SERVICE.update(jobTarget));
+            try {
+                KapuaSecurityUtils.doPrivileged(() -> JOB_TARGET_SERVICE.update(jobTarget));
+            } catch (KapuaOptimisticLockingException kole) {
+                LOG.warn("Target {} has been updated by another component! Status was: {}. Error: {}", jobTarget.getId(), jobTarget.getStatus(), kole.getMessage());
+            }
         }
 
-        jobLogger.info("Writing items... Done!");
+        jobLogger.info("Writing items... DONE!");
     }
 }
