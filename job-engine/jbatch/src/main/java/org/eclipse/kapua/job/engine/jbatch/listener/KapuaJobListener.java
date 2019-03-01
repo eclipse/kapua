@@ -105,6 +105,11 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
         jobLogger.setClassLog(LOG);
 
         jobLogger.info("Running before job...");
+        jobLogger.info("Run configuration:");
+        jobLogger.info("\tTarget count:           {}", jobContextWrapper.getTargetSublist().size());
+        jobLogger.info("\tFrom step index:        {}", jobContextWrapper.getFromStepIndex());
+        jobLogger.info("\tResuming job execution: {}", jobContextWrapper.getResumedJobExecutionId());
+        jobLogger.info("\tEnqueue:                {}", jobContextWrapper.getEnqueue());
 
         JobExecution jobExecution;
         if (jobContextWrapper.getResumedJobExecutionId() != null) {

@@ -54,13 +54,13 @@ public abstract class AbstractTargetProcessor implements TargetOperation {
         try {
             processTarget(jobTarget);
 
-            jobTarget.setStatus(JobTargetStatus.PROCESS_OK);
+            jobTarget.setStatus(getCompletedStatus(jobTarget));
 
             jobLogger.info("Processing item: {} - Done!", jobTarget.getId());
         } catch (Exception e) {
             jobLogger.error(e, "Processing item: {} - Error!", jobTarget.getId());
 
-            jobTarget.setStatus(JobTargetStatus.PROCESS_FAILED);
+            jobTarget.setStatus(getFailedStatus(jobTarget));
             wrappedJobTarget.setProcessingException(e);
         }
 
@@ -82,7 +82,15 @@ public abstract class AbstractTargetProcessor implements TargetOperation {
      * @throws KapuaException in case of exceptions during the processing.
      * @since 1.0.0
      */
-    public abstract void processTarget(JobTarget jobTarget) throws KapuaException;
+    protected abstract void processTarget(JobTarget jobTarget) throws KapuaException;
+
+    protected JobTargetStatus getCompletedStatus(JobTarget jobTarget) {
+        return JobTargetStatus.PROCESS_OK;
+    }
+
+    protected JobTargetStatus getFailedStatus(JobTarget jobTarget) {
+        return JobTargetStatus.PROCESS_FAILED;
+    }
 
     /**
      * Sets {@link #jobContextWrapper} and {@link #stepContextWrapper} wrapping the given {@link JobContext} and the {@link StepContext}.
