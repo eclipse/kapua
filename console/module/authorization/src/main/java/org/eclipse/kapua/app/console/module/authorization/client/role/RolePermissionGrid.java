@@ -32,8 +32,6 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleRoleMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermission;
-import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.AccessInfoSessionPermission;
-import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.DomainSessionPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.GroupSessionPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.RoleSessionPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRoleService;
@@ -142,14 +140,12 @@ public class RolePermissionGrid extends EntityGrid<GwtRolePermission> {
     protected void selectionChangedEvent(GwtRolePermission selectedItem) {
         super.selectionChangedEvent(selectedItem);
         rolePermissionToolBar.getAddEntityButton().setEnabled(selectedRole != null 
-                && currentSession.hasPermission(AccessInfoSessionPermission.read())
-                && currentSession.hasPermission(AccessInfoSessionPermission.write())
-                && currentSession.hasPermission(DomainSessionPermission.read())
                 && currentSession.hasPermission(RoleSessionPermission.write()));
         if (selectedItem == null) {
             rolePermissionToolBar.getDeleteEntityButton().disable();
         } else {
-            rolePermissionToolBar.getDeleteEntityButton().setEnabled(currentSession.hasPermission(AccessInfoSessionPermission.delete()));;
+            rolePermissionToolBar.getDeleteEntityButton()
+                    .setEnabled(currentSession.hasPermission(RoleSessionPermission.delete()));
         }
     }
 

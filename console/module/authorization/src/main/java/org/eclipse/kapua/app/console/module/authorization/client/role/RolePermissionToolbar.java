@@ -19,8 +19,6 @@ import org.eclipse.kapua.app.console.module.authorization.client.role.dialog.Rol
 import org.eclipse.kapua.app.console.module.authorization.client.role.dialog.RolePermissionDeleteDialog;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermission;
-import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.AccessInfoSessionPermission;
-import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.DomainSessionPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.RoleSessionPermission;
 
 public class RolePermissionToolbar extends EntityCRUDToolbar<GwtRolePermission> {
@@ -57,9 +55,6 @@ public class RolePermissionToolbar extends EntityCRUDToolbar<GwtRolePermission> 
     private void checkAddButton() {
         if (getAddEntityButton() != null) {
             getAddEntityButton().setEnabled(selectedRole != null 
-                    && currentSession.hasPermission(AccessInfoSessionPermission.read())
-                    && currentSession.hasPermission(AccessInfoSessionPermission.write())
-                    && currentSession.hasPermission(DomainSessionPermission.read())
                     && currentSession.hasPermission(RoleSessionPermission.write()));
         }
     }
