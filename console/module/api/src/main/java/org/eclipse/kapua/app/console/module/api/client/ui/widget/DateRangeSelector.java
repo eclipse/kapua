@@ -284,10 +284,8 @@ public class DateRangeSelector extends LayoutContainer {
 
                     @Override
                     public String validate(Field<?> field, String value) {
-                        if (startDateField.getValue().after(endDateField.getValue())) {
+                        if (startDateField.getValue() != null && endDateField.getValue() != null && startDateField.getValue().after(endDateField.getValue())) {
                             return MSGS.dataDateRangeInvalidStartDate();
-                        } else {
-                            endDateField.clearInvalid();
                         }
                         return null;
                     }
@@ -303,10 +301,8 @@ public class DateRangeSelector extends LayoutContainer {
 
                     @Override
                     public String validate(Field<?> field, String value) {
-                        if (endDateField.getValue().before(startDateField.getValue())) {
+                        if (startDateField.getValue() != null && endDateField.getValue() != null && endDateField.getValue().before(startDateField.getValue())) {
                             return MSGS.dataDateRangeInvalidStopDate();
-                        } else {
-                            startDateField.clearInvalid();
                         }
                         return null;
                     }
@@ -318,7 +314,7 @@ public class DateRangeSelector extends LayoutContainer {
 
             @Override
             public String validate(Field<?> field, String value) {
-                if (startDateField.getValue().equals(endDateField.getValue()) &&
+                if (startDateField.getValue() != null && endDateField.getValue() != null && startDateField.getValue().equals(endDateField.getValue()) &&
                         startTimeField.getDateValue().after(endTimeField.getDateValue())) {
                     return MSGS.dataDateRangeInvalidStartTime();
                 } else {
@@ -331,7 +327,7 @@ public class DateRangeSelector extends LayoutContainer {
 
             @Override
             public String validate(Field<?> field, String value) {
-                if (startDateField.getValue().equals(endDateField.getValue()) &&
+                if (startDateField.getValue() != null && endDateField.getValue() != null && startDateField != null && endDateField!= null && startDateField.getValue().equals(endDateField.getValue()) &&
                         endTimeField.getDateValue().before(startTimeField.getDateValue())) {
                     return MSGS.dataDateRangeInvalidStopTime();
                 } else {
