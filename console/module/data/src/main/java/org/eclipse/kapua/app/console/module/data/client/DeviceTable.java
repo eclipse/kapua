@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,6 +23,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.util.KeyNav;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -31,6 +32,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
@@ -90,7 +92,7 @@ public class DeviceTable extends LayoutContainer {
     private void initDeviceTable() {
         initDeviceGrid();
 
-        Button refreshButton = new Button(DATA_MSGS.refresh(), new KapuaIcon(IconSet.REFRESH), new SelectionListener<ButtonEvent>() {
+        Button refreshButton = new Button(DATA_MSGS.searchButton(), new KapuaIcon(IconSet.FILTER), new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -110,6 +112,13 @@ public class DeviceTable extends LayoutContainer {
         filterField = new KapuaTextField<String>();
         filterField.setMaxLength(255);
         filterField.setEmptyText(DATA_MSGS.deviceInfoTableFilter());
+        KeyNav<ComponentEvent> keyNav = new KeyNav<ComponentEvent>(filterField) {
+            public void onKeyPress(ComponentEvent ce) {
+                if (ce.getKeyCode() == KeyCodes.KEY_ENTER ) {
+                    refresh();
+                }
+            }
+        };
 
         ToolBar tb = new ToolBar();
         tb.add(filterField);
