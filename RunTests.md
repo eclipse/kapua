@@ -1,33 +1,72 @@
 # How to execute Kapua tests
 
-This is document in preparation. It contains instructions how to prepare environment for testing
-and how to execute unit, integration and functional tests. Test environment is either based on embedded servers or external setup based on Docker Compose.
+There are couple of ways to run tests, either pure unit tests, component tests or integration tests.
+Integration tests can be run:
+
+- using embedded servers
+- using dockerized servers
 
 ## With dockerized Kapua
-Start dockerized Kapua
+With fabric8 plugin usage tests can now be run without explicitly running dockerized environment.
+Docker containers providing Kapua infrastructure are started with maven itself.
+But tu run these integration tests, you have to switch to qa folder and run following command
+
+    mvn test -PI9nTests
     
-      mvn -Dcucumber.options="--tags @integration" -Dgroups='!org.eclipse.kapua.test.junit.JUnitTests' -Dcommons.settings.hotswap=true -Dorg.eclipse.kapua.qa.noEmbeddedServers=true -Dcommons.db.jdbcConnectionUrlResolver=DEFAULT -Dcommons.db.schema.update=true -Dcommons.db.connection.host=localhost -Dcommons.db.connection.port=3306 -Dcommons.db.schema=kapuadb -Dcommons.db.connection.scheme=jdbc:h2:tcp -Dbroker.host=localhost verify  
+This will run integration tests only, those are tests written in gherkin and being annotated with
+``@integration``
+
+If tests fail and dockers are still running use this command:
+
+    mvn docker:stop -I9nTests
 
 Example response with time:
 
     [INFO] ------------------------------------------------------------------------
     [INFO] BUILD SUCCESS
     [INFO] ------------------------------------------------------------------------
-    [INFO] Total time: 22:06 min
-    [INFO] Finished at: 2018-12-06T10:43:19+01:00
-    [INFO] Final Memory: 187M/1726M
-    [INFO] ------------------------------------------------------------------------
+    [INFO] Total time: 18:11 min
+    [INFO] Finished at: 2019-03-04T14:16:32+01:00
+    [INFO] Final Memory: 48M/728M
+    [INFO] ------------------------------------------------------------------------    
 
 ##Without dockerized Kapua
+By default tests are run with embedded servers providing kapua infrastructure services, such as
+database, event-broker, message broker, elaticsearch.
 
-    mvn -fae -Dcucumber.options="--tags ~@rest" -Dgroups='!org.eclipse.kapua.test.junit.JUnitTests' -Dcommons.settings.hotswap=true -Dcommons.db.schema.update=true -Dcommons.db.schema=kapuadb -Dbroker.host=localhost verify
+So to run those use default profile and run:
 
+    mvn clean install
+    or
+    mvn test
+
+Those two commands will use following defaults:
+
+    cucumber.options="--tags ~@rest"
+    groups='!org.eclipse.kapua.test.junit.JUnitTests'
+    commons.settings.hotswap=true
+    commons.db.schema.update=true
+    commons.db.schema=kapuadb
+    broker.host=localhost
 
 Example response with time:
 
     [INFO] BUILD SUCCESS
     [INFO] ------------------------------------------------------------------------
-    [INFO] Total time: 34:53 min
-    [INFO] Finished at: 2018-12-04T11:41:10+01:00
-    [INFO] Final Memory: 187M/1827M
+    [INFO] Total time: 31:14 min
+    [INFO] Finished at: 2019-03-04T14:51:24+01:00
+    [INFO] Final Memory: 244M/1761M
+    [INFO] ------------------------------------------------------------------------
+
+## Run pure junit tests
+
+    mvn test mvn test -Dgroups='org.eclipse.kapua.test.junit.JUnitTests'
+
+Example response with time:
+
+    [INFO] BUILD SUCCESS
+    [INFO] ------------------------------------------------------------------------
+    [INFO] Total time: 05:26 min
+    [INFO] Finished at: 2019-03-04T15:01:04+01:00
+    [INFO] Final Memory: 133M/1250M
     [INFO] ------------------------------------------------------------------------
