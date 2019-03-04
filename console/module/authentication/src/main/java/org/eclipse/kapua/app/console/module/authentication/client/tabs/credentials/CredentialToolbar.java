@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,7 +25,6 @@ import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolb
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
-import org.eclipse.kapua.app.console.module.authentication.shared.model.permission.CredentialSessionPermission;
 
 public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
 
@@ -54,10 +53,7 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
         add(new SeparatorToolItem());
-
-        if (currentSession.hasPermission(CredentialSessionPermission.write())) {
-            add(unlockButton);
-        }
+        add(getUnlockButton());
 
         updateButtonsEnabled();
         getEditEntityButton().disable();
