@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,6 +18,7 @@ public class GwtRoleQuery extends GwtQuery {
     private static final long serialVersionUID = -5198696327167110220L;
 
     private String name;
+    private String description;
 
     public String getName() {
         return name;
@@ -25,5 +26,13 @@ public class GwtRoleQuery extends GwtQuery {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

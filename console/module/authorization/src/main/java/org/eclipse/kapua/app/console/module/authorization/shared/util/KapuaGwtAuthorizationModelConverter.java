@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -53,6 +53,7 @@ public class KapuaGwtAuthorizationModelConverter {
         //
         // Convert other attributes
         gwtGroup.setGroupName(group.getName());
+        gwtGroup.setGroupDescription(group.getDescription());
 
         return gwtGroup;
     }
@@ -74,6 +75,7 @@ public class KapuaGwtAuthorizationModelConverter {
         //
         // Convert other attributes
         gwtRole.setName(role.getName());
+        gwtRole.setDescription(role.getDescription());
 
         //
         // Return converted entity
@@ -98,6 +100,7 @@ public class KapuaGwtAuthorizationModelConverter {
         //
         // Convert other attributes
         gwtAccessRole.setRoleName(role.getName());
+        gwtAccessRole.setRoleDescription(role.getDescription());
         gwtAccessRole.setRoleId(role.getId().toCompactId());
         gwtAccessRole.setAccessInfoId(accessRole.getAccessInfoId().toCompactId());
         //

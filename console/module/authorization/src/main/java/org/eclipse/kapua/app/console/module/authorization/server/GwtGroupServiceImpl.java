@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -68,6 +68,7 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
             KapuaId scopeId = KapuaEid.parseCompactId(gwtGroupCreator.getScopeId());
 
             GroupCreator groupCreator = GROUP_FACTORY.newCreator(scopeId, gwtGroupCreator.getName());
+            groupCreator.setDescription(gwtGroupCreator.getDescription());
             Group group = GROUP_SERVICE.create(groupCreator);
 
             gwtGroup = KapuaGwtAuthorizationModelConverter.convertGroup(group);
@@ -88,6 +89,7 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
 
             if (group != null) {
                 group.setName(gwtGroup.getGroupName());
+                group.setDescription(gwtGroup.getUnescapedDescription());
                 GROUP_SERVICE.update(group);
                 gwtGroupUpdated = KapuaGwtAuthorizationModelConverter.convertGroup(GROUP_SERVICE.find(group.getScopeId(), group.getId()));
             }
@@ -196,6 +198,7 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
                 // gwtGroupDescription.add(new GwtGroupedNVPair("Entity", "Scope
                 // Id", KapuaGwtAuthenticationModelConverter.convertKapuaId(group.getScopeId())));
                 gwtGroupDescription.add(new GwtGroupedNVPair("accessGroupInfo", "accessGroupName", group.getName()));
+                gwtGroupDescription.add(new GwtGroupedNVPair("accessGroupInfo", "accessGroupDescription", group.getDescription()));
                 gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupModifiedOn", group.getModifiedOn()));
                 gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
                 gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupCreatedOn", group.getCreatedOn()));

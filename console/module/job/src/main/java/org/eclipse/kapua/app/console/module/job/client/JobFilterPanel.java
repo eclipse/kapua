@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -33,6 +33,7 @@ public class JobFilterPanel extends EntityFilterPanel<GwtJob> {
     private final GwtSession currentSession;
 
     private final KapuaTextField<String> jobNameField;
+    private final KapuaTextField<String> jobDescriptionField;
 
     public JobFilterPanel(AbstractEntityView<GwtJob> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
@@ -59,11 +60,28 @@ public class JobFilterPanel extends EntityFilterPanel<GwtJob> {
         jobNameField.setStyleAttribute("margin-right", "5px");
         jobNameField.setStyleAttribute("margin-bottom", "10px");
         fieldsPanel.add(jobNameField);
+
+        Label jobDescriptionLabel = new Label("Description");
+        jobDescriptionLabel.setWidth(WIDTH);
+        jobDescriptionLabel.setStyleAttribute("margin", "5px");
+
+        fieldsPanel.add(jobDescriptionLabel);
+
+        jobDescriptionField = new KapuaTextField<String>();
+        jobDescriptionField.setName("name");
+        jobDescriptionField.setWidth(WIDTH);
+        jobDescriptionField.setMaxLength(MAX_LEN);
+        jobDescriptionField.setStyleAttribute("margin-top", "0px");
+        jobDescriptionField.setStyleAttribute("margin-left", "5px");
+        jobDescriptionField.setStyleAttribute("margin-right", "5px");
+        jobDescriptionField.setStyleAttribute("margin-bottom", "10px");
+        fieldsPanel.add(jobDescriptionField);
     }
 
     @Override
     public void resetFields() {
         jobNameField.setValue(null);
+        jobDescriptionField.setValue(null);
         GwtJobQuery query = new GwtJobQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
         entityGrid.refresh(query);
@@ -73,6 +91,7 @@ public class JobFilterPanel extends EntityFilterPanel<GwtJob> {
     public void doFilter() {
         GwtJobQuery query = new GwtJobQuery();
         query.setName(jobNameField.getValue());
+        query.setDescription(jobDescriptionField.getValue());
         query.setScopeId(currentSession.getSelectedAccountId());
         entityGrid.refresh(query);
     }

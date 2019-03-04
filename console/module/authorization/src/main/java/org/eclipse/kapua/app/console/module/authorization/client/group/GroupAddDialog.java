@@ -39,6 +39,7 @@ public class GroupAddDialog extends EntityAddEditDialog {
     private static final GwtGroupServiceAsync GWT_GROUP_SERVICE = GWT.create(GwtGroupService.class);
 
     protected KapuaTextField<String> groupNameField;
+    protected KapuaTextField<String> groupDescriptionField;
 
     public GroupAddDialog(GwtSession currentSession) {
         super(currentSession);
@@ -56,6 +57,14 @@ public class GroupAddDialog extends EntityAddEditDialog {
         groupNameField.setValidator(new TextFieldValidator(groupNameField, FieldType.NAME));
         groupNameField.setToolTip(MSGS.dialogAddFieldNameTooltip());
         groupFormPanel.add(groupNameField);
+
+        groupDescriptionField = new KapuaTextField<String>();
+        groupDescriptionField.setAllowBlank(true);
+        groupDescriptionField.setMaxLength(255);
+        groupDescriptionField.setName("description");
+        groupDescriptionField.setFieldLabel(MSGS.dialogAddFieldDescription());
+        groupNameField.setToolTip(MSGS.dialogAddFieldDescriptionTooltip());
+        groupFormPanel.add(groupDescriptionField);
         bodyPanel.add(groupFormPanel);
     }
 
@@ -77,6 +86,7 @@ public class GroupAddDialog extends EntityAddEditDialog {
         GwtGroupCreator gwtGroupCreator = new GwtGroupCreator();
         gwtGroupCreator.setScopeId(currentSession.getSelectedAccountId());
         gwtGroupCreator.setName(groupNameField.getValue());
+        gwtGroupCreator.setDescription(groupDescriptionField.getValue());
         GWT_GROUP_SERVICE.create(gwtGroupCreator, new AsyncCallback<GwtGroup>() {
 
             @Override

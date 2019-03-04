@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleGroupMessages;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
@@ -45,6 +46,7 @@ public class GroupEditDialog extends GroupAddDialog {
     @Override
     public void submit() {
         selectedGroup.setGroupName(groupNameField.getValue());
+        selectedGroup.setGroupDescription(KapuaSafeHtmlUtils.htmlUnescape(groupDescriptionField.getValue()));
         GWT_GROUP_SERVICE.update(selectedGroup, new AsyncCallback<GwtGroup>() {
 
             @Override
@@ -84,6 +86,7 @@ public class GroupEditDialog extends GroupAddDialog {
 
     private void populateEditDialog(GwtGroup gwtGroup) {
         groupNameField.setValue(gwtGroup.getGroupName());
+        groupDescriptionField.setValue(gwtGroup.getUnescapedDescription());
         formPanel.clearDirtyFields();
     }
 

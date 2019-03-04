@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,6 +30,7 @@ public class TagFilterPanel extends EntityFilterPanel<GwtTag> {
     private final EntityGrid<GwtTag> entityGrid;
     private final GwtSession currentSession;
     private final KapuaTextField<String> nameField;
+    private final KapuaTextField<String> descriptionField;
     private static final ConsoleTagMessages MSGS = GWT.create(ConsoleTagMessages.class);
 
     public TagFilterPanel(AbstractEntityView<GwtTag> entityView, GwtSession currentSession) {
@@ -53,11 +54,25 @@ public class TagFilterPanel extends EntityFilterPanel<GwtTag> {
         nameField.setStyleAttribute("margin-bottom", "10px");
         verticalPanel.add(nameField);
 
+        Label descriptionLabel = new Label(MSGS.filterFieldTagDescriptionLabel());
+        descriptionLabel.setWidth(WIDTH);
+        descriptionLabel.setStyleAttribute("margin", "5px");
+        verticalPanel.add(descriptionLabel);
+        descriptionField = new KapuaTextField<String>();
+        descriptionField.setName("name");
+        descriptionField.setWidth(WIDTH);
+        descriptionField.setMaxLength(MAX_LEN);
+        descriptionField.setStyleAttribute("margin-top", "0px");
+        descriptionField.setStyleAttribute("margin-left", "5px");
+        descriptionField.setStyleAttribute("margin-right", "5px");
+        descriptionField.setStyleAttribute("margin-bottom", "10px");
+        verticalPanel.add(descriptionField);
     }
 
     @Override
     public void resetFields() {
         nameField.setValue(null);
+        descriptionField.setValue(null);
         GwtTagQuery query = new GwtTagQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
         entityGrid.refresh(query);
@@ -68,6 +83,7 @@ public class TagFilterPanel extends EntityFilterPanel<GwtTag> {
     public void doFilter() {
         GwtTagQuery query = new GwtTagQuery();
         query.setName(nameField.getValue());
+        query.setDescription(descriptionField.getValue());
         query.setScopeId(currentSession.getSelectedAccountId());
         entityGrid.refresh(query);
 

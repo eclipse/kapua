@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -129,6 +129,9 @@ public class GwtKapuaJobModelConverter {
         JobQuery jobQuery = JOB_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobQuery.getScopeId()));
         if (gwtJobQuery.getName() != null && !gwtJobQuery.getName().isEmpty()) {
             predicate.and(new AttributePredicateImpl<String>(JobAttributes.NAME, gwtJobQuery.getName(), Operator.LIKE));
+        }
+        if(gwtJobQuery.getDescription() != null && !gwtJobQuery.getDescription().isEmpty()) {
+            predicate.and(new AttributePredicateImpl<String>(JobAttributes.DESCRIPTION, gwtJobQuery.getDescription(), Operator.LIKE));
         }
         jobQuery.setLimit(loadConfig.getLimit());
         jobQuery.setOffset(loadConfig.getOffset());

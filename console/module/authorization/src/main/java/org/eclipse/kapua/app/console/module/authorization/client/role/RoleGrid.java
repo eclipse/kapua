@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -86,6 +86,9 @@ public class RoleGrid extends EntityGrid<GwtRole> {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
         ColumnConfig columnConfig = new ColumnConfig("name", ROLE_MSGS.gridRoleColumnHeaderName(), 400);
+        columnConfigs.add(columnConfig);
+
+        columnConfig = new ColumnConfig("description", ROLE_MSGS.gridRoleColumnHeaderDescription(), 400);
         columnConfigs.add(columnConfig);
 
         columnConfig = new ColumnConfig("modifiedOnFormatted", ROLE_MSGS.gridRoleColumnHeaderModifiedOn(), 200);

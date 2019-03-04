@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,4 +17,5 @@ public class JobAttributes extends KapuaNamedEntityAttributes {
 
     public static final String ENDED_ON = "endedOn";
     public static final String STARTED_ON = "startedOn";
+    public static final String DESCRIPTION = "description";
 }

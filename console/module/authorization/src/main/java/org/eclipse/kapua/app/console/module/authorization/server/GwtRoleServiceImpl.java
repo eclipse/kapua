@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -244,6 +244,7 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             // If there are results
             if (role != null) {
                 gwtRoleDescription.add(new GwtGroupedNVPair("roleInfo", "roleName", role.getName()));
+                gwtRoleDescription.add(new GwtGroupedNVPair("roleInfo", "roleDescription", role.getDescription()));
                 gwtRoleDescription.add(new GwtGroupedNVPair("entityInfo", "roleModifiedOn", role.getModifiedOn()));
                 gwtRoleDescription.add(new GwtGroupedNVPair("entityInfo", "roleModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
                 gwtRoleDescription.add(new GwtGroupedNVPair("entityInfo", "roleCreatedOn", role.getCreatedOn()));

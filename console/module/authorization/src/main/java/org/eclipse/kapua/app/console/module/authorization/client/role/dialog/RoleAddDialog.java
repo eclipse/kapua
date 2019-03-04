@@ -39,11 +39,12 @@ public class RoleAddDialog extends EntityAddEditDialog {
     private static final GwtRoleServiceAsync GWT_ROLE_SERVICE = GWT.create(GwtRoleService.class);
 
     protected KapuaTextField<String> roleNameField;
+    protected KapuaTextField<String> roleDescriptionField;
 
     public RoleAddDialog(GwtSession currentSession) {
         super(currentSession);
 
-        DialogUtils.resizeDialog(this, 400, 150);
+        DialogUtils.resizeDialog(this, 400, 200);
     }
 
     public void validateRoles() {
@@ -64,6 +65,7 @@ public class RoleAddDialog extends EntityAddEditDialog {
 
         gwtRoleCreator.setScopeId(currentSession.getSelectedAccountId());
         gwtRoleCreator.setName(roleNameField.getValue());
+        gwtRoleCreator.setDescription(roleDescriptionField.getValue());
 
         GWT_ROLE_SERVICE.create(xsrfToken, gwtRoleCreator, new AsyncCallback<GwtRole>() {
 
@@ -117,6 +119,14 @@ public class RoleAddDialog extends EntityAddEditDialog {
         roleNameField.setValidator(new TextFieldValidator(roleNameField, FieldType.NAME));
         roleNameField.setToolTip(MSGS.dialogAddFieldNameTooltip());
         roleFormPanel.add(roleNameField);
+
+        roleDescriptionField = new KapuaTextField<String>();
+        roleDescriptionField.setAllowBlank(true);
+        roleDescriptionField.setMaxLength(255);
+        roleDescriptionField.setName("description");
+        roleDescriptionField.setFieldLabel(MSGS.dialogAddFieldDescription());
+        roleNameField.setToolTip(MSGS.dialogAddFieldDescriptionTooltip());
+        roleFormPanel.add(roleDescriptionField);
 
         bodyPanel.add(roleFormPanel);
     }

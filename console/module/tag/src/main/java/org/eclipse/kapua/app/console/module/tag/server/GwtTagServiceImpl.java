@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -72,6 +72,7 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
         try {
             KapuaId scopeId = KapuaEid.parseCompactId(gwtTagCreator.getScopeId());
             TagCreator tagCreator = tagFactory.newCreator(scopeId, gwtTagCreator.getName());
+            tagCreator.setDescription(gwtTagCreator.getDescription());
 
             Tag tag = tagService.create(tagCreator);
 
@@ -94,6 +95,7 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
 
             if (tag != null) {
                 tag.setName(gwtTag.getTagName());
+                tag.setDescription(gwtTag.getUnescapedDescription());
                 tagService.update(tag);
                 gwtTagUpdated = KapuaGwtTagModelConverter.convertTag(tagService.find(tag.getScopeId(), tag.getId()));
             }
@@ -199,6 +201,7 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
                 // gwtTagDescription.add(new GwtGroupedNVPair("Entity", "Scope
                 // Id", KapuaGwtCommonsModelConverter.convertKapuaId(tag.getScopeId())));
                 gwtTagDescription.add(new GwtGroupedNVPair("tagInfo", "tagName", tag.getName()));
+                gwtTagDescription.add(new GwtGroupedNVPair("tagInfo", "tagDescription", tag.getDescription()));
                 gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagModifiedOn", tag.getModifiedOn()));
                 gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
                 gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagCreatedOn", tag.getCreatedOn()));

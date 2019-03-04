@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -87,8 +87,10 @@ public class GwtKapuaAuthorizationModelConverter {
         GroupFactory groupFactory = locator.getFactory(GroupFactory.class);
         GroupQuery groupQuery = groupFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtGroupQuery.getScopeId()));
         if (gwtGroupQuery.getName() != null && !gwtGroupQuery.getName().isEmpty()) {
-            groupQuery
-                    .setPredicate(new AttributePredicateImpl<String>(GroupAttributes.NAME, gwtGroupQuery.getName(), Operator.LIKE));
+            groupQuery.setPredicate(new AttributePredicateImpl<String>(GroupAttributes.NAME, gwtGroupQuery.getName(), Operator.LIKE));
+        }
+        if (gwtGroupQuery.getDescription() != null && !gwtGroupQuery.getDescription().isEmpty()) {
+            groupQuery.setPredicate(new AttributePredicateImpl<String>(GroupAttributes.DESCRIPTION, gwtGroupQuery.getDescription(), Operator.LIKE));
         }
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? GroupAttributes.NAME : loadConfig.getSortField();
         if (sortField.equals("groupName")) {
@@ -122,6 +124,9 @@ public class GwtKapuaAuthorizationModelConverter {
         RoleQuery roleQuery = roleFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtRoleQuery.getScopeId()));
         if (gwtRoleQuery.getName() != null && !gwtRoleQuery.getName().trim().isEmpty()) {
             roleQuery.setPredicate(new AttributePredicateImpl<String>(RoleAttributes.NAME, gwtRoleQuery.getName(), Operator.LIKE));
+        }
+        if (gwtRoleQuery.getDescription() != null && !gwtRoleQuery.getDescription().trim().isEmpty()) {
+            roleQuery.setPredicate(new AttributePredicateImpl<String>(RoleAttributes.DESCRIPTION, gwtRoleQuery.getDescription(), Operator.LIKE));
         }
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? RoleAttributes.NAME : loadConfig.getSortField();
         if (sortField.equals("modifiedOnFormatted")) {
@@ -176,6 +181,7 @@ public class GwtKapuaAuthorizationModelConverter {
 
         // Convert name
         role.setName(gwtRole.getName());
+        role.setDescription(gwtRole.getUnescapedDescription());
 
         if (gwtRole.getPermissions() != null) {
             // Convert permission associated with role
@@ -221,6 +227,7 @@ public class GwtKapuaAuthorizationModelConverter {
 
         // Convert name
         roleCreator.setName(gwtRoleCreator.getName());
+        roleCreator.setDescription(gwtRoleCreator.getDescription());
 
         // Convert permission associated with role
         Set<Permission> permissions = new HashSet<Permission>();
