@@ -16,6 +16,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
@@ -63,6 +64,22 @@ public class UserEditDialog extends UserAddDialog {
             }
         });
 
+    }
+
+    @Override
+    public void validateUser() {
+        if (!email.isValid()) {
+            ConsoleInfo.display("Error", email.getErrorMessage());
+        } else if (!phoneNumber.isValid()) {
+            ConsoleInfo.display("Error", phoneNumber.getErrorMessage());
+        } else if (!expirationDate.isValid()) {
+            ConsoleInfo.display("Error", KapuaSafeHtmlUtils.htmlUnescape(expirationDate.getErrorMessage()));
+        }
+    }
+
+    @Override
+    protected void preSubmit() {
+        super.preSubmit();
     }
 
     @Override
