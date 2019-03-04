@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -72,6 +72,7 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagService;
 import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserDomain;
 import org.eclipse.kapua.service.user.UserService;
 
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
@@ -171,7 +172,9 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                     pairs.add(new GwtGroupedNVPair("connInfo", "connConnectionStatus", deviceConnection.getStatus().toString()));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connClientId", device.getClientId()));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connUserName", lastConnectedUser != null ? lastConnectedUser.getName() : null));
-                    pairs.add(new GwtGroupedNVPair("connInfo", "connReservedUserId", reservedUser != null ? reservedUser.getName() : null));
+                    if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(new UserDomain(), Actions.read, scopeId))) {
+                        pairs.add(new GwtGroupedNVPair("connInfo", "connReservedUserId", reservedUser != null ? reservedUser.getName() : null));
+                    }
                     pairs.add(new GwtGroupedNVPair("connInfo", "connUserCouplingMode", GwtConnectionUserCouplingMode.valueOf(deviceConnection.getUserCouplingMode().name()).getLabel()));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connClientIp", deviceConnection.getClientIp()));
                     pairs.add(new GwtGroupedNVPair("netInfo", "netConnIface", device.getConnectionInterface()));
@@ -183,7 +186,9 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                     pairs.add(new GwtGroupedNVPair("connInfo", "connConnectionStatus", DeviceConnectionStatus.DISCONNECTED.toString()));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connClientId", null));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connUserName", null));
-                    pairs.add(new GwtGroupedNVPair("connInfo", "connReservedUserId", null));
+                    if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(new UserDomain(), Actions.read, scopeId))) {
+                        pairs.add(new GwtGroupedNVPair("connInfo", "connReservedUserId", null));
+                    }
                     pairs.add(new GwtGroupedNVPair("connInfo", "connUserCouplingMode", null));
                     pairs.add(new GwtGroupedNVPair("connInfo", "connClientIp", null));
                     pairs.add(new GwtGroupedNVPair("netInfo", "netConnIface", null));
