@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,12 +30,16 @@ import org.eclipse.kapua.app.console.module.device.shared.util.KapuaGwtDeviceMod
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserDomain;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
@@ -57,7 +61,9 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
     private static final DeviceConnectionService DEVICE_CONNECTION_SERVICE = LOCATOR.getService(DeviceConnectionService.class);
+    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
 
+    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
     private static final UserService USER_SERVICE = LOCATOR.getService(UserService.class);
     private static final UserFactory USER_FACTORY = LOCATOR.getFactory(UserFactory.class);
 
@@ -180,8 +186,10 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
             }
             deviceConnectionPropertiesPairs
                     .add(new GwtGroupedNVPair("connectionUserCouplingModeInfo", "connectionUserCouplingMode", gwtConnectionUserCouplingMode != null ? gwtConnectionUserCouplingMode.getLabel() : null));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionUserCouplingModeInfo", "connectionReservedUser", reservedUser != null ? reservedUser.getName() : null));
-            deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionUserCouplingModeInfo", "allowUserChange", deviceConnection.getAllowUserChange()));
+            if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(new UserDomain(), Actions.read, scopeId))) {
+                deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionUserCouplingModeInfo", "connectionReservedUser", reservedUser != null ? reservedUser.getName() : null));
+                deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionUserCouplingModeInfo", "allowUserChange", deviceConnection.getAllowUserChange()));
+            }
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionFirstEstablishedOn", deviceConnection.getCreatedOn()));
             deviceConnectionPropertiesPairs.add(new GwtGroupedNVPair("connectionInfo", "connectionFirstEstablishedBy", createdUser != null ? createdUser.getName() : null));
 
