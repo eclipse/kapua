@@ -34,7 +34,6 @@ import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser.GwtUserSta
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUserCreator;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAsync;
-
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -84,7 +83,6 @@ public class UserAddDialog extends EntityAddEditDialog {
 
     @Override
     public void createBody() {
-
         submitButton.disable();
         FormPanel userFormPanel = new FormPanel(FORM_LABEL_WIDTH);
         userFormPanel.setFrame(false);
@@ -106,7 +104,7 @@ public class UserAddDialog extends EntityAddEditDialog {
 
         FieldSet statusFieldSet = new FieldSet();
         statusFieldSet.setBorders(true);
-        statusFieldSet.setStyleAttribute("margin", "5px 10px 0px 10px");
+        statusFieldSet.setStyleAttribute("margin", "5px 10px 15px 10px");
         statusFieldSet.setHeading(USER_MSGS.dialogAddStatus());
 
         FormLayout userLayout = new FormLayout();
@@ -126,7 +124,7 @@ public class UserAddDialog extends EntityAddEditDialog {
 
         username = new KapuaTextField<String>();
         username.setAllowBlank(false);
-        username.setMaxLength(255);
+        username.setMaxLength(50);
         username.setName("userName");
         username.setFieldLabel("* " + USER_MSGS.dialogAddFieldUsername());
         username.setValidator(new TextFieldValidator(username, FieldType.NAME));
@@ -312,5 +310,4 @@ public class UserAddDialog extends EntityAddEditDialog {
     public String getInfoMessage() {
         return USER_MSGS.dialogAddInfo();
     }
-
 }

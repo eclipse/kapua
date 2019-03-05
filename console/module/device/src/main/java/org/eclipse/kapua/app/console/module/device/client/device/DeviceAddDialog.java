@@ -25,6 +25,7 @@ import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
@@ -107,7 +108,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
     public DeviceAddDialog(GwtSession currentSession) {
         super(currentSession);
 
-        DialogUtils.resizeDialog(this, 550, 450);
+        DialogUtils.resizeDialog(this, 550, 500);
     }
 
     @Override
@@ -119,6 +120,13 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         clientIdLabel.hide();
     }
 
+    @Override
+    protected void onRender(Element parent, int pos) {
+        super.onRender(parent, pos);
+        bodyPanel.setAutoHeight(true);
+        setAutoHeight(true);
+    }
+
     protected void generateBody() {
 
         FormData formData = new FormData("-20");
@@ -127,10 +135,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         formPanel.setFrame(false);
         formPanel.setBodyBorder(false);
         formPanel.setHeaderVisible(false);
-        // formPanel.setWidth(310);
         formPanel.setScrollMode(Scroll.AUTOY);
-        // formPanel.setStyleAttribute("padding-bottom", "0px");
-        // formPanel.setLayout(new FlowLayout());
 
         Listener<BaseEvent> comboBoxListener = new Listener<BaseEvent>() {
 
@@ -237,10 +242,27 @@ public class DeviceAddDialog extends EntityAddEditDialog {
 
         // Device Custom attributes fieldset
         FieldSet fieldSetCustomAttributes = new FieldSet();
-        FormLayout layoutCustomAttributes = new FormLayout();
-        layoutCustomAttributes.setLabelWidth(Constants.LABEL_WIDTH_DEVICE_FORM);
-        fieldSetCustomAttributes.setLayout(layoutCustomAttributes);
+        Listener<BaseEvent> fieldSetListener = new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                sync(true);
+            }
+        };
+        fieldSetCustomAttributes.addListener(Events.Collapse, fieldSetListener);
+        fieldSetCustomAttributes.addListener(Events.Expand, fieldSetListener);
+
         fieldSetCustomAttributes.setHeading(DEVICE_MSGS.deviceFormFieldsetCustomAttributes());
+        fieldSetCustomAttributes.setBorders(true);
+        fieldSetCustomAttributes.setWidth(540);
+        fieldSetCustomAttributes.setCollapsible(true);
+        fieldSetCustomAttributes.setAutoHeight(true);
+
+        FormLayout fieldSetLayout = new FormLayout();
+        fieldSetLayout.setLabelWidth(Constants.LABEL_WIDTH_DEVICE_FORM - 11);
+        fieldSetCustomAttributes.setLayout(fieldSetLayout);
+
+        FormData subFieldsetFormData = new FormData("-15");
 
         // Custom Attribute #1
         customAttribute1Field = new KapuaTextField<String>();
@@ -249,7 +271,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         customAttribute1Field.setToolTip(DEVICE_MSGS.deviceFormCustomAttributesTooltip());
         customAttribute1Field.setWidth(225);
         customAttribute1Field.setMaxLength(255);
-        fieldSetCustomAttributes.add(customAttribute1Field, formData);
+        fieldSetCustomAttributes.add(customAttribute1Field, subFieldsetFormData);
 
         // Custom Attribute #2
         customAttribute2Field = new KapuaTextField<String>();
@@ -258,7 +280,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         customAttribute2Field.setToolTip(DEVICE_MSGS.deviceFormCustomAttributesTooltip());
         customAttribute2Field.setWidth(225);
         customAttribute2Field.setMaxLength(255);
-        fieldSetCustomAttributes.add(customAttribute2Field, formData);
+        fieldSetCustomAttributes.add(customAttribute2Field, subFieldsetFormData);
 
         // Custom Attribute #3
         customAttribute3Field = new KapuaTextField<String>();
@@ -267,7 +289,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         customAttribute3Field.setToolTip(DEVICE_MSGS.deviceFormCustomAttributesTooltip());
         customAttribute3Field.setWidth(225);
         customAttribute3Field.setMaxLength(255);
-        fieldSetCustomAttributes.add(customAttribute3Field, formData);
+        fieldSetCustomAttributes.add(customAttribute3Field, subFieldsetFormData);
 
         // Custom Attribute #4
         customAttribute4Field = new KapuaTextField<String>();
@@ -276,7 +298,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         customAttribute4Field.setToolTip(DEVICE_MSGS.deviceFormCustomAttributesTooltip());
         customAttribute4Field.setWidth(225);
         customAttribute4Field.setMaxLength(255);
-        fieldSetCustomAttributes.add(customAttribute4Field, formData);
+        fieldSetCustomAttributes.add(customAttribute4Field, subFieldsetFormData);
 
         // Custom Attribute #5
         customAttribute5Field = new KapuaTextField<String>();
@@ -285,7 +307,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         customAttribute5Field.setToolTip(DEVICE_MSGS.deviceFormCustomAttributesTooltip());
         customAttribute5Field.setWidth(225);
         customAttribute5Field.setMaxLength(255);
-        fieldSetCustomAttributes.add(customAttribute5Field, formData);
+        fieldSetCustomAttributes.add(customAttribute5Field, subFieldsetFormData);
 
         // Optlock
         optlock = new NumberField();

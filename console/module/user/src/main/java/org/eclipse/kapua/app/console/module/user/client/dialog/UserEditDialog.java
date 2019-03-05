@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,7 +17,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
-import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
@@ -35,7 +34,6 @@ public class UserEditDialog extends UserAddDialog {
     public UserEditDialog(GwtSession currentSession, GwtUser selectedUser) {
         super(currentSession);
         this.selectedUser = selectedUser;
-        DialogUtils.resizeDialog(this, 400, 390);
     }
 
     @Override
@@ -146,6 +144,7 @@ public class UserEditDialog extends UserAddDialog {
         usernameLabel.setVisible(true);
         username.setVisible(false);
         usernameLabel.setValue(gwtUser.getUsername());
+        usernameLabel.setStyleAttribute("word-wrap", "break-word");
         usernameLabel.setToolTip(USER_MSGS.dialogAddFieldNameEditDialogTooltip());
         if (password != null) {
             password.setVisible(false);
