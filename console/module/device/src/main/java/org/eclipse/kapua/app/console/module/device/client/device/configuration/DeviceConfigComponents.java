@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.configuration;
 
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaMessageBox;
+
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
@@ -472,7 +474,7 @@ public class DeviceConfigComponents extends LayoutContainer {
 
         final DeviceConfigPanel finalDevConfPanel = devConfPanel;
 
-        MessageBox.confirm(MSGS.confirm(),
+        KapuaMessageBox.confirm(MSGS.confirm(),
                 message,
                 new Listener<MessageBoxEvent>() {
 
@@ -538,7 +540,7 @@ public class DeviceConfigComponents extends LayoutContainer {
     public void reset() {
         final GwtConfigComponent comp = (GwtConfigComponent) tree.getSelectionModel().getSelectedItem();
         if (devConfPanel != null && comp != null) {
-            MessageBox.confirm(MSGS.confirm(),
+            KapuaMessageBox.confirm(MSGS.confirm(),
                     DEVICE_MSGS.deviceConfigDirty(),
                     new Listener<MessageBoxEvent>() {
 
