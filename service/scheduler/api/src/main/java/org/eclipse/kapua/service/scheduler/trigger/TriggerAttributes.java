@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,6 +13,12 @@ package org.eclipse.kapua.service.scheduler.trigger;
 
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 
+/**
+ * {@link TriggerAttributes} attributes.
+ *
+ * @see org.eclipse.kapua.model.KapuaEntityAttributes
+ * @since 1.0.0
+ */
 public class TriggerAttributes extends KapuaNamedEntityAttributes {
 
     public static final String TRIGGER_PROPERTIES = "triggerProperties";
@@ -22,8 +28,6 @@ public class TriggerAttributes extends KapuaNamedEntityAttributes {
     public static final String TRIGGER_PROPERTIES_VALUE = TRIGGER_PROPERTIES + ".propertyValue";
 
     public static final String TRIGGER_PROPERTIES_TYPE = TRIGGER_PROPERTIES + ".propertyType";
-
-    public static final String TRIGGER_NAME = "name";
 
     public static final String STARTS_ON = "startsOn";
 

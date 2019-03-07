@@ -14,11 +14,10 @@ package org.eclipse.kapua.service.authorization.role;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 
 /**
- * Query predicate attribute name for role entity.
- * 
- * @since 1.0
- * 
+ * {@link RoleAttributes} attributes.
+ *
+ * @see org.eclipse.kapua.model.KapuaEntityAttributes
+ * @since 1.0.0
  */
 public class RoleAttributes extends KapuaNamedEntityAttributes {
-    public static final String DESCRIPTION = "description";
 }

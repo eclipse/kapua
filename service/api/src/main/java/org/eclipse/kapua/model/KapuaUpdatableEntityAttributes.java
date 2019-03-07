@@ -12,8 +12,9 @@
 package org.eclipse.kapua.model;
 
 /**
- * {@link KapuaUpdatableEntity} query predicates.
+ * {@link KapuaUpdatableEntity} attributes.
  *
+ * @see org.eclipse.kapua.model.KapuaEntityAttributes
  * @since 1.0.0
  */
 public class KapuaUpdatableEntityAttributes extends KapuaEntityAttributes {

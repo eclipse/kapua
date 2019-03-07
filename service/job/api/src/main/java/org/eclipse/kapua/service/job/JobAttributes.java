@@ -13,9 +13,14 @@ package org.eclipse.kapua.service.job;
 
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 
+/**
+ * {@link JobAttributes} attributes.
+ *
+ * @see org.eclipse.kapua.model.KapuaEntityAttributes
+ * @since 1.0.0
+ */
 public class JobAttributes extends KapuaNamedEntityAttributes {
 
     public static final String ENDED_ON = "endedOn";
     public static final String STARTED_ON = "startedOn";
-    public static final String DESCRIPTION = "description";
 }

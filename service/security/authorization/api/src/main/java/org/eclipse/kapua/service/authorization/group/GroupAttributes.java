@@ -12,14 +12,12 @@
 package org.eclipse.kapua.service.authorization.group;
 
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
-import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 
 /**
- * {@link KapuaQuery} {@link QueryPredicate} name for {@link Group} entity.
+ * {@link GroupAttributes} attributes.
  *
- * @since 1.0
+ * @see org.eclipse.kapua.model.KapuaEntityAttributes
+ * @since 1.0.0
  */
 public class GroupAttributes extends KapuaNamedEntityAttributes {
-    public static final String DESCRIPTION = "description";
 }

@@ -37,25 +37,25 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.job.Job;
-import org.eclipse.kapua.service.job.JobFactory;
 import org.eclipse.kapua.service.job.JobAttributes;
+import org.eclipse.kapua.service.job.JobFactory;
 import org.eclipse.kapua.service.job.JobQuery;
-import org.eclipse.kapua.service.job.execution.JobExecutionFactory;
 import org.eclipse.kapua.service.job.execution.JobExecutionAttributes;
+import org.eclipse.kapua.service.job.execution.JobExecutionFactory;
 import org.eclipse.kapua.service.job.execution.JobExecutionQuery;
 import org.eclipse.kapua.service.job.step.JobStep;
+import org.eclipse.kapua.service.job.step.JobStepAttributes;
 import org.eclipse.kapua.service.job.step.JobStepCreator;
 import org.eclipse.kapua.service.job.step.JobStepFactory;
-import org.eclipse.kapua.service.job.step.JobStepAttributes;
 import org.eclipse.kapua.service.job.step.JobStepQuery;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionQuery;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
-import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetAttributes;
+import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 
@@ -130,7 +130,7 @@ public class GwtKapuaJobModelConverter {
         if (gwtJobQuery.getName() != null && !gwtJobQuery.getName().isEmpty()) {
             predicate.and(new AttributePredicateImpl<String>(JobAttributes.NAME, gwtJobQuery.getName(), Operator.LIKE));
         }
-        if(gwtJobQuery.getDescription() != null && !gwtJobQuery.getDescription().isEmpty()) {
+        if (gwtJobQuery.getDescription() != null && !gwtJobQuery.getDescription().isEmpty()) {
             predicate.and(new AttributePredicateImpl<String>(JobAttributes.DESCRIPTION, gwtJobQuery.getDescription(), Operator.LIKE));
         }
         jobQuery.setLimit(loadConfig.getLimit());
@@ -206,8 +206,8 @@ public class GwtKapuaJobModelConverter {
         } else {
             String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? JobStepAttributes.STEP_INDEX : loadConfig.getSortField();
             if (sortField.equals("jobStepName")) {
-                sortField = JobStepAttributes.JOB_STEP_NAME;
-            } else if (sortField.equals("jobStepDefinitionName")) {
+                sortField = JobStepAttributes.NAME;
+            } else if (sortField.equals("jobStepDefinitionId")) {
                 sortField = JobStepAttributes.JOB_STEP_DEFINITION_ID;
             }
             SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
@@ -261,7 +261,7 @@ public class GwtKapuaJobModelConverter {
 
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? TriggerAttributes.ENTITY_ID : loadConfig.getSortField();
         if (sortField.equals("triggerName")) {
-            sortField = TriggerAttributes.TRIGGER_NAME;
+            sortField = TriggerAttributes.NAME;
         } else if (sortField.equals("startsOnFormatted")) {
             sortField = TriggerAttributes.STARTS_ON;
         } else if (sortField.equals("endsOnFormatted")) {

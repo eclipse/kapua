@@ -11,14 +11,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.model;
 
+import org.eclipse.kapua.model.query.KapuaQuery;
+
 /**
- * {@link KapuaEntity} query predicates.
+ * {@link KapuaEntity} attributes.
+ * <p>
+ * These attributes can be used in the {@link org.eclipse.kapua.model.query.predicate.AttributePredicate} to specify which property
+ * to filter {@link org.eclipse.kapua.service.KapuaEntityService#query(KapuaQuery)} and {@link org.eclipse.kapua.service.KapuaEntityService#count(KapuaQuery)} results
  *
  * @since 1.0.0
  */
 public class KapuaEntityAttributes {
 
-    protected KapuaEntityAttributes() { }
+    protected KapuaEntityAttributes() {
+    }
 
     /**
      * Predicate for field {@link KapuaEntity#getScopeId()}
