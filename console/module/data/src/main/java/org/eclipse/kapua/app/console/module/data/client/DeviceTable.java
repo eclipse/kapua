@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.module.data.client;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
+import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
@@ -21,6 +22,7 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.util.KeyNav;
@@ -65,6 +67,7 @@ public class DeviceTable extends LayoutContainer {
     private List<SelectionChangedListener<GwtDatastoreDevice>> listeners = new ArrayList<SelectionChangedListener<GwtDatastoreDevice>>();
     private KapuaPagingToolBar pagingToolBar;
     private KapuaTextField<String> filterField;
+    private Button refreshButton;
 
     public DeviceTable(GwtSession currentSession) {
         this.currentSession = currentSession;
@@ -92,7 +95,7 @@ public class DeviceTable extends LayoutContainer {
     private void initDeviceTable() {
         initDeviceGrid();
 
-        Button refreshButton = new Button(DATA_MSGS.searchButton(), new KapuaIcon(IconSet.FILTER), new SelectionListener<ButtonEvent>() {
+        refreshButton = new Button(DATA_MSGS.searchButton(), new KapuaIcon(IconSet.FILTER), new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -150,6 +153,7 @@ public class DeviceTable extends LayoutContainer {
         };
 
         loader = new BasePagingLoader<PagingLoadResult<GwtDatastoreDevice>>(proxy);
+        loader.addLoadListener(new DeviceTableLoadListener());
         loader.setRemoteSort(true);
         loader.setSortDir(SortDir.ASC);
         loader.setSortField("friendlyDevice");
@@ -221,4 +225,29 @@ public class DeviceTable extends LayoutContainer {
         });
     }
 
+    private class DeviceTableLoadListener extends LoadListener {
+        @Override
+        public void loaderBeforeLoad(LoadEvent le) {
+            if (refreshButton != null) {
+                refreshButton.disable();
+            }
+        }
+
+        @Override
+        public void loaderLoad(LoadEvent le) {
+            if (refreshButton != null) {
+                refreshButton.enable();
+            }
+        }
+
+        @Override
+        public void loaderLoadException(LoadEvent le) {
+            if (refreshButton != null) {
+                refreshButton.enable();
+            }
+            if (le.exception != null) {
+                FailureHandler.handle(le.exception);
+            }
+        }
+    }
 }
