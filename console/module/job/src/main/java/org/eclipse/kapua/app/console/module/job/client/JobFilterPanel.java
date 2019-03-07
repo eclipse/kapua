@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -61,14 +61,14 @@ public class JobFilterPanel extends EntityFilterPanel<GwtJob> {
         jobNameField.setStyleAttribute("margin-bottom", "10px");
         fieldsPanel.add(jobNameField);
 
-        Label jobDescriptionLabel = new Label("Description");
+        Label jobDescriptionLabel = new Label(JOB_MSGS.filterFieldJobDescriptionLabel());
         jobDescriptionLabel.setWidth(WIDTH);
         jobDescriptionLabel.setStyleAttribute("margin", "5px");
 
         fieldsPanel.add(jobDescriptionLabel);
 
         jobDescriptionField = new KapuaTextField<String>();
-        jobDescriptionField.setName("name");
+        jobDescriptionField.setName("description");
         jobDescriptionField.setWidth(WIDTH);
         jobDescriptionField.setMaxLength(MAX_LEN);
         jobDescriptionField.setStyleAttribute("margin-top", "0px");
@@ -93,6 +93,7 @@ public class JobFilterPanel extends EntityFilterPanel<GwtJob> {
         query.setName(jobNameField.getValue());
         query.setDescription(jobDescriptionField.getValue());
         query.setScopeId(currentSession.getSelectedAccountId());
+        query.setDescription(jobDescriptionField.getValue());
         entityGrid.refresh(query);
     }
 }
