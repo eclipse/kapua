@@ -441,7 +441,7 @@ public class DeviceConfigComponents extends LayoutContainer {
         }
         if (configComponent != null) {
 
-            devConfPanel = new DeviceConfigPanel(configComponent);
+            devConfPanel = new DeviceConfigPanel(configComponent, gwtSession);
             devConfPanel.addListener(Events.Change, new Listener<BaseEvent>() {
 
                 @Override

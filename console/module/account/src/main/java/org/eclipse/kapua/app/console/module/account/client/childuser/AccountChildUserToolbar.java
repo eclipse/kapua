@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -41,16 +41,10 @@ public class AccountChildUserToolbar extends EntityCRUDToolbar<GwtUser> {
                 getEditEntityButton().disable();
                 getDeleteEntityButton().disable();
             } else {
-                if (currentSession.hasPermission(UserSessionPermission.write())) {
-                    getAddEntityButton().enable();
-                }
+                getAddEntityButton().setEnabled(currentSession.hasPermission(UserSessionPermission.write()));
                 if (gridSelectionModel.getSelectedItem() != null) {
-                    if (currentSession.hasPermission(UserSessionPermission.write())) {
-                        getEditEntityButton().enable();
-                    }
-                    if (currentSession.hasPermission(UserSessionPermission.delete())) {
-                        getDeleteEntityButton().enable();
-                    }
+                    getEditEntityButton().setEnabled(currentSession.hasPermission(UserSessionPermission.write()));
+                    getDeleteEntityButton().setEnabled(currentSession.hasPermission(UserSessionPermission.delete()));
                 } else {
                     getEditEntityButton().disable();
                     getDeleteEntityButton().disable();
