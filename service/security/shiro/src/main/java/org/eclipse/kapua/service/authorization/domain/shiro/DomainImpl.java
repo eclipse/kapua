@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,7 +31,7 @@ import java.util.Set;
 /**
  * {@link Domain} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @Entity(name = "Domain")
 @Table(name = "athz_domain")
@@ -55,11 +55,19 @@ public class DomainImpl extends AbstractKapuaEntity implements Domain {
 
     /**
      * Constructor
+     *
+     * @since 1.0.0
      */
     public DomainImpl() {
         super();
     }
 
+    /**
+     * Constructor
+     *
+     * @param scopeId the scope KapuaId
+     * @since 1.0.0
+     */
     public DomainImpl(KapuaId scopeId) {
         super(scopeId);
     }

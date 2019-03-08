@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -46,12 +46,11 @@ import org.eclipse.kapua.service.certificate.util.CertificateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.namespace.QName;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.xml.namespace.QName;
 
 @KapuaProvider
 public class CertificateServiceImpl implements CertificateService {
@@ -182,28 +181,43 @@ public class CertificateServiceImpl implements CertificateService {
 
         private static final EmptyTocd INSTANCE = new EmptyTocd();
 
-        private EmptyTocd() {}
+        private EmptyTocd() {
+        }
 
         @Override
-        public void setOtherAttributes(Map<QName, String> otherAttributes) {}
+        public void setOtherAttributes(Map<QName, String> otherAttributes) {
+            // This is a Empty TOCD implementation
+        }
 
         @Override
-        public void setName(String value) {}
+        public void setName(String value) {
+            // This is a Empty TOCD implementation
+        }
 
         @Override
-        public void setId(String value) {}
+        public void setId(String value) {
+            // This is a Empty TOCD implementation
+        }
 
         @Override
-        public void setIcon(List<? extends KapuaTicon> icon) {}
+        public void setIcon(List<? extends KapuaTicon> icon) {
+            // This is a Empty TOCD implementation
+        }
 
         @Override
-        public void setDescription(String value) {}
+        public void setDescription(String value) {
+            // This is a Empty TOCD implementation
+        }
 
         @Override
-        public void setAny(List<Object> any) {}
+        public void setAny(List<Object> any) {
+            // This is a Empty TOCD implementation
+        }
 
         @Override
-        public void setAD(List<? extends KapuaTad> icon) {}
+        public void setAD(List<? extends KapuaTad> icon) {
+            // This is a Empty TOCD implementation
+        }
 
         @Override
         public Map<QName, String> getOtherAttributes() {

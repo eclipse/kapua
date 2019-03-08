@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,29 +16,27 @@ import org.eclipse.kapua.model.KapuaNamedEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
- * Kapua entity named creator service (reference abstract implementation).
+ * {@link KapuaNamedEntityCreator} {@code abstract} implementation.
  *
- * @param <E>
- *            entity type
- * 
- * @since 1.0
- *
+ * @param <E> {@link KapuaEntity} which this {@link AbstractKapuaUpdatableEntityCreator} is for
+ * @since 1.0.0
  */
-@SuppressWarnings("serial")
 public abstract class AbstractKapuaNamedEntityCreator<E extends KapuaEntity> extends AbstractKapuaUpdatableEntityCreator<E> implements KapuaNamedEntityCreator<E> {
 
     protected String name;
+    protected String description;
 
     /**
      * Constructor
-     * 
-     * @param scopeId
-     * @param name
+     *
+     * @param scopeId the scope {@link KapuaId}
+     * @param name    the name
+     * @since 1.0.0
      */
-    protected AbstractKapuaNamedEntityCreator(KapuaId scopeId,
-            String name) {
+    protected AbstractKapuaNamedEntityCreator(KapuaId scopeId, String name) {
         super(scopeId);
-        this.name = name;
+
+        setName(name);
     }
 
     public AbstractKapuaNamedEntityCreator(KapuaId scopeId) {
@@ -53,5 +51,15 @@ public abstract class AbstractKapuaNamedEntityCreator<E extends KapuaEntity> ext
     @Override
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

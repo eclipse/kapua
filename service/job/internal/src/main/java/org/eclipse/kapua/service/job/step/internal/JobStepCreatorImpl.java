@@ -16,15 +16,13 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.JobStepCreator;
-import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionCreator;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link JobStepDefinitionCreator} encapsulates all the information needed to create a new JobStepDefinition in the system.<br>
- * The data provided will be used to seed the new JobStepDefinition.
+ * {@link JobStepCreator} implementation
  *
  * @since 1.0.0
  */
@@ -33,24 +31,13 @@ public class JobStepCreatorImpl extends AbstractKapuaNamedEntityCreator<JobStep>
 
     private static final long serialVersionUID = 3119071638220738358L;
 
-    public JobStepCreatorImpl(KapuaId scopeId) {
-        super(scopeId);
-    }
-
-    private String description;
     private KapuaId jobId;
     private Integer stepIndex;
     private KapuaId jobStepDefinitionId;
     private List<JobStepProperty> jobStepProperty;
 
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
-    public void setDescription(String description) {
-        this.description = description;
+    public JobStepCreatorImpl(KapuaId scopeId) {
+        super(scopeId);
     }
 
     @Override

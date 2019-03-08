@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,21 +21,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Set;
 
 /**
- * {@link Domain} creator definition.<br>
+ * {@link DomainCreator} definition.<br>
+ * <p>
  * It is used to create a new {@link Domain} with {@link Actions} associated
  *
  * @since 1.0.0
  */
 @XmlRootElement(name = "domainCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-//public interface DomainCreator extends KapuaEntityCreator<Domain>, org.eclipse.kapua.model.domain.Domain {
-public interface DomainCreator extends KapuaEntityCreator<Domain> {
+public interface DomainCreator extends KapuaEntityCreator<Domain> { // org.eclipse.kapua.model.domain.Domain {
 
-    public String getName();
+    String getName();
 
-    public Set<Actions> getActions();
+    Set<Actions> getActions();
 
-    public boolean getGroupable();
+    boolean getGroupable();
 
     /**
      * Sets the {@link Domain} name.

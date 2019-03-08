@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,22 +23,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Date;
 
 /**
- * User entity
+ * {@link User} {@link org.eclipse.kapua.model.KapuaEntity} definition
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlRootElement(name = "user")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "status",
-        "displayName",
-        "email",
-        "phoneNumber",
-        "userType",
-        "externalId",
-        "expirationDate"
-}, //
-        factoryClass = UserXmlRegistry.class, //
-        factoryMethod = "newUser")
+@XmlType(factoryClass = UserXmlRegistry.class, factoryMethod = "newUser")
 public interface User extends KapuaNamedEntity {
 
     String TYPE = "user";
@@ -49,96 +40,126 @@ public interface User extends KapuaNamedEntity {
     }
 
     /**
-     * Return the user status
+     * Gets the {@link UserStatus}
      *
-     * @return
+     * @return the {@link UserStatus}
+     * @since 1.0.0
      */
     @XmlElement(name = "status")
     UserStatus getStatus();
 
     /**
-     * Get the user status
+     * Sets the {@link UserStatus}
      *
-     * @param status
+     * @param status the {@link UserStatus}
+     * @since 1.0.0
      */
     void setStatus(UserStatus status);
 
     /**
-     * Return the display name (may be a friendly username to show in the UI)
+     * Gets the display name (may be a friendlier name)
      *
-     * @return
+     * @return the display name (may be a friendlier name)
+     * @since 1.0.0
      */
     @XmlElement(name = "displayName")
     String getDisplayName();
 
     /**
-     * Set the display name
+     * Sets the display name (may be a friendlier name)
      *
-     * @param displayName
+     * @param displayName the display name (may be a friendlier name)
+     * @since 1.0.0
      */
     void setDisplayName(String displayName);
 
     /**
-     * Get the user email
+     * Gets the email
      *
-     * @return
+     * @return the email
+     * @since 1.0.0
      */
     @XmlElement(name = "email")
     String getEmail();
 
     /**
-     * Set the user email
+     * Sets the user email
      *
-     * @param email
+     * @param email the user email
+     * @since 1.0.0
      */
     void setEmail(String email);
 
     /**
-     * Get the phone number
+     * Gets the phone number
      *
-     * @return
+     * @return the phone number
+     * @since 1.0.0
      */
     @XmlElement(name = "phoneNumber")
     String getPhoneNumber();
 
     /**
-     * Set the phone number
+     * Sets the phone number
      *
-     * @param phoneNumber
+     * @param phoneNumber the phone number
+     * @since 1.0.0
      */
     void setPhoneNumber(String phoneNumber);
 
     /**
-     * Get the user type
+     * Gets the {@link UserType}
      *
-     * @return
+     * @return the {@link UserType}
+     * @since 1.0.0
      */
     @XmlElement(name = "userType")
     UserType getUserType();
 
     /**
-     * Set the user type
+     * Sets the user type
+     *
+     * @param userType the {@link UserType}
+     * @since 1.0.0
      */
     void setUserType(UserType userType);
 
     /**
-     * Get the external ID
+     * Gets the external id.
+     * <p>
+     * This field is used to store external SSO identity bound to this {@link User}
      *
-     * @return
+     * @return the external id.
+     * @since 1.0.0
      */
     @XmlElement(name = "externalId")
     String getExternalId();
 
     /**
-     * Set the external ID
+     * Sets the external id.
+     * <p>
+     * This field is used to store external SSO identity bound to this {@link User}
      *
-     * @param externalId
+     * @param externalId the external id.
+     * @since 1.0.0
      */
     void setExternalId(String externalId);
 
+    /**
+     * Gets the expiration date
+     *
+     * @return the expiration date
+     * @since 1.0.0
+     */
     @XmlElement(name = "expirationDate")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
     Date getExpirationDate();
 
+    /**
+     * Sets the expiration date
+     *
+     * @param expirationDate the expiration date
+     * @since 1.0.0
+     */
     void setExpirationDate(Date expirationDate);
 }

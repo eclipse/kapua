@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2017 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,23 +20,22 @@ import org.eclipse.kapua.service.authorization.domain.DomainCreator;
 import java.util.Set;
 
 /**
- * Role creator service implementation.
+ * {@link DomainCreator} implementation
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class DomainCreatorImpl extends AbstractKapuaEntityCreator<Domain> implements DomainCreator {
 
     private static final long serialVersionUID = -4676187845961673421L;
 
     private String name;
-    private String serviceName;
     private Set<Actions> actions;
     private boolean groupable;
 
     /**
      * Constructor
      *
-     * @param name        The name to set for this {@link DomainCreator}.
+     * @param name The name to set for this {@link DomainCreator}.
      * @since 1.0.0
      */
     public DomainCreatorImpl(String name) {

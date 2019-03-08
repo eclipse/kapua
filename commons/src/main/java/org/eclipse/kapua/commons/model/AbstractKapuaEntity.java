@@ -11,8 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.model;
 
-import java.io.Serializable;
-import java.util.Date;
+import org.eclipse.kapua.commons.model.id.IdGenerator;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.model.KapuaEntity;
+import org.eclipse.kapua.model.KapuaUpdatableEntity;
+import org.eclipse.kapua.model.id.KapuaId;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -25,22 +29,15 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import org.eclipse.kapua.commons.model.id.IdGenerator;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.model.KapuaEntity;
-import org.eclipse.kapua.model.id.KapuaId;
+import java.io.Serializable;
+import java.util.Date;
 
 /**
- * {@link KapuaEntity} reference abstract implementation.
- * 
- * @see KapuaEntity
- * 
- * @since 1.0.0
+ * {@link KapuaEntity} {@code abstract} implementation.
  *
+ * @see KapuaEntity
+ * @since 1.0.0
  */
-@SuppressWarnings("serial")
 @MappedSuperclass
 @Access(AccessType.FIELD)
 public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
@@ -70,7 +67,7 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
     /**
      * Protected default constructor.<br>
      * Required by JPA.
-     * 
+     *
      * @since 1.0.0
      */
     protected AbstractKapuaEntity() {
@@ -79,9 +76,8 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
 
     /**
      * Constructor.
-     * 
-     * @param scopeId
-     *            The scope {@link KapuaId} to set for this {@link KapuaEntity}.
+     *
+     * @param scopeId The scope {@link KapuaId} to set for this {@link KapuaEntity}.
      * @since 1.0.0
      */
     public AbstractKapuaEntity(KapuaId scopeId) {
@@ -92,6 +88,10 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
 
     /**
      * Constructor.
+     * <p>
+     * It can be used to clone the {@link KapuaUpdatableEntity}
+     *
+     * @since 1.0.0
      */
     protected AbstractKapuaEntity(KapuaEntity entity) {
         this();
@@ -128,9 +128,10 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
     }
 
     /**
-     * Sets the created on date
-     * 
-     * @param createdOn
+     * Sets the date of creation.
+     *
+     * @param createdOn the date of creation.
+     * @since 1.0.0
      */
     public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
@@ -142,9 +143,10 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
     }
 
     /**
-     * Sets the created by identifier
-     * 
-     * @param createdBy
+     * Sets the identity {@link KapuaId} who has created this {@link KapuaEntity}
+     *
+     * @param createdBy the identity {@link KapuaId} who has created this {@link KapuaEntity}
+     * @since 1.0.0
      */
     public void setCreatedBy(KapuaId createdBy) {
         this.createdBy = KapuaEid.parseKapuaId(createdBy);
@@ -152,7 +154,7 @@ public abstract class AbstractKapuaEntity implements KapuaEntity, Serializable {
 
     /**
      * Before create action sets the {@link KapuaEntity} {@link #id}, {@link #createdBy} and {@link #createdOn}.
-     * 
+     *
      * @since 1.0.0
      */
     @PrePersist

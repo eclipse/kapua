@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,17 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.test.account;
 
-import java.util.Date;
-import java.util.Properties;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.AccountCreator;
+
+import java.util.Date;
+import java.util.Properties;
 
 public class AccountCreatorMock implements AccountCreator {
 
     private KapuaId scopeId;
     private String name;
+    private String description;
     private String organizationName;
     private String organizationEmail;
 
@@ -36,10 +37,21 @@ public class AccountCreatorMock implements AccountCreator {
     }
 
     @Override
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
     public KapuaId getScopeId() {
         return this.scopeId;
     }
 
+    @Override
     public void setScopeId(KapuaId scopeId) {
         this.scopeId = scopeId;
     }
@@ -56,14 +68,12 @@ public class AccountCreatorMock implements AccountCreator {
 
     @Override
     public String getOrganizationPersonName() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setOrganizationPersonName(String organizationPersonName) {
-        // TODO Auto-generated method stub
-
+        // Not used
     }
 
     @Override
@@ -78,108 +88,91 @@ public class AccountCreatorMock implements AccountCreator {
 
     @Override
     public String getOrganizationPhoneNumber() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setOrganizationPhoneNumber(String organizationPhoneNumber) {
-        // TODO Auto-generated method stub
-
+        // Not used
     }
 
     @Override
     public String getOrganizationAddressLine1() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setOrganizationAddressLine1(String organizationAddressLine1) {
-        // TODO Auto-generated method stub
-
+        // Not used
     }
 
     @Override
     public String getOrganizationAddressLine2() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setOrganizationAddressLine2(String organizationAddressLine2) {
-        // TODO Auto-generated method stub
-
+        // Not used
     }
 
     @Override
     public String getOrganizationCity() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setOrganizationCity(String organizationCity) {
-        // TODO Auto-generated method stub
-
+        // Not used
     }
 
     @Override
     public String getOrganizationZipPostCode() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setOrganizationZipPostCode(String organizationZipPostCode) {
-        // TODO Auto-generated method stub
-
+        // Not used
     }
 
     @Override
     public String getOrganizationStateProvinceCounty() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setOrganizationStateProvinceCounty(String organizationStateProvinceCounty) {
-        // TODO Auto-generated method stub
-
+        // Not used
     }
 
     @Override
     public String getOrganizationCountry() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setOrganizationCountry(String organizationCountry) {
-        // TODO Auto-generated method stub
-
+        // Not used
     }
 
     @Override
     public Properties getEntityAttributes() throws KapuaException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setEntityAttributes(Properties entityAttributes) throws KapuaException {
-        // TODO Auto-generated method stub
-
+        // Not used
     }
 
     @Override
     public Date getExpirationDate() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setExpirationDate(Date expirationDate) {
-        // TODO Auto-generated method stub
+        // Not used
     }
 }

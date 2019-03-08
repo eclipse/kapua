@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,25 +24,26 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Date;
 
 /**
- * Kapua base entity definition.<br>
- * All the Kapua entities will be an extension of this entity.
+ * {@link KapuaEntity} definition.
+ * <p>
+ * All the {@link KapuaEntity}s will be an extension of this entity.
  *
  * @since 1.0.0
  */
-@XmlType(propOrder = { //
-        "id", //
-        "scopeId", //
-        "createdOn", //
-        "createdBy" })
+@XmlType(propOrder = {
+        "id",
+        "scopeId",
+        "createdOn",
+        "createdBy"})
 public interface KapuaEntity extends KapuaSerializable {
 
     @XmlTransient
     String getType();
 
     /**
-     * Get the Kapua identifier for the entity
+     * Gets the unique {@link KapuaId}
      *
-     * @return
+     * @return the unique {@link KapuaId}
      * @since 1.0.0
      */
     @XmlElement(name = "id")
@@ -51,17 +52,17 @@ public interface KapuaEntity extends KapuaSerializable {
     KapuaId getId();
 
     /**
-     * Set the Kapua identifier for the entity
+     * Sets the unique {@link KapuaId}
      *
-     * @param id
+     * @param id the unique {@link KapuaId}
      * @since 1.0.0
      */
     void setId(KapuaId id);
 
     /**
-     * Get the Kapua scope identifier for the entity
+     * Gets the scope {@link KapuaId}
      *
-     * @return
+     * @return the scope {@link KapuaId}
      * @since 1.0.0
      */
     @XmlElement(name = "scopeId")
@@ -70,17 +71,17 @@ public interface KapuaEntity extends KapuaSerializable {
     KapuaId getScopeId();
 
     /**
-     * Set the Kapua scope identifier for the entity.
+     * Sets the scope {@link KapuaId}
      *
-     * @param scopeId The Kapua scope identifier to set.
+     * @param scopeId the scope {@link KapuaId}
      * @since 1.0.0
      */
     void setScopeId(KapuaId scopeId);
 
     /**
-     * Get the created on date
+     * Gets the creation date.
      *
-     * @return
+     * @return the creation date.
      * @since 1.0.0
      */
     @XmlElement(name = "createdOn")
@@ -88,9 +89,9 @@ public interface KapuaEntity extends KapuaSerializable {
     Date getCreatedOn();
 
     /**
-     * Set the created by Kapua identifier
+     * Gets the identity {@link KapuaId} who has created this {@link KapuaEntity}
      *
-     * @return
+     * @return the identity {@link KapuaId} who has created this {@link KapuaEntity}
      * @since 1.0.0
      */
     @XmlElement(name = "createdBy")

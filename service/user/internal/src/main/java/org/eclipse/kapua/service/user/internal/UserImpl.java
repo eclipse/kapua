@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
 
+import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserStatus;
+import org.eclipse.kapua.service.user.UserType;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,20 +25,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserStatus;
-import org.eclipse.kapua.service.user.UserType;
-
 import java.util.Date;
 
 /**
- * User entity implementation.
- * 
- * @since 1.0
+ * {@link User} implementation.
  *
+ * @since 1.0.0
  */
 @Entity(name = "User")
 @Table(name = "usr_user")
@@ -69,21 +67,26 @@ public class UserImpl extends AbstractKapuaNamedEntity implements User {
     private Date expirationDate;
 
     /**
-     * Constructor
+     * Constructor.
+     * <p>
+     * Required by JPA.
+     *
+     * @since 1.0.0
      */
     public UserImpl() {
         super();
     }
 
     /**
-     * Constructor
-     * 
-     * @param scopeId
-     * @param name
+     * Constructor.
+     *
+     * @param scopeId the scope {@link KapuaId}
+     * @param name    the name
+     * @since 1.0.0
      */
-    public UserImpl(KapuaId scopeId,
-            String name) {
+    public UserImpl(KapuaId scopeId, String name) {
         super(scopeId, name);
+
         this.status = UserStatus.ENABLED;
     }
 
@@ -139,7 +142,6 @@ public class UserImpl extends AbstractKapuaNamedEntity implements User {
     @Override
     public void setUserType(UserType userType) {
         this.userType = userType;
-
     }
 
     @Override

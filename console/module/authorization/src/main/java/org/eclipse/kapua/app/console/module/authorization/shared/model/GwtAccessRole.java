@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -39,6 +39,14 @@ public class GwtAccessRole extends GwtUpdatableEntityModel {
 
     public void setRoleName(String roleName) {
         set("roleName", roleName);
+    }
+
+    public String getRoleDescription() {
+        return get("roleDescription");
+    }
+
+    public void setRoleDescription(String roleDescription) {
+        set("roleDescription", roleDescription);
     }
 
 }

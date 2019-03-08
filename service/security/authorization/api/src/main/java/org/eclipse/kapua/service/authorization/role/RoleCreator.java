@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role;
 
-import org.eclipse.kapua.model.KapuaEntityCreator;
+import org.eclipse.kapua.model.KapuaNamedEntityCreator;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -24,36 +24,16 @@ import java.security.Permissions;
 import java.util.Set;
 
 /**
- * {@link Role} creator definition.<br>
+ * {@link RoleCreator} definition.
+ * <p>
  * It is used to create a new {@link Role} with {@link Permission}s associated
  *
  * @since 1.0.0
  */
 @XmlRootElement(name = "roleCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "name",
-        "permissions"
-},
-        factoryClass = RoleXmlRegistry.class,
-        factoryMethod = "newRoleCreator")
-public interface RoleCreator extends KapuaEntityCreator<Role> {
-
-    /**
-     * Sets the {@link Role} name.
-     *
-     * @param name The {@link Role} name.
-     * @since 1.0.0
-     */
-    void setName(String name);
-
-    /**
-     * Gets the {@link Role} name.
-     *
-     * @return The {@link Role} name.
-     * @since 1.0.0
-     */
-    @XmlElement(name = "name")
-    String getName();
+@XmlType(factoryClass = RoleXmlRegistry.class, factoryMethod = "newRoleCreator")
+public interface RoleCreator extends KapuaNamedEntityCreator<Role> {
 
     /**
      * Sets the set of {@link Permissions} to assign to the {@link Role} created entity.

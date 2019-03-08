@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -68,7 +68,7 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
     private OrganizationImpl organization;
 
     @Basic
-    @Column(name = "parent_account_path", nullable = false)
+    @Column(name = "parent_account_path", nullable = false, updatable = true)
     private String parentAccountPath;
 
     @OneToMany(fetch = FetchType.LAZY)
@@ -77,7 +77,7 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
     private List<AccountImpl> childAccounts;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "expiration_date")
+    @Column(name = "expiration_date", nullable = false, updatable = true)
     protected Date expirationDate;
 
     /**
@@ -130,9 +130,11 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
 
     @Override
     public List<Account> getChildAccounts() {
-        List<Account> list = new ArrayList<>();
-        list.addAll(childAccounts);
-        return list;
+        if (childAccounts == null) {
+            childAccounts = new ArrayList<>();
+        }
+
+        return new ArrayList<>(childAccounts);
     }
 
     @Override

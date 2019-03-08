@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,64 +11,56 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.group.shiro;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
+import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.group.Group;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  * {@link Group} implementation.
- * 
- * @since 1.0
+ *
+ * @since 1.0.0
  */
 @Entity(name = "Group")
 @Table(name = "athz_group")
-public class GroupImpl extends AbstractKapuaUpdatableEntity implements Group {
+public class GroupImpl extends AbstractKapuaNamedEntity implements Group {
 
     private static final long serialVersionUID = -3760818776351242930L;
 
-    @Basic
-    @Column(name = "name")
-    private String name;
-
-    protected GroupImpl() {
+    /**
+     * Constructor.
+     * <p>
+     * Required by JPA.
+     *
+     * @since 1.1.0
+     */
+    public GroupImpl() {
         super();
     }
 
     /**
-     * Constructor.<br>
-     * Creates a soft clone.
-     * 
-     * @param group
-     * @throws KapuaException
-     */
-    public GroupImpl(Group group) throws KapuaException {
-        super((AbstractKapuaUpdatableEntity) group);
-
-        setName(group.getName());
-    }
-
-    /**
-     * Constructor
-     * 
-     * @param scopeId
+     * Constructor.
+     *
+     * @param scopeId the scope {@link KapuaId}
+     * @since 1.0.0
      */
     public GroupImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getName() {
-        return name;
+    /**
+     * Constructor.
+     * <p>
+     * It can be used to clone the {@link Group}.
+     *
+     * @param group the {@link Group} to clone.
+     * @throws KapuaException
+     * @since 1.0.0
+     */
+    public GroupImpl(Group group) throws KapuaException {
+        super(group);
     }
 }

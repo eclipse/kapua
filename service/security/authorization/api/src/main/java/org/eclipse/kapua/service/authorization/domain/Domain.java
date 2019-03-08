@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,18 +27,18 @@ import javax.xml.bind.annotation.XmlType;
 import java.util.Set;
 
 /**
- * {@link Domain} entity definition.<br>
- * {@link Domain} contains the information about the available {@link Actions} for a entity {@link Domain}<br>
+ * {@link Domain} {@link KapuaEntity} definition
+ * <p>
+ * {@link Domain} contains the information about the available {@link Actions} for a {@link KapuaEntity} {@link Domain}<br>
  * Services needs to register their own specific {@link Domain}.
- * {@link Domain#getName()} must be unique.
  *
  * @since 1.0.0
  */
 @XmlRootElement(name = "domain")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "name",
+@XmlType(propOrder = {"name",
         "actions",
-        "groupable" })
+        "groupable"})
 public interface Domain extends KapuaEntity {//, org.eclipse.kapua.model.domain.Domain {
 
     String TYPE = "domain";

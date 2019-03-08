@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step.definition.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
@@ -21,18 +18,18 @@ import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionCreator;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 import org.eclipse.kapua.service.job.step.definition.JobStepType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * {@link JobStepDefinitionCreator} encapsulates all the information needed to create a new JobStepDefinition in the system.<br>
- * The data provided will be used to seed the new JobStepDefinition.
- * 
- * @since 1.0.0
+ * {@link JobStepDefinitionCreator} implementation
  *
+ * @since 1.0.0
  */
 public class JobStepDefinitionCreatorImpl extends AbstractKapuaNamedEntityCreator<JobStepDefinition> implements JobStepDefinitionCreator {
 
     private static final long serialVersionUID = 4602067255120049746L;
 
-    private String description;
     private JobStepType jobStepType;
     private String readerName;
     private String processorName;
@@ -41,16 +38,6 @@ public class JobStepDefinitionCreatorImpl extends AbstractKapuaNamedEntityCreato
 
     public JobStepDefinitionCreatorImpl(KapuaId scopeId) {
         super(scopeId);
-    }
-
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     @Override

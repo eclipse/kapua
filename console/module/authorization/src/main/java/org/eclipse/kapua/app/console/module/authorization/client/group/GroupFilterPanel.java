@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,6 +30,7 @@ public class GroupFilterPanel extends EntityFilterPanel<GwtGroup> {
     private final EntityGrid<GwtGroup> entityGrid;
     private final GwtSession currentSession;
     private final KapuaTextField<String> nameField;
+    private final KapuaTextField<String> descriptionField;
     private static final ConsoleGroupMessages MSGS = GWT.create(ConsoleGroupMessages.class);
 
     public GroupFilterPanel(AbstractEntityView<GwtGroup> entityView, GwtSession currentSession) {
@@ -53,11 +54,26 @@ public class GroupFilterPanel extends EntityFilterPanel<GwtGroup> {
         nameField.setStyleAttribute("margin-bottom", "10px");
         verticalPanel.add(nameField);
 
+        Label descriptionLabel = new Label(MSGS.filterFieldGroupDescriptionLabel());
+        descriptionLabel.setWidth(WIDTH);
+        descriptionLabel.setStyleAttribute("margin", "5px");
+        verticalPanel.add(descriptionLabel);
+        descriptionField = new KapuaTextField<String>();
+        descriptionField.setName("name");
+        descriptionField.setWidth(WIDTH);
+        descriptionField.setMaxLength(MAX_LEN);
+        descriptionField.setStyleAttribute("margin-top", "0px");
+        descriptionField.setStyleAttribute("margin-left", "5px");
+        descriptionField.setStyleAttribute("margin-right", "5px");
+        descriptionField.setStyleAttribute("margin-bottom", "10px");
+        verticalPanel.add(descriptionField);
+
     }
 
     @Override
     public void resetFields() {
         nameField.setValue(null);
+        descriptionField.setValue(null);
         GwtGroupQuery query = new GwtGroupQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
         entityGrid.refresh(query);
@@ -68,6 +84,7 @@ public class GroupFilterPanel extends EntityFilterPanel<GwtGroup> {
     public void doFilter() {
         GwtGroupQuery query = new GwtGroupQuery();
         query.setName(nameField.getValue());
+        query.setDescription(descriptionField.getValue());
         query.setScopeId(currentSession.getSelectedAccountId());
         entityGrid.refresh(query);
 

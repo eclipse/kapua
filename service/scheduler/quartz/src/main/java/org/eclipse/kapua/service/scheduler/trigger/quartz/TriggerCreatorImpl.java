@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,21 +11,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 /**
- * Trigger creator service implementation.
- * 
- * @since 1.0
- * 
+ * {@link TriggerCreator} implementation.
+ *
+ * @since 1.0.0
  */
 public class TriggerCreatorImpl extends AbstractKapuaNamedEntityCreator<Trigger> implements TriggerCreator {
 
@@ -39,43 +38,50 @@ public class TriggerCreatorImpl extends AbstractKapuaNamedEntityCreator<Trigger>
 
     /**
      * Constructor
-     * 
+     *
      * @param scopeId
-     * @param name
-     *            trigger name
+     * @param name    trigger name
      */
     public TriggerCreatorImpl(KapuaId scopeId, String name) {
         super(scopeId, name);
     }
 
+    @Override
     public Date getStartsOn() {
         return startsOn;
     }
 
+    @Override
     public void setStartsOn(Date startsOn) {
         this.startsOn = startsOn;
     }
 
+    @Override
     public Date getEndsOn() {
         return endsOn;
     }
 
+    @Override
     public void setEndsOn(Date endsOn) {
         this.endsOn = endsOn;
     }
 
+    @Override
     public String getCronScheduling() {
         return cronScheduling;
     }
 
+    @Override
     public void setCronScheduling(String cronScheduling) {
         this.cronScheduling = cronScheduling;
     }
 
+    @Override
     public Long getRetryInterval() {
         return retryInterval;
     }
 
+    @Override
     public void setRetryInterval(Long retryInterval) {
         this.retryInterval = retryInterval;
     }
