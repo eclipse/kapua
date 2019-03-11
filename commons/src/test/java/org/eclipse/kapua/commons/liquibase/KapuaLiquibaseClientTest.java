@@ -10,7 +10,7 @@
  *     Red Hat Inc - initial API and implementation
  *     Eurotech
  *******************************************************************************/
-package org.eclipse.kapua.service.liquibase;
+package org.eclipse.kapua.commons.liquibase;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

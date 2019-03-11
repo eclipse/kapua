@@ -46,7 +46,7 @@ import org.eclipse.kapua.service.device.registry.DeviceStatus;
 import org.eclipse.kapua.service.device.registry.RegistryJAXBContextProvider;
 import org.eclipse.kapua.service.device.registry.TestConfig;
 import org.eclipse.kapua.service.device.registry.shared.SharedTestSteps;
-import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
+import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 
