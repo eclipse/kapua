@@ -37,7 +37,6 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-rest-api-web</artifactId>
-            <version>${project.version}</version>
             <type>war</type>
         </dependency>
 
@@ -122,7 +121,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-translator-kura-mqtt</artifactId>
+            <artifactId>kapua-translator-kura-amqp</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>

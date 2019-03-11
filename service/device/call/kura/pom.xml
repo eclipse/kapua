@@ -54,11 +54,6 @@
 
         <!-- External dependencies -->
         <dependency>
-            <!-- Java MQTT client -->
-            <groupId>org.eclipse.paho</groupId>
-            <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-        </dependency>
-        <dependency>
             <!-- Google protobuf for message encoding -->
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,6 +22,12 @@ import io.vertx.proton.ProtonQoS;
 import io.vertx.proton.ProtonReceiver;
 import io.vertx.proton.ProtonSession;
 
+/**
+ * Amqp receiver implementation to be used by the external consumers.
+ * This class creates a new Vertx Proton connection using the Proton libraries.
+ * Using this class outside a Verticle instance could be unsafe
+ *
+ */
 public class AmqpReceiver extends AmqpConnection {
 
     private static final Logger logger = LoggerFactory.getLogger(AmqpSender.class);
@@ -35,11 +41,20 @@ public class AmqpReceiver extends AmqpConnection {
     private ProtonReceiver receiver;
     private String destination;
 
+    /**
+     * Instantiate the receiver
+     * @param vertx
+     * @param clientOptions
+     */
     public AmqpReceiver(Vertx vertx, ClientOptions clientOptions) {
         super(vertx, clientOptions);
         destination = clientOptions.getString(AmqpClientOptions.DESTINATION);
     }
 
+    /**
+     * Set the message processor handler to process the received messages.
+     * @param messageHandler
+     */
     public void messageHandler(ProtonMessageHandler messageHandler) {
         this.messageHandler = messageHandler;
     }

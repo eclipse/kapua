@@ -13,6 +13,7 @@ package org.eclipse.kapua.app.api.web;
 
 import com.google.common.base.MoreObjects;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.broker.client.amqp.AmqpBridgeFactory;
 import org.eclipse.kapua.commons.core.ServiceModuleBundle;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -78,6 +79,10 @@ public class RestApiListener implements ServletContextListener {
         } catch (KapuaException e) {
             LOG.error("Cannot stop service modules: {}", e.getMessage(), e);
         }
+        //shutdown the Amqp bridges
+        LOG.info("Stopping Amqp bridges...");
+        AmqpBridgeFactory.cleanUp();
+        LOG.info("Stopping Amqp bridges... DONE");
     }
 
 }

@@ -134,7 +134,11 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-translator-kura-mqtt</artifactId>
+            <artifactId>kapua-translator-kura-amqp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-transport-amqp</artifactId>
         </dependency>
 
         <!-- External dependencies -->
@@ -155,7 +159,6 @@
         <dependency>
             <groupId>org.elasticsearch.plugin</groupId>
             <artifactId>transport-netty4-client</artifactId>
-            <version>${elasticsearch-client-transport.version}</version>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch.plugin</groupId>
