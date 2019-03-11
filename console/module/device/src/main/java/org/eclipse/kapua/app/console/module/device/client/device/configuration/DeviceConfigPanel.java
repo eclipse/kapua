@@ -57,6 +57,8 @@ import org.eclipse.kapua.app.console.module.api.client.util.MessageUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigParameter;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceManagementSessionPermission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,12 +74,14 @@ public class DeviceConfigPanel extends LayoutContainer {
 
     private ComponentPlugin infoPlugin;
     private ComponentPlugin dirtyPlugin;
+    private GwtSession currentSession;
 
-    public DeviceConfigPanel(GwtConfigComponent configComponent) {
+    public DeviceConfigPanel(GwtConfigComponent configComponent, GwtSession currentSession) {
         super(new FitLayout());
         setScrollMode(Scroll.AUTO);
         setBorders(false);
 
+        this.currentSession = currentSession;
         this.configComponent = configComponent;
         infoPlugin = new ComponentPlugin() {
 
@@ -311,6 +315,7 @@ public class DeviceConfigPanel extends LayoutContainer {
             } else {
                 field = paintMultiFieldConfigParameter(param);
             }
+            field.setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.write()));
             actionFieldSet.add(field, formData);
         }
 

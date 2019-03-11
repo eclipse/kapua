@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,7 +15,6 @@ import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.Abstra
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.group.GroupView;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
-import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.AccessInfoSessionPermission;
 import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceSessionPermission;
 
 public class DevicesGroupTabItemDescriptor extends AbstractEntityTabDescriptor<GwtGroup, DevicesGroupTabItem, GroupView> {
@@ -37,6 +36,6 @@ public class DevicesGroupTabItemDescriptor extends AbstractEntityTabDescriptor<G
 
     @Override
     public Boolean isEnabled(GwtSession currentSession) {
-        return currentSession.hasPermission(DeviceSessionPermission.read()) && currentSession.hasPermission(AccessInfoSessionPermission.read());
+        return currentSession.hasPermission(DeviceSessionPermission.read());
     }
 }

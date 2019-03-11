@@ -92,7 +92,9 @@ public class JobTabTargetsToolbar extends EntityCRUDToolbar<GwtJobTarget> {
 
         jobStartTargetButton.setEnabled(selectedEntity != null && currentSession.hasPermission(JobSessionPermission.execute()));
         addEntityButton.setEnabled(selectedEntity != null && currentSession.hasPermission(JobSessionPermission.write()));
-        deleteEntityButton.setEnabled(selectedEntity != null && currentSession.hasPermission(JobSessionPermission.delete()));
+        deleteEntityButton
+                .setEnabled(selectedEntity != null && currentSession.hasPermission(JobSessionPermission.delete())
+                        && currentSession.hasPermission(JobSessionPermission.write()));
     }
 
     private void checkButtons() {
@@ -111,7 +113,11 @@ public class JobTabTargetsToolbar extends EntityCRUDToolbar<GwtJobTarget> {
                     }
 
                     if (deleteEntityButton != null) {
-                        deleteEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null && result.getJobXmlDefinition() == null && currentSession.hasPermission(JobSessionPermission.delete()));
+                        deleteEntityButton.setEnabled(
+                                gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null
+                                        && result.getJobXmlDefinition() == null
+                                        && currentSession.hasPermission(JobSessionPermission.delete())
+                                        && currentSession.hasPermission(JobSessionPermission.write()));
                     }
 
                     if (jobStartTargetButton != null) {
