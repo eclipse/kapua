@@ -9,7 +9,7 @@ Integration tests can be run:
 ## With dockerized Kapua
 With fabric8 plugin usage tests can now be run without explicitly running dockerized environment.
 Docker containers providing Kapua infrastructure are started with maven itself.
-But tu run these integration tests, you have to switch to qa folder and run following command
+But to run these integration tests, you have to switch to qa folder and run following command
 
     mvn test -PI9nTests
     
@@ -18,7 +18,7 @@ This will run integration tests only, those are tests written in gherkin and bei
 
 If tests fail and dockers are still running use this command:
 
-    mvn docker:stop -I9nTests
+    mvn docker:stop -PI9nTests
 
 Example response with time:
 
@@ -60,7 +60,7 @@ Example response with time:
 
 ## Run pure junit tests
 
-    mvn test mvn test -Dgroups='org.eclipse.kapua.test.junit.JUnitTests'
+    mvn test -Dgroups='org.eclipse.kapua.test.junit.JUnitTests'
 
 Example response with time:
 
