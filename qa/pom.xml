@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-    Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+    Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -312,35 +312,189 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
+    <profiles>
+        <!-- Profile for running integration tests with Kapua infrastructure started
+             inside dockerized environment. -->
+        <profile>
+            <id>I9nTests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+
                         <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.eclipse.kapua</groupId>
-                                    <artifactId>kapua-rest-api-web</artifactId>
-                                    <type>war</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>${project.build.directory}/war</outputDirectory>
-                                    <destFileName>api.war</destFileName>
-                                </artifactItem>
-                            </artifactItems>
-                            <overWriteReleases>true</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <images>
+                                <image>
+                                    <alias>db</alias>
+                                    <name>kapua/kapua-sql:1.1.0-SNAPSHOT</name>
+                                    <run>
+                                        <ports>
+                                            <port>8181:8181</port>
+                                            <port>3306:3306</port>
+                                        </ports>
+                                        <wait>
+                                            <log>TCP server running at</log>
+                                            <time>20000</time>
+                                        </wait>
+                                    </run>
+                                </image>
+                                <image>
+                                    <alias>es</alias>
+                                    <name>elasticsearch:5.4.0</name>
+                                    <run>
+                                        <ports>
+                                            <port>9200:9200</port>
+                                            <port>9300:9300</port>
+                                        </ports>
+                                        <env>
+                                            <cluster.name>kapua-datastore</cluster.name>
+                                            <discovery.type>single-node</discovery.type>
+                                            <transport.host>_site_</transport.host>
+                                            <transport.ping_schedule>-1</transport.ping_schedule>
+                                            <transport.tcp.connect_timeout>30s</transport.tcp.connect_timeout>
+                                        </env>
+                                        <wait>
+                                            <log>started</log>
+                                            <time>20000</time>
+                                        </wait>
+                                    </run>
+                                </image>
+                                <image>
+                                    <alias>events-broker</alias>
+                                    <name>kapua/kapua-events-broker:1.1.0-SNAPSHOT</name>
+                                    <run>
+                                        <ports>
+                                            <port>5672:5672</port>
+                                        </ports>
+                                        <wait>
+                                            <log>HTTP Server started at</log>
+                                            <time>20000</time>
+                                        </wait>
+                                    </run>
+                                </image>
+                                <image>
+                                    <alias>broker</alias>
+                                    <name>kapua/kapua-broker:1.1.0-SNAPSHOT</name>
+                                    <run>
+                                        <ports>
+                                            <port>1883:1883</port>
+                                            <port>8883:8883</port>
+                                            <port>61614:61614</port>
+                                        </ports>
+                                        <dependsOn>
+                                            <container>db</container>
+                                            <container>es</container>
+                                            <container>events-broker</container>
+                                        </dependsOn>
+                                        <links>
+                                            <link>db:db</link>
+                                            <link>es:es</link>
+                                            <link>events-broker:events-broker</link>
+                                        </links>
+                                        <wait>
+                                            <log>started</log>
+                                            <time>20000</time>
+                                        </wait>
+                                    </run>
+                                </image>
+                                <image>
+                                    <alias>kapua-console</alias>
+                                    <name>kapua/kapua-console:1.1.0-SNAPSHOT</name>
+                                    <run>
+                                        <ports>
+                                            <port>8080:8080</port>
+                                            <port>8443:8443</port>
+                                        </ports>
+                                        <dependsOn>
+                                            <container>broker</container>
+                                            <container>db</container>
+                                            <container>es</container>
+                                            <container>events-broker</container>
+                                        </dependsOn>
+                                        <links>
+                                            <link>broker:broker</link>
+                                            <link>db:db</link>
+                                            <link>es:es</link>
+                                            <link>events-broker:events-broker</link>
+                                        </links>
+                                        <wait>
+                                            <log>org.eclipse.jetty.server.Server - Started</log>
+                                            <time>60000</time>
+                                        </wait>
+                                    </run>
+                                </image>
+                                <image>
+                                    <alias>kapua-api</alias>
+                                    <name>kapua/kapua-api:1.1.0-SNAPSHOT</name>
+                                    <run>
+                                        <ports>
+                                            <port>8081:8080</port>
+                                            <port>8444:8443</port>
+                                        </ports>
+                                        <dependsOn>
+                                            <container>broker</container>
+                                            <container>db</container>
+                                            <container>es</container>
+                                            <container>events-broker</container>
+                                        </dependsOn>
+                                        <links>
+                                            <link>broker:broker</link>
+                                            <link>db:db</link>
+                                            <link>es:es</link>
+                                            <link>events-broker:events-broker</link>
+                                        </links>
+                                        <wait>
+                                            <log>Starting service modules...DONE</log>
+                                            <time>60000</time>
+                                        </wait>
+                                    </run>
+                                </image>
+                            </images>
                         </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+
+                        <executions>
+                            <execution>
+                                <id>start</id>
+                                <!--<phase>pre-integration-test</phase>-->
+                                <phase>generate-test-resources</phase>
+                                <goals>
+                                    <goal>start</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>stop</id>
+                                <!--<phase>post-integration-test</phase>-->
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <argLine>@{argLine} -Xmx1024m</argLine>
+                            <systemPropertyVariables>
+                                <cucumber.options>--tags @integration</cucumber.options>
+                                <groups>'!org.eclipse.kapua.test.junit.JUnitTests'</groups>
+                                <commons.settings.hotswap>true</commons.settings.hotswap>
+                                <org.eclipse.kapua.qa.noEmbeddedServers>true</org.eclipse.kapua.qa.noEmbeddedServers>
+                                <commons.db.jdbcConnectionUrlResolver>DEFAULT</commons.db.jdbcConnectionUrlResolver>
+                                <commons.db.schema.update>true</commons.db.schema.update>
+                                <commons.db.connection.host>localhost</commons.db.connection.host>
+                                <commons.db.connection.port>3306</commons.db.connection.port>
+                                <commons.db.schema>kapuadb</commons.db.schema>
+                                <commons.db.connection.scheme>jdbc:h2:tcp</commons.db.connection.scheme>
+                                <broker.host>localhost</broker.host>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>
