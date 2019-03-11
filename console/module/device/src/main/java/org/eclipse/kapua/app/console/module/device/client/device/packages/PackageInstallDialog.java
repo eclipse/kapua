@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,8 @@ import org.eclipse.kapua.app.console.module.api.client.ui.dialog.TabbedDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaNumberField;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
+import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator.FieldType;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.packages.GwtPackageInstallRequest;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementService;
@@ -110,6 +112,7 @@ public class PackageInstallDialog extends TabbedDialog {
             dpVersionField = new KapuaTextField<String>();
             dpVersionField.setMaxLength(125);
             dpVersionField.setName("dpVersion");
+            dpVersionField.setValidator(new TextFieldValidator(dpVersionField, FieldType.PACKAGE_VERSION));
             dpVersionField.setAllowBlank(false);
             dpVersionField.setFieldLabel("* " + DEVICE_MSGS.packageInstallDpTabVersion());
             dpVersionField.setToolTip(DEVICE_MSGS.devicePackageVersionTooltip());
