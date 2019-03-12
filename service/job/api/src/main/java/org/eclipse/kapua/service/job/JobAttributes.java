@@ -23,5 +23,4 @@ public class JobAttributes extends KapuaNamedEntityAttributes {
 
     public static final String ENDED_ON = "endedOn";
     public static final String STARTED_ON = "startedOn";
-    public static final String DESCRIPTION = "description";
 }

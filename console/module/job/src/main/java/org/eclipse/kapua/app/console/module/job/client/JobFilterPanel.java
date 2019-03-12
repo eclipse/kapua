@@ -93,7 +93,6 @@ public class JobFilterPanel extends EntityFilterPanel<GwtJob> {
         query.setName(jobNameField.getValue());
         query.setDescription(jobDescriptionField.getValue());
         query.setScopeId(currentSession.getSelectedAccountId());
-        query.setDescription(jobDescriptionField.getValue());
         entityGrid.refresh(query);
     }
 }
