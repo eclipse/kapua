@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,7 +14,6 @@ package org.eclipse.kapua.app.console.module.device.client.connection;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.EntityDescriptionTabItem;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
@@ -26,6 +25,7 @@ import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceConne
 public class ConnectionDescriptionTab extends EntityDescriptionTabItem<GwtDeviceConnection> {
 
     private static final GwtDeviceConnectionServiceAsync GWT_DEVICE_CONNECTION_SERVICE = GWT.create(GwtDeviceConnectionService.class);
+    private static final String CONNECTION = "connection";
 
     public ConnectionDescriptionTab(GwtSession currentSession) {
         super(currentSession);
@@ -43,9 +43,8 @@ public class ConnectionDescriptionTab extends EntityDescriptionTabItem<GwtDevice
     }
 
     @Override
-    protected void onRender(Element parent, int index) {
-        super.onRender(parent, index);
-        setBorders(false);
+    protected String getGroupViewText() {
+        return MSGS.tabDescriptionNoItemSelected(CONNECTION);
     }
 
 }

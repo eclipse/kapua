@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,10 +24,13 @@ import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolbarMessages;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
@@ -43,6 +46,8 @@ public class JobTabExecutionsGrid extends EntityGrid<GwtExecution> {
 
     private static final GwtExecutionServiceAsync EXECUTION_SERVICE = GWT.create(GwtExecutionService.class);
     private static final ConsoleJobMessages JOB_MSGS = GWT.create(ConsoleJobMessages.class);
+    private static final ConsoleMessages C_MSGS = GWT.create(ConsoleMessages.class);
+    private static final String EXECUTION = "execution";
 
     private String jobId;
     private GwtExecutionQuery query;
@@ -152,5 +157,26 @@ public class JobTabExecutionsGrid extends EntityGrid<GwtExecution> {
         if (jobId == null) {
             refresh();
         }
+    }
+
+    @Override
+    public String getEmptyGridText() {
+        return C_MSGS.gridNoResultAvailable(EXECUTION);
+    }
+
+    @Override
+    protected KapuaPagingToolbarMessages getKapuaPagingToolbarMessages() {
+        return new KapuaPagingToolbarMessages() {
+
+            @Override
+            public String pagingToolbarShowingPost() {
+                return C_MSGS.specificPagingToolbarShowingPost(EXECUTION);
+            }
+
+            @Override
+            public String pagingToolbarNoResult() {
+                return C_MSGS.specificPagingToolbarNoResult(EXECUTION);
+            }
+        };
     }
 }

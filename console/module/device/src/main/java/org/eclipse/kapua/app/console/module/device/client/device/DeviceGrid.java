@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,15 +24,16 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.color.Color;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolbarMessages;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleConnectionMessages;
@@ -56,6 +57,8 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
 
     private static final ConsoleDeviceMessages DEVICE_MSGS = GWT.create(ConsoleDeviceMessages.class);
     private static final ConsoleConnectionMessages CONNECTION_MSGS = GWT.create(ConsoleConnectionMessages.class);
+    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+    private static final String DEVICE = "device";
 
     public DeviceGrid(AbstractEntityView<GwtDevice> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
@@ -78,9 +81,24 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
     }
 
     @Override
-    protected void onRender(Element target, int index) {
-        super.onRender(target, index);
-        entityLoader.addLoadListener(new DeviceLoadListener());
+    public String getEmptyGridText() {
+        return MSGS.gridNoResultFound(DEVICE);
+    }
+
+    @Override
+    protected KapuaPagingToolbarMessages getKapuaPagingToolbarMessages() {
+        return new KapuaPagingToolbarMessages() {
+
+            @Override
+            public String pagingToolbarShowingPost() {
+                return MSGS.specificPagingToolbarShowingPost(DEVICE);
+            }
+
+            @Override
+            public String pagingToolbarNoResult() {
+                return MSGS.specificPagingToolbarNoResult(DEVICE);
+            }
+        };
     }
 
     @Override

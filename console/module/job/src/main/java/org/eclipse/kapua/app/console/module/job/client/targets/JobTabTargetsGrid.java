@@ -19,8 +19,11 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolbarMessages;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
@@ -41,6 +44,8 @@ public class JobTabTargetsGrid extends EntityGrid<GwtJobTarget> {
     private GwtJobTargetQuery query;
 
     private static final ConsoleJobMessages MSGS = GWT.create(ConsoleJobMessages.class);
+    private static final ConsoleMessages C_MSGS = GWT.create(ConsoleMessages.class);
+    private static final String TARGET = "target";
     private static final GwtJobTargetServiceAsync GWT_JOB_TARGET_SERVICE = GWT.create(GwtJobTargetService.class);
     private static final GwtJobServiceAsync JOB_SERVICE = GWT.create(GwtJobService.class);
 
@@ -63,6 +68,27 @@ public class JobTabTargetsGrid extends EntityGrid<GwtJobTarget> {
         if (jobId == null) {
             refresh();
         }
+    }
+
+    @Override
+    public String getEmptyGridText() {
+        return C_MSGS.gridNoResultAdded(TARGET);
+    }
+
+    @Override
+    protected KapuaPagingToolbarMessages getKapuaPagingToolbarMessages() {
+        return new KapuaPagingToolbarMessages() {
+
+            @Override
+            public String pagingToolbarShowingPost() {
+                return C_MSGS.specificPagingToolbarShowingPost(TARGET);
+            }
+
+            @Override
+            public String pagingToolbarNoResult() {
+                return C_MSGS.specificPagingToolbarNoResult(TARGET);
+            }
+        };
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,6 +32,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPane
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolBar;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolbarMessages;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
@@ -69,6 +70,10 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     protected boolean selectedAgain;
     protected M selectedItem;
     private boolean deselectable;
+
+    public int getEntityPageSize() {
+        return ENTITY_PAGE_SIZE;
+    }
 
     protected EntityGrid(AbstractEntityView<M> entityView, GwtSession currentSession) {
         super(new FitLayout());
@@ -142,15 +147,20 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
         });
 
         //
-        // Grid view options
-        GridView gridView = entityGrid.getView();
-        gridView.setEmptyText(MSGS.gridEmptyResult());
-
-        //
         // Do first load
         if (refreshOnRender) {
             refresh();
         }
+        setEmptyGridText(getEmptyGridText());
+    }
+
+    public String getEmptyGridText() {
+        return MSGS.gridEmptyResult();
+    }
+
+    protected void setEmptyGridText(String message) {
+        GridView gridView = entityGrid.getView();
+        gridView.setEmptyText(message);
     }
 
     protected EntityCRUDToolbar<M> getToolbar() {
@@ -160,12 +170,29 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     protected abstract RpcProxy<PagingLoadResult<M>> getDataProxy();
 
     protected PagingToolBar getPagingToolbar() {
-        return new KapuaPagingToolBar(ENTITY_PAGE_SIZE);
+        KapuaPagingToolBar kapuaPagingToolBar = new KapuaPagingToolBar(ENTITY_PAGE_SIZE);
+        kapuaPagingToolBar.setKapuaPagingToolbarMessages(getKapuaPagingToolbarMessages());
+        return kapuaPagingToolBar;
     }
 
+    protected KapuaPagingToolbarMessages getKapuaPagingToolbarMessages() {
+        return new KapuaPagingToolbarMessages() {
+
+            @Override
+            public String pagingToolbarShowingPost() {
+                return MSGS.pagingToolbarShowingPost();
+            }
+
+            @Override
+            public String pagingToolbarNoResult() {
+                return MSGS.pagingToolbarNoResult();
+            }
+        };
+    }
     /**
      * Configuring entity grid, because it needs to be configured before onRender method is called.
      */
+
     protected void configureEntityGrid() {
         // Data Proxy
         RpcProxy<PagingLoadResult<M>> dataProxy = getDataProxy();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,9 +18,12 @@ import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolbarMessages;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleGroupMessages;
@@ -39,6 +42,8 @@ public class GroupSubjectGrid extends EntityGrid<GwtDevice> {
     private GwtGroup selectedGroup;
     private static final GwtDeviceServiceAsync DEVICE_SERVICE = GWT.create(GwtDeviceService.class);
     private static final ConsoleGroupMessages MSGS = GWT.create(ConsoleGroupMessages.class);
+    private static final ConsoleMessages C_MSGS = GWT.create(ConsoleMessages.class);
+    private static final String ASSIGNED_DEVICE = "assigned device";
     private GwtDeviceQuery query;
 
     GroupSubjectGrid(AbstractEntityView<GwtDevice> entityView, GwtSession currentSession) {
@@ -46,6 +51,27 @@ public class GroupSubjectGrid extends EntityGrid<GwtDevice> {
         query = new GwtDeviceQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
 
+    }
+
+    @Override
+    public String getEmptyGridText() {
+        return C_MSGS.gridNoResultAvailable(ASSIGNED_DEVICE);
+    }
+
+    @Override
+    protected KapuaPagingToolbarMessages getKapuaPagingToolbarMessages() {
+        return new KapuaPagingToolbarMessages() {
+
+            @Override
+            public String pagingToolbarShowingPost() {
+                return C_MSGS.specificPagingToolbarShowingPost(ASSIGNED_DEVICE);
+            }
+
+            @Override
+            public String pagingToolbarNoResult() {
+                return C_MSGS.specificPagingToolbarNoResult(ASSIGNED_DEVICE);
+            }
+        };
     }
 
     @Override

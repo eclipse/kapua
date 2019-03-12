@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,12 +17,14 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.CreatedByNameCellRenderer;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolbarMessages;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleRoleMessages;
@@ -37,8 +39,10 @@ import java.util.List;
 public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
 
     private static final ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
+    private static final ConsoleMessages C_MSGS = GWT.create(ConsoleMessages.class);
 
     private static final GwtAccessRoleServiceAsync GWT_ACCESS_ROLE_SERVICE = GWT.create(GwtAccessRoleService.class);
+    private static final String ASSIGNED_ROLE = "assigned role";
 
     private String userId;
 
@@ -133,8 +137,23 @@ public class UserTabAccessRoleGrid extends EntityGrid<GwtAccessRole> {
     }
 
     @Override
-    protected void onRender(Element target, int index) {
-        super.onRender(target, index);
-        setBorders(false);
+    public String getEmptyGridText() {
+        return C_MSGS.gridNoResultAvailable(ASSIGNED_ROLE);
+    }
+
+    @Override
+    protected KapuaPagingToolbarMessages getKapuaPagingToolbarMessages() {
+        return new KapuaPagingToolbarMessages() {
+
+            @Override
+            public String pagingToolbarShowingPost() {
+                return C_MSGS.specificPagingToolbarShowingPost(ASSIGNED_ROLE);
+            }
+
+            @Override
+            public String pagingToolbarNoResult() {
+                return C_MSGS.specificPagingToolbarNoResult(ASSIGNED_ROLE);
+            }
+        };
     }
 }

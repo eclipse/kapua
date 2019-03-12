@@ -27,6 +27,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.grid.CreatedByNameCell
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolbarMessages;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsolePermissionMessages;
@@ -45,6 +46,7 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
 
     private static final ConsolePermissionMessages PERMISSION_MSGS = GWT.create(ConsolePermissionMessages.class);
     private static final ConsoleMessages COMMONS_MSGS = GWT.create(ConsoleMessages.class);
+    private static final String PERMISSION = "permission";
 
     private String userId;
 
@@ -162,5 +164,26 @@ public class UserTabPermissionGrid extends EntityGrid<GwtAccessPermission> {
         if (userId == null) {
             refresh();
         }
+    }
+
+    @Override
+    public String getEmptyGridText() {
+        return COMMONS_MSGS.gridNoResultAvailable(PERMISSION);
+    }
+
+    @Override
+    protected KapuaPagingToolbarMessages getKapuaPagingToolbarMessages() {
+        return new KapuaPagingToolbarMessages() {
+
+            @Override
+            public String pagingToolbarShowingPost() {
+                return COMMONS_MSGS.specificPagingToolbarShowingPost(PERMISSION);
+            }
+
+            @Override
+            public String pagingToolbarNoResult() {
+                return COMMONS_MSGS.specificPagingToolbarNoResult(PERMISSION);
+            }
+        };
     }
 }

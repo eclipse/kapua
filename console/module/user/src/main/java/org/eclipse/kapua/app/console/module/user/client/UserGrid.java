@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,6 +30,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.ModifiedByNameCellRenderer;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolbarMessages;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.user.client.messages.ConsoleUserMessages;
@@ -51,6 +52,7 @@ public class UserGrid extends EntityGrid<GwtUser> {
 
     private static final ConsoleUserMessages USER_MSGS = GWT.create(ConsoleUserMessages.class);
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+    private static final String USER = "user";
 
     public UserGrid(AbstractEntityView<GwtUser> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
@@ -80,6 +82,27 @@ public class UserGrid extends EntityGrid<GwtUser> {
                 GWT_USER_SERVICE.query((PagingLoadConfig) loadConfig,
                         query,
                         callback);
+            }
+        };
+    }
+
+    @Override
+    public String getEmptyGridText() {
+        return MSGS.gridNoResultFound(USER);
+    }
+
+    @Override
+    protected KapuaPagingToolbarMessages getKapuaPagingToolbarMessages() {
+        return new KapuaPagingToolbarMessages() {
+
+            @Override
+            public String pagingToolbarShowingPost() {
+                return MSGS.specificPagingToolbarShowingPost(USER);
+            }
+
+            @Override
+            public String pagingToolbarNoResult() {
+                return MSGS.specificPagingToolbarNoResult(USER);
             }
         };
     }

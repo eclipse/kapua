@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -50,6 +50,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelector;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelectorListener;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolBar;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolbarMessages;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
@@ -68,6 +69,7 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
     private static final ConsoleDeviceMessages DEVICES_MSGS = GWT.create(ConsoleDeviceMessages.class);
 
     private final GwtDeviceServiceAsync gwtDeviceService = GWT.create(GwtDeviceService.class);
+    private static final String EVENT = "event";
 
     private static final int DEVICE_PAGE_SIZE = 250;
 
@@ -258,14 +260,30 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
         grid.disableTextSelection(false);
         grid.getView().setAutoFill(true);
         grid.getView().setForceFit(true);
-        grid.getView().setEmptyText(DEVICES_MSGS.deviceHistoryTableNoHistory());
+        grid.getView().setEmptyText(MSGS.gridNoResultReceived(EVENT));
 
         pagingToolBar = new KapuaPagingToolBar(DEVICE_PAGE_SIZE);
+        pagingToolBar.setKapuaPagingToolbarMessages(getKapuaPagingToolbarMessages());
         pagingToolBar.bind(loader);
 
         GridSelectionModel<GwtDeviceEvent> selectionModel = new GridSelectionModel<GwtDeviceEvent>();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
         grid.setSelectionModel(selectionModel);
+    }
+
+    protected KapuaPagingToolbarMessages getKapuaPagingToolbarMessages() {
+        return new KapuaPagingToolbarMessages() {
+
+            @Override
+            public String pagingToolbarShowingPost() {
+                return MSGS.specificPagingToolbarShowingPost(EVENT);
+            }
+
+            @Override
+            public String pagingToolbarNoResult() {
+                return MSGS.specificPagingToolbarNoResult(EVENT);
+            }
+        };
     }
 
     // --------------------------------------------------------------------------------------

@@ -22,7 +22,10 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import org.eclipse.kapua.app.console.module.account.client.messages.ConsoleAccountMessages;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
@@ -31,6 +34,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.color.Color;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.CreatedByNameCellRenderer;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolbarMessages;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.user.client.messages.ConsoleUserMessages;
@@ -46,6 +50,8 @@ public class AccountChildUserGrid extends EntityGrid<GwtUser> {
 
     private static final ConsoleUserMessages MSGS = GWT.create(ConsoleUserMessages.class);
     private static final ConsoleMessages CMSGS = GWT.create(ConsoleMessages.class);
+    private static final ConsoleAccountMessages ACCOUNT_MSGS = GWT.create(ConsoleAccountMessages.class);
+    private static final String CHILD_USER = "child user";
 
     private static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
 
@@ -189,4 +195,29 @@ public class AccountChildUserGrid extends EntityGrid<GwtUser> {
         return toolbar;
     }
 
+    @Override
+    protected void onRender(Element target, int index) {
+        super.onRender(target, index);
+    }
+
+    @Override
+    public String getEmptyGridText() {
+        return CMSGS.gridNoResultFound(CHILD_USER);
+    }
+
+    @Override
+    protected KapuaPagingToolbarMessages getKapuaPagingToolbarMessages() {
+        return new KapuaPagingToolbarMessages() {
+
+            @Override
+            public String pagingToolbarShowingPost() {
+                return CMSGS.specificPagingToolbarShowingPost(CHILD_USER);
+            }
+
+            @Override
+            public String pagingToolbarNoResult() {
+                return CMSGS.specificPagingToolbarNoResult(CHILD_USER);
+            }
+        };
+    }
 }

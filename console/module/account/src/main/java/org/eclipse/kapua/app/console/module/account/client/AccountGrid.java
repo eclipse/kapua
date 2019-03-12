@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,6 +22,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import org.eclipse.kapua.app.console.module.account.client.messages.ConsoleAccountMessages;
 import org.eclipse.kapua.app.console.module.account.client.toolbar.AccountGridToolbar;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
@@ -34,6 +35,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.ModifiedByNameCellRenderer;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolbarMessages;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
@@ -42,10 +44,10 @@ import java.util.List;
 
 public class AccountGrid extends EntityGrid<GwtAccount> {
 
-    private static final ConsoleAccountMessages ACCOUNT_MSGS = GWT.create(ConsoleAccountMessages.class);
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
-
+    private static final ConsoleAccountMessages ACCOUNT_MSGS = GWT.create(ConsoleAccountMessages.class);
     private final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
+    private static final String CHILD_ACCOUNT = "child account";
 
     private GwtAccountQuery filterQuery;
     private AccountGridToolbar toolbar;
@@ -224,5 +226,26 @@ public class AccountGrid extends EntityGrid<GwtAccount> {
             toolbar.getEditEntityButton().setEnabled(true);
             toolbar.getDeleteEntityButton().setEnabled(true);
         }
+    }
+
+    @Override
+    public String getEmptyGridText() {
+        return MSGS.gridNoResultFound(CHILD_ACCOUNT);
+    }
+
+    @Override
+    protected KapuaPagingToolbarMessages getKapuaPagingToolbarMessages() {
+        return new KapuaPagingToolbarMessages() {
+
+            @Override
+            public String pagingToolbarShowingPost() {
+                return MSGS.specificPagingToolbarShowingPost(CHILD_ACCOUNT);
+            }
+
+            @Override
+            public String pagingToolbarNoResult() {
+                return MSGS.specificPagingToolbarNoResult(CHILD_ACCOUNT);
+            }
+        };
     }
 }

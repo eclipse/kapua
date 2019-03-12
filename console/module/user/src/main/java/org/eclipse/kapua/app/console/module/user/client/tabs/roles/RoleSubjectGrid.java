@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,9 +18,12 @@ import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolbarMessages;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.client.messages.ConsoleRoleMessages;
@@ -38,6 +41,8 @@ public class RoleSubjectGrid extends EntityGrid<GwtUser> {
     private GwtRole selectedRole;
     private static final GwtUserServiceAsync USER_SERVICE = GWT.create(GwtUserService.class);
     private static final ConsoleRoleMessages MSGS = GWT.create(ConsoleRoleMessages.class);
+    private static final ConsoleMessages C_MSGS = GWT.create(ConsoleMessages.class);
+    private static final String GRANTED_USER = "granted user";
     private GwtAccessRoleQuery query;
 
     RoleSubjectGrid(AbstractEntityView<GwtUser> entityView, GwtSession currentSession) {
@@ -61,6 +66,27 @@ public class RoleSubjectGrid extends EntityGrid<GwtUser> {
                 }
             }
 
+        };
+    }
+
+    @Override
+    public String getEmptyGridText() {
+        return C_MSGS.gridNoResultAvailable(GRANTED_USER);
+    }
+
+    @Override
+    protected KapuaPagingToolbarMessages getKapuaPagingToolbarMessages() {
+        return new KapuaPagingToolbarMessages() {
+
+            @Override
+            public String pagingToolbarShowingPost() {
+                return C_MSGS.specificPagingToolbarShowingPost(GRANTED_USER);
+            }
+
+            @Override
+            public String pagingToolbarNoResult() {
+                return C_MSGS.specificPagingToolbarNoResult(GRANTED_USER);
+            }
         };
     }
 
