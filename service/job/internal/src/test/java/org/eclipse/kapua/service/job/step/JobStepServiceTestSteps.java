@@ -46,7 +46,7 @@ import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionF
 import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionServiceImpl;
 import org.eclipse.kapua.service.job.step.internal.JobStepFactoryImpl;
 import org.eclipse.kapua.service.job.step.internal.JobStepServiceImpl;
-import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
+import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.mockito.Matchers;

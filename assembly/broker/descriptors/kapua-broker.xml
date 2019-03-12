@@ -248,7 +248,6 @@
                 <include>${pom.groupId}:kapua-device-registry-internal</include>
                 <include>${pom.groupId}:kapua-foreignkeys</include>
                 <include>${pom.groupId}:kapua-guice</include>
-                <include>${pom.groupId}:kapua-liquibase</include>
                 <include>${pom.groupId}:kapua-message-api</include>
                 <include>${pom.groupId}:kapua-message-internal</include>
                 <include>${pom.groupId}:kapua-security-authentication-api</include>
