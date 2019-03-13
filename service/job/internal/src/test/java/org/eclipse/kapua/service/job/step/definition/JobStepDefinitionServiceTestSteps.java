@@ -39,7 +39,7 @@ import org.eclipse.kapua.service.job.common.CommonData;
 import org.eclipse.kapua.service.job.step.CucStepProperty;
 import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionFactoryImpl;
 import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionServiceImpl;
-import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
+import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 

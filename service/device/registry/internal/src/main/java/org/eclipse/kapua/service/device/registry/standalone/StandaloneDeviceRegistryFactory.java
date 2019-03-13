@@ -38,7 +38,7 @@ import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactor
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationServiceImpl;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
-import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
+import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 
 import java.util.Collection;

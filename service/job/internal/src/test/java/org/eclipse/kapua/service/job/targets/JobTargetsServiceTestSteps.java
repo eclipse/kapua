@@ -40,7 +40,7 @@ import org.eclipse.kapua.service.job.common.CommonData;
 import org.eclipse.kapua.service.job.internal.JobData;
 import org.eclipse.kapua.service.job.targets.internal.JobTargetFactoryImpl;
 import org.eclipse.kapua.service.job.targets.internal.JobTargetServiceImpl;
-import org.eclipse.kapua.service.liquibase.KapuaLiquibaseClient;
+import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 
