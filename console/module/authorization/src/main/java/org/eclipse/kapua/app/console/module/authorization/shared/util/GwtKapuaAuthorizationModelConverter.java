@@ -33,6 +33,7 @@ import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRoleQu
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
@@ -85,12 +86,13 @@ public class GwtKapuaAuthorizationModelConverter {
             GwtGroupQuery gwtGroupQuery) {
         KapuaLocator locator = KapuaLocator.getInstance();
         GroupFactory groupFactory = locator.getFactory(GroupFactory.class);
+        AndPredicateImpl predicate = new AndPredicateImpl();
         GroupQuery groupQuery = groupFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtGroupQuery.getScopeId()));
         if (gwtGroupQuery.getName() != null && !gwtGroupQuery.getName().isEmpty()) {
-            groupQuery.setPredicate(new AttributePredicateImpl<String>(GroupAttributes.NAME, gwtGroupQuery.getName(), Operator.LIKE));
+            predicate.and(new AttributePredicateImpl<String>(GroupAttributes.NAME, gwtGroupQuery.getName(), Operator.LIKE));
         }
         if (gwtGroupQuery.getDescription() != null && !gwtGroupQuery.getDescription().isEmpty()) {
-            groupQuery.setPredicate(new AttributePredicateImpl<String>(GroupAttributes.DESCRIPTION, gwtGroupQuery.getDescription(), Operator.LIKE));
+            predicate.and(new AttributePredicateImpl<String>(GroupAttributes.DESCRIPTION, gwtGroupQuery.getDescription(), Operator.LIKE));
         }
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? GroupAttributes.NAME : loadConfig.getSortField();
         if (sortField.equals("groupName")) {
@@ -103,6 +105,7 @@ public class GwtKapuaAuthorizationModelConverter {
         groupQuery.setSortCriteria(sortCriteria);
         groupQuery.setOffset(loadConfig.getOffset());
         groupQuery.setLimit(loadConfig.getLimit());
+        groupQuery.setPredicate(predicate);
 
         return groupQuery;
     }
@@ -119,14 +122,15 @@ public class GwtKapuaAuthorizationModelConverter {
         // Get Services
         KapuaLocator locator = KapuaLocator.getInstance();
         RoleFactory roleFactory = locator.getFactory(RoleFactory.class);
+        AndPredicateImpl predicate = new AndPredicateImpl();
 
         // Convert query
         RoleQuery roleQuery = roleFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtRoleQuery.getScopeId()));
         if (gwtRoleQuery.getName() != null && !gwtRoleQuery.getName().trim().isEmpty()) {
-            roleQuery.setPredicate(new AttributePredicateImpl<String>(RoleAttributes.NAME, gwtRoleQuery.getName(), Operator.LIKE));
+            predicate.and(new AttributePredicateImpl<String>(RoleAttributes.NAME, gwtRoleQuery.getName(), Operator.LIKE));
         }
         if (gwtRoleQuery.getDescription() != null && !gwtRoleQuery.getDescription().trim().isEmpty()) {
-            roleQuery.setPredicate(new AttributePredicateImpl<String>(RoleAttributes.DESCRIPTION, gwtRoleQuery.getDescription(), Operator.LIKE));
+            predicate.and(new AttributePredicateImpl<String>(RoleAttributes.DESCRIPTION, gwtRoleQuery.getDescription(), Operator.LIKE));
         }
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? RoleAttributes.NAME : loadConfig.getSortField();
         if (sortField.equals("modifiedOnFormatted")) {
@@ -139,6 +143,7 @@ public class GwtKapuaAuthorizationModelConverter {
         roleQuery.setSortCriteria(sortCriteria);
         roleQuery.setOffset(loadConfig.getOffset());
         roleQuery.setLimit(loadConfig.getLimit());
+        roleQuery.setPredicate(predicate);
 
         //
         // Return converted
