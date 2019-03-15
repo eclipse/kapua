@@ -18,7 +18,7 @@ Feature: Tag Service
 
   Background:
     Given I login as user with name "kapua-sys" and password "kapua-password"
-      And Tag Service configuration
+      And I configure the tag service
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |

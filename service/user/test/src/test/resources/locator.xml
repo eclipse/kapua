@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+    Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -16,11 +16,11 @@
         <api>org.eclipse.kapua.service.user.UserService</api>
         <api>org.eclipse.kapua.service.user.UserFactory</api>
         <api>org.eclipse.kapua.service.authentication.AuthenticationService</api>
+        <api>org.eclipse.kapua.service.authentication.CredentialsFactory</api>
         <api>org.eclipse.kapua.service.authorization.AuthorizationService</api>
-        <api>org.eclipse.kapua.service.authentication.UsernamePasswordTokenFactory</api>
         <api>org.eclipse.kapua.service.authorization.domain.DomainFactory</api>
         <api>org.eclipse.kapua.service.authorization.domain.DomainRegistryService</api>
-        <api>org.eclipse.kapua.service.authorization.permission.PermissionFactory</api>
+        <api>org.eclipse.kapua.service.authorization.permissio.PermissionFactory</api>
         <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
         <api>org.eclipse.kapua.service.generator.id.IdGeneratorService</api>
     </provided>

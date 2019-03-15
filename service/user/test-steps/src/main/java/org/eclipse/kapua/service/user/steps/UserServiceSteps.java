@@ -40,6 +40,7 @@ import org.eclipse.kapua.qa.common.cucumber.CucPermission;
 import org.eclipse.kapua.qa.common.cucumber.CucUser;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
+import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
@@ -47,7 +48,6 @@ import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
-import org.eclipse.kapua.service.authentication.shiro.UsernamePasswordCredentialsImpl;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
@@ -107,6 +107,7 @@ public class UserServiceSteps extends TestBase {
     private PermissionFactory permissionFactory;
     private CredentialService credentialService;
     private CredentialFactory credentialFactory;
+    private CredentialsFactory credentialsFactory;
 
 
     @Inject
@@ -136,6 +137,7 @@ public class UserServiceSteps extends TestBase {
         accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
         permissionFactory = locator.getFactory(PermissionFactory.class);
         credentialFactory = locator.getFactory(CredentialFactory.class);
+        credentialsFactory = locator.getFactory(CredentialsFactory.class);
 
         if (isUnitTest()) {
             // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
@@ -527,8 +529,7 @@ public class UserServiceSteps extends TestBase {
     @When("^I login as user with name \"(.*)\" and password \"(.*)\"$")
     public void loginUser(String userName, String password) throws Exception {
 
-        String passwd = password;
-        LoginCredentials credentials = new UsernamePasswordCredentialsImpl(userName, passwd);
+        LoginCredentials credentials = credentialsFactory.newUsernamePasswordCredentials(userName, password);
         authenticationService.logout();
 
         primeException();
