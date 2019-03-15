@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -66,7 +66,9 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
             @Override
             public void onFailure(Throwable caught) {
                 exitStatus = false;
-                exitMessage = MSGS.dialogAddError(MSGS.dialogAddRoleErrorAccessInfo(caught.getLocalizedMessage()));
+                if (!isPermissionErrorMessage(caught)) {
+                    exitMessage = MSGS.dialogAddError(MSGS.dialogAddRoleErrorAccessInfo(caught.getLocalizedMessage()));
+                }
 
                 hide();
             }
@@ -102,14 +104,15 @@ public class AccessRoleAddDialog extends EntityAddEditDialog {
                 status.hide();
 
                 exitStatus = false;
-                switch (((GwtKapuaException) cause).getCode()) {
+                if (!isPermissionErrorMessage(cause)) {
+                    switch (((GwtKapuaException) cause).getCode()) {
                     case DUPLICATE_NAME:
                         exitMessage = MSGS.dialogAddRoleDuplicateError();
                         break;
                     default:
                         exitMessage = MSGS.dialogAddError(MSGS.dialogAddRoleError(cause.getLocalizedMessage()));
+                    }
                 }
-
                 rolesCombo.markInvalid(exitMessage);
                 ConsoleInfo.display(CMSGS.error(), exitMessage);
             }

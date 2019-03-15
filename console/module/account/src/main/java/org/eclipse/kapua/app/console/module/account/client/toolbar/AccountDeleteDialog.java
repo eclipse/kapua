@@ -49,7 +49,9 @@ public class AccountDeleteDialog extends EntityDeleteDialog {
             @Override
             public void onFailure(Throwable t) {
                 exitStatus = false;
-                exitMessage = MSGS.accountDeleteErrorMessage();
+                if (!isPermissionErrorMessage(t)) {
+                    exitMessage = MSGS.accountDeleteErrorMessage();
+                }
                 hide();
             }
         });

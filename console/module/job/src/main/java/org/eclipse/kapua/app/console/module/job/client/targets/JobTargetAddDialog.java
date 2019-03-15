@@ -270,8 +270,9 @@ public class JobTargetAddDialog extends EntityAddEditDialog {
                 status.hide();
 
                 exitStatus = false;
-                exitMessage = JOB_MSGS.dialogAddTargetError(cause.getLocalizedMessage());
-
+                if (!isPermissionErrorMessage(cause)) {
+                    exitMessage = JOB_MSGS.dialogAddTargetError(cause.getLocalizedMessage());
+                }
                 hide();
             }
         });

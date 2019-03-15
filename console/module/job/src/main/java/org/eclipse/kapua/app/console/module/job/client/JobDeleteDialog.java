@@ -47,7 +47,9 @@ public class JobDeleteDialog extends EntityDeleteDialog {
             @Override
             public void onFailure(Throwable cause) {
                 exitStatus = false;
-                exitMessage = JOB_MSGS.dialogDeleteError(cause.getLocalizedMessage());
+                if (!isPermissionErrorMessage(cause)) {
+                    exitMessage = JOB_MSGS.dialogDeleteError(cause.getLocalizedMessage());
+                }
                 hide();
             }
         });

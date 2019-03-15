@@ -59,8 +59,9 @@ public class CredentialEditDialog extends CredentialAddDialog {
                 status.hide();
 
                 exitStatus = false;
-                exitMessage = MSGS.dialogEditError(caught.getLocalizedMessage());
-
+                if (!isPermissionErrorMessage(caught)) {
+                    exitMessage = MSGS.dialogEditError(caught.getLocalizedMessage());
+                }
                 hide();
             }
 

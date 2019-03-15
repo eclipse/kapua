@@ -55,7 +55,9 @@ public class DeviceEditDialog extends DeviceAddDialog {
             @Override
             public void onFailure(Throwable cause) {
                 exitStatus = false;
-                exitMessage = DEVICE_MSGS.dialogFormEditLoadFailed(cause.getLocalizedMessage());
+                if (!isPermissionErrorMessage(cause)) {
+                    exitMessage = DEVICE_MSGS.dialogFormEditLoadFailed(cause.getLocalizedMessage());
+                }
                 unmaskDialog();
             }
         });
@@ -89,7 +91,9 @@ public class DeviceEditDialog extends DeviceAddDialog {
             @Override
             public void onFailure(Throwable caught) {
                 exitStatus = false;
-                exitMessage = DEVICE_MSGS.deviceFormEditError(caught.getLocalizedMessage());
+                if (!isPermissionErrorMessage(caught)) {
+                    exitMessage = DEVICE_MSGS.deviceFormEditError(caught.getLocalizedMessage());
+                }
                 hide();
             }
 

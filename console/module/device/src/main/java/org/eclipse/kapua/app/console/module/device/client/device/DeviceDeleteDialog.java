@@ -58,7 +58,9 @@ public class DeviceDeleteDialog extends EntityDeleteDialog {
 
                     public void onFailure(Throwable caught) {
                         exitStatus = false;
-                        exitMessage = DEVICE_MSGS.dialogDeviceDeleteError(caught.getLocalizedMessage());
+                        if (!isPermissionErrorMessage(caught)) {
+                            exitMessage = DEVICE_MSGS.dialogDeviceDeleteError(caught.getLocalizedMessage());
+                        }
                         hide();
                     }
 

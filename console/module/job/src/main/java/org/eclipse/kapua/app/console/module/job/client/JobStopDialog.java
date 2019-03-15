@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,7 +16,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.SimpleDialog;
-import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
@@ -52,14 +51,18 @@ public class JobStopDialog extends SimpleDialog {
 
             @Override
             public void onFailure(Throwable caught) {
-                ConsoleInfo.display(MSGS.popupError(), JOB_MSGS.jobStopErrorMessage());
+                exitStatus = false;
+                if (!isPermissionErrorMessage(caught)) {
+                    exitMessage = JOB_MSGS.jobStopErrorMessage();
+                }
                 unmask();
                 hide();
             }
 
             @Override
             public void onSuccess(Void result) {
-                ConsoleInfo.display(MSGS.popupInfo(), JOB_MSGS.jobStopStoppedMessage());
+                exitStatus = true;
+                exitMessage = JOB_MSGS.jobStopStoppedMessage();
                 unmask();
                 hide();
             }
