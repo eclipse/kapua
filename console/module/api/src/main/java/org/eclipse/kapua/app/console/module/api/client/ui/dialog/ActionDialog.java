@@ -31,6 +31,8 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
@@ -240,5 +242,21 @@ public abstract class ActionDialog extends KapuaDialog {
 
     public void setDisabledFormPanelEvents(Boolean disabledFormPanelEvents) {
         this.disabledFormPanelEvents = disabledFormPanelEvents;
+    }
+
+    /**
+     * Method for checking the thrown exception for the SUBJECT_UNAUTHORIZED error code.
+     * @param caught The exception thrown
+     * @return In case of the SUBJECT_UNAUTHORIZED error code the returned value is true 
+     * and the exitMessage is set. For every other case the returned value is false.
+     */
+    public boolean isPermissionErrorMessage(Throwable caught) {
+        if ((caught instanceof GwtKapuaException)
+                && GwtKapuaErrorCode.SUBJECT_UNAUTHORIZED.equals(((GwtKapuaException) caught).getCode())) {
+            exitMessage = caught.getLocalizedMessage();
+            return true;
+        } else {
+            return false;
+        }
     }
 }

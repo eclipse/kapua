@@ -15,7 +15,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityDeleteDialog;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
-import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.tag.client.messages.ConsoleTagMessages;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
 import org.eclipse.kapua.app.console.module.tag.shared.service.GwtTagService;
@@ -41,9 +40,10 @@ public class TagDeleteDialog extends EntityDeleteDialog {
 
             @Override
             public void onFailure(Throwable arg0) {
-                FailureHandler.handle(arg0);
                 exitStatus = false;
-                exitMessage = MSGS.dialogDeleteError(arg0.getLocalizedMessage());
+                if (!isPermissionErrorMessage(arg0)) {
+                    exitMessage = MSGS.dialogDeleteError(arg0.getLocalizedMessage());
+                }
                 hide();
 
             }

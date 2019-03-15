@@ -90,8 +90,10 @@ public class PermissionAddDialog extends EntityAddEditDialog {
 
             @Override
             public void onFailure(Throwable caught) {
-                exitMessage = MSGS.dialogAddPermissionErrorAccessInfo(caught.getLocalizedMessage());
                 exitStatus = false;
+                if (!isPermissionErrorMessage(caught)) {
+                    exitMessage = MSGS.dialogAddPermissionErrorAccessInfo(caught.getLocalizedMessage());
+                }
                 hide();
             }
         });
@@ -126,8 +128,10 @@ public class PermissionAddDialog extends EntityAddEditDialog {
 
             @Override
             public void onFailure(Throwable caught) {
-                exitMessage = MSGS.dialogAddPermissionErrorDomains(caught.getLocalizedMessage());
                 exitStatus = false;
+                if (!isPermissionErrorMessage(caught)) {
+                    exitMessage = MSGS.dialogAddPermissionErrorDomains(caught.getLocalizedMessage());
+                }
                 hide();
             }
 
@@ -150,8 +154,10 @@ public class PermissionAddDialog extends EntityAddEditDialog {
 
                     @Override
                     public void onFailure(Throwable caught) {
-                        exitMessage = MSGS.dialogAddPermissionErrorActions(caught.getLocalizedMessage());
                         exitStatus = false;
+                        if (!isPermissionErrorMessage(caught)) {
+                            exitMessage = MSGS.dialogAddPermissionErrorActions(caught.getLocalizedMessage());
+                        }
                         hide();
                     }
 
@@ -222,8 +228,10 @@ public class PermissionAddDialog extends EntityAddEditDialog {
 
                 @Override
                 public void onFailure(Throwable caught) {
-                    exitMessage = MSGS.dialogAddPermissionErrorGroups(caught.getLocalizedMessage());
                     exitStatus = false;
+                    if (!isPermissionErrorMessage(caught)) {
+                        exitMessage = MSGS.dialogAddPermissionErrorGroups(caught.getLocalizedMessage());
+                    }
                     hide();
                 }
 
@@ -302,13 +310,14 @@ public class PermissionAddDialog extends EntityAddEditDialog {
                 status.hide();
 
                 exitStatus = false;
-                if ((cause instanceof GwtKapuaException) &&
-                        (GwtKapuaErrorCode.ENTITY_UNIQUENESS.equals(((GwtKapuaException) cause).getCode()))) {
-                    exitMessage = MSGS.dialogAddPermissionAlreadyExists();
-                } else {
-                    exitMessage = MSGS.dialogAddError(MSGS.dialogAddPermissionError(cause.getLocalizedMessage()));
+                if (!isPermissionErrorMessage(cause)) {
+                    if ((cause instanceof GwtKapuaException) &&
+                            (GwtKapuaErrorCode.ENTITY_UNIQUENESS.equals(((GwtKapuaException) cause).getCode()))) {
+                        exitMessage = MSGS.dialogAddPermissionAlreadyExists();
+                    } else {
+                        exitMessage = MSGS.dialogAddError(MSGS.dialogAddPermissionError(cause.getLocalizedMessage()));
+                    }
                 }
-
                 domainsCombo.markInvalid(exitMessage);
                 actionsCombo.markInvalid(exitMessage);
                 if (groupsCombo.isEnabled()){

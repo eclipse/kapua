@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -103,8 +103,10 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
 
             @Override
             public void onFailure(Throwable caught) {
-                exitMessage = MSGS.dialogAddError(caught.getLocalizedMessage());
                 exitStatus = false;
+                if (!isPermissionErrorMessage(caught)) {
+                    exitMessage = MSGS.dialogAddError(caught.getLocalizedMessage());
+                }
                 hide();
             }
 
@@ -127,8 +129,10 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
 
                     @Override
                     public void onFailure(Throwable caught) {
-                        exitMessage = MSGS.dialogAddError(caught.getLocalizedMessage());
                         exitStatus = false;
+                        if (!isPermissionErrorMessage(caught)) {
+                            exitMessage = MSGS.dialogAddError(caught.getLocalizedMessage());
+                        }
                         hide();
                     }
 
@@ -201,8 +205,10 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
 
                 @Override
                 public void onFailure(Throwable caught) {
-                    exitMessage = MSGS.dialogAddError(caught.getLocalizedMessage());
                     exitStatus = false;
+                    if (!isPermissionErrorMessage(caught)) {
+                        exitMessage = MSGS.dialogAddError(caught.getLocalizedMessage());
+                    }
                     hide();
                 }
 
@@ -281,12 +287,14 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
                 status.hide();
 
                 exitStatus = false;
-                if ((cause instanceof GwtKapuaException) && (GwtKapuaErrorCode.ENTITY_UNIQUENESS.equals(((GwtKapuaException) cause).getCode()))) {
-                    exitMessage = MSGS.dialogAddPermissionAlreadyExists();
-                } else {
-                    exitMessage = MSGS.dialogAddError(MSGS.dialogAddPermissionError(cause.getLocalizedMessage()));
-                }
+                if (!isPermissionErrorMessage(cause)) {
+                    if ((cause instanceof GwtKapuaException) && (GwtKapuaErrorCode.ENTITY_UNIQUENESS.equals(((GwtKapuaException) cause).getCode()))) {
+                        exitMessage = MSGS.dialogAddPermissionAlreadyExists();
+                    } else {
+                        exitMessage = MSGS.dialogAddError(MSGS.dialogAddPermissionError(cause.getLocalizedMessage()));
+                    }
 
+                }
                 domainsCombo.markInvalid(exitMessage);
                 actionsCombo.markInvalid(exitMessage);
                 if (groupsCombo.isEnabled()){

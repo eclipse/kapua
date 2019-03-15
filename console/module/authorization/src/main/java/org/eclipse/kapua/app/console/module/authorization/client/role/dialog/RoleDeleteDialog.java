@@ -60,7 +60,9 @@ public class RoleDeleteDialog extends EntityDeleteDialog {
             @Override
             public void onFailure(Throwable cause) {
                 exitStatus = false;
-                exitMessage = MSGS.dialogDeleteError(cause.getLocalizedMessage());
+                if (!isPermissionErrorMessage(cause)) {
+                    exitMessage = MSGS.dialogDeleteError(cause.getLocalizedMessage());
+                }
                 hide();
             }
         });

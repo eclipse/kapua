@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,7 @@
 package org.eclipse.kapua.app.console.module.job.client;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
@@ -57,6 +58,7 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 JobStartDialog dialog = new JobStartDialog(gridSelectionModel.getSelectedItem());
+                dialog.addListener(Events.Hide, getHideDialogListener());
                 dialog.show();
             }
         });
@@ -68,6 +70,7 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 JobStopDialog dialog = new JobStopDialog(gridSelectionModel.getSelectedItem());
+                dialog.addListener(Events.Hide, getHideDialogListener());
                 dialog.show();
             }
         });
@@ -79,6 +82,7 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 JobRestartDialog dialog = new JobRestartDialog(gridSelectionModel.getSelectedItem());
+                dialog.addListener(Events.Hide, getHideDialogListener());
                 dialog.show();
             }
         });
