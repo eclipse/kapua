@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -69,7 +69,8 @@ public class TextFieldValidator implements Validator {
                 "^\\+? ?[0-9_]+( [0-9_]+)*$"),
         ALPHABET("alphabet", "^[a-zA-Z_]+$"),
         ALPHANUMERIC("alphanumeric", "^[a-zA-Z0-9_]+$"),
-        NUMERIC("numeric", "^[+0-9.]+$");
+        NUMERIC("numeric", "^[+0-9.]+$"),
+        PACKAGE_VERSION("package_version", "^[a-zA-Z0-9.\\-\\_]*$");
 
         private String name;
         private String regex;
