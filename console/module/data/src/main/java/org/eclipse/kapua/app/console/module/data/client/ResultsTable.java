@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -106,7 +106,6 @@ public class ResultsTable extends LayoutContainer {
         initResultsTable();
         add(tableContainer);
 
-        loader.load();
         queryButton.disable();
         dateRangeSelector.disable();
     }
@@ -175,6 +174,7 @@ public class ResultsTable extends LayoutContainer {
                 if (queryButton != null) {
                     queryButton.disable();
                 }
+                pagingToolBar.enable();
             }
         });
         loader.addListener(Loader.Load, new Listener<BaseEvent>() {
@@ -184,6 +184,7 @@ public class ResultsTable extends LayoutContainer {
                 if (queryButton != null && !metrics.isEmpty()) {
                     queryButton.enable();
                 }
+                pagingToolBar.enable();
             }
         });
         loader.addListener(Loader.LoadException, new Listener<BaseEvent>() {
@@ -193,6 +194,7 @@ public class ResultsTable extends LayoutContainer {
                 if (queryButton != null) {
                     queryButton.enable();
                 }
+                pagingToolBar.enable();
             }
         });
 
@@ -232,6 +234,7 @@ public class ResultsTable extends LayoutContainer {
         warningLabel.setStyleAttribute("margin-left", "10px");
         warningLabel.setStyleAttribute("font-weight", "bold");
         warningLabel.setStyleAttribute("color", "grey");
+        warningLabel.hide();
         resultsToolBar.add(warningLabel);
         resultsToolBar.add(new FillToolItem());
 
@@ -252,7 +255,7 @@ public class ResultsTable extends LayoutContainer {
 
         pagingToolBar = new KapuaPagingToolBar(RESULTSTABLE_PAGE_SIZE);
         pagingToolBar.bind(loader);
-        pagingToolBar.enable();
+        pagingToolBar.disable();
     }
 
     public void refresh() {
