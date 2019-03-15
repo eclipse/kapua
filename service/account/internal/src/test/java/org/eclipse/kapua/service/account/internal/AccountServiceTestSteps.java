@@ -49,7 +49,6 @@ import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.Organization;
-import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSetting;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
@@ -690,11 +689,6 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
     @Then("^The returned value is (\\d+)$")
     public void checkIntegerReturnValue(int val) {
         assertEquals(Integer.valueOf(val), intVal);
-    }
-
-    @Then("^Account service metadata is available$")
-    public void checkAccountServiceMetadataExistance() {
-        assertNotNull("Account settings not configured.", KapuaAccountSetting.getInstance());
     }
 
     // *******************
