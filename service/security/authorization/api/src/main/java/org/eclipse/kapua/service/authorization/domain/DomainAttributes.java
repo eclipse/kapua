@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.domain.shiro;
+package org.eclipse.kapua.service.authorization.domain;
 
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 
