@@ -12,13 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
-import java.io.StringWriter;
-import java.math.BigInteger;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Date;
-import java.util.UUID;
-
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.message.KapuaChannel;
@@ -31,6 +24,13 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import java.io.StringWriter;
+import java.math.BigInteger;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Date;
+import java.util.UUID;
 
 @Category(JUnitTests.class)
 public class KapuaMessageTest extends Assert {
@@ -57,7 +57,7 @@ public class KapuaMessageTest extends Assert {
 
         KapuaMessageUtil.populateChannel(kapuaChannel);
         KapuaMessageUtil.populatePayload(kapuaMetrics);
-        KapuaMessage<?,?> kapuaMessage = new KapuaMessageImpl<>(kapuaChannel, kapuaMetrics);
+        KapuaMessage<?, ?> kapuaMessage = new KapuaMessageImpl<>(kapuaChannel, kapuaMetrics);
         KapuaMessageUtil.populateKapuaMessage(kapuaMessage, referenceDate);
 
         assertEquals(UUID.fromString("11111111-2222-3333-4444-555555555555"), kapuaMessage.getId());
@@ -68,7 +68,7 @@ public class KapuaMessageTest extends Assert {
         assertEquals(capturedDate, kapuaMessage.getCapturedOn());
         KapuaPosition position = new KapuaPositionImpl();
         KapuaMessageUtil.populatePosition(position, referenceDate);
-        assertEquals(position.toString(), kapuaMessage.getPosition().toString());
+        assertEquals(position.toDisplayString(), kapuaMessage.getPosition().toDisplayString());
         assertEquals(kapuaChannel, kapuaMessage.getChannel());
         assertEquals(kapuaMetrics, kapuaMessage.getPayload());
     }
@@ -80,7 +80,7 @@ public class KapuaMessageTest extends Assert {
 
         KapuaMessageUtil.populateChannel(kapuaChannel);
         KapuaMessageUtil.populatePayload(kapuaPayload);
-        KapuaMessage<KapuaChannel,KapuaPayload> kapuaMessage = new KapuaMessageImpl<>();
+        KapuaMessage<KapuaChannel, KapuaPayload> kapuaMessage = new KapuaMessageImpl<>();
         kapuaMessage.setChannel(kapuaChannel);
         kapuaMessage.setPayload(kapuaPayload);
 
@@ -90,13 +90,13 @@ public class KapuaMessageTest extends Assert {
 
     @Test
     public void messageEquals() throws Exception {
-        KapuaMessage<KapuaChannel,KapuaPayload> kapuaMessageFirst = new KapuaMessageImpl<>();
+        KapuaMessage<KapuaChannel, KapuaPayload> kapuaMessageFirst = new KapuaMessageImpl<>();
         KapuaMessageUtil.populateKapuaMessage(kapuaMessageFirst, referenceDate);
-        KapuaMessage<KapuaChannel,KapuaPayload> kapuaMessageSecond = new KapuaMessageImpl<>();
+        KapuaMessage<KapuaChannel, KapuaPayload> kapuaMessageSecond = new KapuaMessageImpl<>();
         KapuaMessageUtil.populateKapuaMessage(kapuaMessageSecond, referenceDate);
 
-        assertEquals(0, ((KapuaMessageImpl<KapuaChannel,KapuaPayload>) kapuaMessageFirst).
-                compareTo((KapuaMessageImpl<KapuaChannel,KapuaPayload>) kapuaMessageSecond));
+        assertEquals(0, ((KapuaMessageImpl<KapuaChannel, KapuaPayload>) kapuaMessageFirst).
+                compareTo((KapuaMessageImpl<KapuaChannel, KapuaPayload>) kapuaMessageSecond));
     }
 
     @Test
@@ -107,7 +107,7 @@ public class KapuaMessageTest extends Assert {
 
         KapuaMessageUtil.populateChannel(kapuaChannel);
         KapuaMessageUtil.populatePayload(kapuaMetrics);
-        KapuaMessage<KapuaChannel,KapuaPayload> kapuaMessage = new KapuaMessageImpl<>(kapuaChannel, kapuaMetrics);
+        KapuaMessage<KapuaChannel, KapuaPayload> kapuaMessage = new KapuaMessageImpl<>(kapuaChannel, kapuaMetrics);
         KapuaMessageUtil.populateKapuaMessage(kapuaMessage, referenceDate);
 
         StringWriter strWriter = new StringWriter();

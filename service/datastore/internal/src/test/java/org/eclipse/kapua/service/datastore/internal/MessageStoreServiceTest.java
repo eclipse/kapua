@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,19 +14,16 @@ package org.eclipse.kapua.service.datastore.internal;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
+import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
-import org.eclipse.kapua.message.internal.KapuaPositionImpl;
-import org.eclipse.kapua.message.internal.device.data.KapuaDataChannelImpl;
-import org.eclipse.kapua.message.internal.device.data.KapuaDataMessageImpl;
-import org.eclipse.kapua.message.internal.device.data.KapuaDataPayloadImpl;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
@@ -89,7 +86,6 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
-
 import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -126,7 +122,14 @@ import java.util.stream.Collectors;
 public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger(MessageStoreServiceTest.class);
+
     private static final long PUBLISH_DATE_TEST_CHECK_TIME_WINDOW = 1000l;
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final KapuaMessageFactory KAPUA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaMessageFactory.class);
+    private static final KapuaDataMessageFactory KAPUA_DATA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaDataMessageFactory.class);
+
 
     // this unused instance is just added to initialize the embedded node as first step before executing any action on datastore side.
     // otherwise, if the datastore service is initialized before the embedded es node startup, the transport connector is not able to be initialized (since it tries to connect to the node)
@@ -296,13 +299,16 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
     }
 
     private KapuaDataMessage insertMessage(Account account, String clientId, KapuaId deviceId, String semanticTopic, byte[] payload, Date sentOn) throws InterruptedException {
-        KapuaDataPayloadImpl messagePayload = new KapuaDataPayloadImpl();
+        KapuaDataPayload messagePayload = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataPayload();
         Map<String, Object> metrics = new HashMap<>();
-        metrics.put("float", new Float((float) 0.01));
+        metrics.put("float", 0.01F);
+
         messagePayload.setMetrics(metrics);
         messagePayload.setBody(payload);
+
         Date receivedOn = Date.from(KapuaDateUtils.getKapuaSysDate());
         Date capturedOn = sentOn;
+
         KapuaDataMessage message = createMessage(clientId, account.getId(), deviceId, receivedOn, capturedOn, sentOn);
         setChannel(message, semanticTopic);
         updatePayload(message, messagePayload);
@@ -336,13 +342,13 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         String stringPayload = "Hello delete by id message!";
         byte[] payload = ArrayUtils.addAll(randomPayload, stringPayload.getBytes());
 
-        KapuaDataPayloadImpl messagePayload = new KapuaDataPayloadImpl();
+        KapuaDataPayload messagePayload = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataPayload();
 
         Map<String, Object> metrics = new HashMap<>();
-        metrics.put("float", new Float((float) 0.01));
-        metrics.put("integer", new Integer(1));
-        metrics.put("double", (double) 0.01);
-        metrics.put("long", (long) (10000000000000l));
+        metrics.put("float", 0.01F);
+        metrics.put("integer", 1);
+        metrics.put("double", 0.01D);
+        metrics.put("long", 10000000000000L);
         metrics.put("string_value", Integer.toString(1000));
         messagePayload.setMetrics(metrics);
 
@@ -440,13 +446,13 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             String stringPayload = "Hello delete by query message!";
             byte[] payload = ArrayUtils.addAll(randomPayload, stringPayload.getBytes());
 
-            KapuaDataPayloadImpl messagePayload = new KapuaDataPayloadImpl();
+            KapuaDataPayload messagePayload = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataPayload();
 
             Map<String, Object> metrics = new HashMap<>();
-            metrics.put("float", new Float((float) 0.01));
-            metrics.put("integer", new Integer(1));
-            metrics.put("double", (double) 0.01);
-            metrics.put("long", (long) (10000000000000l));
+            metrics.put("float", 0.01F);
+            metrics.put("integer", 1);
+            metrics.put("double", 0.01D);
+            metrics.put("long", 10000000000000L);
             metrics.put("string_value", Integer.toString(1000));
             messagePayload.setMetrics(metrics);
 
@@ -548,7 +554,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             String stringPayload = "Hello delete by query message!";
             byte[] payload = ArrayUtils.addAll(randomPayload, stringPayload.getBytes());
 
-            KapuaDataPayloadImpl messagePayload = new KapuaDataPayloadImpl();
+            KapuaDataPayload messagePayload = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataPayload();
             messagePayload.setMetrics(getMetrics(message, i));
             messagePayload.setBody(payload);
             Date receivedOn = Date.from(capturedOnDate.plusMillis(i * 1000));
@@ -656,13 +662,13 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         String stringPayload = "Hello first message on!";
         byte[] payload = ArrayUtils.addAll(randomPayload, stringPayload.getBytes());
 
-        KapuaDataPayloadImpl messagePayload = new KapuaDataPayloadImpl();
+        KapuaDataPayload messagePayload = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataPayload();
 
         Map<String, Object> metrics = new HashMap<>();
-        metrics.put("float", new Float((float) 0.01));
-        metrics.put("integer", new Integer(1));
-        metrics.put("double", (double) 0.01);
-        metrics.put("long", (long) (10000000000000l));
+        metrics.put("float", 0.01F);
+        metrics.put("integer", 1);
+        metrics.put("double", 0.01D);
+        metrics.put("long", 10000000000000L);
         metrics.put("string_value", Integer.toString(1000));
         messagePayload.setMetrics(metrics);
 
@@ -758,7 +764,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
             String stringPayload = "Hello World" + (i + 1) + " \n\n\t\n\tHelloWord2";
             byte[] payload = ArrayUtils.addAll(randomPayload, stringPayload.getBytes());
 
-            KapuaDataPayloadImpl messagePayload = new KapuaDataPayloadImpl();
+            KapuaDataPayload messagePayload = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataPayload();
 
             Map<String, Object> metrics = new HashMap<>();
             metrics.put("float_int", Float.valueOf(i + 1));
@@ -1026,8 +1032,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
-        String[] clientIds = new String[]{ "ci_client_by_account_client1", "ci_client_by_account_client2", "ci_client_by_account_client3", "ci_client_by_account_client4" };
-        String[] semanticTopic = new String[]{ "ci_client_by_account/1/2/3" };
+        String[] clientIds = new String[]{"ci_client_by_account_client1", "ci_client_by_account_client2", "ci_client_by_account_client3", "ci_client_by_account_client4"};
+        String[] semanticTopic = new String[]{"ci_client_by_account/1/2/3"};
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
@@ -1086,8 +1092,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
-        String[] clientIds = new String[]{ "ci_client_by_pd_by_account_client1", "ci_client_by_pd_by_account_client2" };
-        String[] semanticTopic = new String[]{ "ci_client_by_pd_by_account/1/2/3" };
+        String[] clientIds = new String[]{"ci_client_by_pd_by_account_client1", "ci_client_by_pd_by_account_client2"};
+        String[] semanticTopic = new String[]{"ci_client_by_pd_by_account/1/2/3"};
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date capturedOnSecondMessage = new Date(capturedOn.getTime() + PUBLISH_DATE_TEST_CHECK_TIME_WINDOW);
@@ -1151,8 +1157,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
-        String[] clientIds = new String[]{ "ci_topic_by_account_client1", "ci_topic_by_account_client2" };
-        String[] semanticTopic = new String[]{ "ci_topic_by_account/1/2/3", "ci_topic_by_account/1/2/4", "ci_topic_by_account/1/2/5", "ci_topic_by_account/1/2/6" };
+        String[] clientIds = new String[]{"ci_topic_by_account_client1", "ci_topic_by_account_client2"};
+        String[] semanticTopic = new String[]{"ci_topic_by_account/1/2/3", "ci_topic_by_account/1/2/4", "ci_topic_by_account/1/2/5", "ci_topic_by_account/1/2/6"};
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
@@ -1209,8 +1215,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
-        String[] clientIds = new String[]{ "ci_topic_by_client_client1" };
-        String[] semanticTopic = new String[]{ "ci_topic_by_client/1/2/3", "ci_topic_by_client/1/2/4", "ci_topic_by_client/1/2/5", "ci_topic_by_client/1/2/6" };
+        String[] clientIds = new String[]{"ci_topic_by_client_client1"};
+        String[] semanticTopic = new String[]{"ci_topic_by_client/1/2/3", "ci_topic_by_client/1/2/4", "ci_topic_by_client/1/2/5", "ci_topic_by_client/1/2/6"};
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
@@ -1267,9 +1273,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
-        String[] clientIds = new String[]{ "mi_client_by_account_client1", "mi_client_by_account_client2" };
-        String[] metrics = new String[]{ "mi_client_by_account_metric1", "mi_client_by_account_metric2", "mi_client_by_account_metric3", "mi_client_by_account_metric4" };
-        String[] semanticTopic = new String[]{ "mi_client_by_account/1/2/3" };
+        String[] clientIds = new String[]{"mi_client_by_account_client1", "mi_client_by_account_client2"};
+        String[] metrics = new String[]{"mi_client_by_account_metric1", "mi_client_by_account_metric2", "mi_client_by_account_metric3", "mi_client_by_account_metric4"};
+        String[] semanticTopic = new String[]{"mi_client_by_account/1/2/3"};
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
@@ -1321,9 +1327,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
-        String[] clientIds = new String[]{ "mi_client_by_pd_by_account_client1", "mi_client_by_pd_by_account_client2" };
-        String[] metrics = new String[]{ "mi_client_by_pd_by_account_metric1", "mi_client_by_pd_by_account_metric2", "mi_client_by_pd_by_account_metric3", "mi_client_by_pd_by_account_metric4" };
-        String[] semanticTopic = new String[]{ "mi_client_by_pd_by_account/1/2/3" };
+        String[] clientIds = new String[]{"mi_client_by_pd_by_account_client1", "mi_client_by_pd_by_account_client2"};
+        String[] metrics = new String[]{"mi_client_by_pd_by_account_metric1", "mi_client_by_pd_by_account_metric2", "mi_client_by_pd_by_account_metric3", "mi_client_by_pd_by_account_metric4"};
+        String[] semanticTopic = new String[]{"mi_client_by_pd_by_account/1/2/3"};
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date capturedOnSecondMessage = new Date(capturedOn.getTime() + PUBLISH_DATE_TEST_CHECK_TIME_WINDOW);
@@ -1409,9 +1415,9 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
-        String[] clientIds = new String[]{ "mi_client_by_client_client1", "mi_client_by_client_client2" };
-        String[] metrics = new String[]{ "mi_client_by_client_metric1", "mi_client_by_client_metric2", "mi_client_by_client_metric3", "mi_client_by_client_metric4" };
-        String[] semanticTopic = new String[]{ "mi_client_by_client/1/2/3" };
+        String[] clientIds = new String[]{"mi_client_by_client_client1", "mi_client_by_client_client2"};
+        String[] metrics = new String[]{"mi_client_by_client_metric1", "mi_client_by_client_metric2", "mi_client_by_client_metric3", "mi_client_by_client_metric4"};
+        String[] semanticTopic = new String[]{"mi_client_by_client/1/2/3"};
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
@@ -1445,7 +1451,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         setMetricInfoQueryBaseCriteria(metricInfoQuery, clientIds[0], null, null);
 
         MetricInfoListResult metricList = metricInfoRegistryService.query(metricInfoQuery);
-        checkMetricInfoClientIdsAndMetricNames(metricList, 4, new String[]{ clientIds[0] }, metrics);
+        checkMetricInfoClientIdsAndMetricNames(metricList, 4, new String[]{clientIds[0]}, metrics);
     }
 
     /**
@@ -1472,19 +1478,19 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
                 "tram/route/one",
                 "car/one"
         };
-        String[] metrics = new String[]{ "m_order_metric1", "m_order_metric2", "m_order_metric3", "m_order_metric4", "m_order_metric5", "m_order_metric6" };
-        String[] clientIds = new String[]{ String.format("device-%d", new Date().getTime()), String.format("device-%d", new Date().getTime() + 100) };
-        String[] metricsValuesString = new String[]{ "string_metric_1", "string_metric_2", "string_metric_3", "string_metric_4", "string_metric_5", "string_metric_6" };
-        Date[] metricsValuesDate = new Date[]{ new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:01 01/01/2017").getTime()),
+        String[] metrics = new String[]{"m_order_metric1", "m_order_metric2", "m_order_metric3", "m_order_metric4", "m_order_metric5", "m_order_metric6"};
+        String[] clientIds = new String[]{String.format("device-%d", new Date().getTime()), String.format("device-%d", new Date().getTime() + 100)};
+        String[] metricsValuesString = new String[]{"string_metric_1", "string_metric_2", "string_metric_3", "string_metric_4", "string_metric_5", "string_metric_6"};
+        Date[] metricsValuesDate = new Date[]{new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:01 01/01/2017").getTime()),
                 new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:02 01/01/2017").getTime()),
                 new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:03 01/01/2017").getTime()),
                 new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:04 01/01/2017").getTime()),
                 new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:05 01/01/2017").getTime()),
-                new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:06 01/01/2017").getTime()) };
-        int[] metricsValuesInt = new int[]{ 10, 20, 30, 40, 50, 60 };
-        float[] metricsValuesFloat = new float[]{ 0.002f, 10.12f, 20.22f, 33.33f, 44.44f, 55.66f };
-        double[] metricsValuesDouble = new double[]{ 1.002d, 11.12d, 21.22d, 34.33d, 45.44d, 56.66d };
-        boolean[] metricsValuesBoolean = new boolean[]{ true, true, false, true, false, false };
+                new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:06 01/01/2017").getTime())};
+        int[] metricsValuesInt = new int[]{10, 20, 30, 40, 50, 60};
+        float[] metricsValuesFloat = new float[]{0.002f, 10.12f, 20.22f, 33.33f, 44.44f, 55.66f};
+        double[] metricsValuesDouble = new double[]{1.002d, 11.12d, 21.22d, 34.33d, 45.44d, 56.66d};
+        boolean[] metricsValuesBoolean = new boolean[]{true, true, false, true, false, false};
 
         DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientIds[0]);
         Device device1 = deviceRegistryService.create(deviceCreator);
@@ -1551,8 +1557,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         setMetricInfoQueryBaseCriteria(metricInfoQuery, new DateRange(capturedOn1, capturedOn2));
 
         MetricInfoListResult metricList = metricInfoRegistryService.query(metricInfoQuery);
-        checkMetricInfoClientIdsAndMetricNames(metricList, metrics.length * semanticTopic.length, new String[]{ clientIds[0], clientIds[1] }, new String[]{ metrics[0], metrics[1], metrics[2],
-                metrics[3], metrics[4], metrics[5] });
+        checkMetricInfoClientIdsAndMetricNames(metricList, metrics.length * semanticTopic.length, new String[]{clientIds[0], clientIds[1]}, new String[]{metrics[0], metrics[1], metrics[2],
+                metrics[3], metrics[4], metrics[5]});
         checkMetricDateBound(metricList, new Date(capturedOn1.getTime()), new Date(capturedOn2.getTime()));
 
         for (MetricInfo metricInfo : metricList.getItems()) {
@@ -1582,8 +1588,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
-        String[] clientIds = new String[]{ "clii_client_by_account_client1", "clii_client_by_account_client2" };
-        String[] semanticTopic = new String[]{ "clii_client_by_account/1/2/3", "clii_client_by_account/1/2/4", "clii_client_by_account/1/2/5", "clii_client_by_account/1/2/6" };
+        String[] clientIds = new String[]{"clii_client_by_account_client1", "clii_client_by_account_client2"};
+        String[] semanticTopic = new String[]{"clii_client_by_account/1/2/3", "clii_client_by_account/1/2/4", "clii_client_by_account/1/2/5", "clii_client_by_account/1/2/6"};
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
@@ -1639,8 +1645,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
-        String[] clientIds = new String[]{ "clii_client_by_pd_by_account_client1", "clii_client_by_pd_by_account_client2" };
-        String[] semanticTopic = new String[]{ "clii_client_by_pd_by_account/1/2/3" };
+        String[] clientIds = new String[]{"clii_client_by_pd_by_account_client1", "clii_client_by_pd_by_account_client2"};
+        String[] semanticTopic = new String[]{"clii_client_by_pd_by_account/1/2/3"};
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date capturedOnSecondMessage = new Date(capturedOn.getTime() + PUBLISH_DATE_TEST_CHECK_TIME_WINDOW);
@@ -1707,8 +1713,8 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
-        String[] clientIds = new String[]{ "clii_by_client_client1", "clii_by_client_client2", "clii_by_client_client3", "clii_by_client_client4" };
-        String[] semanticTopic = new String[]{ "clii_by_client/1/2/3", "clii_by_client/1/2/4" };
+        String[] clientIds = new String[]{"clii_by_client_client1", "clii_by_client_client2", "clii_by_client_client3", "clii_by_client_client4"};
+        String[] semanticTopic = new String[]{"clii_by_client/1/2/3", "clii_by_client/1/2/4"};
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
@@ -1741,7 +1747,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         setClientInfoQueryBaseCriteria(clientInfoQuery, clientIds[0], null);
 
         ClientInfoListResult clientList = clientInfoRegistryService.query(clientInfoQuery);
-        checkClientInfo(clientList, 1, new String[]{ clientIds[0] });
+        checkClientInfo(clientList, 1, new String[]{clientIds[0]});
     }
 
     @Test
@@ -1758,11 +1764,11 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
-        String[] clientIds = new String[]{ "tba_client1" };
-        String[] semanticTopic = new String[]{ "tba_1/1/1/1", "tba_1/1/1/2", "tba_1/1/1/3", "tba_1/1/2/1", "tba_1/1/2/2", "tba_1/1/2/3",
+        String[] clientIds = new String[]{"tba_client1"};
+        String[] semanticTopic = new String[]{"tba_1/1/1/1", "tba_1/1/1/2", "tba_1/1/1/3", "tba_1/1/2/1", "tba_1/1/2/2", "tba_1/1/2/3",
                 "tba_1/2/1/1", "tba_1/2/1/2", "tba_1/2/1/3", "tba_1/2/2/1", "tba_1/2/2/2", "tba_1/2/2/3",
                 "tba_2/1/1/1", "tba_2/1/1/2", "tba_2/1/1/3", "tba_2/1/2/1", "tba_2/1/2/2", "tba_2/1/2/3",
-                "tba_2/2/1/1", "tba_2/2/1/2", "tba_2/2/1/3", "tba_2/2/2/1", "tba_2/2/2/2", "tba_2/2/2/3" };
+                "tba_2/2/1/1", "tba_2/2/1/2", "tba_2/2/1/3", "tba_2/2/2/1", "tba_2/2/2/2", "tba_2/2/2/3"};
         Date sentOn = new Date(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2015").getTime());
         Date capturedOn = new Date();
         Date receivedOn = new Date();
@@ -1818,13 +1824,11 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         DeviceCreator deviceCreator = deviceFactory.newCreator(account.getId(), clientId);
         Device device = deviceRegistryService.create(deviceCreator);
 
-        KapuaDataMessageImpl message = new KapuaDataMessageImpl();
-        KapuaDataChannelImpl channel = new KapuaDataChannelImpl();
-        KapuaDataPayloadImpl messagePayload = new KapuaDataPayloadImpl();
-        KapuaPositionImpl messagePosition = new KapuaPositionImpl();
-        Map<String, Object> metrics = new HashMap<>();
+        KapuaDataMessage message = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataMessage();
+        KapuaDataChannel channel = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataChannel();
+        KapuaDataPayload messagePayload = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataPayload();
+        KapuaPosition messagePosition = KAPUA_MESSAGE_FACTORY.newPosition();
 
-        channel.setClientId(device.getClientId());
         channel.setSemanticParts(Arrays.asList("APP01"));
 
         message.setScopeId(account.getId());
@@ -1833,6 +1837,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         message.setReceivedOn(now);
         message.setChannel(channel);
 
+        Map<String, Object> metrics = new HashMap<>();
         metrics.put("distance", 1L);
         metrics.put("label", "goofy");
         messagePayload.setMetrics(metrics);
@@ -1981,11 +1986,11 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      */
     private KapuaDataMessage createMessage(String clientId, KapuaId scopeId, KapuaId deviceId,
                                            Date receivedOn, Date capturedOn, Date sentOn) {
-        KapuaDataMessage message = new KapuaDataMessageImpl();
+        KapuaDataMessage message = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataMessage();
         message.setReceivedOn(receivedOn);
         message.setCapturedOn(capturedOn);
         message.setSentOn(sentOn);
-        message.setChannel(new KapuaDataChannelImpl());
+        message.setChannel(KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataChannel());
         message.setClientId(clientId);
         message.setDeviceId(deviceId);
         message.setScopeId(scopeId);
@@ -1999,7 +2004,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * @param semanticPart
      */
     private void setChannel(KapuaDataMessage message, String semanticPart) {
-        final KapuaDataChannelImpl channel = new KapuaDataChannelImpl();
+        KapuaDataChannel channel = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataChannel();
         channel.setSemanticParts(new ArrayList<>(Arrays.asList(semanticPart.split("/"))));
 
         message.setChannel(channel);
@@ -2017,7 +2022,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
 
     private void initMetrics(KapuaDataMessage message) {
         if (message.getPayload() == null) {
-            message.setPayload(new KapuaDataPayloadImpl());
+            message.setPayload(KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataPayload());
         }
     }
 
@@ -2036,7 +2041,7 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
      * @return
      */
     private KapuaPosition getPosition(Double altitude, Double heading, Double latitude, Double longitude, Double precision, Integer satellites, Double speed, Integer status, Date timestamp) {
-        KapuaPosition messagePosition = new KapuaPositionImpl();
+        KapuaPosition messagePosition = KAPUA_MESSAGE_FACTORY.newPosition();
         messagePosition.setAltitude(altitude);
         messagePosition.setHeading(heading);
         messagePosition.setLatitude(latitude);
@@ -2061,13 +2066,13 @@ public class MessageStoreServiceTest extends AbstractMessageStoreServiceTest {
         int choiche = number % 6;
         switch (choiche) {
             case 0:
-                return new Double(1 * Math.E);
+                return 1D * Math.E;
             case 1:
-                return new Float(2);
+                return 2F;
             case 2:
-                return new Integer(3);
+                return 3;
             case 3:
-                return new Long(4);
+                return 4L;
             case 4:
                 return new String("string_value");
             default:

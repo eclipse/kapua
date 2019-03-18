@@ -132,44 +132,4 @@ public class KapuaPositionImpl implements KapuaPosition {
         this.status = status;
     }
 
-    @Override
-    public String toString() {
-//        // a-la JSON
-//        StringBuilder sb = new StringBuilder();
-//
-//        sb.append("{");
-//        sb.append("\"longitude\":");
-//        sb.append(longitude);
-//        sb.append(", ");
-//        sb.append("\"latitude\":");
-//        sb.append(latitude);
-//        sb.append(", ");
-//        sb.append("\"altitude\":");
-//        sb.append(altitude);
-//        sb.append(", ");
-//        sb.append("\"precision\":");
-//        sb.append(precision);
-//        sb.append(", ");
-//        sb.append("\"heading\":");
-//        sb.append(heading);
-//        sb.append(", ");
-//        sb.append("\"speed\":");
-//        sb.append(speed);
-//        sb.append(", ");
-//        sb.append("\"timestamp\":");
-//        sb.append("\"");
-//        sb.append(timestamp);
-//        sb.append("\"");
-//        sb.append(", ");
-//        sb.append("\"satellites\":");
-//        sb.append(satellites);
-//        sb.append(", ");
-//        sb.append("\"status\":");
-//        sb.append(status);
-//        sb.append("}");
-//
-//        return sb.toString();
-
-        return toDisplayString();
-    }
 }

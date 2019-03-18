@@ -49,7 +49,7 @@ public class KuraDisconnectPayload extends KuraPayload implements DeviceLifecycl
     }
 
     /**
-     * Ge tthe device uptime
+     * Gets the device uptime
      *
      * @return
      */
@@ -58,7 +58,7 @@ public class KuraDisconnectPayload extends KuraPayload implements DeviceLifecycl
     }
 
     /**
-     * Get the device displayable name
+     * Gets the device displayable name
      *
      * @return
      */

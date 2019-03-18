@@ -64,7 +64,7 @@ public final class Payloads {
 
     private static Object forDisplay(Object value) {
         if (value instanceof byte[]) {
-            return Base64.getUrlEncoder().encode((byte[]) value);
+            return Base64.getUrlEncoder().withoutPadding().encodeToString((byte[]) value);
         } else if (value instanceof Float || value instanceof Double || value instanceof Integer || value instanceof Long || value instanceof Boolean || value instanceof String) {
             return value;
         } else {

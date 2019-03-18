@@ -19,205 +19,234 @@ package org.eclipse.kapua.message.device.lifecycle;
 public interface KapuaBirthPayload extends KapuaLifecyclePayload {
 
     /**
-     * Get the device uptime
+     * Gets the uptime.
      *
-     * @return
+     * @return The uptime.
+     * @since 1.0.0
      */
     String getUptime();
 
     /**
-     * Get the device display name
+     * Gets the display name.
      *
-     * @return
+     * @return The display name.
+     * @since 1.0.0
      */
     String getDisplayName();
 
     /**
-     * Get the model name
+     * Gets the model name.
      *
-     * @return
+     * @return The model name.
+     * @since 1.0.0
      */
     String getModelName();
 
     /**
-     * Get the model identifier
+     * Gets the model identifier.
      *
-     * @return
+     * @return The model identifier.
+     * @since 1.0.0
      */
     String getModelId();
 
     /**
-     * Get the part number
+     * Gets the part number.
      *
-     * @return
+     * @return The part number.
+     * @since 1.0.0
      */
     String getPartNumber();
 
     /**
-     * Get the serial number
+     * Gets the serial number.
      *
-     * @return
+     * @return The serial number.
+     * @since 1.0.0
      */
     String getSerialNumber();
 
     /**
-     * Get the firmware
+     * Gets the firmware name.
      *
-     * @return
+     * @return The firmware name.
+     * @since 1.0.0
      */
     String getFirmware();
 
     /**
-     * Get the firmware version
+     * Gets the firmware version.
      *
-     * @return
+     * @return The firmware version.
+     * @since 1.0.0
      */
     String getFirmwareVersion();
 
     /**
-     * Get the bios
+     * Gets the bios name
      *
-     * @return
+     * @return The bios name.
+     * @since 1.0.0
      */
     String getBios();
 
     /**
-     * Get the biuos version
+     * Gets the bios version.
      *
-     * @return
+     * @return The bios version.
+     * @since 1.0.0
      */
     String getBiosVersion();
 
     /**
-     * Get the operating system
+     * Gets the operating system name.
      *
-     * @return
+     * @return The operating system name.
+     * @since 1.0.0
      */
     String getOs();
 
     /**
-     * Get the operating system version
+     * Gets the operating system version.
      *
-     * @return
+     * @return The operating system version.
+     * @since 1.0.0
      */
     String getOsVersion();
 
     /**
-     * Get the java virtual machine
+     * Gets the java virtual machine name/vendor.
      *
-     * @return
+     * @return The java virtual machine name/vendor.
+     * @since 1.0.0
      */
     String getJvm();
 
     /**
-     * Get the java virtual machine version
+     * Gets the java virtual machine version.
      *
-     * @return
+     * @return The java virtual machine version.
+     * @since 1.0.0
      */
     String getJvmVersion();
 
     /**
-     * Get the java virtual machine profile
+     * Gets the java virtual machine profile.
      *
-     * @return
+     * @return The java virtual machine profile.
+     * @since 1.0.0
      */
     String getJvmProfile();
 
     /**
-     * Get the container framework
+     * Gets the container framework name.
      *
-     * @return
+     * @return The container framework name.
+     * @since 1.0.0
      */
     String getContainerFramework();
 
     /**
-     * Get the container framework version
+     * Gets the container framework version.
      *
-     * @return
+     * @return The container framework version.
+     * @since 1.0.0
      */
     String getContainerFrameworkVersion();
 
     /**
-     * Get the application framework
+     * Gets the application framework name.
      *
-     * @return
+     * @return The application framework name.
+     * @since 1.0.0
      */
     String getApplicationFramework();
 
     /**
-     * Get the application framework version
+     * Gets the application framework version
      *
-     * @return
+     * @return The application framework version
+     * @since 1.0.0
      */
     String getApplicationFrameworkVersion();
 
     /**
-     * Get connection interface
+     * Gets the connection interface.
      *
-     * @return
+     * @return The connection interface.
+     * @since 1.0.0
      */
     String getConnectionInterface();
 
     /**
-     * Get the connection interface ip
+     * Gets the connection interface ip.
      *
-     * @return
+     * @return The connection interface ip.
+     * @since 1.0.0
      */
     String getConnectionIp();
 
     /**
-     * Get accept encoding
+     * Gets the accepted encoding.
      *
-     * @return
+     * @return The accepted encoding.
+     * @since 1.0.0
      */
     String getAcceptEncoding();
 
     /**
-     * Get application identifiers
+     * Gets the application identifiers.
      *
-     * @return
+     * @return The application identifiers.
+     * @since 1.0.0
      */
     String getApplicationIdentifiers();
 
     /**
-     * Get available processor
+     * Gets the available processors.
      *
-     * @return
+     * @return The available processors.
+     * @since 1.0.0
      */
     String getAvailableProcessors();
 
     /**
-     * Get total memory
+     * Gets the total memory.
      *
-     * @return
+     * @return The total memory.
+     * @since 1.0.0
      */
     String getTotalMemory();
 
     /**
-     * Get operating system architecture
+     * Gets the operating system architecture.
      *
-     * @return
+     * @return The operating system architecture.
+     * @since 1.0.0
      */
     String getOsArch();
 
     /**
-     * Get modem imei
+     * Gets the modem IMEI.
      *
-     * @return
+     * @return The modem IMEI.
+     * @since 1.0.0
      */
     String getModemImei();
 
     /**
-     * Get modem imsi
+     * Gets the modem IMSI.
      *
-     * @return
+     * @return The modem IMSI.
+     * @since 1.0.0
      */
     String getModemImsi();
 
     /**
-     * Get modem iccid
+     * Gets the modem ICCID.
      *
-     * @return
+     * @return The modem ICCID.
+     * @since 1.0.0
      */
     String getModemIccid();
 

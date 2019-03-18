@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,8 +10,6 @@
  *     Eurotech - initial API and implementation
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.client;
-
-import java.util.List;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -51,6 +49,8 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleService;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleServiceAsync;
 
+import java.util.List;
+
 public class NorthView extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
@@ -72,6 +72,7 @@ public class NorthView extends LayoutContainer {
     private String userDisplayName;
     private String rootAccountName;
     private String selectedAccountName;
+
     // Listener
     private final SelectionListener<MenuEvent> switchToAccountListener = new SelectionListener<MenuEvent>() {
 
@@ -81,8 +82,7 @@ public class NorthView extends LayoutContainer {
         }
     };
 
-    public NorthView(GwtSession currentSession,
-            KapuaCloudConsole parent) {
+    public NorthView(GwtSession currentSession, KapuaCloudConsole parent) {
         this.parent = parent;
 
         this.currentSession = currentSession;
@@ -245,47 +245,45 @@ public class NorthView extends LayoutContainer {
      * @param accountId the account of the current menu item.
      */
     private void populateNavigatorMenu(final Menu menu, String accountId) {
-        gwtAccountService.find(accountId,
-                new AsyncCallback<GwtAccount>() {
+        gwtAccountService.find(accountId, new AsyncCallback<GwtAccount>() {
 
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        FailureHandler.handle(caught);
-                    }
+            @Override
+            public void onFailure(Throwable caught) {
+                FailureHandler.handle(caught);
+            }
 
-                    @Override
-                    public void onSuccess(GwtAccount result) {
-                        // If no children are found, add "No Child" label
-                        if (result.getChildAccounts() != null &&
-                                result.getChildAccounts().size() == 0) {
-                            MenuItem noChildMenuItem = new MenuItem(MSGS.accountSelectorItemNoChild());
-                            noChildMenuItem.disable();
-                            menu.add(noChildMenuItem);
-                        } else {
-                            // For each child found create a item menu and search for its children
-                            for (GwtAccount childAccount : result.getChildAccounts()) {
-                                // Add item menu entry
-                                KapuaMenuItem childAccountMenuItem = new KapuaMenuItem();
-                                childAccountMenuItem.setIcon(IconSet.USER);
-                                childAccountMenuItem.setText(childAccount.getName());
-                                childAccountMenuItem.setTitle(childAccount.getName());
-                                childAccountMenuItem.setId(String.valueOf(childAccount.getId()));
-                                menu.add(childAccountMenuItem);
+            @Override
+            public void onSuccess(GwtAccount result) {
+                // If no children are found, add "No Child" label
+                if (result.getChildAccounts() != null && result.getChildAccounts().isEmpty()) {
+                    MenuItem noChildMenuItem = new MenuItem(MSGS.accountSelectorItemNoChild());
+                    noChildMenuItem.disable();
+                    menu.add(noChildMenuItem);
+                } else {
+                    // For each child found create a item menu and search for its children
+                    for (GwtAccount childAccount : result.getChildAccounts()) {
+                        // Add item menu entry
+                        KapuaMenuItem childAccountMenuItem = new KapuaMenuItem();
+                        childAccountMenuItem.setIcon(IconSet.USER);
+                        childAccountMenuItem.setText(childAccount.getName());
+                        childAccountMenuItem.setTitle(childAccount.getName());
+                        childAccountMenuItem.setId(String.valueOf(childAccount.getId()));
+                        menu.add(childAccountMenuItem);
 
-                                // Add selection listener to make the switch happen when selected
-                                childAccountMenuItem.addSelectionListener(switchToAccountListener);
+                        // Add selection listener to make the switch happen when selected
+                        childAccountMenuItem.addSelectionListener(switchToAccountListener);
 
-                                // Search for its children
-                                if (childAccount.getChildAccounts().size() > 0) {
-                                    Menu childMenu = new Menu();
-                                    childMenu.setAutoWidth(true);
-                                    childAccountMenuItem.setSubMenu(childMenu);
-                                    populateNavigatorMenu(childMenu, childAccount.getId());
-                                }
-                            }
+                        // Search for its children
+                        if (!childAccount.getChildAccounts().isEmpty()) {
+                            Menu childMenu = new Menu();
+                            childMenu.setAutoWidth(true);
+                            childAccountMenuItem.setSubMenu(childMenu);
+                            populateNavigatorMenu(childMenu, childAccount.getId());
                         }
                     }
-                });
+                }
+            }
+        });
     }
 
     /**
@@ -331,7 +329,6 @@ public class NorthView extends LayoutContainer {
                         updateUserActionButtonLabel();
 
                         if (((ContentPanel) parent.getCenterView().getItem(0)).getItem(0) instanceof AbstractView) {
-                            @SuppressWarnings("rawtypes")
                             AbstractView aev = (AbstractView) ((ContentPanel) parent.getCenterView().getItem(0)).getItem(0);
                             aev.onUserChange();
                         }
@@ -358,14 +355,12 @@ public class NorthView extends LayoutContainer {
      * {username} @ {selectedAccountName}<br/>
      */
     private void updateUserActionButtonLabel() {
-        // Current selected scope
         String accountName = currentSession.getSelectedAccountName();
 
-        // Set label {displayName || username} @ {selectedAccountName}
-        if (userDisplayName == null ||
-                userDisplayName.isEmpty()) {
+        if (userDisplayName == null || userDisplayName.isEmpty()) {
             userDisplayName = username;
         }
+
         userActionButton.setText(MSGS.consoleHeaderUserActionButtonLabel(userDisplayName, accountName));
     }
 }

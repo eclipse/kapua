@@ -22,16 +22,16 @@ import org.junit.experimental.categories.Category;
 @Category(JUnitTests.class)
 public class KapuaDisconnectMessageTest extends Assert {
 
-    private static final String PAYLOAD_DISPLAY_STR = "[ getUptime()=12" +
-            ", getDisplayName()=displayName" +
-            "]";
+    private static final String PAYLOAD_DISPLAY_STR = "" +
+            "displayName=A display name" +
+            "~~uptime=12";
 
     @Test
     public void kapuaDisconnectPayloadInitConstructor() {
         KapuaDisconnectPayload kapuaDisconnectPayload = populateKapuaDisconnectPayload();
 
         assertEquals("12", kapuaDisconnectPayload.getUptime());
-        assertEquals("displayName", kapuaDisconnectPayload.getDisplayName());
+        assertEquals("A display name", kapuaDisconnectPayload.getDisplayName());
     }
 
     @Test
@@ -71,11 +71,9 @@ public class KapuaDisconnectMessageTest extends Assert {
      * @return all KapuaDisconnectPayload fields populated with data.
      */
     private static KapuaDisconnectPayload populateKapuaDisconnectPayload() {
-        KapuaDisconnectPayload kapuaDisconnectPayload = new KapuaDisconnectPayloadImpl(
+        return new KapuaDisconnectPayloadImpl(
                 "12",
-                "displayName"
+                "A display name"
         );
-
-        return kapuaDisconnectPayload;
     }
 }

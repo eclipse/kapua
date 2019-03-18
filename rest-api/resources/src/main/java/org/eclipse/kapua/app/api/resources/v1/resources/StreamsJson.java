@@ -15,14 +15,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
-
 import org.eclipse.kapua.app.api.resources.v1.resources.marker.JsonSerializationFixed;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonKapuaDataMessage;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
+import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
-import org.eclipse.kapua.message.internal.device.data.KapuaDataMessageImpl;
-import org.eclipse.kapua.message.internal.device.data.KapuaDataPayloadImpl;
 import org.eclipse.kapua.model.type.ObjectValueConverter;
 
 import javax.ws.rs.Consumes;
@@ -36,9 +35,12 @@ import javax.ws.rs.core.Response;
 /**
  * @see JsonSerializationFixed
  */
-@Api(value = "Streams", authorizations = { @Authorization(value = "kapuaAccessToken") })
+@Api(value = "Streams", authorizations = {@Authorization(value = "kapuaAccessToken")})
 @Path("{scopeId}/streams")
 public class StreamsJson extends AbstractKapuaResource implements JsonSerializationFixed {
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final KapuaDataMessageFactory KAPUA_DATA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaDataMessageFactory.class);
 
     private static final Streams STREAMS = new Streams();
 
@@ -91,13 +93,14 @@ public class StreamsJson extends AbstractKapuaResource implements JsonSerializat
      */
     @POST
     @Path("messages")
-    @Consumes({ MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_JSON})
     @ApiOperation(nickname = "streamPublish", value = "Publishes a fire-and-forget message", notes = "Publishes a fire-and-forget message to a topic composed of [account-name] / [client-id] / [semtantic-parts]")
     public Response publish(
             @ApiParam(value = "The ScopeId of the device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The timeout of the request execution") @QueryParam("timeout") Long timeout,
             @ApiParam(value = "The input request", required = true) JsonKapuaDataMessage jsonKapuaDataMessage) throws Exception {
-        KapuaDataMessage kapuaDataMessage = new KapuaDataMessageImpl();
+
+        KapuaDataMessage kapuaDataMessage = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataMessage();
 
         kapuaDataMessage.setId(jsonKapuaDataMessage.getId());
         kapuaDataMessage.setScopeId(scopeId);
@@ -109,7 +112,7 @@ public class StreamsJson extends AbstractKapuaResource implements JsonSerializat
         kapuaDataMessage.setPosition(jsonKapuaDataMessage.getPosition());
         kapuaDataMessage.setChannel(jsonKapuaDataMessage.getChannel());
 
-        KapuaDataPayload kapuaDataPayload = new KapuaDataPayloadImpl();
+        KapuaDataPayload kapuaDataPayload = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataPayload();
 
         if (jsonKapuaDataMessage.getPayload() != null) {
             kapuaDataPayload.setBody(jsonKapuaDataMessage.getPayload().getBody());

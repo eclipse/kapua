@@ -12,6 +12,7 @@
 package org.eclipse.kapua.message.internal.device.lifecycle;
 
 import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectPayload;
+import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectPayloadAttibutes;
 
 /**
  * {@link KapuaDisconnectPayload} implementation.
@@ -20,32 +21,36 @@ import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectPayload;
  */
 public class KapuaDisconnectPayloadImpl extends AbstractLifecyclePayloadImpl implements KapuaDisconnectPayload {
 
-    private String uptime;
-    private String displayName;
-
     /**
      * Constructor.
      * <p>
      * Sets all available properties of the {@link KapuaDisconnectPayload} at once.
      *
-     * @param uptime      The uptime of the {@link KapuaDisconnectPayload}
-     * @param displayName The display name of the {@link KapuaDisconnectPayload}
+     * @param uptime      The {@link KapuaDisconnectPayloadAttibutes#UPTIME}of the {@link KapuaDisconnectPayload}
+     * @param displayName The {@link KapuaDisconnectPayloadAttibutes#DISPLAY_NAME} of the {@link KapuaDisconnectPayload}
      * @since 1.0.0
      */
     public KapuaDisconnectPayloadImpl(String uptime, String displayName) {
-        this.uptime = uptime;
-        this.displayName = displayName;
+        setUptime(uptime);
+        setDisplayName(displayName);
     }
 
 
     @Override
     public String getUptime() {
-        return uptime;
+        return (String) getMetrics().get(KapuaDisconnectPayloadAttibutes.UPTIME);
+    }
+
+    private void setUptime(String uptime) {
+        getMetrics().put(KapuaDisconnectPayloadAttibutes.UPTIME, uptime);
     }
 
     @Override
     public String getDisplayName() {
-        return displayName;
+        return (String) getMetrics().get(KapuaDisconnectPayloadAttibutes.DISPLAY_NAME);
     }
 
+    private void setDisplayName(String displayName) {
+        getMetrics().put(KapuaDisconnectPayloadAttibutes.DISPLAY_NAME, displayName);
+    }
 }

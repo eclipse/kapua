@@ -214,6 +214,8 @@ public interface KapuaPosition extends Position, Serializable {
         properties.put("satellites", getSatellites());
         properties.put("status", getStatus());
 
-        return Payloads.toDisplayString(properties);
+        String displayString = Payloads.toDisplayString(properties);
+
+        return displayString.isEmpty() ? null : displayString;
     }
 }

@@ -11,8 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.common;
 
-import java.math.BigInteger;
-
+import cucumber.api.Scenario;
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.When;
+import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
@@ -38,16 +42,10 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceI
 import org.eclipse.kapua.service.device.registry.shared.SharedTestSteps;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
-
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
+import java.math.BigInteger;
 
 /**
  * Implementation of Gherkin steps used in DeviceRegistryValidation.feature scenarios.
@@ -276,7 +274,7 @@ public class DeviceRegistryValidationTestSteps extends AbstractKapuaSteps {
         }
 
         try {
-            sharedTests. primeException();
+            sharedTests.primeException();
             DeviceValidation.validateDeletePreconditions(scope, dev);
         } catch (KapuaException ex) {
             sharedTests.verifyException(ex);

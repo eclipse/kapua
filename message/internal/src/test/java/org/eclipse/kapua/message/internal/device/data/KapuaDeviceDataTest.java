@@ -11,43 +11,40 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.device.data;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
+import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Category(JUnitTests.class)
 public class KapuaDeviceDataTest extends Assert {
 
-    @Test
-    public void kapuaDataChannelGetterSetters() throws Exception {
-        KapuaDataChannelImpl kapuaDataChannel = new KapuaDataChannelImpl();
-
-        kapuaDataChannel.setClientId("clientId-1");
-        assertEquals("clientId-1", kapuaDataChannel.getClientId());
-    }
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final KapuaDataMessageFactory KAPUA_DATA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaDataMessageFactory.class);
 
     @Test
     public void kapuaDataChanneltoString() throws Exception {
-        KapuaDataChannelImpl kapuaDataChannel = new KapuaDataChannelImpl();
+        KapuaDataChannel kapuaDataChannel = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataChannel();
         List<String> semanticParts = new ArrayList<>();
         semanticParts.add("part1");
         semanticParts.add("part2");
         semanticParts.add("part3");
 
-        kapuaDataChannel.setClientId("clientId-1");
         kapuaDataChannel.setSemanticParts(semanticParts);
         assertEquals("part1/part2/part3", kapuaDataChannel.toString());
     }
 
     @Test
     public void kapuaDataMesssageGetterSetters() {
-        KapuaDataMessage kapuaDataMessage = new KapuaDataMessageImpl();
+        KapuaDataMessage kapuaDataMessage = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataMessage();
 
         kapuaDataMessage.setClientId("clientId-1");
         assertEquals("clientId-1", kapuaDataMessage.getClientId());
@@ -55,7 +52,7 @@ public class KapuaDeviceDataTest extends Assert {
 
     @Test
     public void kapuaDataPayloadDefaultConstructor() {
-        KapuaDataPayload kapuaDataPayload = new KapuaDataPayloadImpl();
+        KapuaDataPayload kapuaDataPayload = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataPayload();
 
         assertNotNull(kapuaDataPayload);
     }
