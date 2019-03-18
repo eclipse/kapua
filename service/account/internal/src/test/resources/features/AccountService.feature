@@ -192,12 +192,6 @@ Scenario: Test account query
     When I query for all accounts that have the system account as parent
     Then The returned value is 9
 
-Scenario: Account service metadata
-    The Account service must have some associated configuration metadata. Check that the
-    metadata exists. No content checks will be performed.
-
-    Then Account service metadata is available
-
 Scenario: Account name must not be mutable
     It must be impossible to change an existing account name. When tried, an exception must
     be thrown and the original account must be unchanged.
