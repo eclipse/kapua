@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,24 +11,28 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.device.lifecycle;
 
+import org.eclipse.kapua.message.KapuaChannel;
+
 /**
- * {@link KapuaDisconnectPayload} definition.
+ * {@link KapuaLifecycleChannel} definition
  *
- * @since 1.0.0
+ * @since 1.1.0
  */
-public interface KapuaDisconnectPayload extends KapuaLifecyclePayload {
+public interface KapuaLifecycleChannel extends KapuaChannel {
 
     /**
-     * Get the device uptime
+     * Gets client id
      *
-     * @return
+     * @return The client id
+     * @since 1.1.0
      */
-    String getUptime();
+    String getClientId();
 
     /**
-     * Set the device uptime
+     * Sets client id
      *
-     * @return
+     * @param clientId The client id
+     * @since 1.1.0
      */
-    String getDisplayName();
+    void setClientId(String clientId);
 }

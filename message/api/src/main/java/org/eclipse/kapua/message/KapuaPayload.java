@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.message;
 
+import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.commons.util.Payloads;
 import org.eclipse.kapua.message.xml.MessageXmlRegistry;
 import org.eclipse.kapua.message.xml.MetricsXmlAdapter;
@@ -25,57 +26,58 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Map;
 
-import io.swagger.annotations.ApiModelProperty;
-
 /**
- * Kapua {@link Message} {@link Payload} definition.
+ * {@link KapuaPayload} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlRootElement(name = "payload")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {
-        "metrics", "body"
-}, factoryClass = MessageXmlRegistry.class, factoryMethod = "newPayload")
+@XmlType(propOrder = {"metrics", "body"}, factoryClass = MessageXmlRegistry.class, factoryMethod = "newPayload")
 public interface KapuaPayload extends Payload {
 
     /**
      * Get the metrics map
      *
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "metrics")
     @XmlJavaTypeAdapter(MetricsXmlAdapter.class)
-    public Map<String, Object> getMetrics();
+    Map<String, Object> getMetrics();
 
     /**
      * Set the metrics map
      *
      * @param metrics
+     * @since 1.0.0
      */
-    public void setMetrics(Map<String, Object> metrics);
+    void setMetrics(Map<String, Object> metrics);
 
     /**
      * Get the message body
      *
      * @return
+     * @since 1.0.0
      */
     @XmlElement(name = "body")
     @XmlJavaTypeAdapter(BinaryXmlAdapter.class)
     @ApiModelProperty(dataType = "string")
-    public byte[] getBody();
+    byte[] getBody();
 
     /**
      * Set the message body
      *
      * @param body
+     * @since 1.0.0
      */
-    public void setBody(byte[] body);
+    void setBody(byte[] body);
 
     /**
      * Returns a string for displaying the {@link KapuaPayload} content.
      *
      * @return A {@link String} used for displaying the content of the {@link KapuaPayload}, never returns {@code null}
+     * @since 1.0.0
      */
     @XmlTransient
     default String toDisplayString() {

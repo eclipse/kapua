@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,36 +9,26 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.message.internal.device.data;
+package org.eclipse.kapua.message.internal.device.lifecycle;
 
-import org.eclipse.kapua.message.device.data.KapuaDataChannel;
+import org.eclipse.kapua.message.device.lifecycle.KapuaLifecycleChannel;
 import org.eclipse.kapua.message.internal.KapuaChannelImpl;
 
 /**
- * {@link KapuaDataChannel} implementation.
+ * {@link AbstractLifecycleChannelImpl} {@code abstract} implementation.
  *
- * @since 1.0.0
+ * @since 1.1.0
  */
-public class KapuaDataChannelImpl extends KapuaChannelImpl implements KapuaDataChannel {
+public abstract class AbstractLifecycleChannelImpl extends KapuaChannelImpl implements KapuaLifecycleChannel {
 
     private String clientId;
 
-    /**
-     * Gets the client identifier
-     *
-     * @return
-     * @since 1.0.0
-     */
+    @Override
     public String getClientId() {
         return clientId;
     }
 
-    /**
-     * Sets the client identifier
-     *
-     * @param clientId
-     * @since 1.0.0
-     */
+    @Override
     public void setClientId(String clientId) {
         this.clientId = clientId;
     }

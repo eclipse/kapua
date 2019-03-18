@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,16 +13,14 @@ package org.eclipse.kapua.message;
 
 import org.eclipse.kapua.message.xml.MessageXmlRegistry;
 
+import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlType;
-
 /**
- * Channel definition.
+ * {@link Channel} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
-@XmlType(factoryClass = MessageXmlRegistry.class, factoryMethod = "newKapuaChannel") //
+@XmlType(factoryClass = MessageXmlRegistry.class, factoryMethod = "newKapuaChannel")
 public interface Channel extends Serializable {
-
 }

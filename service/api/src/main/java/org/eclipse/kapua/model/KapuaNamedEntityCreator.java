@@ -23,8 +23,6 @@ import javax.xml.bind.annotation.XmlType;
  * <li>description</li>
  * </ul>
  *
- * </p>
- *
  * <div>
  *
  * <p>

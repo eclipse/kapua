@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,8 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.message;
 
-import java.io.Serializable;
-import java.util.Date;
+import org.eclipse.kapua.commons.util.Payloads;
+import org.eclipse.kapua.message.xml.MessageXmlRegistry;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -20,183 +21,199 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.eclipse.kapua.message.xml.MessageXmlRegistry;
-import org.eclipse.kapua.model.xml.DateXmlAdapter;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Kapua position object definition.
+ * {@link KapuaPosition} definition.
+ * <p>
+ * {@link KapuaPosition} is a data structure to capture a geo location.
+ * <p>
+ * It can be associated to an {@link org.eclipse.kapua.message.KapuaPayload} to geotag an {@link org.eclipse.kapua.message.KapuaMessage} before sending to Kapua.
  *
  * @since 1.0.0
  */
 @XmlRootElement(name = "position")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { //
-        "longitude", //
-        "latitude", //
-        "altitude", //
-        "precision", //
-        "heading", //
-        "speed", //
-        "timestamp", //
-        "satellites", //
-        "status", //
-}, factoryClass = MessageXmlRegistry.class, factoryMethod = "newPosition")
+@XmlType(factoryClass = MessageXmlRegistry.class, factoryMethod = "newPosition")
 public interface KapuaPosition extends Position, Serializable {
 
     /**
-     * Get the device position longitude
+     * Gets the GPS position longitude
      *
-     * @return
+     * @return The GPS position longitude
      * @since 1.0.0
      */
     @XmlElement(name = "longitude")
-    public Double getLongitude();
+    Double getLongitude();
 
     /**
-     * Set the device position longitude
+     * Sets the GPS position longitude
      *
-     * @param longitude
+     * @param longitude The GPS position longitude
      * @since 1.0.0
      */
-    public void setLongitude(Double longitude);
+    void setLongitude(Double longitude);
 
     /**
-     * Get the device position latitude
+     * Gets the GPS position latitude
      *
-     * @return
+     * @return The GPS position latitude
      * @since 1.0.0
      */
     @XmlElement(name = "latitude")
-    public Double getLatitude();
+    Double getLatitude();
 
     /**
-     * Set the device position latitude
+     * Sets the GPS position latitude
      *
-     * @param latitude
+     * @param latitude The GPS position latitude
      * @since 1.0.0
      */
-    public void setLatitude(Double latitude);
+    void setLatitude(Double latitude);
 
     /**
-     * Get the device position altitude
+     * Gets the GPS position altitude
      *
-     * @return
+     * @return The GPS position altitude
      * @since 1.0.0
      */
     @XmlElement(name = "altitude")
-    public Double getAltitude();
+    Double getAltitude();
 
     /**
-     * Set the device position altitude
+     * Sets the GPS position altitude
      *
-     * @param altitude
+     * @param altitude The GPS position altitude
      * @since 1.0.0
      */
-    public void setAltitude(Double altitude);
+    void setAltitude(Double altitude);
 
     /**
-     * Get the device precision
+     * Gets the GPS precision
      *
-     * @return
+     * @return The GPS precision
      * @since 1.0.0
      */
     @XmlElement(name = "precision")
-    public Double getPrecision();
+    Double getPrecision();
 
     /**
-     * Set the device precision
+     * Sets the GPS precision
      *
-     * @param precision
+     * @param precision The GPS precision
      * @since 1.0.0
      */
-    public void setPrecision(Double precision);
+    void setPrecision(Double precision);
 
     /**
-     * Get the device heading
+     * Gets the GPS heading
      *
-     * @return
+     * @return The GPS heading
+     * @since 1.0.0
      */
     @XmlElement(name = "heading")
-    public Double getHeading();
+    Double getHeading();
 
     /**
-     * Set the device heading
+     * Sets the GPS heading
      *
-     * @param heading
+     * @param heading The GPS heading
      * @since 1.0.0
      */
-    public void setHeading(Double heading);
+    void setHeading(Double heading);
 
     /**
-     * Get the device speed
+     * Gets the GPS speed
      *
-     * @return
+     * @return The GPS speed.
      * @since 1.0.0
      */
     @XmlElement(name = "speed")
-    public Double getSpeed();
+    Double getSpeed();
 
     /**
-     * Set the device speed
+     * Sets the GPS speed
      *
-     * @param speed
+     * @param speed The GPS speed
      * @since 1.0.0
      */
-    public void setSpeed(Double speed);
+    void setSpeed(Double speed);
 
     /**
-     * Get the timestamp
+     * Gets the timestamp
      *
-     * @return
+     * @return The timestamp
      * @since 1.0.0
      */
     @XmlElement(name = "timestamp")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
-    public Date getTimestamp();
+    Date getTimestamp();
 
     /**
-     * Set the timestamp
+     * Sets the timestamp
      *
-     * @param timestamp
+     * @param timestamp The timestamp
      * @since 1.0.0
      */
-    public void setTimestamp(Date timestamp);
+    void setTimestamp(Date timestamp);
 
     /**
-     * Get the satellites count
+     * Gets the satellites count
      *
-     * @return
+     * @return The satellites count
+     * @since 1.0.0
      */
     @XmlElement(name = "satellites")
-    public Integer getSatellites();
+    Integer getSatellites();
 
     /**
-     * Set the satellites count
+     * Sets the satellites count
      *
-     * @param satellites
+     * @param satellites The satellites count.
+     * @since 1.0.0
      */
-    public void setSatellites(Integer satellites);
+    void setSatellites(Integer satellites);
 
     /**
-     * Get the device status
+     * Gets the GPS status
      *
-     * @return
+     * @return The GPS status
+     * @since 1.0.0
      */
     @XmlElement(name = "status")
-    public Integer getStatus();
+    Integer getStatus();
 
     /**
-     * Set the device status
+     * Sets the GPS status
      *
-     * @param status
+     * @param status The GPS status
+     * @since 1.0.0
      */
-    public void setStatus(Integer status);
+    void setStatus(Integer status);
 
     /**
-     * Convert the position to a displayable String
+     * Converts the {@link KapuaPosition} attributes to a displayable {@link String}
      *
-     * @return
+     * @return The displayable {@link String}
+     * @since 1.0.0
      */
-    public String toDisplayString();
+    default String toDisplayString() {
+
+        Map<String, Object> properties = new HashMap<>();
+
+        properties.put("latitude", getLatitude());
+        properties.put("longitude", getLongitude());
+        properties.put("altitude", getAltitude());
+        properties.put("precision", getPrecision());
+        properties.put("heading", getHeading());
+        properties.put("speed", getSpeed());
+        properties.put("timestamp", getTimestamp());
+        properties.put("satellites", getSatellites());
+        properties.put("status", getStatus());
+
+        return Payloads.toDisplayString(properties);
+    }
 }

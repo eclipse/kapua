@@ -10,14 +10,14 @@
  *     Eurotech - initial API and implementation
  *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.message.internal;
+package org.eclipse.kapua.message.internal.device.data;
 
 import org.eclipse.kapua.locator.KapuaProvider;
-import org.eclipse.kapua.message.KapuaChannel;
-import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.message.KapuaMessageFactory;
-import org.eclipse.kapua.message.KapuaPayload;
-import org.eclipse.kapua.message.KapuaPosition;
+import org.eclipse.kapua.message.device.data.KapuaDataChannel;
+import org.eclipse.kapua.message.device.data.KapuaDataMessage;
+import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
+import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 
 /**
  * {@link KapuaMessageFactory} implementation
@@ -25,25 +25,21 @@ import org.eclipse.kapua.message.KapuaPosition;
  * @since 1.0.0
  */
 @KapuaProvider
-public class KapuaMessageFactoryImpl implements KapuaMessageFactory {
+public class KapuaDataMessageFactoryImpl implements KapuaDataMessageFactory {
 
     @Override
-    public KapuaMessage newMessage() {
-        return new KapuaMessageImpl<>();
+    public KapuaDataMessage newKapuaDataMessage() {
+        return new KapuaDataMessageImpl();
     }
 
     @Override
-    public KapuaChannel newChannel() {
-        return new KapuaChannelImpl();
+    public KapuaDataChannel newKapuaDataChannel() {
+        return new KapuaDataChannelImpl();
     }
 
     @Override
-    public KapuaPayload newPayload() {
-        return new KapuaPayloadImpl();
+    public KapuaDataPayload newKapuaDataPayload() {
+        return new KapuaDataPayloadImpl();
     }
 
-    @Override
-    public KapuaPosition newPosition() {
-        return new KapuaPositionImpl();
-    }
 }

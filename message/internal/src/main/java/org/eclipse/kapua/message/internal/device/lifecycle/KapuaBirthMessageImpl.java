@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,12 +15,11 @@ package org.eclipse.kapua.message.internal.device.lifecycle;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthPayload;
-import org.eclipse.kapua.message.internal.KapuaMessageImpl;
 
 /**
  * Kapua birth message object reference implementation.
  */
-public class KapuaBirthMessageImpl extends KapuaMessageImpl<KapuaBirthChannel, KapuaBirthPayload> implements KapuaBirthMessage {
+public class KapuaBirthMessageImpl extends AbstractLifecycleMessageImpl<KapuaBirthChannel, KapuaBirthPayload> implements KapuaBirthMessage {
 
     private static final long serialVersionUID = 1L;
 

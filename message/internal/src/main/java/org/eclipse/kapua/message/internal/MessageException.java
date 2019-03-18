@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,10 +14,9 @@ package org.eclipse.kapua.message.internal;
 import org.eclipse.kapua.KapuaException;
 
 /**
- * Message exception.
- * 
- * @since 1.0
+ * {@link org.eclipse.kapua.message.Message} exception.
  *
+ * @since 1.0.0
  */
 public class MessageException extends KapuaException {
 
@@ -27,8 +26,9 @@ public class MessageException extends KapuaException {
 
     /**
      * Constructor
-     * 
+     *
      * @param code
+     * @since 1.0.0
      */
     public MessageException(MessageErrorCodes code) {
         super(code);
@@ -36,9 +36,10 @@ public class MessageException extends KapuaException {
 
     /**
      * Constructor
-     * 
+     *
      * @param code
      * @param arguments
+     * @since 1.0.0
      */
     public MessageException(MessageErrorCodes code, Object... arguments) {
         super(code, arguments);
@@ -46,15 +47,17 @@ public class MessageException extends KapuaException {
 
     /**
      * Constructor
-     * 
+     *
      * @param code
      * @param cause
      * @param arguments
+     * @since 1.0.0
      */
     public MessageException(MessageErrorCodes code, Throwable cause, Object... arguments) {
         super(code, cause, arguments);
     }
 
+    @Override
     protected String getKapuaErrorMessagesBundle() {
         return KAPUA_ERROR_MESSAGES;
     }

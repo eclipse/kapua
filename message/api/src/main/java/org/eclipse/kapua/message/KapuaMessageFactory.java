@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,15 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.message;
 
-import org.eclipse.kapua.message.device.data.KapuaDataChannel;
-import org.eclipse.kapua.message.device.data.KapuaDataMessage;
-import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 
 /**
  * {@link KapuaMessage}s {@link KapuaObjectFactory} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface KapuaMessageFactory extends KapuaObjectFactory {
 
@@ -28,48 +25,31 @@ public interface KapuaMessageFactory extends KapuaObjectFactory {
      * Creates a new {@link KapuaMessage}
      *
      * @return the new {@link KapuaMessage}
+     * @since 1.0.0
      */
-    public KapuaMessage newMessage();
+    KapuaMessage newMessage();
 
     /**
      * Creates a new {@link KapuaChannel}
      *
      * @return the new {@link KapuaChannel}
+     * @since 1.0.0
      */
-    public KapuaChannel newChannel();
+    KapuaChannel newChannel();
 
     /**
      * Creates a new {@link KapuaPayload}
      *
      * @return the new {@link KapuaPayload}
+     * @since 1.0.0
      */
-    public KapuaPayload newPayload();
+    KapuaPayload newPayload();
 
     /**
      * Creates a new {@link KapuaPosition}
      *
      * @return the new {@link KapuaPosition}
+     * @since 1.0.0
      */
-    public KapuaPosition newPosition();
-
-    /**
-     * Creates a new {@link KapuaDataMessage}
-     *
-     * @return the new {@link KapuaDataMessage}
-     */
-    public KapuaDataMessage newKapuaDataMessage();
-
-    /**
-     * Creates a new {@link KapuaDataChannel}
-     *
-     * @return the new {@link KapuaDataChannel}
-     */
-    KapuaDataChannel newKapuaDataChannel();
-
-    /**
-     * Creates a new {@link KapuaDataPayload}.
-     *
-     * @return the new {@link KapuaDataPayload}.
-     */
-    KapuaDataPayload newKapuaDataPayload();
+    KapuaPosition newPosition();
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,9 +17,9 @@ import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 /**
- * {@link Message} {@link Payload} definition.
+ * {@link Payload} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlType(factoryClass = MessageXmlRegistry.class, factoryMethod = "newPayload")
 public interface Payload extends Serializable {

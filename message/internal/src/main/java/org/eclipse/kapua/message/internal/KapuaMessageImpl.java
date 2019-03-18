@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,24 +12,29 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
-import java.util.Date;
-import java.util.UUID;
-
 import org.eclipse.kapua.message.KapuaChannel;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.model.id.KapuaId;
 
+import java.util.Date;
+import java.util.UUID;
+
 /**
- * KapuaMessage provides an abstraction over the messages sent in and out of the Kapua platform.<br>
+ * {@link KapuaMessage} provides an abstraction over the {@link org.eclipse.kapua.message.Message}s sent in and out of the Kapua platform.
+ * <p>
  * It encapsulates all the information regarding the message: the topic it was addressed to, the timestamp
- * when it was received by the platform, and the payload contained in the message.<br>
- * The payload can be represented by a raw binary array or by an KapuaPayload object if it was formatted
- * as such when the message was composed and sent. Refer to the KapuaPayload documentation for more details on
- * how KapuaPayload are modelled and how they can be constructed.<br>
- * The KapuaMessage class is used both by the messages/search API to return message results from the platform,
+ * when it was received by the platform, and the payload contained in the message.
+ * <p>
+ * The payload can be represented by a raw binary array or by an {@link KapuaPayload} object if it was formatted
+ * as such when the message was composed and sent. Refer to the {@link KapuaPayload} documentation for more details on
+ * how {@link KapuaPayload} are modelled and how they can be constructed.
+ * <p>
+ * The {@link KapuaMessage} class is used both by the messages/search API to return message results from the platform,
  * as well as by messages/store and messages/publish API to send messages to the platform.
+ *
+ * @since 1.0.0
  */
 public class KapuaMessageImpl<C extends KapuaChannel, P extends KapuaPayload> implements Comparable<KapuaMessageImpl<C, P>>, KapuaMessage<C, P> {
 
@@ -59,15 +64,17 @@ public class KapuaMessageImpl<C extends KapuaChannel, P extends KapuaPayload> im
     }
 
     /**
-     * Constructor
-     * 
-     * @param channel
-     * @param metrics
+     * Constructor.
+     *
+     * @param channel The {@link KapuaChannel} of the {@link KapuaMessage}
+     * @param payload The {@link KapuaPayload} of the {@link KapuaMessage}
+     * @since 1.0.0
      */
-    public KapuaMessageImpl(C channel, P metrics) {
+    public KapuaMessageImpl(C channel, P payload) {
         this();
+
         this.channel = channel;
-        this.payload = metrics;
+        this.payload = payload;
     }
 
     @Override
