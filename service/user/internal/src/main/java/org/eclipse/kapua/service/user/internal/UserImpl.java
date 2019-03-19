@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.user.User;
@@ -80,8 +81,18 @@ public class UserImpl extends AbstractKapuaNamedEntity implements User {
     /**
      * Constructor.
      *
-     * @param scopeId the scope {@link KapuaId}
-     * @param name    the name
+     * @param scopeId The scope {@link KapuaId} to set into the {@link User}
+     * @since 1.0.0
+     */
+    public UserImpl(KapuaId scopeId) {
+        super(scopeId);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param scopeId The scope {@link KapuaId} to set into the {@link User}
+     * @param name    The name to set into the {@link User}
      * @since 1.0.0
      */
     public UserImpl(KapuaId scopeId, String name) {
@@ -90,8 +101,23 @@ public class UserImpl extends AbstractKapuaNamedEntity implements User {
         this.status = UserStatus.ENABLED;
     }
 
-    public UserImpl(KapuaId scopeId) {
-        super(scopeId);
+    /**
+     * Clone constructor.
+     *
+     * @param user
+     * @throws KapuaException
+     * @since 1.1.0
+     */
+    public UserImpl(User user) throws KapuaException {
+        super(user);
+
+        setStatus(user.getStatus());
+        setDisplayName(user.getDisplayName());
+        setEmail(user.getEmail());
+        setPhoneNumber(user.getPhoneNumber());
+        setUserType(user.getUserType());
+        setExternalId(user.getExternalId());
+        setExpirationDate(user.getExpirationDate());
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,18 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.access.AccessRole;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.access.AccessRole;
 
 /**
  * {@link AccessRole} implementation.
@@ -59,8 +59,7 @@ public class AccessRoleImpl extends AbstractKapuaEntity implements AccessRole {
     /**
      * Constructor.
      *
-     * @param scopeId
-     *            The scope id to set for this {@link AccessRole}.
+     * @param scopeId The scope {@link KapuaId} to set for this {@link AccessRole}.
      * @since 1.0.0
      */
     public AccessRoleImpl(KapuaId scopeId) {
@@ -68,13 +67,10 @@ public class AccessRoleImpl extends AbstractKapuaEntity implements AccessRole {
     }
 
     /**
-     * Constructor.<br>
-     * Creates a clone of the given {@link AccessRole}.
+     * Clone constructor.
      *
-     * @param accessRole
-     *            The {@link AccessRole} to clone.
-     * @throws KapuaException
-     *             If the given {@link AccessRole} is incompatible with the implementation-specific type.
+     * @param accessRole The {@link AccessRole} to clone.
+     * @throws KapuaException If the given {@link AccessRole} is incompatible with the implementation-specific type.
      * @since 1.0.0
      */
     public AccessRoleImpl(AccessRole accessRole) throws KapuaException {

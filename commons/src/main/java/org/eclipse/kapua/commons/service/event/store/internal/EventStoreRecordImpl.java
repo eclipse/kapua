@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,7 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.event.store.internal;
 
-import java.util.Date;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecord;
+import org.eclipse.kapua.event.ServiceEvent.EventStatus;
+import org.eclipse.kapua.model.id.KapuaId;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -24,13 +29,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.util.Date;
 
-import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecord;
-import org.eclipse.kapua.event.ServiceEvent.EventStatus;
-import org.eclipse.kapua.model.id.KapuaId;
-
+/**
+ * {@link EventStoreRecord} implementation
+ *
+ * @since 1.0.0
+ */
 @Entity(name = "EventStoreRecord")
 @Table(name = "sys_event_store")
 public class EventStoreRecordImpl extends AbstractKapuaUpdatableEntity implements EventStoreRecord {
@@ -89,8 +94,36 @@ public class EventStoreRecordImpl extends AbstractKapuaUpdatableEntity implement
         status = EventStatus.TRIGGERED;
     }
 
+    /**
+     * Constructor.
+     *
+     * @param scopeId
+     * @since 1.0.0
+     */
     public EventStoreRecordImpl(KapuaId scopeId) {
-        setScopeId(scopeId);
+        super(scopeId);
+    }
+
+    /**
+     * Clone constructor
+     *
+     * @throws KapuaException
+     * @since 1.1.0
+     */
+    public EventStoreRecordImpl(EventStoreRecord eventStoreRecord) throws KapuaException {
+        super(eventStoreRecord);
+
+        setContextId(eventStoreRecord.getContextId());
+        setTimestamp(eventStoreRecord.getTimestamp());
+        setUserId(eventStoreRecord.getUserId());
+        setService(eventStoreRecord.getService());
+        setEntityType(eventStoreRecord.getEntityType());
+        setEntityId(eventStoreRecord.getEntityId());
+        setOperation(eventStoreRecord.getOperation());
+        setInputs(eventStoreRecord.getInputs());
+        setOutputs(eventStoreRecord.getOutputs());
+        setStatus(eventStoreRecord.getStatus());
+        setNote(eventStoreRecord.getNote());
     }
 
     @Override
@@ -178,6 +211,7 @@ public class EventStoreRecordImpl extends AbstractKapuaUpdatableEntity implement
         return inputs;
     }
 
+    @Override
     public void setInputs(String inputs) {
         this.inputs = inputs;
     }
@@ -187,6 +221,7 @@ public class EventStoreRecordImpl extends AbstractKapuaUpdatableEntity implement
         return outputs;
     }
 
+    @Override
     public void setOutputs(String outputs) {
         this.outputs = outputs;
     }
@@ -206,6 +241,7 @@ public class EventStoreRecordImpl extends AbstractKapuaUpdatableEntity implement
         return note;
     }
 
+    @Override
     public void setNote(String note) {
         this.note = note;
     }

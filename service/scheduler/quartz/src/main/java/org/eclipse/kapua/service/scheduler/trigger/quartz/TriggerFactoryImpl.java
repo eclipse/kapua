@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
+import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
@@ -21,9 +22,9 @@ import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 
 /**
- * Trigger service factory implementation.
+ * {@link TriggerFactory} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @KapuaProvider
 public class TriggerFactoryImpl implements TriggerFactory {
@@ -51,5 +52,14 @@ public class TriggerFactoryImpl implements TriggerFactory {
     @Override
     public TriggerProperty newTriggerProperty(String name, String type, String value) {
         return new TriggerPropertyImpl(name, type, value);
+    }
+
+    @Override
+    public Trigger clone(Trigger trigger) {
+        try {
+            return new TriggerImpl(trigger);
+        } catch (Exception e) {
+            throw new KapuaEntityCloneException(e, Trigger.TYPE, trigger);
+        }
     }
 }

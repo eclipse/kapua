@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,6 +10,14 @@
  *     Eurotech - initial API and implementation
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.shiro;
+
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authentication.credential.Credential;
+import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
+import org.eclipse.kapua.service.authentication.credential.CredentialType;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -25,14 +33,6 @@ import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authentication.credential.Credential;
-import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
-import org.eclipse.kapua.service.authentication.credential.CredentialType;
-
 import java.util.Date;
 
 @XmlRootElement
@@ -40,10 +40,9 @@ import java.util.Date;
 @Entity(name = "Credential")
 @Table(name = "atht_credential")
 /**
- * Credential implementation.
- * 
- * @since 1.0
+ * {@link Credential} implementation.
  *
+ * @since 1.0.0
  */
 public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Credential {
 
@@ -88,19 +87,32 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
     protected Date lockoutReset;
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public CredentialImpl() {
         super();
     }
 
     /**
-     * Constructor
-     * 
-     * @param scopeId
-     * @param userId
-     * @param credentialType
-     * @param credentialKey
+     * Constructor.
+     *
+     * @param scopeId The scope {@link KapuaId} to set into the {@link Credential}.
+     * @since 1.0.0
+     */
+    public CredentialImpl(KapuaId scopeId) {
+        super(scopeId);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param scopeId        The scope {@link KapuaId} to set into the {@link Credential}.
+     * @param userId         The {@link org.eclipse.kapua.service.user.User} {@link KapuaId} to set into the {@link Credential}.
+     * @param credentialType The {@link CredentialType} to set into the {@link Credential}.
+     * @param credentialKey  The credential key to set into the {@link Credential}.
+     * @since 1.0.0
      */
     public CredentialImpl(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey, CredentialStatus credentialStatus, Date expirationDate) {
         super(scopeId);
@@ -111,8 +123,24 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
         this.expirationDate = expirationDate;
     }
 
-    public CredentialImpl(KapuaId scopeId) {
-        super(scopeId);
+    /**
+     * Clone constructor.
+     *
+     * @param credential
+     * @throws KapuaException
+     * @since 1.1.0
+     */
+    public CredentialImpl(Credential credential) throws KapuaException {
+        super(credential);
+
+        setUserId(credential.getUserId());
+        setCredentialType(credential.getCredentialType());
+        setCredentialKey(credential.getCredentialKey());
+        setExpirationDate(credential.getExpirationDate());
+        setStatus(credential.getStatus());
+        setLoginFailures(credential.getLoginFailures());
+        setLoginFailuresReset(credential.getLoginFailuresReset());
+        setLockoutReset(credential.getLockoutReset());
     }
 
     @Override
@@ -138,7 +166,6 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
     @Override
     public void setCredentialType(CredentialType credentialType) {
         this.credentialType = credentialType;
-
     }
 
     @Override
@@ -169,7 +196,6 @@ public class CredentialImpl extends AbstractKapuaUpdatableEntity implements Cred
     public void setUserId(KapuaEid userId) {
         this.userId = userId;
     }
-
 
     @Override
     public int getLoginFailures() {

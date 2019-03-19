@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,12 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event.internal;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.message.internal.KapuaPositionImpl;
-import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
@@ -93,6 +91,8 @@ public class DeviceEventImpl extends AbstractKapuaEntity implements DeviceEvent 
 
     /**
      * Constructor
+     *
+     * @since 1.0.0
      */
     protected DeviceEventImpl() {
         super();
@@ -101,19 +101,21 @@ public class DeviceEventImpl extends AbstractKapuaEntity implements DeviceEvent 
     /**
      * Constructor
      *
-     * @param scopeId
+     * @param scopeId The scope {@link KapuaId} to set into the {@link DeviceEvent}
+     * @since 1.0.0
      */
     public DeviceEventImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
     /**
-     * Constructor
+     * Clone constructor.
      *
      * @param deviceEvent
+     * @since 1.0.0
      */
-    public DeviceEventImpl(DeviceEvent deviceEvent) throws KapuaException {
-        super((KapuaEntity) deviceEvent);
+    public DeviceEventImpl(DeviceEvent deviceEvent) {
+        super(deviceEvent);
 
         setDeviceId(deviceEvent.getDeviceId());
         setReceivedOn(deviceEvent.getReceivedOn());
@@ -164,6 +166,7 @@ public class DeviceEventImpl extends AbstractKapuaEntity implements DeviceEvent 
     public void setPosition(KapuaPosition position) {
         if (position != null) {
             this.position = new KapuaPositionImpl();
+
             this.position.setAltitude(position.getAltitude());
             this.position.setHeading(position.getHeading());
             this.position.setLatitude(position.getLatitude());
@@ -173,6 +176,8 @@ public class DeviceEventImpl extends AbstractKapuaEntity implements DeviceEvent 
             this.position.setSpeed(position.getSpeed());
             this.position.setStatus(position.getStatus());
             this.position.setTimestamp(position.getTimestamp());
+        } else {
+            this.position = null;
         }
     }
 

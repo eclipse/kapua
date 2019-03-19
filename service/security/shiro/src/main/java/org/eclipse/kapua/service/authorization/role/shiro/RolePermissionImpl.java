@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -48,14 +48,43 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
     @Embedded
     private PermissionImpl permission;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     protected RolePermissionImpl() {
         super();
     }
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @param scopeId The scope {@link KapuaId} to set into the {@link RolePermission}
+     * @since 1.0.0
+     */
+    public RolePermissionImpl(KapuaId scopeId) {
+        super(scopeId);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param scopeId    The scope {@link KapuaId} to set into the {@link RolePermission}
+     * @param permission The {@link Permission} to set into the {@link RolePermission}
+     * @since 1.0.0
+     */
+    public RolePermissionImpl(KapuaId scopeId, Permission permission) {
+        this(scopeId);
+
+        setPermission(permission);
+    }
+
+    /**
+     * Clone constructor
      *
      * @param rolePermission
+     * @since 1.0.0
      */
     public RolePermissionImpl(RolePermission rolePermission) {
         super(rolePermission);
@@ -63,26 +92,6 @@ public class RolePermissionImpl extends AbstractKapuaEntity implements RolePermi
         setId(rolePermission.getId());
         setRoleId(rolePermission.getRoleId());
         setPermission(rolePermission.getPermission());
-    }
-
-    /**
-     * Constructor
-     *
-     * @param scopeId
-     */
-    public RolePermissionImpl(KapuaId scopeId) {
-        super(scopeId);
-    }
-
-    /**
-     * Constructor
-     *
-     * @param scopeId
-     * @param permission
-     */
-    public RolePermissionImpl(KapuaId scopeId, Permission permission) {
-        this(scopeId);
-        setPermission(permission);
     }
 
     @Override

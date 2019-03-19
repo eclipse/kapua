@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.internal;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.Job;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link Job} {@link org.eclipse.kapua.model.KapuaEntity} definition.
+ * {@link Job} implementation.
  *
  * @since 1.0.0
  */
@@ -42,11 +43,36 @@ public class JobImpl extends AbstractKapuaNamedEntity implements Job {
     @Column(name = "job_xml_definition", nullable = true, updatable = true)
     private String jobXmlDefinition;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     public JobImpl() {
     }
 
+    /**
+     * Constructor.
+     *
+     * @param scopeId The scope {@link KapuaId} to set into the {@link Job}
+     * @since 1.0.0
+     */
     public JobImpl(KapuaId scopeId) {
         super(scopeId);
+    }
+
+    /**
+     * Clone constructor.
+     *
+     * @param job
+     * @throws KapuaException
+     * @since 1.1.0
+     */
+    public JobImpl(Job job) throws KapuaException {
+        super(job);
+
+        setJobSteps(job.getJobSteps());
+        setJobXmlDefinition(job.getJobXmlDefinition());
     }
 
     @Override

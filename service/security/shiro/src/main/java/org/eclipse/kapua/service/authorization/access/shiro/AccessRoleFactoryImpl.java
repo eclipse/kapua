@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
+import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
@@ -20,10 +21,9 @@ import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 
 /**
- * {@link AccessRole} factory implementation.
- * 
+ * {@link AccessRoleFactory} implementation.
+ *
  * @since 1.0.0
- * 
  */
 @KapuaProvider
 public class AccessRoleFactoryImpl implements AccessRoleFactory {
@@ -46,5 +46,14 @@ public class AccessRoleFactoryImpl implements AccessRoleFactory {
     @Override
     public AccessRoleListResult newListResult() {
         return new AccessRoleListResultImpl();
+    }
+
+    @Override
+    public AccessRole clone(AccessRole accessRole) {
+        try {
+            return new AccessRoleImpl(accessRole);
+        } catch (Exception e) {
+            throw new KapuaEntityCloneException(e, AccessRole.TYPE, accessRole);
+        }
     }
 }

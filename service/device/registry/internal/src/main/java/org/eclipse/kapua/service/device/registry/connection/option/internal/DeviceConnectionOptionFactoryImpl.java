@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection.option.internal;
 
+import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOption;
@@ -20,9 +21,9 @@ import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnect
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionQuery;
 
 /**
- * Device connection service factory implementation.
+ * {@link DeviceConnectionOptionFactory} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @KapuaProvider
 public class DeviceConnectionOptionFactoryImpl implements DeviceConnectionOptionFactory {
@@ -47,4 +48,12 @@ public class DeviceConnectionOptionFactoryImpl implements DeviceConnectionOption
         return new DeviceConnectionOptionListResultImpl();
     }
 
+    @Override
+    public DeviceConnectionOption clone(DeviceConnectionOption deviceConnectionOption) {
+        try {
+            return new DeviceConnectionOptionImpl(deviceConnectionOption);
+        } catch (Exception e) {
+            throw new KapuaEntityCloneException(e, DeviceConnectionOption.TYPE, deviceConnectionOption);
+        }
+    }
 }

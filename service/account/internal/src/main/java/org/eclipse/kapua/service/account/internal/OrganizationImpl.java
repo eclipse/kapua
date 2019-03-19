@@ -11,17 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
-import java.io.Serializable;
+import org.eclipse.kapua.service.account.Organization;
 
 import javax.persistence.Embeddable;
-
-import org.eclipse.kapua.service.account.Organization;
+import java.io.Serializable;
 
 /**
  * Organization entity implementation
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @Embeddable
 public class OrganizationImpl implements Organization, Serializable {
@@ -41,9 +39,32 @@ public class OrganizationImpl implements Organization, Serializable {
     private String country;
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public OrganizationImpl() {
+    }
+
+    /**
+     * Clone constructor.
+     *
+     * @since 1.1.0
+     */
+    public OrganizationImpl(Organization organization) {
+        this();
+
+        setName(organization.getName());
+        setPersonName(organization.getPersonName());
+        setEmail(organization.getEmail());
+        setPhoneNumber(organization.getPhoneNumber());
+        setAddressLine1(organization.getAddressLine1());
+        setAddressLine2(organization.getAddressLine2());
+        setAddressLine3(organization.getAddressLine3());
+        setZipPostCode(organization.getZipPostCode());
+        setCity(organization.getCity());
+        setStateProvinceCounty(organization.getStateProvinceCounty());
+        setCountry(organization.getCountry());
     }
 
     @Override
@@ -106,20 +127,12 @@ public class OrganizationImpl implements Organization, Serializable {
         this.addressLine2 = addressLine2;
     }
 
-    /**
-     * Get organization address (third line)
-     * 
-     * @return
-     */
+    @Override
     public String getAddressLine3() {
         return addressLine3;
     }
 
-    /**
-     * Set organization address (third line)
-     * 
-     * @param addressLine3
-     */
+    @Override
     public void setAddressLine3(String addressLine3) {
         this.addressLine3 = addressLine3;
     }

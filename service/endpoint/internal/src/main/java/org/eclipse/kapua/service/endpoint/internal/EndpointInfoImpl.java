@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.endpoint.internal;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.endpoint.EndpointInfo;
@@ -55,6 +56,11 @@ public class EndpointInfoImpl extends AbstractKapuaUpdatableEntity implements En
     @CollectionTable(name = "endp_endpoint_info_usage", joinColumns = @JoinColumn(name = "endpoint_info_id", referencedColumnName = "id"))
     private Set<EndpointUsageImpl> usages;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     protected EndpointInfoImpl() {
         super();
     }
@@ -62,10 +68,28 @@ public class EndpointInfoImpl extends AbstractKapuaUpdatableEntity implements En
     /**
      * Constructor
      *
-     * @param scopeId
+     * @param scopeId The scope {@link KapuaId} to set into the {@link EndpointInfo}
+     * @since 1.0.0
      */
     public EndpointInfoImpl(KapuaId scopeId) {
         super(scopeId);
+    }
+
+    /**
+     * Clone constructor.
+     *
+     * @param endpointInfo
+     * @throws KapuaException
+     * @since 1.1.0
+     */
+    public EndpointInfoImpl(EndpointInfo endpointInfo) throws KapuaException {
+        super(endpointInfo);
+
+        setSchema(endpointInfo.getSchema());
+        setDns(endpointInfo.getDns());
+        setPort(endpointInfo.getPort());
+        setSecure(endpointInfo.getSecure());
+        setUsages(endpointInfo.getUsages());
     }
 
     @Override

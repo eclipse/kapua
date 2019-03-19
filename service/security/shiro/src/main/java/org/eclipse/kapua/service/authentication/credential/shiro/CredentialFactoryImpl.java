@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.shiro;
 
+import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.Credential;
@@ -24,10 +25,9 @@ import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import java.util.Date;
 
 /**
- * Credential factory service implementation.
- * 
- * @since 1.0
- * 
+ * {@link CredentialFactory} implementation.
+ *
+ * @since 1.0.0
  */
 @KapuaProvider
 public class CredentialFactoryImpl implements CredentialFactory {
@@ -60,5 +60,14 @@ public class CredentialFactoryImpl implements CredentialFactory {
     @Override
     public CredentialCreator newCreator(KapuaId scopeId) {
         return new CredentialCreatorImpl(scopeId);
+    }
+
+    @Override
+    public Credential clone(Credential credential) {
+        try {
+            return new CredentialImpl(credential);
+        } catch (Exception e) {
+            throw new KapuaEntityCloneException(e, Credential.TYPE, credential);
+        }
     }
 }

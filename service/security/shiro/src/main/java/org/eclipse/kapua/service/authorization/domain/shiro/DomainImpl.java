@@ -54,7 +54,7 @@ public class DomainImpl extends AbstractKapuaEntity implements Domain {
     private boolean groupable;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @since 1.0.0
      */
@@ -70,6 +70,20 @@ public class DomainImpl extends AbstractKapuaEntity implements Domain {
      */
     public DomainImpl(KapuaId scopeId) {
         super(scopeId);
+    }
+
+    /**
+     * Clone constructor.
+     *
+     * @param domain
+     * @since 1.1.0
+     */
+    public DomainImpl(Domain domain) {
+        super(domain);
+
+        setName(domain.getName());
+        setActions(domain.getActions());
+        setGroupable(domain.getGroupable());
     }
 
     @Override

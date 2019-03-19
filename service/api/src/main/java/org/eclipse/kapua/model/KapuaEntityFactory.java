@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.model;
 
+import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -66,7 +67,8 @@ public interface KapuaEntityFactory<E extends KapuaEntity, C extends KapuaEntity
      *
      * @param entity The {@link KapuaEntity} to be cloned.
      * @return A deep clone of the {@link KapuaEntity}
+     * @throws KapuaEntityCloneException When error occurs while cloning the {@link KapuaEntity}
      * @since 1.1.0
      */
-    E clone(E entity);
+    E clone(E entity) throws KapuaEntityCloneException;
 }

@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate.internal;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.certificate.Certificate;
@@ -37,6 +38,11 @@ public class CertificateImpl extends AbstractKapuaNamedEntity implements Certifi
 
     public CertificateImpl(KapuaId scopeId) {
         super(scopeId);
+    }
+
+
+    public CertificateImpl(Certificate certificate) throws KapuaException {
+        throw new UnsupportedOperationException();
     }
 
     @Override

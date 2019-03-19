@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
+import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
@@ -21,9 +22,9 @@ import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.Organization;
 
 /**
- * Account service factory implementation.
+ * {@link AccountFactory} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @KapuaProvider
 public class AccountFactoryImpl implements AccountFactory {
@@ -58,5 +59,14 @@ public class AccountFactoryImpl implements AccountFactory {
     @Override
     public AccountListResult newListResult() {
         return new AccountListResultImpl();
+    }
+
+    @Override
+    public Account clone(Account account) {
+        try {
+            return new AccountImpl(account);
+        } catch (Exception e) {
+            throw new KapuaEntityCloneException(e, Account.TYPE, account);
+        }
     }
 }

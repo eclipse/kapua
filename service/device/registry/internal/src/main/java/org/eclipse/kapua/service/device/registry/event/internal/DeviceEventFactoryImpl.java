@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,9 +23,9 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import java.util.Date;
 
 /**
- * Device event factory service implementation.
+ * {@link DeviceEventFactory} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @KapuaProvider
 public class DeviceEventFactoryImpl implements DeviceEventFactory {
@@ -33,10 +33,12 @@ public class DeviceEventFactoryImpl implements DeviceEventFactory {
     @Override
     public DeviceEventCreator newCreator(KapuaId scopeId, KapuaId deviceId, Date receivedOn, String resource) {
         DeviceEventCreator creator = newCreator(scopeId);
+
         creator.setDeviceId(deviceId);
         creator.setAction(KapuaMethod.CREATE);
         creator.setReceivedOn(new Date(receivedOn.getTime()));
         creator.setResource(resource);
+
         return creator;
     }
 
@@ -58,5 +60,10 @@ public class DeviceEventFactoryImpl implements DeviceEventFactory {
     @Override
     public DeviceEventListResult newListResult() {
         return new DeviceEventListResultImpl();
+    }
+
+    @Override
+    public DeviceEvent clone(DeviceEvent deviceEvent) {
+        return new DeviceEventImpl(deviceEvent);
     }
 }

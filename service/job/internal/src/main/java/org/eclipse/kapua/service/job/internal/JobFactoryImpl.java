@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.internal;
 
+import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.Job;
@@ -21,9 +22,8 @@ import org.eclipse.kapua.service.job.JobQuery;
 
 /**
  * {@link JobFactory} implementation.
- * 
+ *
  * @since 1.0.0
- * 
  */
 @KapuaProvider
 public class JobFactoryImpl implements JobFactory {
@@ -46,5 +46,14 @@ public class JobFactoryImpl implements JobFactory {
     @Override
     public JobListResult newListResult() {
         return new JobListResultImpl();
+    }
+
+    @Override
+    public Job clone(Job job) {
+        try {
+            return new JobImpl(job);
+        } catch (Exception e) {
+            throw new KapuaEntityCloneException(e, Job.TYPE, job);
+        }
     }
 }

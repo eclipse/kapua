@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
@@ -88,13 +89,15 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param scopeId
+     * @since 1.0.0
      */
     public AccountImpl(KapuaId scopeId) {
         super(scopeId);
-        this.parentAccountPath = "";
+
+        setParentAccountPath("");
     }
 
     /**
@@ -102,10 +105,27 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
      *
      * @param scopeId
      * @param name
+     * @since 1.0.0
      */
     public AccountImpl(KapuaId scopeId, String name) {
         super(scopeId, name);
-        this.parentAccountPath = "";
+
+        setParentAccountPath("");
+    }
+
+    /**
+     * Clone constructor.
+     *
+     * @throws KapuaException
+     * @since 1.1.0
+     */
+    public AccountImpl(Account account) throws KapuaException {
+        super(account);
+
+        setOrganization(new OrganizationImpl(account.getOrganization()));
+        setParentAccountPath(account.getParentAccountPath());
+        setChildAccounts(account.getChildAccounts());
+        setExpirationDate(account.getExpirationDate());
     }
 
     @Override
@@ -135,6 +155,16 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
         }
 
         return new ArrayList<>(childAccounts);
+    }
+
+    private void setChildAccounts(List<Account> childAccounts) throws KapuaException {
+        List<AccountImpl> accounts = new ArrayList<>();
+
+        for (Account a : childAccounts) {
+            accounts.add(new AccountImpl(a));
+        }
+
+        this.childAccounts = accounts;
     }
 
     @Override

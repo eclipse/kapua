@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,28 +30,33 @@ public class TagImpl extends AbstractKapuaNamedEntity implements Tag {
 
     private static final long serialVersionUID = -3760818776351242930L;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     protected TagImpl() {
         super();
     }
 
     /**
      * Constructor.
-     * <p>
-     * Creates a soft clone.
-     *
-     * @param tag The {@link Tag} from which to create the new {@link Tag}.
-     * @throws KapuaException
-     */
-    public TagImpl(Tag tag) throws KapuaException {
-        super(tag);
-    }
-
-    /**
-     * Constructor.
      *
      * @param scopeId The scope {@link KapuaId}
+     * @since 1.0.0
      */
     public TagImpl(KapuaId scopeId) {
         super(scopeId);
+    }
+
+    /**
+     * Clone constructor.
+     *
+     * @param tag The {@link Tag} from which to create the new {@link Tag}.
+     * @throws KapuaException
+     * @since 1.0.0
+     */
+    public TagImpl(Tag tag) throws KapuaException {
+        super(tag);
     }
 }
