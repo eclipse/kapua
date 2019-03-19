@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,26 +15,28 @@ import org.eclipse.kapua.model.KapuaEntityFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
- * Account factory service definition.
+ * {@link AccountFactory} definition.
  *
- * @since 1.0
+ * @see org.eclipse.kapua.model.KapuaEntityFactory
+ * @since 1.0.0
  */
 public interface AccountFactory extends KapuaEntityFactory<Account, AccountCreator, AccountQuery, AccountListResult> {
 
     /**
-     * Creates a new {@link AccountCreator} for the specified name
+     * Instantiates a new {@link AccountCreator} with the given name.
      *
-     * @param scopeId
-     * @param name
-     * @return
+     * @param scopeId The scope {@link KapuaId} to set in the {@link AccountCreator}
+     * @param name    The name to set in the {@link AccountCreator}
+     * @return The newly instantiated {@link AccountCreator}
+     * @since 1.0.0
      */
     AccountCreator newCreator(KapuaId scopeId, String name);
 
     /**
-     * Creates a new organization entity
+     * Instantiates a new {@link Organization}.
      *
-     * @return
+     * @return The newly instantiated {@link Organization}.
+     * @since 1.0.0
      */
     Organization newOrganization();
-
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,10 +14,10 @@ package org.eclipse.kapua.service.authorization.access;
 import org.eclipse.kapua.model.KapuaEntityFactory;
 
 /**
- * {@link AccessRole} object factory.
- * 
- * @since 1.0.0
+ * {@link AccessRoleFactory} definition.
  *
+ * @see org.eclipse.kapua.model.KapuaEntityFactory
+ * @since 1.0.0
  */
 public interface AccessRoleFactory extends KapuaEntityFactory<AccessRole, AccessRoleCreator, AccessRoleQuery, AccessRoleListResult> {
 

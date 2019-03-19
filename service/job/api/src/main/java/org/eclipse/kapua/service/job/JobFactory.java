@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,13 +12,12 @@
 package org.eclipse.kapua.service.job;
 
 import org.eclipse.kapua.model.KapuaEntityFactory;
-import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory;
 
 /**
- * {@link JobStepDefinitionFactory} definition.
- * 
- * @since 1.0
- * 
+ * {@link JobFactory} definition.
+ *
+ * @see org.eclipse.kapua.model.KapuaEntityFactory
+ * @since 1.0.0
  */
 public interface JobFactory extends KapuaEntityFactory<Job, JobCreator, JobQuery, JobListResult> {
 

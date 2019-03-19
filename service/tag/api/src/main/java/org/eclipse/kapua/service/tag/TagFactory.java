@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,18 +15,19 @@ import org.eclipse.kapua.model.KapuaEntityFactory;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
- * {@link Tag} object factory.
+ * {@link TagFactory} definition.
  *
+ * @see org.eclipse.kapua.model.KapuaEntityFactory
  * @since 1.0.0
  */
 public interface TagFactory extends KapuaEntityFactory<Tag, TagCreator, TagQuery, TagListResult> {
 
     /**
-     * Instantiate a new {@link TagCreator} implementing object with the provided parameters.
+     * Instantiates a new {@link TagCreator}.
      *
-     * @param scopeId The scope id of the tag.
-     * @param name    The {@link Tag} name to set.
-     * @return A instance of the implementing class of {@link Tag}.
+     * @param scopeId The scope {@link KapuaId} to set into the {@link TagCreator}
+     * @param name    The name to set into the {@link TagCreator}.
+     * @return The newly instantiated {@link TagCreator}
      * @since 1.0.0
      */
     TagCreator newCreator(KapuaId scopeId, String name);
