@@ -14,6 +14,9 @@ package org.eclipse.kapua.commons.model;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.util.PropertiesUtils;
+import org.eclipse.kapua.entity.EntityPropertiesReadException;
+import org.eclipse.kapua.entity.EntityPropertiesWriteException;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -31,8 +34,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.Date;
 import java.util.Properties;
 
@@ -152,30 +153,20 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
     // -------------------------------------------------
 
     @Override
-    public Properties getEntityAttributes()
-            throws KapuaException {
-        Properties props = new Properties();
-        if (attributes != null) {
-            try {
-                props.load(new StringReader(attributes));
-            } catch (IOException e) {
-                throw KapuaException.internalError(e);
-            }
+    public Properties getEntityAttributes() {
+        try {
+            return PropertiesUtils.readPropertiesFromString(attributes);
+        } catch (IOException e) {
+            throw new EntityPropertiesReadException(e, "attributes", attributes);
         }
-        return props;
     }
 
     @Override
-    public void setEntityAttributes(Properties props)
-            throws KapuaException {
-        if (props != null) {
-            try {
-                StringWriter writer = new StringWriter();
-                props.store(writer, null);
-                attributes = writer.toString();
-            } catch (IOException e) {
-                throw KapuaException.internalError(e);
-            }
+    public void setEntityAttributes(Properties attribures) {
+        try {
+            this.attributes = PropertiesUtils.writePropertiesToString(attribures);
+        } catch (IOException e) {
+            throw new EntityPropertiesWriteException(e, "attributes", attribures);
         }
     }
 
@@ -186,30 +177,20 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
     // -------------------------------------------------
 
     @Override
-    public Properties getEntityProperties()
-            throws KapuaException {
-        Properties props = new Properties();
-        if (properties != null) {
-            try {
-                props.load(new StringReader(properties));
-            } catch (IOException e) {
-                throw KapuaException.internalError(e);
-            }
+    public Properties getEntityProperties() {
+        try {
+            return PropertiesUtils.readPropertiesFromString(properties);
+        } catch (IOException e) {
+            throw new EntityPropertiesReadException(e, "properties", properties);
         }
-        return props;
     }
 
     @Override
-    public void setEntityProperties(Properties props)
-            throws KapuaException {
-        if (props != null) {
-            try {
-                StringWriter writer = new StringWriter();
-                props.store(writer, null);
-                properties = writer.toString();
-            } catch (IOException e) {
-                throw KapuaException.internalError(e);
-            }
+    public void setEntityProperties(Properties properties) {
+        try {
+            this.properties = PropertiesUtils.writePropertiesToString(properties);
+        } catch (IOException e) {
+            throw new EntityPropertiesWriteException(e, "properties", properties);
         }
     }
 

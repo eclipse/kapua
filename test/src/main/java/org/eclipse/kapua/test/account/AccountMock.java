@@ -38,8 +38,7 @@ public class AccountMock implements Account {
 
     @Override
     public void setScopeId(KapuaId scopeId) {
-        // TODO Auto-generated method stub
-
+        this.scopeId = KapuaEid.parseKapuaId(scopeId);
     }
 
     @Override

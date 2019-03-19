@@ -134,7 +134,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             Account account = AccountDAO.create(em, accountCreator);
             em.persist(account);
 
-            w            // Set the parent account path
+            // Set the parent account path
             String parentAccountPath = AccountDAO.find(em, null, accountCreator.getScopeId()).getParentAccountPath() + "/" + account.getId();
             account.setParentAccountPath(parentAccountPath);
             return AccountDAO.update(em, account);

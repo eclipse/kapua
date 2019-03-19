@@ -12,6 +12,9 @@
 package org.eclipse.kapua;
 
 import org.eclipse.kapua.model.KapuaEntity;
+import org.eclipse.kapua.model.KapuaUpdatableEntity;
+
+import java.util.Properties;
 
 /**
  * Kapua runtime error codes
@@ -63,5 +66,19 @@ public enum KapuaRuntimeErrorCodes implements KapuaErrorCode {
      *
      * @since 1.1.0
      */
-    ENTITY_CLONE_ERROR
+    ENTITY_CLONE_ERROR,
+
+    /**
+     * Error while reading {@link java.util.Properties} from {@link KapuaUpdatableEntity#getEntityAttributes() or {@link KapuaUpdatableEntity#getEntityProperties()}
+     *
+     * @since 1.1.0
+     */
+    ENTITY_PROPERTIES_READ_ERROR,
+
+    /**
+     * Error while writing {@link java.util.Properties} to {@link KapuaUpdatableEntity#setEntityAttributes(Properties)} or {@link KapuaUpdatableEntity#setEntityProperties(Properties)}
+     *
+     * @since 1.1.0
+     */
+    ENTITY_PROPERTIES_WRITE_ERROR
 }

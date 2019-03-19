@@ -12,7 +12,8 @@
 package org.eclipse.kapua.model;
 
 import io.swagger.annotations.ApiModelProperty;
-import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.entity.EntityPropertiesReadException;
+import org.eclipse.kapua.entity.EntityPropertiesWriteException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
@@ -78,40 +79,36 @@ public interface KapuaUpdatableEntity extends KapuaEntity {
      * Gets the attributes
      *
      * @return the attributes
-     * @throws KapuaException
+     * @throws EntityPropertiesReadException If there are error while reading {@link Properties}
      */
     @XmlTransient
-    Properties getEntityAttributes()
-            throws KapuaException;
+    Properties getEntityAttributes() throws EntityPropertiesReadException;
 
     /**
      * Sets the attributes
      *
      * @param props the attributes
-     * @throws KapuaException
+     * @throws EntityPropertiesWriteException If there are error while writing {@link Properties}
      * @since 1.0.0
      */
-    void setEntityAttributes(Properties props)
-            throws KapuaException;
+    void setEntityAttributes(Properties props) throws EntityPropertiesWriteException;
 
     /**
      * Gets the property entities
      *
      * @return the property entities
-     * @throws KapuaException
+     * @throws EntityPropertiesReadException If there are error while reading {@link Properties}
      * @since 1.0.0
      */
     @XmlTransient
-    Properties getEntityProperties()
-            throws KapuaException;
+    Properties getEntityProperties() throws EntityPropertiesReadException;
 
     /**
      * Sets the property entities
      *
      * @param props the property entities
-     * @throws KapuaException
+     * @throws EntityPropertiesWriteException If there are error while writing {@link Properties}
      * @since 1.0.0
      */
-    void setEntityProperties(Properties props)
-            throws KapuaException;
+    void setEntityProperties(Properties props) throws EntityPropertiesWriteException;
 }

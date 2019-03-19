@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.Properties;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
+import org.eclipse.kapua.commons.util.PropertiesUtils;
+import org.eclipse.kapua.model.id.KapuaId;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -26,21 +26,18 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
-import org.eclipse.kapua.model.id.KapuaId;
+import java.io.IOException;
+import java.util.Properties;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "pid", "scopeId", "id", "name", "createdOn", "createdBy", "modifiedOn", "modifiedBy", "optlock" })
+@XmlType(propOrder = {"pid", "configurations"})
 @Entity(name = "ServiceConfig")
 @Table(name = "sys_configuration")
 /**
- * Service configuration reference implementation.
- * 
- * @since 1.0
- * 
+ * {@link ServiceConfig} implementation.
+ *
+ * @since 1.0.0
  */
 public class ServiceConfigImpl extends AbstractKapuaUpdatableEntity implements ServiceConfig {
 
@@ -57,16 +54,19 @@ public class ServiceConfigImpl extends AbstractKapuaUpdatableEntity implements S
     protected String configurations;
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public ServiceConfigImpl() {
         super();
     }
 
     /**
-     * Constructor
-     * 
-     * @param scopeId
+     * Constructor.
+     *
+     * @param scopeId The scope {@link KapuaId} to set into the {@link ServiceConfig}
+     * @since 1.0.0
      */
     public ServiceConfigImpl(KapuaId scopeId) {
         super(scopeId);
@@ -83,30 +83,20 @@ public class ServiceConfigImpl extends AbstractKapuaUpdatableEntity implements S
     }
 
     @Override
-    public Properties getConfigurations()
-            throws KapuaException {
-        Properties props = new Properties();
-        if (configurations != null) {
-            try {
-                props.load(new StringReader(configurations));
-            } catch (IOException e) {
-                throw KapuaException.internalError(e);
-            }
+    public Properties getConfigurations() throws KapuaException {
+        try {
+            return PropertiesUtils.readPropertiesFromString(configurations);
+        } catch (IOException e) {
+            throw KapuaException.internalError(e);
         }
-        return props;
     }
 
     @Override
-    public void setConfigurations(Properties props)
-            throws KapuaException {
-        if (props != null) {
-            try {
-                StringWriter writer = new StringWriter();
-                props.store(writer, null);
-                configurations = writer.toString();
-            } catch (IOException e) {
-                throw KapuaException.internalError(e);
-            }
+    public void setConfigurations(Properties properties) throws KapuaException {
+        try {
+            configurations = PropertiesUtils.writePropertiesToString(properties);
+        } catch (IOException e) {
+            throw KapuaException.internalError(e);
         }
     }
 }
