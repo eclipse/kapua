@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -26,16 +26,17 @@ import java.util.Set;
 public class DeviceMock implements Device {
 
     private static final long serialVersionUID = -7521204246371846263L;
+
     private static long longId = 1;
+
     private KapuaEid id;
     private KapuaId scopeId;
     private String clientId;
 
     public DeviceMock(KapuaId scopeId, String clientId) {
-        this.id = new KapuaEid(BigInteger.valueOf(longId++));
-
-        this.scopeId = scopeId;
-        this.clientId = clientId;
+        setId(new KapuaEid(BigInteger.valueOf(longId++)));
+        setScopeId(scopeId);
+        setClientId(clientId);
     }
 
     @Override
@@ -45,7 +46,7 @@ public class DeviceMock implements Device {
 
     @Override
     public void setId(KapuaId id) {
-        this.id = (KapuaEid) id;
+        this.id = KapuaEid.parseKapuaId(id);
     }
 
     @Override

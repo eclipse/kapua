@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -26,19 +26,35 @@ public class AccountMock implements Account {
     private static final long serialVersionUID = 2950823934061491685L;
 
     private static long longId = 1;
+
     private KapuaId id;
     private KapuaId scopeId;
     private String name;
 
     public AccountMock(KapuaId scopeId, String name) {
-        this.id = new KapuaEid(BigInteger.valueOf(longId++));
-        this.scopeId = scopeId;
-        this.name = name;
+        setId(new KapuaEid(BigInteger.valueOf(longId++)));
+        setScopeId(scopeId);
+        setName(name);
+    }
+
+    @Override
+    public KapuaId getId() {
+        return this.id;
+    }
+
+    @Override
+    public void setId(KapuaId id) {
+        this.id = KapuaEid.parseKapuaId(id);
     }
 
     @Override
     public void setScopeId(KapuaId scopeId) {
         this.scopeId = KapuaEid.parseKapuaId(scopeId);
+    }
+
+    @Override
+    public KapuaId getScopeId() {
+        return this.scopeId;
     }
 
     @Override
@@ -53,111 +69,96 @@ public class AccountMock implements Account {
 
     @Override
     public String getDescription() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setDescription(String description) {
-        // Not used
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Date getModifiedOn() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public KapuaId getModifiedBy() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public int getOptlock() {
-        return 0;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setOptlock(int optlock) {
-        // Not used
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Properties getEntityAttributes() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setEntityAttributes(Properties props) {
-        // Not used
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Properties getEntityProperties() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setEntityProperties(Properties props) {
-        // Not used
-    }
-
-    @Override
-    public KapuaId getId() {
-        return this.id;
-    }
-
-    @Override
-    public void setId(KapuaId id) {
-        // Not used
-    }
-
-    @Override
-    public KapuaId getScopeId() {
-        return this.scopeId;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Date getCreatedOn() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public KapuaId getCreatedBy() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Organization getOrganization() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setOrganization(Organization organization) {
-        // Not used
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public String getParentAccountPath() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setParentAccountPath(String parentAccountPath) {
-        // Not used
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<Account> getChildAccounts() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Date getExpirationDate() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setExpirationDate(Date expirationDate) {
-        // Not used
+        throw new UnsupportedOperationException();
     }
 }

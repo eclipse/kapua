@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,14 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.test.user;
 
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.locator.guice.TestService;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
@@ -29,6 +23,10 @@ import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserService;
+
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 
 @TestService
 @KapuaProvider
@@ -44,26 +42,25 @@ public class UserServiceMock implements UserService {
     }
 
     @Override
-    public long count(KapuaQuery<User> query)
-            throws KapuaException {
+    public long count(KapuaQuery<User> query) throws KapuaException {
         throw KapuaException.internalError("Not implemented");
     }
 
     @Override
-    public User create(UserCreator userCreator)
-            throws KapuaException {
-        // TODO Auto-generated method stub
+    public User create(UserCreator userCreator) throws KapuaException {
         UserMock user = new UserMock(userCreator.getScopeId(), userCreator.getName());
+
         user.setDisplayName(userCreator.getDisplayName());
         user.setEmail(userCreator.getEmail());
         user.setPhoneNumber(userCreator.getPhoneNumber());
+
         users.put(user.getId(), user);
+
         return user;
     }
 
     @Override
-    public User update(User user)
-            throws KapuaException {
+    public User update(User user) throws KapuaException {
         if (!users.containsKey(user.getId())) {
             throw KapuaException.internalError("User not found");
         }
@@ -72,6 +69,7 @@ public class UserServiceMock implements UserService {
         user.setDisplayName(user.getDisplayName());
         user.setEmail(user.getEmail());
         user.setPhoneNumber(user.getPhoneNumber());
+
         return userMock;
     }
 
@@ -85,8 +83,7 @@ public class UserServiceMock implements UserService {
     }
 
     @Override
-    public void delete(User user)
-            throws KapuaException {
+    public void delete(User user) throws KapuaException {
         if (!users.containsKey(user.getId())) {
             throw KapuaException.internalError("User not found");
         }
@@ -95,8 +92,7 @@ public class UserServiceMock implements UserService {
     }
 
     @Override
-    public User find(KapuaId accountId, KapuaId userId)
-            throws KapuaException {
+    public User find(KapuaId accountId, KapuaId userId) throws KapuaException {
         if (!users.containsKey(userId)) {
             throw KapuaException.internalError("User not found");
         }
@@ -105,53 +101,38 @@ public class UserServiceMock implements UserService {
     }
 
     @Override
-    public User findByName(String name)
-            throws KapuaException {
-        Iterator<UserMock> userMocks = users.values().iterator();
-        while (userMocks.hasNext()) {
-            UserMock userMock = userMocks.next();
+    public User findByName(String name) throws KapuaException {
+        for (UserMock userMock : users.values()) {
             if (userMock.getName() != null && userMock.getName().equals(name)) {
                 return userMock;
             }
         }
+
         throw KapuaException.internalError("User not found");
     }
 
     @Override
-    public User findByExternalId(String externalId) throws KapuaException {
-        return null;
+    public User findByExternalId(String externalId) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public UserListResult query(KapuaQuery<User> query)
-            throws KapuaException {
-        throw KapuaException.internalError("Not implemented");
+    public UserListResult query(KapuaQuery<User> query) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public KapuaTocd getConfigMetadata(KapuaId scopeId)
-            throws KapuaException {
-        // TODO Auto-generated method stub
-        return null;
+    public KapuaTocd getConfigMetadata(KapuaId scopeId) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public Map<String, Object> getConfigValues(KapuaId scopeId)
-            throws KapuaException {
-        // TODO Auto-generated method stub
-        return null;
+    public Map<String, Object> getConfigValues(KapuaId scopeId) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values)
-            throws KapuaException {
-        // TODO Auto-generated method stub
-
+    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) {
+        throw new UnsupportedOperationException();
     }
-
-    public void onKapuaEvent(ServiceEvent kapuaEvent) throws KapuaException {
-        // TODO Auto-generated method stub
-
-    }
-
 }
