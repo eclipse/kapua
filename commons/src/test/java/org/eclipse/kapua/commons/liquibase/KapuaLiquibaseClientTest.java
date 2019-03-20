@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Red Hat Inc and others.
+ * Copyright (c) 2017, 2019 Red Hat Inc and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,10 +31,12 @@ import org.junit.experimental.categories.Category;
 public class KapuaLiquibaseClientTest {
 
     private Connection connection;
+    private static final String JDBC_URL = "jdbc:h2:mem:kapua;MODE=MySQL";
 
     @Before
     public void start() throws SQLException {
-        connection = DriverManager.getConnection("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua");
+        connection = DriverManager.getConnection(JDBC_URL, "kapua", "kapua");
+        dropAllTables();
     }
 
     @After
@@ -50,10 +52,9 @@ public class KapuaLiquibaseClientTest {
         System.setProperty("LIQUIBASE_ENABLED", "true");
 
         // When
-        new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
+        new KapuaLiquibaseClient(JDBC_URL, "kapua", "kapua").update();
 
         // Then
-        Connection connection = DriverManager.getConnection("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua");
         ResultSet sqlResults = connection.prepareStatement("SHOW TABLES").executeQuery();
         List<String> tables = new LinkedList<>();
         while (sqlResults.next()) {
@@ -68,11 +69,10 @@ public class KapuaLiquibaseClientTest {
         System.setProperty("LIQUIBASE_ENABLED", "true");
 
         // When
-        new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
-        new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
+        new KapuaLiquibaseClient(JDBC_URL, "kapua", "kapua").update();
+        new KapuaLiquibaseClient(JDBC_URL, "kapua", "kapua").update();
 
         // Then
-        Connection connection = DriverManager.getConnection("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua");
         ResultSet sqlResults = connection.prepareStatement("SHOW TABLES").executeQuery();
         List<String> tables = new LinkedList<>();
         while (sqlResults.next()) {
@@ -84,12 +84,11 @@ public class KapuaLiquibaseClientTest {
     @Test
     public void shouldSkipDatabaseUpdate() throws Exception {
         // Given
-        Connection connection = DriverManager.getConnection("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua");
         connection.prepareStatement("DROP TABLE IF EXISTS DATABASECHANGELOG").execute();
         System.setProperty("LIQUIBASE_ENABLED", "false");
 
         // When
-        new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua").update();
+        new KapuaLiquibaseClient(JDBC_URL, "kapua", "kapua").update();
 
         // Then
         ResultSet sqlResults = connection.prepareStatement("SHOW TABLES").executeQuery();
@@ -103,11 +102,26 @@ public class KapuaLiquibaseClientTest {
 
         // When
         try {
-            new KapuaLiquibaseClient("jdbc:h2:mem:kapua;MODE=MySQL", "kapua", "kapua", Optional.of("foo")).update();
+            new KapuaLiquibaseClient(JDBC_URL, "kapua", "kapua", Optional.of("foo")).update();
         } catch (Exception e) {
             // Then
             Assertions.assertThat(e).hasMessageContaining("Schema \"FOO\" not found");
             throw e;
+        }
+    }
+
+    // *******************
+    // * Private Helpers *
+    // *******************
+
+    private void dropAllTables() throws SQLException {
+
+        String[] types = {"TABLE"};
+        ResultSet sqlResults = connection.getMetaData().getTables(null, null, "%" , types);
+
+        while(sqlResults.next()) {
+            String sqlStatement = String.format("DROP TABLE IF EXISTS %s", sqlResults.getString("TABLE_NAME").toUpperCase());
+            connection.prepareStatement(sqlStatement).execute();
         }
     }
 
