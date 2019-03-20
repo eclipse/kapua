@@ -86,32 +86,32 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      * @param modemIccid
      */
     public AbstractKuraAppsBirthPayload(String uptime,
-            String displayName,
-            String modelName,
-            String modelId,
-            String partNumber,
-            String serialNumber,
-            String firmwareVersion,
-            String biosVersion,
-            String os,
-            String osVersion,
-            String jvmName,
-            String jvmVersion,
-            String jvmProfile,
-            String applicationFramework,
-            String applicationFrameworkVersion,
-            String connectionInterface,
-            String connectionIp,
-            String acceptEncoding,
-            String applicationIdentifiers,
-            String availableProcessors,
-            String totalMemory,
-            String osArch,
-            String osgiFramework,
-            String osgiFrameworkVersion,
-            String modemImei,
-            String modemImsi,
-            String modemIccid) {
+                                        String displayName,
+                                        String modelName,
+                                        String modelId,
+                                        String partNumber,
+                                        String serialNumber,
+                                        String firmwareVersion,
+                                        String biosVersion,
+                                        String os,
+                                        String osVersion,
+                                        String jvmName,
+                                        String jvmVersion,
+                                        String jvmProfile,
+                                        String applicationFramework,
+                                        String applicationFrameworkVersion,
+                                        String connectionInterface,
+                                        String connectionIp,
+                                        String acceptEncoding,
+                                        String applicationIdentifiers,
+                                        String availableProcessors,
+                                        String totalMemory,
+                                        String osArch,
+                                        String osgiFramework,
+                                        String osgiFrameworkVersion,
+                                        String modemImei,
+                                        String modemImsi,
+                                        String modemIccid) {
         super();
 
         if (uptime != null) {
@@ -279,7 +279,7 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
     }
 
     /**
-     * Get the biuos version
+     * Get the bios version
      *
      * @return
      */
@@ -468,43 +468,5 @@ public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceL
      */
     public String getModemIccid() {
         return (String) getMetrics().get(MODEM_ICCID);
-    }
-
-    /**
-     * Returns a displayable representation string
-     *
-     * @return
-     */
-    public String toDisplayString() {
-        return new StringBuilder()
-                .append("[ getUptime()=").append(getUptime())
-                .append(", getDisplayName()=").append(getDisplayName())
-                .append(", getModelName()=").append(getModelName())
-                .append(", getModelId()=").append(getModelId())
-                .append(", getPartNumber()=").append(getPartNumber())
-                .append(", getSerialNumber()=").append(getSerialNumber())
-                .append(", getFirmwareVersion()=").append(getFirmwareVersion())
-                .append(", getBiosVersion()=").append(getBiosVersion())
-                .append(", getOs()=").append(getOs())
-                .append(", getOsVersion()=").append(getOsVersion())
-                .append(", getJvmName()=").append(getJvm())
-                .append(", getJvmVersion()=").append(getJvmVersion())
-                .append(", getJvmProfile()=").append(getJvmProfile())
-                .append(", getOsgiFramework()=").append(getContainerFramework())
-                .append(", getOsgiFrameworkVersion()=").append(getContainerFrameworkVersion())
-                .append(", getApplicationFramework()=").append(getApplicationFramework())
-                .append(", getApplicationFrameworkVersion()=").append(getApplicationFrameworkVersion())
-                .append(", getConnectionInterface()=").append(getConnectionInterface())
-                .append(", getConnectionIp()=").append(getConnectionIp())
-                .append(", getAcceptEncoding()=").append(getAcceptEncoding())
-                .append(", getApplicationIdentifiers()=").append(getApplicationIdentifiers())
-                .append(", getAvailableProcessors()=").append(getAvailableProcessors())
-                .append(", getTotalMemory()=").append(getTotalMemory())
-                .append(", getOsArch()=").append(getOsArch())
-                .append(", getModemImei()=").append(getModemImei())
-                .append(", getModemImsi()=").append(getModemImsi())
-                .append(", getModemIccid()=").append(getModemIccid())
-                .append("]")
-                .toString();
     }
 }

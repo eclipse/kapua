@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,12 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
-import java.util.List;
-
 import org.eclipse.kapua.message.KapuaChannel;
 
+import java.util.List;
+
 /**
- * Kapua message channel object reference implementation.
+ * {@link KapuaChannel} implementation.
+ *
+ * @since 1.0.0
  */
 public class KapuaChannelImpl implements KapuaChannel {
 
@@ -35,10 +37,7 @@ public class KapuaChannelImpl implements KapuaChannel {
 
     @Override
     public String toString() {
-        if (semanticParts == null) {
-            return "";
-        }
-        return String.join("/", semanticParts);
+        return semanticParts != null ? String.join("/", semanticParts) : "";
     }
 
 }

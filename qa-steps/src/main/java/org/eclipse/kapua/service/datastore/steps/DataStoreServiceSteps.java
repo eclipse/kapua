@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,13 +27,12 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.KapuaPosition;
+import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
+import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
-import org.eclipse.kapua.message.internal.KapuaPositionImpl;
-import org.eclipse.kapua.message.internal.device.data.KapuaDataChannelImpl;
-import org.eclipse.kapua.message.internal.device.data.KapuaDataMessageImpl;
-import org.eclipse.kapua.message.internal.device.data.KapuaDataPayloadImpl;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.StepData;
 import org.eclipse.kapua.service.account.Account;
@@ -116,7 +115,7 @@ import java.util.stream.Collectors;
 @ScenarioScoped
 public class DataStoreServiceSteps extends AbstractKapuaSteps {
 
-    private static final Logger logger = LoggerFactory.getLogger(DataStoreServiceSteps.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DataStoreServiceSteps.class);
 
     private AccountService accountService;
 
@@ -141,7 +140,8 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
-    private static final MessageStoreService MESSAGE_STORE_SERVICE = LOCATOR.getService(MessageStoreService.class);
+    private static final KapuaMessageFactory KAPUA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaMessageFactory.class);
+    private static final KapuaDataMessageFactory KAPUA_DATA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaDataMessageFactory.class);
 
     @Inject
     public DataStoreServiceSteps(StepData stepData) {
@@ -150,7 +150,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
     }
 
     @Before
-    public void beforeScenario(Scenario scenario) throws Exception {
+    public void beforeScenario(Scenario scenario) {
 
         // Get instance of services used in different scenarios
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -175,11 +175,11 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
 
         try {
             deleteAllIndices();
-            logger.info("Logging out in cleanup");
+            LOG.info("Logging out in cleanup");
             SecurityUtils.getSubject().logout();
             KapuaSecurityUtils.clearSession();
         } catch (Exception e) {
-            logger.error("Failed to log out in @After", e);
+            LOG.error("Failed to log out in @After", e);
         }
     }
 
@@ -262,30 +262,30 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         List<KapuaDataMessage> tmpMsgLst = (List<KapuaDataMessage>) stepData.get(lstKey);
         KapuaDataMessage tmpMsg = tmpMsgLst.get(idx);
 
-        tmpMsg.setPayload(new KapuaDataPayloadImpl());
+        tmpMsg.setPayload(KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataPayload());
 
         for (TestMetric tmpMet : metLst) {
             switch (tmpMet.getType().trim().toLowerCase()) {
-            case "string": {
-                tmpMsg.getPayload().getMetrics().put(tmpMet.getMetric(), tmpMet.getValue());
-                break;
-            }
-            case "int": {
-                tmpMsg.getPayload().getMetrics().put(tmpMet.getMetric(), Integer.valueOf(tmpMet.getValue()));
-                break;
-            }
-            case "double": {
-                tmpMsg.getPayload().getMetrics().put(tmpMet.getMetric(), Double.valueOf(tmpMet.getValue()));
-                break;
-            }
-            case "bool": {
-                tmpMsg.getPayload().getMetrics().put(tmpMet.getMetric(), Boolean.valueOf(tmpMet.getValue().trim().toUpperCase()));
-                break;
-            }
-            default: {
-                fail(String.format("Unknown metric type [%s]", tmpMet.getType()));
-                break;
-            }
+                case "string": {
+                    tmpMsg.getPayload().getMetrics().put(tmpMet.getMetric(), tmpMet.getValue());
+                    break;
+                }
+                case "int": {
+                    tmpMsg.getPayload().getMetrics().put(tmpMet.getMetric(), Integer.valueOf(tmpMet.getValue()));
+                    break;
+                }
+                case "double": {
+                    tmpMsg.getPayload().getMetrics().put(tmpMet.getMetric(), Double.valueOf(tmpMet.getValue()));
+                    break;
+                }
+                case "bool": {
+                    tmpMsg.getPayload().getMetrics().put(tmpMet.getMetric(), Boolean.valueOf(tmpMet.getValue().trim().toUpperCase()));
+                    break;
+                }
+                default: {
+                    fail(String.format("Unknown metric type [%s]", tmpMet.getType()));
+                    break;
+                }
             }
         }
     }
@@ -326,31 +326,31 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         Device tmpDev;
         Date sentOn, capturedOn;
 
-        String[] metrics = new String[] {
+        String[] metrics = new String[]{
                 "m_order_metric1",
                 "m_order_metric2",
                 "m_order_metric3",
                 "m_order_metric4",
                 "m_order_metric5",
-                "m_order_metric6" };
-        String[] metricsValuesString = new String[] {
+                "m_order_metric6"};
+        String[] metricsValuesString = new String[]{
                 "string_metric_1",
                 "string_metric_2",
                 "string_metric_3",
                 "string_metric_4",
                 "string_metric_5",
-                "string_metric_6" };
-        Date[] metricsValuesDate = new Date[] {
+                "string_metric_6"};
+        Date[] metricsValuesDate = new Date[]{
                 new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:01 01/01/2017").getTime()),
                 new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:02 01/01/2017").getTime()),
                 new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:03 01/01/2017").getTime()),
                 new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:04 01/01/2017").getTime()),
                 new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:05 01/01/2017").getTime()),
-                new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:06 01/01/2017").getTime()) };
-        int[] metricsValuesInt = new int[] { 10, 20, 30, 40, 50, 60 };
-        float[] metricsValuesFloat = new float[] { 0.002f, 10.12f, 20.22f, 33.33f, 44.44f, 55.66f };
-        double[] metricsValuesDouble = new double[] { 1.002d, 11.12d, 21.22d, 34.33d, 45.44d, 56.66d };
-        boolean[] metricsValuesBoolean = new boolean[] { true, true, false, true, false, false };
+                new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:06 01/01/2017").getTime())};
+        int[] metricsValuesInt = new int[]{10, 20, 30, 40, 50, 60};
+        float[] metricsValuesFloat = new float[]{0.002f, 10.12f, 20.22f, 33.33f, 44.44f, 55.66f};
+        double[] metricsValuesDouble = new double[]{1.002d, 11.12d, 21.22d, 34.33d, 45.44d, 56.66d};
+        boolean[] metricsValuesBoolean = new boolean[]{true, true, false, true, false, false};
 
         for (int i = 0; i < number; i++) {
             if (i < number / 4) {
@@ -1372,7 +1372,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
 
     private KapuaDataPayload createRandomTestPayload() throws Exception {
 
-        KapuaDataPayloadImpl tmpTestPayload = new KapuaDataPayloadImpl();
+        KapuaDataPayload tmpTestPayload = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataPayload();
 
         byte[] randomPayload = new byte[128];
         random.nextBytes(randomPayload);
@@ -1413,7 +1413,8 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
 
     private KapuaPosition createRandomTestPosition(Date timeStamp) {
 
-        KapuaPositionImpl tmpPosition = new KapuaPositionImpl();
+        KapuaPosition tmpPosition = KAPUA_MESSAGE_FACTORY.newPosition();
+
         tmpPosition.setAltitude(20000.0 * random.nextDouble()); // 0 .. 20000
         tmpPosition.setHeading(360.0 * random.nextDouble()); // 0 .. 360
         tmpPosition.setLatitude(180.0 * (random.nextDouble() - 0.5)); // -90 .. 90
@@ -1432,7 +1433,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
 
         String tmpTopic = (topic != null) ? topic : "default/test/topic";
         String tmpClientId = (clientId != null) ? clientId : ((Device) stepData.get("LastDevice")).getClientId();
-        KapuaDataMessageImpl tmpMessage = new KapuaDataMessageImpl();
+        KapuaDataMessage tmpMessage = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataMessage();
 
         Date tmpRecDate = new Date();
         Calendar tmpCal = Calendar.getInstance();
@@ -1451,7 +1452,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
         tmpMessage.setDeviceId(deviceId);
         tmpMessage.setScopeId(scopeId);
 
-        final KapuaDataChannelImpl tmpChannel = new KapuaDataChannelImpl();
+        KapuaDataChannel tmpChannel = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataChannel();
         tmpChannel.setSemanticParts(new ArrayList<>(Arrays.asList(tmpTopic.split("/"))));
         tmpMessage.setChannel(tmpChannel);
 
@@ -1972,8 +1973,7 @@ public class DataStoreServiceSteps extends AbstractKapuaSteps {
      * @param storageEnabled
      * @throws KapuaException
      */
-    private void updateConfiguration(MessageStoreService messageStoreService, KapuaId scopeId, KapuaId parentId, DataIndexBy dataIndexBy, MetricsIndexBy metricsIndexBy, int dataTTL,
-            boolean storageEnabled)
+    private void updateConfiguration(MessageStoreService messageStoreService, KapuaId scopeId, KapuaId parentId, DataIndexBy dataIndexBy, MetricsIndexBy metricsIndexBy, int dataTTL, boolean storageEnabled)
             throws KapuaException {
 
         Map<String, Object> config = messageStoreService.getConfigValues(scopeId);

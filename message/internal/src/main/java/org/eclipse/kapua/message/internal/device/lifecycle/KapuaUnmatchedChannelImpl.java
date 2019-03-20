@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,33 +12,19 @@
 package org.eclipse.kapua.message.internal.device.lifecycle;
 
 import org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedChannel;
-import org.eclipse.kapua.message.internal.KapuaChannelImpl;
 
 /**
- * Kapua unmatched message channel object reference implementation.
- * 
- * @since 1.0
+ * {@link KapuaUnmatchedChannel} implementation.
  *
+ * @since 1.0.0
  */
-public class KapuaUnmatchedChannelImpl extends KapuaChannelImpl implements KapuaUnmatchedChannel {
-
-    private String clientId;
-
-    @Override
-    public String getClientId() {
-        return clientId;
-    }
-
-    @Override
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
-    }
+public class KapuaUnmatchedChannelImpl extends AbstractLifecycleChannelImpl implements KapuaUnmatchedChannel {
 
     @Override
     public String toString() {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("Client id '");
-        strBuilder.append(clientId);
+        strBuilder.append(getClientId());
         strBuilder.append("' - semantic topic '");
         strBuilder.append(super.toString());
         strBuilder.append("'");

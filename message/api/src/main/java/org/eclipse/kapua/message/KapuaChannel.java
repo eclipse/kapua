@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,32 +21,36 @@ import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
 /**
- * Kapua message channel object definition.
+ * {@link KapuaChannel} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlRootElement(name = "channel")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { //
-        "semanticParts" //
-}, factoryClass = MessageXmlRegistry.class, factoryMethod = "newKapuaChannel") //
+@XmlType(propOrder = {"semanticParts"}, factoryClass = MessageXmlRegistry.class, factoryMethod = "newKapuaChannel")
 public interface KapuaChannel extends Channel {
 
     /**
      * Get the channel destination semantic part
      *
      * @return
+     * @since 1.0.0
      */
-    public List<String> getSemanticParts();
+    List<String> getSemanticParts();
 
     /**
      * Set the channel destination semantic part
      *
      * @param semanticParts
+     * @since 1.0.0
      */
-    public void setSemanticParts(List<String> semanticParts);
+    void setSemanticParts(List<String> semanticParts);
 
-    public default String toPathString() {
+    /**
+     * @return
+     * @since 1.0.0
+     */
+    default String toPathString() {
         return String.join("/", getSemanticParts());
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,10 +15,9 @@ import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
 
 /**
- * Kapua data message payload object reference implementation.
- * 
- * @since 1.0
+ * {@link KapuaDataPayload} implementation.
  *
+ * @since 1.0.0
  */
 public class KapuaDataPayloadImpl extends KapuaPayloadImpl implements KapuaDataPayload {
 

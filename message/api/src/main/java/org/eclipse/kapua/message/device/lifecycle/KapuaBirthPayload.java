@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,217 +11,243 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.device.lifecycle;
 
-import org.eclipse.kapua.message.KapuaPayload;
-
 /**
- * Kapua data message payload object definition.
- * 
- * @since 1.0
+ * {@link KapuaBirthPayload} definition.
  *
+ * @since 1.0.0
  */
-public interface KapuaBirthPayload extends KapuaPayload {
+public interface KapuaBirthPayload extends KapuaLifecyclePayload {
 
     /**
-     * Get the device uptime
-     * 
-     * @return
+     * Gets the uptime.
+     *
+     * @return The uptime.
+     * @since 1.0.0
      */
-    public String getUptime();
+    String getUptime();
 
     /**
-     * Get the device display name
-     * 
-     * @return
+     * Gets the display name.
+     *
+     * @return The display name.
+     * @since 1.0.0
      */
-    public String getDisplayName();
+    String getDisplayName();
 
     /**
-     * Get the model name
-     * 
-     * @return
+     * Gets the model name.
+     *
+     * @return The model name.
+     * @since 1.0.0
      */
-    public String getModelName();
+    String getModelName();
 
     /**
-     * Get the model identifier
-     * 
-     * @return
+     * Gets the model identifier.
+     *
+     * @return The model identifier.
+     * @since 1.0.0
      */
-    public String getModelId();
+    String getModelId();
 
     /**
-     * Get the part number
-     * 
-     * @return
+     * Gets the part number.
+     *
+     * @return The part number.
+     * @since 1.0.0
      */
-    public String getPartNumber();
+    String getPartNumber();
 
     /**
-     * Get the serial number
-     * 
-     * @return
+     * Gets the serial number.
+     *
+     * @return The serial number.
+     * @since 1.0.0
      */
-    public String getSerialNumber();
+    String getSerialNumber();
 
     /**
-     * Get the firmware
-     * 
-     * @return
+     * Gets the firmware name.
+     *
+     * @return The firmware name.
+     * @since 1.0.0
      */
-    public String getFirmware();
+    String getFirmware();
 
     /**
-     * Get the firmware version
-     * 
-     * @return
+     * Gets the firmware version.
+     *
+     * @return The firmware version.
+     * @since 1.0.0
      */
-    public String getFirmwareVersion();
+    String getFirmwareVersion();
 
     /**
-     * Get the bios
-     * 
-     * @return
+     * Gets the bios name
+     *
+     * @return The bios name.
+     * @since 1.0.0
      */
-    public String getBios();
+    String getBios();
 
     /**
-     * Get the biuos version
-     * 
-     * @return
+     * Gets the bios version.
+     *
+     * @return The bios version.
+     * @since 1.0.0
      */
-    public String getBiosVersion();
+    String getBiosVersion();
 
     /**
-     * Get the operating system
-     * 
-     * @return
+     * Gets the operating system name.
+     *
+     * @return The operating system name.
+     * @since 1.0.0
      */
-    public String getOs();
+    String getOs();
 
     /**
-     * Get the operating system version
-     * 
-     * @return
+     * Gets the operating system version.
+     *
+     * @return The operating system version.
+     * @since 1.0.0
      */
-    public String getOsVersion();
+    String getOsVersion();
 
     /**
-     * Get the java virtual machine
-     * 
-     * @return
+     * Gets the java virtual machine name/vendor.
+     *
+     * @return The java virtual machine name/vendor.
+     * @since 1.0.0
      */
-    public String getJvm();
+    String getJvm();
 
     /**
-     * Get the java virtual machine version
-     * 
-     * @return
+     * Gets the java virtual machine version.
+     *
+     * @return The java virtual machine version.
+     * @since 1.0.0
      */
-    public String getJvmVersion();
+    String getJvmVersion();
 
     /**
-     * Get the java virtual machine profile
-     * 
-     * @return
+     * Gets the java virtual machine profile.
+     *
+     * @return The java virtual machine profile.
+     * @since 1.0.0
      */
-    public String getJvmProfile();
+    String getJvmProfile();
 
     /**
-     * Get the container framework
-     * 
-     * @return
+     * Gets the container framework name.
+     *
+     * @return The container framework name.
+     * @since 1.0.0
      */
-    public String getContainerFramework();
+    String getContainerFramework();
 
     /**
-     * Get the container framework version
-     * 
-     * @return
+     * Gets the container framework version.
+     *
+     * @return The container framework version.
+     * @since 1.0.0
      */
-    public String getContainerFrameworkVersion();
+    String getContainerFrameworkVersion();
 
     /**
-     * Get the application framework
-     * 
-     * @return
+     * Gets the application framework name.
+     *
+     * @return The application framework name.
+     * @since 1.0.0
      */
-    public String getApplicationFramework();
+    String getApplicationFramework();
 
     /**
-     * Get the application framework version
-     * 
-     * @return
+     * Gets the application framework version
+     *
+     * @return The application framework version
+     * @since 1.0.0
      */
-    public String getApplicationFrameworkVersion();
+    String getApplicationFrameworkVersion();
 
     /**
-     * Get connection interface
-     * 
-     * @return
+     * Gets the connection interface.
+     *
+     * @return The connection interface.
+     * @since 1.0.0
      */
-    public String getConnectionInterface();
+    String getConnectionInterface();
 
     /**
-     * Get the connection interface ip
-     * 
-     * @return
+     * Gets the connection interface ip.
+     *
+     * @return The connection interface ip.
+     * @since 1.0.0
      */
-    public String getConnectionIp();
+    String getConnectionIp();
 
     /**
-     * Get accept encoding
-     * 
-     * @return
+     * Gets the accepted encoding.
+     *
+     * @return The accepted encoding.
+     * @since 1.0.0
      */
-    public String getAcceptEncoding();
+    String getAcceptEncoding();
 
     /**
-     * Get application identifiers
-     * 
-     * @return
+     * Gets the application identifiers.
+     *
+     * @return The application identifiers.
+     * @since 1.0.0
      */
-    public String getApplicationIdentifiers();
+    String getApplicationIdentifiers();
 
     /**
-     * Get available processor
-     * 
-     * @return
+     * Gets the available processors.
+     *
+     * @return The available processors.
+     * @since 1.0.0
      */
-    public String getAvailableProcessors();
+    String getAvailableProcessors();
 
     /**
-     * Get total memory
-     * 
-     * @return
+     * Gets the total memory.
+     *
+     * @return The total memory.
+     * @since 1.0.0
      */
-    public String getTotalMemory();
+    String getTotalMemory();
 
     /**
-     * Get operating system architecture
-     * 
-     * @return
+     * Gets the operating system architecture.
+     *
+     * @return The operating system architecture.
+     * @since 1.0.0
      */
-    public String getOsArch();
+    String getOsArch();
 
     /**
-     * Get modem imei
-     * 
-     * @return
+     * Gets the modem IMEI.
+     *
+     * @return The modem IMEI.
+     * @since 1.0.0
      */
-    public String getModemImei();
+    String getModemImei();
 
     /**
-     * Get modem imsi
-     * 
-     * @return
+     * Gets the modem IMSI.
+     *
+     * @return The modem IMSI.
+     * @since 1.0.0
      */
-    public String getModemImsi();
+    String getModemImsi();
 
     /**
-     * Get modem iccid
-     * 
-     * @return
+     * Gets the modem ICCID.
+     *
+     * @return The modem ICCID.
+     * @since 1.0.0
      */
-    public String getModemIccid();
+    String getModemIccid();
 
 }

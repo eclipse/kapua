@@ -15,7 +15,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
-
 import org.eclipse.kapua.app.api.resources.v1.resources.marker.JsonSerializationFixed;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.DateParam;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.MetricType;
@@ -25,13 +24,13 @@ import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonDatastore
 import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonKapuaDataMessage;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonMessageListResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonMessageQuery;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
+import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
-import org.eclipse.kapua.message.internal.device.data.KapuaDataMessageImpl;
-import org.eclipse.kapua.message.internal.device.data.KapuaDataPayloadImpl;
 import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
+import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.StorableId;
@@ -54,9 +53,15 @@ import java.util.List;
 /**
  * @see JsonSerializationFixed
  */
-@Api(value = "Data Messages", authorizations = { @Authorization(value = "kapuaAccessToken") })
+@Api(value = "Data Messages", authorizations = {@Authorization(value = "kapuaAccessToken")})
 @Path("{scopeId}/data/messages")
 public class DataMessagesJson extends AbstractKapuaResource implements JsonSerializationFixed {
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final KapuaDataMessageFactory KAPUA_DATA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaDataMessageFactory.class);
+
+    private static final DatastoreObjectFactory DATASTORE_OBJECT_FACTORY = LOCATOR.getFactory(DatastoreObjectFactory.class);
 
     private static final DataMessages DATA_MESSAGES = new DataMessages();
 
@@ -80,7 +85,7 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
             notes = "Returns the list of all the datastoreMessages associated to the current selected scope.",
             response = MessageListResult.class)
     @GET
-    @Produces({ MediaType.APPLICATION_JSON })
+    @Produces({MediaType.APPLICATION_JSON})
     public <V extends Comparable<V>> JsonMessageListResult simpleQueryJson(
             @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The client id to filter results") @QueryParam("clientId") String clientId,
@@ -128,8 +133,8 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
      *                   {@link KapuaService} exceptions.
      */
     @POST
-    @Consumes({ MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
     @ApiOperation(nickname = "dataMessageStore",
             value = "Stores a new KapuaDataMessage",
             notes = "Stores a new KapuaDataMessage under the account of the currently connected user. In this case, the provided message will only be stored in the back-end database and it will not be forwarded to the message broker.",
@@ -138,7 +143,7 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
             @ApiParam(value = "The ScopeId in which to store the message", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The KapuaDataMessage to be stored") JsonKapuaDataMessage jsonKapuaDataMessage) throws Exception {
 
-        KapuaDataMessage kapuaDataMessage = new KapuaDataMessageImpl();
+        KapuaDataMessage kapuaDataMessage = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataMessage();
 
         kapuaDataMessage.setId(jsonKapuaDataMessage.getId());
         kapuaDataMessage.setScopeId(scopeId);
@@ -150,17 +155,19 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
         kapuaDataMessage.setPosition(jsonKapuaDataMessage.getPosition());
         kapuaDataMessage.setChannel(jsonKapuaDataMessage.getChannel());
 
-        KapuaDataPayload kapuaDataPayload = new KapuaDataPayloadImpl();
-        kapuaDataPayload.setBody(jsonKapuaDataMessage.getPayload().getBody());
+        KapuaDataPayload kapuaDataPayload = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataPayload();
 
-        jsonKapuaDataMessage.getPayload().getMetrics().forEach(
-                jsonMetric -> {
-                    String name = jsonMetric.getName();
-                    Object value = ObjectValueConverter.fromString(jsonMetric.getValue(), jsonMetric.getValueType());
+        if (jsonKapuaDataMessage.getPayload() != null) {
+            kapuaDataPayload.setBody(jsonKapuaDataMessage.getPayload().getBody());
 
-                    kapuaDataPayload.getMetrics().put(name, value);
-                });
+            jsonKapuaDataMessage.getPayload().getMetrics().forEach(
+                    jsonMetric -> {
+                        String name = jsonMetric.getName();
+                        Object value = ObjectValueConverter.fromString(jsonMetric.getValue(), jsonMetric.getValueType());
 
+                        kapuaDataPayload.getMetrics().put(name, value);
+                    });
+        }
         kapuaDataMessage.setPayload(kapuaDataPayload);
 
         return DATA_MESSAGES.storeMessage(scopeId, kapuaDataMessage);
@@ -177,8 +184,8 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
      */
     @POST
     @Path("_query")
-    @Consumes({ MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
     @ApiOperation(nickname = "dataMessageQuery",
             value = "Queries the DatastoreMessages",
             notes = "Queries the DatastoreMessages with the given DatastoreMessageQuery parameter returning all matching DatastoreMessages",
@@ -208,7 +215,7 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
      */
     @GET
     @Path("{datastoreMessageId}")
-    @Produces({ MediaType.APPLICATION_JSON })
+    @Produces({MediaType.APPLICATION_JSON})
     @ApiOperation(nickname = "dataMessageFind",
             value = "Gets an DatastoreMessage",
             notes = "Gets the DatastoreMessage specified by the datastoreMessageId path parameter",
@@ -224,13 +231,14 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
     }
 
     private MessageQuery convertQuery(JsonMessageQuery query) {
-        MessageQuery messageQuery = new MessageQueryImpl(query.getScopeId());
+        MessageQuery messageQuery = DATASTORE_OBJECT_FACTORY.newDatastoreMessageQuery(query.getScopeId());
         messageQuery.setAskTotalCount(query.isAskTotalCount());
         messageQuery.setFetchAttributes(query.getFetchAttributes());
         messageQuery.setFetchStyle(query.getFetchStyle());
         messageQuery.setLimit(query.getLimit());
         messageQuery.setOffset(query.getOffset());
         messageQuery.setPredicate(query.getPredicate());
+
         List<SortField> sortFields = new ArrayList<>();
         if (query.getSortFields() != null) {
             for (XmlAdaptedSortField xmlAdaptedSortField : query.getSortFields()) {

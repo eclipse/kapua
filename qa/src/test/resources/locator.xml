@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2016, 2017 Eurotech and/or its affiliates and others
+    Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -70,7 +70,6 @@
 
         <api>org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessageFactory</api>
 
-
         <api>org.eclipse.kapua.service.device.management.registry.manager.DeviceManagementRegistryManagerService</api>
         <api>org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory</api>
         <api>org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService</api>
@@ -101,6 +100,7 @@
         <api>org.eclipse.kapua.transport.TransportClientFactory</api>
 
         <api>org.eclipse.kapua.message.KapuaMessageFactory</api>
+        <api>org.eclipse.kapua.message.device.data.KapuaDataMessageFactory</api>
 
         <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
         <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
@@ -111,11 +111,12 @@
             <interceptor>annotation</interceptor>
             <with>Impl</with>
         </provide>
+
     </provided>
     <packages>
         <package>org.eclipse.kapua.commons</package>
+        <package>org.eclipse.kapua.message</package>
         <package>org.eclipse.kapua.service</package>
         <package>org.eclipse.kapua.transport</package>
-        <package>org.eclipse.kapua.message</package>
     </packages>
 </locator-config>

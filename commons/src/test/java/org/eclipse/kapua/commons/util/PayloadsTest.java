@@ -11,34 +11,34 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util;
 
+import org.eclipse.kapua.test.junit.JUnitTests;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.kapua.test.junit.JUnitTests;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
 @Category(JUnitTests.class)
 public class PayloadsTest {
 
-    private static final String PAYLOAD_DISPLAY_STR = "Boolean=true~~Double=42.42~~Float=42.42~~Integer=42~~Long=43~~String=Big brown fox~~byte=626F647900~~unknown=";
+    private static final String PAYLOAD_DISPLAY_STR = "Boolean=true~~Double=42.42~~Float=42.42~~Integer=42~~Long=43~~String=Big brown fox~~byte=Ym9keQA~~unknown=";
 
     private static final Map<String, Object> TEST_DATA;
 
     static {
         final Map<String, Object> metrics = new HashMap<>();
 
-        metrics.put("Float", Float.valueOf(42.42f));
-        metrics.put("Double", Double.valueOf(42.42d));
-        metrics.put("Integer", Integer.valueOf(42));
-        metrics.put("Long", Long.valueOf(43l));
+        metrics.put("Float", 42.42F);
+        metrics.put("Double", 42.42D);
+        metrics.put("Integer", 42);
+        metrics.put("Long", 43L);
         metrics.put("Boolean", Boolean.TRUE);
         metrics.put("String", "Big brown fox");
-        metrics.put("byte", new byte[] { 'b', 'o', 'd', 'y', 0 });
+        metrics.put("byte", new byte[]{'b', 'o', 'd', 'y', 0});
         metrics.put("unknown", new BigDecimal("42.42"));
         metrics.put("null", null);
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,42 +22,44 @@ import org.junit.experimental.categories.Category;
 @Category(JUnitTests.class)
 public class KapuaBirthMessageTest extends Assert {
 
-    private static final String PAYLOAD_DISPLAY_STR = "[ getUptime()=12" +
-            ", getDisplayName()=displayName" +
-            ", getModelName()=modelName" +
-            ", getModelId()=modelId-1" +
-            ", getPartNumber()=part-1" +
-            ", getSerialNumber()=SN-123" +
-            ", getFirmwareVersion()=firmwareV-1" +
-            ", getBiosVersion()=biosV-1" +
-            ", getOs()=Linux" +
-            ", getOsVersion()=osV-1" +
-            ", getJvmName()=Oracle HotSpot" +
-            ", getJvmVersion()=8" +
-            ", getJvmProfile()=desktop" +
-            ", getOsgiFramework()=containerFramework" +
-            ", getOsgiFrameworkVersion()=containerFrameworkV-1" +
-            ", getEsfKuraVersion()=applicationFrameworkV-1" +
-            ", getConnectionInterface()=connectionInterface" +
-            ", getConnectionIp()=192.168.1.1" +
-            ", getAcceptEncoding()=UTF-8" +
-            ", getApplicationIdentifiers()=applicationIdentifiers" +
-            ", getAvailableProcessors()=1" +
-            ", getTotalMemory()=4" +
-            ", getOsArch()=Linux x86" +
-            ", getModemImei()=49-015420-323751" +
-            ", getModemImsi()=359881234567890" +
-            ", getModemIccid()=8991101200003204510" +
-            "]";
+    private static final String PAYLOAD_DISPLAY_STR = "" +
+            "acceptEncoding=UTF-8" +
+            "~~applicationFramework=applicationFramework" +
+            "~~applicationFrameworkVersion=applicationFrameworkV-1" +
+            "~~applicationIdentifiers=applicationIdentifiers" +
+            "~~availableProcessors=1" +
+            "~~bios=bios" +
+            "~~biosVersion=biosV-1" +
+            "~~connectionInterface=connectionInterface" +
+            "~~connectionIp=192.168.1.1" +
+            "~~containerFramework=containerFramework" +
+            "~~containerFrameworkVersion=containerFrameworkV-1" +
+            "~~displayName=Display Name" +
+            "~~firmware=firmware-1" +
+            "~~firmwareVersion=firmwareV-1" +
+            "~~jvm=Oracle HotSpot" +
+            "~~jvmProfile=desktop" +
+            "~~jvmVersion=8" +
+            "~~modelId=Model Id-1" +
+            "~~modelName=Model Name" +
+            "~~modemIccid=8991101200003204510" +
+            "~~modemImei=49-015420-323751" +
+            "~~modemImsi=359881234567890" +
+            "~~os=Linux~~osArch=Linux x86" +
+            "~~osVersion=osV-1" +
+            "~~partNumber=part-1" +
+            "~~serialNumber=SN-123" +
+            "~~totalMemory=4" +
+            "~~uptime=12";
 
     @Test
     public void kapuaBirthPayloadInitConstructor() {
         KapuaBirthPayload kapuaBirthPayload = populateKapuaBirthPayload();
 
         assertEquals("12", kapuaBirthPayload.getUptime());
-        assertEquals("displayName", kapuaBirthPayload.getDisplayName());
-        assertEquals("modelName", kapuaBirthPayload.getModelName());
-        assertEquals("modelId-1", kapuaBirthPayload.getModelId());
+        assertEquals("Display Name", kapuaBirthPayload.getDisplayName());
+        assertEquals("Model Name", kapuaBirthPayload.getModelName());
+        assertEquals("Model Id-1", kapuaBirthPayload.getModelId());
         assertEquals("part-1", kapuaBirthPayload.getPartNumber());
         assertEquals("SN-123", kapuaBirthPayload.getSerialNumber());
         assertEquals("firmware-1", kapuaBirthPayload.getFirmware());
@@ -89,7 +91,6 @@ public class KapuaBirthMessageTest extends Assert {
     public void toDisplayString() throws Exception {
         KapuaBirthPayload kapuaBirthPayload = populateKapuaBirthPayload();
 
-        // FIXME strings representing methods are not in sync with real method names
         String displayStr = kapuaBirthPayload.toDisplayString();
         assertEquals(PAYLOAD_DISPLAY_STR, displayStr);
     }
@@ -123,11 +124,11 @@ public class KapuaBirthMessageTest extends Assert {
      * @return all KapuaBirthPayload fields populated with data.
      */
     private static KapuaBirthPayload populateKapuaBirthPayload() {
-        KapuaBirthPayload kapuaBirthPayload = new KapuaBirthPayloadImpl(
+        return new KapuaBirthPayloadImpl(
                 "12",
-                "displayName",
-                "modelName",
-                "modelId-1",
+                "Display Name",
+                "Model Name",
+                "Model Id-1",
                 "part-1",
                 "SN-123",
                 "firmware-1",
@@ -154,7 +155,5 @@ public class KapuaBirthMessageTest extends Assert {
                 "359881234567890",
                 "8991101200003204510"
         );
-
-        return kapuaBirthPayload;
     }
 }

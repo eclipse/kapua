@@ -25,6 +25,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
+import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
@@ -46,10 +47,8 @@ import org.eclipse.kapua.service.device.registry.DeviceStatus;
 import org.eclipse.kapua.service.device.registry.RegistryJAXBContextProvider;
 import org.eclipse.kapua.service.device.registry.TestConfig;
 import org.eclipse.kapua.service.device.registry.shared.SharedTestSteps;
-import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
-
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
@@ -62,12 +61,10 @@ import java.util.Optional;
 
 /**
  * Implementation of Gherkin steps used in DeviceRegistry.feature scenarios.
- *
+ * <p>
  * MockedLocator is used for Location Service. Mockito is used to mock other
  * services that the Device Registry services dependent on. Dependent services are: -
  * Authorization Service -
- *
- *
  */
 @ScenarioScoped
 public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {

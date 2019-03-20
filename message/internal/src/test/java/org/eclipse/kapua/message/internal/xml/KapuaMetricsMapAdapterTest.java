@@ -11,10 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.xml;
 
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
@@ -24,6 +20,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 @Category(JUnitTests.class)
 public class KapuaMetricsMapAdapterTest extends Assert {
@@ -50,8 +50,9 @@ public class KapuaMetricsMapAdapterTest extends Assert {
     @Test
     public void marshalWithAdapter() throws Exception {
         KapuaPayload metricsMap = new KapuaPayloadImpl();
+
         Map<String, Object> metrics = new HashMap<>();
-        metrics.put(String.valueOf("key1"), String.valueOf("value1"));
+        metrics.put("key1", "value1");
         metricsMap.setMetrics(metrics);
 
         StringWriter strWriter = new StringWriter();

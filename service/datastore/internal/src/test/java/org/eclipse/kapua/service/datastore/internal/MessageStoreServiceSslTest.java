@@ -11,38 +11,25 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import java.text.ParseException;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
+import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
-import org.eclipse.kapua.message.internal.device.data.KapuaDataChannelImpl;
-import org.eclipse.kapua.message.internal.device.data.KapuaDataMessageImpl;
-import org.eclipse.kapua.message.internal.device.data.KapuaDataPayloadImpl;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
+import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.client.ClientException;
 import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
-import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.RangePredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
@@ -63,16 +50,32 @@ import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.ParseException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 @Category(JUnitTests.class)
 public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger(MessageStoreServiceSslTest.class);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
     private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
     private static final DeviceFactory DEVICE_FACTORY = LOCATOR.getFactory(DeviceFactory.class);
+
     private static final MessageStoreService MESSAGE_STORE_SERVICE = LOCATOR.getService(MessageStoreService.class);
     private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
+
+    private static final DatastoreObjectFactory DATASTORE_OBJECT_FACTORY = LOCATOR.getFactory(DatastoreObjectFactory.class);
+
+    private static final KapuaDataMessageFactory KAPUA_DATA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaDataMessageFactory.class);
 
     /**
      * This method deletes all indices of the current ES instance
@@ -81,15 +84,12 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
      * This is required to ensure that each unit test, as it currently expects, starts with an empty ES setup
      * </p>
      *
-     * @throws Exception
-     *             any case anything goes wrong
+     * @throws Exception any case anything goes wrong
      */
     // @Before
     // public void deleteAllIndices() throws Exception {
     // DatastoreMediator.getInstance().deleteAllIndexes();
     // }
-
-
     @Test(expected = DatastoreException.class)
     @Ignore
     public void connectNoSsl() throws InterruptedException, KapuaException, ParseException {
@@ -217,8 +217,8 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
     }
 
     private KapuaDataMessage insertMessage(Account account, String clientId, KapuaId deviceId, String semanticTopic, byte[] payload, Date sentOn) throws InterruptedException, KapuaException {
-        KapuaDataPayloadImpl messagePayload = new KapuaDataPayloadImpl();
-        Map<String, Object> metrics = new HashMap<String, Object>();
+        KapuaDataPayload messagePayload = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataPayload();
+        Map<String, Object> metrics = new HashMap<>();
         metrics.put("float", new Float((float) 0.01));
         messagePayload.setMetrics(metrics);
         messagePayload.setBody(payload);
@@ -257,13 +257,12 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
      * @param sentOn
      * @return
      */
-    private KapuaDataMessage createMessage(String clientId, KapuaId scopeId, KapuaId deviceId,
-            Date receivedOn, Date capturedOn, Date sentOn) {
-        KapuaDataMessage message = new KapuaDataMessageImpl();
+    private KapuaDataMessage createMessage(String clientId, KapuaId scopeId, KapuaId deviceId, Date receivedOn, Date capturedOn, Date sentOn) {
+        KapuaDataMessage message = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataMessage();
         message.setReceivedOn(receivedOn);
         message.setCapturedOn(capturedOn);
         message.setSentOn(sentOn);
-        message.setChannel(new KapuaDataChannelImpl());
+        message.setChannel(KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataChannel());
         message.setClientId(clientId);
         message.setDeviceId(deviceId);
         message.setScopeId(scopeId);
@@ -277,7 +276,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
      * @param semanticPart
      */
     private void setChannel(KapuaDataMessage message, String semanticPart) {
-        final KapuaDataChannelImpl channel = new KapuaDataChannelImpl();
+        KapuaDataChannel channel = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataChannel();
         channel.setSemanticParts(new ArrayList<>(Arrays.asList(semanticPart.split("/"))));
 
         message.setChannel(channel);
@@ -303,7 +302,8 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
      * @return
      */
     private MessageQuery getBaseMessageQuery(KapuaId scopeId, int limit) {
-        MessageQuery query = new MessageQueryImpl(scopeId);
+        MessageQuery query = DATASTORE_OBJECT_FACTORY.newDatastoreMessageQuery(scopeId);
+
         query.setAskTotalCount(true);
         query.setFetchStyle(StorableFetchStyle.SOURCE_FULL);
         query.setLimit(limit);
@@ -322,13 +322,15 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
      * @param dateRange
      */
     private void setMessageQueryBaseCriteria(MessageQuery messageQuery, String clientId, DateRange dateRange) {
-        AndPredicate andPredicate = new AndPredicateImpl();
+        AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
+
         if (!StringUtils.isEmpty(clientId)) {
             TermPredicate clientPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MessageField.CLIENT_ID, clientId);
             andPredicate.getPredicates().add(clientPredicate);
         }
         if (dateRange != null) {
-            RangePredicate timestampPredicate = new RangePredicateImpl(MessageField.TIMESTAMP, dateRange.getLowerBound(), dateRange.getUpperBound());
+            RangePredicate timestampPredicate = STORABLE_PREDICATE_FACTORY.newRangePredicate(MessageField.TIMESTAMP.name(), dateRange.getLowerBound(), dateRange.getUpperBound());
+
             andPredicate.getPredicates().add(timestampPredicate);
         }
         messageQuery.setPredicate(andPredicate);

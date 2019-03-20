@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,26 +12,12 @@
 package org.eclipse.kapua.message.internal.device.lifecycle;
 
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsChannel;
-import org.eclipse.kapua.message.internal.KapuaChannelImpl;
 
 /**
- * Kapua application message channel object reference implementation.
- * 
- * @since 1.0
+ * {@link KapuaAppsChannel} implementation.
  *
+ * @since 1.0.0
  */
-public class KapuaAppsChannelImpl extends KapuaChannelImpl implements KapuaAppsChannel {
-
-    private String clientId;
-
-    @Override
-    public String getClientId() {
-        return clientId;
-    }
-
-    @Override
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
-    }
+public class KapuaAppsChannelImpl extends KapuaBirthChannelImpl implements KapuaAppsChannel {
 
 }

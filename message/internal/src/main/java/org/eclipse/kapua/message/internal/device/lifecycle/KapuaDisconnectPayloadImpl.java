@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,47 +12,45 @@
 package org.eclipse.kapua.message.internal.device.lifecycle;
 
 import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectPayload;
-import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
+import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectPayloadAttibutes;
 
 /**
- * Kapua data message payload object reference implementation.
- * 
- * @since 1.0
+ * {@link KapuaDisconnectPayload} implementation.
  *
+ * @since 1.0.0
  */
-public class KapuaDisconnectPayloadImpl extends KapuaPayloadImpl implements KapuaDisconnectPayload {
-
-    private String uptime;
-    private String displayName;
+public class KapuaDisconnectPayloadImpl extends AbstractLifecyclePayloadImpl implements KapuaDisconnectPayload {
 
     /**
-     * Constructor
-     * 
-     * @param uptime
-     * @param displayName
+     * Constructor.
+     * <p>
+     * Sets all available properties of the {@link KapuaDisconnectPayload} at once.
+     *
+     * @param uptime      The {@link KapuaDisconnectPayloadAttibutes#UPTIME}of the {@link KapuaDisconnectPayload}
+     * @param displayName The {@link KapuaDisconnectPayloadAttibutes#DISPLAY_NAME} of the {@link KapuaDisconnectPayload}
+     * @since 1.0.0
      */
-    public KapuaDisconnectPayloadImpl(String uptime,
-            String displayName) {
-        this.uptime = uptime;
-        this.displayName = displayName;
+    public KapuaDisconnectPayloadImpl(String uptime, String displayName) {
+        setUptime(uptime);
+        setDisplayName(displayName);
     }
 
-    @Override
-    public String toDisplayString() {
-        return new StringBuilder().append("[ getUptime()=").append(getUptime())
-                .append(", getDisplayName()=").append(getDisplayName())
-                .append("]")
-                .toString();
-    }
 
     @Override
     public String getUptime() {
-        return uptime;
+        return (String) getMetrics().get(KapuaDisconnectPayloadAttibutes.UPTIME);
+    }
+
+    private void setUptime(String uptime) {
+        getMetrics().put(KapuaDisconnectPayloadAttibutes.UPTIME, uptime);
     }
 
     @Override
     public String getDisplayName() {
-        return displayName;
+        return (String) getMetrics().get(KapuaDisconnectPayloadAttibutes.DISPLAY_NAME);
     }
 
+    private void setDisplayName(String displayName) {
+        getMetrics().put(KapuaDisconnectPayloadAttibutes.DISPLAY_NAME, displayName);
+    }
 }

@@ -685,7 +685,7 @@ public class DeviceServiceSteps extends BaseQATests /*KapuaTest*/ {
                 clientId);
 
         tmpCr.setConnectionId(generateRandomId());
-        tmpCr.setDisplayName("display_name");
+        tmpCr.setDisplayName("displayName");
         tmpCr.setSerialNumber("serialNumber");
         tmpCr.setModelId("modelId");
         tmpCr.setImei(String.valueOf(random.nextInt()));

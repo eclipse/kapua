@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -97,18 +97,18 @@ public class AccountChildUserGrid extends EntityGrid<GwtUser> {
                 KapuaIcon icon;
                 if (gwtUser.getStatusEnum() != null) {
                     switch (gwtUser.getStatusEnum()) {
-                    case DISABLED:
-                        icon = new KapuaIcon(IconSet.USER);
-                        icon.setColor(Color.RED);
-                        break;
-                    case ENABLED:
-                        icon = new KapuaIcon(IconSet.USER);
-                        icon.setColor(Color.GREEN);
-                        break;
-                    default:
-                        icon = new KapuaIcon(IconSet.USER);
-                        icon.setColor(Color.GREY);
-                        break;
+                        case DISABLED:
+                            icon = new KapuaIcon(IconSet.USER);
+                            icon.setColor(Color.RED);
+                            break;
+                        case ENABLED:
+                            icon = new KapuaIcon(IconSet.USER);
+                            icon.setColor(Color.GREEN);
+                            break;
+                        default:
+                            icon = new KapuaIcon(IconSet.USER);
+                            icon.setColor(Color.GREY);
+                            break;
                     }
                 } else {
                     icon = new KapuaIcon(IconSet.USER);
@@ -144,8 +144,7 @@ public class AccountChildUserGrid extends EntityGrid<GwtUser> {
         GridCellRenderer<GwtUser> setExpirationDate = new GridCellRenderer<GwtUser>() {
 
             @Override
-            public Object render(GwtUser gwtUser, String property, ColumnData config, int rowIndex, int colIndex,
-                    ListStore<GwtUser> store, Grid<GwtUser> grid) {
+            public Object render(GwtUser gwtUser, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtUser> store, Grid<GwtUser> grid) {
                 if (gwtUser.getExpirationDateFormatted() != null) {
                     return gwtUser.getExpirationDateFormatted();
                 } else {

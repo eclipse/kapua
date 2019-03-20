@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,16 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
+import org.eclipse.kapua.message.KapuaPayload;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.kapua.commons.util.Payloads;
-import org.eclipse.kapua.message.KapuaPayload;
-
 /**
- * Kapua message payload object reference implementation.
+ * {@link KapuaPayload} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class KapuaPayloadImpl implements KapuaPayload {
 
@@ -56,10 +55,5 @@ public class KapuaPayloadImpl implements KapuaPayload {
     @Override
     public void setBody(byte[] body) {
         this.body = body;
-    }
-
-    @Override
-    public String toDisplayString() {
-        return Payloads.toDisplayString(metrics);
     }
 }

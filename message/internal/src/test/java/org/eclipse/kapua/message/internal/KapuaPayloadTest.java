@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
-import java.io.StringWriter;
-import java.util.Map;
-
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.test.junit.JUnitTests;
@@ -23,10 +20,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import java.io.StringWriter;
+import java.util.Map;
+
 @Category(JUnitTests.class)
 public class KapuaPayloadTest extends Assert {
 
-    private static final String PAYLOAD_DISPLAY_STR = "Boolean=true~~Double=42.42~~Float=42.42~~Integer=42~~Long=43~~String=Big brown fox~~byte=626F647900~~unknown=";
+    private static final String PAYLOAD_DISPLAY_STR = "Boolean=true~~Double=42.42~~Float=42.42~~Integer=42~~Long=43~~String=Big brown fox~~byte=Ym9keQA~~unknown=";
 
     private static final String KAPUA_PAYLOAD_XML_STR = "missing";
 
@@ -49,7 +49,7 @@ public class KapuaPayloadTest extends Assert {
         byte[] body = kapuaPayload.getBody();
         assertEquals("value1", properties.get("key1"));
         assertEquals("value2", properties.get("key2"));
-        assertArrayEquals(new byte[] { 'b', 'o', 'd', 'y' }, body);
+        assertArrayEquals(new byte[]{'b', 'o', 'd', 'y'}, body);
     }
 
     @Test
