@@ -19,6 +19,7 @@ import javax.jms.JMSException;
 import javax.jms.Topic;
 
 import org.apache.activemq.command.ActiveMQMessage;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.converter.AbstractKapuaConverter;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor;
@@ -164,7 +165,10 @@ public class JmsUtil {
         // second step.... from device dependent protocol (unknown) to Kapua
         Translator<DeviceMessage<?, ?>, KapuaMessage<?, ?>> translatorToKapua = Translator.getTranslatorFor(deviceMessageType, kapuaMessageType);
         KapuaMessage<?, ?> message = translatorToKapua.translate(deviceMessage);
-        message.setClientId(clientId);
+        if (StringUtils.isEmpty(message.getClientId())) {
+            logger.debug("Updating client id since the received value is null (new value {})", clientId);
+            message.setClientId(clientId);
+        }
         return message;
     }
 
