@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
-import java.sql.Date;
-import java.util.TimeZone;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEndBeforeStartTimeException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
@@ -20,8 +18,6 @@ import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -53,6 +49,9 @@ import org.quartz.SimpleScheduleBuilder;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
+
+import java.sql.Date;
+import java.util.TimeZone;
 
 /**
  * {@link TriggerService} implementation.
@@ -93,7 +92,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Check duplicate name
         TriggerQuery query = new TriggerQueryImpl(triggerCreator.getScopeId());
-        query.setPredicate(new AttributePredicateImpl<>(TriggerAttributes.NAME, triggerCreator.getName()));
+        query.setPredicate(query.attributePredicate(TriggerAttributes.NAME, triggerCreator.getName()));
 
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException();
@@ -205,9 +204,9 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         // Check duplicate name
         TriggerQuery query = new TriggerQueryImpl(trigger.getScopeId());
         query.setPredicate(
-                new AndPredicateImpl(
-                        new AttributePredicateImpl<>(TriggerAttributes.NAME, trigger.getName()),
-                        new AttributePredicateImpl<>(TriggerAttributes.ENTITY_ID, trigger.getId(), Operator.NOT_EQUAL)
+                query.andPredicate(
+                        query.attributePredicate(TriggerAttributes.NAME, trigger.getName()),
+                        query.attributePredicate(TriggerAttributes.ENTITY_ID, trigger.getId(), Operator.NOT_EQUAL)
                 )
         );
 

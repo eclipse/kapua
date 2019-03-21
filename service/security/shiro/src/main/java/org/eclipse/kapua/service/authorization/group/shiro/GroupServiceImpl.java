@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,8 +16,6 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -29,10 +27,10 @@ import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.group.Group;
+import org.eclipse.kapua.service.authorization.group.GroupAttributes;
 import org.eclipse.kapua.service.authorization.group.GroupCreator;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupListResult;
-import org.eclipse.kapua.service.authorization.group.GroupAttributes;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -80,7 +78,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         //
         // Check duplicate name
         GroupQuery query = new GroupQueryImpl(groupCreator.getScopeId());
-        query.setPredicate(new AttributePredicateImpl<>(GroupAttributes.NAME, groupCreator.getName()));
+        query.setPredicate(query.attributePredicate(GroupAttributes.NAME, groupCreator.getName()));
 
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(groupCreator.getName());
@@ -114,9 +112,9 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         // Check duplicate name
         GroupQuery query = new GroupQueryImpl(group.getScopeId());
         query.setPredicate(
-                new AndPredicateImpl(
-                        new AttributePredicateImpl<>(GroupAttributes.NAME, group.getName()),
-                        new AttributePredicateImpl<>(GroupAttributes.ENTITY_ID, group.getId(), Operator.NOT_EQUAL)
+                query.andPredicate(
+                        query.attributePredicate(GroupAttributes.NAME, group.getName()),
+                        query.attributePredicate(GroupAttributes.ENTITY_ID, group.getId(), Operator.NOT_EQUAL)
                 )
         );
 

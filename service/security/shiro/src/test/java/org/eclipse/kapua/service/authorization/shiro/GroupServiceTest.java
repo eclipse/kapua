@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,22 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
-import java.math.BigInteger;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authorization.group.Group;
+import org.eclipse.kapua.service.authorization.group.GroupAttributes;
 import org.eclipse.kapua.service.authorization.group.GroupCreator;
 import org.eclipse.kapua.service.authorization.group.GroupListResult;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupCreatorImpl;
-import org.eclipse.kapua.service.authorization.group.GroupAttributes;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupQueryImpl;
 import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.ResourceLimitsConfig;
@@ -36,6 +33,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import java.math.BigInteger;
 
 @Category(JUnitTests.class)
 public class GroupServiceTest extends KapuaTest {
@@ -191,7 +190,7 @@ public class GroupServiceTest extends KapuaTest {
             GroupService groupService = locator.getService(GroupService.class);
             ResourceLimitsConfig resourceLimits = new ResourceLimitsConfig(scope.getId(), BigInteger.ONE);
             resourceLimits.addConfig("infiniteChildEntities", Boolean.TRUE);
-            resourceLimits.addConfig("maxNumberChildEntities", Integer.valueOf(5));
+            resourceLimits.addConfig("maxNumberChildEntities", 5);
             resourceLimits.setServiceConfig(groupService);
             Group group = groupService.create(groupCreator);
 
@@ -202,7 +201,7 @@ public class GroupServiceTest extends KapuaTest {
             //
             // Query
             GroupQuery query = new GroupQueryImpl(scope);
-            query.setPredicate(new AttributePredicateImpl<String>(GroupAttributes.NAME, group.getName()));
+            query.setPredicate(query.attributePredicate(GroupAttributes.NAME, group.getName()));
             GroupListResult groupsFound = groupService.query(query);
             long groupsCount = groupService.count(query);
 

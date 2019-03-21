@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,9 +19,7 @@ import com.ibm.jbatch.jsl.model.JSLJob;
 import com.ibm.jbatch.jsl.model.Step;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
-
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.CannotBuildJobDefDriverException;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.CannotCleanJobDefFileDriverException;
@@ -42,14 +40,13 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.step.JobStep;
+import org.eclipse.kapua.service.job.step.JobStepAttributes;
 import org.eclipse.kapua.service.job.step.JobStepFactory;
 import org.eclipse.kapua.service.job.step.JobStepListResult;
-import org.eclipse.kapua.service.job.step.JobStepAttributes;
 import org.eclipse.kapua.service.job.step.JobStepQuery;
 import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,10 +129,10 @@ public class JbatchDriver {
         String jobXmlDefinition;
         String jobName = JbatchDriver.getJbatchJobName(scopeId, jobId);
         try {
-            JobStepQuery jobStepQuery = JOB_STEP_FACTORY.newQuery(scopeId);
-            jobStepQuery.setPredicate(new AttributePredicateImpl<>(JobStepAttributes.JOB_ID, jobId));
+            JobStepQuery query = JOB_STEP_FACTORY.newQuery(scopeId);
+            query.setPredicate(query.attributePredicate(JobStepAttributes.JOB_ID, jobId));
 
-            JobStepListResult jobSteps = JOB_STEP_SERVICE.query(jobStepQuery);
+            JobStepListResult jobSteps = JOB_STEP_SERVICE.query(query);
             jobSteps.sort(Comparator.comparing(JobStep::getStepIndex));
 
             List<ExecutionElement> jslExecutionElements = new ArrayList<>();

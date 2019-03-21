@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,16 +28,17 @@ import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
@@ -305,7 +306,7 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
         DeviceQuery tmpQuery = new DeviceQueryImpl(rootScopeId);
 
         // Search for the known bios version string
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("biosVersion", version));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.BIOS_VERSION, version));
         deviceList = deviceRegistryService.query(tmpQuery);
         assertNotNull(deviceList);
     }
@@ -316,7 +317,7 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
         DeviceQuery tmpQuery = new DeviceQueryImpl(rootScopeId);
 
         // Search for the known bios version string
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsNotEqualTo("biosVersion", version));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.BIOS_VERSION, version, AttributePredicate.Operator.NOT_EQUAL));
         deviceList = deviceRegistryService.query(tmpQuery);
         assertNotNull(deviceList);
     }
@@ -327,7 +328,7 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
         DeviceQuery tmpQuery = new DeviceQueryImpl(rootScopeId);
 
         // Search for the known bios version string
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("clientId", id));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, id));
         deviceList = deviceRegistryService.query(tmpQuery);
         assertNotNull(deviceList);
     }
@@ -354,7 +355,7 @@ public class DeviceRegistryServiceTestSteps extends AbstractKapuaSteps {
             throws KapuaException {
         DeviceQuery tmpQuery = new DeviceQueryImpl(rootScopeId);
         assertNotNull(tmpQuery);
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("biosVersion", version));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.BIOS_VERSION, version));
         count = 0;
         count = deviceRegistryService.count(tmpQuery);
     }

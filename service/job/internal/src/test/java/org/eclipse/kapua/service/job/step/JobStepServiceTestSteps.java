@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,8 +23,8 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
+import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -46,7 +46,6 @@ import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionF
 import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionServiceImpl;
 import org.eclipse.kapua.service.job.step.internal.JobStepFactoryImpl;
 import org.eclipse.kapua.service.job.step.internal.JobStepServiceImpl;
-import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.mockito.Matchers;
@@ -246,7 +245,7 @@ public class JobStepServiceTestSteps extends AbstractKapuaSteps {
             throws Exception {
 
         JobStepQuery tmpQuery = stepFactory.newQuery(commonData.currentScopeId);
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("name", name));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobStepAttributes.NAME, name));
 
         try {
             commonData.primeException();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,8 +14,6 @@ package org.eclipse.kapua.service.authorization.access.shiro;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -27,15 +25,15 @@ import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
+import org.eclipse.kapua.service.authorization.access.AccessRoleAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
-import org.eclipse.kapua.service.authorization.access.AccessRoleAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
-import org.eclipse.kapua.service.authorization.role.shiro.RoleDAO;
 import org.eclipse.kapua.service.authorization.role.RolePermissionAttributes;
+import org.eclipse.kapua.service.authorization.role.shiro.RoleDAO;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationErrorCodes;
 import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationException;
@@ -88,9 +86,9 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
 
             AccessRoleQuery query = new AccessRoleQueryImpl(accessRoleCreator.getScopeId());
             query.setPredicate(
-                    new AndPredicateImpl(
-                            new AttributePredicateImpl<>(AccessRoleAttributes.ACCESS_INFO_ID, accessRoleCreator.getAccessInfoId()),
-                            new AttributePredicateImpl<>(RolePermissionAttributes.ROLE_ID, accessRoleCreator.getRoleId())
+                    query.andPredicate(
+                            query.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessRoleCreator.getAccessInfoId()),
+                            query.attributePredicate(RolePermissionAttributes.ROLE_ID, accessRoleCreator.getRoleId())
                     )
             );
 
@@ -152,7 +150,7 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
         //
         // Build query
         AccessRoleQuery query = new AccessRoleQueryImpl(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(AccessRoleAttributes.ACCESS_INFO_ID, accessInfoId));
+        query.setPredicate(query.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfoId));
 
         return query(query);
     }

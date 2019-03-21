@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,14 +12,11 @@
 package org.eclipse.kapua.service.authentication.credential.shiro;
 
 import org.apache.shiro.codec.Base64;
-
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.jpa.EntityManager;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
@@ -29,14 +26,16 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.authentication.AuthenticationDomains;
 import org.eclipse.kapua.service.authentication.credential.Credential;
+import org.eclipse.kapua.service.authentication.credential.CredentialAttributes;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
-import org.eclipse.kapua.service.authentication.credential.CredentialAttributes;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
@@ -46,7 +45,6 @@ import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticatio
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -299,7 +297,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         //
         // Build query
         CredentialQuery query = new CredentialQueryImpl(scopeId);
-        QueryPredicate predicate = new AttributePredicateImpl<>(CredentialAttributes.USER_ID, userId);
+        QueryPredicate predicate = query.attributePredicate(CredentialAttributes.USER_ID, userId);
         query.setPredicate(predicate);
 
         //
@@ -329,12 +327,13 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
             //
             // Build query
             KapuaQuery<Credential> query = new CredentialQueryImpl();
-            AttributePredicateImpl<CredentialType> typePredicate = new AttributePredicateImpl<>(CredentialAttributes.CREDENTIAL_TYPE, CredentialType.API_KEY);
-            AttributePredicateImpl<String> keyPredicate = new AttributePredicateImpl<>(CredentialAttributes.CREDENTIAL_KEY, apiKeyPreValue, Operator.STARTS_WITH);
+            AttributePredicate<CredentialType> typePredicate = query.attributePredicate(CredentialAttributes.CREDENTIAL_TYPE, CredentialType.API_KEY);
+            AttributePredicate<String> keyPredicate = query.attributePredicate(CredentialAttributes.CREDENTIAL_KEY, apiKeyPreValue, Operator.STARTS_WITH);
 
-            AndPredicateImpl andPredicate = new AndPredicateImpl();
-            andPredicate.and(typePredicate);
-            andPredicate.and(keyPredicate);
+            AndPredicate andPredicate = query.andPredicate(
+                    typePredicate,
+                    keyPredicate
+            );
 
             query.setPredicate(andPredicate);
 
@@ -389,13 +388,19 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
     private long countExistingCredentials(CredentialType credentialType, KapuaId scopeId, KapuaId userId) throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
         CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
-        KapuaQuery<Credential> credentialQuery = credentialFactory.newQuery(scopeId);
-        CredentialType ct = credentialType;
-        QueryPredicate credentialTypePredicate = new AttributePredicateImpl<>(CredentialAttributes.CREDENTIAL_TYPE, ct);
-        QueryPredicate userIdPredicate = new AttributePredicateImpl<>(CredentialAttributes.USER_ID, userId);
-        QueryPredicate andPredicate = new AndPredicateImpl().and(credentialTypePredicate).and(userIdPredicate);
-        credentialQuery.setPredicate(andPredicate);
-        return count(credentialQuery);
+        KapuaQuery<Credential> query = credentialFactory.newQuery(scopeId);
+
+        QueryPredicate credentialTypePredicate = query.attributePredicate(CredentialAttributes.CREDENTIAL_TYPE, credentialType);
+        QueryPredicate userIdPredicate = query.attributePredicate(CredentialAttributes.USER_ID, userId);
+
+        QueryPredicate andPredicate = query.andPredicate(
+                credentialTypePredicate,
+                userIdPredicate
+        );
+
+        query.setPredicate(andPredicate);
+
+        return count(query);
     }
 
     //@ListenServiceEvent(fromAddress="account")
@@ -417,7 +422,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
 
         CredentialQuery query = credentialFactory.newQuery(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(CredentialAttributes.USER_ID, userId));
+        query.setPredicate(query.attributePredicate(CredentialAttributes.USER_ID, userId));
 
         CredentialListResult credentialsToDelete = query(query);
 

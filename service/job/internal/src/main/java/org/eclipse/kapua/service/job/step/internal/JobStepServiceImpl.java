@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,8 +17,6 @@ import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -31,11 +29,11 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
 import org.eclipse.kapua.service.job.step.JobStep;
+import org.eclipse.kapua.service.job.step.JobStepAttributes;
 import org.eclipse.kapua.service.job.step.JobStepCreator;
 import org.eclipse.kapua.service.job.step.JobStepFactory;
 import org.eclipse.kapua.service.job.step.JobStepIndex;
 import org.eclipse.kapua.service.job.step.JobStepListResult;
-import org.eclipse.kapua.service.job.step.JobStepAttributes;
 import org.eclipse.kapua.service.job.step.JobStepQuery;
 import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
@@ -103,9 +101,9 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
         // Check duplicate name
         JobStepQuery query = new JobStepQueryImpl(jobStepCreator.getScopeId());
         query.setPredicate(
-                new AndPredicateImpl(
-                        new AttributePredicateImpl<>(JobStepAttributes.JOB_ID, jobStepCreator.getJobId()),
-                        new AttributePredicateImpl<>(JobStepAttributes.NAME, jobStepCreator.getName())
+                query.andPredicate(
+                        query.attributePredicate(JobStepAttributes.JOB_ID, jobStepCreator.getJobId()),
+                        query.attributePredicate(JobStepAttributes.NAME, jobStepCreator.getName())
                 )
         );
 
@@ -116,7 +114,7 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Check step index
         if (jobStepCreator.getStepIndex() == null) {
-            query.setPredicate(new AttributePredicateImpl<>(JobStepAttributes.JOB_ID, jobStepCreator.getJobId()));
+            query.setPredicate(query.attributePredicate(JobStepAttributes.JOB_ID, jobStepCreator.getJobId()));
             query.setSortCriteria(new FieldSortCriteria(JobStepAttributes.STEP_INDEX, FieldSortCriteria.SortOrder.DESCENDING));
             query.setLimit(1);
 
@@ -126,9 +124,9 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
             jobStepCreator.setStepIndex(lastJobStep != null ? lastJobStep.getStepIndex() + 1 : JobStepIndex.FIRST);
         } else {
             query.setPredicate(
-                    new AndPredicateImpl(
-                            new AttributePredicateImpl<>(JobStepAttributes.JOB_ID, jobStepCreator.getJobId()),
-                            new AttributePredicateImpl<>(JobStepAttributes.STEP_INDEX, jobStepCreator.getStepIndex())
+                    query.andPredicate(
+                            query.attributePredicate(JobStepAttributes.JOB_ID, jobStepCreator.getJobId()),
+                            query.attributePredicate(JobStepAttributes.STEP_INDEX, jobStepCreator.getStepIndex())
                     )
             );
 
@@ -185,10 +183,10 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         JobStepQuery query = new JobStepQueryImpl(jobStep.getScopeId());
         query.setPredicate(
-                new AndPredicateImpl(
-                        new AttributePredicateImpl<>(JobStepAttributes.JOB_ID, jobStep.getJobId()),
-                        new AttributePredicateImpl<>(JobStepAttributes.NAME, jobStep.getName()),
-                        new AttributePredicateImpl<>(JobStepAttributes.ENTITY_ID, jobStep.getId(), Operator.NOT_EQUAL)
+                query.andPredicate(
+                        query.attributePredicate(JobStepAttributes.JOB_ID, jobStep.getJobId()),
+                        query.attributePredicate(JobStepAttributes.NAME, jobStep.getName()),
+                        query.attributePredicate(JobStepAttributes.ENTITY_ID, jobStep.getId(), Operator.NOT_EQUAL)
                 )
         );
 

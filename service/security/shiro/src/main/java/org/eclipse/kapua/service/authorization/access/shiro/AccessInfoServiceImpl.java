@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.authorization.access.shiro;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
@@ -164,7 +163,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
         AccessInfoQuery query = accessInfoFactory.newQuery(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(AccessInfoAttributes.USER_ID, userId));
+        query.setPredicate(query.attributePredicate(AccessInfoAttributes.USER_ID, userId));
         AccessInfoListResult result = entityManagerSession.onResult(em -> AccessInfoDAO.query(em, query));
         if (!result.isEmpty()) {
             return result.getFirstItem();
@@ -241,7 +240,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
 
         AccessInfoQuery query = accessInfoFactory.newQuery(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(AccessInfoAttributes.USER_ID, userId));
+        query.setPredicate(query.attributePredicate(AccessInfoAttributes.USER_ID, userId));
 
         AccessInfoListResult accessInfosToDelete = query(query);
 

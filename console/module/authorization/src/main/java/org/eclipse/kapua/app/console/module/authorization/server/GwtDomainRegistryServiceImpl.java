@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,7 +18,6 @@ import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtDomain
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtPermission.GwtAction;
 import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtDomainRegistryService;
 import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAuthorizationModelConverter;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.service.authorization.domain.Domain;
@@ -63,9 +62,11 @@ public class GwtDomainRegistryServiceImpl extends KapuaRemoteServiceServlet impl
             KapuaLocator locator = KapuaLocator.getInstance();
             DomainRegistryService domainRegistryService = locator.getService(DomainRegistryService.class);
             DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
+
             DomainQuery query = domainFactory.newQuery(null);
-            query.setPredicate(new AttributePredicateImpl<String>(DomainAttributes.NAME, domainName));
+            query.setPredicate(query.attributePredicate(DomainAttributes.NAME, domainName));
             DomainListResult queryResult = domainRegistryService.query(query);
+
             if (!queryResult.isEmpty()) {
                 for (Actions action : queryResult.getFirstItem().getActions()) {
                     gwtActionList.add(KapuaGwtAuthorizationModelConverter.convertAction(action));

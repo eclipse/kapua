@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,8 +13,6 @@ package org.eclipse.kapua.service.device.management.commons;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ThrowingRunnable;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -106,9 +104,9 @@ public abstract class AbstractDeviceManagementServiceImpl {
     protected void closeManagementOperation(KapuaId scopeId, KapuaId deviceId, KapuaId operationId, KapuaResponseMessage<?, ?> responseMessageMessage) throws KapuaException {
         DeviceManagementOperationQuery query = DEVICE_MANAGEMENT_OPERATION_FACTORY.newQuery(scopeId);
         query.setPredicate(
-                new AndPredicateImpl(
-                        new AttributePredicateImpl<>(DeviceManagementOperationAttributes.DEVICE_ID, deviceId),
-                        new AttributePredicateImpl<>(DeviceManagementOperationAttributes.OPERATION_ID, operationId)
+                query.andPredicate(
+                        query.attributePredicate(DeviceManagementOperationAttributes.DEVICE_ID, deviceId),
+                        query.attributePredicate(DeviceManagementOperationAttributes.OPERATION_ID, operationId)
                 )
         );
         DeviceManagementOperation deviceManagementOperation = DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.query(query).getFirstItem();

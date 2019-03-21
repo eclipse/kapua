@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,7 +18,6 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.service.authorization.domain.Domain;
@@ -167,7 +166,7 @@ public class DomainServiceTestSteps extends AbstractAuthorizationServiceTest {
     public void queryForNamedDomain(String name)
             throws KapuaException {
         DomainQuery query = domainFactory.newQuery(null);
-        query.setPredicate(new AttributePredicateImpl<>(DomainAttributes.NAME, name));
+        query.setPredicate(query.attributePredicate(DomainAttributes.NAME, name));
         KapuaSecurityUtils.doPrivileged(() -> {
             domainData.domainList = domainRegistryService.query(query);
             return null;

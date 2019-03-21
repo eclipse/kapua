@@ -51,28 +51,6 @@ public class AttributePredicateImpl<T> implements AttributePredicate<T> {
         this.operator = operator;
     }
 
-    /**
-     * Create an equal to predicate
-     *
-     * @param attributeName
-     * @param attributeValue
-     * @return
-     */
-    public static <T> AttributePredicateImpl<T> attributeIsEqualTo(String attributeName, T attributeValue) {
-        return new AttributePredicateImpl<>(attributeName, attributeValue);
-    }
-
-    /**
-     * Create a not equal to predicate
-     *
-     * @param attributeName
-     * @param attributeValue
-     * @return
-     */
-    public static <T> AttributePredicateImpl<T> attributeIsNotEqualTo(String attributeName, T attributeValue) {
-        return new AttributePredicateImpl<>(attributeName, attributeValue, Operator.NOT_EQUAL);
-    }
-
     @Override
     public String getAttributeName() {
         return attributeName;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,7 +28,6 @@ import org.eclipse.kapua.app.console.module.authorization.shared.util.GwtKapuaAu
 import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAuthorizationModelConverter;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -129,11 +128,10 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
                 KapuaId userId = GwtKapuaCommonsModelConverter.convertKapuaId(userShortId);
 
                 AccessInfo accessInfo = accessInfoService.findByUserId(scopeId, userId);
-                final User user = userService.find(scopeId, userId);
 
                 if (accessInfo != null) {
                     AccessRoleQuery query = accessRoleFactory.newQuery(scopeId);
-                    query.setPredicate(new AttributePredicateImpl<KapuaId>(AccessPermissionAttributes.ACCESS_INFO_ID, accessInfo.getId()));
+                    query.setPredicate(query.attributePredicate(AccessPermissionAttributes.ACCESS_INFO_ID, accessInfo.getId()));
                     query.setLimit(loadConfig.getLimit());
                     query.setOffset(loadConfig.getOffset());
                     String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? "createdOn" : loadConfig.getSortField();
@@ -147,7 +145,7 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
                     AccessRoleListResult accessRoleList = accessRoleService.query(query);
 
                     totalLegnth = (int) accessRoleService.count(query);
-                    if (!accessRoleList.isEmpty()){
+                    if (!accessRoleList.isEmpty()) {
                         for (final AccessRole accessRole : accessRoleList.getItems()) {
                             User createdByUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 

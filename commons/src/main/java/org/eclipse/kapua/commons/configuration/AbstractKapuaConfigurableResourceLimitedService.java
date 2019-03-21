@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,13 +13,12 @@ package org.eclipse.kapua.commons.configuration;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.KapuaEntityFactory;
-import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -54,7 +53,6 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
 
     @Override
     protected boolean validateNewConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, KapuaId parentId) throws KapuaException {
-        @SuppressWarnings("unused")
         boolean parentValidation = super.validateNewConfigValuesCoherence(ocd, updatedProps, scopeId, parentId);
         int availableChildEntitiesWithNewConfig = allowedChildEntities(scopeId, null, updatedProps);
         if (availableChildEntitiesWithNewConfig < 0) {
@@ -107,7 +105,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
                 AccountQuery childAccountsQuery = accountFactory.newQuery(scopeId);
                 // Exclude the scope that is under config update
                 if (targetScopeId != null) {
-                    childAccountsQuery.setPredicate(new AttributePredicateImpl<>(KapuaEntityAttributes.ENTITY_ID, targetScopeId, Operator.NOT_EQUAL));
+                    childAccountsQuery.setPredicate(childAccountsQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, targetScopeId, Operator.NOT_EQUAL));
                 }
 
                 AccountListResult childAccounts = accountService.query(childAccountsQuery);

@@ -21,8 +21,6 @@ import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -361,10 +359,9 @@ public class ServiceDAO {
         QueryPredicate kapuaPredicates = kapuaQuery.getPredicate();
         if (kapuaQuery.getScopeId() != null) {
 
-            AttributePredicateImpl<KapuaId> scopeId = new AttributePredicateImpl<>(KapuaEntityAttributes.SCOPE_ID, kapuaQuery.getScopeId());
-
-            AndPredicateImpl scopedAndPredicate = new AndPredicateImpl();
-            scopedAndPredicate.and(scopeId);
+            AndPredicate scopedAndPredicate = kapuaQuery.andPredicate(
+                    kapuaQuery.attributePredicate(KapuaEntityAttributes.SCOPE_ID, kapuaQuery.getScopeId())
+            );
 
             // Add existing query predicates
             if (kapuaQuery.getPredicate() != null) {
@@ -468,9 +465,9 @@ public class ServiceDAO {
         QueryPredicate kapuaPredicates = kapuaQuery.getPredicate();
         if (kapuaQuery.getScopeId() != null) {
 
-            AndPredicateImpl scopedAndPredicate = new AndPredicateImpl();
+            AndPredicate scopedAndPredicate = kapuaQuery.andPredicate();
 
-            AttributePredicateImpl<KapuaId> scopeId = new AttributePredicateImpl<>(KapuaEntityAttributes.SCOPE_ID, kapuaQuery.getScopeId());
+            AttributePredicate<KapuaId> scopeId = kapuaQuery.attributePredicate(KapuaEntityAttributes.SCOPE_ID, kapuaQuery.getScopeId());
             scopedAndPredicate.and(scopeId);
 
             if (kapuaQuery.getPredicate() != null) {
@@ -742,7 +739,8 @@ public class ServiceDAO {
                     KapuaId userId = kapuaSession.getUserId();
 
                     AccessInfoQuery accessInfoQuery = ACCESS_INFO_FACTORY.newQuery(kapuaSession.getScopeId());
-                    accessInfoQuery.setPredicate(new AttributePredicateImpl<>(AccessInfoAttributes.USER_ID, userId));
+                    accessInfoQuery.setPredicate(query.attributePredicate(AccessInfoAttributes.USER_ID, userId));
+
                     AccessInfoListResult accessInfos = KapuaSecurityUtils.doPrivileged(() -> ACCESS_INFO_SERVICE.query(accessInfoQuery));
 
                     List<Permission> groupPermissions = new ArrayList<>();
@@ -774,14 +772,14 @@ public class ServiceDAO {
                         }
                     }
 
-                    AndPredicateImpl andPredicate = new AndPredicateImpl();
+                    AndPredicate andPredicate = query.andPredicate();
                     if (!groupPermissions.isEmpty()) {
                         int i = 0;
                         KapuaId[] groupsIds = new KapuaEid[groupPermissions.size()];
                         for (Permission p : groupPermissions) {
                             groupsIds[i++] = p.getGroupId();
                         }
-                        andPredicate.and(new AttributePredicateImpl<>(groupPredicateName, groupsIds));
+                        andPredicate.and(query.attributePredicate(groupPredicateName, groupsIds));
                     }
 
                     if (query.getPredicate() != null) {

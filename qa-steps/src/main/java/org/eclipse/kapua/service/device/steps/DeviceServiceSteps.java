@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,7 +23,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -67,8 +66,10 @@ import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
+import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventAttributes;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
@@ -87,7 +88,6 @@ import org.eclipse.kapua.service.user.steps.TestConfig;
 import org.junit.Assert;
 
 import javax.inject.Inject;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -103,7 +103,6 @@ import java.util.Vector;
 @ScenarioScoped
 public class DeviceServiceSteps extends BaseQATests /*KapuaTest*/ {
 
-    private static final KapuaEid DEFAULT_SCOPE_ID = new KapuaEid(BigInteger.valueOf(1L));
     protected static Random random = new Random();
 
     // Device registry services
@@ -410,13 +409,15 @@ public class DeviceServiceSteps extends BaseQATests /*KapuaTest*/ {
     public void iSearchForDeviceWithTag(String deviceTagName) throws Throwable {
 
         Account lastAcc = (Account) stepData.get("LastAccount");
-        DeviceQueryImpl deviceQuery = new DeviceQueryImpl(lastAcc.getId());
+        DeviceQuery deviceQuery = new DeviceQueryImpl(lastAcc.getId());
 
         KapuaQuery<Tag> tagQuery = new TagFactoryImpl().newQuery(lastAcc.getId());
-        tagQuery.setPredicate(new AttributePredicateImpl<>(TagAttributes.NAME, deviceTagName, AttributePredicate.Operator.EQUAL));
+        tagQuery.setPredicate(tagQuery.attributePredicate(TagAttributes.NAME, deviceTagName, AttributePredicate.Operator.EQUAL));
         TagListResult tagQueryResult = tagService.query(tagQuery);
+
         Tag tag = tagQueryResult.getFirstItem();
-        deviceQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo(DeviceAttributes.TAG_IDS, tag.getId()));
+
+        deviceQuery.setPredicate(deviceQuery.attributePredicate(DeviceAttributes.TAG_IDS, tag.getId()));
         DeviceListResult deviceList = deviceRegistryService.query(deviceQuery);
 
         stepData.put("DeviceList", deviceList);
@@ -472,8 +473,8 @@ public class DeviceServiceSteps extends BaseQATests /*KapuaTest*/ {
         Assert.assertNotNull(tmpDev.getId());
 
         tmpQuery = new DeviceEventQueryImpl(tmpAcc.getId());
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("deviceId", tmpDev.getId()));
-        tmpQuery.setSortCriteria(new FieldSortCriteria("receivedOn", FieldSortCriteria.SortOrder.ASCENDING));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceEventAttributes.DEVICE_ID, tmpDev.getId()));
+        tmpQuery.setSortCriteria(new FieldSortCriteria(DeviceEventAttributes.RECEIVED_ON, FieldSortCriteria.SortOrder.ASCENDING));
         tmpList = deviceEventsService.query(tmpQuery);
 
         Assert.assertNotNull(tmpList);

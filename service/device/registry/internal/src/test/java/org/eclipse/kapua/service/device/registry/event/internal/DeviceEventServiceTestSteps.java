@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,9 +24,9 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
+import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -47,6 +47,7 @@ import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.TestConfig;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventAttributes;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
@@ -56,10 +57,8 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFac
 import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
 import org.eclipse.kapua.service.device.registry.shared.SharedTestSteps;
-import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
-
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
@@ -374,7 +373,7 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
         assertNotNull(tmpQuery);
         assertNotNull(tmpMeth);
 
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("action", tmpMeth));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceEventAttributes.ACTION, tmpMeth));
         eventList = eventService.query(tmpQuery);
     }
 
@@ -485,24 +484,24 @@ public class DeviceEventServiceTestSteps extends AbstractKapuaSteps {
         KapuaMethod tmpMeth = null;
 
         switch (name.trim().toUpperCase()) {
-        case "READ":
-            tmpMeth = KapuaMethod.READ;
-            break;
-        case "CREATE":
-            tmpMeth = KapuaMethod.CREATE;
-            break;
-        case "WRITE":
-            tmpMeth = KapuaMethod.WRITE;
-            break;
-        case "DELETE":
-            tmpMeth = KapuaMethod.DELETE;
-            break;
-        case "OPTIONS":
-            tmpMeth = KapuaMethod.OPTIONS;
-            break;
-        case "EXECUTE":
-            tmpMeth = KapuaMethod.EXECUTE;
-            break;
+            case "READ":
+                tmpMeth = KapuaMethod.READ;
+                break;
+            case "CREATE":
+                tmpMeth = KapuaMethod.CREATE;
+                break;
+            case "WRITE":
+                tmpMeth = KapuaMethod.WRITE;
+                break;
+            case "DELETE":
+                tmpMeth = KapuaMethod.DELETE;
+                break;
+            case "OPTIONS":
+                tmpMeth = KapuaMethod.OPTIONS;
+                break;
+            case "EXECUTE":
+                tmpMeth = KapuaMethod.EXECUTE;
+                break;
         }
         assertNotNull(tmpMeth);
 

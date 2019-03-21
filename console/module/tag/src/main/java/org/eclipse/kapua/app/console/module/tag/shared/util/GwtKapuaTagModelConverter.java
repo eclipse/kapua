@@ -18,14 +18,13 @@ import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModel
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagQuery;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
+import org.eclipse.kapua.service.tag.TagAttributes;
 import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagQuery;
-import org.eclipse.kapua.service.tag.TagAttributes;
 
 public class GwtKapuaTagModelConverter {
 
@@ -44,13 +43,15 @@ public class GwtKapuaTagModelConverter {
      */
     public static TagQuery convertTagQuery(PagingLoadConfig loadConfig, GwtTagQuery gwtTagQuery) {
 
+        TagQuery query = TAG_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtTagQuery.getScopeId()));
+
         // Predicates conversion
-        AndPredicateImpl andPredicate = new AndPredicateImpl();
+        AndPredicate andPredicate = query.andPredicate();
         if (gwtTagQuery.getName() != null && !gwtTagQuery.getName().isEmpty()) {
-            andPredicate.and(new AttributePredicateImpl<String>(TagAttributes.NAME, gwtTagQuery.getName(), Operator.LIKE));
+            andPredicate.and(query.attributePredicate(TagAttributes.NAME, gwtTagQuery.getName(), Operator.LIKE));
         }
         if (gwtTagQuery.getDescription() != null && !gwtTagQuery.getDescription().isEmpty()) {
-            andPredicate.and(new AttributePredicateImpl<String>(TagAttributes.DESCRIPTION, gwtTagQuery.getDescription(), Operator.LIKE));
+            andPredicate.and(query.attributePredicate(TagAttributes.DESCRIPTION, gwtTagQuery.getDescription(), Operator.LIKE));
         }
         if (!gwtTagQuery.getIds().isEmpty()) {
             int i = 0;
@@ -59,8 +60,9 @@ public class GwtKapuaTagModelConverter {
                 tagIds[i++] = GwtKapuaCommonsModelConverter.convertKapuaId(gwtTagId);
             }
 
-            andPredicate.and(new AttributePredicateImpl<KapuaId[]>(TagAttributes.ENTITY_ID, tagIds));
+            andPredicate.and(query.attributePredicate(TagAttributes.ENTITY_ID, tagIds));
         }
+        query.setPredicate(andPredicate);
 
         // Sort order conversion
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? TagAttributes.NAME : loadConfig.getSortField();
@@ -73,12 +75,10 @@ public class GwtKapuaTagModelConverter {
         FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
 
         // Query conversion
-        TagQuery tagQuery = TAG_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtTagQuery.getScopeId()));
-        tagQuery.setPredicate(andPredicate);
-        tagQuery.setSortCriteria(sortCriteria);
-        tagQuery.setOffset(loadConfig.getOffset());
-        tagQuery.setLimit(loadConfig.getLimit());
+        query.setSortCriteria(sortCriteria);
+        query.setOffset(loadConfig.getOffset());
+        query.setLimit(loadConfig.getLimit());
 
-        return tagQuery;
+        return query;
     }
 }

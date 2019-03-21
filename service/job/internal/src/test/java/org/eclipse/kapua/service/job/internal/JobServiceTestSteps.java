@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,8 +24,8 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
+import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -39,17 +39,16 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.job.JobAttributes;
 import org.eclipse.kapua.service.job.JobCreator;
 import org.eclipse.kapua.service.job.JobFactory;
 import org.eclipse.kapua.service.job.JobJAXBContextProvider;
-import org.eclipse.kapua.service.job.JobAttributes;
 import org.eclipse.kapua.service.job.JobQuery;
 import org.eclipse.kapua.service.job.JobService;
 import org.eclipse.kapua.service.job.common.CommonData;
 import org.eclipse.kapua.service.job.common.TestConfig;
 import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.StepData;
-import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerFactoryImpl;
@@ -399,7 +398,7 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
             throws Exception {
 
         JobQuery tmpQuery = jobFactory.newQuery(commonData.currentScopeId);
-        tmpQuery.setPredicate(new AttributePredicateImpl<>(JobAttributes.NAME, name, Operator.STARTS_WITH));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobAttributes.NAME, name, Operator.STARTS_WITH));
 
         try {
             commonData.primeException();
@@ -414,7 +413,7 @@ public class JobServiceTestSteps extends AbstractKapuaSteps {
             throws Exception {
 
         JobQuery tmpQuery = jobFactory.newQuery(commonData.currentScopeId);
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo(JobAttributes.NAME, name));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobAttributes.NAME, name));
 
         try {
             commonData.primeException();

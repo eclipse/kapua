@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,8 +16,6 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
@@ -26,8 +24,8 @@ import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticatio
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.certificate.Certificate;
-import org.eclipse.kapua.service.certificate.CertificateFactory;
 import org.eclipse.kapua.service.certificate.CertificateAttributes;
+import org.eclipse.kapua.service.certificate.CertificateFactory;
 import org.eclipse.kapua.service.certificate.CertificateQuery;
 import org.eclipse.kapua.service.certificate.CertificateService;
 import org.eclipse.kapua.service.certificate.CertificateStatus;
@@ -71,18 +69,18 @@ public class AccessTokenCredentialsMatcher implements CredentialsMatcher {
             try {
                 String issuer = settings.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_SESSION_JWT_ISSUER);
 
-                CertificateQuery certificateQuery = CERTIFICATE_FACTORY.newQuery(null);
-                certificateQuery.setPredicate(
-                        new AndPredicateImpl(
-                                new AttributePredicateImpl<>(CertificateAttributes.USAGE_NAME, "JWT"),
-                                new AttributePredicateImpl<>(CertificateAttributes.STATUS, CertificateStatus.VALID)
+                CertificateQuery query = CERTIFICATE_FACTORY.newQuery(null);
+                query.setPredicate(
+                        query.andPredicate(
+                                query.attributePredicate(CertificateAttributes.USAGE_NAME, "JWT"),
+                                query.attributePredicate(CertificateAttributes.STATUS, CertificateStatus.VALID)
                         )
                 );
-                certificateQuery.setSortCriteria(new FieldSortCriteria(CertificateAttributes.CREATED_BY, FieldSortCriteria.SortOrder.DESCENDING));
-                certificateQuery.setIncludeInherited(true);
-                certificateQuery.setLimit(1);
+                query.setSortCriteria(new FieldSortCriteria(CertificateAttributes.CREATED_BY, FieldSortCriteria.SortOrder.DESCENDING));
+                query.setIncludeInherited(true);
+                query.setLimit(1);
 
-                Certificate certificate = KapuaSecurityUtils.doPrivileged(() -> CERTIFICATE_SERVICE.query(certificateQuery)).getFirstItem();
+                Certificate certificate = KapuaSecurityUtils.doPrivileged(() -> CERTIFICATE_SERVICE.query(query)).getFirstItem();
 
                 if (certificate == null) {
                     throw new JwtCertificateNotFoundException();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 , 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016 , 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,7 +21,6 @@ import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
@@ -111,7 +110,8 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Check duplicate name
         AccountQuery query = new AccountQueryImpl(accountCreator.getScopeId());
-        query.setPredicate(new AttributePredicateImpl<>(AccountAttributes.NAME, accountCreator.getName()));
+        query.setPredicate(query.attributePredicate(AccountAttributes.NAME, accountCreator.getName()));
+
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(accountCreator.getName());
         }
