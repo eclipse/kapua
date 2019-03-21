@@ -17,6 +17,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.model.query.predicate.OrPredicate;
 import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 
 import javax.validation.constraints.NotNull;
@@ -153,4 +154,18 @@ public interface KapuaQuery<E extends KapuaEntity> {
      * @since 1.0.0
      */
     void setLimit(Integer limit);
+
+    //
+    // Predicates factory
+    <T> AttributePredicate<T> attributePredicate(String attributeName, T attributeValue);
+
+    <T> AttributePredicate<T> attributePredicate(String attributeName, T attributeValue, AttributePredicate.Operator operator);
+
+    AndPredicate andPredicate();
+
+    AndPredicate andPredicate(QueryPredicate... queryPredicates);
+
+    OrPredicate orPredicate();
+
+    OrPredicate orPredicate(QueryPredicate... queryPredicates);
 }

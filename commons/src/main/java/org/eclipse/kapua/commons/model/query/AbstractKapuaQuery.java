@@ -13,11 +13,17 @@ package org.eclipse.kapua.commons.model.query;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
+import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.OrPredicateImpl;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.KapuaSortCriteria;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.model.query.predicate.OrPredicate;
 import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 
 import java.util.ArrayList;
@@ -130,5 +136,37 @@ public abstract class AbstractKapuaQuery<E extends KapuaEntity> implements Kapua
     @Override
     public void setLimit(Integer limit) {
         this.limit = limit;
+    }
+
+    //
+    // Predicate factory
+    @Override
+    public <T> AttributePredicate<T> attributePredicate(String attributeName, T attributeValue) {
+        return new AttributePredicateImpl<>(attributeName, attributeValue);
+    }
+
+    @Override
+    public <T> AttributePredicate<T> attributePredicate(String attributeName, T attributeValue, AttributePredicate.Operator operator) {
+        return new AttributePredicateImpl<>(attributeName, attributeValue, operator);
+    }
+
+    @Override
+    public AndPredicate andPredicate() {
+        return new AndPredicateImpl();
+    }
+
+    @Override
+    public AndPredicate andPredicate(QueryPredicate... queryPredicates) {
+        return new AndPredicateImpl(queryPredicates);
+    }
+
+    @Override
+    public OrPredicate orPredicate() {
+        return new OrPredicateImpl();
+    }
+
+    @Override
+    public OrPredicate orPredicate(QueryPredicate... queryPredicates) {
+        return new OrPredicateImpl(queryPredicates);
     }
 }
