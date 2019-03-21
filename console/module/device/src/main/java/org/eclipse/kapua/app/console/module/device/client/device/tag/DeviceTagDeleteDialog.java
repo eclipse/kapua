@@ -44,7 +44,7 @@ public class DeviceTagDeleteDialog extends EntityDeleteDialog {
 
     @Override
     public String getInfoMessage() {
-        return MSGS.dialogDeviceTagDeleteInfo(selectedTag.getTagName(), selectedDevice.getClientId());
+        return MSGS.dialogDeviceTagDeleteInfo();
     }
 
     @Override
