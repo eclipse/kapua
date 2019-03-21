@@ -11,16 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
-import org.eclipse.kapua.commons.model.query.predicate.AbstractKapuaQuery;
+import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 
 /**
  * {@link RolePermission} query implementation.
- * 
+ *
  * @since 1.0
- * 
  */
 public class RolePermissionQueryImpl extends AbstractKapuaQuery<RolePermission> implements RolePermissionQuery {
 
@@ -33,7 +32,7 @@ public class RolePermissionQueryImpl extends AbstractKapuaQuery<RolePermission> 
 
     /**
      * Constructor
-     * 
+     *
      * @param scopeId
      */
     public RolePermissionQueryImpl(KapuaId scopeId) {

@@ -11,14 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.tag.internal;
 
-import org.eclipse.kapua.commons.model.query.predicate.AbstractKapuaQuery;
+import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagQuery;
 
 /**
  * {@link TagQuery} implementation.
- * 
+ *
  * @since 1.0.0
  */
 public class TagQueryImpl extends AbstractKapuaQuery<Tag> implements TagQuery {

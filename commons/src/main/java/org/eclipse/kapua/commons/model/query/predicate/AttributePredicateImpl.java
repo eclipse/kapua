@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,47 +14,36 @@ package org.eclipse.kapua.commons.model.query.predicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 
 /**
- * Kapua attribute predicate reference implementation.
+ * {@link AttributePredicate} implementation.
  *
- * @param <T>
- *            attribute value
- * 
- * @since 1.0
- * 
+ * @since 1.0.0
  */
 public class AttributePredicateImpl<T> implements AttributePredicate<T> {
 
-    /**
-     * Predicate attribute name
-     */
     private String attributeName;
-
-    /**
-     * Predicate attribute value
-     */
     private T attributeValue;
-
-    /**
-     * Comparison attribute
-     */
     private Operator operator;
 
     /**
-     * Constructor
-     * 
-     * @param attributeName
-     * @param attributeValue
+     * Constructor.
+     * <p>
+     * Defaults ot {@link org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator#EQUAL}
+     *
+     * @param attributeName  The name of {@link org.eclipse.kapua.model.KapuaEntityAttributes} to set into the {@link AttributePredicate}.
+     * @param attributeValue The value of {@link org.eclipse.kapua.model.KapuaEntityAttributes} to set into the {@link AttributePredicate}.
+     * @since 1.0.0
      */
     public AttributePredicateImpl(String attributeName, T attributeValue) {
         this(attributeName, attributeValue, Operator.EQUAL);
     }
 
     /**
-     * Constructor
-     * 
-     * @param attributeName
-     * @param attributeValue
-     * @param operator
+     * Constructor.
+     *
+     * @param attributeName  The name of {@link org.eclipse.kapua.model.KapuaEntityAttributes} to set into the {@link AttributePredicate}.
+     * @param attributeValue The value of {@link org.eclipse.kapua.model.KapuaEntityAttributes} to set into the {@link AttributePredicate}.
+     * @param operator       The {@link org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator} to set into the {@link AttributePredicate}.
+     * @since 1.0.0
      */
     public AttributePredicateImpl(String attributeName, T attributeValue, Operator operator) {
         this.attributeName = attributeName;
@@ -64,7 +53,7 @@ public class AttributePredicateImpl<T> implements AttributePredicate<T> {
 
     /**
      * Create an equal to predicate
-     * 
+     *
      * @param attributeName
      * @param attributeValue
      * @return
@@ -75,7 +64,7 @@ public class AttributePredicateImpl<T> implements AttributePredicate<T> {
 
     /**
      * Create a not equal to predicate
-     * 
+     *
      * @param attributeName
      * @param attributeValue
      * @return

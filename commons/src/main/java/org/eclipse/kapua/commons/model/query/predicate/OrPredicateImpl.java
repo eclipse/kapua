@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,25 +21,25 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * {@link OrPredicate} reference implementation.
+ * {@link OrPredicate} implementation.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 public class OrPredicateImpl implements OrPredicate {
 
     private List<QueryPredicate> predicates;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @since 0.1.0
+     * @since 1.0.0
      */
     public OrPredicateImpl() {
         setPredicates(new ArrayList<>());
     }
 
     /**
-     * Constructor which accepts a not null array of {@link QueryPredicate}s.
+     * Constructor which accepts a not {@code null} array of {@link QueryPredicate}s.
      *
      * @param predicates the {@link QueryPredicate}s to add.
      * @throws NullPointerException if the given parameter is {@code null}.
@@ -51,18 +51,12 @@ public class OrPredicateImpl implements OrPredicate {
         setPredicates(Lists.newArrayList(predicates));
     }
 
-    /**
-     * Adds a new {@link QueryPredicate} to this {@link OrPredicate}.
-     *
-     * @param predicate The {@link QueryPredicate} to add
-     * @return {@code this} {@link OrPredicateImpl}.
-     * @throws NullPointerException if the given parameter is {@code null}.
-     */
     @Override
     public OrPredicateImpl or(@NotNull QueryPredicate predicate) {
         Objects.requireNonNull(predicates);
 
-        this.predicates.add(predicate);
+        getPredicates().add(predicate);
+
         return this;
     }
 
@@ -71,7 +65,8 @@ public class OrPredicateImpl implements OrPredicate {
         return this.predicates;
     }
 
-    private void setPredicates(List<QueryPredicate> predicates) {
+    @Override
+    public void setPredicates(List<QueryPredicate> predicates) {
         this.predicates = predicates;
     }
 }

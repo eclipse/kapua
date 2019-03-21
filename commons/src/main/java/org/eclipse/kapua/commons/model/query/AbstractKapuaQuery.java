@@ -9,13 +9,9 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.model.query.predicate;
-
-import java.util.ArrayList;
-import java.util.List;
+package org.eclipse.kapua.commons.model.query;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
@@ -24,14 +20,14 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.KapuaSortCriteria;
 import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * {@link KapuaQuery} reference abstract implementation.
+ * {@link KapuaQuery} {@code abstract} implementation.
  *
- * @param <E>
- *            {@link KapuaEntity} domain for this query.
- * 
+ * @param <E> {@link KapuaEntity} domain
  * @since 1.0.0
- * 
  */
 public abstract class AbstractKapuaQuery<E extends KapuaEntity> implements KapuaQuery<E> {
 
@@ -46,9 +42,9 @@ public abstract class AbstractKapuaQuery<E extends KapuaEntity> implements Kapua
 
     /**
      * Constructor.
-     * 
+     * <p>
      * It defaults the {@link #sortCriteria} to order by the {@link KapuaEntity#getCreatedOn()} {@link SortOrder#ASCENDING}.
-     * 
+     *
      * @since 1.0.0
      */
     public AbstractKapuaQuery() {
@@ -57,9 +53,8 @@ public abstract class AbstractKapuaQuery<E extends KapuaEntity> implements Kapua
 
     /**
      * Constructor.
-     * 
-     * @param scopeId
-     *            The scope id of the {@link KapuaQuery}
+     *
+     * @param scopeId The scope {@link KapuaId} of the {@link KapuaQuery}
      * @since 1.0.0
      */
     public AbstractKapuaQuery(KapuaId scopeId) {
@@ -69,22 +64,8 @@ public abstract class AbstractKapuaQuery<E extends KapuaEntity> implements Kapua
     }
 
     @Override
-    public void addFetchAttributes(String fetchAttribute) {
-        if (getFetchAttributes() == null) {
-            setFetchAttributes(new ArrayList<>());
-        }
-
-        getFetchAttributes().add(fetchAttribute);
-    }
-
-    @Override
-    public void setFetchAttributes(List<String> fetchAttributes) {
-        this.fetchAttributes = fetchAttributes;
-    }
-
-    @Override
-    public List<String> getFetchAttributes() {
-        return fetchAttributes;
+    public KapuaId getScopeId() {
+        return scopeId;
     }
 
     @Override
@@ -93,13 +74,22 @@ public abstract class AbstractKapuaQuery<E extends KapuaEntity> implements Kapua
     }
 
     @Override
-    public KapuaId getScopeId() {
-        return scopeId;
+    public void addFetchAttributes(String fetchAttribute) {
+        getFetchAttributes().add(fetchAttribute);
     }
 
     @Override
-    public void setPredicate(QueryPredicate queryPredicate) {
-        this.predicate = queryPredicate;
+    public List<String> getFetchAttributes() {
+        if (fetchAttributes == null) {
+            fetchAttributes = new ArrayList<>();
+        }
+
+        return fetchAttributes;
+    }
+
+    @Override
+    public void setFetchAttributes(List<String> fetchAttributes) {
+        this.fetchAttributes = fetchAttributes;
     }
 
     @Override
@@ -108,13 +98,18 @@ public abstract class AbstractKapuaQuery<E extends KapuaEntity> implements Kapua
     }
 
     @Override
-    public void setSortCriteria(KapuaSortCriteria sortCriteria) {
-        this.sortCriteria = sortCriteria;
+    public void setPredicate(QueryPredicate queryPredicate) {
+        this.predicate = queryPredicate;
     }
 
     @Override
     public KapuaSortCriteria getSortCriteria() {
-        return this.sortCriteria;
+        return sortCriteria;
+    }
+
+    @Override
+    public void setSortCriteria(KapuaSortCriteria sortCriteria) {
+        this.sortCriteria = sortCriteria;
     }
 
     @Override
@@ -123,13 +118,13 @@ public abstract class AbstractKapuaQuery<E extends KapuaEntity> implements Kapua
     }
 
     @Override
-    public Integer getLimit() {
-        return limit;
+    public void setOffset(Integer offset) {
+        this.offset = offset;
     }
 
     @Override
-    public void setOffset(Integer offset) {
-        this.offset = offset;
+    public Integer getLimit() {
+        return limit;
     }
 
     @Override

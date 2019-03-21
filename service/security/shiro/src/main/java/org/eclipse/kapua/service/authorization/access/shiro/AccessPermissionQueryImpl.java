@@ -11,16 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
-import org.eclipse.kapua.commons.model.query.predicate.AbstractKapuaQuery;
+import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 
 /**
  * {@link AccessPermission} query implementation.
- * 
+ *
  * @since 1.0
- * 
  */
 public class AccessPermissionQueryImpl extends AbstractKapuaQuery<AccessPermission> implements AccessPermissionQuery {
 
@@ -33,7 +32,7 @@ public class AccessPermissionQueryImpl extends AbstractKapuaQuery<AccessPermissi
 
     /**
      * Constructor
-     * 
+     *
      * @param scopeId
      */
     public AccessPermissionQueryImpl(KapuaId scopeId) {
