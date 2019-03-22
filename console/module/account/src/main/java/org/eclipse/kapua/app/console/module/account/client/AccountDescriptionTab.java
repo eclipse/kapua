@@ -33,6 +33,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 public class AccountDescriptionTab extends EntityDescriptionTabItem<GwtAccount> {
 
     private static final GwtAccountServiceAsync GWT_ACCOUNT_SERVICE = GWT.create(GwtAccountService.class);
+    private static final String CHILD_ACCOUNT = "child account";
 
     public AccountDescriptionTab(GwtSession currentSession) {
         super(currentSession);
@@ -52,6 +53,11 @@ public class AccountDescriptionTab extends EntityDescriptionTabItem<GwtAccount> 
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
+    }
+
+    @Override
+    protected String getGroupViewText() {
+        return MSGS.tabDescriptionNoItemSelected(CHILD_ACCOUNT);
     }
 
     @Override

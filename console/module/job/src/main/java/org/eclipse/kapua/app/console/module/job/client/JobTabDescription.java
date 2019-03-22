@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,6 +25,7 @@ import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobServiceAsyn
 public class JobTabDescription extends EntityDescriptionTabItem<GwtJob> {
 
     private static final GwtJobServiceAsync JOB_SERVICE = GWT.create(GwtJobService.class);
+    private static final String JOB = "job";
 
     public JobTabDescription(GwtSession currentSession) {
         super(currentSession);
@@ -39,5 +40,10 @@ public class JobTabDescription extends EntityDescriptionTabItem<GwtJob> {
                 JOB_SERVICE.findJobDescription(currentSession.getSelectedAccountId(), selectedEntity.getId(), callback);
             }
         };
+    }
+
+    @Override
+    protected String getGroupViewText() {
+        return MSGS.tabDescriptionNoItemSelected(JOB);
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,6 +31,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.color.Color;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.ModifiedByNameCellRenderer;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolbarMessages;
 import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
@@ -52,9 +53,8 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
     private static final GwtCredentialServiceAsync GWT_CREDENTIAL_SERVICE = GWT.create(GwtCredentialService.class);
     private GwtCredentialQuery query;
     private String selectedUserId;
-    private String selectedUserName;
-
     private CredentialToolbar toolbar;
+    private static final String CREDENTIAL = "credential";
 
     public CredentialGrid(AbstractEntityView<GwtCredential> entityView, GwtSession currentSession) {
         super(entityView, currentSession);
@@ -213,7 +213,6 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
     }
 
     public void setSelectedUserName(String selectedUserName) {
-        this.selectedUserName = selectedUserName;
         getToolbar().setSelectedUserName(selectedUserName);
     }
 
@@ -250,5 +249,26 @@ public class CredentialGrid extends EntityGrid<GwtCredential> {
         if (selectedUserId == null) {
             refresh();
         }
+    }
+
+    @Override
+    public String getEmptyGridText() {
+        return MSGS.gridNoResultAvailable(CREDENTIAL);
+    }
+
+    @Override
+    protected KapuaPagingToolbarMessages getKapuaPagingToolbarMessages() {
+        return new KapuaPagingToolbarMessages() {
+
+            @Override
+            public String pagingToolbarShowingPost() {
+                return MSGS.specificPagingToolbarShowingPost(CREDENTIAL);
+            }
+
+            @Override
+            public String pagingToolbarNoResult() {
+                return MSGS.specificPagingToolbarNoResult(CREDENTIAL);
+            }
+        };
     }
 }

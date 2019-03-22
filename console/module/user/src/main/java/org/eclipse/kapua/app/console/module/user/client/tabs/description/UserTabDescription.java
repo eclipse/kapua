@@ -17,7 +17,6 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import java.util.Date;
@@ -33,6 +32,7 @@ import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAs
 public class UserTabDescription extends EntityDescriptionTabItem<GwtUser> {
 
     private static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
+    private static final String USER = "user";
 
     public UserTabDescription(GwtSession currentSession) {
         super(currentSession);
@@ -51,8 +51,8 @@ public class UserTabDescription extends EntityDescriptionTabItem<GwtUser> {
     }
 
     @Override
-    protected void onRender(Element parent, int index) {
-        super.onRender(parent, index);
+    protected String getGroupViewText() {
+        return MSGS.tabDescriptionNoItemSelected(USER);
     }
 
     @Override

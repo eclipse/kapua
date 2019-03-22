@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -51,9 +51,11 @@ public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends
     private Grid<GwtGroupedNVPair> descriptionGrid;
     private GroupingStore<GwtGroupedNVPair> descriptionValuesStore;
     private BaseListLoader<ListLoadResult<GwtGroupedNVPair>> descriptionValuesLoader;
+    private GroupingView groupingView;
 
     public EntityDescriptionTabItem(GwtSession currentSession) {
         super(currentSession, MSGS.entityTabDescriptionTitle(), new KapuaIcon(IconSet.INFO));
+        groupingView = new GroupingView();
     }
 
     @Override
@@ -99,13 +101,11 @@ public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends
 
         //
         // Grid
-        GroupingView groupingView = new GroupingView();
         groupingView.setShowGroupedColumn(false);
         groupingView.setForceFit(true);
         groupingView.setAutoFill(true);
         groupingView.setSortingEnabled(false);
         groupingView.setShowGroupedColumn(false);
-        groupingView.setEmptyText(MSGS.entityTabDescriptionNoSelection());
         groupingView.setEnableNoGroups(false);
         groupingView.setEnableGroupingMenu(false);
         descriptionGrid = new KapuaGrid<GwtGroupedNVPair>(descriptionValuesStore, cm);
@@ -121,11 +121,21 @@ public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends
         contentPanel.add(descriptionGrid);
 
         add(contentPanel);
+
+        setGroupViewText(getGroupViewText());
     }
 
     @Override
     public void setEntity(M t) {
         super.setEntity(t);
+    }
+
+    protected void setGroupViewText(String message) {
+        groupingView.setEmptyText(message);
+    }
+
+    protected String getGroupViewText() {
+        return MSGS.entityTabDescriptionNoSelection();
     }
 
     protected abstract RpcProxy<ListLoadResult<GwtGroupedNVPair>> getDataProxy();

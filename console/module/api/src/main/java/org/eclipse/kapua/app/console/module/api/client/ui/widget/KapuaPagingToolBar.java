@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,6 +23,7 @@ public class KapuaPagingToolBar extends PagingToolBar {
      * Max length of user input field for page number.
      */
     public static final int MAX_TEXT_LEN = 4;
+    private KapuaPagingToolbarMessages kapuaPagingToolbarMessages;
 
     public KapuaPagingToolBar(int pageSize) {
         super(pageSize);
@@ -31,26 +32,29 @@ public class KapuaPagingToolBar extends PagingToolBar {
             this.pageText.getElement().setAttribute("maxLength", String.valueOf(MAX_TEXT_LEN));
         }
 
-        PagingToolBarMessages pagingToolbarMessages = getMessages();
-        pagingToolbarMessages.setBeforePageText(MSGS.pagingToolbarPage());
-        pagingToolbarMessages.setAfterPageText(MSGS.pagingToolbarOf().concat("{0}"));
+        remove(refresh);
+    }
 
+    public void setKapuaPagingToolbarMessages(KapuaPagingToolbarMessages kapuaPagingToolbarMessages) {
+        this.kapuaPagingToolbarMessages = kapuaPagingToolbarMessages;
+
+        PagingToolBarMessages pagingToolbarMessages = getMessages();
         StringBuilder sb = new StringBuilder();
         sb.append(MSGS.pagingToolbarShowingPre())
                 .append(" {0} - {1} ")
                 .append(MSGS.pagingToolbarShowingMid())
                 .append(" {2} ")
-                .append(MSGS.pagingToolbarShowingPost());
+                .append(kapuaPagingToolbarMessages.pagingToolbarShowingPost());
         pagingToolbarMessages.setDisplayMsg(sb.toString());
 
-        pagingToolbarMessages.setEmptyMsg(MSGS.pagingToolbarNoResult());
-
+        pagingToolbarMessages.setEmptyMsg(kapuaPagingToolbarMessages.pagingToolbarNoResult());
+        pagingToolbarMessages.setBeforePageText(MSGS.pagingToolbarPage());
+        pagingToolbarMessages.setAfterPageText(MSGS.pagingToolbarOf().concat("{0}"));
         pagingToolbarMessages.setFirstText(MSGS.pagingToolbarFirstPage());
         pagingToolbarMessages.setPrevText(MSGS.pagingToolbarPrevPage());
         pagingToolbarMessages.setNextText(MSGS.pagingToolbarNextPage());
         pagingToolbarMessages.setLastText(MSGS.pagingToolbarLastPage());
         pagingToolbarMessages.setRefreshText(MSGS.pagingToolbarRefresh());
-
-        remove(refresh);
     }
+
 }
