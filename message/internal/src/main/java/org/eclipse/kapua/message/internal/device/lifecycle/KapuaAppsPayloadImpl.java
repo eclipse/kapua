@@ -23,6 +23,15 @@ public class KapuaAppsPayloadImpl extends KapuaBirthPayloadImpl implements Kapua
     /**
      * Constructor.
      *
+     * @since 1.1.0
+     */
+    public KapuaAppsPayloadImpl() {
+        super();
+    }
+
+    /**
+     * Constructor.
+     *
      * @see KapuaBirthPayloadImpl
      */
     public KapuaAppsPayloadImpl(String uptime,

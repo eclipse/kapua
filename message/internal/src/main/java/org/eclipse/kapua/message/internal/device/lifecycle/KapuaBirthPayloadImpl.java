@@ -24,6 +24,15 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
 
     /**
      * Constructor.
+     *
+     * @since 1.1.0
+     */
+    public KapuaBirthPayloadImpl() {
+        super();
+    }
+
+    /**
+     * Constructor.
      * <p>
      * Sets all available properties of the {@link KapuaBirthPayload} at once.
      *
@@ -87,7 +96,6 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
                                  String modemImei,
                                  String modemImsi,
                                  String modemIccid) {
-        getMetrics();
 
         setUptime(uptime);
         setDisplayName(displayName);
@@ -125,7 +133,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.UPTIME);
     }
 
-    private void setUptime(String uptime) {
+    @Override
+    public void setUptime(String uptime) {
         getMetrics().put(KapuaBirthPayloadAttibutes.UPTIME, uptime);
     }
 
@@ -134,7 +143,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.DISPLAY_NAME);
     }
 
-    private void setDisplayName(String displayName) {
+    @Override
+    public void setDisplayName(String displayName) {
         getMetrics().put(KapuaBirthPayloadAttibutes.DISPLAY_NAME, displayName);
     }
 
@@ -143,7 +153,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.MODEL_NAME);
     }
 
-    private void setModelName(String moodelyName) {
+    @Override
+    public void setModelName(String moodelyName) {
         getMetrics().put(KapuaBirthPayloadAttibutes.MODEL_NAME, moodelyName);
     }
 
@@ -152,7 +163,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.MODEL_ID);
     }
 
-    private void setModelId(String modelId) {
+    @Override
+    public void setModelId(String modelId) {
         getMetrics().put(KapuaBirthPayloadAttibutes.MODEL_ID, modelId);
     }
 
@@ -161,7 +173,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.PART_NUMBER);
     }
 
-    private void setPartNumber(String partNumber) {
+    @Override
+    public void setPartNumber(String partNumber) {
         getMetrics().put(KapuaBirthPayloadAttibutes.PART_NUMBER, partNumber);
     }
 
@@ -170,7 +183,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.SERIAL_NUMBER);
     }
 
-    private void setSerialNumber(String serialNumber) {
+    @Override
+    public void setSerialNumber(String serialNumber) {
         getMetrics().put(KapuaBirthPayloadAttibutes.SERIAL_NUMBER, serialNumber);
     }
 
@@ -179,7 +193,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.FIRMWARE);
     }
 
-    private void setFirmware(String firmware) {
+    @Override
+    public void setFirmware(String firmware) {
         getMetrics().put(KapuaBirthPayloadAttibutes.FIRMWARE, firmware);
     }
 
@@ -188,7 +203,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.FIRMWARE_VERSION);
     }
 
-    private void setFirmwareVersion(String firmwareVersion) {
+    @Override
+    public void setFirmwareVersion(String firmwareVersion) {
         getMetrics().put(KapuaBirthPayloadAttibutes.FIRMWARE_VERSION, firmwareVersion);
     }
 
@@ -197,7 +213,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.BIOS);
     }
 
-    private void setBios(String bios) {
+    @Override
+    public void setBios(String bios) {
         getMetrics().put(KapuaBirthPayloadAttibutes.BIOS, bios);
     }
 
@@ -206,7 +223,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.BIOS_VERSION);
     }
 
-    private void setBiosVersion(String biosVersion) {
+    @Override
+    public void setBiosVersion(String biosVersion) {
         getMetrics().put(KapuaBirthPayloadAttibutes.BIOS_VERSION, biosVersion);
     }
 
@@ -215,8 +233,19 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.OS);
     }
 
-    private void setOs(String os) {
+    @Override
+    public void setOs(String os) {
         getMetrics().put(KapuaBirthPayloadAttibutes.OS, os);
+    }
+
+    @Override
+    public String getOsArch() {
+        return (String) getMetrics().get(KapuaBirthPayloadAttibutes.OS_ARCH);
+    }
+
+    @Override
+    public void setOsArch(String osArch) {
+        getMetrics().put(KapuaBirthPayloadAttibutes.OS_ARCH, osArch);
     }
 
     @Override
@@ -224,7 +253,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.OS_VERSION);
     }
 
-    private void setOsVersion(String osVersion) {
+    @Override
+    public void setOsVersion(String osVersion) {
         getMetrics().put(KapuaBirthPayloadAttibutes.OS_VERSION, osVersion);
     }
 
@@ -233,7 +263,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.JVM);
     }
 
-    private void setJvm(String jvm) {
+    @Override
+    public void setJvm(String jvm) {
         getMetrics().put(KapuaBirthPayloadAttibutes.JVM, jvm);
     }
 
@@ -242,7 +273,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.JVM_VERSION);
     }
 
-    private void setJvmVersion(String jvmVersion) {
+    @Override
+    public void setJvmVersion(String jvmVersion) {
         getMetrics().put(KapuaBirthPayloadAttibutes.JVM_VERSION, jvmVersion);
     }
 
@@ -251,7 +283,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.JVM_PROFILE);
     }
 
-    private void setJvmProfile(String jvmProfile) {
+    @Override
+    public void setJvmProfile(String jvmProfile) {
         getMetrics().put(KapuaBirthPayloadAttibutes.JVM_PROFILE, jvmProfile);
     }
 
@@ -260,7 +293,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.CONTAINER_FRAMEWORK);
     }
 
-    private void setContainerFramework(String containerFramework) {
+    @Override
+    public void setContainerFramework(String containerFramework) {
         getMetrics().put(KapuaBirthPayloadAttibutes.CONTAINER_FRAMEWORK, containerFramework);
     }
 
@@ -269,7 +303,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.CONTAINER_FRAMEWORK_VERSION);
     }
 
-    private void setContainerFrameworkVersion(String containerFrameworkVersion) {
+    @Override
+    public void setContainerFrameworkVersion(String containerFrameworkVersion) {
         getMetrics().put(KapuaBirthPayloadAttibutes.CONTAINER_FRAMEWORK_VERSION, containerFrameworkVersion);
     }
 
@@ -278,7 +313,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.APPLICATION_FRAMEWORK);
     }
 
-    private void setApplicationFramework(String applicationFramework) {
+    @Override
+    public void setApplicationFramework(String applicationFramework) {
         getMetrics().put(KapuaBirthPayloadAttibutes.APPLICATION_FRAMEWORK, applicationFramework);
     }
 
@@ -287,7 +323,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.APPLICATION_FRAMEWORK_VERSION);
     }
 
-    private void setApplicationFrameworkVersion(String applicationFrameworkVersion) {
+    @Override
+    public void setApplicationFrameworkVersion(String applicationFrameworkVersion) {
         getMetrics().put(KapuaBirthPayloadAttibutes.APPLICATION_FRAMEWORK_VERSION, applicationFrameworkVersion);
     }
 
@@ -296,7 +333,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.CONNECTION_INTERFACE);
     }
 
-    private void setConnectionInterface(String connectionInterface) {
+    @Override
+    public void setConnectionInterface(String connectionInterface) {
         getMetrics().put(KapuaBirthPayloadAttibutes.CONNECTION_INTERFACE, connectionInterface);
     }
 
@@ -305,7 +343,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.CONNECTION_IP);
     }
 
-    private void setConnectionIp(String connectionIp) {
+    @Override
+    public void setConnectionIp(String connectionIp) {
         getMetrics().put(KapuaBirthPayloadAttibutes.CONNECTION_IP, connectionIp);
     }
 
@@ -314,7 +353,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.ACCEPT_ENCODING);
     }
 
-    private void setAcceptEncoding(String acceptEncoding) {
+    @Override
+    public void setAcceptEncoding(String acceptEncoding) {
         getMetrics().put(KapuaBirthPayloadAttibutes.ACCEPT_ENCODING, acceptEncoding);
     }
 
@@ -323,7 +363,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.APPLICATION_IDENTIFIERS);
     }
 
-    private void setApplicationIdentifiers(String applicationIdentifiers) {
+    @Override
+    public void setApplicationIdentifiers(String applicationIdentifiers) {
         getMetrics().put(KapuaBirthPayloadAttibutes.APPLICATION_IDENTIFIERS, applicationIdentifiers);
     }
 
@@ -332,7 +373,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.AVAILABLE_PROCESSORS);
     }
 
-    private void setAvailableProcessors(String availableProcessors) {
+    @Override
+    public void setAvailableProcessors(String availableProcessors) {
         getMetrics().put(KapuaBirthPayloadAttibutes.AVAILABLE_PROCESSORS, availableProcessors);
     }
 
@@ -341,17 +383,9 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.TOTAL_MEMORY);
     }
 
-    private void setTotalMemory(String totalMemory) {
-        getMetrics().put(KapuaBirthPayloadAttibutes.TOTAL_MEMORY, totalMemory);
-    }
-
     @Override
-    public String getOsArch() {
-        return (String) getMetrics().get(KapuaBirthPayloadAttibutes.OS_ARCH);
-    }
-
-    private void setOsArch(String osArch) {
-        getMetrics().put(KapuaBirthPayloadAttibutes.OS_ARCH, osArch);
+    public void setTotalMemory(String totalMemory) {
+        getMetrics().put(KapuaBirthPayloadAttibutes.TOTAL_MEMORY, totalMemory);
     }
 
     @Override
@@ -359,7 +393,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.MODEM_IMEI);
     }
 
-    private void setModemImei(String modemImei) {
+    @Override
+    public void setModemImei(String modemImei) {
         getMetrics().put(KapuaBirthPayloadAttibutes.MODEM_IMEI, modemImei);
     }
 
@@ -368,7 +403,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.MODEM_IMSI);
     }
 
-    private void setModemImsi(String modemImsi) {
+    @Override
+    public void setModemImsi(String modemImsi) {
         getMetrics().put(KapuaBirthPayloadAttibutes.MODEM_IMSI, modemImsi);
     }
 
@@ -377,7 +413,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         return (String) getMetrics().get(KapuaBirthPayloadAttibutes.MODEM_ICCID);
     }
 
-    private void setModemIccid(String modemIccid) {
+    @Override
+    public void setModemIccid(String modemIccid) {
         getMetrics().put(KapuaBirthPayloadAttibutes.MODEM_ICCID, modemIccid);
     }
 

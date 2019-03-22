@@ -23,6 +23,15 @@ public class KapuaDisconnectPayloadImpl extends AbstractLifecyclePayloadImpl imp
 
     /**
      * Constructor.
+     *
+     * @since 1.1.0
+     */
+    public KapuaDisconnectPayloadImpl() {
+        super();
+    }
+
+    /**
+     * Constructor.
      * <p>
      * Sets all available properties of the {@link KapuaDisconnectPayload} at once.
      *
@@ -41,7 +50,8 @@ public class KapuaDisconnectPayloadImpl extends AbstractLifecyclePayloadImpl imp
         return (String) getMetrics().get(KapuaDisconnectPayloadAttibutes.UPTIME);
     }
 
-    private void setUptime(String uptime) {
+    @Override
+    public void setUptime(String uptime) {
         getMetrics().put(KapuaDisconnectPayloadAttibutes.UPTIME, uptime);
     }
 
@@ -50,7 +60,8 @@ public class KapuaDisconnectPayloadImpl extends AbstractLifecyclePayloadImpl imp
         return (String) getMetrics().get(KapuaDisconnectPayloadAttibutes.DISPLAY_NAME);
     }
 
-    private void setDisplayName(String displayName) {
+    @Override
+    public void setDisplayName(String displayName) {
         getMetrics().put(KapuaDisconnectPayloadAttibutes.DISPLAY_NAME, displayName);
     }
 }

@@ -11,11 +11,25 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.device.lifecycle;
 
+/**
+ * {@link KapuaDisconnectPayloadAttibutes} definitions.
+ * <p>
+ * All available fields in a {@link KapuaDisconnectPayload}
+ *
+ * @since 1.0.0
+ */
 public class KapuaDisconnectPayloadAttibutes {
 
     private KapuaDisconnectPayloadAttibutes() {
     }
 
+    /**
+     * @since 1.0.0
+     */
     public static final String UPTIME = "uptime";
+
+    /**
+     * @since 1.0.0
+     */
     public static final String DISPLAY_NAME = "displayName";
 }

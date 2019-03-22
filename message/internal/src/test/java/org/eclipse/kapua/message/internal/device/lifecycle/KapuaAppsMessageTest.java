@@ -11,8 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.device.lifecycle;
 
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsChannel;
+import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsPayload;
+import org.eclipse.kapua.message.device.lifecycle.KapuaLifecycleMessageFactory;
 import org.eclipse.kapua.test.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,6 +23,9 @@ import org.junit.experimental.categories.Category;
 
 @Category(JUnitTests.class)
 public class KapuaAppsMessageTest extends Assert {
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final KapuaLifecycleMessageFactory LIFECYCLE_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaLifecycleMessageFactory.class);
 
     private static final String PAYLOAD_DISPLAY_STR = "" +
             "acceptEncoding=UTF-8" +
@@ -96,14 +102,14 @@ public class KapuaAppsMessageTest extends Assert {
 
     @Test
     public void kapuaAppsMessageConstructor() throws Exception {
-        KapuaAppsMessageImpl kapuaAppsMessage = new KapuaAppsMessageImpl();
+        KapuaAppsMessage kapuaAppsMessage = LIFECYCLE_MESSAGE_FACTORY.newKapuaAppsMessage();
 
         assertNotNull(kapuaAppsMessage);
     }
 
     @Test
     public void kapuaAppsChannelGetterSetters() throws Exception {
-        KapuaAppsChannel kapuaAppsChannel = new KapuaAppsChannelImpl();
+        KapuaAppsChannel kapuaAppsChannel = LIFECYCLE_MESSAGE_FACTORY.newKapuaAppsChannel();
 
         kapuaAppsChannel.setClientId("clientId-1");
         assertEquals("clientId-1", kapuaAppsChannel.getClientId());
