@@ -95,6 +95,7 @@ public class JobTabTargetsToolbar extends EntityCRUDToolbar<GwtJobTarget> {
         deleteEntityButton
                 .setEnabled(selectedEntity != null && currentSession.hasPermission(JobSessionPermission.delete())
                         && currentSession.hasPermission(JobSessionPermission.write()));
+        deleteEntityButton.setText(JOB_MSGS.tabTargetsDeleteButton());
     }
 
     private void checkButtons() {

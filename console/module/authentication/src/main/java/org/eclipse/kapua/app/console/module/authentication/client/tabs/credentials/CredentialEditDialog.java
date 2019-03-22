@@ -147,11 +147,21 @@ public class CredentialEditDialog extends CredentialAddDialog {
 
     @Override
     public String getHeaderMessage() {
+        if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.API_KEY) {
+            return MSGS.dialogEditApiKeyHeader(selectedCredential.getUsername());
+        } else if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.PASSWORD) {
+            return MSGS.dialogEditPasswordHeader(selectedCredential.getUsername());
+        }
         return MSGS.dialogEditHeader(selectedCredential.getUsername());
     }
 
     @Override
     public String getInfoMessage() {
+        if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.API_KEY) {
+            return MSGS.dialogEditApiKeyInfo();
+        } else if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.PASSWORD) {
+            return MSGS.dialogEditPasswordInfo();
+        }
         return MSGS.dialogEditInfo();
     }
 }

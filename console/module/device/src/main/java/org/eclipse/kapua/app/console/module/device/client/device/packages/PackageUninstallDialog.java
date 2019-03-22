@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -77,6 +77,7 @@ public class PackageUninstallDialog extends SimpleDialog {
         operationReboot = new CheckBox();
         operationReboot.setName("operationReboot");
         operationReboot.setFieldLabel(DEVICE_MSGS.deviceUnistallAsyncUninstallReboot());
+        operationReboot.setToolTip(DEVICE_MSGS.deviceUnistallAsyncUninstallRebootTooltip());
         operationReboot.setBoxLabel("");
         operationReboot.setValue(false);
         operationOptionsForm.add(operationReboot, formData);
@@ -104,6 +105,7 @@ public class PackageUninstallDialog extends SimpleDialog {
         operationRebootDelay.setMaxLength(5);
         operationRebootDelay.setMaxValue(65535);
         operationRebootDelay.setPropertyEditorType(Integer.class);
+        operationRebootDelay.setToolTip(DEVICE_MSGS.deviceUnistallAsyncUninstallRebootDelayTooltip());
         operationOptionsForm.add(operationRebootDelay, formData);
 
         bodyPanel.add(operationOptionsForm);

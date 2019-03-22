@@ -31,7 +31,6 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.HiddenField;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -50,6 +49,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.FileUploadDialog;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaMessageBox;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
@@ -446,7 +446,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
         final GwtSnapshot snapshot = grid.getSelectionModel().getSelectedItem();
         if (selectedDevice != null && snapshot != null) {
 
-            MessageBox.confirm(MSGS.confirm(),
+            KapuaMessageBox.confirm(MSGS.confirm(),
                     DEVICE_MSGS.deviceSnapshotRollbackConfirm(),
                     new Listener<MessageBoxEvent>() {
 
