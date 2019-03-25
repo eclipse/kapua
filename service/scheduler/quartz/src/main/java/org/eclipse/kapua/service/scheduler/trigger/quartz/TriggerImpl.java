@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
@@ -62,6 +63,8 @@ public class TriggerImpl extends AbstractKapuaNamedEntity implements Trigger {
 
     /**
      * Constructor
+     *
+     * @since 1.0.0
      */
     protected TriggerImpl() {
         super();
@@ -70,10 +73,28 @@ public class TriggerImpl extends AbstractKapuaNamedEntity implements Trigger {
     /**
      * Constructor
      *
-     * @param scopeId
+     * @param scopeId The scope {@link KapuaId} to set into the {@link Trigger}
+     * @since 1.0.0
      */
     public TriggerImpl(KapuaId scopeId) {
         super(scopeId);
+    }
+
+    /**
+     * Clone constructor.
+     *
+     * @param trigger
+     * @throws KapuaException
+     * @since 1.1.0
+     */
+    public TriggerImpl(Trigger trigger) throws KapuaException {
+        super(trigger);
+
+        setStartsOn(trigger.getStartsOn());
+        setEndsOn(trigger.getEndsOn());
+        setCronScheduling(trigger.getCronScheduling());
+        setRetryInterval(trigger.getRetryInterval());
+        setTriggerProperties(trigger.getTriggerProperties());
     }
 
     @Override

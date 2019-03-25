@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step.internal;
 
+import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.step.JobStep;
@@ -23,9 +24,8 @@ import org.eclipse.kapua.service.job.step.definition.internal.JobStepPropertyImp
 
 /**
  * {@link JobStepFactory} implementation.
- * 
+ *
  * @since 1.0.0
- * 
  */
 @KapuaProvider
 public class JobStepFactoryImpl implements JobStepFactory {
@@ -53,5 +53,14 @@ public class JobStepFactoryImpl implements JobStepFactory {
     @Override
     public JobStepProperty newStepProperty(String name, String propertyType, String propertyValue) {
         return new JobStepPropertyImpl(name, propertyType, propertyValue);
+    }
+
+    @Override
+    public JobStep clone(JobStep jobStep) {
+        try {
+            return new JobStepImpl(jobStep);
+        } catch (Exception e) {
+            throw new KapuaEntityCloneException(e, JobStep.TYPE, jobStep);
+        }
     }
 }

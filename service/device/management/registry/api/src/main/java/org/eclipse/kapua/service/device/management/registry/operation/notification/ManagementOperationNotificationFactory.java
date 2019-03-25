@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,7 +13,12 @@ package org.eclipse.kapua.service.device.management.registry.operation.notificat
 
 import org.eclipse.kapua.model.KapuaEntityFactory;
 
-public interface ManagementOperationNotificationFactory extends
-        KapuaEntityFactory<ManagementOperationNotification, ManagementOperationNotificationCreator, ManagementOperationNotificationQuery, ManagementOperationNotificationListResult> {
+/**
+ * {@link ManagementOperationNotificationFactory} definition.
+ *
+ * @see org.eclipse.kapua.model.KapuaEntityFactory
+ * @since 1.0.0
+ */
+public interface ManagementOperationNotificationFactory extends KapuaEntityFactory<ManagementOperationNotification, ManagementOperationNotificationCreator, ManagementOperationNotificationQuery, ManagementOperationNotificationListResult> {
 
 }

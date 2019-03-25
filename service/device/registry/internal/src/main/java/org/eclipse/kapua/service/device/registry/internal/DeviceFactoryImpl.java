@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
+import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -20,9 +21,9 @@ import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 
 /**
- * Device service factory implementation.
+ * {@link DeviceFactory} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @KapuaProvider
 public class DeviceFactoryImpl implements DeviceFactory {
@@ -54,4 +55,12 @@ public class DeviceFactoryImpl implements DeviceFactory {
         return new DeviceCreatorImpl(scopeId);
     }
 
+    @Override
+    public Device clone(Device device) {
+        try {
+            return new DeviceImpl(device);
+        } catch (Exception e) {
+            throw new KapuaEntityCloneException(e, Device.TYPE, device);
+        }
+    }
 }

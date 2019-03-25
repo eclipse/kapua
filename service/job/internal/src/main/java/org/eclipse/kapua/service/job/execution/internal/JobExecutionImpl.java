@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,7 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.execution.internal;
 
-import java.util.Date;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.execution.JobExecution;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -21,11 +25,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.job.execution.JobExecution;
+import java.util.Date;
 
 @Entity(name = "JobExecution")
 @Table(name = "job_job_execution")
@@ -47,11 +47,37 @@ public class JobExecutionImpl extends AbstractKapuaUpdatableEntity implements Jo
     @Column(name = "ended_on", nullable = true, updatable = true)
     public Date endedOn;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     public JobExecutionImpl() {
     }
 
+    /**
+     * Constructor.
+     *
+     * @param scopeId The scope {@link KapuaId} to set into the {@link JobExecution}
+     * @since 1.0.0
+     */
     public JobExecutionImpl(KapuaId scopeId) {
         super(scopeId);
+    }
+
+    /**
+     * Clone constructor.
+     *
+     * @param jobExecution
+     * @throws KapuaException
+     * @since 1.1.0
+     */
+    public JobExecutionImpl(JobExecution jobExecution) throws KapuaException {
+        super(jobExecution);
+
+        setJobId(jobExecution.getJobId());
+        setStartedOn(jobExecution.getStartedOn());
+        setEndedOn(jobExecution.getEndedOn());
     }
 
     @Override
@@ -64,18 +90,22 @@ public class JobExecutionImpl extends AbstractKapuaUpdatableEntity implements Jo
         this.jobId = KapuaEid.parseKapuaId(jobId);
     }
 
+    @Override
     public Date getStartedOn() {
         return startedOn;
     }
 
+    @Override
     public void setStartedOn(Date startedOn) {
         this.startedOn = startedOn;
     }
 
+    @Override
     public Date getEndedOn() {
         return endedOn;
     }
 
+    @Override
     public void setEndedOn(Date endedOn) {
         this.endedOn = endedOn;
     }

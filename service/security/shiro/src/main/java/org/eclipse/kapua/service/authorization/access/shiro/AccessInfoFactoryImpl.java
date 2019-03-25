@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
+import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
@@ -20,10 +21,9 @@ import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
 import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
 
 /**
- * User permission factory service implementation.
- * 
- * @since 1.0
- * 
+ * {@link AccessInfoFactory} implementation.
+ *
+ * @since 1.0.0
  */
 @KapuaProvider
 public class AccessInfoFactoryImpl implements AccessInfoFactory {
@@ -48,4 +48,12 @@ public class AccessInfoFactoryImpl implements AccessInfoFactory {
         return new AccessInfoListResultImpl();
     }
 
+    @Override
+    public AccessInfo clone(AccessInfo accessInfo) {
+        try {
+            return new AccessInfoImpl(accessInfo);
+        } catch (Exception e) {
+            throw new KapuaEntityCloneException(e, AccessInfo.TYPE, accessInfo);
+        }
+    }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,151 +16,188 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Organization entity
+ * {@link Organization} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = AccountXmlRegistry.class, factoryMethod = "newOrganization")
 public interface Organization {
 
     /**
-     * Get the organization name
+     * Gets the name.
      *
-     * @return
+     * @return The name.
+     * @since 1.0.0
      */
     String getName();
 
     /**
-     * Set the organization name
+     * Sets the name
      *
-     * @param name
+     * @param name The name.
+     * @since 1.0.0
      */
     void setName(String name);
 
     /**
-     * Get organization referent name
+     * Gets the referent name.
      *
-     * @return
+     * @return The referent name.
+     * @since 1.0.0
      */
     String getPersonName();
 
     /**
-     * Set organization referent name
+     * Sets the referent name.
      *
-     * @param name
+     * @param personName The referent name
+     * @since 1.0.0
      */
-    void setPersonName(String name);
+    void setPersonName(String personName);
 
     /**
-     * Get the organization email
+     * Gets the email.
      *
-     * @return
+     * @return The email.
+     * @since 1.0.0
      */
     String getEmail();
 
     /**
-     * Set the organization email
+     * Sets the email.
      *
-     * @param email
+     * @param email The email.
+     * @since 1.0.0
      */
     void setEmail(String email);
 
     /**
-     * Get the organization phone number
+     * Gets the  phone number.
      *
-     * @return
+     * @return The phone number.
+     * @since 1.0.0
      */
     String getPhoneNumber();
 
     /**
-     * Set the organization phone number
+     * Sets the phone number.
      *
-     * @param phoneNumber
+     * @param phoneNumber The phone number.
+     * @since 1.0.0
      */
     void setPhoneNumber(String phoneNumber);
 
     /**
-     * Get organization address (first line)
+     * Gets the address first line.
      *
-     * @return
+     * @return The address first line.
+     * @since 1.0.0
      */
     String getAddressLine1();
 
     /**
-     * Set organization address (first line)
+     * Sets the address first line.
      *
-     * @param addressLine1
+     * @param addressLine1 The address first line.
+     * @since 1.0.0
      */
     void setAddressLine1(String addressLine1);
 
     /**
-     * Get organization address (second line)
+     * Gets the address second line.
      *
-     * @return
+     * @return The address second line.
+     * @since 1.0.0
      */
     String getAddressLine2();
 
     /**
-     * Set organization address (second line)
+     * Sets the address second line.
      *
-     * @param addressLine2
+     * @param addressLine2 The address second line.
+     * @since 1.0.0
      */
     void setAddressLine2(String addressLine2);
 
+
     /**
-     * Get organization postal zip code
+     * Gets the address third line.
      *
-     * @return
+     * @return The address third line.
+     * @since 1.1.0
+     */
+    String getAddressLine3();
+
+    /**
+     * Sets the address third line.
+     *
+     * @param addressLine3 The address third line.
+     * @since 1.1.0
+     */
+    void setAddressLine3(String addressLine3);
+
+    /**
+     * Gets the postal ZIP code.
+     *
+     * @return The postal ZIP code.
+     * @since 1.0.0
      */
     String getZipPostCode();
 
     /**
-     * Set organization postal zip code
+     * Sets the postal ZIP code.
      *
-     * @param zipPostalCode
+     * @param zipPostalCode The postal ZIP code.
+     * @since 1.0.0
      */
     void setZipPostCode(String zipPostalCode);
 
     /**
-     * Get the organization city
+     * Gets the city.
      *
-     * @return
+     * @return The city.
+     * @since 1.0.0
      */
     String getCity();
 
     /**
-     * Set the organization city
+     * Sets the city.
      *
-     * @param city
+     * @param city The city.
+     * @since 1.0.0
      */
     void setCity(String city);
 
     /**
-     * Get organization province or state (if it is a federal state) within a country
+     * Gets the province or state (if it is a federal state) within a country.
      *
-     * @return
+     * @return The province or state (if it is a federal state) within a country.
+     * @since 1.0.0
      */
     String getStateProvinceCounty();
 
     /**
-     * Set organization province or state (if it is a federal state) within a country
+     * Sets the province or state (if it is a federal state) within a country.
      *
-     * @param stateProvinceCounty
+     * @param stateProvinceCounty The province or state (if it is a federal state) within a country.
+     * @since 1.0.0
      */
     void setStateProvinceCounty(String stateProvinceCounty);
 
     /**
-     * Get the organization country
+     * Gets the country.
      *
-     * @return
+     * @return The country.
+     * @since 1.0.0
      */
     String getCountry();
 
     /**
-     * Set the organization country
+     * Sets the country.
      *
-     * @param country
+     * @param country The country.
+     * @since 1.0.0
      */
     void setCountry(String country);
 }

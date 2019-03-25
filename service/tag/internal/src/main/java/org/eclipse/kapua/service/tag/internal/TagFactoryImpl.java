@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.tag.internal;
 
+import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.tag.Tag;
@@ -21,7 +22,7 @@ import org.eclipse.kapua.service.tag.TagQuery;
 
 /**
  * {@link TagFactory} implementation.
- * 
+ *
  * @since 1.0.0
  */
 @KapuaProvider
@@ -30,7 +31,9 @@ public class TagFactoryImpl implements TagFactory {
     @Override
     public TagCreator newCreator(KapuaId scopeId, String name) {
         TagCreator creator = newCreator(scopeId);
+
         creator.setName(name);
+
         return creator;
     }
 
@@ -52,5 +55,14 @@ public class TagFactoryImpl implements TagFactory {
     @Override
     public TagCreator newCreator(KapuaId scopeId) {
         return new TagCreatorImpl(scopeId);
+    }
+
+    @Override
+    public Tag clone(Tag tag) {
+        try {
+            return new TagImpl(tag);
+        } catch (Exception e) {
+            throw new KapuaEntityCloneException(e, Tag.TYPE, tag);
+        }
     }
 }

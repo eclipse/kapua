@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,7 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.token.shiro;
 
-import java.util.Date;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
+import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
+import org.eclipse.kapua.commons.model.id.IdGenerator;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authentication.token.AccessToken;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -22,19 +28,12 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
-import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
-import org.eclipse.kapua.commons.model.id.IdGenerator;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authentication.token.AccessToken;
+import java.util.Date;
 
 /**
  * {@link AccessToken} implementation.
- * 
+ *
  * @since 1.0.0
- * 
  */
 
 @Entity(name = "AccessToken")
@@ -71,7 +70,7 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
 
     /**
      * Constructor.
-     * 
+     *
      * @since 1.0.0
      */
     public AccessTokenImpl() {
@@ -80,19 +79,16 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
 
     /**
      * Constructor.
-     * 
-     * @param userId
-     *            user identifier
-     * @param scopeId
-     *            scope identifier
-     * @param tokenId
-     *            token identifier
-     * @param expiresOn
-     *            token expiration {@link Date}
+     *
+     * @param userId    user identifier
+     * @param scopeId   scope identifier
+     * @param tokenId   token identifier
+     * @param expiresOn token expiration {@link Date}
      * @since 1.0.0
      */
     public AccessTokenImpl(KapuaId scopeId, KapuaId userId, String tokenId, Date expiresOn, String refreshToken, Date refreshExpiresOn) {
         super(scopeId);
+
         setUserId(userId);
         setTokenId(tokenId);
         setExpiresOn(expiresOn);
@@ -103,6 +99,25 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
     public AccessTokenImpl(KapuaId scopeId) {
         super(scopeId);
     }
+
+    /**
+     * Clone constructor.
+     *
+     * @param accessToken
+     * @throws KapuaException
+     * @since 1.1.0
+     */
+    public AccessTokenImpl(AccessToken accessToken) throws KapuaException {
+        super(accessToken);
+
+        setUserId(accessToken.getUserId());
+        setTokenId(accessToken.getTokenId());
+        setExpiresOn(accessToken.getExpiresOn());
+        setRefreshToken(accessToken.getRefreshToken());
+        setRefreshExpiresOn(accessToken.getRefreshExpiresOn());
+        setInvalidatedOn(accessToken.getInvalidatedOn());
+    }
+
 
     @Override
     public KapuaId getUserId() {
@@ -137,7 +152,7 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
     /**
      * The {@link AbstractKapuaUpdatableEntity#prePersistsAction()} is overridden because the property {@link AbstractKapuaEntity#getCreatedBy()}
      * must be set to the current userId instead of the user in session, which is not set at the time of the creation of this {@link AccessToken}.
-     * 
+     *
      * @since 1.0.0
      */
     @Override

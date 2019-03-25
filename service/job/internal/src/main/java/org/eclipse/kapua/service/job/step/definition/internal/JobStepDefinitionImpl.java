@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step.definition.internal;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
@@ -60,11 +61,39 @@ public class JobStepDefinitionImpl extends AbstractKapuaNamedEntity implements J
     @CollectionTable(name = "job_job_step_definition_properties", joinColumns = @JoinColumn(name = "step_definition_id", referencedColumnName = "id"))
     private List<JobStepPropertyImpl> jobStepProperties;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     public JobStepDefinitionImpl() {
     }
 
+    /**
+     * Constructor.
+     *
+     * @param scopeId The scope {@link KapuaId} to set into the {@link JobStepDefinition}
+     * @since 1.0.0
+     */
     public JobStepDefinitionImpl(KapuaId scopeId) {
         super(scopeId);
+    }
+
+    /**
+     * Clone constructor.
+     *
+     * @param jobStepDefinition
+     * @throws KapuaException
+     * @since 1.1.0
+     */
+    public JobStepDefinitionImpl(JobStepDefinition jobStepDefinition) throws KapuaException {
+        super(jobStepDefinition);
+
+        setStepType(jobStepDefinition.getStepType());
+        setReaderName(jobStepDefinition.getReaderName());
+        setProcessorName(jobStepDefinition.getProcessorName());
+        setWriterName(jobStepDefinition.getWriterName());
+        setStepProperties(jobStepDefinition.getStepProperties());
     }
 
     @Override

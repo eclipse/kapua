@@ -52,9 +52,7 @@ public class GroupImpl extends AbstractKapuaNamedEntity implements Group {
     }
 
     /**
-     * Constructor.
-     * <p>
-     * It can be used to clone the {@link Group}.
+     * Clone constructor.
      *
      * @param group the {@link Group} to clone.
      * @throws KapuaException

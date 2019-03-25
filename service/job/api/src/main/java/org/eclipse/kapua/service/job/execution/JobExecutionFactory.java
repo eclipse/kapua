@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,9 +15,9 @@ import org.eclipse.kapua.model.KapuaEntityFactory;
 
 /**
  * {@link JobExecutionFactory} definition.
- * 
- * @since 1.0
- * 
+ *
+ * @see org.eclipse.kapua.model.KapuaEntityFactory
+ * @since 1.0.0
  */
 public interface JobExecutionFactory extends KapuaEntityFactory<JobExecution, JobExecutionCreator, JobExecutionQuery, JobExecutionListResult> {
 

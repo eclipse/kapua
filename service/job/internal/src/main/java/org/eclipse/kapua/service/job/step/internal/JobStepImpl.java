@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step.internal;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -62,11 +63,38 @@ public class JobStepImpl extends AbstractKapuaNamedEntity implements JobStep {
     @CollectionTable(name = "job_job_step_properties", joinColumns = @JoinColumn(name = "step_id", referencedColumnName = "id"))
     private List<JobStepPropertyImpl> stepProperties;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     public JobStepImpl() {
     }
 
+    /**
+     * Constructor.
+     *
+     * @param scopeId The scope {@link KapuaId} to set into the {@link JobStep}
+     * @since 1.0.0
+     */
     public JobStepImpl(KapuaId scopeId) {
         super(scopeId);
+    }
+
+    /**
+     * Clone constructor.
+     *
+     * @param jobStep
+     * @throws KapuaException
+     * @since 1.1.0
+     */
+    public JobStepImpl(JobStep jobStep) throws KapuaException {
+        super(jobStep);
+
+        setJobId(jobStep.getJobId());
+        setJobStepDefinitionId(jobStep.getJobStepDefinitionId());
+        setStepIndex(jobStep.getStepIndex());
+        setStepProperties(jobStep.getStepProperties());
     }
 
     @Override

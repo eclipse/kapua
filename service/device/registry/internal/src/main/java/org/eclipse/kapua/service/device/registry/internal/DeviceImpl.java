@@ -11,8 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.internal;
 
-import java.util.HashSet;
-import java.util.Set;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceStatus;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
+import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionImpl;
+import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
+import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventImpl;
+import org.eclipse.kapua.service.tag.Taggable;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -28,20 +38,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceStatus;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
-import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionImpl;
-import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
-import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventImpl;
-import org.eclipse.kapua.service.tag.Taggable;
-
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * {@link Device} implementation.
@@ -185,18 +183,63 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device, 
 
     /**
      * Constructor
+     *
+     * @since 1.0.0
      */
     protected DeviceImpl() {
         super();
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The scope {@link KapuaId} to set into the {@link Device}.
+     * @since 1.0.0
      */
     public DeviceImpl(KapuaId scopeId) {
         super(scopeId);
+    }
+
+    /**
+     * Clone constructor.
+     *
+     * @param device
+     * @throws KapuaException
+     * @since 1.1.0
+     */
+    public DeviceImpl(Device device) throws KapuaException {
+        super(device);
+
+        setTagIds(device.getTagIds());
+        setGroupId(device.getGroupId());
+        setClientId(device.getClientId());
+        setConnectionId(device.getConnectionId());
+        setConnection(device.getConnection());
+        setStatus(device.getStatus());
+        setDisplayName(device.getDisplayName());
+        setLastEventId(device.getLastEventId());
+        setLastEvent(device.getLastEvent());
+        setSerialNumber(device.getSerialNumber());
+        setModelId(device.getModelId());
+        setModelName(device.getModelName());
+        setImei(device.getImei());
+        setImsi(device.getImsi());
+        setIccid(device.getIccid());
+        setBiosVersion(device.getBiosVersion());
+        setFirmwareVersion(device.getFirmwareVersion());
+        setOsVersion(device.getOsVersion());
+        setJvmVersion(device.getJvmVersion());
+        setOsgiFrameworkVersion(device.getOsgiFrameworkVersion());
+        setApplicationFrameworkVersion(device.getApplicationFrameworkVersion());
+        setConnectionInterface(device.getConnectionInterface());
+        setConnectionIp(device.getConnectionIp());
+        setApplicationIdentifiers(device.getApplicationIdentifiers());
+        setAcceptEncoding(device.getAcceptEncoding());
+        setCustomAttribute1(device.getCustomAttribute1());
+        setCustomAttribute2(device.getCustomAttribute2());
+        setCustomAttribute3(device.getCustomAttribute3());
+        setCustomAttribute4(device.getCustomAttribute4());
+        setCustomAttribute5(device.getCustomAttribute5());
     }
 
     @Override
@@ -252,7 +295,6 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device, 
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public DeviceConnection getConnection() {
         return connection;
     }
@@ -292,7 +334,6 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device, 
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public DeviceEvent getLastEvent() {
         return lastEvent;
     }

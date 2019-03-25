@@ -35,7 +35,7 @@ public class RoleImpl extends AbstractKapuaNamedEntity implements Role {
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param scopeId The scope {@link KapuaId}
      * @since 1.0.0
@@ -45,12 +45,11 @@ public class RoleImpl extends AbstractKapuaNamedEntity implements Role {
     }
 
     /**
-     * Constructor.
-     * <p>
-     * Creates a soft clone.
+     * Clone constructor.
      *
      * @param role The {@link Role} to clone
      * @throws KapuaException
+     * @since 1.0.0
      */
     public RoleImpl(Role role) throws KapuaException {
         super(role);

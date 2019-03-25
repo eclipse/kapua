@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,31 +17,38 @@ import org.eclipse.kapua.model.id.KapuaId;
 import java.util.Date;
 
 /**
- * Credential factory service definition.
+ * {@link CredentialFactory} definition.
  *
- * @since 1.0
+ * @see org.eclipse.kapua.model.KapuaEntityFactory
+ * @since 1.0.0
  */
 public interface CredentialFactory extends KapuaEntityFactory<Credential, CredentialCreator, CredentialQuery, CredentialListResult> {
 
     /**
-     * Create a new {@link Credential}
+     * Instantiates a new {@link Credential}.
      *
-     * @param scopeId
-     * @param userId
-     * @param credentialType
-     * @param credentialKey
-     * @return
+     * @param scopeId          The scope {@link KapuaId} to set into the {@link Credential}.
+     * @param userId           The {@link org.eclipse.kapua.service.user.User} {@link KapuaId} to set into the {@link Credential}.
+     * @param credentialType   The {@link CredentialType} to set into the {@link Credential}.
+     * @param credentialKey    The key to set into the {@link Credential}.
+     * @param credentialStatus The {@link CredentialStatus} to set into the {@link Credential}.
+     * @param expirationDate   The expiration date to set into the {@link Credential}.
+     * @return The newly instantiated {@link Credential}
+     * @since 1.0.0
      */
     Credential newCredential(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey, CredentialStatus credentialStatus, Date expirationDate);
 
     /**
-     * Create a new {@link CredentialCreator} for the specific credential type
+     * Instantiates a new {@link CredentialCreator}.
      *
-     * @param scopeId
-     * @param userId
-     * @param credentialType
-     * @param credentialKey
-     * @return
+     * @param scopeId          The scope {@link KapuaId} to set into the {@link CredentialCreator}.
+     * @param userId           The {@link org.eclipse.kapua.service.user.User} {@link KapuaId} to set into the {@link CredentialCreator}.
+     * @param credentialType   The {@link CredentialType} to set into the {@link CredentialCreator}.
+     * @param credentialKey    The key to set into the {@link CredentialCreator}.
+     * @param credentialStatus The {@link CredentialStatus} to set into the {@link CredentialCreator}.
+     * @param expirationDate   The expiration date to set into the {@link CredentialCreator}.
+     * @return The newly instantiated {@link CredentialCreator}
+     * @since 1.0.0
      */
     CredentialCreator newCreator(KapuaId scopeId, KapuaId userId, CredentialType credentialType, String credentialKey, CredentialStatus credentialStatus, Date expirationDate);
 

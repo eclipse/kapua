@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection.option.internal;
 
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
+import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOption;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
@@ -21,20 +28,11 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.model.KapuaUpdatableEntity;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
-import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOption;
-
 /**
- * {@link DeviceConnectionOption} entity.
- * 
+ * {@link DeviceConnectionOption} implementation.
+ *
  * @since 1.0.0
  */
-
 @Entity(name = "DeviceConnectionOptions")
 @Table(name = "dvc_device_connection")
 public class DeviceConnectionOptionImpl extends AbstractKapuaUpdatableEntity implements DeviceConnectionOption {
@@ -56,7 +54,9 @@ public class DeviceConnectionOptionImpl extends AbstractKapuaUpdatableEntity imp
     private KapuaEid reservedUserId;
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     protected DeviceConnectionOptionImpl() {
         super();
@@ -64,43 +64,56 @@ public class DeviceConnectionOptionImpl extends AbstractKapuaUpdatableEntity imp
 
     /**
      * Constructor
-     * 
-     * @param scopeId
+     *
+     * @param scopeId The scope {@link KapuaId} to set into the {@link DeviceConnectionOption}
+     * @since 1.0.0
      */
     public DeviceConnectionOptionImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
+    /**
+     * Clone constructor.
+     *
+     * @param deviceConnectionOptions
+     * @throws KapuaException
+     * @since 1.0.0
+     */
     public DeviceConnectionOptionImpl(DeviceConnectionOption deviceConnectionOptions) throws KapuaException {
-        super((KapuaUpdatableEntity) deviceConnectionOptions);
+        super(deviceConnectionOptions);
 
         setAllowUserChange(deviceConnectionOptions.getAllowUserChange());
         setUserCouplingMode(deviceConnectionOptions.getUserCouplingMode());
         setReservedUserId(deviceConnectionOptions.getReservedUserId());
     }
 
+    @Override
     public boolean getAllowUserChange() {
         return allowUserChange;
     }
 
+    @Override
     public void setAllowUserChange(boolean allowUserChange) {
         this.allowUserChange = allowUserChange;
     }
 
+    @Override
     public ConnectionUserCouplingMode getUserCouplingMode() {
         return userCouplingMode;
     }
 
+    @Override
     public void setUserCouplingMode(ConnectionUserCouplingMode userCouplingMode) {
         this.userCouplingMode = userCouplingMode;
     }
 
+    @Override
     public KapuaId getReservedUserId() {
         return reservedUserId;
     }
 
+    @Override
     public void setReservedUserId(KapuaId reservedUserId) {
         this.reservedUserId = KapuaEid.parseKapuaId(reservedUserId);
     }
-
 }

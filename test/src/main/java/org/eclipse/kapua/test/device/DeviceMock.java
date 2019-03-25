@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,12 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.test.device;
 
-import java.math.BigInteger;
-import java.util.Date;
-import java.util.Properties;
-import java.util.Set;
-
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -24,72 +18,25 @@ import org.eclipse.kapua.service.device.registry.DeviceStatus;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 
+import java.math.BigInteger;
+import java.util.Date;
+import java.util.Properties;
+import java.util.Set;
+
 public class DeviceMock implements Device {
 
     private static final long serialVersionUID = -7521204246371846263L;
+
     private static long longId = 1;
+
     private KapuaEid id;
     private KapuaId scopeId;
     private String clientId;
 
     public DeviceMock(KapuaId scopeId, String clientId) {
-        this.id = new KapuaEid(BigInteger.valueOf(longId++));
-        this.scopeId = scopeId;
-        this.clientId = clientId;
-    }
-
-    @Override
-    public void setScopeId(KapuaId scopeId) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public Date getModifiedOn() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public KapuaId getModifiedBy() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public int getOptlock() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public void setOptlock(int optlock) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public Properties getEntityAttributes() throws KapuaException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setEntityAttributes(Properties props) throws KapuaException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public Properties getEntityProperties() throws KapuaException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setEntityProperties(Properties props) throws KapuaException {
-        // TODO Auto-generated method stub
-
+        setId(new KapuaEid(BigInteger.valueOf(longId++)));
+        setScopeId(scopeId);
+        setClientId(clientId);
     }
 
     @Override
@@ -99,7 +46,7 @@ public class DeviceMock implements Device {
 
     @Override
     public void setId(KapuaId id) {
-        this.id = (KapuaEid) id;
+        this.id = KapuaEid.parseKapuaId(id);
     }
 
     @Override
@@ -108,356 +55,347 @@ public class DeviceMock implements Device {
     }
 
     @Override
-    public Date getCreatedOn() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public KapuaId getCreatedBy() {
-        // TODO Auto-generated method stub
-        return null;
+    public void setScopeId(KapuaId scopeId) {
+        this.scopeId = KapuaEid.parseKapuaId(scopeId);
     }
 
     @Override
     public String getClientId() {
-        // TODO Auto-generated method stub
         return this.clientId;
     }
 
     @Override
     public void setClientId(String clientId) {
-        // TODO Auto-generated method stub
         this.clientId = clientId;
     }
 
     @Override
-    public DeviceStatus getStatus() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setStatus(DeviceStatus status) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getDisplayName() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setDisplayName(String diplayName) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getSerialNumber() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setSerialNumber(String serialNumber) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getModelId() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setModelId(String modelId) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getModelName() {
-        return null;
-    }
-
-    @Override
-    public void setModelName(String modelName) {
-
-    }
-
-    @Override
-    public String getImei() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setImei(String imei) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getImsi() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setImsi(String imsi) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getIccid() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setIccid(String iccid) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getBiosVersion() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setBiosVersion(String biosVersion) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getFirmwareVersion() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setFirmwareVersion(String firmwareVersion) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getOsVersion() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setOsVersion(String osVersion) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getJvmVersion() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setJvmVersion(String jvmVersion) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getOsgiFrameworkVersion() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setOsgiFrameworkVersion(String osgiFrameworkVersion) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getApplicationFrameworkVersion() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setApplicationFrameworkVersion(String appFrameworkVersion) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getConnectionInterface() {
-        return null;
-    }
-
-    @Override
-    public void setConnectionInterface(String connectionInterface) {
-
-    }
-
-    @Override
-    public String getConnectionIp() {
-        return null;
-    }
-
-    @Override
-    public void setConnectionIp(String connectionIp) {
-
-    }
-
-    @Override
-    public String getApplicationIdentifiers() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setApplicationIdentifiers(String applicationIdentifiers) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getAcceptEncoding() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setAcceptEncoding(String acceptEncoding) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getCustomAttribute1() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setCustomAttribute1(String customAttribute1) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getCustomAttribute2() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setCustomAttribute2(String customAttribute2) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getCustomAttribute3() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setCustomAttribute3(String customAttribute3) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getCustomAttribute4() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setCustomAttribute4(String customAttribute4) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getCustomAttribute5() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setCustomAttribute5(String customAttribute5) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public KapuaId getConnectionId() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setConnectionId(KapuaId connectionId) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public KapuaId getGroupId() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setGroupId(KapuaId groupId) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public <C extends DeviceConnection> C getConnection() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public KapuaId getLastEventId() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setLastEventId(KapuaId lastEventId) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public <E extends DeviceEvent> E getLastEvent() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public void setTagIds(Set<KapuaId> tagIds) {
-        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Set<KapuaId> getTagIds() {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
+    @Override
+    public KapuaId getGroupId() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setGroupId(KapuaId groupId) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public KapuaId getConnectionId() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setConnectionId(KapuaId connectionId) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <C extends DeviceConnection> C getConnection() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public DeviceStatus getStatus() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setStatus(DeviceStatus status) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getDisplayName() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setDisplayName(String diplayName) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public KapuaId getLastEventId() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setLastEventId(KapuaId lastEventId) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <E extends DeviceEvent> E getLastEvent() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getSerialNumber() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setSerialNumber(String serialNumber) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getModelId() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setModelId(String modelId) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getModelName() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setModelName(String modelName) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getImei() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setImei(String imei) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getImsi() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setImsi(String imsi) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getIccid() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setIccid(String iccid) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getBiosVersion() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setBiosVersion(String biosVersion) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getFirmwareVersion() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setFirmwareVersion(String firmwareVersion) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getOsVersion() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setOsVersion(String osVersion) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getJvmVersion() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setJvmVersion(String jvmVersion) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getOsgiFrameworkVersion() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setOsgiFrameworkVersion(String osgiFrameworkVersion) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getApplicationFrameworkVersion() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setApplicationFrameworkVersion(String appFrameworkVersion) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getConnectionInterface() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setConnectionInterface(String connectionInterface) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getConnectionIp() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setConnectionIp(String connectionIp) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getApplicationIdentifiers() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setApplicationIdentifiers(String applicationIdentifiers) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getAcceptEncoding() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setAcceptEncoding(String acceptEncoding) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getCustomAttribute1() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setCustomAttribute1(String customAttribute1) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getCustomAttribute2() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setCustomAttribute2(String customAttribute2) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getCustomAttribute3() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setCustomAttribute3(String customAttribute3) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getCustomAttribute4() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setCustomAttribute4(String customAttribute4) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getCustomAttribute5() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setCustomAttribute5(String customAttribute5) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Date getModifiedOn() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public KapuaId getModifiedBy() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int getOptlock() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setOptlock(int optlock) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Properties getEntityAttributes() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setEntityAttributes(Properties props) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Properties getEntityProperties() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setEntityProperties(Properties props) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Date getCreatedOn() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public KapuaId getCreatedBy() {
+        throw new UnsupportedOperationException();
+    }
 }

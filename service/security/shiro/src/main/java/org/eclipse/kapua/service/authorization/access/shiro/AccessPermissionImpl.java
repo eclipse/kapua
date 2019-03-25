@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -26,9 +26,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * User permission implementation.
+ * {@link AccessPermission} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @Entity(name = "AccessPermission")
 @Table(name = "athz_access_permission")
@@ -47,24 +47,28 @@ public class AccessPermissionImpl extends AbstractKapuaEntity implements AccessP
 
     /**
      * Constructor
+     *
+     * @since 1.0.0
      */
     protected AccessPermissionImpl() {
         super();
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The scope {@link KapuaId} to set into the {@link AccessPermission}
+     * @since 1.0.0
      */
     public AccessPermissionImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
     /**
-     * Constructor
+     * Clone constructor
      *
      * @param accessPermission
+     * @since 1.0.0
      */
     public AccessPermissionImpl(AccessPermission accessPermission) {
         super(accessPermission);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,11 +14,18 @@ package org.eclipse.kapua.service.endpoint;
 import org.eclipse.kapua.model.KapuaEntityFactory;
 
 /**
- * {@link EndpointInfo} object factory.
+ * {@link EndpointInfoFactory} definition.
  *
  * @since 1.0.0
  */
 public interface EndpointInfoFactory extends KapuaEntityFactory<EndpointInfo, EndpointInfoCreator, EndpointInfoQuery, EndpointInfoListResult> {
 
+    /**
+     * Instantiates a new {@link EndpointUsage}.
+     *
+     * @param name The name to set into the {@link EndpointUsage}.
+     * @return The newly instantiated {@link EndpointUsage}.
+     * @since 1.0.0
+     */
     EndpointUsage newEndpointUsage(String name);
 }

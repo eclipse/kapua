@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.registry.operation.internal;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -81,12 +82,44 @@ public class DeviceManagementOperationImpl extends AbstractKapuaUpdatableEntity 
     @CollectionTable(name = "dvcm_device_management_operation_input_property", joinColumns = @JoinColumn(name = "operation_id", referencedColumnName = "id"))
     private List<DeviceManagementOperationPropertyImpl> inputProperties;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     protected DeviceManagementOperationImpl() {
         super();
     }
 
+    /**
+     * Constructor.
+     *
+     * @param scopeId
+     * @since 1.0.0
+     */
     public DeviceManagementOperationImpl(KapuaId scopeId) {
         super(scopeId);
+    }
+
+    /**
+     * Clone constructor.
+     *
+     * @param deviceManagementOperation
+     * @throws KapuaException
+     * @since 1.1.0
+     */
+    public DeviceManagementOperationImpl(DeviceManagementOperation deviceManagementOperation) throws KapuaException {
+        super(deviceManagementOperation);
+
+        setStartedOn(deviceManagementOperation.getStartedOn());
+        setEndedOn(deviceManagementOperation.getEndedOn());
+        setDeviceId(deviceManagementOperation.getDeviceId());
+        setOperationId(deviceManagementOperation.getOperationId());
+        setAppId(deviceManagementOperation.getAppId());
+        setAction(deviceManagementOperation.getAction());
+        setResource(deviceManagementOperation.getResource());
+        setStatus(deviceManagementOperation.getStatus());
+        setInputProperties(deviceManagementOperation.getInputProperties());
     }
 
     @Override
@@ -94,6 +127,7 @@ public class DeviceManagementOperationImpl extends AbstractKapuaUpdatableEntity 
         return startedOn;
     }
 
+    @Override
     public void setStartedOn(Date startedOn) {
         this.startedOn = startedOn;
     }

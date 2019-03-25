@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,22 +17,23 @@ import org.eclipse.kapua.model.id.KapuaId;
 import java.util.Date;
 
 /**
- * Access token factory service definition.
+ * {@link AccessTokenFactory} definition.
  *
- * @since 1.0
+ * @see org.eclipse.kapua.model.KapuaEntityFactory
+ * @since 1.0.0
  */
 public interface AccessTokenFactory extends KapuaEntityFactory<AccessToken, AccessTokenCreator, AccessTokenQuery, AccessTokenListResult> {
 
     /**
-     * Create a new {@link AccessTokenCreator} for the specific access credential type
+     * Instantiates a new {@link AccessTokenCreator}.
      *
-     * @param scopeId      The scopeId of the new {@link AccessToken}.
-     * @param userId       The userId owner of the new {@link AccessToken}.
-     * @param tokenId      The tokenId of the new {@link AccessToken}.
-     * @param expiresOn    The expiration date after which the token is no longer valid.
-     * @param refreshToken The refresh token to obtain a new {@link AccessToken} after expiration.
-     * @return A new instance of {@link AccessTokenCreator}.
-     * @since 1.0
+     * @param scopeId      The scope {@link KapuaId} to set into the{@link AccessToken}.
+     * @param userId       The {@link org.eclipse.kapua.service.user.User} {@link KapuaId} to set into the{@link AccessToken}.
+     * @param tokenId      The token id to set into the{@link AccessToken}.
+     * @param expiresOn    The expiration date to set into the{@link AccessToken}.
+     * @param refreshToken The refresh token to set into the{@link AccessToken}.
+     * @return The newly instantiated {@link AccessTokenCreator}.
+     * @since 1.0.0
      */
     AccessTokenCreator newCreator(KapuaId scopeId, KapuaId userId, String tokenId, Date expiresOn, String refreshToken, Date refreshExpiresOn);
 

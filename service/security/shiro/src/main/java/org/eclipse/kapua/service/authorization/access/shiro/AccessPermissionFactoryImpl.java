@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,10 +20,9 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult
 import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 
 /**
- * {@link AccessPermission} factory implementation.
- * 
+ * {@link AccessPermissionFactory} implementation.
+ *
  * @since 1.0.0
- * 
  */
 @KapuaProvider
 public class AccessPermissionFactoryImpl implements AccessPermissionFactory {
@@ -46,5 +45,10 @@ public class AccessPermissionFactoryImpl implements AccessPermissionFactory {
     @Override
     public AccessPermissionListResult newListResult() {
         return new AccessPermissionListResultImpl();
+    }
+
+    @Override
+    public AccessPermission clone(AccessPermission accessPermission) {
+        return new AccessPermissionImpl(accessPermission);
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,8 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.token.shiro;
 
-import java.util.Date;
-
+import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
@@ -21,11 +20,12 @@ import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
 import org.eclipse.kapua.service.authentication.token.AccessTokenListResult;
 import org.eclipse.kapua.service.authentication.token.AccessTokenQuery;
 
+import java.util.Date;
+
 /**
- * Credential factory service implementation.
- * 
- * @since 1.0
- * 
+ * {@link AccessTokenFactory} implementation.
+ *
+ * @since 1.0.0
  */
 @KapuaProvider
 public class AccessTokenFactoryImpl implements AccessTokenFactory {
@@ -33,11 +33,13 @@ public class AccessTokenFactoryImpl implements AccessTokenFactory {
     @Override
     public AccessTokenCreatorImpl newCreator(KapuaId scopeId, KapuaId userId, String tokenId, Date expiresOn, String refreshToken, Date refreshExpiresOn) {
         AccessTokenCreatorImpl accessTokenCreator = new AccessTokenCreatorImpl(scopeId);
+
         accessTokenCreator.setUserId(userId);
         accessTokenCreator.setTokenId(tokenId);
         accessTokenCreator.setExpiresOn(expiresOn);
         accessTokenCreator.setRefreshToken(refreshToken);
         accessTokenCreator.setRefreshExpiresOn(refreshExpiresOn);
+
         return accessTokenCreator;
     }
 
@@ -59,5 +61,14 @@ public class AccessTokenFactoryImpl implements AccessTokenFactory {
     @Override
     public AccessTokenListResult newListResult() {
         return new AccessTokenListResultImpl();
+    }
+
+    @Override
+    public AccessToken clone(AccessToken accessToken) {
+        try {
+            return new AccessTokenImpl(accessToken);
+        } catch (Exception e) {
+            throw new KapuaEntityCloneException(e, AccessToken.TYPE, accessToken);
+        }
     }
 }

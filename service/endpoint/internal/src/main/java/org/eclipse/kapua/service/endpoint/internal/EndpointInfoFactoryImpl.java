@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.endpoint.internal;
 
+import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.endpoint.EndpointInfo;
@@ -51,5 +52,14 @@ public class EndpointInfoFactoryImpl implements EndpointInfoFactory {
     @Override
     public EndpointUsage newEndpointUsage(String name) {
         return new EndpointUsageImpl(name);
+    }
+
+    @Override
+    public EndpointInfo clone(EndpointInfo endpointInfo) {
+        try {
+            return new EndpointInfoImpl(endpointInfo);
+        } catch (Exception e) {
+            throw new KapuaEntityCloneException(e, EndpointInfo.TYPE, endpointInfo);
+        }
     }
 }
