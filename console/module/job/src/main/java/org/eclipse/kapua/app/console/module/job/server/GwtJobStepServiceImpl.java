@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -67,7 +67,7 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
 
                 JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE
                         .find(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getScopeId()), GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getJobStepDefinitionId()));
-                gwtJobStep.setJobStepDefinitionId(jobStepDefinition.getName());
+                gwtJobStep.setJobStepDefinitionName(jobStepDefinition.getName());
 
                 setEnumOnJobStepProperty(gwtJobStep.getStepProperties());
 
