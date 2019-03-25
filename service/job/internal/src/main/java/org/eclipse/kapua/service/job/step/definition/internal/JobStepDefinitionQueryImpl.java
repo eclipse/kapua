@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,16 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step.definition.internal;
 
-import org.eclipse.kapua.commons.model.query.predicate.AbstractKapuaQuery;
+import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionQuery;
 
 /**
  * {@link JobStepDefinitionQuery} definition.
- * 
+ *
  * @since 1.0
- * 
  */
 public class JobStepDefinitionQueryImpl extends AbstractKapuaQuery<JobStepDefinition> implements JobStepDefinitionQuery {
 

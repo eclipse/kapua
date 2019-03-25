@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,8 +14,6 @@ package org.eclipse.kapua.service.authorization.role.shiro;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -30,9 +28,9 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionValidator;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.role.RolePermissionAttributes;
 import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
-import org.eclipse.kapua.service.authorization.role.RolePermissionAttributes;
 import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleService;
@@ -92,14 +90,14 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
         // Check duplicates
         RolePermissionQuery query = new RolePermissionQueryImpl(rolePermissionCreator.getScopeId());
         query.setPredicate(
-                new AndPredicateImpl(
-                        new AttributePredicateImpl<>(RolePermissionAttributes.SCOPE_ID, rolePermissionCreator.getScopeId()),
-                        new AttributePredicateImpl<>(RolePermissionAttributes.ROLE_ID, rolePermissionCreator.getRoleId()),
-                        new AttributePredicateImpl<>(RolePermissionAttributes.PERMISSION_DOMAIN, rolePermissionCreator.getPermission().getDomain()),
-                        new AttributePredicateImpl<>(RolePermissionAttributes.PERMISSION_ACTION, rolePermissionCreator.getPermission().getAction()),
-                        new AttributePredicateImpl<>(RolePermissionAttributes.PERMISSION_TARGET_SCOPE_ID, rolePermissionCreator.getPermission().getTargetScopeId()),
-                        new AttributePredicateImpl<>(RolePermissionAttributes.PERMISSION_GROUP_ID, rolePermissionCreator.getPermission().getGroupId()),
-                        new AttributePredicateImpl<>(RolePermissionAttributes.PERMISSION_FORWARDABLE, rolePermissionCreator.getPermission().getForwardable())
+                query.andPredicate(
+                        query.attributePredicate(RolePermissionAttributes.SCOPE_ID, rolePermissionCreator.getScopeId()),
+                        query.attributePredicate(RolePermissionAttributes.ROLE_ID, rolePermissionCreator.getRoleId()),
+                        query.attributePredicate(RolePermissionAttributes.PERMISSION_DOMAIN, rolePermissionCreator.getPermission().getDomain()),
+                        query.attributePredicate(RolePermissionAttributes.PERMISSION_ACTION, rolePermissionCreator.getPermission().getAction()),
+                        query.attributePredicate(RolePermissionAttributes.PERMISSION_TARGET_SCOPE_ID, rolePermissionCreator.getPermission().getTargetScopeId()),
+                        query.attributePredicate(RolePermissionAttributes.PERMISSION_GROUP_ID, rolePermissionCreator.getPermission().getGroupId()),
+                        query.attributePredicate(RolePermissionAttributes.PERMISSION_FORWARDABLE, rolePermissionCreator.getPermission().getForwardable())
                 )
         );
         if (count(query) > 0) {
@@ -164,7 +162,7 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
         //
         // Build query
         RolePermissionQuery query = new RolePermissionQueryImpl(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(RolePermissionAttributes.ROLE_ID, roleId));
+        query.setPredicate(query.attributePredicate(RolePermissionAttributes.ROLE_ID, roleId));
 
         return query(query);
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -29,8 +29,6 @@ import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.KapuaDelayUtil;
@@ -50,8 +48,8 @@ import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
 import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 import org.eclipse.kapua.service.certificate.Certificate;
-import org.eclipse.kapua.service.certificate.CertificateFactory;
 import org.eclipse.kapua.service.certificate.CertificateAttributes;
+import org.eclipse.kapua.service.certificate.CertificateFactory;
 import org.eclipse.kapua.service.certificate.CertificateQuery;
 import org.eclipse.kapua.service.certificate.CertificateService;
 import org.eclipse.kapua.service.certificate.CertificateStatus;
@@ -467,14 +465,19 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             KapuaLocator locator = KapuaLocator.getInstance();
             CertificateService certificateService = locator.getService(CertificateService.class);
             CertificateFactory certificateFactory = locator.getFactory(CertificateFactory.class);
-            CertificateQuery certificateQuery = certificateFactory.newQuery(scopeId);
-            certificateQuery.setPredicate(new AndPredicateImpl()
-                    .and(new AttributePredicateImpl<>(CertificateAttributes.USAGE_NAME, "JWT"))
-                    .and(new AttributePredicateImpl<>(CertificateAttributes.STATUS, CertificateStatus.VALID)));
-            certificateQuery.setIncludeInherited(true);
-            certificateQuery.setLimit(1);
 
-            Certificate certificate = KapuaSecurityUtils.doPrivileged(() -> certificateService.query(certificateQuery)).getFirstItem();
+            CertificateQuery query = certificateFactory.newQuery(scopeId);
+            query.setPredicate(
+                    query.andPredicate(
+                            query.attributePredicate(CertificateAttributes.USAGE_NAME, "JWT"),
+                            query.attributePredicate(CertificateAttributes.STATUS, CertificateStatus.VALID)
+                    )
+            );
+
+            query.setIncludeInherited(true);
+            query.setLimit(1);
+
+            Certificate certificate = KapuaSecurityUtils.doPrivileged(() -> certificateService.query(query)).getFirstItem();
             if (certificate == null) {
                 throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.JWT_CERTIFICATE_NOT_FOUND);
             }

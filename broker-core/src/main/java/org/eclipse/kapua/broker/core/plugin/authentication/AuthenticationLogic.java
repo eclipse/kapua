@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,8 +19,6 @@ import org.eclipse.kapua.broker.core.plugin.metric.ClientMetric;
 import org.eclipse.kapua.broker.core.plugin.metric.LoginMetric;
 import org.eclipse.kapua.broker.core.plugin.metric.PublishMetric;
 import org.eclipse.kapua.broker.core.plugin.metric.SubscribeMetric;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Domain;
@@ -33,8 +31,8 @@ import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
-import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionFactory;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionAttributes;
+import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionFactory;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionQuery;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionService;
 import org.slf4j.Logger;
@@ -102,7 +100,7 @@ public abstract class AuthenticationLogic {
      * @param kcc
      * @param error
      * @return true send disconnect message (if the disconnection is a clean disconnection)
-     *         false don't send disconnect message (the disconnection is caused by a stealing link or the device is currently connected to another node)
+     * false don't send disconnect message (the disconnection is caused by a stealing link or the device is currently connected to another node)
      */
     public abstract boolean disconnect(KapuaConnectionContext kcc, Throwable error);
 
@@ -226,10 +224,7 @@ public abstract class AuthenticationLogic {
     protected void checkConnectionCountByReservedUserId(KapuaId scopeId, KapuaId userId, long count) throws KapuaException {
         // check that no devices have this user as strict user
         DeviceConnectionOptionQuery query = deviceConnectionOptionFactory.newQuery(scopeId);
-
-        AndPredicateImpl andPredicate = new AndPredicateImpl();
-        andPredicate.and(new AttributePredicateImpl<>(DeviceConnectionOptionAttributes.RESERVED_USER_ID, userId));
-        query.setPredicate(andPredicate);
+        query.setPredicate(query.attributePredicate(DeviceConnectionOptionAttributes.RESERVED_USER_ID, userId));
         query.setLimit(1);
 
         Long connectionCountByReservedUserId = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionOptionService.count(query));

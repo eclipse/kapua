@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,8 +23,8 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
+import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -34,13 +34,12 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
 import org.eclipse.kapua.service.job.JobJAXBContextProvider;
 import org.eclipse.kapua.service.job.common.CommonData;
 import org.eclipse.kapua.service.job.execution.internal.JobExecutionFactoryImpl;
 import org.eclipse.kapua.service.job.execution.internal.JobExecutionServiceImpl;
 import org.eclipse.kapua.service.job.internal.JobData;
-import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
+import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
 import org.eclipse.kapua.test.MockedLocator;
 import org.eclipse.kapua.test.steps.AbstractKapuaSteps;
 import org.joda.time.DateTime;
@@ -239,7 +238,7 @@ public class JobExecutionServiceTestSteps extends AbstractKapuaSteps {
             throws Exception {
 
         JobExecutionQuery tmpQuery = executionFactory.newQuery(commonData.currentScopeId);
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("jobId", jobData.job.getId()));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobData.job.getId()));
 
         try {
             commonData.primeException();
@@ -254,7 +253,7 @@ public class JobExecutionServiceTestSteps extends AbstractKapuaSteps {
             throws Exception {
 
         JobExecutionQuery tmpQuery = executionFactory.newQuery(commonData.currentScopeId);
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("jobId", jobData.job.getId()));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobData.job.getId()));
 
         try {
             commonData.primeException();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,16 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
-import org.eclipse.kapua.commons.model.query.predicate.AbstractKapuaQuery;
+import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
 
 /**
  * Access info query implementation.
- * 
+ *
  * @since 1.0
- * 
  */
 public class AccessInfoQueryImpl extends AbstractKapuaQuery<AccessInfo> implements AccessInfoQuery {
 
@@ -33,7 +32,7 @@ public class AccessInfoQueryImpl extends AbstractKapuaQuery<AccessInfo> implemen
 
     /**
      * Constructor
-     * 
+     *
      * @param scopeId
      */
     public AccessInfoQueryImpl(KapuaId scopeId) {

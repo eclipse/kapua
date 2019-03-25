@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.authorization.shiro;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -22,6 +21,7 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
+import org.eclipse.kapua.service.authorization.role.RoleAttributes;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
@@ -30,7 +30,6 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleCreatorImpl;
-import org.eclipse.kapua.service.authorization.role.RoleAttributes;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleQueryImpl;
 import org.eclipse.kapua.test.KapuaTest;
 import org.eclipse.kapua.test.ResourceLimitsConfig;
@@ -270,7 +269,7 @@ public class RoleServiceTest extends KapuaTest {
             //
             // Query
             RoleQuery query = new RoleQueryImpl(scope);
-            query.setPredicate(new AttributePredicateImpl<>(RoleAttributes.NAME, role.getName()));
+            query.setPredicate(query.attributePredicate(RoleAttributes.NAME, role.getName()));
             RoleListResult rolesFound = roleService.query(query);
             long rolesCount = roleService.count(query);
 

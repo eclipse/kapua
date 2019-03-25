@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,48 +11,44 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.security.KapuaSession;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.group.GroupFactory;
-import org.eclipse.kapua.service.authorization.group.GroupQuery;
-import org.eclipse.kapua.service.authorization.group.GroupService;
-import org.eclipse.kapua.service.authorization.group.shiro.GroupFactoryImpl;
-import org.eclipse.kapua.service.authorization.group.GroupAttributes;
-import org.eclipse.kapua.service.authorization.group.shiro.GroupServiceImpl;
-
 import cucumber.api.Scenario;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.group.GroupAttributes;
+import org.eclipse.kapua.service.authorization.group.GroupFactory;
+import org.eclipse.kapua.service.authorization.group.GroupQuery;
+import org.eclipse.kapua.service.authorization.group.GroupService;
+import org.eclipse.kapua.service.authorization.group.shiro.GroupFactoryImpl;
+import org.eclipse.kapua.service.authorization.group.shiro.GroupServiceImpl;
+
+import javax.inject.Inject;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Implementation of Gherkin steps used in GroupService.feature scenarios.
- *
  */
 @ScenarioScoped
 public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
 
     // Test data scratchpads
-    CommonTestData commonData ;
-    GroupServiceTestData groupData ;
+    CommonTestData commonData;
+    GroupServiceTestData groupData;
 
     // Various domain related service references
-    GroupService groupService ;
-    GroupFactory groupFactory ;
+    GroupService groupService;
+    GroupFactory groupFactory;
 
     // Currently executing scenario.
     Scenario scenario;
@@ -236,7 +232,7 @@ public class GroupServiceTestSteps extends AbstractAuthorizationServiceTest {
             throws KapuaException {
         KapuaId tmpId = new KapuaEid(BigInteger.valueOf(scope));
         GroupQuery tmpQuery = groupFactory.newQuery(tmpId);
-        tmpQuery.setPredicate(new AttributePredicateImpl<>(GroupAttributes.NAME, name));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(GroupAttributes.NAME, name));
 
         KapuaSecurityUtils.doPrivileged(() -> {
             groupData.groupList = groupService.query(tmpQuery);

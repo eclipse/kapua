@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,12 +19,11 @@ import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModel
 import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpointQuery;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
-import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
 import org.eclipse.kapua.service.endpoint.EndpointInfoAttributes;
+import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
 import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
 
 public class GwtKapuaEndpointModelConverter {
@@ -44,24 +43,28 @@ public class GwtKapuaEndpointModelConverter {
      */
     public static EndpointInfoQuery convertEndpointQuery(PagingLoadConfig loadConfig, GwtEndpointQuery gwtEndpointQuery) {
 
+        EndpointInfoQuery query = ENDPOINT_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtEndpointQuery.getScopeId()));
+
         // Predicates conversion
-        AndPredicateImpl andPredicate = new AndPredicateImpl();
+        AndPredicate andPredicate = query.andPredicate();
 
         if (!Strings.isNullOrEmpty(gwtEndpointQuery.getSchema())) {
-            andPredicate.and(new AttributePredicateImpl<String>(EndpointInfoAttributes.SCHEMA, gwtEndpointQuery.getSchema(), AttributePredicate.Operator.LIKE));
+            andPredicate.and(query.attributePredicate(EndpointInfoAttributes.SCHEMA, gwtEndpointQuery.getSchema(), AttributePredicate.Operator.LIKE));
         }
 
         if (!Strings.isNullOrEmpty(gwtEndpointQuery.getDns())) {
-            andPredicate.and(new AttributePredicateImpl<String>(EndpointInfoAttributes.DNS, gwtEndpointQuery.getDns(), AttributePredicate.Operator.LIKE));
+            andPredicate.and(query.attributePredicate(EndpointInfoAttributes.DNS, gwtEndpointQuery.getDns(), AttributePredicate.Operator.LIKE));
         }
 
         if (gwtEndpointQuery.getPort() != null) {
-            andPredicate.and(new AttributePredicateImpl<Integer>(EndpointInfoAttributes.PORT, gwtEndpointQuery.getPort().intValue(), AttributePredicate.Operator.LIKE));
+            andPredicate.and(query.attributePredicate(EndpointInfoAttributes.PORT, gwtEndpointQuery.getPort().intValue(), AttributePredicate.Operator.LIKE));
         }
 
         if (gwtEndpointQuery.getCheck()) {
-            andPredicate.and(new AttributePredicateImpl<Boolean>(EndpointInfoAttributes.SECURE, gwtEndpointQuery.getSecure(), AttributePredicate.Operator.EQUAL));
+            andPredicate.and(query.attributePredicate(EndpointInfoAttributes.SECURE, gwtEndpointQuery.getSecure(), AttributePredicate.Operator.EQUAL));
         }
+
+        query.setPredicate(andPredicate);
 
         // Sort order conversion
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? EndpointInfoAttributes.DNS : loadConfig.getSortField();
@@ -76,12 +79,10 @@ public class GwtKapuaEndpointModelConverter {
         FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
 
         // Query conversion
-        EndpointInfoQuery ednpointQuery = ENDPOINT_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtEndpointQuery.getScopeId()));
-        ednpointQuery.setPredicate(andPredicate);
-        ednpointQuery.setSortCriteria(sortCriteria);
-        ednpointQuery.setOffset(loadConfig.getOffset());
-        ednpointQuery.setLimit(loadConfig.getLimit());
+        query.setSortCriteria(sortCriteria);
+        query.setOffset(loadConfig.getOffset());
+        query.setLimit(loadConfig.getLimit());
 
-        return ednpointQuery;
+        return query;
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,15 +20,14 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.endpoint.EndpointInfo;
+import org.eclipse.kapua.service.endpoint.EndpointInfoAttributes;
 import org.eclipse.kapua.service.endpoint.EndpointInfoCreator;
 import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
 import org.eclipse.kapua.service.endpoint.EndpointInfoListResult;
-import org.eclipse.kapua.service.endpoint.EndpointInfoAttributes;
 import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
 import org.eclipse.kapua.service.endpoint.EndpointInfoService;
 
@@ -45,7 +44,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Api(value = "EndpointInfos", authorizations = { @Authorization(value = "kapuaAccessToken") })
+@Api(value = "EndpointInfos", authorizations = {@Authorization(value = "kapuaAccessToken")})
 @Path("{scopeId}/endpointInfos")
 public class EndpointInfos extends AbstractKapuaResource {
 
@@ -69,7 +68,7 @@ public class EndpointInfos extends AbstractKapuaResource {
             notes = "Returns the list of all the endpointInfos associated to the current selected scope.", //
             response = EndpointInfoListResult.class)
     @GET
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public EndpointInfoListResult simpleQuery(
             @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The endpointInfo usage to filter results.") @QueryParam("usage") String usage,
@@ -77,9 +76,9 @@ public class EndpointInfos extends AbstractKapuaResource {
             @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
         EndpointInfoQuery query = endpointInfoFactory.newQuery(scopeId);
 
-        AndPredicateImpl andPredicate = new AndPredicateImpl();
+        AndPredicate andPredicate = query.andPredicate();
         if (!Strings.isNullOrEmpty(usage)) {
-            andPredicate.and(new AttributePredicateImpl<>(EndpointInfoAttributes.USAGES, endpointInfoFactory.newEndpointUsage(usage)));
+            andPredicate.and(query.attributePredicate(EndpointInfoAttributes.USAGES, endpointInfoFactory.newEndpointUsage(usage)));
         }
         query.setPredicate(andPredicate);
 
@@ -104,8 +103,8 @@ public class EndpointInfos extends AbstractKapuaResource {
             response = EndpointInfoListResult.class)
     @POST
     @Path("_query")
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public EndpointInfoListResult query(
             @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The EndpointInfoQuery to use to filter results.", required = true) EndpointInfoQuery query) throws Exception {
@@ -129,8 +128,8 @@ public class EndpointInfos extends AbstractKapuaResource {
             response = CountResult.class)
     @POST
     @Path("_count")
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public CountResult count(
             @ApiParam(value = "The ScopeId in which to count results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The EndpointInfoQuery to use to filter count results", required = true) EndpointInfoQuery query) throws Exception {
@@ -154,8 +153,8 @@ public class EndpointInfos extends AbstractKapuaResource {
             notes = "Creates a new EndpointInfo based on the information provided in EndpointInfoCreator parameter.", //
             response = EndpointInfo.class)
     @POST
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public EndpointInfo create(
             @ApiParam(value = "The ScopeId in which to create the EndpointInfo", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "Provides the information for the new EndpointInfo to be created", required = true) EndpointInfoCreator endpointInfoCreator) throws Exception {
@@ -179,7 +178,7 @@ public class EndpointInfos extends AbstractKapuaResource {
             response = EndpointInfo.class)
     @GET
     @Path("{endpointInfoId}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public EndpointInfo find(
             @ApiParam(value = "The ScopeId of the requested EndpointInfo.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the requested EndpointInfo", required = true) @PathParam("endpointInfoId") EntityId endpointInfoId) throws Exception {
@@ -208,8 +207,8 @@ public class EndpointInfos extends AbstractKapuaResource {
             response = EndpointInfo.class)
     @PUT
     @Path("{endpointInfoId}")
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public EndpointInfo update(
             @ApiParam(value = "The ScopeId of the requested EndpointInfo.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the requested EndpointInfo", required = true) @PathParam("endpointInfoId") EntityId endpointInfoId,

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,26 +18,24 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
-import org.eclipse.kapua.qa.steps.DBHelper;
-import org.junit.Assert;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.qa.steps.BaseQATests;
+import org.eclipse.kapua.qa.steps.DBHelper;
 import org.eclipse.kapua.service.StepData;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.tag.Tag;
+import org.eclipse.kapua.service.tag.TagAttributes;
 import org.eclipse.kapua.service.tag.TagCreator;
 import org.eclipse.kapua.service.tag.TagListResult;
 import org.eclipse.kapua.service.tag.TagService;
 import org.eclipse.kapua.service.tag.internal.TagFactoryImpl;
-import org.eclipse.kapua.service.tag.TagAttributes;
 import org.eclipse.kapua.service.user.steps.TestConfig;
+import org.junit.Assert;
 
 import javax.inject.Inject;
 import java.math.BigInteger;
@@ -108,12 +106,9 @@ public class TagServiceSteps extends BaseQATests {
             config.addConfigToMap(valueMap);
         }
         try {
-//            stepData.put("isException", false);
             primeException();
             tagService.setConfigValues(scopeId, parentId, valueMap);
         } catch (KapuaException ke) {
-//            stepData.put("isException", true);
-//            stepData.put("exception", ke);
             verifyException(ke);
         }
     }
@@ -129,7 +124,7 @@ public class TagServiceSteps extends BaseQATests {
     public void tagWithNameIfSearched(String tagName) throws Throwable {
 
         KapuaQuery<Tag> query = new TagFactoryImpl().newQuery(DEFAULT_SCOPE_ID);
-        query.setPredicate(new AttributePredicateImpl<String>(TagAttributes.NAME, tagName, AttributePredicate.Operator.EQUAL));
+        query.setPredicate(query.attributePredicate(TagAttributes.NAME, tagName, AttributePredicate.Operator.EQUAL));
         TagListResult queryResult = tagService.query(query);
         Tag foundTag = queryResult.getFirstItem();
         stepData.put("tag", foundTag);
@@ -151,7 +146,7 @@ public class TagServiceSteps extends BaseQATests {
         tagService.delete(foundTag.getScopeId(), foundTag.getId());
         queryResult.clearItems();
         foundTag = queryResult.getFirstItem();
-        Assert.assertEquals(null,foundTag);
+        Assert.assertNull(foundTag);
     }
 
     /**

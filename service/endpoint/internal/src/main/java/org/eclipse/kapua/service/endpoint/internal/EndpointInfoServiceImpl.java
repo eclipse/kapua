@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,8 +16,6 @@ import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.jpa.EntityManager;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
@@ -33,11 +31,11 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.endpoint.EndpointInfo;
+import org.eclipse.kapua.service.endpoint.EndpointInfoAttributes;
 import org.eclipse.kapua.service.endpoint.EndpointInfoCreator;
 import org.eclipse.kapua.service.endpoint.EndpointInfoDomains;
 import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
 import org.eclipse.kapua.service.endpoint.EndpointInfoListResult;
-import org.eclipse.kapua.service.endpoint.EndpointInfoAttributes;
 import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
 import org.eclipse.kapua.service.endpoint.EndpointInfoService;
 
@@ -184,7 +182,7 @@ public class EndpointInfoServiceImpl
             if (endpointInfoListResult.isEmpty() && query.getScopeId() != null) {
 
                 // First check if there are any endpoint specified at all
-                if (countAllEndpointsInScope(em, query.getScopeId())){
+                if (countAllEndpointsInScope(em, query.getScopeId())) {
                     // if there are endpoints (even not matching the query), return the empty list
                     return endpointInfoListResult;
                 }
@@ -270,17 +268,18 @@ public class EndpointInfoServiceImpl
      */
     private void checkDuplicateEndpointInfo(KapuaId scopeId, KapuaId entityId, String schema, String dns, int port) throws KapuaException {
 
-        AndPredicate andPredicate = new AndPredicateImpl(
-                new AttributePredicateImpl<>(EndpointInfoAttributes.SCHEMA, schema),
-                new AttributePredicateImpl<>(EndpointInfoAttributes.DNS, dns),
-                new AttributePredicateImpl<>(EndpointInfoAttributes.PORT, port)
+        EndpointInfoQuery query = new EndpointInfoQueryImpl(scopeId);
+
+        AndPredicate andPredicate = query.andPredicate(
+                query.attributePredicate(EndpointInfoAttributes.SCHEMA, schema),
+                query.attributePredicate(EndpointInfoAttributes.DNS, dns),
+                query.attributePredicate(EndpointInfoAttributes.PORT, port)
         );
 
         if (entityId != null) {
-            andPredicate.and(new AttributePredicateImpl<>(EndpointInfoAttributes.ENTITY_ID, entityId, Operator.NOT_EQUAL));
+            andPredicate.and(query.attributePredicate(EndpointInfoAttributes.ENTITY_ID, entityId, Operator.NOT_EQUAL));
         }
 
-        EndpointInfoQuery query = new EndpointInfoQueryImpl(scopeId);
         query.setPredicate(andPredicate);
 
         if (count(query) > 0) {

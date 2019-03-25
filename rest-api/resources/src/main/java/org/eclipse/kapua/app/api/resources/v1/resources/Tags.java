@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,6 +10,26 @@
  *     Eurotech - initial API and implementation
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
+
+import com.google.common.base.Strings;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.Authorization;
+import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.tag.Tag;
+import org.eclipse.kapua.service.tag.TagAttributes;
+import org.eclipse.kapua.service.tag.TagCreator;
+import org.eclipse.kapua.service.tag.TagFactory;
+import org.eclipse.kapua.service.tag.TagListResult;
+import org.eclipse.kapua.service.tag.TagQuery;
+import org.eclipse.kapua.service.tag.TagService;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -24,30 +44,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import io.swagger.annotations.Authorization;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
-import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.tag.Tag;
-import org.eclipse.kapua.service.tag.TagCreator;
-import org.eclipse.kapua.service.tag.TagFactory;
-import org.eclipse.kapua.service.tag.TagListResult;
-import org.eclipse.kapua.service.tag.TagQuery;
-import org.eclipse.kapua.service.tag.TagService;
-import org.eclipse.kapua.service.tag.TagAttributes;
-
-import com.google.common.base.Strings;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
-@Api(value = "Tags", authorizations = { @Authorization(value = "kapuaAccessToken") })
+@Api(value = "Tags", authorizations = {@Authorization(value = "kapuaAccessToken")})
 @Path("{scopeId}/tags")
 public class Tags extends AbstractKapuaResource {
 
@@ -58,17 +55,12 @@ public class Tags extends AbstractKapuaResource {
     /**
      * Gets the {@link Tag} list in the scope.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param name
-     *            The {@link Tag} name to filter results
-     * @param offset
-     *            The result set offset.
-     * @param limit
-     *            The result set limit.
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param name    The {@link Tag} name to filter results
+     * @param offset  The result set offset.
+     * @param limit   The result set limit.
      * @return The {@link TagListResult} of all the tags associated to the current selected scope.
-     * @throws Exception
-     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @ApiOperation(nickname = "tagSimpleQuery",
@@ -76,7 +68,7 @@ public class Tags extends AbstractKapuaResource {
             notes = "Returns the list of all the tags associated to the current selected scope.", //
             response = TagListResult.class)
     @GET
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public TagListResult simpleQuery(
             @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The tag name to filter results.") @QueryParam("name") String name,
@@ -84,9 +76,9 @@ public class Tags extends AbstractKapuaResource {
             @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
         TagQuery query = tagFactory.newQuery(scopeId);
 
-        AndPredicateImpl andPredicate = new AndPredicateImpl();
+        AndPredicate andPredicate = query.andPredicate();
         if (!Strings.isNullOrEmpty(name)) {
-            andPredicate.and(new AttributePredicateImpl<>(TagAttributes.NAME, name));
+            andPredicate.and(query.attributePredicate(TagAttributes.NAME, name));
         }
         query.setPredicate(andPredicate);
 
@@ -99,13 +91,10 @@ public class Tags extends AbstractKapuaResource {
     /**
      * Queries the results with the given {@link TagQuery} parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param query
-     *            The {@link TagQuery} to use to filter results.
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param query   The {@link TagQuery} to use to filter results.
      * @return The {@link TagListResult} of all the result matching the given {@link TagQuery} parameter.
-     * @throws Exception
-     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @ApiOperation(nickname = "tagQuery",
@@ -114,8 +103,8 @@ public class Tags extends AbstractKapuaResource {
             response = TagListResult.class)
     @POST
     @Path("_query")
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public TagListResult query(
             @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The TagQuery to use to filter results.", required = true) TagQuery query) throws Exception {
@@ -127,13 +116,10 @@ public class Tags extends AbstractKapuaResource {
     /**
      * Counts the results with the given {@link TagQuery} parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to search results.
-     * @param query
-     *            The {@link TagQuery} to use to filter results.
+     * @param scopeId The {@link ScopeId} in which to search results.
+     * @param query   The {@link TagQuery} to use to filter results.
      * @return The count of all the result matching the given {@link TagQuery} parameter.
-     * @throws Exception
-     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @ApiOperation(nickname = "tagCount",
@@ -142,8 +128,8 @@ public class Tags extends AbstractKapuaResource {
             response = CountResult.class)
     @POST
     @Path("_count")
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public CountResult count(
             @ApiParam(value = "The ScopeId in which to count results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The TagQuery to use to filter count results", required = true) TagQuery query) throws Exception {
@@ -156,13 +142,10 @@ public class Tags extends AbstractKapuaResource {
      * Creates a new Tag based on the information provided in TagCreator
      * parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} in which to create the {@link Tag}
-     * @param tagCreator
-     *            Provides the information for the new {@link Tag} to be created.
+     * @param scopeId    The {@link ScopeId} in which to create the {@link Tag}
+     * @param tagCreator Provides the information for the new {@link Tag} to be created.
      * @return The newly created {@link Tag} object.
-     * @throws Exception
-     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @ApiOperation(nickname = "createTag",
@@ -170,8 +153,8 @@ public class Tags extends AbstractKapuaResource {
             notes = "Creates a new Tag based on the information provided in TagCreator parameter.", //
             response = Tag.class)
     @POST
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Tag create(
             @ApiParam(value = "The ScopeId in which to create the Tag", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "Provides the information for the new Tag to be created", required = true) TagCreator tagCreator) throws Exception {
@@ -183,13 +166,10 @@ public class Tags extends AbstractKapuaResource {
     /**
      * Returns the Tag specified by the "tagId" path parameter.
      *
-     * @param scopeId
-     *            The {@link ScopeId} of the requested {@link Tag}.
-     * @param tagId
-     *            The id of the requested Tag.
+     * @param scopeId The {@link ScopeId} of the requested {@link Tag}.
+     * @param tagId   The id of the requested Tag.
      * @return The requested Tag object.
-     * @throws Exception
-     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @ApiOperation(nickname = "tagFind",
@@ -198,7 +178,7 @@ public class Tags extends AbstractKapuaResource {
             response = Tag.class)
     @GET
     @Path("{tagId}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Tag find(
             @ApiParam(value = "The ScopeId of the requested Tag.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the requested Tag", required = true) @PathParam("tagId") EntityId tagId) throws Exception {
@@ -214,15 +194,11 @@ public class Tags extends AbstractKapuaResource {
     /**
      * Updates the Tag based on the information provided in the Tag parameter.
      *
-     * @param scopeId
-     *            The ScopeId of the requested {@link Tag}.
-     * @param tagId
-     *            The id of the requested {@link Tag}
-     * @param tag
-     *            The modified Tag whose attributed need to be updated.
+     * @param scopeId The ScopeId of the requested {@link Tag}.
+     * @param tagId   The id of the requested {@link Tag}
+     * @param tag     The modified Tag whose attributed need to be updated.
      * @return The updated tag.
-     * @throws Exception
-     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @ApiOperation(nickname = "tagUpdate",
@@ -231,8 +207,8 @@ public class Tags extends AbstractKapuaResource {
             response = Tag.class)
     @PUT
     @Path("{tagId}")
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Tag update(
             @ApiParam(value = "The ScopeId of the requested Tag.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the requested Tag", required = true) @PathParam("tagId") EntityId tagId,
@@ -246,13 +222,10 @@ public class Tags extends AbstractKapuaResource {
     /**
      * Deletes the Tag specified by the "tagId" path parameter.
      *
-     * @param scopeId
-     *            The ScopeId of the requested {@link Tag}.
-     * @param tagId
-     *            The id of the Tag to be deleted.
+     * @param scopeId The ScopeId of the requested {@link Tag}.
+     * @param tagId   The id of the Tag to be deleted.
      * @return HTTP 200 if operation has completed successfully.
-     * @throws Exception
-     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @ApiOperation(nickname = "tagDelete",

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,8 +17,10 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.model.query.predicate.OrPredicate;
 import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
@@ -28,7 +30,7 @@ import java.util.List;
 /**
  * {@link KapuaQuery} definition.
  *
- * @param <E> query entity domain
+ * @param <E> The {@link KapuaEntity} for which this {@link KapuaQuery} is for.
  */
 public interface KapuaQuery<E extends KapuaEntity> {
 
@@ -36,6 +38,7 @@ public interface KapuaQuery<E extends KapuaEntity> {
      * Gets the fetch attribute names list.
      *
      * @return The fetch attribute names list.
+     * @since 1.0.0
      */
     @XmlElementWrapper(name = "fetchAttributeName")
     @XmlElement(name = "fetchAttributeName")
@@ -47,7 +50,7 @@ public interface KapuaQuery<E extends KapuaEntity> {
      * @param fetchAttribute The fetch attribute to add to the list.
      * @since 1.0.0
      */
-    void addFetchAttributes(String fetchAttribute);
+    void addFetchAttributes(@NotNull String fetchAttribute);
 
     /**
      * Sets the fetch attribute names list.<br>
@@ -56,7 +59,7 @@ public interface KapuaQuery<E extends KapuaEntity> {
      * @param fetchAttributeNames The fetch attribute names list.
      * @since 1.0.0
      */
-    void setFetchAttributes(List<String> fetchAttributeNames);
+    void setFetchAttributes(@NotNull List<String> fetchAttributeNames);
 
     /**
      * Get the scope {@link KapuaId} in which to query.
@@ -75,7 +78,7 @@ public interface KapuaQuery<E extends KapuaEntity> {
      * @param scopeId The scope {@link KapuaId} in which to query.
      * @since 1.0.0
      */
-    void setScopeId(KapuaId scopeId);
+    void setScopeId(@NotNull KapuaId scopeId);
 
     /**
      * Gets the {@link KapuaQuery} {@link QueryPredicate}s.
@@ -84,7 +87,6 @@ public interface KapuaQuery<E extends KapuaEntity> {
      * @since 1.0.0
      */
     @XmlTransient
-    // @XmlElement(name = "predicate")
     QueryPredicate getPredicate();
 
     /**
@@ -95,7 +97,7 @@ public interface KapuaQuery<E extends KapuaEntity> {
      * @param queryPredicate The {@link KapuaQuery} {@link QueryPredicate}s.
      * @since 1.0.0
      */
-    void setPredicate(QueryPredicate queryPredicate);
+    void setPredicate(@NotNull QueryPredicate queryPredicate);
 
     /**
      * Gets the {@link KapuaQuery} {@link KapuaSortCriteria}
@@ -104,7 +106,6 @@ public interface KapuaQuery<E extends KapuaEntity> {
      * @since 1.0.0
      */
     @XmlTransient
-    // @XmlElement(name = "sortCriteria")
     KapuaSortCriteria getSortCriteria();
 
     /**
@@ -113,7 +114,7 @@ public interface KapuaQuery<E extends KapuaEntity> {
      * @param sortCriteria The {@link KapuaQuery} {@link KapuaSortCriteria}.
      * @since 1.0.0
      */
-    void setSortCriteria(KapuaSortCriteria sortCriteria);
+    void setSortCriteria(@NotNull KapuaSortCriteria sortCriteria);
 
     /**
      * Gets the {@link KapuaQuery} offset.
@@ -153,4 +154,18 @@ public interface KapuaQuery<E extends KapuaEntity> {
      * @since 1.0.0
      */
     void setLimit(Integer limit);
+
+    //
+    // Predicates factory
+    <T> AttributePredicate<T> attributePredicate(String attributeName, T attributeValue);
+
+    <T> AttributePredicate<T> attributePredicate(String attributeName, T attributeValue, AttributePredicate.Operator operator);
+
+    AndPredicate andPredicate();
+
+    AndPredicate andPredicate(QueryPredicate... queryPredicates);
+
+    OrPredicate orPredicate();
+
+    OrPredicate orPredicate(QueryPredicate... queryPredicates);
 }

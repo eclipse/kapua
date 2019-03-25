@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,35 +11,32 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.servlet;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.concurrent.Callable;
+import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaIllegalAccessException;
+import org.eclipse.kapua.KapuaUnauthenticatedException;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.query.KapuaListResult;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventAttributes;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.KapuaIllegalAccessException;
-import org.eclipse.kapua.KapuaUnauthenticatedException;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.query.KapuaListResult;
-import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
-import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
-import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventAttributes;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.util.Date;
+import java.util.concurrent.Callable;
 
 public class DeviceEventExporterServlet extends HttpServlet {
 
@@ -102,22 +99,22 @@ public class DeviceEventExporterServlet extends HttpServlet {
             int offset = 0;
 
             // paginate through the matching message
-            DeviceEventQuery deq = def.newQuery(KapuaEid.parseCompactId(scopeId));
-            deq.setLimit(250);
+            DeviceEventQuery query = def.newQuery(KapuaEid.parseCompactId(scopeId));
+            query.setLimit(250);
 
             // Inserting filter parameter if specified
-            AndPredicateImpl andPred = new AndPredicateImpl();
+            AndPredicate andPred = query.andPredicate(
+                    query.attributePredicate(DeviceEventAttributes.DEVICE_ID, KapuaEid.parseCompactId(deviceId), Operator.EQUAL),
+                    query.attributePredicate(DeviceEventAttributes.RECEIVED_ON, startDate, Operator.GREATER_THAN),
+                    query.attributePredicate(DeviceEventAttributes.RECEIVED_ON, endDate, Operator.LESS_THAN)
+            );
 
-            andPred = andPred.and(new AttributePredicateImpl<KapuaId>(DeviceEventAttributes.DEVICE_ID, KapuaEid.parseCompactId(deviceId), Operator.EQUAL))
-                    .and(new AttributePredicateImpl<Date>(DeviceEventAttributes.RECEIVED_ON, startDate, Operator.GREATER_THAN))
-                    .and(new AttributePredicateImpl<Date>(DeviceEventAttributes.RECEIVED_ON, endDate, Operator.LESS_THAN));
-
-            deq.setPredicate(andPred);
+            query.setPredicate(andPred);
 
             KapuaListResult<DeviceEvent> results;
             do {
-                deq.setOffset(offset);
-                results = des.query(deq);
+                query.setOffset(offset);
+                results = des.query(query);
 
                 deviceEventExporter.append(results);
 

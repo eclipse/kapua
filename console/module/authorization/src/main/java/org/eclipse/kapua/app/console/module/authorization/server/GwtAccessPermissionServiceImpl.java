@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,7 +28,6 @@ import org.eclipse.kapua.app.console.module.authorization.shared.util.GwtKapuaAu
 import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAuthorizationModelConverter;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
@@ -38,10 +37,10 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionFactory;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
-import org.eclipse.kapua.service.authorization.access.AccessPermissionAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.group.Group;
@@ -135,10 +134,10 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
                 AccessInfo accessInfo = ACCESS_INFO_SERVICE.findByUserId(scopeId, userId);
 
                 if (accessInfo != null) {
-                    AccessPermissionQuery accessPermissionQuery = ACCESS_PERMISSION_FACTORY.newQuery(scopeId);
-                    accessPermissionQuery.setPredicate(new AttributePredicateImpl<KapuaId>(AccessPermissionAttributes.ACCESS_INFO_ID, accessInfo.getId()));
-                    accessPermissionQuery.setLimit(loadConfig.getLimit());
-                    accessPermissionQuery.setOffset(loadConfig.getOffset());
+                    AccessPermissionQuery query = ACCESS_PERMISSION_FACTORY.newQuery(scopeId);
+                    query.setPredicate(query.attributePredicate(AccessPermissionAttributes.ACCESS_INFO_ID, accessInfo.getId()));
+                    query.setLimit(loadConfig.getLimit());
+                    query.setOffset(loadConfig.getOffset());
 
                     String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? KapuaEntityAttributes.CREATED_ON : loadConfig.getSortField();
                     if (sortField.equals("createdOnFormatted")) {
@@ -146,10 +145,10 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
                     }
                     SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
                     FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
-                    accessPermissionQuery.setSortCriteria(sortCriteria);
+                    query.setSortCriteria(sortCriteria);
 
-                    AccessPermissionListResult accessPermissionList = ACCESS_PERMISSION_SERVICE.query(accessPermissionQuery);
-                    totalLength = (int) ACCESS_PERMISSION_SERVICE.count(accessPermissionQuery);
+                    AccessPermissionListResult accessPermissionList = ACCESS_PERMISSION_SERVICE.query(query);
+                    totalLength = (int) ACCESS_PERMISSION_SERVICE.count(query);
 
                     if (!accessPermissionList.isEmpty()) {
                         for (final AccessPermission accessPermission : accessPermissionList.getItems()) {

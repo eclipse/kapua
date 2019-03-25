@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,29 +11,43 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.query.predicate;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- * Kapua sql or predicate definition.
- * 
- * @since 1.0
- * 
+ * {@link OrPredicate} definition.
+ * <p>
+ * Used to link multiple {@link QueryPredicate}s in OR clause.
+ *
+ * @since 1.0.0
  */
 public interface OrPredicate extends QueryPredicate {
 
     /**
-     * Creates an "or predicate" from a generic predicate
-     * 
-     * @param predicate
-     * @return
+     * Adds the given {@link QueryPredicate} to the {@link OrPredicate}.
+     *
+     * @param predicate The {@link OrPredicate} to concatenate
+     * @return {@code this} {@link OrPredicate}.
+     * @throws NullPointerException if the given parameter is {@code null}.
+     * @since 1.0.0
      */
-    public OrPredicate or(QueryPredicate predicate);
+    OrPredicate or(@NotNull QueryPredicate predicate);
 
     /**
-     * Returns a list of predicates
-     * 
-     * @return
+     * Gets all {@link QueryPredicate} set for this {@link OrPredicate}
+     *
+     * @return The {@link List} of {@link QueryPredicate}s
+     * @since 1.0.0
      */
-    public List<QueryPredicate> getPredicates();
+    List<QueryPredicate> getPredicates();
+
+    /**
+     * Sets a {@link List} of {@link QueryPredicate}s in OR clause
+     *
+     * @param predicates The {@link List} of {@link QueryPredicate}s
+     * @throws NullPointerException if the given parameter is {@code null}.
+     * @since 1.1.0
+     */
+    void setPredicates(@NotNull List<QueryPredicate> predicates);
 
 }

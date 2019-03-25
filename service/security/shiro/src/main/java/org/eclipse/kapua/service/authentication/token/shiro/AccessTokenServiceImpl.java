@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.authentication.token.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
@@ -24,9 +23,9 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authentication.AuthenticationDomains;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
+import org.eclipse.kapua.service.authentication.token.AccessTokenAttributes;
 import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
 import org.eclipse.kapua.service.authentication.token.AccessTokenListResult;
-import org.eclipse.kapua.service.authentication.token.AccessTokenAttributes;
 import org.eclipse.kapua.service.authentication.token.AccessTokenQuery;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -186,7 +185,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
         //
         // Build query
         AccessTokenQuery query = new AccessTokenQueryImpl(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(AccessTokenAttributes.USER_ID, userId));
+        query.setPredicate(query.attributePredicate(AccessTokenAttributes.USER_ID, userId));
 
         //
         // Do query
@@ -251,7 +250,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     private void deleteAccessTokenByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
 
         AccessTokenQuery query = new AccessTokenQueryImpl(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(AccessTokenAttributes.USER_ID, userId));
+        query.setPredicate(query.attributePredicate(AccessTokenAttributes.USER_ID, userId));
 
         AccessTokenListResult accessTokensToDelete = query(query);
 

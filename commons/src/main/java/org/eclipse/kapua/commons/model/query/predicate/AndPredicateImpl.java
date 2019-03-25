@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * {@link AndPredicate} reference implementation.
+ * {@link AndPredicate}  implementation.
  *
- * @since 0.1.0
+ * @since 1.0.0
  */
 public class AndPredicateImpl implements AndPredicate {
 
@@ -32,7 +32,7 @@ public class AndPredicateImpl implements AndPredicate {
     /**
      * Constructor
      *
-     * @since 0.1.0
+     * @since 1.0.0
      */
     public AndPredicateImpl() {
         setPredicates(new ArrayList<>());
@@ -51,18 +51,12 @@ public class AndPredicateImpl implements AndPredicate {
         setPredicates(Lists.newArrayList(predicates));
     }
 
-    /**
-     * Adds a new {@link QueryPredicate} to this {@link AndPredicate}.
-     *
-     * @param predicate The {@link QueryPredicate} to add
-     * @return {@code this} {@link AndPredicateImpl}.
-     * @throws NullPointerException if the given parameter is {@code null}.
-     */
     @Override
     public AndPredicateImpl and(@NotNull QueryPredicate predicate) {
         Objects.requireNonNull(predicates);
 
-        this.predicates.add(predicate);
+        getPredicates().add(predicate);
+
         return this;
     }
 
@@ -71,7 +65,8 @@ public class AndPredicateImpl implements AndPredicate {
         return this.predicates;
     }
 
-    private void setPredicates(List<QueryPredicate> predicates) {
+    @Override
+    public void setPredicates(List<QueryPredicate> predicates) {
         this.predicates = predicates;
     }
 }

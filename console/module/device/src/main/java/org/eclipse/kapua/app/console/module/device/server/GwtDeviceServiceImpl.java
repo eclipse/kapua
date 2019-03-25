@@ -11,12 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.server;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
-
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
@@ -38,8 +38,6 @@ import org.eclipse.kapua.app.console.module.device.shared.util.KapuaGwtDeviceMod
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaPosition;
@@ -54,10 +52,10 @@ import org.eclipse.kapua.service.authorization.group.GroupDomain;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceDomains;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
-import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
@@ -65,8 +63,8 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
-import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventAttributes;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.tag.Tag;
@@ -75,12 +73,11 @@ import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserDomain;
 import org.eclipse.kapua.service.user.UserService;
 
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
-import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
 
 /**
  * The server side implementation of the Device RPC service.
@@ -256,18 +253,18 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                 // GPS infos retrieval
                 if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.read, device.getScopeId()))) {
                     DeviceEventFactory deviceEventFactory = locator.getFactory(DeviceEventFactory.class);
-                    DeviceEventQuery eventQuery = deviceEventFactory
-                            .newQuery(device.getScopeId());
-                    eventQuery.setLimit(1);
-                    eventQuery.setSortCriteria(new FieldSortCriteria(DeviceEventAttributes.RECEIVED_ON, SortOrder.DESCENDING));
+                    DeviceEventQuery query = deviceEventFactory.newQuery(device.getScopeId());
+                    query.setLimit(1);
+                    query.setSortCriteria(new FieldSortCriteria(DeviceEventAttributes.RECEIVED_ON, SortOrder.DESCENDING));
 
-                    AndPredicateImpl andPredicate = new AndPredicateImpl();
-                    andPredicate.and(new AttributePredicateImpl<KapuaId>(DeviceEventAttributes.DEVICE_ID, device.getId()));
-                    andPredicate.and(new AttributePredicateImpl<String>(DeviceEventAttributes.RESOURCE, "BIRTH"));
+                    AndPredicate andPredicate = query.andPredicate(
+                            query.attributePredicate(DeviceEventAttributes.DEVICE_ID, device.getId()),
+                            query.attributePredicate(DeviceEventAttributes.RESOURCE, "BIRTH")
+                    );
 
-                    eventQuery.setPredicate(andPredicate);
+                    query.setPredicate(andPredicate);
 
-                    KapuaListResult<DeviceEvent> events = deviceEventService.query(eventQuery);
+                    KapuaListResult<DeviceEvent> events = deviceEventService.query(query);
                     DeviceEvent lastEvent = events.getFirstItem();
                     if (lastEvent != null) {
                         KapuaPosition eventPosition = lastEvent.getPosition();
@@ -523,9 +520,9 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
 
     @Override
     public PagingLoadResult<GwtDeviceEvent> findDeviceEvents(PagingLoadConfig loadConfig,
-            GwtDevice gwtDevice,
-            Date startDate,
-            Date endDate)
+                                                             GwtDevice gwtDevice,
+                                                             Date startDate,
+                                                             Date endDate)
             throws GwtKapuaException {
         ArrayList<GwtDeviceEvent> gwtDeviceEvents = new ArrayList<GwtDeviceEvent>();
         BasePagingLoadResult<GwtDeviceEvent> gwtResults = null;
@@ -540,11 +537,11 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
             BasePagingLoadConfig bplc = (BasePagingLoadConfig) loadConfig;
             DeviceEventQuery query = deviceEventFactory.newQuery(KapuaEid.parseCompactId(gwtDevice.getScopeId()));
 
-            AndPredicate andPredicate = new AndPredicateImpl();
-
-            andPredicate.and(new AttributePredicateImpl<KapuaId>(DeviceEventAttributes.DEVICE_ID, KapuaEid.parseCompactId(gwtDevice.getId())));
-            andPredicate.and(new AttributePredicateImpl<Date>(DeviceEventAttributes.RECEIVED_ON, startDate, Operator.GREATER_THAN));
-            andPredicate.and(new AttributePredicateImpl<Date>(DeviceEventAttributes.RECEIVED_ON, endDate, Operator.LESS_THAN));
+            AndPredicate andPredicate = query.andPredicate(
+                    query.attributePredicate(DeviceEventAttributes.DEVICE_ID, KapuaEid.parseCompactId(gwtDevice.getId())),
+                    query.attributePredicate(DeviceEventAttributes.RECEIVED_ON, startDate, Operator.GREATER_THAN),
+                    query.attributePredicate(DeviceEventAttributes.RECEIVED_ON, endDate, Operator.LESS_THAN)
+            );
 
             query.setPredicate(andPredicate);
             query.setSortCriteria(new FieldSortCriteria(DeviceEventAttributes.RECEIVED_ON, SortOrder.DESCENDING));

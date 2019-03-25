@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,17 +20,16 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.role.RolePermissionAttributes;
 import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
-import org.eclipse.kapua.service.authorization.role.RolePermissionAttributes;
 import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 
@@ -46,7 +45,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Api(value = "Roles", authorizations = { @Authorization(value = "kapuaAccessToken") })
+@Api(value = "Roles", authorizations = {@Authorization(value = "kapuaAccessToken")})
 @Path("{scopeId}/roles/{roleId}/permissions")
 public class RolesPermissions extends AbstractKapuaResource {
 
@@ -69,7 +68,7 @@ public class RolesPermissions extends AbstractKapuaResource {
      */
     @ApiOperation(nickname = "rolePermissionSimpleQuery", value = "Gets the RolePermission list in the scope", notes = "Returns the list of all the rolePermissions associated to the current selected scope.", response = RolePermissionListResult.class)
     @GET
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public RolePermissionListResult simpleQuery(
             @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the Role to filter results.") @PathParam("roleId") EntityId roleId,
@@ -79,13 +78,13 @@ public class RolesPermissions extends AbstractKapuaResource {
             @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
         RolePermissionQuery query = rolePermissionFactory.newQuery(scopeId);
 
-        AndPredicateImpl andPredicate = new AndPredicateImpl();
-        query.setPredicate(new AttributePredicateImpl<>(RolePermissionAttributes.ROLE_ID, roleId));
+        AndPredicate andPredicate = query.andPredicate();
+        query.setPredicate(query.attributePredicate(RolePermissionAttributes.ROLE_ID, roleId));
         if (!Strings.isNullOrEmpty(domain)) {
-            andPredicate.and(new AttributePredicateImpl<>(RolePermissionAttributes.PERMISSION_DOMAIN, domain));
+            andPredicate.and(query.attributePredicate(RolePermissionAttributes.PERMISSION_DOMAIN, domain));
         }
         if (action != null) {
-            andPredicate.and(new AttributePredicateImpl<>(RolePermissionAttributes.PERMISSION_ACTION, action));
+            andPredicate.and(query.attributePredicate(RolePermissionAttributes.PERMISSION_ACTION, action));
         }
         query.setPredicate(andPredicate);
 
@@ -108,16 +107,16 @@ public class RolesPermissions extends AbstractKapuaResource {
     @ApiOperation(nickname = "rolePermissionQuery", value = "Queries the RolePermissions", notes = "Queries the RolePermissions with the given RolePermissionQuery parameter returning all matching RolePermissions", response = RolePermissionListResult.class)
     @POST
     @Path("_query")
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public RolePermissionListResult query(
             @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The Role id in which to search results.") @PathParam("roleId") EntityId roleId,
             @ApiParam(value = "The RolePermissionQuery to use to filter results.", required = true) RolePermissionQuery query) throws Exception {
         query.setScopeId(scopeId);
 
-        AndPredicateImpl andPredicate = new AndPredicateImpl();
-        andPredicate.and(new AttributePredicateImpl<>(RolePermissionAttributes.ROLE_ID, roleId));
+        AndPredicate andPredicate = query.andPredicate();
+        andPredicate.and(query.attributePredicate(RolePermissionAttributes.ROLE_ID, roleId));
         andPredicate.and(query.getPredicate());
 
         query.setPredicate(andPredicate);
@@ -138,14 +137,14 @@ public class RolesPermissions extends AbstractKapuaResource {
     @ApiOperation(nickname = "rolePermissionCount", value = "Counts the RolePermissions", notes = "Counts the RolePermissions with the given RolePermissionQuery parameter returning the number of matching RolePermissions", response = CountResult.class)
     @POST
     @Path("_count")
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public CountResult count(
             @ApiParam(value = "The ScopeId in which to count results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The Role id in which to count results.") @PathParam("roleId") EntityId roleId,
             @ApiParam(value = "The RolePermissionQuery to use to filter results.", required = true) RolePermissionQuery query) throws Exception {
         query.setScopeId(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(RolePermissionAttributes.ROLE_ID, roleId));
+        query.setPredicate(query.attributePredicate(RolePermissionAttributes.ROLE_ID, roleId));
 
         return new CountResult(rolePermissionService.count(query));
     }
@@ -163,8 +162,8 @@ public class RolesPermissions extends AbstractKapuaResource {
      */
     @ApiOperation(nickname = "rolePermissionCreate", value = "Create a RolePermission", notes = "Creates a new RolePermission based on the information provided in RolePermissionCreator parameter.", response = RolePermission.class)
     @POST
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public RolePermission create(
             @ApiParam(value = "The ScopeId in which to create the RolePermission", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The Role id in which to create the RolePermission.", required = true) @PathParam("roleId") EntityId roleId,
@@ -188,16 +187,17 @@ public class RolesPermissions extends AbstractKapuaResource {
     @ApiOperation(nickname = "rolePermissionFind", value = "Get a RolePermission", notes = "Returns the RolePermission specified by the \"rolePermissionId\" path parameter.", response = RolePermission.class)
     @GET
     @Path("{rolePermissionId}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public RolePermission find(
             @ApiParam(value = "The ScopeId of the requested RolePermission.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "Specifies the RoleId for the requested RolePermission", required = true) @PathParam("roleId") EntityId roleId,
             @ApiParam(value = "The id of the requested RolePermission", required = true) @PathParam("rolePermissionId") EntityId rolePermissionId) throws Exception {
         RolePermissionQuery query = rolePermissionFactory.newQuery(scopeId);
 
-        AndPredicateImpl andPredicate = new AndPredicateImpl();
-        andPredicate.and(new AttributePredicateImpl<>(RolePermissionAttributes.ROLE_ID, roleId));
-        andPredicate.and(new AttributePredicateImpl<>(RolePermissionAttributes.ENTITY_ID, rolePermissionId));
+        AndPredicate andPredicate = query.andPredicate(
+                query.attributePredicate(RolePermissionAttributes.ROLE_ID, roleId),
+                query.attributePredicate(RolePermissionAttributes.ENTITY_ID, rolePermissionId)
+        );
 
         query.setPredicate(andPredicate);
         query.setOffset(0);

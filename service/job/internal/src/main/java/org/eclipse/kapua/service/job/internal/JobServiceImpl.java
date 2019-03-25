@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,8 +16,6 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.job.engine.JobEngineService;
@@ -26,21 +24,22 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.Job;
+import org.eclipse.kapua.service.job.JobAttributes;
 import org.eclipse.kapua.service.job.JobCreator;
 import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.JobFactory;
 import org.eclipse.kapua.service.job.JobListResult;
-import org.eclipse.kapua.service.job.JobAttributes;
 import org.eclipse.kapua.service.job.JobQuery;
 import org.eclipse.kapua.service.job.JobService;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 
@@ -85,7 +84,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         //
         // Check duplicate name
         JobQuery query = new JobQueryImpl(creator.getScopeId());
-        query.setPredicate(new AttributePredicateImpl<>(JobAttributes.NAME, creator.getName()));
+        query.setPredicate(query.attributePredicate(JobAttributes.NAME, creator.getName()));
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(creator.getName());
         }
@@ -117,9 +116,9 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         // Check duplicate name
         JobQuery query = new JobQueryImpl(job.getScopeId());
         query.setPredicate(
-                new AndPredicateImpl(
-                        new AttributePredicateImpl<>(JobAttributes.NAME, job.getName()),
-                        new AttributePredicateImpl<>(JobAttributes.ENTITY_ID, job.getId(), Operator.NOT_EQUAL)
+                query.andPredicate(
+                        query.attributePredicate(JobAttributes.NAME, job.getName()),
+                        query.attributePredicate(JobAttributes.ENTITY_ID, job.getId(), Operator.NOT_EQUAL)
                 )
         );
 
@@ -200,17 +199,19 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         //
         // Find all the triggers that are associated with this job
         TriggerQuery query = triggerFactory.newQuery(scopeId);
-        AndPredicateImpl andPredicate = new AndPredicateImpl()
-                .and(new AttributePredicateImpl<>(TriggerAttributes.TRIGGER_PROPERTIES_NAME, "jobId"))
-                .and(new AttributePredicateImpl<>(TriggerAttributes.TRIGGER_PROPERTIES_VALUE, jobId.toCompactId()))
-                .and(new AttributePredicateImpl<>(TriggerAttributes.TRIGGER_PROPERTIES_TYPE, KapuaId.class.getName()));
+        AndPredicate andPredicate = query.andPredicate(
+                query.attributePredicate(TriggerAttributes.TRIGGER_PROPERTIES_NAME, "jobId"),
+                query.attributePredicate(TriggerAttributes.TRIGGER_PROPERTIES_VALUE, jobId.toCompactId()),
+                query.attributePredicate(TriggerAttributes.TRIGGER_PROPERTIES_TYPE, KapuaId.class.getName())
+        );
+
         query.setPredicate(andPredicate);
 
         //
         // Query for and delete all the triggers that are associated with this job
         KapuaSecurityUtils.doPrivileged(() -> {
             TriggerListResult triggers = triggerService.query(query);
-            for(Trigger trig : triggers.getItems()) {
+            for (Trigger trig : triggers.getItems()) {
                 triggerService.delete(trig.getScopeId(), trig.getId());
             }
         });

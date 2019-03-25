@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,8 +13,6 @@ package org.eclipse.kapua.job.engine.jbatch;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
@@ -38,12 +36,12 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.JobService;
-import org.eclipse.kapua.service.job.step.JobStepFactory;
 import org.eclipse.kapua.service.job.step.JobStepAttributes;
+import org.eclipse.kapua.service.job.step.JobStepFactory;
 import org.eclipse.kapua.service.job.step.JobStepQuery;
 import org.eclipse.kapua.service.job.step.JobStepService;
-import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetAttributes;
+import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
 
@@ -90,7 +88,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         //
         // Check job targets
         JobTargetQuery jobTargetQuery = JOB_TARGET_FACTORY.newQuery(scopeId);
-        jobTargetQuery.setPredicate(new AttributePredicateImpl<>(JobTargetAttributes.JOB_ID, jobId));
+        jobTargetQuery.setPredicate(jobTargetQuery.attributePredicate(JobTargetAttributes.JOB_ID, jobId));
         if (JOB_TARGET_SERVICE.count(jobTargetQuery) <= 0) {
             throw new KapuaJobEngineException(KapuaJobEngineErrorCodes.JOB_TARGET_MISSING);
         }
@@ -99,9 +97,9 @@ public class JobEngineServiceJbatch implements JobEngineService {
         // Check job target sublist
         if (!jobStartOptions.getTargetIdSublist().isEmpty()) {
             jobTargetQuery.setPredicate(
-                    new AndPredicateImpl(
+                    jobTargetQuery.andPredicate(
                             jobTargetQuery.getPredicate(),
-                            new AttributePredicateImpl<>(JobTargetAttributes.ENTITY_ID, jobStartOptions.getTargetIdSublist().toArray())
+                            jobTargetQuery.attributePredicate(JobTargetAttributes.ENTITY_ID, jobStartOptions.getTargetIdSublist().toArray())
                     )
             );
 
@@ -113,7 +111,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         //
         // Check job steps
         JobStepQuery jobStepQuery = JOB_STEP_FACTORY.newQuery(scopeId);
-        jobStepQuery.setPredicate(new AttributePredicateImpl<>(JobStepAttributes.JOB_ID, jobId));
+        jobStepQuery.setPredicate(jobStepQuery.attributePredicate(JobStepAttributes.JOB_ID, jobId));
         if (JOB_STEP_SERVICE.count(jobStepQuery) <= 0) {
             throw new KapuaJobEngineException(KapuaJobEngineErrorCodes.JOB_STEP_MISSING);
         }

@@ -36,7 +36,6 @@ import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAu
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
@@ -50,10 +49,10 @@ import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.role.RolePermissionAttributes;
 import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
-import org.eclipse.kapua.service.authorization.role.RolePermissionAttributes;
 import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
@@ -271,7 +270,7 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
             // Get permissions assigned to the Role
             RolePermissionQuery query = ROLE_PERMISSION_FACTORY.newQuery(scopeId);
-            query.setPredicate(new AttributePredicateImpl<KapuaId>(RolePermissionAttributes.ROLE_ID, roleId));
+            query.setPredicate(query.attributePredicate(RolePermissionAttributes.ROLE_ID, roleId));
             query.setLimit(loadConfig.getLimit());
             query.setOffset(loadConfig.getOffset());
 
@@ -313,10 +312,10 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                         Group group = GROUP_SERVICE.find(rolePermission.getScopeId(), rolePermission.getPermission().getGroupId());
                         if (group != null) {
                             gwtRolePermission.setGroupName(group.getName());
-                            }
-                        } else {
-                            gwtRolePermission.setGroupName("ALL");
-                           }
+                        }
+                    } else {
+                        gwtRolePermission.setGroupName("ALL");
+                    }
 
                     gwtRolePermission.setCreatedByName(createdByUser != null ? createdByUser.getName() : null);
                     gwtRolePermission.setTargetScopeIdByName(targetScopeIdAccount != null ? targetScopeIdAccount.getName() : null);

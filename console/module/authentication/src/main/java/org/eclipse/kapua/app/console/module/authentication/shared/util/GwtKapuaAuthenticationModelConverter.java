@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,16 +23,15 @@ import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCrede
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialType;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authentication.credential.Credential;
+import org.eclipse.kapua.service.authentication.credential.CredentialAttributes;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
-import org.eclipse.kapua.service.authentication.credential.CredentialAttributes;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
@@ -42,16 +41,14 @@ import org.eclipse.kapua.service.authentication.credential.CredentialType;
  */
 public class GwtKapuaAuthenticationModelConverter {
 
-    private GwtKapuaAuthenticationModelConverter(){
+    private GwtKapuaAuthenticationModelConverter() {
     }
 
     /**
      * Converts a {@link GwtCredentialQuery} into a {@link CredentialQuery} object for backend usage
      *
-     * @param loadConfig
-     *            the load configuration
-     * @param gwtCredentialQuery
-     *            the {@link GwtCredentialQuery} to convertKapuaId
+     * @param loadConfig         the load configuration
+     * @param gwtCredentialQuery the {@link GwtCredentialQuery} to convertKapuaId
      * @return the converted {@link CredentialQuery}
      */
     public static CredentialQuery convertCredentialQuery(PagingLoadConfig loadConfig, GwtCredentialQuery gwtCredentialQuery) {
@@ -61,16 +58,17 @@ public class GwtKapuaAuthenticationModelConverter {
         CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
 
         // Convert query
-        CredentialQuery credentialQuery = credentialFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredentialQuery.getScopeId()));
-        AndPredicateImpl andPredicate = new AndPredicateImpl();
+        CredentialQuery query = credentialFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredentialQuery.getScopeId()));
+        AndPredicate andPredicate = query.andPredicate();
+
         if (gwtCredentialQuery.getUserId() != null && !gwtCredentialQuery.getUserId().trim().isEmpty()) {
-            andPredicate.and(new AttributePredicateImpl<KapuaId>(CredentialAttributes.USER_ID, GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredentialQuery.getUserId())));
+            andPredicate.and(query.attributePredicate(CredentialAttributes.USER_ID, GwtKapuaCommonsModelConverter.convertKapuaId(gwtCredentialQuery.getUserId())));
         }
         if (gwtCredentialQuery.getUsername() != null && !gwtCredentialQuery.getUsername().trim().isEmpty()) {
             // TODO set username predicate
         }
         if (gwtCredentialQuery.getType() != null && gwtCredentialQuery.getType() != GwtCredentialType.ALL) {
-            andPredicate.and(new AttributePredicateImpl<CredentialType>(CredentialAttributes.CREDENTIAL_TYPE, convertCredentialType(gwtCredentialQuery.getType()), Operator.EQUAL));
+            andPredicate.and(query.attributePredicate(CredentialAttributes.CREDENTIAL_TYPE, convertCredentialType(gwtCredentialQuery.getType()), Operator.EQUAL));
         }
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? CredentialAttributes.CREDENTIAL_TYPE : loadConfig.getSortField();
         if (sortField.equals("expirationDateFormatted")) {
@@ -78,23 +76,23 @@ public class GwtKapuaAuthenticationModelConverter {
         } else if (sortField.equals("modifiedOnFormatted")) {
             sortField = CredentialAttributes.MODIFIED_ON;
         }
+
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
         FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
-        credentialQuery.setSortCriteria(sortCriteria);
-        credentialQuery.setPredicate(andPredicate);
-        credentialQuery.setOffset(loadConfig.getOffset());
-        credentialQuery.setLimit(loadConfig.getLimit());
+        query.setSortCriteria(sortCriteria);
+        query.setPredicate(andPredicate);
+        query.setOffset(loadConfig.getOffset());
+        query.setLimit(loadConfig.getLimit());
 
         //
         // Return converted
-        return credentialQuery;
+        return query;
     }
 
     /**
      * Converts a {@link GwtCredentialCreator} into a {@link CredentialCreator} object for backend usage
      *
-     * @param gwtCredentialCreator
-     *            the {@link GwtCredentialCreator} to convertKapuaId
+     * @param gwtCredentialCreator the {@link GwtCredentialCreator} to convertKapuaId
      * @return the converted {@link CredentialCreator}
      */
     public static CredentialCreator convertCredentialCreator(GwtCredentialCreator gwtCredentialCreator) {
@@ -120,8 +118,7 @@ public class GwtKapuaAuthenticationModelConverter {
     /**
      * Converts a {@link GwtCredential} into a {@link Credential} object for backend usage
      *
-     * @param gwtCredential
-     *            the {@link GwtCredential} to convertKapuaId
+     * @param gwtCredential the {@link GwtCredential} to convertKapuaId
      * @return the converted {@link Credential}
      */
     public static Credential convertCredential(GwtCredential gwtCredential) {

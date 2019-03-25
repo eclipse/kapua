@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,7 +17,6 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -25,11 +24,11 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceDomains;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
-import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.common.DeviceValidation;
@@ -72,8 +71,9 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         }
 
         DeviceQuery query = new DeviceQueryImpl(deviceCreator.getScopeId());
-        query.setPredicate(new AttributePredicateImpl<>(DeviceAttributes.CLIENT_ID, deviceCreator.getClientId()));
+        query.setPredicate(query.attributePredicate(DeviceAttributes.CLIENT_ID, deviceCreator.getClientId()));
         DeviceListResult deviceListResult = query(query);
+
         if (!deviceListResult.isEmpty()) {
             throw new KapuaDuplicateNameException(deviceCreator.getClientId());
         }
@@ -123,7 +123,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         DeviceValidation.validateFindByClientIdPreconditions(scopeId, clientId);
 
         DeviceQueryImpl query = new DeviceQueryImpl(scopeId);
-        QueryPredicate predicate = new AttributePredicateImpl<>(DeviceAttributes.CLIENT_ID, clientId);
+        QueryPredicate predicate = query.attributePredicate(DeviceAttributes.CLIENT_ID, clientId);
         query.setFetchAttributes(Lists.newArrayList(DeviceAttributes.CONNECTION, DeviceAttributes.LAST_EVENT));
         query.setPredicate(predicate);
 
@@ -157,7 +157,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         DeviceFactory deviceFactory = locator.getFactory(DeviceFactory.class);
 
         DeviceQuery query = deviceFactory.newQuery(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(DeviceAttributes.GROUP_ID, groupId));
+        query.setPredicate(query.attributePredicate(DeviceAttributes.GROUP_ID, groupId));
 
         DeviceListResult devicesToDelete = query(query);
 
