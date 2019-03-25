@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,8 +12,6 @@
 package org.eclipse.kapua.job.engine.jbatch.listener;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.commons.context.JobContextWrapper;
@@ -60,15 +58,14 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
     private static final JobTargetService JOB_TARGET_SERVICE = LOCATOR.getService(JobTargetService.class);
     private static final JobTargetFactory JOB_TARGET_FACTORY = LOCATOR.getFactory(JobTargetFactory.class);
 
-
     @Inject
     private JobContext jobContext;
 
-    @Override
     /**
      * Before starting the actual {@link org.eclipse.kapua.service.job.Job} processing, create the {@link JobExecution} to track progress and
      * check if there are other {@link JobExecution} running with the same {@link JobExecution#getTargetIds()}.
      */
+    @Override
     public void beforeJob() throws Exception {
         JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext);
 
@@ -93,10 +90,11 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
         LOG.info("JOB {} - {} - Running before job... DONE!", jobContextWrapper.getJobId(), jobContextWrapper.getJobName());
     }
 
-    @Override
+
     /**
      * Close the {@link JobExecution} setting the {@link JobExecution#getEndedOn()}.
      */
+    @Override
     public void afterJob() throws Exception {
         JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext);
 
@@ -130,6 +128,7 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
      * @param jBatchExecutionId The {@link JobContext#getExecutionId()}
      * @return The newly created {@link JobExecution}
      * @throws KapuaException If any error happens during the processing
+     * @since 1.1.0
      */
     private JobExecution createJobExecution(KapuaId scopeId, KapuaId jobId, JobTargetSublist jobTargetSublist, Long jBatchExecutionId) throws KapuaException {
         JobExecutionCreator jobExecutionCreator = JOB_EXECUTION_FACTORY.newCreator(scopeId);
@@ -142,8 +141,8 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
             JobTargetQuery jobTargetQuery = JOB_TARGET_FACTORY.newQuery(scopeId);
 
             jobTargetQuery.setPredicate(
-                    new AndPredicateImpl(
-                            new AttributePredicateImpl<>(JobTargetAttributes.JOB_ID, jobId)
+                    jobTargetQuery.andPredicate(
+                            jobTargetQuery.attributePredicate(JobTargetAttributes.JOB_ID, jobId)
                     )
             );
 
@@ -178,6 +177,7 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
      * @param jobName           The current {@link JobContextWrapper#getJobName()}
      * @param jobTargetIdSubset The current {@link JobExecution#getTargetIds()} }
      * @throws KapuaException If any error happens during the processing.
+     * @since 1.1.0
      */
     private void checkJobRunning(KapuaId scopeId, KapuaId jobId, String jobName, Set<KapuaId> jobTargetIdSubset) throws KapuaException {
         List<Long> runningExecutionsIds = BatchRuntime.getJobOperator().getRunningExecutions(jobName);
@@ -186,10 +186,10 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
             JobExecutionQuery jobExecutionQuery = JOB_EXECUTION_FACTORY.newQuery(scopeId);
 
             jobExecutionQuery.setPredicate(
-                    new AndPredicateImpl(
-                            new AttributePredicateImpl<>(JobExecutionAttributes.JOB_ID, jobId),
-                            new AttributePredicateImpl<>(JobExecutionAttributes.ENDED_ON, null),
-                            new AttributePredicateImpl<>(JobExecutionAttributes.TARGET_IDS, jobTargetIdSubset.toArray())
+                    jobExecutionQuery.andPredicate(
+                            jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobId),
+                            jobExecutionQuery.attributePredicate(JobExecutionAttributes.ENDED_ON, null),
+                            jobExecutionQuery.attributePredicate(JobExecutionAttributes.TARGET_IDS, jobTargetIdSubset.toArray())
                     )
             );
 

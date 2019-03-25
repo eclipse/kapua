@@ -129,6 +129,7 @@ public class JbatchDriver {
      * @throws CannotWriteJobDefFileDriverException if the XML job definition file cannot be created and written in the tmp directory
      * @throws JobExecutionIsRunningDriverException if the jBatch job has another {@link JobExecution} running
      * @throws JobStartingDriverException           if invoking {@link JobOperator#start(String, Properties)} throws an {@link Exception}
+     * @since 1.0.0
      */
     public static void startJob(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull JobStartOptions jobStartOptions)
             throws JbatchDriverException {
@@ -228,6 +229,7 @@ public class JbatchDriver {
      * @param toStopJobExecutionId The optional {@link org.eclipse.kapua.service.job.execution.JobExecution#getId()} to stop.
      * @throws ExecutionNotFoundDriverException   when there isn't a corresponding job execution in jBatch tables
      * @throws ExecutionNotRunningDriverException when the corresponding job execution is not running.
+     * @since 1.0.0
      */
     public static void stopJob(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, KapuaId toStopJobExecutionId) throws JbatchDriverException, KapuaException {
 
@@ -274,7 +276,8 @@ public class JbatchDriver {
      *
      * @param scopeId The scopeId of the {@link Job}
      * @param jobId   The id of the {@link Job}
-     * @return {@code true} if the jBatch {@link Job} is running, {@code false} otherwise,
+     * @return {@code true} if the jBatch {@link Job} is running, {@code false} otherwise.
+     * @since 1.0.0
      */
     public static boolean isRunningJob(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) {
         return !getRunningJobExecutions(scopeId, jobId).isEmpty();

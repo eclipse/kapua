@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -26,8 +26,7 @@ import java.util.Date;
 import java.util.Set;
 
 /**
- * {@link JobExecutionCreator} encapsulates all the information needed to create a new JobExecution in the system.<br>
- * The data provided will be used to seed the new JobExecution.
+ * {@link JobExecutionCreator} defintion.
  *
  * @since 1.0.0
  */
@@ -36,18 +35,42 @@ import java.util.Set;
 @XmlType(factoryClass = JobExecutionXmlRegistry.class, factoryMethod = "newJobExecutionCreator")
 public interface JobExecutionCreator extends KapuaUpdatableEntityCreator<JobExecution> {
 
+    /**
+     * @return
+     * @since 1.0.0
+     */
     KapuaId getJobId();
 
+    /**
+     * @param jobId
+     * @since 1.0.0
+     */
     void setJobId(KapuaId jobId);
 
+    /**
+     * @return
+     * @since 1.0.0
+     */
     Date getStartedOn();
 
+    /**
+     * @param startedOn
+     * @since 1.0.0
+     */
     void setStartedOn(Date startedOn);
 
+    /**
+     * @return
+     * @since 1.1.0
+     */
     @XmlElement(name = "targetIds")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     @ApiModelProperty(dataType = "string")
     <I extends KapuaId> Set<I> getTargetIds();
 
+    /**
+     * @param tagTargetIds
+     * @since 1.1.0
+     */
     void setTargetIds(Set<KapuaId> tagTargetIds);
 }

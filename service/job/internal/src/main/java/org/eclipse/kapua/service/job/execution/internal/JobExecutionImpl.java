@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.execution.internal;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -32,6 +31,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * {@link JobExecution} implementation
+ *
+ * @since 1.0.0
+ */
 @Entity(name = "JobExecution")
 @Table(name = "job_job_execution")
 public class JobExecutionImpl extends AbstractKapuaUpdatableEntity implements JobExecution {
@@ -81,15 +85,15 @@ public class JobExecutionImpl extends AbstractKapuaUpdatableEntity implements Jo
      * Clone constructor.
      *
      * @param jobExecution
-     * @throws KapuaException
      * @since 1.1.0
      */
-    public JobExecutionImpl(JobExecution jobExecution) throws KapuaException {
+    public JobExecutionImpl(JobExecution jobExecution) {
         super(jobExecution);
 
         setJobId(jobExecution.getJobId());
         setStartedOn(jobExecution.getStartedOn());
         setEndedOn(jobExecution.getEndedOn());
+        setTargetIds(jobExecution.getTargetIds());
     }
 
     @Override

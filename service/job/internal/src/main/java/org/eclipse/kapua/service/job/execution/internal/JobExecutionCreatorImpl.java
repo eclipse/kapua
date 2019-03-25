@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,7 +12,6 @@
 package org.eclipse.kapua.service.job.execution.internal;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntityCreator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.execution.JobExecution;
 import org.eclipse.kapua.service.job.execution.JobExecutionCreator;
@@ -20,7 +19,11 @@ import org.eclipse.kapua.service.job.execution.JobExecutionCreator;
 import java.util.Date;
 import java.util.Set;
 
-@KapuaProvider
+/**
+ * {@link JobExecutionCreator} implementation
+ *
+ * @since 1.0.0
+ */
 public class JobExecutionCreatorImpl extends AbstractKapuaUpdatableEntityCreator<JobExecution> implements JobExecutionCreator {
 
     private static final long serialVersionUID = 3119071638220738358L;

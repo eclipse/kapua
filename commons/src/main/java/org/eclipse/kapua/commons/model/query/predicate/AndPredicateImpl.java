@@ -30,7 +30,7 @@ public class AndPredicateImpl implements AndPredicate {
     private List<QueryPredicate> predicates;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @since 1.0.0
      */
