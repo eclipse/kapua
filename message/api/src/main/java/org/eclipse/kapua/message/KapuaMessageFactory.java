@@ -15,40 +15,40 @@ package org.eclipse.kapua.message;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 
 /**
- * {@link KapuaMessage}s {@link KapuaObjectFactory} definition.
+ * {@link KapuaMessageFactory} definition.
  *
  * @since 1.0.0
  */
 public interface KapuaMessageFactory extends KapuaObjectFactory {
 
     /**
-     * Creates a new {@link KapuaMessage}
+     * Instantiates a new {@link KapuaMessage}
      *
-     * @return the new {@link KapuaMessage}
+     * @return The newly instantiated {@link KapuaMessage}
      * @since 1.0.0
      */
     KapuaMessage newMessage();
 
     /**
-     * Creates a new {@link KapuaChannel}
+     * Instantiates a new {@link KapuaChannel}
      *
-     * @return the new {@link KapuaChannel}
+     * @return The newly instantiated {@link KapuaChannel}
      * @since 1.0.0
      */
     KapuaChannel newChannel();
 
     /**
-     * Creates a new {@link KapuaPayload}
+     * Instantiates a new {@link KapuaPayload}
      *
-     * @return the new {@link KapuaPayload}
+     * @return The newly instantiated {@link KapuaPayload}
      * @since 1.0.0
      */
     KapuaPayload newPayload();
 
     /**
-     * Creates a new {@link KapuaPosition}
+     * Instantiates a new {@link KapuaPosition}
      *
-     * @return the new {@link KapuaPosition}
+     * @return The newly instantiated {@link KapuaPosition}
      * @since 1.0.0
      */
     KapuaPosition newPosition();

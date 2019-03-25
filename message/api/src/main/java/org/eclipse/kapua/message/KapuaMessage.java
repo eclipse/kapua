@@ -52,26 +52,26 @@ import java.util.UUID;
 public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> extends Message<C, P> {
 
     /**
-     * Get the message identifier
+     * Gets the unique identifier.
      *
-     * @return
+     * @return The unique identifier.
      * @since 1.0.0
      */
     @XmlElement(name = "id")
     UUID getId();
 
     /**
-     * Set the message identifier
+     * Sets the unique identifier.
      *
-     * @param id
+     * @param id The unique identifier.
      * @since 1.0.0
      */
     void setId(UUID id);
 
     /**
-     * Get scope identifier
+     * Gets the scope {@link KapuaId}
      *
-     * @return
+     * @return The scope {@link KapuaId}
      * @since 1.0.0
      */
     @XmlElement(name = "scopeId")
@@ -80,34 +80,34 @@ public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> ex
     KapuaId getScopeId();
 
     /**
-     * Set scope identifier
+     * Sets the scope {@link KapuaId}.
      *
-     * @param scopeId
+     * @param scopeId The scope {@link KapuaId}
      * @since 1.0.0
      */
     void setScopeId(KapuaId scopeId);
 
     /**
-     * Get client identifier
+     * Gets the device client identifier
      *
-     * @return
+     * @return The device client identifier.
      * @since 1.0.0
      */
     @XmlElement(name = "clientId")
     String getClientId();
 
     /**
-     * Set client identifier
+     * Sets the device client identifier.
      *
-     * @param clientId
+     * @param clientId The device client identifier.
      * @since 1.0.0
      */
     void setClientId(String clientId);
 
     /**
-     * Get device identifier
+     * Gets the device {@link KapuaId}.
      *
-     * @return
+     * @return The device {@link KapuaId}.
      * @since 1.0.0
      */
     @XmlElement(name = "deviceId")
@@ -116,110 +116,111 @@ public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> ex
     KapuaId getDeviceId();
 
     /**
-     * Set device identifier
+     * Sets the device {@link KapuaId}.
      *
-     * @param deviceId
+     * @param deviceId The device {@link KapuaId}.
      * @since 1.0.0
      */
     void setDeviceId(KapuaId deviceId);
 
     /**
-     * Get the message received on date
+     * Gets the received on {@link Date}.
      *
-     * @return
+     * @return The received on {@link Date}.
+     * @since 1.0.0
      */
     @XmlElement(name = "receivedOn")
     Date getReceivedOn();
 
     /**
-     * Set the message received on date
+     * Sets the received on {@link Date}.
      *
-     * @param receivedOn
+     * @param receivedOn The received on {@link Date}.
      * @since 1.0.0
      */
     void setReceivedOn(Date receivedOn);
 
     /**
-     * Get the message sent on date
+     * Gets the sent on {@link Date}.
      *
-     * @return
+     * @return The sent on {@link Date}.
      * @since 1.0.0
      */
     @XmlElement(name = "sentOn")
     Date getSentOn();
 
     /**
-     * Set the message sent on date
+     * Sets the sent on {@link Date}.
      *
-     * @param sentOn
+     * @param sentOn The sent on {@link Date}.
      * @since 1.0.0
      */
     void setSentOn(Date sentOn);
 
     /**
-     * Get the message captured on date
+     * Gets the captured on {@link Date}.
      *
-     * @return
+     * @return The captured on {@link Date}.
      * @since 1.0.0
      */
     @XmlElement(name = "capturedOn")
     Date getCapturedOn();
 
     /**
-     * Set the message captured on date
+     * Sets the captured on {@link Date}.
      *
-     * @param capturedOn
+     * @param capturedOn The captured on {@link Date}.
      * @since 1.0.0
      */
     void setCapturedOn(Date capturedOn);
 
     /**
-     * Get the device position
+     * Gets the device {@link KapuaPosition}.
      *
-     * @return
+     * @return The device {@link KapuaPosition}.
      * @since 1.0.0
      */
     @XmlElement(name = "position")
     KapuaPosition getPosition();
 
     /**
-     * Set the device position
+     * Sets the device {@link KapuaPosition}.
      *
-     * @param position
+     * @param position The device {@link KapuaPosition}.
      * @since 1.0.0
      */
     void setPosition(KapuaPosition position);
 
     /**
-     * Get the message channel
+     * Gets the {@link KapuaChannel}.
      *
-     * @return
+     * @return The {@link KapuaChannel}.
      * @since 1.0.0
      */
     @XmlElement(name = "channel")
     C getChannel();
 
     /**
-     * Set the message channel
+     * Sets the {@link KapuaChannel}.
      *
-     * @param semanticChannel
+     * @param semanticChannel The {@link KapuaChannel}.
      * @since 1.0.0
      */
     void setChannel(C semanticChannel);
 
     /**
-     * Get the message payload
+     * Gets the {@link KapuaPayload}.
      *
-     * @return
+     * @return The {@link KapuaPayload}.
      * @since 1.0.0
      */
     @XmlElement(name = "payload")
     P getPayload();
 
     /**
-     * Set the message payload
+     * Sets the {@link KapuaPayload}.
      *
-     * @param payload
+     * @param payload The {@link KapuaPayload}.
      * @since 1.0.0
      */
     void setPayload(P payload);

@@ -19,16 +19,34 @@ package org.eclipse.kapua.message.device.lifecycle;
 public interface KapuaDisconnectPayload extends KapuaLifecyclePayload {
 
     /**
-     * Get the device uptime
+     * Gets the device uptime.
      *
-     * @return
+     * @return The device uptime.
+     * @since 1.0.0
      */
     String getUptime();
 
     /**
-     * Set the device uptime
+     * Sets the device uptime.
      *
-     * @return
+     * @param uptime The device uptime.
+     * @since 1.1.0
+     */
+    void setUptime(String uptime);
+
+    /**
+     * Gets the device display name.
+     *
+     * @return The device display name.
+     * @since 1.0.0
      */
     String getDisplayName();
+
+    /**
+     * Sets the device display name.
+     *
+     * @param displayName The device display name
+     * @since 1.1.0
+     */
+    void setDisplayName(String displayName);
 }
