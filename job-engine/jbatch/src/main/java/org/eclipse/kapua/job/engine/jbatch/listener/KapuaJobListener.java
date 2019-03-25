@@ -12,6 +12,7 @@
 package org.eclipse.kapua.job.engine.jbatch.listener;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.commons.logger.JobLogger;

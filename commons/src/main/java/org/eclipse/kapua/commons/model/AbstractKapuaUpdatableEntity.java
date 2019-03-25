@@ -162,11 +162,11 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
     }
 
     @Override
-    public void setEntityAttributes(Properties attribures) {
+    public void setEntityAttributes(Properties entityAttributes) {
         try {
-            this.attributes = PropertiesUtils.writePropertiesToString(attribures);
+            this.attributes = PropertiesUtils.writePropertiesToString(entityAttributes);
         } catch (IOException e) {
-            throw new EntityPropertiesWriteException(e, "attributes", attribures);
+            throw new EntityPropertiesWriteException(e, "attributes", entityAttributes);
         }
     }
 

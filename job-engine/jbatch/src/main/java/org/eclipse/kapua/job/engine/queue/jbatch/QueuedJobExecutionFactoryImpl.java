@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.queue.jbatch;
 
+import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecution;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionCreator;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionFactory;
@@ -21,6 +22,8 @@ import org.eclipse.kapua.model.id.KapuaId;
 
 /**
  * {@link QueuedJobExecutionFactory} implementation.
+ *
+ * @since 1.1.0
  */
 @KapuaProvider
 public class QueuedJobExecutionFactoryImpl implements QueuedJobExecutionFactory {
@@ -45,4 +48,12 @@ public class QueuedJobExecutionFactoryImpl implements QueuedJobExecutionFactory 
         return new QueuedJobExecutionListResultImpl();
     }
 
+    @Override
+    public QueuedJobExecution clone(QueuedJobExecution queuedJobExecution) {
+        try {
+            return new QueuedJobExecutionImpl(queuedJobExecution);
+        } catch (Exception e) {
+            throw new KapuaEntityCloneException(e, QueuedJobExecution.TYPE, queuedJobExecution);
+        }
+    }
 }

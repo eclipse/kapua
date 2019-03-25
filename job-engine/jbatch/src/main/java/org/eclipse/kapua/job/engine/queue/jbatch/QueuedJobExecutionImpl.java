@@ -26,6 +26,11 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
+/**
+ * {@link QueuedJobExecution} implementation.
+ *
+ * @since 1.1.0
+ */
 @Entity(name = "QueuedJobExecution")
 @Table(name = "job_queued_job_execution")
 public class QueuedJobExecutionImpl extends AbstractKapuaUpdatableEntity implements QueuedJobExecution {
@@ -54,11 +59,37 @@ public class QueuedJobExecutionImpl extends AbstractKapuaUpdatableEntity impleme
     @Column(name = "status", nullable = false, updatable = true)
     private QueuedJobExecutionStatus status;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.1.0
+     */
     public QueuedJobExecutionImpl() {
     }
 
+    /**
+     * Constructor.
+     *
+     * @param scopeId The scope {@link KapuaId} to set into the {@link QueuedJobExecution}.
+     * @since 1.1.0
+     */
     public QueuedJobExecutionImpl(KapuaId scopeId) {
         super(scopeId);
+    }
+
+    /**
+     * Clone constructor.
+     *
+     * @param queuedJobExecution
+     * @since 1.1.0
+     */
+    public QueuedJobExecutionImpl(QueuedJobExecution queuedJobExecution) {
+        super(queuedJobExecution);
+
+        setJobId(queuedJobExecution.getJobId());
+        setJobExecutionId(queuedJobExecution.getJobExecutionId());
+        setWaitForJobExecutionId(queuedJobExecution.getWaitForJobExecutionId());
+        setStatus(queuedJobExecution.getStatus());
     }
 
     @Override

@@ -11,11 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.queue.jbatch;
 
-import org.eclipse.kapua.commons.model.query.predicate.AbstractKapuaQuery;
+import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecution;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 
+/**
+ * {@link QueuedJobExecutionQuery} implementation
+ *
+ * @since 1.1.0
+ */
 public class QueuedJobExecutionQueryImpl extends AbstractKapuaQuery<QueuedJobExecution> implements QueuedJobExecutionQuery {
 
     /**
