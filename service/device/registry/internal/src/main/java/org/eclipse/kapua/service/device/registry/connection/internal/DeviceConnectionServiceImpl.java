@@ -236,22 +236,4 @@ public class DeviceConnectionServiceImpl extends
         }
     }
 
-    @Override
-    public DeviceConnection findByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
-        //
-        // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
-
-        //
-        // Build query
-        DeviceConnectionQueryImpl query = new DeviceConnectionQueryImpl(scopeId);
-        QueryPredicate predicate = new AttributePredicateImpl<>(DeviceConnectionAttributes.RESERVED_USER_ID, userId);
-        query.setPredicate(predicate);
-
-        //
-        // Query and parse result
-        DeviceConnectionListResult result = query(query);
-        return result.getFirstItem();
-    }
-
 }

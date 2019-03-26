@@ -11,11 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.user.server;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.Callable;
-
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
@@ -48,6 +49,17 @@ import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceDomain;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.Callable;
+import org.eclipse.kapua.service.device.registry.DeviceFactory;
+import org.eclipse.kapua.service.device.registry.DeviceListResult;
+import org.eclipse.kapua.service.device.registry.DeviceQuery;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionDomain;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
@@ -57,12 +69,6 @@ import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
-
-import com.extjs.gxt.ui.client.data.BaseListLoadResult;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
 
 /**
  * The server side implementation of the RPC service.
@@ -86,6 +92,8 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
 
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
+    private static final DeviceRegistryService DEVICE_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
+    private static final DeviceFactory DEVICE_FACTORY = LOCATOR.getFactory(DeviceFactory.class);
 
     @Override
     public GwtUser create(GwtXSRFToken xsrfToken, GwtUserCreator gwtUserCreator) throws GwtKapuaException {
@@ -302,6 +310,14 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                     }
                 });
 
+                DeviceConnection deviceConnection = null;
+                if (deviceListQuery(scopeId) != null && AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(new DeviceConnectionDomain(), Actions.read, scopeId))) {
+                for (Device device : deviceListQuery(scopeId).getItems()) {
+                    if (device.getConnectionId() != null) {
+                        deviceConnection = DEVICE_CONNECTION_SERVICE.find(scopeId, device.getConnectionId());
+                        break;
+                    }
+                }}
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userStatus", user.getStatus().toString()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userName", user.getName()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userDisplayName", user.getDisplayName()));
@@ -312,9 +328,8 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 gwtUserDescription.add(new GwtGroupedNVPair("entityInfo", "userCreatedBy", createdUser != null ? createdUser.getName() : null));
                 gwtUserDescription.add(new GwtGroupedNVPair("entityInfo", "userModifiedOn", user.getModifiedOn()));
                 gwtUserDescription.add(new GwtGroupedNVPair("entityInfo", "userModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
-                if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(new DeviceConnectionDomain(), Actions.read, scopeId))) {
-                DeviceConnection deviceConnection = DEVICE_CONNECTION_SERVICE.findByUserId(scopeId, userId);
-                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userReservedConnection", deviceConnection != null ? "Yes" : "No")); }
+                if (deviceConnection != null && deviceConnection.getReservedUserId() != null && deviceConnection.getReservedUserId().equals(user.getId())) {
+                    gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userReservedConnection", "Yes" )); }
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);
@@ -386,5 +401,17 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         }
 
         return new BasePagingLoadResult<GwtUser>(gwtUsers, loadConfig.getOffset(), totalLength);   
+    }
+
+    /**
+    Method which returns list of all available devices in current scope(if User have Device:read permission), otherwise null is returned.
+     */
+    private DeviceListResult deviceListQuery(KapuaId scopeId) throws KapuaException {
+         DeviceListResult devicesList = null;
+         if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(new DeviceDomain(), Actions.read, scopeId))) {
+         DeviceQuery deviceQuery = DEVICE_FACTORY.newQuery(scopeId);
+         devicesList = DEVICE_SERVICE.query(deviceQuery);
+         }
+         return devicesList;
     }
 }
