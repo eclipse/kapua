@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2098 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,6 +15,11 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 
+/**
+ * {@link JobEngineService} definition.
+ *
+ * @since 1.0.0
+ */
 public interface JobEngineService extends KapuaService {
 
     /**
@@ -50,11 +55,11 @@ public interface JobEngineService extends KapuaService {
     boolean isRunning(KapuaId scopeId, KapuaId jobId) throws KapuaException;
 
     /**
-     * Stops the {@link org.eclipse.kapua.service.job.Job}.
+     * Stops all the running {@link org.eclipse.kapua.service.job.execution.JobExecution} of the {@link org.eclipse.kapua.service.job.Job}.
      * <p>
-     * This method does not wait fot the {@link org.eclipse.kapua.service.job.Job} to completely stop.
-     * It ask the {@link org.eclipse.kapua.service.job.Job} to stop but it can take some time to completely stop,
-     * depending on the current status of the {@link org.eclipse.kapua.service.job.Job}.
+     * This method does not wait for the {@link org.eclipse.kapua.service.job.execution.JobExecution} to completely stop.
+     * It ask the {@link org.eclipse.kapua.service.job.execution.JobExecution} to stop but it can take some time to completely stop,
+     * depending on the current status of the {@link org.eclipse.kapua.service.job.execution.JobExecution}.
      * <p>
      * {@link JobEngineService#isRunning(KapuaId, KapuaId)} can be used to check the actual running status of the {@link org.eclipse.kapua.service.job.Job}
      *
@@ -64,6 +69,23 @@ public interface JobEngineService extends KapuaService {
      * @since 1.0.0
      */
     void stopJob(KapuaId scopeId, KapuaId jobId) throws KapuaException;
+
+    /**
+     * Stops the {@link org.eclipse.kapua.service.job.execution.JobExecution}.
+     * <p>
+     * This method does not wait for the {@link org.eclipse.kapua.service.job.execution.JobExecution} to completely stop.
+     * It ask the {@link org.eclipse.kapua.service.job.execution.JobExecution} to stop but it can take some time to completely stop,
+     * depending on the current status of the {@link org.eclipse.kapua.service.job.execution.JobExecution}.
+     * <p>
+     * {@link JobEngineService#isRunning(KapuaId, KapuaId)} can be used to check the actual running status of the {@link org.eclipse.kapua.service.job.Job}
+     *
+     * @param scopeId        The scopeId of the {@link org.eclipse.kapua.service.job.Job}
+     * @param jobId          The id of the {@link org.eclipse.kapua.service.job.Job}
+     * @param jobExecutionId The id of the {@link org.eclipse.kapua.service.job.execution.JobExecution} to stop
+     * @throws KapuaException if something goes bad when checking the status of the job
+     * @since 1.1.0
+     */
+    void stopJobExecution(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) throws KapuaException;
 
     /**
      * Cleans all the Job related data from the data structures supporting the {@link JobEngineService}

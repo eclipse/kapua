@@ -19,6 +19,7 @@ import com.ibm.jbatch.jsl.model.JSLJob;
 import com.ibm.jbatch.jsl.model.Step;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.CannotBuildJobDefDriverException;
@@ -39,6 +40,7 @@ import org.eclipse.kapua.job.engine.jbatch.setting.KapuaJobEngineSettingKeys;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.Job;
+import org.eclipse.kapua.service.job.execution.JobExecutionService;
 import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.JobStepAttributes;
 import org.eclipse.kapua.service.job.step.JobStepFactory;
@@ -69,6 +71,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * Driver class for Java Batch API
@@ -79,11 +82,15 @@ public class JbatchDriver {
 
     private static final Logger LOG = LoggerFactory.getLogger(JbatchDriver.class);
 
+    private static final String JBATCH_EXECUTION_ID = "JBATCH_EXECUTION_ID";
+
     private static final KapuaJobEngineSetting JOB_ENGINE_SETTING = KapuaJobEngineSetting.getInstance();
 
     private static final JobOperator JOB_OPERATOR = BatchRuntime.getJobOperator();
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final JobExecutionService JOB_EXECUTION_SERVICE = LOCATOR.getService(JobExecutionService.class);
 
     private static final JobStepService JOB_STEP_SERVICE = LOCATOR.getService(JobStepService.class);
     private static final JobStepFactory JOB_STEP_FACTORY = LOCATOR.getFactory(JobStepFactory.class);
@@ -122,6 +129,7 @@ public class JbatchDriver {
      * @throws CannotWriteJobDefFileDriverException if the XML job definition file cannot be created and written in the tmp directory
      * @throws JobExecutionIsRunningDriverException if the jBatch job has another {@link JobExecution} running
      * @throws JobStartingDriverException           if invoking {@link JobOperator#start(String, Properties)} throws an {@link Exception}
+     * @since 1.0.0
      */
     public static void startJob(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull JobStartOptions jobStartOptions)
             throws JbatchDriverException {
@@ -199,12 +207,6 @@ public class JbatchDriver {
         }
 
         //
-        // Check job running
-        if (isRunningJob(scopeId, jobId)) {
-            throw new JobExecutionIsRunningDriverException(JbatchDriver.getJbatchJobName(scopeId, jobId));
-        }
-
-        //
         // Start job
         try {
             JOB_OPERATOR.start(jobXmlDefinitionFile.getAbsolutePath().replaceAll("\\.xml$", ""), new Properties());
@@ -222,30 +224,44 @@ public class JbatchDriver {
      * <p>
      * A jBatch job cannot be resumed after this method is invoked on it.
      *
-     * @param scopeId The scopeId of the {@link Job}
-     * @param jobId   The id of the {@link Job}
+     * @param scopeId              The scopeId of the {@link Job}
+     * @param jobId                The id of the {@link Job}
+     * @param toStopJobExecutionId The optional {@link org.eclipse.kapua.service.job.execution.JobExecution#getId()} to stop.
      * @throws ExecutionNotFoundDriverException   when there isn't a corresponding job execution in jBatch tables
      * @throws ExecutionNotRunningDriverException when the corresponding job execution is not running.
+     * @since 1.0.0
      */
-    public static void stopJob(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) throws JbatchDriverException {
+    public static void stopJob(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, KapuaId toStopJobExecutionId) throws JbatchDriverException, KapuaException {
 
         String jobName = getJbatchJobName(scopeId, jobId);
 
         //
         // Check running
-        JobExecution runningExecution = getRunningJobExecution(scopeId, jobId);
-        if (runningExecution == null) {
+        List<JobExecution> runningExecutions = getRunningJobExecutions(scopeId, jobId);
+        if (runningExecutions.isEmpty()) {
             throw new ExecutionNotRunningDriverException(jobName);
+        }
+
+        //
+        // Filter execution to stop
+        if (toStopJobExecutionId != null) {
+            org.eclipse.kapua.service.job.execution.JobExecution je = JOB_EXECUTION_SERVICE.find(scopeId, toStopJobExecutionId);
+
+            long toStopJbatchExecutionId = Long.parseLong((String) je.getEntityAttributes().get(JBATCH_EXECUTION_ID));
+
+            runningExecutions = runningExecutions.stream().filter(re -> re.getExecutionId() == toStopJbatchExecutionId).collect(Collectors.toList());
         }
 
         //
         // Do stop
         try {
-            JOB_OPERATOR.stop(runningExecution.getExecutionId());
+            runningExecutions.forEach((runningExecution -> {
+                JOB_OPERATOR.stop(runningExecution.getExecutionId());
 
-            if (JOB_ENGINE_SETTING.getBoolean(KapuaJobEngineSettingKeys.JOB_ENGINE_STOP_WAIT_CHECK)) {
-                JbatchUtil.waitForStop(runningExecution, () -> JOB_OPERATOR.abandon(runningExecution.getExecutionId()));
-            }
+                if (JOB_ENGINE_SETTING.getBoolean(KapuaJobEngineSettingKeys.JOB_ENGINE_STOP_WAIT_CHECK)) {
+                    JbatchUtil.waitForStop(runningExecution, () -> JOB_OPERATOR.abandon(runningExecution.getExecutionId()));
+                }
+            }));
         } catch (NoSuchJobExecutionException e) {
             throw new ExecutionNotFoundDriverException(e, jobName);
         } catch (JobExecutionNotRunningException e) {
@@ -260,10 +276,11 @@ public class JbatchDriver {
      *
      * @param scopeId The scopeId of the {@link Job}
      * @param jobId   The id of the {@link Job}
-     * @return {@code true} if the jBatch {@link Job} is running, {@code false} otherwise,
+     * @return {@code true} if the jBatch {@link Job} is running, {@code false} otherwise.
+     * @since 1.0.0
      */
     public static boolean isRunningJob(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) {
-        return getRunningJobExecution(scopeId, jobId) != null;
+        return !getRunningJobExecutions(scopeId, jobId).isEmpty();
     }
 
     public static void cleanJobData(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) throws CleanJobDataDriverException {
@@ -278,8 +295,8 @@ public class JbatchDriver {
     //
     // Private methods
     //
-    private static JobExecution getRunningJobExecution(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) {
-        return getJobExecutions(scopeId, jobId).stream().filter(je -> JbatchJobRunningStatuses.getStatuses().contains(je.getBatchStatus())).findFirst().orElse(null);
+    private static List<JobExecution> getRunningJobExecutions(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) {
+        return getJobExecutions(scopeId, jobId).stream().filter(je -> JbatchJobRunningStatuses.getStatuses().contains(je.getBatchStatus())).collect(Collectors.toList());
     }
 
     private static List<JobExecution> getJobExecutions(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) {

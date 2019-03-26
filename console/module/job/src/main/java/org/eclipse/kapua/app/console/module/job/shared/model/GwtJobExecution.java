@@ -16,10 +16,9 @@ import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityM
 
 import java.util.Date;
 
-public class GwtExecution extends GwtUpdatableEntityModel {
+public class GwtJobExecution extends GwtUpdatableEntityModel {
 
     @Override
-    @SuppressWarnings({ "unchecked" })
     public <X> X get(String property) {
         if ("startedOnFormatted".equals(property)) {
             return (X) (DateUtils.formatDateTime(getStartedOn()));
@@ -28,6 +27,14 @@ public class GwtExecution extends GwtUpdatableEntityModel {
         } else {
             return super.get(property);
         }
+    }
+
+    public String getJobId() {
+        return get("jobId");
+    }
+
+    public void setJobId(String jobId) {
+        set("jobId", jobId);
     }
 
     public Date getStartedOn() {

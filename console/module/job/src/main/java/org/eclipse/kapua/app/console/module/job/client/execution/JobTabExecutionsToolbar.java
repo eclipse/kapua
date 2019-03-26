@@ -11,14 +11,25 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.client.execution;
 
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
-import org.eclipse.kapua.app.console.module.job.shared.model.GwtExecution;
+import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobExecution;
 
-public class JobTabExecutionsToolbar extends EntityCRUDToolbar<GwtExecution> {
+public class JobTabExecutionsToolbar extends EntityCRUDToolbar<GwtJobExecution> {
+
+    private static final ConsoleJobMessages JOB_MSGS = GWT.create(ConsoleJobMessages.class);
 
     private String jobId;
+
+    private Button stopJobButton;
 
     public JobTabExecutionsToolbar(GwtSession currentSession) {
         super(currentSession, true);
@@ -35,13 +46,37 @@ public class JobTabExecutionsToolbar extends EntityCRUDToolbar<GwtExecution> {
 
     @Override
     protected void onRender(Element target, int index) {
+
+        stopJobButton = new Button(JOB_MSGS.jobStopButton(), new KapuaIcon(IconSet.STOP), new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                JobExecutionStopDialog dialog = new JobExecutionStopDialog(gridSelectionModel.getSelectedItem());
+                dialog.show();
+            }
+        });
+        stopJobButton.disable();
+        addExtraButton(stopJobButton);
+
         super.onRender(target, index);
+
+        checkButtons();
+    }
+
+    @Override
+    protected void updateButtonEnablement() {
+        super.updateButtonEnablement();
+
         checkButtons();
     }
 
     private void checkButtons() {
         if (refreshEntityButton != null) {
             refreshEntityButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
+        }
+
+        if (stopJobButton != null) {
+            stopJobButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null && gridSelectionModel.getSelectedItem().getEndedOn() == null);
         }
     }
 

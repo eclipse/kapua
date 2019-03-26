@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,10 +22,9 @@ import org.eclipse.kapua.service.job.execution.JobExecutionCreator;
 import org.eclipse.kapua.service.job.execution.JobExecutionListResult;
 
 /**
- * JobExecution DAO
- * 
- * @since 1.0
+ * {@link JobExecution} {@link ServiceDAO}.
  *
+ * @since 1.0.0
  */
 public class JobExecutionDAO {
 
@@ -34,32 +33,33 @@ public class JobExecutionDAO {
 
     /**
      * Creates and return new JobExecution
-     * 
+     *
      * @param em
      * @param jobExecutionCreator
      * @return
      * @throws KapuaException
+     * @since 1.0.0
      */
     public static JobExecution create(EntityManager em, JobExecutionCreator jobExecutionCreator)
             throws KapuaException {
-        //
-        // Create JobExecution
 
         JobExecutionImpl jobExecutionImpl = new JobExecutionImpl(jobExecutionCreator.getScopeId());
         jobExecutionImpl.setJobId(jobExecutionCreator.getJobId());
         jobExecutionImpl.setStartedOn(jobExecutionCreator.getStartedOn());
         jobExecutionImpl.setEntityAttributes(jobExecutionCreator.getEntityAttributes());
+        jobExecutionImpl.setTargetIds(jobExecutionCreator.getTargetIds());
 
         return ServiceDAO.create(em, jobExecutionImpl);
     }
 
     /**
      * Updates the provided jobExecution
-     * 
+     *
      * @param em
      * @param jobExecution
      * @return
      * @throws KapuaException
+     * @since 1.0.0
      */
     public static JobExecution update(EntityManager em, JobExecution jobExecution)
             throws KapuaException {
@@ -77,6 +77,7 @@ public class JobExecutionDAO {
      * @param scopeId
      * @param jobExecutionId
      * @return
+     * @since 1.0.0
      */
     public static JobExecution find(EntityManager em, KapuaId scopeId, KapuaId jobExecutionId) {
         return ServiceDAO.find(em, JobExecutionImpl.class, scopeId, jobExecutionId);
@@ -88,6 +89,7 @@ public class JobExecutionDAO {
      * @param em
      * @param name
      * @return
+     * @since 1.0.0
      */
     public static JobExecution findByName(EntityManager em, String name) {
         return ServiceDAO.findByField(em, JobExecutionImpl.class, "name", name);
@@ -100,6 +102,7 @@ public class JobExecutionDAO {
      * @param jobExecutionQuery
      * @return
      * @throws KapuaException
+     * @since 1.0.0
      */
     public static JobExecutionListResult query(EntityManager em, KapuaQuery<JobExecution> jobExecutionQuery)
             throws KapuaException {
@@ -113,6 +116,7 @@ public class JobExecutionDAO {
      * @param jobExecutionQuery
      * @return
      * @throws KapuaException
+     * @since 1.0.0
      */
     public static long count(EntityManager em, KapuaQuery<JobExecution> jobExecutionQuery)
             throws KapuaException {
@@ -125,8 +129,8 @@ public class JobExecutionDAO {
      * @param em
      * @param scopeId
      * @param jobExecutionId
-     * @throws KapuaEntityNotFoundException
-     *             If the {@link JobExecution} is not found
+     * @throws KapuaEntityNotFoundException If the {@link JobExecution} is not found
+     * @since 1.0.0
      */
     public static void delete(EntityManager em, KapuaId scopeId, KapuaId jobExecutionId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, JobExecutionImpl.class, scopeId, jobExecutionId);

@@ -16,10 +16,10 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.module.job.shared.model.GwtExecution;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobExecution;
 
 @RemoteServiceRelativePath("execution")
-public interface GwtExecutionService extends RemoteService {
+public interface GwtJobExecutionService extends RemoteService {
 
     /**
      * Returns the list of executions by their jobId
@@ -29,6 +29,6 @@ public interface GwtExecutionService extends RemoteService {
      * @return
      * @throws GwtKapuaException
      */
-    PagingLoadResult<GwtExecution> findByJobId(PagingLoadConfig loadConfig, String scopeId, String jobId)
+    PagingLoadResult<GwtJobExecution> findByJobId(PagingLoadConfig loadConfig, String scopeId, String jobId)
             throws GwtKapuaException;
 }

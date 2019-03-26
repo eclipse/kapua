@@ -15,8 +15,8 @@ import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
-import org.eclipse.kapua.app.console.module.job.shared.model.GwtExecutionQuery;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJob;
+import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobExecutionQuery;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobQuery;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStartOptions;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStep;
@@ -60,7 +60,9 @@ import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class GwtKapuaJobModelConverter {
 
@@ -292,9 +294,9 @@ public class GwtKapuaJobModelConverter {
         return triggerPropertyList;
     }
 
-    public static JobExecutionQuery convertJobExecutionQuery(PagingLoadConfig pagingLoadConfig, GwtExecutionQuery gwtExecutionQuery) {
-        JobExecutionQuery query = JOB_EXECUTION_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtExecutionQuery.getScopeId()));
-        query.setPredicate(query.attributePredicate(JobExecutionAttributes.JOB_ID, GwtKapuaCommonsModelConverter.convertKapuaId(gwtExecutionQuery.getJobId())));
+    public static JobExecutionQuery convertJobExecutionQuery(PagingLoadConfig pagingLoadConfig, GwtJobExecutionQuery gwtJobExecutionQuery) {
+        JobExecutionQuery query = JOB_EXECUTION_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobExecutionQuery.getScopeId()));
+        query.setPredicate(query.attributePredicate(JobExecutionAttributes.JOB_ID, GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobExecutionQuery.getJobId())));
         String sortField = StringUtils.isEmpty(pagingLoadConfig.getSortField()) ? JobAttributes.NAME : pagingLoadConfig.getSortField();
         if (sortField.equals("startedOnFormatted")) {
             sortField = JobAttributes.STARTED_ON;
@@ -317,8 +319,8 @@ public class GwtKapuaJobModelConverter {
         return jobStartOptions;
     }
 
-    private static List<KapuaId> convertTargetIdSublist(List<String> gwtTargetIdSublist) {
-        List<KapuaId> targetIdSublist = new ArrayList<KapuaId>();
+    private static Set<KapuaId> convertTargetIdSublist(List<String> gwtTargetIdSublist) {
+        Set<KapuaId> targetIdSublist = new HashSet<KapuaId>();
         for (String gwtKapuaId : gwtTargetIdSublist) {
             targetIdSublist.add(GwtKapuaCommonsModelConverter.convertKapuaId(gwtKapuaId));
         }

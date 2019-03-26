@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,29 +14,38 @@ package org.eclipse.kapua.job.engine.jbatch;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.model.id.KapuaId;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+/**
+ * {@link JobStartOptions} implementation.
+ *
+ * @since 1.0.0
+ */
 public class JobStartOptionsImpl implements JobStartOptions {
 
-    private List<KapuaId> targetIdSublist;
-
+    private Set<KapuaId> targetIdSublist;
     private Integer fromStepIndex;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     public JobStartOptionsImpl() {
     }
 
     @Override
-    public List<KapuaId> getTargetIdSublist() {
+    public Set<KapuaId> getTargetIdSublist() {
         if (targetIdSublist == null) {
-            targetIdSublist = new ArrayList<>();
+            targetIdSublist = new HashSet<>();
         }
 
         return targetIdSublist;
     }
 
     @Override
-    public void setTargetIdSublist(List<KapuaId> targetIdSublist) {
+    public void setTargetIdSublist(Set<KapuaId> targetIdSublist) {
         this.targetIdSublist = targetIdSublist;
     }
 
