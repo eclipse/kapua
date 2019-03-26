@@ -39,6 +39,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Default {@link TargetReader} implementation.
+ * <p>
+ * All {@link org.eclipse.kapua.service.job.step.definition.JobStepDefinition} can use this {@link TargetReader} implementation or extend or provide one on their own.
+ *
+ * @since 1.0.0
+ */
 public class DefaultTargetReader extends AbstractItemReader implements TargetReader {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultTargetReader.class);

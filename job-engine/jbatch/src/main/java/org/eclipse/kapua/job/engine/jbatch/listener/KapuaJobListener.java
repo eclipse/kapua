@@ -104,7 +104,6 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
             String msg = String.format("Cannot update job execution (internal reference [%d]). Cannot find 'executionId' in JobContext", jobContextWrapper.getExecutionId());
             LOG.error(msg);
             // Don't send any exception to prevent the job engine to set the job exit status as failed!
-            // TODO will send service events when the feature will be implemented
         } else {
             JobExecution jobExecution = KapuaSecurityUtils.doPrivileged(() -> JOB_EXECUTION_SERVICE.find(jobContextWrapper.getScopeId(), kapuaExecutionId));
 

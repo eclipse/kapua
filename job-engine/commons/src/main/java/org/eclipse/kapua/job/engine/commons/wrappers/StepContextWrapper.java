@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -29,6 +29,11 @@ import javax.xml.stream.XMLStreamException;
 import java.io.Serializable;
 import java.util.Properties;
 
+/**
+ * {@link StepContextWrapper} wraps the {@link StepContext} and offers utility methods around it.
+ *
+ * @since 1.0.0
+ */
 public class StepContextWrapper {
 
     private StepContext stepContext;

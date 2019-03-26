@@ -24,6 +24,14 @@ import org.slf4j.LoggerFactory;
 import javax.batch.runtime.context.JobContext;
 import javax.batch.runtime.context.StepContext;
 
+/**
+ * {@link TargetOperation} {@code abstract} implementation.
+ * <p>
+ * All {@link org.eclipse.kapua.service.job.step.definition.JobStepDefinition} must provide their own implementation of the {@link TargetOperation}
+ * containing the actual processing logic of the {@link JobTarget}
+ *
+ * @since 1.0.0
+ */
 public abstract class AbstractTargetProcessor implements TargetOperation {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractTargetProcessor.class);

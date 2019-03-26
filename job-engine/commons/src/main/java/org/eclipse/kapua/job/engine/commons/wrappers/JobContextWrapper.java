@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,6 +25,11 @@ import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import java.util.Properties;
 
+/**
+ * {@link JobContextWrapper} wraps the {@link JobContext} and offers utility methods around it.
+ *
+ * @since 1.0.0
+ */
 public class JobContextWrapper {
 
     private static final String KAPUA_EXECUTION_ID = "KAPUA_EXECUTION_ID";

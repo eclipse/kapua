@@ -13,6 +13,11 @@ package org.eclipse.kapua.job.engine.commons.wrappers;
 
 import org.eclipse.kapua.service.job.targets.JobTarget;
 
+/**
+ * {@link JobTargetWrapper} wraps the {@link JobTarget} and offers utility methods around it.
+ *
+ * @since 1.0.0
+ */
 public class JobTargetWrapper {
 
     private JobTarget jobTarget;
