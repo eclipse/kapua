@@ -304,8 +304,7 @@ public class GwtKapuaJobModelConverter {
             sortField = JobAttributes.ENDED_ON;
         }
         SortOrder sortOrder = pagingLoadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
-        FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
-        query.setSortCriteria(sortCriteria);
+        query.setSortCriteria(new FieldSortCriteria(sortField, sortOrder));
         query.setLimit(pagingLoadConfig.getLimit());
         query.setOffset(pagingLoadConfig.getOffset());
 

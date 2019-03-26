@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,8 +12,9 @@
 package org.eclipse.kapua.job.engine.commons.operation;
 
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.job.engine.commons.context.JobContextWrapper;
-import org.eclipse.kapua.job.engine.commons.context.StepContextWrapper;
+import org.eclipse.kapua.job.engine.commons.wrappers.JobContextWrapper;
+import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
+import org.eclipse.kapua.job.engine.commons.wrappers.StepContextWrapper;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.job.operation.TargetWriter;
 import org.eclipse.kapua.service.job.targets.JobTarget;
@@ -28,6 +29,13 @@ import javax.batch.runtime.context.StepContext;
 import javax.inject.Inject;
 import java.util.List;
 
+/**
+ * Default {@link TargetWriter} implementation.
+ * <p>
+ * All {@link org.eclipse.kapua.service.job.step.definition.JobStepDefinition} can use this {@link TargetWriter} implementation or extend or provide one on their own.
+ *
+ * @since 1.0.0
+ */
 public class DefaultTargetWriter extends AbstractItemWriter implements TargetWriter {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultTargetWriter.class);
@@ -49,13 +57,14 @@ public class DefaultTargetWriter extends AbstractItemWriter implements TargetWri
         LOG.info("JOB {} - Writing items...", jobContextWrapper.getJobId());
 
         for (Object item : items) {
-            JobTarget processedJobTarget = (JobTarget) item;
+            JobTargetWrapper processedWrappedJobTarget = (JobTargetWrapper) item;
+            JobTarget processedJobTarget = processedWrappedJobTarget.getJobTarget();
 
             JobTarget jobTarget = KapuaSecurityUtils.doPrivileged(() -> JOB_TARGET_SERVICE.find(processedJobTarget.getScopeId(), processedJobTarget.getId()));
 
             jobTarget.setStepIndex(stepContextWrapper.getStepIndex());
             jobTarget.setStatus(processedJobTarget.getStatus());
-            jobTarget.setException(processedJobTarget.getException());
+            jobTarget.setStatusMessage(processedWrappedJobTarget.getProcessingException() != null ? processedWrappedJobTarget.getProcessingException().getMessage() : null);
 
             if (JobTargetStatus.PROCESS_OK.equals(jobTarget.getStatus())) {
 
@@ -72,5 +81,4 @@ public class DefaultTargetWriter extends AbstractItemWriter implements TargetWri
 
         LOG.info("JOB {} - Writing items... Done!", jobContextWrapper.getJobId());
     }
-
 }

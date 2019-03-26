@@ -14,8 +14,8 @@ package org.eclipse.kapua.job.engine.jbatch.listener;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.JobStartOptions;
-import org.eclipse.kapua.job.engine.commons.context.JobContextWrapper;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
+import org.eclipse.kapua.job.engine.commons.wrappers.JobContextWrapper;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobAlreadyRunningException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -90,7 +90,6 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
         LOG.info("JOB {} - {} - Running before job... DONE!", jobContextWrapper.getJobId(), jobContextWrapper.getJobName());
     }
 
-
     /**
      * Close the {@link JobExecution} setting the {@link JobExecution#getEndedOn()}.
      */
@@ -105,7 +104,6 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
             String msg = String.format("Cannot update job execution (internal reference [%d]). Cannot find 'executionId' in JobContext", jobContextWrapper.getExecutionId());
             LOG.error(msg);
             // Don't send any exception to prevent the job engine to set the job exit status as failed!
-            // TODO will send service events when the feature will be implemented
         } else {
             JobExecution jobExecution = KapuaSecurityUtils.doPrivileged(() -> JOB_EXECUTION_SERVICE.find(jobContextWrapper.getScopeId(), kapuaExecutionId));
 

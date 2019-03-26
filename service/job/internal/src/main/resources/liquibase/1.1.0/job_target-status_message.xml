@@ -9,15 +9,20 @@
 
     Contributors:
         Eurotech - initial API and implementation
- -->
+-->
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                             http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+
         logicalFilePath="KapuaDB/changelog-job-1.1.0.xml">
 
-    <include relativeToChangelogFile="true" file="./job_execution_target.xml"/>
-    <include relativeToChangelogFile="true" file="./job_target-status_message.xml"/>
+    <include relativeToChangelogFile="true" file="../common-properties.xml"/>
 
+    <changeSet id="changelog-job_target-1.1.0_addStatusMessage" author="eurotech">
+        <addColumn tableName="job_job_target">
+            <column name="status_message" type="text"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

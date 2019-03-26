@@ -69,7 +69,7 @@ public enum KapuaRuntimeErrorCodes implements KapuaErrorCode {
     ENTITY_CLONE_ERROR,
 
     /**
-     * Error while reading {@link java.util.Properties} from {@link KapuaUpdatableEntity#getEntityAttributes() or {@link KapuaUpdatableEntity#getEntityProperties()}
+     * Error while reading {@link java.util.Properties} from {@link KapuaUpdatableEntity#getEntityAttributes()} or {@link KapuaUpdatableEntity#getEntityProperties()}
      *
      * @since 1.1.0
      */

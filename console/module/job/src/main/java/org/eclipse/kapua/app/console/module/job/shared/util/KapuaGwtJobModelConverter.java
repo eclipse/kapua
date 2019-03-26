@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -39,36 +39,44 @@ public class KapuaGwtJobModelConverter {
 
     public static GwtJob convertJob(Job job) {
         GwtJob gwtJob = new GwtJob();
+
         KapuaGwtCommonsModelConverter.convertUpdatableEntity(job, gwtJob);
         gwtJob.setJobName(job.getName());
         gwtJob.setDescription(job.getDescription());
         gwtJob.setJobXmlDefinition(job.getJobXmlDefinition());
         gwtJob.setJobSteps(convertJobSteps(job.getJobSteps()));
+
         return gwtJob;
     }
 
     private static List<GwtJobStep> convertJobSteps(List<JobStep> jobStepList) {
         List<GwtJobStep> gwtJobStepList = new ArrayList<GwtJobStep>();
+
         for (JobStep jobStep : jobStepList) {
             gwtJobStepList.add(convertJobStep(jobStep));
         }
+
         return gwtJobStepList;
     }
 
     public static GwtJobStep convertJobStep(JobStep jobStep) {
         GwtJobStep gwtJobStep = new GwtJobStep();
+
         KapuaGwtCommonsModelConverter.convertUpdatableEntity(jobStep, gwtJobStep);
+
         gwtJobStep.setJobStepName(jobStep.getName());
         gwtJobStep.setDescription(jobStep.getDescription());
         gwtJobStep.setJobId(KapuaGwtCommonsModelConverter.convertKapuaId(jobStep.getJobId()));
         gwtJobStep.setJobStepDefinitionId(KapuaGwtCommonsModelConverter.convertKapuaId(jobStep.getJobStepDefinitionId()));
         gwtJobStep.setStepIndex(jobStep.getStepIndex());
         gwtJobStep.setStepProperties(convertJobStepProperties(jobStep.getStepProperties()));
+
         return gwtJobStep;
     }
 
     private static List<GwtJobStepProperty> convertJobStepProperties(List<JobStepProperty> jobStepPropertyList) {
         List<GwtJobStepProperty> gwtJobStepPropertyList = new ArrayList<GwtJobStepProperty>();
+
         for (JobStepProperty jobStepProperty : jobStepPropertyList) {
             GwtJobStepProperty gwtJobStepProperty = new GwtJobStepProperty();
             gwtJobStepProperty.setPropertyName(jobStepProperty.getName());
@@ -76,23 +84,29 @@ public class KapuaGwtJobModelConverter {
             gwtJobStepProperty.setPropertyValue(jobStepProperty.getPropertyValue());
             gwtJobStepPropertyList.add(gwtJobStepProperty);
         }
+
         return gwtJobStepPropertyList;
     }
 
     public static GwtJobTarget convertJobTarget(JobTarget jobTarget) {
         GwtJobTarget gwtJobTarget = new GwtJobTarget();
+
         KapuaGwtCommonsModelConverter.convertUpdatableEntity(jobTarget, gwtJobTarget);
+
         gwtJobTarget.setJobTargetId(KapuaGwtCommonsModelConverter.convertKapuaId(jobTarget.getJobTargetId()));
         gwtJobTarget.setClientId(KapuaGwtCommonsModelConverter.convertKapuaId(jobTarget.getJobTargetId()));
         gwtJobTarget.setStatus(jobTarget.getStatus().toString());
         gwtJobTarget.setStepIndex(jobTarget.getStepIndex());
-        gwtJobTarget.setErrorMessage(jobTarget.getException() != null ? jobTarget.getException().getMessage() : null);
+        gwtJobTarget.setStatusMessage(jobTarget.getStatusMessage());
+
         return gwtJobTarget;
     }
 
     public static GwtJobStepDefinition convertJobStepDefinition(JobStepDefinition jobStepDefinition) {
         GwtJobStepDefinition gwtJobStepDefinition = new GwtJobStepDefinition();
+
         KapuaGwtCommonsModelConverter.convertEntity(jobStepDefinition, gwtJobStepDefinition);
+
         gwtJobStepDefinition.setJobStepDefinitionName(jobStepDefinition.getName());
         gwtJobStepDefinition.setDescription(jobStepDefinition.getDescription());
         gwtJobStepDefinition.setProcessorName(jobStepDefinition.getProcessorName());
@@ -100,23 +114,28 @@ public class KapuaGwtJobModelConverter {
         gwtJobStepDefinition.setWriterName(jobStepDefinition.getWriterName());
         gwtJobStepDefinition.setStepProperties(convertJobStepProperties(jobStepDefinition.getStepProperties()));
         gwtJobStepDefinition.setStepType(jobStepDefinition.getStepType().name());
+
         return gwtJobStepDefinition;
     }
 
     public static GwtTrigger convertTrigger(Trigger trigger) {
         GwtTrigger gwtTrigger = new GwtTrigger();
+
         KapuaGwtCommonsModelConverter.convertUpdatableEntity(trigger, gwtTrigger);
+
         gwtTrigger.setTriggerName(trigger.getName());
         gwtTrigger.setCronScheduling(trigger.getCronScheduling());
         gwtTrigger.setStartsOn(trigger.getStartsOn());
         gwtTrigger.setEndsOn(trigger.getEndsOn());
         gwtTrigger.setRetryInterval(trigger.getRetryInterval());
         gwtTrigger.setTriggerProperties(convertTriggerProperties(trigger.getTriggerProperties()));
+
         return gwtTrigger;
     }
 
     private static List<GwtTriggerProperty> convertTriggerProperties(List<TriggerProperty> triggerPropertyList) {
         List<GwtTriggerProperty> gwtTriggerPropertyList = new ArrayList<GwtTriggerProperty>();
+
         for (TriggerProperty triggerProperty : triggerPropertyList) {
             GwtTriggerProperty gwtTriggerProperty = new GwtTriggerProperty();
             gwtTriggerProperty.setPropertyName(triggerProperty.getName());
@@ -124,6 +143,7 @@ public class KapuaGwtJobModelConverter {
             gwtTriggerProperty.setPropertyValue(triggerProperty.getPropertyValue());
             gwtTriggerPropertyList.add(gwtTriggerProperty);
         }
+
         return gwtTriggerPropertyList;
     }
 
