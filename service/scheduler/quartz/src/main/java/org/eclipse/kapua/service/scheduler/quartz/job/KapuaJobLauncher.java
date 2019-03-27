@@ -39,6 +39,7 @@ public class KapuaJobLauncher implements Job {
     public void execute(JobExecutionContext context) throws JobExecutionException {
         try {
             org.eclipse.kapua.service.job.Job job = KapuaSecurityUtils.doPrivileged(() -> jobService.find(getScopeId(), getJobId()));
+
             if (job == null) {
                 throw new KapuaEntityNotFoundException(org.eclipse.kapua.service.job.Job.class.getName(), jobId);
             }

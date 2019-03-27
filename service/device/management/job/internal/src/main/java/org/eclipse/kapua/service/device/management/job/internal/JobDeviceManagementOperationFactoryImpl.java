@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.job.internal;
 
+import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperation;
@@ -45,5 +46,14 @@ public class JobDeviceManagementOperationFactoryImpl implements JobDeviceManagem
     @Override
     public JobDeviceManagementOperationListResult newListResult() {
         return new JobDeviceManagementOperationListResultImpl();
+    }
+
+    @Override
+    public JobDeviceManagementOperation clone(JobDeviceManagementOperation jobDeviceManagementOperation) {
+        try {
+            return new JobDeviceManagementOperationImpl(jobDeviceManagementOperation);
+        } catch (Exception e) {
+            throw new KapuaEntityCloneException(e, JobDeviceManagementOperation.TYPE, jobDeviceManagementOperation);
+        }
     }
 }

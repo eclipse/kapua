@@ -46,11 +46,35 @@ public class JobDeviceManagementOperationImpl extends AbstractKapuaUpdatableEnti
     })
     private KapuaEid deviceManagementOperationId;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.1.0
+     */
     public JobDeviceManagementOperationImpl() {
     }
 
+    /**
+     * Constructor.
+     *
+     * @param scopeId The scope {@link KapuaId} to set into the {@link JobDeviceManagementOperation}.
+     * @since 1.1.0
+     */
     public JobDeviceManagementOperationImpl(KapuaId scopeId) {
         super(scopeId);
+    }
+
+    /**
+     * Clone constructor.
+     *
+     * @param jobDeviceManagementOperation The {@link JobDeviceManagementOperation} to clone.
+     * @since 1.1.0
+     */
+    public JobDeviceManagementOperationImpl(JobDeviceManagementOperation jobDeviceManagementOperation) {
+        super(jobDeviceManagementOperation);
+
+        setJobId(jobDeviceManagementOperation.getJobId());
+        setDeviceManagementOperationId(jobDeviceManagementOperation.getDeviceManagementOperationId());
     }
 
     @Override

@@ -42,10 +42,14 @@ import org.eclipse.kapua.service.job.targets.JobTargetListResult;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
 import org.eclipse.kapua.service.job.targets.JobTargetStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
 public interface JobDeviceManagementOperationManagerService extends KapuaService {
+
+    Logger LOG = LoggerFactory.getLogger(JobDeviceManagementOperationManagerService.class);
 
     KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
@@ -73,12 +77,14 @@ public interface JobDeviceManagementOperationManagerService extends KapuaService
         // UGLY 'DEPLOY-V2'-related part
         //
         boolean isLastNotification = true;
-        for (DeviceManagementOperationProperty ip : deviceManagementOperation.getInputProperties()) {
-            if (ip.getName().equals("kapua.package.download.install")) {
-                if (resource.equals("download")) {
-                    isLastNotification = !Boolean.parseBoolean(ip.getPropertyValue());
+        if (!OperationStatus.FAILED.equals(status)) {
+            for (DeviceManagementOperationProperty ip : deviceManagementOperation.getInputProperties()) {
+                if (ip.getName().equals("kapua.package.download.install")) {
+                    if (resource.equals("download")) {
+                        isLastNotification = !Boolean.parseBoolean(ip.getPropertyValue());
+                    }
+                    break;
                 }
-                break;
             }
         }
 
@@ -90,35 +96,52 @@ public interface JobDeviceManagementOperationManagerService extends KapuaService
         // Update the job target
         JobDeviceManagementOperation jobDeviceManagementOperation = getJobDeviceManagementOperation(scopeId, operationId);
 
-        JobTargetQuery jobTargetQuery = JOB_TARGET_FACTORY.newQuery(scopeId);
-        jobTargetQuery.setPredicate(
-                new AndPredicateImpl(
-                        new AttributePredicateImpl<>(JobTargetAttributes.JOB_ID, jobDeviceManagementOperation.getJobId()),
-                        new AttributePredicateImpl<>(JobTargetAttributes.JOB_TARGET_ID, deviceManagementOperation.getDeviceId())
-                )
-        );
+        short attempts = 0;
+        short limit = 3;
+        boolean failed = false;
+        JobTarget jobTarget = null;
+        do {
+            try {
+                JobTargetQuery jobTargetQuery = JOB_TARGET_FACTORY.newQuery(scopeId);
+                jobTargetQuery.setPredicate(
+                        new AndPredicateImpl(
+                                new AttributePredicateImpl<>(JobTargetAttributes.JOB_ID, jobDeviceManagementOperation.getJobId()),
+                                new AttributePredicateImpl<>(JobTargetAttributes.JOB_TARGET_ID, deviceManagementOperation.getDeviceId())
+                        )
+                );
 
-        JobTargetListResult jobTargets = JOB_TARGET_SERVICE.query(jobTargetQuery);
+                JobTargetListResult jobTargets = JOB_TARGET_SERVICE.query(jobTargetQuery);
 
-        JobTarget jobTarget = jobTargets.getFirstItem();
+                jobTarget = jobTargets.getFirstItem();
 
-        if (jobTarget == null) {
-            throw new IllegalStateException();
-        }
+                if (jobTarget == null) {
+                    throw new IllegalStateException();
+                }
 
-        switch (status) {
-            case COMPLETED:
-                jobTarget.setStatus(JobTargetStatus.NOTIFIED_COMPLETION);
-                break;
-            case FAILED:
-                jobTarget.setStatus(JobTargetStatus.PROCESS_FAILED);
-                break;
-            case STALE:
-            default:
-                break;
-        }
+                switch (status) {
+                    case COMPLETED:
+                        jobTarget.setStatus(JobTargetStatus.NOTIFIED_COMPLETION);
+                        break;
+                    case FAILED:
+                        jobTarget.setStatus(JobTargetStatus.PROCESS_FAILED);
+                        break;
+                    case STALE:
+                    default:
+                        break;
+                }
 
-        JOB_TARGET_SERVICE.update(jobTarget);
+                JOB_TARGET_SERVICE.update(jobTarget);
+            } catch (Exception e) {
+                failed = true;
+                attempts++;
+
+                if (attempts >= limit || jobTarget == null) {
+                    throw e;
+                } else {
+                    LOG.warn("Update JobTarget {} with status {}...  FAILED! Retrying...", jobTarget.getId(), jobTarget.getStatus());
+                }
+            }
+        } while (failed);
 
         if (JobTargetStatus.PROCESS_FAILED.equals(jobTarget.getStatus())) {
             return;

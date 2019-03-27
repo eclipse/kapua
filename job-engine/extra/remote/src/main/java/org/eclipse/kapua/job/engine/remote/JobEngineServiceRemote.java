@@ -12,6 +12,7 @@
 package org.eclipse.kapua.job.engine.remote;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
@@ -19,16 +20,23 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.scheduler.quartz.utils.QuartzTriggerUtils;
 import org.quartz.JobDataMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @KapuaProvider
 public class JobEngineServiceRemote implements JobEngineService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(JobEngineServiceRemote.class);
+
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final KapuaIdFactory KAPUA_ID_FACTORY = LOCATOR.getFactory(KapuaIdFactory.class);
 
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
@@ -53,17 +61,16 @@ public class JobEngineServiceRemote implements JobEngineService {
         //
         // Seed the trigger
         try {
+            LOG.info("Scheduling remote job start! ScopeId: {} - JobId: {} - JobOptions: {}", scopeId, jobId, jobStartOptions.getTargetIdSublist().size());
+
             // Build job data map
             JobDataMap jobDataMap = new JobDataMap();
             jobDataMap.put("scopeId", scopeId);
             jobDataMap.put("jobId", jobId);
-
-            if (jobStartOptions != null) {
-                jobDataMap.put("jobStartOptions", jobStartOptions);
-            }
+            jobDataMap.put("jobStartOptions", jobStartOptions);
 
             // Create the trigger
-            QuartzTriggerUtils.createQuartzTrigger(scopeId, jobId, jobDataMap);
+            QuartzTriggerUtils.createQuartzTrigger(scopeId, jobId, KAPUA_ID_FACTORY.newKapuaId(IdGenerator.generate()), jobDataMap);
         } catch (Exception e) {
             KapuaException.internalError(e, "Error!");
         }

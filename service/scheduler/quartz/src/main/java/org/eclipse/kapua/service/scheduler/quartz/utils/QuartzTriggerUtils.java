@@ -38,7 +38,7 @@ public class QuartzTriggerUtils {
     private QuartzTriggerUtils() {
     }
 
-    public static void createQuartzTrigger(KapuaId scopeId, KapuaId jobId, JobDataMap triggerDataMap) {
+    public static void createQuartzTrigger(KapuaId scopeId, KapuaId jobId, KapuaId uniqueId, JobDataMap triggerDataMap) {
         JobKey jobkey = JobKey.jobKey(KapuaJobLauncher.class.getName(), "USER");
 
         SchedulerFactory sf = new StdSchedulerFactory();
@@ -68,7 +68,7 @@ public class QuartzTriggerUtils {
         }
 
         // Quartz Trigger data map definition
-        TriggerKey triggerKey = TriggerKey.triggerKey(jobId.toCompactId(), scopeId.toCompactId());
+        TriggerKey triggerKey = TriggerKey.triggerKey(jobId.toCompactId().concat("-").concat(uniqueId.toCompactId()), scopeId.toCompactId());
 
         // Quartz Trigger definition
         TriggerBuilder<org.quartz.Trigger> triggerBuilder = TriggerBuilder.newTrigger()

@@ -50,6 +50,11 @@ public enum GwtKapuaErrorCode {
     DOWNLOAD_PACKAGE_EXCEPTION,
     TRIGGER_NEVER_FIRE,
     JOB_STARTING_ERROR,
+<<<<<<< HEAD
     ADMIN_ROLE_DELETED_ERROR,
     PERMISSION_DELETE_NOT_ALLOWED
+=======
+    JOB_STOPPING_ERROR,
+    ADMIN_ROLE_DELETED_ERROR
+>>>>>>> 818fbdd00... Fixed Job processing
 }

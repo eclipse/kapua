@@ -43,7 +43,6 @@ import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 
 import java.sql.Date;
-import java.util.TimeZone;
 
 /**
  * {@link TriggerService} implementation.

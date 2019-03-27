@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.job.internal;
 
-import org.eclipse.kapua.commons.model.query.predicate.AbstractKapuaQuery;
+import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationQuery;
@@ -24,9 +24,10 @@ import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperat
 public class JobDeviceManagementOperationQueryImpl extends AbstractKapuaQuery<JobDeviceManagementOperation> implements JobDeviceManagementOperationQuery {
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param scopeId
+     * @since 1.1.0
      */
     public JobDeviceManagementOperationQueryImpl(KapuaId scopeId) {
         super(scopeId);

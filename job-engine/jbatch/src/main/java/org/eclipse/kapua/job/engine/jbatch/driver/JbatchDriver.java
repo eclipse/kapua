@@ -192,7 +192,7 @@ public class JbatchDriver {
 
         //
         // Retrieve job XML definition file. Delete it if exist
-        File jobXmlDefinitionFile = new File(jobTempDirectory, jobId.toCompactId().concat(".xml"));
+        File jobXmlDefinitionFile = new File(jobTempDirectory, jobId.toCompactId().concat("-").concat(String.valueOf(System.currentTimeMillis())).concat(".xml"));
         if (jobXmlDefinitionFile.exists() && !jobXmlDefinitionFile.delete()) {
             throw new CannotCleanJobDefFileDriverException(jobName, jobXmlDefinitionFile.getAbsolutePath());
         }
@@ -254,10 +254,6 @@ public class JbatchDriver {
         try {
             runningExecutions.forEach((runningExecution -> {
                 JOB_OPERATOR.stop(runningExecution.getExecutionId());
-
-//                if (JOB_ENGINE_SETTING.getBoolean(JobEngineSettingKeys.JOB_ENGINE_STOP_WAIT_CHECK)) {
-//                    JbatchUtil.waitForStop(runningExecution, () -> JOB_OPERATOR.abandon(runningExecution.getExecutionId()));
-//                }
             }));
         } catch (NoSuchJobExecutionException e) {
             throw new ExecutionNotFoundDriverException(e, jobName);
