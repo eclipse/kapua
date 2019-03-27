@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,7 +14,9 @@ package org.eclipse.kapua.service.device.management.bundle.job;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.commons.operation.AbstractTargetProcessor;
+import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
 import org.eclipse.kapua.service.device.management.bundle.job.definition.DeviceBundlePropertyKeys;
 import org.eclipse.kapua.service.job.operation.TargetOperation;
@@ -24,6 +26,11 @@ import javax.batch.runtime.context.JobContext;
 import javax.batch.runtime.context.StepContext;
 import javax.inject.Inject;
 
+/**
+ * {@link TargetOperation} for {@link DeviceBundleManagementService#stop(KapuaId, KapuaId, String, Long)}.
+ *
+ * @since 1.0.0
+ */
 public class DeviceBundleStopTargetProcessor extends AbstractTargetProcessor implements TargetOperation {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
@@ -36,8 +43,12 @@ public class DeviceBundleStopTargetProcessor extends AbstractTargetProcessor imp
     StepContext stepContext;
 
     @Override
-    public void processTarget(JobTarget jobTarget) throws KapuaException {
+    protected void initProcessing(JobTargetWrapper wrappedJobTarget) {
         setContext(jobContext, stepContext);
+    }
+
+    @Override
+    public void processTarget(JobTarget jobTarget) throws KapuaException {
 
         String bundleId = stepContextWrapper.getStepProperty(DeviceBundlePropertyKeys.BUNDLE_ID, String.class);
         Long timeout = stepContextWrapper.getStepProperty(DeviceBundlePropertyKeys.TIMEOUT, Long.class);

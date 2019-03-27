@@ -24,6 +24,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -63,6 +64,10 @@ public class JobExecutionImpl extends AbstractKapuaUpdatableEntity implements Jo
     })
     private Set<KapuaEid> targetIds;
 
+    @Lob
+    @Column(name = "log", nullable = true, updatable = true)
+    private String log;
+
     /**
      * Constructor.
      *
@@ -74,7 +79,7 @@ public class JobExecutionImpl extends AbstractKapuaUpdatableEntity implements Jo
     /**
      * Constructor.
      *
-     * @param scopeId The scope {@link KapuaId} to set into the {@link JobExecution}
+     * @param scopeId The scope {@link KapuaId} to set into the {@link JobExecution}.
      * @since 1.0.0
      */
     public JobExecutionImpl(KapuaId scopeId) {
@@ -84,7 +89,7 @@ public class JobExecutionImpl extends AbstractKapuaUpdatableEntity implements Jo
     /**
      * Clone constructor.
      *
-     * @param jobExecution
+     * @param jobExecution The {@link JobExecution} to clone.
      * @since 1.1.0
      */
     public JobExecutionImpl(JobExecution jobExecution) {
@@ -94,6 +99,7 @@ public class JobExecutionImpl extends AbstractKapuaUpdatableEntity implements Jo
         setStartedOn(jobExecution.getStartedOn());
         setEndedOn(jobExecution.getEndedOn());
         setTargetIds(jobExecution.getTargetIds());
+        setLog(jobExecution.getLog());
     }
 
     @Override
@@ -149,5 +155,15 @@ public class JobExecutionImpl extends AbstractKapuaUpdatableEntity implements Jo
         }
 
         return tagIds;
+    }
+
+    @Override
+    public String getLog() {
+        return log;
+    }
+
+    @Override
+    public void setLog(String log) {
+        this.log = log;
     }
 }

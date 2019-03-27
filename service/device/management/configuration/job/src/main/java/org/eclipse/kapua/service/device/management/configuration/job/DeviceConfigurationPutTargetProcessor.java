@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,7 +14,9 @@ package org.eclipse.kapua.service.device.management.configuration.job;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.commons.operation.AbstractTargetProcessor;
+import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService;
 import org.eclipse.kapua.service.device.management.configuration.job.definition.DeviceConfigurationPutPropertyKeys;
@@ -25,6 +27,11 @@ import javax.batch.runtime.context.JobContext;
 import javax.batch.runtime.context.StepContext;
 import javax.inject.Inject;
 
+/**
+ * {@link TargetOperation} for {@link DeviceConfigurationManagementService#put(KapuaId, KapuaId, DeviceConfiguration, Long)}.
+ *
+ * @since 1.0.0
+ */
 public class DeviceConfigurationPutTargetProcessor extends AbstractTargetProcessor implements TargetOperation {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
@@ -37,8 +44,12 @@ public class DeviceConfigurationPutTargetProcessor extends AbstractTargetProcess
     StepContext stepContext;
 
     @Override
-    public void processTarget(JobTarget jobTarget) throws KapuaException {
+    protected void initProcessing(JobTargetWrapper wrappedJobTarget) {
         setContext(jobContext, stepContext);
+    }
+
+    @Override
+    public void processTarget(JobTarget jobTarget) throws KapuaException {
 
         DeviceConfiguration configuration = stepContextWrapper.getStepProperty(DeviceConfigurationPutPropertyKeys.CONFIGURATION, DeviceConfiguration.class);
         Long timeout = stepContextWrapper.getStepProperty(DeviceConfigurationPutPropertyKeys.TIMEOUT, Long.class);

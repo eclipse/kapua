@@ -12,6 +12,7 @@
 package org.eclipse.kapua.job.engine.commons.operation;
 
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.job.engine.commons.logger.JobLogger;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobContextWrapper;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
 import org.eclipse.kapua.job.engine.commons.wrappers.StepContextWrapper;
@@ -68,7 +69,11 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
     public void open(Serializable arg0) throws Exception {
         JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext);
         StepContextWrapper stepContextWrapper = new StepContextWrapper(stepContext);
-        LOG.info("JOB {} - Opening cursor...", jobContextWrapper.getJobId());
+
+        JobLogger jobLogger = jobContextWrapper.getJobLogger();
+        jobLogger.setClassLog(LOG);
+
+        jobLogger.info("Opening cursor...");
 
         //
         // Job Id and JobTarget status filtering
@@ -96,20 +101,24 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
         // Wrap the JobTargets in a wrapper object to store additional informations
         jobTargets.getItems().forEach(jt -> wrappedJobTargets.add(new JobTargetWrapper(jt)));
 
-        LOG.info("JOB {} - Opening cursor... Done!", jobContextWrapper.getJobId());
+        jobLogger.info("Opening cursor... Done!");
     }
 
     @Override
     public Object readItem() throws Exception {
         JobContextWrapper jobContextWrapper = new JobContextWrapper(jobContext);
-        LOG.info("JOB {} - Reading item...", jobContextWrapper.getJobId());
+
+        JobLogger jobLogger = jobContextWrapper.getJobLogger();
+        jobLogger.setClassLog(LOG);
+
+        jobLogger.info("Reading item...");
 
         JobTargetWrapper currentWrappedJobTarget = null;
         if (jobTargetIndex < wrappedJobTargets.size()) {
             currentWrappedJobTarget = wrappedJobTargets.get(jobTargetIndex++);
         }
 
-        LOG.info("JOB {} - Reading item... Done!", jobContextWrapper.getJobId());
+        jobLogger.info("Reading item... Done!");
         return currentWrappedJobTarget;
     }
 

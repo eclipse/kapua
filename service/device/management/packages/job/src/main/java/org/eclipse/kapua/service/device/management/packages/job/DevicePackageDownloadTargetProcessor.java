@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,7 +14,9 @@ package org.eclipse.kapua.service.device.management.packages.job;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.commons.operation.AbstractTargetProcessor;
+import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService;
 import org.eclipse.kapua.service.device.management.packages.job.definition.DevicePackageDownloadPropertyKeys;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
@@ -25,6 +27,11 @@ import javax.batch.runtime.context.JobContext;
 import javax.batch.runtime.context.StepContext;
 import javax.inject.Inject;
 
+/**
+ * {@link TargetOperation} for {@link DevicePackageManagementService#downloadExec(KapuaId, KapuaId, DevicePackageDownloadRequest, Long)}.
+ *
+ * @since 1.0.0
+ */
 public class DevicePackageDownloadTargetProcessor extends AbstractTargetProcessor implements TargetOperation {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
@@ -37,8 +44,12 @@ public class DevicePackageDownloadTargetProcessor extends AbstractTargetProcesso
     StepContext stepContext;
 
     @Override
-    public void processTarget(JobTarget jobTarget) throws KapuaException {
+    protected void initProcessing(JobTargetWrapper wrappedJobTarget) {
         setContext(jobContext, stepContext);
+    }
+
+    @Override
+    public void processTarget(JobTarget jobTarget) throws KapuaException {
 
         DevicePackageDownloadRequest packageDownloadRequest = stepContextWrapper.getStepProperty(DevicePackageDownloadPropertyKeys.PACKAGE_DOWNLOAD_REQUEST, DevicePackageDownloadRequest.class);
         Long timeout = stepContextWrapper.getStepProperty(DevicePackageDownloadPropertyKeys.TIMEOUT, Long.class);
