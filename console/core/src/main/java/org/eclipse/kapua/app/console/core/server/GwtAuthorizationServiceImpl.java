@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -97,9 +97,12 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         try {
             // Get the user
             KapuaLocator locator = KapuaLocator.getInstance();
+            LoginCredentials credentials = null;
             AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
             CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
-            LoginCredentials credentials = credentialsFactory.newUsernamePasswordCredentials(gwtLoginCredentials.getUsername(), gwtLoginCredentials.getPassword());
+            if(gwtLoginCredentials.getUsername() != null && gwtLoginCredentials.getPassword() != null) {
+                credentials = credentialsFactory.newUsernamePasswordCredentials(gwtLoginCredentials.getUsername(), gwtLoginCredentials.getPassword());
+            }
 
             // Login
             authenticationService.login(credentials);
