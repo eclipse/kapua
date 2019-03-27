@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,7 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.commons.operation.AbstractTargetProcessor;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandManagementService;
 import org.eclipse.kapua.service.device.management.command.job.definition.DeviceCommandExecPropertyKeys;
@@ -26,6 +27,11 @@ import javax.batch.runtime.context.JobContext;
 import javax.batch.runtime.context.StepContext;
 import javax.inject.Inject;
 
+/**
+ * {@link TargetOperation} for {@link DeviceCommandManagementService#exec(KapuaId, KapuaId, DeviceCommandInput, Long)}.
+ *
+ * @since 1.0.0
+ */
 public class DeviceCommandExecTargetProcessor extends AbstractTargetProcessor implements TargetOperation {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -67,11 +67,31 @@ public abstract class AbstractTargetProcessor implements TargetOperation {
         return wrappedJobTarget;
     }
 
+    /**
+     * Actions before {@link #processTarget(JobTarget)} invokation.
+     *
+     * @param wrappedJobTarget The current {@link JobTargetWrapper}
+     * @since 1.1.0
+     */
     protected abstract void initProcessing(JobTargetWrapper wrappedJobTarget);
 
+    /**
+     * Action of the actual processing of the {@link JobTarget}.
+     *
+     * @param jobTarget The current {@link JobTarget}
+     * @throws KapuaException in case of exceptions during the processing.
+     * @since 1.0.0
+     */
     public abstract void processTarget(JobTarget jobTarget) throws KapuaException;
 
-    public void setContext(JobContext jobContext, StepContext stepContext) {
+    /**
+     * Sets {@link #jobContextWrapper} and {@link #stepContextWrapper} wrapping the given {@link JobContext} and the {@link StepContext}.
+     *
+     * @param jobContext  The {@code inject}ed {@link JobContext}.
+     * @param stepContext The {@code inject}ed {@link StepContext}.
+     * @since 1.0.0
+     */
+    protected void setContext(JobContext jobContext, StepContext stepContext) {
         jobContextWrapper = new JobContextWrapper(jobContext);
         stepContextWrapper = new StepContextWrapper(stepContext);
     }

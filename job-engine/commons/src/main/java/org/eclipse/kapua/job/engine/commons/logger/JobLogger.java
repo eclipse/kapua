@@ -32,6 +32,8 @@ import java.util.List;
  * This {@link JobLogger} logs to the standard {@link Logger} of the current Java class (after setting it using {@link #setClassLog(Logger)})
  * and keeps a copy of the log inside. Then, by invoking {@link #flush()} method it is possible to retrieve the copy of the log and store it
  * into the {@link org.eclipse.kapua.service.job.execution.JobExecution#setLog(String)}.
+ *
+ * @since 1.1.0
  */
 public class JobLogger {
 
@@ -65,6 +67,7 @@ public class JobLogger {
      * @param scopeId The current {@link JobExecution#getScopeId()}
      * @param jobId   The current {@link JobExecution#getJobId()}
      * @param jobName The current jBatch Job Name.
+     * @since 1.1.0
      */
     public JobLogger(KapuaId scopeId, KapuaId jobId, String jobName) {
         this.scopeId = scopeId;
@@ -76,6 +79,7 @@ public class JobLogger {
      * Sets the {@link JobExecution#getId()} into the {@link JobLogger} to be printed into the {@link Logger}.
      *
      * @param jobExecutionId The current {@link JobExecution#getId()}
+     * @since 1.1.0
      */
     public void setJobExecutionId(KapuaId jobExecutionId) {
         this.jobExecutionId = jobExecutionId;
@@ -87,6 +91,7 @@ public class JobLogger {
      * The current set {@link Logger} will be used to print to the standard log of the application
      *
      * @param classLog The {@link Logger} to use to print log.
+     * @since 1.1.0
      */
     public void setClassLog(Logger classLog) {
         this.containerClassLog = classLog;
@@ -96,6 +101,7 @@ public class JobLogger {
      * Logs a log line of {@link Level#INFO}.
      *
      * @param message The {@link String} to log.
+     * @since 1.1.0
      */
     public void info(String message) {
         info(message, Collections.emptyList().toArray());
@@ -106,6 +112,7 @@ public class JobLogger {
      *
      * @param format    The {@link String} format for the log line.
      * @param arguments The {@link java.util.Objects}... to populate the given format.
+     * @since 1.1.0
      */
     public void info(String format, Object... arguments) {
 
@@ -146,6 +153,7 @@ public class JobLogger {
      * Logs a log line of {@link Level#WARN}.
      *
      * @param message The {@link String} to log.
+     * @since 1.1.0
      */
     public void warn(String message) {
         warn(null, message);
@@ -158,6 +166,7 @@ public class JobLogger {
      *
      * @param exception The {@link Exception} to log.
      * @param message   The {@link String} to log.
+     * @since 1.1.0
      */
     public void warn(Exception exception, String message) {
         warn(exception, message, Collections.emptyList().toArray());
@@ -171,6 +180,7 @@ public class JobLogger {
      * @param exception The {@link Exception} to log.
      * @param format    The {@link String} to log.
      * @param arguments The {@link java.util.Objects}... to populate the given format.
+     * @since 1.1.0
      */
     public void warn(Exception exception, String format, Object... arguments) {
 
@@ -218,6 +228,7 @@ public class JobLogger {
      * Logs a log line of {@link Level#ERROR}.
      *
      * @param message The {@link String} to log.
+     * @since 1.1.0
      */
     public void error(String message) {
         error(null, message);
@@ -230,6 +241,7 @@ public class JobLogger {
      *
      * @param exception The {@link Exception} to log.
      * @param message   The {@link String} to log.
+     * @since 1.1.0
      */
     public void error(Exception exception, String message) {
         error(exception, message, Collections.emptyList().toArray());
@@ -243,6 +255,7 @@ public class JobLogger {
      * @param exception The {@link Exception} to log.
      * @param format    The {@link String} to log.
      * @param arguments The {@link java.util.Objects}... to populate the given format.
+     * @since 1.1.0
      */
     public void error(Exception exception, String format, Object... arguments) {
 
@@ -290,6 +303,7 @@ public class JobLogger {
      * Returns all the log stored into {@code this} JobLogger and clears the current content.
      *
      * @return The current stored log.
+     * @since 1.1.0
      */
     public synchronized String flush() {
         String log = logSb.toString();
@@ -313,6 +327,7 @@ public class JobLogger {
      *
      * @param format    The {@link String} format to check.
      * @param arguments The {@link List} of arguments to check.
+     * @since 1.1.0
      */
     private void checkFormatAndArguments(String format, Object... arguments) {
         if (StringUtils.countMatches(format, "{}") != arguments.length) {
@@ -330,6 +345,7 @@ public class JobLogger {
      * @param arguments      The user-provided {@link List} of arguments to log.
      * @param formatSb       The {@link StringBuilder} to populate, it must be empty.
      * @param finalArguments The {@link List} to populate, it must be empty.
+     * @since 1.1.0
      */
     private void buildStdLogFormatArguments(String format, Object[] arguments, StringBuilder formatSb, List<Object> finalArguments) {
 
@@ -363,6 +379,7 @@ public class JobLogger {
      * </p>
      *
      * @param formatSb The {@link String} format to adapt.
+     * @since 1.1.0
      */
     private void tokenizeFormat(StringBuilder formatSb) {
         int i = 0;

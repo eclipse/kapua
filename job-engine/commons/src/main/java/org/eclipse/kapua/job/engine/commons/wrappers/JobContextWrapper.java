@@ -19,6 +19,7 @@ import org.eclipse.kapua.job.engine.commons.logger.JobLogger;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.kapua.job.engine.commons.model.JobTransientUserData;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.execution.JobExecution;
 import org.xml.sax.SAXException;
 
 import javax.batch.runtime.BatchStatus;
@@ -38,22 +39,48 @@ public class JobContextWrapper {
 
     private JobContext jobContext;
 
+    /**
+     * Constructor from the {@code inject}ed {@link JobContext}.
+     * <p>
+     * Wraps the given {@link JobContext}
+     *
+     * @param jobContext The {@link JobContext} to wrap.
+     * @since 1.1.0
+     */
     public JobContextWrapper(JobContext jobContext) {
         this.jobContext = jobContext;
     }
 
+    /**
+     * Gets the scope {@link KapuaId} of the {@link org.eclipse.kapua.service.job.execution.JobExecution}.
+     *
+     * @return The current scope {@link KapuaId} of the {@link org.eclipse.kapua.service.job.execution.JobExecution}.
+     * @since 1.0.0
+     */
     public KapuaId getScopeId() {
         Properties jobContextProperties = jobContext.getProperties();
         String scopeIdString = jobContextProperties.getProperty(JobContextPropertyNames.JOB_SCOPE_ID);
         return scopeIdString != null ? KapuaEid.parseCompactId(scopeIdString) : null;
     }
 
+    /**
+     * Gets the {@link org.eclipse.kapua.service.job.Job} {@link KapuaId} of the {@link org.eclipse.kapua.service.job.execution.JobExecution}.
+     *
+     * @return The current {@link org.eclipse.kapua.service.job.Job} {@link KapuaId} of the {@link org.eclipse.kapua.service.job.execution.JobExecution}.
+     * @since 1.0.0
+     */
     public KapuaId getJobId() {
         Properties jobContextProperties = jobContext.getProperties();
         String jobIdString = jobContextProperties.getProperty(JobContextPropertyNames.JOB_ID);
         return jobIdString != null ? KapuaEid.parseCompactId(jobIdString) : null;
     }
 
+    /**
+     * Gets the {@link JobTargetSublist} of the {@link org.eclipse.kapua.service.job.execution.JobExecution}.
+     *
+     * @return The current {@link JobTargetSublist} of the {@link org.eclipse.kapua.service.job.execution.JobExecution}.
+     * @since 1.0.0
+     */
     public JobTargetSublist getTargetSublist() {
         Properties jobContextProperties = jobContext.getProperties();
         String jobTargetSublistString = jobContextProperties.getProperty(JobContextPropertyNames.JOB_TARGET_SUBLIST);
@@ -65,6 +92,12 @@ public class JobContextWrapper {
         }
     }
 
+    /**
+     * Gets the start step index of the {@link org.eclipse.kapua.service.job.execution.JobExecution}.
+     *
+     * @return The start step index of the {@link org.eclipse.kapua.service.job.execution.JobExecution}.
+     * @since 1.0.0
+     */
     public Integer getFromStepIndex() {
         Properties jobContextProperties = jobContext.getProperties();
         String fromStepIndexString = jobContextProperties.getProperty(JobContextPropertyNames.JOB_STEP_FROM_INDEX);
@@ -72,6 +105,12 @@ public class JobContextWrapper {
         return Strings.isNullOrEmpty(fromStepIndexString) ? null : Integer.valueOf(fromStepIndexString);
     }
 
+    /**
+     * Gets the {@link JobTransientUserData}.
+     *
+     * @return The {@link JobTransientUserData}.
+     * @since 1.1.0
+     */
     public JobTransientUserData getJobTransientUserData() {
         JobTransientUserData transientUserData = (JobTransientUserData) getTransientUserData();
 
@@ -82,6 +121,14 @@ public class JobContextWrapper {
         return transientUserData;
     }
 
+    /**
+     * Gets the {@link JobLogger}.
+     * <p>
+     * If it does not exist, it instantiates a new one.
+     *
+     * @return The {@link JobLogger}.
+     * @since 1.1.0
+     */
     public JobLogger getJobLogger() {
 
         JobLogger jobLogger = getJobTransientUserData().getJobLogger();
@@ -94,46 +141,103 @@ public class JobContextWrapper {
         return jobLogger;
     }
 
+    /**
+     * @return {@link JobContext#getJobName()}.
+     * @see JobContext#getJobName
+     * @since 1.0.0
+     */
     public String getJobName() {
         return jobContext.getJobName();
     }
 
-    public Object getTransientUserData() {
+    /**
+     * @return {@link JobContext#getTransientUserData()}.
+     * @see JobContext#getTransientUserData().
+     * @since 1.0.0
+     */
+    private Object getTransientUserData() {
         return jobContext.getTransientUserData();
     }
 
-    public void setTransientUserData(Object data) {
+    /**
+     * @param data {@link JobContext#setTransientUserData(Object)}.
+     * @see JobContext#setTransientUserData(Object).
+     * @since 1.0.0
+     */
+    private void setTransientUserData(Object data) {
         jobContext.setTransientUserData(data);
     }
 
+    /**
+     * @return {@link JobContext#getInstanceId()}.
+     * @see JobContext#getInstanceId
+     * @since 1.0.0
+     */
     public long getInstanceId() {
         return jobContext.getInstanceId();
     }
 
+    /**
+     * @return {@link JobContext#getExecutionId()}.
+     * @see JobContext#getExecutionId
+     * @since 1.0.0
+     */
     public long getExecutionId() {
         return jobContext.getExecutionId();
     }
 
+    /**
+     * @return {@link JobContext#getProperties()}.
+     * @see JobContext#getProperties
+     * @since 1.0.0
+     */
     public Properties getProperties() {
         return jobContext.getProperties();
     }
 
+    /**
+     * @return {@link JobContext#getBatchStatus()}.
+     * @see JobContext#getBatchStatus
+     * @since 1.0.0
+     */
     public BatchStatus getBatchStatus() {
         return jobContext.getBatchStatus();
     }
 
+    /**
+     * @return {@link JobContext#getExitStatus()}.
+     * @see JobContext#getExitStatus
+     * @since 1.0.0
+     */
     public String getExitStatus() {
         return jobContext.getExitStatus();
     }
 
+    /**
+     * @param status {@link JobContext#setExitStatus(String)}.
+     * @see JobContext#setExitStatus(String)
+     * @since 1.0.0
+     */
     public void setExitStatus(String status) {
         jobContext.setExitStatus(status);
     }
 
+    /**
+     * Gets the current {@link JobExecution#getId()}.
+     *
+     * @return The current {@link JobExecution#getId()}.
+     * @since 1.0.0
+     */
     public KapuaId getKapuaExecutionId() {
         return (KapuaId) getProperties().get(KAPUA_EXECUTION_ID);
     }
 
+    /**
+     * Sets the current {@link JobExecution#getId()}.
+     *
+     * @param kapuaExecutionId The current {@link JobExecution#getId()}.
+     * @since 1.0.0
+     */
     public void setKapuaExecutionId(KapuaId kapuaExecutionId) {
         getProperties().put(KAPUA_EXECUTION_ID, kapuaExecutionId);
     }

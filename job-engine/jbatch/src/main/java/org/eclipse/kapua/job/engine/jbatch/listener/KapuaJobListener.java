@@ -45,6 +45,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * {@link JobListener} implementations.
+ * <p>
+ * Listener for all {@link Job}.
+ *
+ * @since 1.0.0
+ */
 public class KapuaJobListener extends AbstractJobListener implements JobListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(KapuaJobListener.class);

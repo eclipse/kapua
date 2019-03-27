@@ -79,7 +79,7 @@ public class JobExecutionImpl extends AbstractKapuaUpdatableEntity implements Jo
     /**
      * Constructor.
      *
-     * @param scopeId The scope {@link KapuaId} to set into the {@link JobExecution}
+     * @param scopeId The scope {@link KapuaId} to set into the {@link JobExecution}.
      * @since 1.0.0
      */
     public JobExecutionImpl(KapuaId scopeId) {
@@ -89,7 +89,7 @@ public class JobExecutionImpl extends AbstractKapuaUpdatableEntity implements Jo
     /**
      * Clone constructor.
      *
-     * @param jobExecution
+     * @param jobExecution The {@link JobExecution} to clone.
      * @since 1.1.0
      */
     public JobExecutionImpl(JobExecution jobExecution) {
