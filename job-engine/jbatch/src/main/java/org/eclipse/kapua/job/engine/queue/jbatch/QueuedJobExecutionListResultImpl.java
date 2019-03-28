@@ -17,6 +17,8 @@ import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionListResult;
 
 /**
  * {@link QueuedJobExecutionListResult} implementation.
+ *
+ * @since 1.1.0
  */
 public class QueuedJobExecutionListResultImpl extends KapuaListResultImpl<QueuedJobExecution> implements QueuedJobExecutionListResult {
 

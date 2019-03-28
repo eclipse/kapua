@@ -12,6 +12,7 @@
 
 DROP TABLE IF EXISTS job_job_step_properties;
 DROP TABLE IF EXISTS sys_configuration;
+DROP TABLE IF EXISTS job_queued_job_execution;
 DROP TABLE IF EXISTS job_job_execution_target;
 DROP TABLE IF EXISTS job_job_execution;
 DROP TABLE IF EXISTS job_job_step;

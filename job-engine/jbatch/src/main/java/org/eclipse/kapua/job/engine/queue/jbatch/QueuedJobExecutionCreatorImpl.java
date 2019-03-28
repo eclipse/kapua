@@ -18,6 +18,11 @@ import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionStatus;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 
+/**
+ * {@link QueuedJobExecutionCreator} implementation
+ *
+ * @since 1.0.0
+ */
 @KapuaProvider
 public class QueuedJobExecutionCreatorImpl extends AbstractKapuaUpdatableEntityCreator<QueuedJobExecution> implements QueuedJobExecutionCreator {
 
@@ -28,6 +33,12 @@ public class QueuedJobExecutionCreatorImpl extends AbstractKapuaUpdatableEntityC
     private KapuaId waitForJobExecutionId;
     private QueuedJobExecutionStatus status;
 
+    /**
+     * Constructor.
+     *
+     * @param scopeId The scope {@link KapuaId} to set into the {@link QueuedJobExecutionCreator}.
+     * @since 1.1.0
+     */
     protected QueuedJobExecutionCreatorImpl(KapuaId scopeId) {
         super(scopeId);
     }

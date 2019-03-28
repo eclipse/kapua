@@ -36,6 +36,12 @@ public class JobStartOptionsImpl implements JobStartOptions {
     public JobStartOptionsImpl() {
     }
 
+    /**
+     * Clone constructor.
+     *
+     * @param jobStartOptions The {@link JobStartOptions} to clone.
+     * @since 1.1.0
+     */
     public JobStartOptionsImpl(JobStartOptions jobStartOptions) {
         this();
 

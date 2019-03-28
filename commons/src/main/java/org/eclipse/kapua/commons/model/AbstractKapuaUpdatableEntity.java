@@ -114,7 +114,7 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
     /**
      * Sets the date of the last update
      *
-     * @param modifiedOn the date of the last update
+     * @param modifiedOn The date of the last update
      * @since 1.0.0
      */
     public void setModifiedOn(Date modifiedOn) {
@@ -129,7 +129,7 @@ public abstract class AbstractKapuaUpdatableEntity extends AbstractKapuaEntity i
     /**
      * Sets the identity {@link KapuaId} who has updated this {@link KapuaEntity}
      *
-     * @param modifiedBy the identity {@link KapuaId} who has updated this {@link KapuaEntity}
+     * @param modifiedBy The identity {@link KapuaId} who has updated this {@link KapuaEntity}
      * @since 1.0.0
      */
     public void setModifiedBy(KapuaId modifiedBy) {

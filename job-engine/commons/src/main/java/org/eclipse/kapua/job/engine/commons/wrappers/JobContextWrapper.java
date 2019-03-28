@@ -87,6 +87,12 @@ public class JobContextWrapper {
         }
     }
 
+    /**
+     * Gets the {@link JobExecution} {@link KapuaId} to resume
+     *
+     * @return The {@link JobExecution} {@link KapuaId} to resume
+     * @since 1.1.0
+     */
     public KapuaId getResumedJobExecutionId() {
         String resumedKapuaExecutionIdString = getProperties().getProperty(JobContextPropertyNames.RESUMED_KAPUA_EXECUTION_ID);
         return Strings.isNullOrEmpty(resumedKapuaExecutionIdString) ? null : KapuaEid.parseCompactId(resumedKapuaExecutionIdString);
@@ -103,6 +109,12 @@ public class JobContextWrapper {
         return Strings.isNullOrEmpty(fromStepIndexString) ? null : Integer.valueOf(fromStepIndexString);
     }
 
+    /**
+     * Gets whether or not this {@link JobExecution} should be enqueued or not.
+     *
+     * @return {@code true} if this {@link JobExecution} should be enqueued, {@code false} otherwise.
+     * @since 1.1.0
+     */
     public boolean getEnqueue() {
         String enqueueString = getProperties().getProperty(JobContextPropertyNames.ENQUEUE);
         return enqueueString != null && Boolean.valueOf(enqueueString);

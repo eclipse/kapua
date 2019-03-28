@@ -13,6 +13,11 @@ package org.eclipse.kapua.job.engine;
 
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 
+/**
+ * {@link JobStartOptions} {@link KapuaEntityAttributes}.
+ *
+ * @since 1.1.0
+ */
 public class JobStartOptionsAttributes extends KapuaEntityAttributes {
 
     public static final String TARGET_ID_SUBLIST = "targetIdSublist";

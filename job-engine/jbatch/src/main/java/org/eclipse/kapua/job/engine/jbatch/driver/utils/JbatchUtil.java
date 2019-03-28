@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,8 +15,6 @@ import org.eclipse.kapua.job.engine.jbatch.driver.JbatchDriver;
 import org.eclipse.kapua.job.engine.jbatch.setting.JobEngineSetting;
 import org.eclipse.kapua.job.engine.jbatch.setting.JobEngineSettingKeys;
 
-import javax.batch.operations.JobOperator;
-import javax.batch.runtime.BatchRuntime;
 import javax.batch.runtime.JobExecution;
 import java.util.Date;
 import java.util.Timer;
@@ -24,8 +22,6 @@ import java.util.Timer;
 public class JbatchUtil {
 
     private static final JobEngineSetting JOB_ENGINE_SETTING = JobEngineSetting.getInstance();
-
-    private static final JobOperator JOB_OPERATOR = BatchRuntime.getJobOperator();
 
     private JbatchUtil() {
     }

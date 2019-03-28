@@ -13,6 +13,11 @@ package org.eclipse.kapua.job.engine.queue;
 
 import org.eclipse.kapua.model.KapuaUpdatableEntityAttributes;
 
+/**
+ * {@link QueuedJobExecutionAttributes} {@link org.eclipse.kapua.model.KapuaEntityAttributes}.
+ *
+ * @since 1.1.0
+ */
 public class QueuedJobExecutionAttributes extends KapuaUpdatableEntityAttributes {
 
     public static final String JOB_ID = "jobId";

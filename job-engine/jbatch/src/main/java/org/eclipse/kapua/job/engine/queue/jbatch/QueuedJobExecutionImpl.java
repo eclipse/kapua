@@ -80,7 +80,7 @@ public class QueuedJobExecutionImpl extends AbstractKapuaUpdatableEntity impleme
     /**
      * Clone constructor.
      *
-     * @param queuedJobExecution
+     * @param queuedJobExecution The {@link QueuedJobExecution} to clone.
      * @since 1.1.0
      */
     public QueuedJobExecutionImpl(QueuedJobExecution queuedJobExecution) {
