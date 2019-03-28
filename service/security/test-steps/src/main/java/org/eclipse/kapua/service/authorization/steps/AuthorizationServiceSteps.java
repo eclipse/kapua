@@ -20,13 +20,13 @@ import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
@@ -86,7 +86,6 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
-import org.eclipse.kapua.service.authorization.role.shiro.RoleImpl;
 import org.eclipse.kapua.service.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -313,7 +312,7 @@ public class AuthorizationServiceSteps extends TestBase {
     public void updateRoleNameTo(String name)
             throws Exception {
 
-        Role role = new RoleImpl((Role) stepData.get("Role"));
+        Role role = roleFactory.clone((Role) stepData.get("Role"));
         role.setName(name);
         Thread.sleep(200);
 
@@ -460,7 +459,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
         KapuaId tmpId = getKapuaId(scope);
         RoleQuery tmpQuery = roleFactory.newQuery(tmpId);
-        tmpQuery.setPredicate(new AttributePredicateImpl<>(RoleAttributes.NAME, name));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(RoleAttributes.NAME, name, AttributePredicate.Operator.EQUAL));
 
         stepData.remove("RoleList");
         stepData.remove("RoleFound");
@@ -734,7 +733,7 @@ public class AuthorizationServiceSteps extends TestBase {
             throws Exception {
 
         DomainQuery query = domainFactory.newQuery(KapuaId.ANY);
-        query.setPredicate(new AttributePredicateImpl<>(DomainAttributes.NAME, name));
+        query.setPredicate(query.attributePredicate(DomainAttributes.NAME, name, AttributePredicate.Operator.EQUAL));
 
         try {
             primeException();
@@ -808,7 +807,7 @@ public class AuthorizationServiceSteps extends TestBase {
             throws Exception {
 
         DomainQuery query = domainFactory.newQuery(null);
-        query.setPredicate(new AttributePredicateImpl<>(DomainAttributes.NAME, name));
+        query.setPredicate(query.attributePredicate(DomainAttributes.NAME, name, AttributePredicate.Operator.EQUAL));
 
         stepData.remove("DomainList");
         stepData.remove("Count");
@@ -1110,7 +1109,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
         KapuaId tmpId = getKapuaId(scope);
         GroupQuery tmpQuery = groupFactory.newQuery(tmpId);
-        tmpQuery.setPredicate(new AttributePredicateImpl<>(GroupAttributes.NAME, name));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(GroupAttributes.NAME, name, AttributePredicate.Operator.EQUAL));
 
         stepData.remove("GroupList");
         stepData.remove("Group");
@@ -1513,7 +1512,7 @@ public class AuthorizationServiceSteps extends TestBase {
         User user = (User) stepData.get("User");
 
         AccessInfoQuery tmpQuery = accessInfoFactory.newQuery(currScope);
-        tmpQuery.setPredicate(new AttributePredicateImpl<>(AccessInfoAttributes.USER_ID, user.getId()));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(AccessInfoAttributes.USER_ID, user.getId(), AttributePredicate.Operator.EQUAL));
 
         try {
             primeException();

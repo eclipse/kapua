@@ -24,7 +24,6 @@ import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
@@ -40,21 +39,10 @@ import org.eclipse.kapua.message.device.lifecycle.KapuaBirthPayload;
 import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectPayload;
+import org.eclipse.kapua.message.device.lifecycle.KapuaLifecycleMessageFactory;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingPayload;
-import org.eclipse.kapua.message.internal.device.lifecycle.KapuaAppsChannelImpl;
-import org.eclipse.kapua.message.internal.device.lifecycle.KapuaAppsMessageImpl;
-import org.eclipse.kapua.message.internal.device.lifecycle.KapuaAppsPayloadImpl;
-import org.eclipse.kapua.message.internal.device.lifecycle.KapuaBirthChannelImpl;
-import org.eclipse.kapua.message.internal.device.lifecycle.KapuaBirthMessageImpl;
-import org.eclipse.kapua.message.internal.device.lifecycle.KapuaBirthPayloadImpl;
-import org.eclipse.kapua.message.internal.device.lifecycle.KapuaDisconnectChannelImpl;
-import org.eclipse.kapua.message.internal.device.lifecycle.KapuaDisconnectMessageImpl;
-import org.eclipse.kapua.message.internal.device.lifecycle.KapuaDisconnectPayloadImpl;
-import org.eclipse.kapua.message.internal.device.lifecycle.KapuaMissingChannelImpl;
-import org.eclipse.kapua.message.internal.device.lifecycle.KapuaMissingMessageImpl;
-import org.eclipse.kapua.message.internal.device.lifecycle.KapuaMissingPayloadImpl;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
@@ -96,6 +84,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuer
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventAttributes;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
@@ -184,6 +173,7 @@ public class DeviceRegistrySteps extends TestBase {
     private TagService tagService;
     private TagFactory tagFactory;
     private KapuaMessageFactory messageFactory;
+    private KapuaLifecycleMessageFactory lifecycleMessageFactory;
 
     private AclCreator aclCreator;
 
@@ -223,6 +213,7 @@ public class DeviceRegistrySteps extends TestBase {
         eventFactory = locator.getFactory(DeviceEventFactory.class);
 
         messageFactory = locator.getFactory(KapuaMessageFactory.class);
+        lifecycleMessageFactory = locator.getFactory(KapuaLifecycleMessageFactory.class);
 
         deviceLifeCycleService = locator.getService(DeviceLifeCycleService.class);
         authenticationService = locator.getService(AuthenticationService.class);
@@ -568,7 +559,7 @@ public class DeviceRegistrySteps extends TestBase {
 
         DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
         // Search for the known bios version string
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("biosVersion", version));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.BIOS_VERSION, version, AttributePredicate.Operator.EQUAL));
 
         primeException();
         try {
@@ -586,7 +577,7 @@ public class DeviceRegistrySteps extends TestBase {
 
         DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
         // Search for the known bios version string
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsNotEqualTo("biosVersion", version));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.BIOS_VERSION, version, AttributePredicate.Operator.EQUAL));
 
         primeException();
         try {
@@ -604,7 +595,7 @@ public class DeviceRegistrySteps extends TestBase {
 
         DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
         // Search for the known bios version string
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("clientId", id));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, id, AttributePredicate.Operator.EQUAL));
 
         primeException();
         try {
@@ -647,7 +638,7 @@ public class DeviceRegistrySteps extends TestBase {
             throws Exception {
 
         DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("biosVersion", version));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.BIOS_VERSION, version, AttributePredicate.Operator.EQUAL));
 
         primeException();
         try {
@@ -1399,7 +1390,7 @@ public class DeviceRegistrySteps extends TestBase {
             throws Exception {
 
         DeviceConnectionQuery query = deviceConnectionFactory.newQuery(getCurrentScopeId());
-        query.setPredicate(AttributePredicateImpl.attributeIsEqualTo(parameter, value));
+        query.setPredicate(query.attributePredicate(parameter, value, AttributePredicate.Operator.EQUAL));
 
         primeException();
         try {
@@ -1652,7 +1643,7 @@ public class DeviceRegistrySteps extends TestBase {
         assertNotNull(tmpQuery);
         KapuaMethod tmpMeth = getMethodFromString(eventType);
         assertNotNull(tmpMeth);
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("action", tmpMeth));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceEventAttributes.ACTION, tmpMeth, AttributePredicate.Operator.EQUAL));
 
         primeException();
         try {
@@ -1704,8 +1695,8 @@ public class DeviceRegistrySteps extends TestBase {
         Assert.assertNotNull(tmpDev.getId());
 
         tmpQuery = eventFactory.newQuery(tmpAcc.getId());
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("deviceId", tmpDev.getId()));
-        tmpQuery.setSortCriteria(new FieldSortCriteria("receivedOn", FieldSortCriteria.SortOrder.ASCENDING));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceEventAttributes.DEVICE_ID, tmpDev.getId(), AttributePredicate.Operator.EQUAL));
+        tmpQuery.setSortCriteria(new FieldSortCriteria(DeviceEventAttributes.RECEIVED_ON, FieldSortCriteria.SortOrder.ASCENDING));
         tmpList = eventService.query(tmpQuery);
 
         Assert.assertNotNull(tmpList);
@@ -1845,14 +1836,14 @@ public class DeviceRegistrySteps extends TestBase {
         Account lastAcc = (Account) stepData.get("LastAccount");
         DeviceQuery deviceQuery = deviceFactory.newQuery(lastAcc.getId());
         TagQuery tagQuery = tagFactory.newQuery(lastAcc.getId());
-        tagQuery.setPredicate(new AttributePredicateImpl<>(TagAttributes.NAME, deviceTagName, AttributePredicate.Operator.EQUAL));
+        tagQuery.setPredicate(tagQuery.attributePredicate(TagAttributes.NAME, deviceTagName, AttributePredicate.Operator.EQUAL));
 
         primeException();
         try {
             stepData.remove("DeviceList");
             TagListResult tagQueryResult = tagService.query(tagQuery);
             Tag tag = tagQueryResult.getFirstItem();
-            deviceQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo(DeviceAttributes.TAG_IDS, tag.getId()));
+            deviceQuery.setPredicate(deviceQuery.attributePredicate(DeviceAttributes.TAG_IDS, tag.getId(), AttributePredicate.Operator.EQUAL));
             DeviceListResult deviceList = deviceRegistryService.query(deviceQuery);
             stepData.put("DeviceList", deviceList);
         } catch (KapuaException ex) {
@@ -1873,8 +1864,8 @@ public class DeviceRegistrySteps extends TestBase {
 
         Device tmpDev;
         List<String> tmpSemParts = new ArrayList<>();
-        KapuaBirthMessage tmpMsg = new KapuaBirthMessageImpl();
-        KapuaBirthChannel tmpChan = new KapuaBirthChannelImpl();
+        KapuaBirthMessage tmpMsg = lifecycleMessageFactory.newKapuaBirthMessage();
+        KapuaBirthChannel tmpChan = lifecycleMessageFactory.newKapuaBirthChannel();
         KapuaBirthPayload tmpPayload = prepareDefaultBirthPayload();
 
         tmpChan.setClientId(clientId);
@@ -1907,8 +1898,8 @@ public class DeviceRegistrySteps extends TestBase {
         Account tmpAccount = (Account) stepData.get("LastAccount");
         Device tmpDev;
         List<String> tmpSemParts = new ArrayList<>();
-        KapuaDisconnectMessage tmpMsg = new KapuaDisconnectMessageImpl();
-        KapuaDisconnectChannel tmpChan = new KapuaDisconnectChannelImpl();
+        KapuaDisconnectMessage tmpMsg = lifecycleMessageFactory.newKapuaDisconnectMessage();
+        KapuaDisconnectChannel tmpChan = lifecycleMessageFactory.newKapuaDisconnectChannel();
         KapuaDisconnectPayload tmpPayload = prepareDefaultDeathPayload();
 
         tmpChan.setClientId(clientId);
@@ -1946,8 +1937,8 @@ public class DeviceRegistrySteps extends TestBase {
         Account tmpAccount = (Account) stepData.get("LastAccount");
         Device tmpDev;
         List<String> tmpSemParts = new ArrayList<>();
-        KapuaMissingMessage tmpMsg = new KapuaMissingMessageImpl();
-        KapuaMissingChannel tmpChan = new KapuaMissingChannelImpl();
+        KapuaMissingMessage tmpMsg = lifecycleMessageFactory.newKapuaMissingMessage();
+        KapuaMissingChannel tmpChan = lifecycleMessageFactory.newKapuaMissingChannel();
         KapuaMissingPayload tmpPayload = prepareDefaultMissingPayload();
 
         tmpChan.setClientId(clientId);
@@ -1984,8 +1975,8 @@ public class DeviceRegistrySteps extends TestBase {
         Account tmpAccount = (Account) stepData.get("LastAccount");
         Device tmpDev;
         List<String> tmpSemParts = new ArrayList<>();
-        KapuaAppsMessage tmpMsg = new KapuaAppsMessageImpl();
-        KapuaAppsChannel tmpChan = new KapuaAppsChannelImpl();
+        KapuaAppsMessage tmpMsg = lifecycleMessageFactory.newKapuaAppsMessage();
+        KapuaAppsChannel tmpChan = lifecycleMessageFactory.newKapuaAppsChannel();
         KapuaAppsPayload tmpPayload = prepareDefaultApplicationPayload();
 
         tmpChan.setClientId(clientId);
@@ -2365,7 +2356,7 @@ public class DeviceRegistrySteps extends TestBase {
 
         DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
         // Search for the known bios version string
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("clientId", clientId));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, clientId, AttributePredicate.Operator.EQUAL));
 
         DeviceListResult deviceList = deviceRegistryService.query(tmpQuery);
 
@@ -2389,84 +2380,90 @@ public class DeviceRegistrySteps extends TestBase {
     }
 
     private KapuaBirthPayload prepareDefaultBirthPayload() {
-        return new KapuaBirthPayloadImpl(
-                "500", // uptime
-                "ReliaGate 10-20", // displayName
-                "ReliaGate", // modelName
-                "ReliaGate 10-20", // modelId
-                "ABC123456", // partNumber
-                "12312312312", // serialNumber
-                "Kura", // firmware
-                "2.0", // firmwareVersion
-                "BIOStm", // bios
-                "1.2.3", // biosVersion
-                "linux", // os
-                "4.9.18", // osVersion
-                "J9", // jvm
-                "2.4", // jvmVersion
-                "J8SE", // jvmProfile
-                "OSGi", // containerFramework
-                "1.2.3", // containerFrameworkVersion
-                "Kura", // applicationFramework
-                "2.0", // applicationFrameworkVersion
-                "eth0", // connectionInterface
-                "192.168.1.2", // connectionIp
-                "gzip", // acceptEncoding
-                "CLOUD-V1", // applicationIdentifiers
-                "1", // availableProcessors
-                "1024", // totalMemory
-                "linux", // osArch
-                "123456789ABCDEF", // modemImei
-                "123456789", // modemImsi
-                "ABCDEF" // modemIccid
-        );
 
+        KapuaBirthPayload payload = lifecycleMessageFactory.newKapuaBirthPayload();
+        payload.setUptime("500");
+        payload.setDisplayName("ReliaGate 10-20");
+        payload.setModelName("ReliaGate");
+        payload.setModelId("ReliaGate 10-20");
+        payload.setPartNumber("ABC123456");
+        payload.setSerialNumber("12312312312");
+        payload.setFirmware("Kura");
+        payload.setFirmwareVersion("2.0");
+        payload.setBios("BIOStm");
+        payload.setBiosVersion("1.2.3");
+        payload.setOs("linux");
+        payload.setOsVersion("4.9.18");
+        payload.setJvm("J9");
+        payload.setJvmVersion("2.4");
+        payload.setJvmProfile("J8SE");
+        payload.setContainerFramework("OSGi");
+        payload.setContainerFrameworkVersion("1.2.3");
+        payload.setApplicationFramework("Kura");
+        payload.setApplicationFrameworkVersion("2.0");
+        payload.setConnectionInterface("eth0");
+        payload.setConnectionIp("192.168.1.2");
+        payload.setAcceptEncoding("gzip");
+        payload.setApplicationIdentifiers("CLOUD-V1");
+        payload.setAvailableProcessors("1");
+        payload.setTotalMemory("1024");
+        payload.setOsArch("linux");
+        payload.setModemImei("123456789ABCDEF");
+        payload.setModemImsi("123456789");
+        payload.setModemIccid("ABCDEF");
+
+        return payload;
     }
 
     private KapuaDisconnectPayload prepareDefaultDeathPayload() {
-        return new KapuaDisconnectPayloadImpl(
-                "1000", // uptime
-                "ReliaGate 10-20" // displayName
-        );
+
+        KapuaDisconnectPayload payload = lifecycleMessageFactory.newKapuaDisconnectPayload();
+        payload.setUptime("1000");
+        payload.setDisplayName("ReliaGate 10-20");
+
+        return payload;
     }
 
     private KapuaMissingPayload prepareDefaultMissingPayload() {
-        KapuaMissingPayload tmpPayload = new KapuaMissingPayloadImpl();
+
+        KapuaMissingPayload tmpPayload = lifecycleMessageFactory.newKapuaMissingPayload();
         return tmpPayload;
     }
 
     private KapuaAppsPayload prepareDefaultApplicationPayload() {
-        return new KapuaAppsPayloadImpl(
-                "500", // uptime
-                "ReliaGate 10-20", // displayName
-                "ReliaGate", // modelName
-                "ReliaGate 10-20", // modelId
-                "ABC123456", // partNumber
-                "12312312312", // serialNumber
-                "Kura", // firmware
-                "2.0", // firmwareVersion
-                "BIOStm", // bios
-                "1.2.3", // biosVersion
-                "linux", // os
-                "4.9.18", // osVersion
-                "J9", // jvm
-                "2.4", // jvmVersion
-                "J8SE", // jvmProfile
-                "OSGi", // containerFramework
-                "1.2.3", // containerFrameworkVersion
-                "Kura", // applicationFramework
-                "2.0", // applicationFrameworkVersion
-                "eth0", // connectionInterface
-                "192.168.1.2", // connectionIp
-                "gzip", // acceptEncoding
-                "CLOUD-V1", // applicationIdentifiers
-                "1", // availableProcessors
-                "1024", // totalMemory
-                "linux", // osArch
-                "123456789ABCDEF", // modemImei
-                "123456789", // modemImsi
-                "ABCDEF" // modemIccid
-        );
+
+        KapuaAppsPayload payload = lifecycleMessageFactory.newKapuaAppsPayload();
+        payload.setUptime("500");
+        payload.setDisplayName("ReliaGate 10-20");
+        payload.setModelName("ReliaGate");
+        payload.setModelId("ReliaGate 10-20");
+        payload.setPartNumber("ABC123456");
+        payload.setSerialNumber("12312312312");
+        payload.setFirmware("Kura");
+        payload.setFirmwareVersion("2.0");
+        payload.setBios("BIOStm");
+        payload.setBiosVersion("1.2.3");
+        payload.setOs("linux");
+        payload.setOsVersion("4.9.18");
+        payload.setJvm("J9");
+        payload.setJvmVersion("2.4");
+        payload.setJvmProfile("J8SE");
+        payload.setContainerFramework("OSGi");
+        payload.setContainerFrameworkVersion("1.2.3");
+        payload.setApplicationFramework("Kura");
+        payload.setApplicationFrameworkVersion("2.0");
+        payload.setConnectionInterface("eth0");
+        payload.setConnectionIp("192.168.1.2");
+        payload.setAcceptEncoding("gzip");
+        payload.setApplicationIdentifiers("CLOUD-V1");
+        payload.setAvailableProcessors("1");
+        payload.setTotalMemory("1024");
+        payload.setOsArch("linux");
+        payload.setModemImei("123456789ABCDEF");
+        payload.setModemImsi("123456789");
+        payload.setModemIccid("ABCDEF");
+
+        return payload;
     }
 
     private DeviceCreator prepareDeviceCreatorFromCucDevice(CucDevice dev) {

@@ -67,6 +67,7 @@
         <api>org.eclipse.kapua.service.device.registry.event.DeviceEventFactory</api>
         <api>org.eclipse.kapua.service.device.registry.event.DeviceEventService</api>
         <api>org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService</api>
+        <api>org.eclipse.kapua.message.device.lifecycle.KapuaLifecycleMessageFactory</api>
 
         <api>org.eclipse.kapua.service.device.call.DeviceCallFactory</api>
         <api>org.eclipse.kapua.service.device.call.DeviceMessageFactory</api>

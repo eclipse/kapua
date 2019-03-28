@@ -20,13 +20,11 @@ import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
@@ -39,6 +37,7 @@ import org.eclipse.kapua.service.tag.TagAttributes;
 import org.eclipse.kapua.service.tag.TagCreator;
 import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagListResult;
+import org.eclipse.kapua.service.tag.TagQuery;
 import org.eclipse.kapua.service.tag.TagService;
 import org.junit.Assert;
 import org.slf4j.Logger;
@@ -152,8 +151,8 @@ public class TagServiceSteps extends TestBase {
     @When("^Tag with name \"([^\"]*)\" is searched$")
     public void tagWithNameIfSearched(String tagName) throws Throwable {
 
-        KapuaQuery<Tag> query = tagFactory.newQuery(SYS_SCOPE_ID);
-        query.setPredicate(new AttributePredicateImpl<String>(TagAttributes.NAME, tagName, AttributePredicate.Operator.EQUAL));
+        TagQuery query = tagFactory.newQuery(SYS_SCOPE_ID);
+        query.setPredicate(query.attributePredicate(TagAttributes.NAME, tagName, AttributePredicate.Operator.EQUAL));
         TagListResult queryResult = tagService.query(query);
         Tag foundTag = queryResult.getFirstItem();
         stepData.put("tag", foundTag);

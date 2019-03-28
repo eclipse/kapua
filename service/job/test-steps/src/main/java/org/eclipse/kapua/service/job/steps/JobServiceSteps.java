@@ -21,12 +21,12 @@ import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
@@ -42,12 +42,14 @@ import org.eclipse.kapua.service.job.JobListResult;
 import org.eclipse.kapua.service.job.JobQuery;
 import org.eclipse.kapua.service.job.JobService;
 import org.eclipse.kapua.service.job.execution.JobExecution;
+import org.eclipse.kapua.service.job.execution.JobExecutionAttributes;
 import org.eclipse.kapua.service.job.execution.JobExecutionCreator;
 import org.eclipse.kapua.service.job.execution.JobExecutionFactory;
 import org.eclipse.kapua.service.job.execution.JobExecutionListResult;
 import org.eclipse.kapua.service.job.execution.JobExecutionQuery;
 import org.eclipse.kapua.service.job.execution.JobExecutionService;
 import org.eclipse.kapua.service.job.step.JobStep;
+import org.eclipse.kapua.service.job.step.JobStepAttributes;
 import org.eclipse.kapua.service.job.step.JobStepCreator;
 import org.eclipse.kapua.service.job.step.JobStepFactory;
 import org.eclipse.kapua.service.job.step.JobStepListResult;
@@ -61,6 +63,7 @@ import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 import org.eclipse.kapua.service.job.step.definition.JobStepType;
 import org.eclipse.kapua.service.job.targets.JobTarget;
+import org.eclipse.kapua.service.job.targets.JobTargetAttributes;
 import org.eclipse.kapua.service.job.targets.JobTargetCreator;
 import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetListResult;
@@ -454,7 +457,7 @@ public class JobServiceSteps extends TestBase {
             throws Exception {
 
         JobQuery tmpQuery = jobFactory.newQuery(getCurrentScopeId());
-        tmpQuery.setPredicate(new AttributePredicateImpl<>(JobAttributes.NAME, name, Operator.STARTS_WITH));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobAttributes.NAME, name, Operator.STARTS_WITH));
 
         primeException();
         try {
@@ -957,7 +960,7 @@ public class JobServiceSteps extends TestBase {
             throws Exception {
 
         JobStepQuery tmpQuery = jobStepFactory.newQuery(getCurrentScopeId());
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("name", name));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobStepAttributes.NAME, name, AttributePredicate.Operator.EQUAL));
 
         primeException();
         try {
@@ -1197,7 +1200,7 @@ public class JobServiceSteps extends TestBase {
 
         Job job = (Job) stepData.get("Job");
         JobTargetQuery tmpQuery = jobTargetFactory.newQuery(getCurrentScopeId());
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("jobId", job.getId()));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobTargetAttributes.JOB_ID, job.getId(), AttributePredicate.Operator.EQUAL));
 
         primeException();
         try {
@@ -1369,7 +1372,7 @@ public class JobServiceSteps extends TestBase {
 
         Job job = (Job) stepData.get("Job");
         JobExecutionQuery tmpQuery = jobExecutionFactory.newQuery(getCurrentScopeId());
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("jobId", job.getId()));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobExecutionAttributes.JOB_ID, job.getId(), Operator.EQUAL));
 
         primeException();
         try {
@@ -1387,7 +1390,7 @@ public class JobServiceSteps extends TestBase {
 
         Job job = (Job) stepData.get("Job");
         JobExecutionQuery tmpQuery = jobExecutionFactory.newQuery(getCurrentScopeId());
-        tmpQuery.setPredicate(AttributePredicateImpl.attributeIsEqualTo("jobId", job.getId()));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobExecutionAttributes.JOB_ID, job.getId(), Operator.EQUAL));
 
         primeException();
         try {

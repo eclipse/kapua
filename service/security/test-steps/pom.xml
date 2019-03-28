@@ -47,24 +47,11 @@
         <!-- Internal dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-security-shiro</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-commons</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-qa-common</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-account-test-steps</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-user-test-steps</artifactId>
         </dependency>
 
         <!-- External dependencies -->
