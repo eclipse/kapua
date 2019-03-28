@@ -222,7 +222,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
 
     private void refreshJobStepDefinition(GwtJobStepDefinition gwtJobStepDefinition) {
         jobStepPropertiesFieldSet.setVisible(true);
-        jobStepDefinitionDescription.setText(gwtJobStepDefinition.getDescription());
+        jobStepDefinitionDescription.setText(gwtJobStepDefinition.getDescription() + ".");
         jobStepPropertiesPanel.removeAll();
 
         for (GwtJobStepProperty property : gwtJobStepDefinition.getStepProperties()) {

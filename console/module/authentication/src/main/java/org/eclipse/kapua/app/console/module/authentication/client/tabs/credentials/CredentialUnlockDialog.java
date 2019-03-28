@@ -33,7 +33,6 @@ public class CredentialUnlockDialog extends EntityDeleteDialog {
 
     @Override
     public String getHeaderMessage() {
-        // TODO will be credential name
         return MSGS.dialogUnlockHeader(selectedCredential.getCredentialType());
     }
 

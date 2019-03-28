@@ -36,9 +36,9 @@ public class CredentialDeleteDialog extends EntityDeleteDialog {
     @Override
     public String getHeaderMessage() {
         if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.API_KEY) {
-            return MSGS.dialogDeleteHeaderAPI(selectedCredential.getId());
+            return MSGS.dialogDeleteHeaderAPI();
         } else if (selectedCredential.getCredentialTypeEnum() == GwtCredentialType.PASSWORD) {
-            return MSGS.dialogDeleteHeaderPassword(selectedCredential.getId());
+            return MSGS.dialogDeleteHeaderPassword();
         } else {
             return "";
         }

@@ -124,7 +124,7 @@ public class DeviceTagAddDialog extends EntityAddEditDialog {
         tagsCombo.setTypeAhead(false);
         tagsCombo.setAllowBlank(false);
         tagsCombo.disable();
-        // tagsCombo.setEmptyText(MSGS.dialogDeviceTagAddFieldTagEmptyText());
+        tagsCombo.setEmptyText(MSGS.dialogDeviceTagAddFieldTagEmptyText());
         tagsCombo.setFieldLabel("* " + MSGS.dialogDeviceTagAddFieldTag());
         tagsCombo.setToolTip(MSGS.deviceFormTagTooltip());
         tagsCombo.setTriggerAction(TriggerAction.ALL);
