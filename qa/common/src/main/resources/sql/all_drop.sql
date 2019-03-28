@@ -64,6 +64,8 @@ DROP TABLE IF EXISTS job_job;
 
 DROP TABLE IF EXISTS job_job_execution;
 
+DROP TABLE IF EXISTS job_job_execution_target;
+
 DROP TABLE IF EXISTS job_job_step;
 
 DROP TABLE IF EXISTS job_job_step_definition;
