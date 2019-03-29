@@ -36,7 +36,9 @@ import java.util.Set;
 public interface JobStartOptions extends KapuaSerializable {
 
     /**
-     * @return
+     * Gets the sub{@link java.util.List} of {@link org.eclipse.kapua.service.job.targets.JobTarget} {@link KapuaId}s.
+     *
+     * @return The sub{@link java.util.List} of {@link org.eclipse.kapua.service.job.targets.JobTarget} {@link KapuaId}s.
      * @since 1.0.0
      */
     @XmlElementWrapper(name = "targetIdSublist")
@@ -45,34 +47,60 @@ public interface JobStartOptions extends KapuaSerializable {
     Set<KapuaId> getTargetIdSublist();
 
     /**
-     * @param targetSublist
+     * Sets the sub{@link java.util.List} of {@link org.eclipse.kapua.service.job.targets.JobTarget} {@link KapuaId}s.
+     *
+     * @param targetIdSublist The sub{@link java.util.List} of {@link org.eclipse.kapua.service.job.targets.JobTarget} {@link KapuaId}s.
      * @since 1.0.0
      */
-    void setTargetIdSublist(Set<KapuaId> targetSublist);
+    void setTargetIdSublist(Set<KapuaId> targetIdSublist);
 
     /**
-     * @param targetId
+     * Removes a {@link org.eclipse.kapua.service.job.targets.JobTarget} {@link KapuaId} from sub{@link java.util.List} of {@link org.eclipse.kapua.service.job.targets.JobTarget} {@link KapuaId}s.
+     *
+     * @param targetId The {@link org.eclipse.kapua.service.job.targets.JobTarget} {@link KapuaId} to remove.
      * @since 1.0.0
      */
     @XmlTransient
     void removeTargetIdToSublist(KapuaId targetId);
 
     /**
-     * @param targetId
+     * Adds a {@link org.eclipse.kapua.service.job.targets.JobTarget} {@link KapuaId} from sub{@link java.util.List} of {@link org.eclipse.kapua.service.job.targets.JobTarget} {@link KapuaId}s.
+     *
+     * @param targetId The {@link org.eclipse.kapua.service.job.targets.JobTarget} {@link KapuaId} to add.
      * @since 1.0.0
      */
     @XmlTransient
     void addTargetIdToSublist(KapuaId targetId);
 
     /**
-     * @return
+     * Gets the starting {@link org.eclipse.kapua.service.job.step.JobStep} index.
+     *
+     * @return The starting {@link org.eclipse.kapua.service.job.step.JobStep} index.
      * @since 1.0.0
      */
     Integer getFromStepIndex();
 
     /**
-     * @param fromStepIndex
+     * Sets the starting {@link org.eclipse.kapua.service.job.step.JobStep} index.
+     *
+     * @param fromStepIndex The starting {@link org.eclipse.kapua.service.job.step.JobStep} index.
      * @since 1.0.0
      */
     void setFromStepIndex(Integer fromStepIndex);
+
+    /**
+     * Gets whether or not enqueue the {@link org.eclipse.kapua.service.job.execution.JobExecution}.
+     *
+     * @return {@code true} if the {@link org.eclipse.kapua.service.job.execution.JobExecution} needs to be enqueued, {@code false} otherwise.
+     * @since 1.1.0
+     */
+    boolean getEnqueue();
+
+    /**
+     * Sets whether or not enqueue the {@link org.eclipse.kapua.service.job.execution.JobExecution}.
+     *
+     * @param enqueue {@code true} if the {@link org.eclipse.kapua.service.job.execution.JobExecution} needs to be enqueued, {@code false} otherwise.
+     * @since 1.1.0
+     */
+    void setEnqueue(boolean enqueue);
 }

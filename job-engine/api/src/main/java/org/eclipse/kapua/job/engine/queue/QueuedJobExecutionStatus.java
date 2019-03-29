@@ -9,13 +9,24 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.job.engine.jbatch.exception;
+package org.eclipse.kapua.job.engine.queue;
 
-import org.eclipse.kapua.model.id.KapuaId;
+/**
+ * The status of the {@link QueuedJobExecution}
+ *
+ * @since 1.1.0
+ */
+public enum QueuedJobExecutionStatus {
 
-public class JobStartingException extends JobEngineException {
+    /**
+     * The {@link QueuedJobExecution} has been enqueued and it is waiting to be resumed.
+     * <p>
+     * This is the initial status in which a newly created {@link QueuedJobExecution} should be in.
+     */
+    QUEUED,
 
-    public JobStartingException(Throwable t, KapuaId scopeId, KapuaId jobId) {
-        super(KapuaJobEngineErrorCodes.JOB_STARTING, t, scopeId, jobId);
-    }
+    /**
+     * The {@link QueuedJobExecution} has been resumed and fired.
+     */
+    PROCESSED
 }

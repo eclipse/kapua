@@ -26,6 +26,7 @@ public class JobStartOptionsImpl implements JobStartOptions {
 
     private Set<KapuaId> targetIdSublist;
     private Integer fromStepIndex;
+    private boolean enqueue;
 
     /**
      * Constructor.
@@ -33,6 +34,20 @@ public class JobStartOptionsImpl implements JobStartOptions {
      * @since 1.0.0
      */
     public JobStartOptionsImpl() {
+    }
+
+    /**
+     * Clone constructor.
+     *
+     * @param jobStartOptions The {@link JobStartOptions} to clone.
+     * @since 1.1.0
+     */
+    public JobStartOptionsImpl(JobStartOptions jobStartOptions) {
+        this();
+
+        setTargetIdSublist(jobStartOptions.getTargetIdSublist());
+        setFromStepIndex(jobStartOptions.getFromStepIndex());
+        setEnqueue(jobStartOptions.getEnqueue());
     }
 
     @Override
@@ -67,5 +82,19 @@ public class JobStartOptionsImpl implements JobStartOptions {
     @Override
     public void setFromStepIndex(Integer fromStepIndex) {
         this.fromStepIndex = fromStepIndex;
+    }
+
+    @Override
+    public boolean getEnqueue() {
+        return enqueue;
+    }
+
+    @Override
+    public void setEnqueue(boolean enqueue) {
+        this.enqueue = enqueue;
+    }
+
+    public static JobStartOptionsImpl parse(JobStartOptions jobStartOptions) {
+        return jobStartOptions != null ? (jobStartOptions instanceof JobStartOptionsImpl ? (JobStartOptionsImpl) jobStartOptions : new JobStartOptionsImpl(jobStartOptions)) : null;
     }
 }

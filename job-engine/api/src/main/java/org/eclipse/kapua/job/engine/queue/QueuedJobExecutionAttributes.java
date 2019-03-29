@@ -9,13 +9,20 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.job.engine.jbatch.exception;
+package org.eclipse.kapua.job.engine.queue;
 
-import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.KapuaUpdatableEntityAttributes;
 
-public class JobStartingException extends JobEngineException {
+/**
+ * {@link QueuedJobExecutionAttributes} {@link org.eclipse.kapua.model.KapuaEntityAttributes}.
+ *
+ * @since 1.1.0
+ */
+public class QueuedJobExecutionAttributes extends KapuaUpdatableEntityAttributes {
 
-    public JobStartingException(Throwable t, KapuaId scopeId, KapuaId jobId) {
-        super(KapuaJobEngineErrorCodes.JOB_STARTING, t, scopeId, jobId);
-    }
+    public static final String JOB_ID = "jobId";
+
+    public static final String JOB_EXECUTION_ID = "jobExecutionId";
+
+    public static final String WAIT_FOR_JOB_EXECUTION_ID = "waitForJobExecutionId";
 }

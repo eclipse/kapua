@@ -22,6 +22,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.job.engine.JobStartOptions;
+import org.eclipse.kapua.job.engine.commons.wrappers.JobContextPropertyNames;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.CannotBuildJobDefDriverException;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.CannotCleanJobDefFileDriverException;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.CannotCreateTmpDirDriverException;
@@ -32,11 +33,9 @@ import org.eclipse.kapua.job.engine.jbatch.driver.exception.ExecutionNotRunningD
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.JbatchDriverException;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.JobExecutionIsRunningDriverException;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.JobStartingDriverException;
-import org.eclipse.kapua.job.engine.jbatch.driver.utils.JbatchUtil;
 import org.eclipse.kapua.job.engine.jbatch.driver.utils.JobDefinitionBuildUtils;
 import org.eclipse.kapua.job.engine.jbatch.persistence.KapuaJDBCPersistenceManagerImpl;
-import org.eclipse.kapua.job.engine.jbatch.setting.KapuaJobEngineSetting;
-import org.eclipse.kapua.job.engine.jbatch.setting.KapuaJobEngineSettingKeys;
+import org.eclipse.kapua.job.engine.jbatch.setting.JobEngineSettingKeys;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.Job;
@@ -83,8 +82,6 @@ public class JbatchDriver {
     private static final Logger LOG = LoggerFactory.getLogger(JbatchDriver.class);
 
     private static final String JBATCH_EXECUTION_ID = "JBATCH_EXECUTION_ID";
-
-    private static final KapuaJobEngineSetting JOB_ENGINE_SETTING = KapuaJobEngineSetting.getInstance();
 
     private static final JobOperator JOB_OPERATOR = BatchRuntime.getJobOperator();
 
@@ -219,7 +216,7 @@ public class JbatchDriver {
      * Stops completely the jBatch job.
      * <p>
      * First invokes the {@link JobOperator#stop(long)} on the running execution, which stop the running execution.
-     * Secondly, according to the {@link KapuaJobEngineSettingKeys#JOB_ENGINE_STOP_WAIT_CHECK} value, it waits asynchronously the complete stop of the job
+     * Secondly, according to the {@link JobEngineSettingKeys#JOB_ENGINE_STOP_WAIT_CHECK} value, it waits asynchronously the complete stop of the job
      * to be able to invoke {@link JobOperator#abandon(long)} which terminate the jBatch Job.
      * <p>
      * A jBatch job cannot be resumed after this method is invoked on it.
@@ -258,9 +255,9 @@ public class JbatchDriver {
             runningExecutions.forEach((runningExecution -> {
                 JOB_OPERATOR.stop(runningExecution.getExecutionId());
 
-                if (JOB_ENGINE_SETTING.getBoolean(KapuaJobEngineSettingKeys.JOB_ENGINE_STOP_WAIT_CHECK)) {
-                    JbatchUtil.waitForStop(runningExecution, () -> JOB_OPERATOR.abandon(runningExecution.getExecutionId()));
-                }
+//                if (JOB_ENGINE_SETTING.getBoolean(JobEngineSettingKeys.JOB_ENGINE_STOP_WAIT_CHECK)) {
+//                    JbatchUtil.waitForStop(runningExecution, () -> JOB_OPERATOR.abandon(runningExecution.getExecutionId()));
+//                }
             }));
         } catch (NoSuchJobExecutionException e) {
             throw new ExecutionNotFoundDriverException(e, jobName);
@@ -268,6 +265,43 @@ public class JbatchDriver {
             throw new ExecutionNotRunningDriverException(e, jobName);
         }
     }
+
+    public static void resumeJob(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull KapuaId toResumeJobExecutionId) throws JbatchDriverException, KapuaException {
+
+        String jobName = getJbatchJobName(scopeId, jobId);
+
+        //
+        // Get list
+        List<JobExecution> stoppedJobExecutions = getJobExecutions(scopeId, jobId);
+        if (stoppedJobExecutions.isEmpty()) {
+            throw new ExecutionNotFoundDriverException(jobName);
+        }
+
+        //
+        // Filter execution to resume
+        org.eclipse.kapua.service.job.execution.JobExecution je = JOB_EXECUTION_SERVICE.find(scopeId, toResumeJobExecutionId);
+
+        long toResumeJbatchExecutionId = Long.parseLong((String) je.getEntityAttributes().get(JBATCH_EXECUTION_ID));
+
+        stoppedJobExecutions = stoppedJobExecutions.stream().filter(re -> re.getExecutionId() == toResumeJbatchExecutionId).collect(Collectors.toList());
+
+        //
+        // Do stop
+        try {
+            stoppedJobExecutions.forEach((stoppedExecution -> {
+                Properties properties = new Properties();
+
+                properties.setProperty(JobContextPropertyNames.RESUMED_KAPUA_EXECUTION_ID, toResumeJobExecutionId.toCompactId());
+
+                JOB_OPERATOR.restart(stoppedExecution.getExecutionId(), properties);
+            }));
+        } catch (NoSuchJobExecutionException e) {
+            throw new ExecutionNotFoundDriverException(e, jobName);
+        } catch (JobExecutionNotRunningException e) {
+            throw new ExecutionNotRunningDriverException(e, jobName);
+        }
+    }
+
 
     /**
      * Checks whether or not the {@link Job} identified by the parametersis in a running status.

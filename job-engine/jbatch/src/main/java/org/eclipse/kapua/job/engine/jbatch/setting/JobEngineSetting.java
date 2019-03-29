@@ -16,16 +16,16 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 /**
  * {@link org.eclipse.kapua.job.engine.jbatch.JobEngineServiceJbatch} setting implementation.
  */
-public class KapuaJobEngineSetting extends AbstractKapuaSetting<KapuaJobEngineSettingKeys> {
+public class JobEngineSetting extends AbstractKapuaSetting<JobEngineSettingKeys> {
 
     private static final String JOB_ENGINE_SETTING_RESOURCE = "kapua-job-engine-setting.properties";
 
-    private static final KapuaJobEngineSetting INSTANCE = new KapuaJobEngineSetting();
+    private static final JobEngineSetting INSTANCE = new JobEngineSetting();
 
     /**
-     * Construct a new job engine setting reading settings from {@link KapuaJobEngineSetting#JOB_ENGINE_SETTING_RESOURCE}
+     * Construct a new job engine setting reading settings from {@link JobEngineSetting#JOB_ENGINE_SETTING_RESOURCE}
      */
-    private KapuaJobEngineSetting() {
+    private JobEngineSetting() {
         super(JOB_ENGINE_SETTING_RESOURCE);
     }
 
@@ -34,7 +34,7 @@ public class KapuaJobEngineSetting extends AbstractKapuaSetting<KapuaJobEngineSe
      *
      * @return
      */
-    public static KapuaJobEngineSetting getInstance() {
+    public static JobEngineSetting getInstance() {
         return INSTANCE;
     }
 }

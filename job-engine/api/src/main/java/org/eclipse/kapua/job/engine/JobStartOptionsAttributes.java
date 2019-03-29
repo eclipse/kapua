@@ -9,13 +9,21 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.job.engine.jbatch.exception;
+package org.eclipse.kapua.job.engine;
 
-import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 
-public class JobStartingException extends JobEngineException {
+/**
+ * {@link JobStartOptions} {@link KapuaEntityAttributes}.
+ *
+ * @since 1.1.0
+ */
+public class JobStartOptionsAttributes extends KapuaEntityAttributes {
 
-    public JobStartingException(Throwable t, KapuaId scopeId, KapuaId jobId) {
-        super(KapuaJobEngineErrorCodes.JOB_STARTING, t, scopeId, jobId);
-    }
+    public static final String TARGET_ID_SUBLIST = "targetIdSublist";
+
+    public static final String FROM_STEP_INDEX = "fromStepIndex";
+
+    public static final String ENQUEUE = "enqueue";
+
 }
