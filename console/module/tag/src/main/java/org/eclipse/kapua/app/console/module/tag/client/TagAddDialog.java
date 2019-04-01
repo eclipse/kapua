@@ -88,7 +88,7 @@ public class TagAddDialog extends EntityAddEditDialog {
         GWT_TAG_SERVICE.create(gwtTagCreator, new AsyncCallback<GwtTag>() {
 
             @Override
-            public void onSuccess(GwtTag arg0) {
+            public void onSuccess(GwtTag gwtTag) {
                 exitStatus = true;
                 exitMessage = MSGS.dialogAddConfirmation();
                 hide();
@@ -96,16 +96,19 @@ public class TagAddDialog extends EntityAddEditDialog {
 
             @Override
             public void onFailure(Throwable cause) {
-                FailureHandler.handleFormException(formPanel, cause);
+                exitStatus = false;
                 status.hide();
                 formPanel.getButtonBar().enable();
                 unmask();
                 submitButton.enable();
                 cancelButton.enable();
-                if (cause instanceof GwtKapuaException) {
-                    GwtKapuaException gwtCause = (GwtKapuaException) cause;
-                    if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
-                        tagNameField.markInvalid(gwtCause.getMessage());
+                if (!isPermissionErrorMessage(cause)) {
+                    if (cause instanceof GwtKapuaException) {
+                        GwtKapuaException gwtCause = (GwtKapuaException) cause;
+                        if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
+                            tagNameField.markInvalid(gwtCause.getMessage());
+                        }
+                        FailureHandler.handleFormException(formPanel, cause);
                     }
                 }
             }

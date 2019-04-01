@@ -51,17 +51,20 @@ public class GroupEditDialog extends GroupAddDialog {
 
             @Override
             public void onFailure(Throwable cause) {
-                FailureHandler.handleFormException(formPanel, cause);
+                exitStatus = false;
                 status.hide();
                 formPanel.getButtonBar().enable();
                 unmask();
                 submitButton.enable();
                 cancelButton.enable();
-                if (cause instanceof GwtKapuaException) {
-                    GwtKapuaException gwtCause = (GwtKapuaException) cause;
-                    if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
-                        groupNameField.markInvalid(gwtCause.getMessage());
+                if (!isPermissionErrorMessage(cause)) {
+                    if (cause instanceof GwtKapuaException) {
+                        GwtKapuaException gwtCause = (GwtKapuaException) cause;
+                        if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
+                            groupNameField.markInvalid(gwtCause.getMessage());
+                        }
                     }
+                    FailureHandler.handleFormException(formPanel, cause);
                 }
             }
 

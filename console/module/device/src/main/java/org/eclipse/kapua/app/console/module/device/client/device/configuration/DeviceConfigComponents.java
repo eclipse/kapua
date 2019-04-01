@@ -47,6 +47,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
@@ -511,7 +512,10 @@ public class DeviceConfigComponents extends LayoutContainer {
 
                                                 @Override
                                                 public void onFailure(Throwable caught) {
-                                                    if(!selectedDevice.isOnline()) {
+                                                    if ((caught instanceof GwtKapuaException) && GwtKapuaErrorCode.SUBJECT_UNAUTHORIZED
+                                                            .equals(((GwtKapuaException) caught).getCode())) {
+                                                        ConsoleInfo.display(MSGS.popupError(), caught.getLocalizedMessage());
+                                                    } else if (!selectedDevice.isOnline()) {
                                                         ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceConnectionError());
                                                     }
                                                     dirty = true;

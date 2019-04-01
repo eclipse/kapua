@@ -48,7 +48,7 @@ public class JobEditDialog extends JobAddDialog {
         gwtJobService.update(xsrfToken, selectedJob, new AsyncCallback<GwtJob>() {
 
             @Override
-            public void onSuccess(GwtJob arg0) {
+            public void onSuccess(GwtJob gwtJob) {
                 exitStatus = true;
                 exitMessage = JOB_MSGS.dialogEditConfirmation();
                 hide();
@@ -57,16 +57,18 @@ public class JobEditDialog extends JobAddDialog {
             @Override
             public void onFailure(Throwable cause) {
                 exitStatus = false;
-                FailureHandler.handleFormException(formPanel, cause);
                 status.hide();
                 formPanel.getButtonBar().enable();
                 unmask();
                 submitButton.enable();
                 cancelButton.enable();
-                if (cause instanceof GwtKapuaException) {
-                    GwtKapuaException gwtCause = (GwtKapuaException) cause;
-                    if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
-                        name.markInvalid(gwtCause.getMessage());
+                if (!isPermissionErrorMessage(cause)) {
+                    if (cause instanceof GwtKapuaException) {
+                        GwtKapuaException gwtCause = (GwtKapuaException) cause;
+                        if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
+                            name.markInvalid(gwtCause.getMessage());
+                        }
+                        FailureHandler.handleFormException(formPanel, cause);
                     }
                 }
             }

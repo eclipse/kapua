@@ -90,7 +90,7 @@ public class GroupAddDialog extends EntityAddEditDialog {
         GWT_GROUP_SERVICE.create(gwtGroupCreator, new AsyncCallback<GwtGroup>() {
 
             @Override
-            public void onSuccess(GwtGroup arg0) {
+            public void onSuccess(GwtGroup gwtGroup) {
                 exitStatus = true;
                 exitMessage = MSGS.dialogAddConfirmation();
                 hide();
@@ -98,17 +98,20 @@ public class GroupAddDialog extends EntityAddEditDialog {
 
             @Override
             public void onFailure(Throwable cause) {
-                FailureHandler.handleFormException(formPanel, cause);
+                exitStatus = false;
                 status.hide();
                 formPanel.getButtonBar().enable();
                 unmask();
                 submitButton.enable();
                 cancelButton.enable();
-                if (cause instanceof GwtKapuaException) {
-                    GwtKapuaException gwtCause = (GwtKapuaException) cause;
-                    if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
-                        groupNameField.markInvalid(gwtCause.getMessage());
+                if (!isPermissionErrorMessage(cause)) {
+                    if (cause instanceof GwtKapuaException) {
+                        GwtKapuaException gwtCause = (GwtKapuaException) cause;
+                        if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
+                            groupNameField.markInvalid(gwtCause.getMessage());
+                        }
                     }
+                    FailureHandler.handleFormException(formPanel, cause);
                 }
             }
         });

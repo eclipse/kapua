@@ -20,6 +20,7 @@ import org.eclipse.kapua.app.console.module.authorization.client.role.dialog.Rol
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.permission.RoleSessionPermission;
 
+import com.extjs.gxt.ui.client.event.Events;
 import com.google.gwt.user.client.Element;
 
 public class RoleToolbarGrid extends EntityCRUDToolbar<GwtRole> {
@@ -30,7 +31,9 @@ public class RoleToolbarGrid extends EntityCRUDToolbar<GwtRole> {
 
     @Override
     protected KapuaDialog getAddDialog() {
-        return new RoleAddDialog(currentSession);
+        RoleAddDialog dialog = new RoleAddDialog(currentSession);
+        dialog.addListener(Events.Hide, getHideDialogListener());
+        return dialog;
     }
 
     @Override
@@ -39,6 +42,7 @@ public class RoleToolbarGrid extends EntityCRUDToolbar<GwtRole> {
         RoleEditDialog dialog = null;
         if (selectedRole != null) {
             dialog = new RoleEditDialog(currentSession, selectedRole);
+            dialog.addListener(Events.Hide, getHideDialogListener());
         }
         return dialog;
     }
@@ -55,6 +59,7 @@ public class RoleToolbarGrid extends EntityCRUDToolbar<GwtRole> {
         RoleDeleteDialog dialog = null;
         if (selectedRole != null) {
             dialog = new RoleDeleteDialog(selectedRole);
+            dialog.addListener(Events.Hide, getHideDialogListener());
         }
         return dialog;
     }

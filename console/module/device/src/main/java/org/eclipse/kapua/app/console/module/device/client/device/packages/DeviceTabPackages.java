@@ -30,12 +30,14 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.user.client.Element;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog.InfoDialogType;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.client.device.DeviceView;
 import org.eclipse.kapua.app.console.module.device.client.device.packages.button.PackageInstallButton;
@@ -49,6 +51,7 @@ import org.eclipse.kapua.app.console.module.device.shared.model.permission.Devic
 public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
     private static final ConsoleDeviceMessages MSGS = GWT.create(ConsoleDeviceMessages.class);
+    private static final ConsoleMessages CMSGS = GWT.create(ConsoleMessages.class);
 
     private DeviceView deviceTabs;
 
@@ -272,20 +275,8 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
                     return;
                 } else {
 
-                    InfoDialogType exitDialogType;
                     String exitMessage = packageInstallDialog.getExitMessage();
-
-                    if (exitStatus == true) { // Operation Success
-                        exitDialogType = InfoDialogType.INFO;
-                    } else { // Operaton Failed
-                        exitDialogType = InfoDialogType.ERROR;
-                    }
-
-                    //
-                    // Exit dialog
-                    InfoDialog exitDialog = new InfoDialog(exitDialogType, exitMessage);
-
-                    exitDialog.show();
+                    ConsoleInfo.display(exitStatus == true ? CMSGS.information() : CMSGS.error(), exitMessage);
 
                     uninstallButton.disable();
                     deviceTabs.setSelectedEntity(selectedEntity);
@@ -315,20 +306,8 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
                         return;
                     } else {
 
-                        InfoDialogType exitDialogType;
                         String exitMessage = packageUninstallDialog.getExitMessage();
-
-                        if (exitStatus == true) { // Operation Success
-                            exitDialogType = InfoDialogType.INFO;
-                        } else { // Operaton Failed
-                            exitDialogType = InfoDialogType.ERROR;
-                        }
-
-                        //
-                        // Exit dialog
-                        InfoDialog exitDialog = new InfoDialog(exitDialogType, exitMessage);
-
-                        exitDialog.show();
+                        ConsoleInfo.display(exitStatus == true ? CMSGS.information() : CMSGS.error(), exitMessage);
 
                         uninstallButton.disable();
                         deviceTabs.setSelectedEntity(selectedEntity);

@@ -16,6 +16,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolb
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpoint;
 import org.eclipse.kapua.app.console.module.endpoint.shared.model.permission.EndpointSessionPermission;
+import com.extjs.gxt.ui.client.event.Events;
 
 public class EndpointToolbarGrid extends EntityCRUDToolbar<GwtEndpoint> {
 
@@ -29,7 +30,9 @@ public class EndpointToolbarGrid extends EntityCRUDToolbar<GwtEndpoint> {
 
     @Override
     protected KapuaDialog getAddDialog() {
-        return new EndpointAddDialog(currentSession);
+        EndpointAddDialog dialog = new EndpointAddDialog(currentSession);
+        dialog.addListener(Events.Hide, getHideDialogListener());
+        return dialog;
     }
 
     @Override
@@ -38,6 +41,7 @@ public class EndpointToolbarGrid extends EntityCRUDToolbar<GwtEndpoint> {
         EndpointEditDialog dialog = null;
         if (selectedEndpoint != null) {
             dialog = new EndpointEditDialog(currentSession, selectedEndpoint);
+            dialog.addListener(Events.Hide, getHideDialogListener());
         }
         return dialog;
     }
@@ -48,6 +52,7 @@ public class EndpointToolbarGrid extends EntityCRUDToolbar<GwtEndpoint> {
         EndpointDeleteDialog dialog = null;
         if (selectedEndpoint != null) {
             dialog = new EndpointDeleteDialog(selectedEndpoint);
+            dialog.addListener(Events.Hide, getHideDialogListener());
         }
         return dialog;
     }

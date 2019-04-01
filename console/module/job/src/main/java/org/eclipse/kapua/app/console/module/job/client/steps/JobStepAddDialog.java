@@ -123,6 +123,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         };
 
         BaseListLoader<ListLoadResult<GwtJobStepDefinition>> jobStepDefinitionLoader = new BaseListLoader<ListLoadResult<GwtJobStepDefinition>>(jobStepDefinitionProxy);
+        jobStepDefinitionLoader.addLoadListener(new DialogLoadListener());
         ListStore<GwtJobStepDefinition> jobStepDefinitionStore = new ListStore<GwtJobStepDefinition>(jobStepDefinitionLoader);
         jobStepDefinitionCombo.setStore(jobStepDefinitionStore);
         jobStepDefinitionCombo.setDisplayField("jobStepDefinitionName");
@@ -185,7 +186,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         JOB_STEP_SERVICE.create(xsrfToken, gwtJobStepCreator, new AsyncCallback<GwtJobStep>() {
 
             @Override
-            public void onSuccess(GwtJobStep arg0) {
+            public void onSuccess(GwtJobStep gwtJobStep) {
                 exitStatus = true;
                 exitMessage = JOB_MSGS.dialogAddStepConfirmation();
                 hide();
@@ -194,17 +195,19 @@ public class JobStepAddDialog extends EntityAddEditDialog {
             @Override
             public void onFailure(Throwable cause) {
                 exitStatus = false;
-                FailureHandler.handleFormException(formPanel, cause);
                 status.hide();
                 formPanel.getButtonBar().enable();
                 unmask();
                 submitButton.enable();
                 cancelButton.enable();
-                if (cause instanceof GwtKapuaException) {
-                    GwtKapuaException gwtCause = (GwtKapuaException) cause;
-                    if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
-                        jobStepName.markInvalid(gwtCause.getMessage());
+                if (!isPermissionErrorMessage(cause)) {
+                    if (cause instanceof GwtKapuaException) {
+                        GwtKapuaException gwtCause = (GwtKapuaException) cause;
+                        if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
+                            jobStepName.markInvalid(gwtCause.getMessage());
+                        }
                     }
+                    FailureHandler.handleFormException(formPanel, cause);
                 }
             }
         });

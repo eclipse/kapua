@@ -11,11 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.client.ui.dialog;
 
+import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.util.KeyNav;
 import com.extjs.gxt.ui.client.widget.Status;
@@ -247,16 +249,33 @@ public abstract class ActionDialog extends KapuaDialog {
     /**
      * Method for checking the thrown exception for the SUBJECT_UNAUTHORIZED error code.
      * @param caught The exception thrown
-     * @return In case of the SUBJECT_UNAUTHORIZED error code the returned value is true 
-     * and the exitMessage is set. For every other case the returned value is false.
+     * @return In case of the SUBJECT_UNAUTHORIZED error code the returned value is true, 
+     * the dialog is closed and the exitMessage is set. For every other case the returned 
+     * value is false.
      */
     public boolean isPermissionErrorMessage(Throwable caught) {
         if ((caught instanceof GwtKapuaException)
                 && GwtKapuaErrorCode.SUBJECT_UNAUTHORIZED.equals(((GwtKapuaException) caught).getCode())) {
             exitMessage = caught.getLocalizedMessage();
+            hide();
             return true;
         } else {
             return false;
+        }
+    }
+
+    /**
+     * Dialog specific load listener class that overrides the default loaderLoadException method.  
+     * The exception is handled by FailureHandler class's handle() method and the dialog is closed.
+     */
+    public class DialogLoadListener extends LoadListener {
+        @Override
+        public void loaderLoadException(LoadEvent loadEvent) {
+            super.loaderLoadException(loadEvent);
+            if (loadEvent.exception != null) {
+                FailureHandler.handle(loadEvent.exception);
+                hide();
+            }
         }
     }
 }

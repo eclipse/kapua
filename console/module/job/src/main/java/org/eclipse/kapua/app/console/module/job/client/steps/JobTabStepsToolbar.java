@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.client.steps;
 
+import com.extjs.gxt.ui.client.event.Events;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -43,7 +44,9 @@ public class JobTabStepsToolbar extends EntityCRUDToolbar<GwtJobStep> {
 
     @Override
     protected KapuaDialog getAddDialog() {
-        return new JobStepAddDialog(currentSession, jobId);
+        JobStepAddDialog dialog = new JobStepAddDialog(currentSession, jobId);
+        dialog.addListener(Events.Hide, getHideDialogListener());
+        return dialog;
     }
 
     @Override
@@ -52,6 +55,7 @@ public class JobTabStepsToolbar extends EntityCRUDToolbar<GwtJobStep> {
         JobStepEditDialog dialog = null;
         if (selectedJobStep != null) {
             dialog = new JobStepEditDialog(currentSession, selectedJobStep);
+            dialog.addListener(Events.Hide, getHideDialogListener());
         }
         return dialog;
     }
@@ -62,6 +66,7 @@ public class JobTabStepsToolbar extends EntityCRUDToolbar<GwtJobStep> {
         JobStepDeleteDialog dialog = null;
         if (selectedJobStep != null) {
             dialog = new JobStepDeleteDialog(selectedJobStep);
+            dialog.addListener(Events.Hide, getHideDialogListener());
         }
         return dialog;
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -63,9 +63,10 @@ public class JobStepEditDialog extends JobStepAddDialog {
             @Override
             public void onFailure(Throwable caught) {
                 exitStatus = false;
-                exitMessage = JOB_MSGS.dialogEditError(caught.getLocalizedMessage());
-
-                hide();
+                if (!isPermissionErrorMessage(caught)) {
+                    exitMessage = JOB_MSGS.dialogEditError(caught.getLocalizedMessage());
+                    hide();
+                }
             }
 
             @Override
@@ -105,7 +106,7 @@ public class JobStepEditDialog extends JobStepAddDialog {
         JOB_STEP_SERVICE.update(xsrfToken, selectedJobStep, new AsyncCallback<GwtJobStep>() {
 
             @Override
-            public void onSuccess(GwtJobStep arg0) {
+            public void onSuccess(GwtJobStep gwtJobStep) {
                 exitStatus = true;
                 exitMessage = JOB_MSGS.dialogEditStepConfirmation();
                 hide();
@@ -114,17 +115,19 @@ public class JobStepEditDialog extends JobStepAddDialog {
             @Override
             public void onFailure(Throwable cause) {
                 exitStatus = false;
-                FailureHandler.handleFormException(formPanel, cause);
                 status.hide();
                 formPanel.getButtonBar().enable();
                 unmask();
                 submitButton.enable();
                 cancelButton.enable();
-                if (cause instanceof GwtKapuaException) {
-                    GwtKapuaException gwtCause = (GwtKapuaException) cause;
-                    if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
-                        jobStepName.markInvalid(gwtCause.getMessage());
+                if (!isPermissionErrorMessage(cause)) {
+                    if (cause instanceof GwtKapuaException) {
+                        GwtKapuaException gwtCause = (GwtKapuaException) cause;
+                        if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
+                            jobStepName.markInvalid(gwtCause.getMessage());
+                        }
                     }
+                    FailureHandler.handleFormException(formPanel, cause);
                 }
             }
         });

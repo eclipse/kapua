@@ -265,9 +265,10 @@ public class CredentialAddDialog extends EntityAddEditDialog {
                 status.hide();
 
                 exitStatus = false;
-                exitMessage = cause.getLocalizedMessage();
-                credentialType.markInvalid(exitMessage);
-                ConsoleInfo.display(CMSGS.error(), exitMessage);
+                if (!isPermissionErrorMessage(cause)) {
+                    exitMessage = cause.getLocalizedMessage();
+                    credentialType.markInvalid(exitMessage);
+                }
             }
         });
     }

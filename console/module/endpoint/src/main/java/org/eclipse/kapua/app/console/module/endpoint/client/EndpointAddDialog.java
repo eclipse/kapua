@@ -131,7 +131,7 @@ public class EndpointAddDialog extends EntityAddEditDialog {
         GWT_ENDPOINT_SERVICE.create(gwtEndpointCreator, new AsyncCallback<GwtEndpoint>() {
 
             @Override
-            public void onSuccess(GwtEndpoint arg0) {
+            public void onSuccess(GwtEndpoint gwtEndpoint) {
                 exitStatus = true;
                 exitMessage = MSGS.dialogAddConfirmation();
                 hide();
@@ -139,15 +139,18 @@ public class EndpointAddDialog extends EntityAddEditDialog {
 
             @Override
             public void onFailure(Throwable cause) {
-                FailureHandler.handleFormException(formPanel, cause);
+                exitStatus = false;
                 status.hide();
                 formPanel.getButtonBar().enable();
                 unmask();
                 submitButton.enable();
                 cancelButton.enable();
-                endpointDnsField.markInvalid(VAL_MSGS.DUPLICATE_NAME());
-                endpointSchemaField.markInvalid(VAL_MSGS.DUPLICATE_NAME());
-                endpointPortField.markInvalid(VAL_MSGS.DUPLICATE_NAME());
+                if (!isPermissionErrorMessage(cause)) {
+                    FailureHandler.handleFormException(formPanel, cause);
+                    endpointDnsField.markInvalid(VAL_MSGS.DUPLICATE_NAME());
+                    endpointSchemaField.markInvalid(VAL_MSGS.DUPLICATE_NAME());
+                    endpointPortField.markInvalid(VAL_MSGS.DUPLICATE_NAME());
+                }
             }
         });
 

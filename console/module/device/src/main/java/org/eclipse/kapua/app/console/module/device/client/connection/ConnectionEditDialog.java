@@ -139,7 +139,11 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
 
                 @Override
                 public void onFailure(Throwable caught) {
-                    FailureHandler.handle(caught);
+                    exitStatus = false;
+                    if (!isPermissionErrorMessage(caught)) {
+                        FailureHandler.handle(caught);
+                        hide();
+                    }
                 }
 
                 @Override
@@ -179,23 +183,25 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
         GWT_CONNECTION_OPTION_SERVICE.update(xsrfToken, selectedDeviceConnectionOption, new AsyncCallback<GwtDeviceConnectionOption>() {
 
             @Override
-            public void onFailure(Throwable arg0) {
+            public void onFailure(Throwable cause) {
                 exitStatus = false;
                 status.hide();
                 unmask();
-                FailureHandler.handle(arg0);
                 submitButton.enable();
                 cancelButton.enable();
-                if (arg0 instanceof GwtKapuaException) {
-                    GwtKapuaException gwtCause = (GwtKapuaException) arg0;
-                    if (gwtCause.getCode().equals(GwtKapuaErrorCode.INTERNAL_ERROR)) {
-                        reservedUserCombo.markInvalid(arg0.getMessage());
+                if (!isPermissionErrorMessage(cause)) {
+                    if (cause instanceof GwtKapuaException) {
+                        GwtKapuaException gwtCause = (GwtKapuaException) cause;
+                        if (gwtCause.getCode().equals(GwtKapuaErrorCode.INTERNAL_ERROR)) {
+                            reservedUserCombo.markInvalid(cause.getMessage());
+                        }
+                    FailureHandler.handle(cause);
                     }
                 }
             }
 
             @Override
-            public void onSuccess(GwtDeviceConnectionOption arg0) {
+            public void onSuccess(GwtDeviceConnectionOption gwtDeviceConnectionOption) {
                 exitStatus = true;
                 exitMessage = MSGS.dialogEditConfirmation();
                 hide();
@@ -219,7 +225,11 @@ public class ConnectionEditDialog extends EntityAddEditDialog {
 
                 @Override
                 public void onFailure(Throwable caught) {
-                    FailureHandler.handle(caught);
+                    exitStatus = false;
+                    if (!isPermissionErrorMessage(caught)) {
+                        FailureHandler.handle(caught);
+                        hide();
+                    }
                 }
 
                 @Override

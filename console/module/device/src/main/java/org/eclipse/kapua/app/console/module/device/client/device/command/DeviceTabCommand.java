@@ -44,9 +44,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog;
-import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog.InfoDialogType;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
@@ -217,9 +216,7 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
                     String errorMessage = htmlResult.substring(errorMessageStartIndex, errorMessageEndIndex);
 
                     if (!errorMessage.isEmpty()) {
-                        errorMessage = DEVICE_MSGS.deviceCommandCommunicationError();
-                    InfoDialog exitDialog = new InfoDialog(InfoDialogType.ERROR, MSGS.error() + MSGS.commandExecutionFailure() + ":<br/>" + errorMessage);
-                    exitDialog.show();
+                        ConsoleInfo.display(MSGS.error(), DEVICE_MSGS.deviceCommandCommunicationError());
                     }
                     commandInput.unmask();
                 } else {
