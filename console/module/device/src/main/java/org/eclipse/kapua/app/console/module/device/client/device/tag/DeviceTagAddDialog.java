@@ -95,7 +95,7 @@ public class DeviceTagAddDialog extends EntityAddEditDialog {
 
     @Override
     public String getHeaderMessage() {
-        return MSGS.dialogDeviceTagAddHeader(selectedDevice.getClientId());
+        return MSGS.dialogDeviceTagAddHeader();
     }
 
     @Override
