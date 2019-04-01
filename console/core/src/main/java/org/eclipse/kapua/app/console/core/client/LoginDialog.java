@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -162,14 +162,6 @@ public class LoginDialog extends Dialog {
         getButtonBar().add(new FillToolItem());
 
         reset = new Button(CORE_MSGS.loginReset());
-        reset.addListener(Events.OnFocus, new Listener<BaseEvent>() {
-
-            @Override
-            public void handleEvent(BaseEvent be) {
-                username.clearInvalid();
-                password.clearInvalid();
-            }
-        });
 
         reset.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
@@ -185,7 +177,6 @@ public class LoginDialog extends Dialog {
         });
 
         login = new Button(CORE_MSGS.loginLogin());
-        login.disable();
         login.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
@@ -229,12 +220,20 @@ public class LoginDialog extends Dialog {
      * Login submit
      */
     protected void onSubmit() {
-        status.show();
-        getButtonBar().disable();
-        username.disable();
-        password.disable();
-
-        performLogin();
+        if (username.getValue() == null && password.getValue() == null) {
+            ConsoleInfo.display(MSGS.dialogError(), MSGS.usernameAndPasswordRequired());
+            password.markInvalid(password.getErrorMessage());
+        } else if (username.getValue() == null) {
+            ConsoleInfo.display(MSGS.dialogError(), MSGS.usernameFieldRequired());
+        } else if (password.getValue() == null) {
+            ConsoleInfo.display(MSGS.dialogError(), MSGS.passwordFieldRequired());
+        } else {
+            status.show();
+            getButtonBar().disable();
+            username.disable();
+            password.disable();
+            performLogin();
+        }
     }
 
     // Login
@@ -287,9 +286,7 @@ public class LoginDialog extends Dialog {
     }
 
     protected void validate() {
-        login.setEnabled(hasValue(username) &&
-                username.isValid() &&
-                hasValue(password));
+        login.setEnabled(true);
     }
 
     public void reset() {
@@ -301,7 +298,6 @@ public class LoginDialog extends Dialog {
         username.focus();
         status.hide();
         getButtonBar().enable();
-        login.disable();
         password.clearInvalid();
     }
 
