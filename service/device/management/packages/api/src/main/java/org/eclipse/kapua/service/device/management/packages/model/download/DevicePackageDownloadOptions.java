@@ -13,5 +13,10 @@ package org.eclipse.kapua.service.device.management.packages.model.download;
 
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageOptions;
 
+/**
+ * {@link DevicePackageDownloadOptions} definition.
+ *
+ * @since 1.1.0
+ */
 public interface DevicePackageDownloadOptions extends DevicePackageOptions {
 }

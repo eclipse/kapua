@@ -12,25 +12,34 @@
 package org.eclipse.kapua.service.device.management.packages.model.internal;
 
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.device.management.packages.model.DevicePackageOptions;
 
-public abstract class DevicePackageOptionsImpl {
+/**
+ * {@link DevicePackageOptions} {@code abstract} implementation.
+ *
+ * @since 1.1.0
+ */
+public abstract class DevicePackageOptionsImpl implements DevicePackageOptions {
 
-    Long timeout;
-
+    private Long timeout;
     private KapuaId forcedOperationId;
 
+    @Override
     public Long getTimeout() {
         return timeout;
     }
 
+    @Override
     public void setTimeout(Long timeout) {
         this.timeout = timeout;
     }
 
+    @Override
     public KapuaId getForcedOperationId() {
         return forcedOperationId;
     }
 
+    @Override
     public void setForcedOperationId(KapuaId forcedOperationId) {
         this.forcedOperationId = forcedOperationId;
     }

@@ -13,5 +13,10 @@ package org.eclipse.kapua.service.device.management.packages.model.install;
 
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageOptions;
 
+/**
+ * {@link DevicePackageInstallOptions} definition.
+ *
+ * @since 1.1.0
+ */
 public interface DevicePackageInstallOptions extends DevicePackageOptions {
 }

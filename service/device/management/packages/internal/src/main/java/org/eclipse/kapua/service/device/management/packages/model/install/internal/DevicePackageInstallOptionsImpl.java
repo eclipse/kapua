@@ -14,5 +14,10 @@ package org.eclipse.kapua.service.device.management.packages.model.install.inter
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallOptions;
 import org.eclipse.kapua.service.device.management.packages.model.internal.DevicePackageOptionsImpl;
 
+/**
+ * {@link DevicePackageInstallOptions} implementation
+ *
+ * @since 1.1.0
+ */
 public class DevicePackageInstallOptionsImpl extends DevicePackageOptionsImpl implements DevicePackageInstallOptions {
 }

@@ -13,5 +13,10 @@ package org.eclipse.kapua.service.device.management.packages.model.uninstall;
 
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageOptions;
 
+/**
+ * {@link DevicePackageUninstallOptions} definition.
+ *
+ * @since 1.1.0
+ */
 public interface DevicePackageUninstallOptions extends DevicePackageOptions {
 }

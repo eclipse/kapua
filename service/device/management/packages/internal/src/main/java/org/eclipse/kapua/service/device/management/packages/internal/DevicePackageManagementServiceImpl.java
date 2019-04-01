@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -63,7 +63,7 @@ import org.eclipse.kapua.service.device.management.packages.model.uninstall.inte
 import java.util.Date;
 
 /**
- * Device package service implementation.
+ * {@link DevicePackageManagementService} implementation.
  *
  * @since 1.0.0
  */
@@ -572,7 +572,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         packageRequestChannel.setAppName(PackageAppProperties.APP_NAME);
         packageRequestChannel.setVersion(PackageAppProperties.APP_VERSION);
         packageRequestChannel.setMethod(KapuaMethod.READ);
-        packageRequestChannel.setPackageResource(PackageResource.INSTALL);
+        packageRequestChannel.setPackageResource(PackageResource.UNINSTALL);
 
         PackageRequestPayload packageRequestPayload = new PackageRequestPayload();
 
