@@ -285,6 +285,7 @@ public class DeviceAssetsPanel extends LayoutContainer {
         field.setValue((String) channel.getValue());
         field.setAllowBlank(true);
         field.setFieldLabel(channel.getName() + " (" + channel.getType() + " - " + channel.getMode() + ")");
+        field.setLabelStyle("word-break:break-all");
         field.addPlugin(dirtyPlugin);
 
         if (channel.getValue() != null) {
@@ -299,6 +300,7 @@ public class DeviceAssetsPanel extends LayoutContainer {
         field.setName(channel.getName());
         field.setAllowBlank(true);
         field.setFieldLabel(channel.getName() + " (" + channel.getType() + " - " + channel.getMode() + ")");
+        field.setLabelStyle("word-break:break-all");
         field.addPlugin(dirtyPlugin);
         field.setMaxValue(MAX_SAFE_INTEGER);
 
@@ -353,6 +355,7 @@ public class DeviceAssetsPanel extends LayoutContainer {
         radioGroup.setName(channel.getName());
         radioGroup.setItemId(channel.getName());
         radioGroup.setFieldLabel(channel.getName() + " (" + channel.getType() + " - " + channel.getMode() + ")");
+        radioGroup.setLabelStyle("word-break:break-all");
         radioGroup.add(radioTrue);
         radioGroup.add(radioFalse);
 
