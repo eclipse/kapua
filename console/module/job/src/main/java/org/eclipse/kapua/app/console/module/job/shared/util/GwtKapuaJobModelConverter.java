@@ -214,6 +214,8 @@ public class GwtKapuaJobModelConverter {
                 sortField = JobStepAttributes.NAME;
             } else if (sortField.equals("jobStepDefinitionId")) {
                 sortField = JobStepAttributes.JOB_STEP_DEFINITION_ID;
+            } else if (sortField.equals("jobStepDefinitionName")) {
+                sortField = JobStepAttributes.JOB_STEP_DEFINITION_ID;
             }
             SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
             return new FieldSortCriteria(sortField, sortOrder);
