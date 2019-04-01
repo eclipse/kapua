@@ -37,7 +37,7 @@ public class EndpointTabDescription extends EntityDescriptionTabItem<GwtEndpoint
 
             @Override
             protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback) {
-                GWT_ENDPOINT_SERVICE.getEndpointDescription(selectedEntity.getScopeId(), selectedEntity.getId(), callback);
+                GWT_ENDPOINT_SERVICE.getEndpointDescription(selectedEntity.getScopeId(), currentSession.getAccountId(), selectedEntity.getId(), callback);
 
             }
         };

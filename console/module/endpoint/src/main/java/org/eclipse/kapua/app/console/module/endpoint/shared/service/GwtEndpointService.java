@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -33,11 +33,11 @@ public interface GwtEndpointService extends RemoteService {
 
     public GwtEndpoint find(String scopeShortId, String roleShortId) throws GwtKapuaException;
 
-    public PagingLoadResult<GwtEndpoint> query(PagingLoadConfig loadConfig, GwtEndpointQuery gwtEndpointQuery) throws GwtKapuaException;
+    public PagingLoadResult<GwtEndpoint> query(PagingLoadConfig loadConfig, String gwtAccountId, GwtEndpointQuery gwtEndpointQuery) throws GwtKapuaException;
 
     public void delete(String scopeId, String endpointId) throws GwtKapuaException;
 
-    public ListLoadResult<GwtGroupedNVPair> getEndpointDescription(String scopeShortId, String endpointShortId) throws GwtKapuaException;
+    public ListLoadResult<GwtGroupedNVPair> getEndpointDescription(String scopeShortId, String accountShortId, String endpointShortId) throws GwtKapuaException;
 
     public List<GwtEndpoint> findAll(String scopeId) throws GwtKapuaException;
 

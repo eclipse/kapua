@@ -203,27 +203,28 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
     }
 
     @Override
-    public ListLoadResult<GwtGroupedNVPair> getAccountInfo(String scopeIdString, String accountIdString)
+    public ListLoadResult<GwtGroupedNVPair> getAccountInfo(String scopeIdString, String accountIdString, String selectedAccountIdString)
             throws GwtKapuaException {
         final KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
-        KapuaId accountId = KapuaEid.parseCompactId(accountIdString);
+        final KapuaId accountId = KapuaEid.parseCompactId(accountIdString);
+        final KapuaId selectedAccountId = KapuaEid.parseCompactId(selectedAccountIdString);
 
         List<GwtGroupedNVPair> accountPropertiesPairs = new ArrayList<GwtGroupedNVPair>();
         try {
-            final Account account = ACCOUNT_SERVICE.find(scopeId, accountId);
+            final Account account = ACCOUNT_SERVICE.find(scopeId, selectedAccountId);
 
             User userCreatedBy = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
                 @Override
                 public User call() throws Exception {
-                    return USER_SERVICE.find(scopeId, account.getCreatedBy());
+                    return USER_SERVICE.find(accountId, account.getCreatedBy());
                 }
             });
             User userModifiedBy = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
                 @Override
                 public User call() throws Exception {
-                    return USER_SERVICE.find(scopeId, account.getModifiedBy());
+                    return USER_SERVICE.find(accountId, account.getModifiedBy());
                 }
             });
 

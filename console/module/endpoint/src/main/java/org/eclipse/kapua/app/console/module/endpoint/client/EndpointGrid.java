@@ -77,7 +77,7 @@ public class EndpointGrid extends EntityGrid<GwtEndpoint> {
             @Override
             protected void load(Object loadConfig,
                     AsyncCallback<PagingLoadResult<GwtEndpoint>> callback) {
-                GWT_ENDPOINT_SERVICE.query((PagingLoadConfig) loadConfig, query, callback);
+                GWT_ENDPOINT_SERVICE.query((PagingLoadConfig) loadConfig, currentSession.getAccountId(), query, callback);
 
             }
         };

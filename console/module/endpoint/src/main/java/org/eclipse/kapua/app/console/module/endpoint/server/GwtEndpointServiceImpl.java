@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -127,10 +127,11 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
     }
 
     @Override
-    public PagingLoadResult<GwtEndpoint> query(PagingLoadConfig loadConfig, final GwtEndpointQuery gwtEndpointQuery) throws GwtKapuaException {
+    public PagingLoadResult<GwtEndpoint> query(PagingLoadConfig loadConfig, String gwtAccountId, final GwtEndpointQuery gwtEndpointQuery) throws GwtKapuaException {
         int totalLength = 0;
         List<GwtEndpoint> gwtEndpointList = new ArrayList<GwtEndpoint>();
         try {
+            final KapuaId accountId = KapuaEid.parseCompactId(gwtAccountId);
             EndpointInfoQuery endpointQuery = GwtKapuaEndpointModelConverter.convertEndpointQuery(loadConfig, gwtEndpointQuery);
 
             EndpointInfoListResult endpoints = ENDPOINT_INFO_SERVICE.query(endpointQuery);
@@ -141,7 +142,7 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
 
                     @Override
                     public UserListResult call() throws Exception {
-                        return USER_SERVICE.query(USER_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtEndpointQuery.getScopeId())));
+                        return USER_SERVICE.query(USER_FACTORY.newQuery(accountId));
                     }
                 });
 
@@ -179,10 +180,11 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
     }
 
     @Override
-    public ListLoadResult<GwtGroupedNVPair> getEndpointDescription(String scopeShortId, String endpointShortId) throws GwtKapuaException {
+    public ListLoadResult<GwtGroupedNVPair> getEndpointDescription(String scopeShortId, String accountShortId, String endpointShortId) throws GwtKapuaException {
         List<GwtGroupedNVPair> gwtEndpointDescription = new ArrayList<GwtGroupedNVPair>();
         try {
             final KapuaId scopeId = KapuaEid.parseCompactId(scopeShortId);
+            final KapuaId accountId = KapuaEid.parseCompactId(accountShortId);
             KapuaId endpointId = KapuaEid.parseCompactId(endpointShortId);
 
             final EndpointInfo endpointInfo = ENDPOINT_INFO_SERVICE.find(scopeId, endpointId);
@@ -192,14 +194,14 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
 
                     @Override
                     public User call() throws Exception {
-                        return USER_SERVICE.find(scopeId, endpointInfo.getCreatedBy());
+                        return USER_SERVICE.find(accountId, endpointInfo.getCreatedBy());
                     }
                 });
                 User modifiedUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
                     @Override
                     public User call() throws Exception {
-                        return USER_SERVICE.find(scopeId, endpointInfo.getModifiedBy());
+                        return USER_SERVICE.find(accountId, endpointInfo.getModifiedBy());
                     }
                 });
 
