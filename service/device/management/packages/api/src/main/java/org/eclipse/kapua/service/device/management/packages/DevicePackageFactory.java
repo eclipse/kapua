@@ -17,42 +17,49 @@ import org.eclipse.kapua.service.device.management.packages.model.DevicePackageB
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageBundleInfos;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOperation;
+import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOptions;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
+import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallOptions;
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
+import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOptions;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 
 /**
- * Device package service definition.
+ * {@link DevicePackageFactory} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface DevicePackageFactory extends KapuaObjectFactory {
 
     /**
      * Creates a new {@link DevicePackages}
      *
-     * @return
+     * @return the newly created {@link DevicePackages}
+     * @since 1.0.0
      */
     DevicePackages newDeviceDeploymentPackages();
 
     /**
      * Creates a new {@link DevicePackage}
      *
-     * @return
+     * @return The newly created {@link DevicePackage}
+     * @since 1.0.0
      */
     DevicePackage newDeviceDeploymentPackage();
 
     /**
-     * Creates a new device package bundle information
+     * Creates a new {@link DevicePackageBundleInfo}
      *
-     * @return
+     * @return the newly created {@link DevicePackageBundleInfo}
+     * @since 1.0.0
      */
     DevicePackageBundleInfo newDevicePackageBundleInfo();
 
     /**
-     * Creates a new device package bundle informations
+     * Creates a new {@link DevicePackageBundleInfos}
      *
-     * @return
+     * @return the newly created {@link DevicePackageBundleInfos}
+     * @since 1.0.0
      */
     DevicePackageBundleInfos newDevicePackageBundleInfos();
 
@@ -61,16 +68,26 @@ public interface DevicePackageFactory extends KapuaObjectFactory {
     //
 
     /**
-     * Creates a new device package download request
+     * Creates a new {@link DevicePackageDownloadRequest}
      *
-     * @return
+     * @return The newly created {@link DevicePackageDownloadRequest}
+     * @since 1.0.0
      */
     DevicePackageDownloadRequest newPackageDownloadRequest();
 
     /**
-     * Creates a new device package download operation
+     * Creates a new {@link DevicePackageDownloadOptions}
      *
-     * @return
+     * @return the newly created {@link DevicePackageDownloadOptions}
+     * @since 1.1.0
+     */
+    DevicePackageDownloadOptions newDevicePackageDownloadOptions();
+
+    /**
+     * Creates a new {@link DevicePackageDownloadOperation}
+     *
+     * @return the newly created {@link DevicePackageDownloadOperation}
+     * @since 1.0.0
      */
     DevicePackageDownloadOperation newPackageDownloadOperation();
 
@@ -81,18 +98,37 @@ public interface DevicePackageFactory extends KapuaObjectFactory {
     /**
      * Creates a new {@link DevicePackageInstallRequest}
      *
-     * @return
+     * @return the newly created {@link DevicePackageInstallRequest}
+     * @since 1.0.0
      */
     DevicePackageInstallRequest newPackageInstallRequest();
+
+    /**
+     * Creates a new {@link DevicePackageInstallOptions}
+     *
+     * @return the newly created {@link DevicePackageInstallOptions}
+     * @since 1.1.0
+     */
+    DevicePackageInstallOptions newDevicePackageInstallOptions();
+
 
     //
     // Uninstall operation
     //
 
     /**
-     * Creates a new device package uninstall request
+     * Creates a new {@link DevicePackageUninstallRequest}
      *
-     * @return
+     * @return the newly created {@link DevicePackageUninstallRequest}
+     * @since 1.0.0
      */
     DevicePackageUninstallRequest newPackageUninstallRequest();
+
+    /**
+     * Creates a new {@link DevicePackageUninstallOptions}
+     *
+     * @return the newly created {@link DevicePackageUninstallOptions}
+     * @since 1.1.0
+     */
+    DevicePackageUninstallOptions newDevicePackageUninstallOptions();
 }
