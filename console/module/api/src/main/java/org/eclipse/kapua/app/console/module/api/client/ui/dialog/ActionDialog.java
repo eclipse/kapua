@@ -32,6 +32,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
@@ -191,6 +192,14 @@ public abstract class ActionDialog extends KapuaDialog {
 
             @Override
             public void onFailure(Throwable ex) {
+                 Timer timer = new Timer() {
+
+                     @Override
+                     public void run() {
+                         Window.Location.reload();
+                     }
+                 };
+                 timer.schedule(5000);
                 FailureHandler.handle(ex);
             }
 
