@@ -45,7 +45,7 @@ public class DBHelper {
     /**
      * Path to root of full DB scripts.
      */
-    private static final String FULL_SCHEMA_PATH = "database";
+    private static final String FULL_SCHEMA_PATH = "sql";
 
     /**
      * Filter for deleting all new DB data except base data.
@@ -146,7 +146,7 @@ public class DBHelper {
 
         try {
             if (isSetup) {
-                KapuaConfigurableServiceSchemaUtilsWithResources.scriptSession(FULL_SCHEMA_PATH, DELETE_SCRIPT);
+                deleteAll();
             }
         } finally {
             // close the connection
