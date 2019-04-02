@@ -13,19 +13,15 @@
 package org.eclipse.kapua.qa.common;
 
 import com.google.common.base.MoreObjects;
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
-import org.eclipse.kapua.commons.jpa.CommonsEntityManagerFactory;
-import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtilsWithResources;
-import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
@@ -50,7 +46,6 @@ public class DBHelper {
      * Path to root of full DB scripts.
      */
     private static final String FULL_SCHEMA_PATH = "database";
-    private static final String DROP_ALL_TABLES = "sql/all_drop.sql";
 
     /**
      * Filter for deleting all new DB data except base data.
@@ -167,13 +162,16 @@ public class DBHelper {
         KapuaConfigurableServiceSchemaUtilsWithResources.scriptSession(FULL_SCHEMA_PATH, DELETE_SCRIPT);
     }
 
-    public void dropAll() throws KapuaException {
-        this.resourceSession(CommonsEntityManagerFactory.getInstance(),DROP_ALL_TABLES);
-        this.close();
-    }
+    public void dropAll() throws SQLException {
 
-    public void resourceSession(AbstractEntityManagerFactory entityManagerFactory, String scriptName) throws KapuaException {
-        EntityManagerSession entityManagerSession = new EntityManagerSession(entityManagerFactory);
-        entityManagerSession.onTransactedAction(entityManager -> new SimpleSqlScriptExecutor().scanResources(scriptName).executeUpdate(entityManager));
+        String[] types = {"TABLE"};
+        ResultSet sqlResults = connection.getMetaData().getTables(null, null, "%" , types);
+
+        while(sqlResults.next()) {
+            String sqlStatement = String.format("DROP TABLE %s", sqlResults.getString("TABLE_NAME").toUpperCase());
+            connection.prepareStatement(sqlStatement).execute();
+        }
+
+        this.close();
     }
 }
