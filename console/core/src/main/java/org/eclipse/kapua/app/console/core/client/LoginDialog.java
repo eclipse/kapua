@@ -227,6 +227,7 @@ public class LoginDialog extends Dialog {
             ConsoleInfo.display(MSGS.dialogError(), MSGS.usernameFieldRequired());
         } else if (password.getValue() == null) {
             ConsoleInfo.display(MSGS.dialogError(), MSGS.passwordFieldRequired());
+            password.markInvalid(password.getErrorMessage());
         } else {
             status.show();
             getButtonBar().disable();
