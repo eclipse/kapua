@@ -22,7 +22,6 @@ import com.extjs.gxt.ui.client.event.FormEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Dialog;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
@@ -44,6 +43,7 @@ import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldV
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
 
 public class FileUploadDialog extends Dialog {
@@ -100,7 +100,7 @@ public class FileUploadDialog extends Dialog {
             public void handleEvent(FormEvent be) {
                 String htmlResponse = be.getResultHtml();
                 if (htmlResponse == null || htmlResponse.isEmpty()) {
-                    MessageBox.info(MSGS.information(), MSGS.fileUploadSuccess(), null);
+                    ConsoleInfo.display(MSGS.information(), MSGS.fileUploadSuccess());
                 } else {
                     String errMsg = htmlResponse;
                     int startIdx = htmlResponse.indexOf("<pre>");
@@ -111,7 +111,7 @@ public class FileUploadDialog extends Dialog {
                             errMsg = MSGS.fileUploadInvalidShapshotFailure();
                         }
                     } 
-                    MessageBox.alert(MSGS.error(), MSGS.fileUploadFailure() + ": " + errMsg, null);
+                    ConsoleInfo.display(MSGS.error(), MSGS.fileUploadFailure() + ": " + errMsg);
                 }
                 hide();
             }

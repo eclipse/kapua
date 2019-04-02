@@ -53,15 +53,18 @@ public class EndpointEditDialog extends EndpointAddDialog {
             @Override
             public void onFailure(Throwable cause) {
                 exitStatus = false;
-                FailureHandler.handleFormException(formPanel, cause);
                 status.hide();
                 formPanel.getButtonBar().enable();
                 unmask();
                 submitButton.enable();
                 cancelButton.enable();
-                endpointDnsField.markInvalid(VAL_MSGS.DUPLICATE_NAME());
-                endpointSchemaField.markInvalid(VAL_MSGS.DUPLICATE_NAME());
-                endpointPortField.markInvalid(VAL_MSGS.DUPLICATE_NAME());
+                if (!isPermissionErrorMessage(cause)) {
+                    FailureHandler.handleFormException(formPanel, cause);
+                    endpointDnsField.markInvalid(VAL_MSGS.DUPLICATE_NAME());
+                    endpointSchemaField.markInvalid(VAL_MSGS.DUPLICATE_NAME());
+                    endpointPortField.markInvalid(VAL_MSGS.DUPLICATE_NAME());
+                }
+
             }
 
             @Override

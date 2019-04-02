@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.tag;
 
+import com.extjs.gxt.ui.client.event.Events;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
@@ -41,6 +42,7 @@ public class DeviceTagToolbar extends TagToolbarGrid {
         DeviceTagAddDialog dialog = null;
         if (selectedDevice != null) {
             dialog = new DeviceTagAddDialog(currentSession, selectedDevice);
+            dialog.addListener(Events.Hide, getHideDialogListener());
         }
         return dialog;
     }
@@ -50,6 +52,7 @@ public class DeviceTagToolbar extends TagToolbarGrid {
         DeviceTagDeleteDialog dialog = null;
         if (selectedEntity != null) {
             dialog = new DeviceTagDeleteDialog(selectedDevice, selectedEntity);
+            dialog.addListener(Events.Hide, getHideDialogListener());
         }
         return dialog;
     }

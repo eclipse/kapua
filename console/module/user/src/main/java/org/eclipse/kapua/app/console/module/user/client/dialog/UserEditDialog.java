@@ -58,7 +58,9 @@ public class UserEditDialog extends UserAddDialog {
             @Override
             public void onFailure(Throwable cause) {
                 exitStatus = false;
-                exitMessage = USER_MSGS.dialogEditLoadFailed(cause.getLocalizedMessage());
+                if (!isPermissionErrorMessage(cause)) {
+                    exitMessage = USER_MSGS.dialogEditLoadFailed(cause.getLocalizedMessage());
+                }
                 unmaskDialog();
                 hide();
             }
@@ -94,7 +96,7 @@ public class UserEditDialog extends UserAddDialog {
         gwtUserService.update(xsrfToken, selectedUser, new AsyncCallback<GwtUser>() {
 
             @Override
-            public void onSuccess(GwtUser arg0) {
+            public void onSuccess(GwtUser gwtUser) {
                 exitStatus = true;
                 exitMessage = USER_MSGS.dialogEditConfirmation();
                 hide();
@@ -103,26 +105,28 @@ public class UserEditDialog extends UserAddDialog {
             @Override
             public void onFailure(Throwable cause) {
                 exitStatus = false;
-                exitMessage = USER_MSGS.dialogEditError(cause.getLocalizedMessage());
-                FailureHandler.handleFormException(formPanel, cause);
                 status.hide();
                 formPanel.getButtonBar().enable();
                 unmask();
                 submitButton.enable();
                 cancelButton.enable();
-                if (cause instanceof GwtKapuaException) {
-                    GwtKapuaException gwtCause = (GwtKapuaException) cause;
-                    if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
-                        username.markInvalid(gwtCause.getMessage());
-                    } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.ILLEGAL_ARGUMENT)) {
-                        if (gwtCause.getArguments().length == 2 && gwtCause.getArguments()[0].equals("status") && gwtCause.getArguments()[1].equals("DISABLED")) {
-                            userStatus.markInvalid(gwtCause.getMessage());
-                        }
-                    } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.OPERATION_NOT_ALLOWED_ON_ADMIN_USER)) {
-                        if (userStatus.getValue().getValue().equals(GwtUserStatus.DISABLED)) {
-                            userStatus.markInvalid(USER_MSGS.dialogEditAdminUserStatusError());
-                        } if (expirationDate.getValue() != null) {
-                            expirationDate.markInvalid(USER_MSGS.dialogEditAdminExpirationDateError());
+                if (!isPermissionErrorMessage(cause)) {
+                    exitMessage = USER_MSGS.dialogEditError(cause.getLocalizedMessage());
+                    FailureHandler.handleFormException(formPanel, cause);
+                    if (cause instanceof GwtKapuaException) {
+                        GwtKapuaException gwtCause = (GwtKapuaException) cause;
+                        if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
+                            username.markInvalid(gwtCause.getMessage());
+                        } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.ILLEGAL_ARGUMENT)) {
+                            if (gwtCause.getArguments().length == 2 && gwtCause.getArguments()[0].equals("status") && gwtCause.getArguments()[1].equals("DISABLED")) {
+                                userStatus.markInvalid(gwtCause.getMessage());
+                            }
+                        } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.OPERATION_NOT_ALLOWED_ON_ADMIN_USER)) {
+                            if (userStatus.getValue().getValue().equals(GwtUserStatus.DISABLED)) {
+                                userStatus.markInvalid(USER_MSGS.dialogEditAdminUserStatusError());
+                            } if (expirationDate.getValue() != null) {
+                                expirationDate.markInvalid(USER_MSGS.dialogEditAdminExpirationDateError());
+                            }
                         }
                     }
                 }

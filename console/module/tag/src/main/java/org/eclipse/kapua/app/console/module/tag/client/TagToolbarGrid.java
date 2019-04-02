@@ -16,6 +16,8 @@ import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolb
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
 import org.eclipse.kapua.app.console.module.tag.shared.model.permission.TagSessionPermission;
+
+import com.extjs.gxt.ui.client.event.Events;
 import com.google.gwt.user.client.Element;
 
 public class TagToolbarGrid extends EntityCRUDToolbar<GwtTag> {
@@ -30,7 +32,9 @@ public class TagToolbarGrid extends EntityCRUDToolbar<GwtTag> {
 
     @Override
     protected KapuaDialog getAddDialog() {
-        return new TagAddDialog(currentSession);
+        TagAddDialog dialog = new TagAddDialog(currentSession);
+        dialog.addListener(Events.Hide, getHideDialogListener());
+        return dialog;
     }
 
     @Override
@@ -45,6 +49,7 @@ public class TagToolbarGrid extends EntityCRUDToolbar<GwtTag> {
         TagEditDialog dialog = null;
         if (selectedTag != null) {
             dialog = new TagEditDialog(currentSession, selectedTag);
+            dialog.addListener(Events.Hide, getHideDialogListener());
         }
         return dialog;
     }
@@ -55,6 +60,7 @@ public class TagToolbarGrid extends EntityCRUDToolbar<GwtTag> {
         TagDeleteDialog dialog = null;
         if (selectedTag != null) {
             dialog = new TagDeleteDialog(selectedTag);
+            dialog.addListener(Events.Hide, getHideDialogListener());
         }
         return dialog;
     }

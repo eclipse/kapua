@@ -95,7 +95,7 @@ public class JobAddDialog extends EntityAddEditDialog {
         GWT_JOB_SERVICE.create(xsrfToken, gwtJobCreator, new AsyncCallback<GwtJob>() {
 
             @Override
-            public void onSuccess(GwtJob arg0) {
+            public void onSuccess(GwtJob gwtJob) {
                 exitStatus = true;
                 exitMessage = JOB_MSGS.dialogAddConfirmation();
                 hide();
@@ -104,17 +104,19 @@ public class JobAddDialog extends EntityAddEditDialog {
             @Override
             public void onFailure(Throwable cause) {
                 exitStatus = false;
-                FailureHandler.handleFormException(formPanel, cause);
                 status.hide();
                 formPanel.getButtonBar().enable();
                 unmask();
                 submitButton.enable();
                 cancelButton.enable();
-                if (cause instanceof GwtKapuaException) {
-                    GwtKapuaException gwtCause = (GwtKapuaException) cause;
-                    if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
-                        name.markInvalid(gwtCause.getMessage());
+                if (!isPermissionErrorMessage(cause)) {
+                    if (cause instanceof GwtKapuaException) {
+                        GwtKapuaException gwtCause = (GwtKapuaException) cause;
+                        if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
+                            name.markInvalid(gwtCause.getMessage());
+                        }
                     }
+                    FailureHandler.handleFormException(formPanel, cause);
                 }
             }
         });

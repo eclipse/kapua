@@ -273,7 +273,7 @@ public class UserAddDialog extends EntityAddEditDialog {
         gwtUserService.create(xsrfToken, gwtUserCreator, new AsyncCallback<GwtUser>() {
 
             @Override
-            public void onSuccess(GwtUser arg0) {
+            public void onSuccess(GwtUser gwtUser) {
                 exitStatus = true;
                 exitMessage = USER_MSGS.dialogAddConfirmation();
                 hide();
@@ -282,22 +282,24 @@ public class UserAddDialog extends EntityAddEditDialog {
             @Override
             public void onFailure(Throwable cause) {
                 exitStatus = false;
-                FailureHandler.handleFormException(formPanel, cause);
                 status.hide();
                 formPanel.getButtonBar().enable();
                 unmask();
                 submitButton.enable();
                 cancelButton.enable();
-                if (cause instanceof GwtKapuaException) {
-                    GwtKapuaException gwtCause = (GwtKapuaException) cause;
-                    switch (gwtCause.getCode()) {
-                    case DUPLICATE_NAME:
-                    case ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT:
-                        username.markInvalid(gwtCause.getMessage());
-                        break;
-                    default:
-                        break;
+                if (!isPermissionErrorMessage(cause)) {
+                    if (cause instanceof GwtKapuaException) {
+                        GwtKapuaException gwtCause = (GwtKapuaException) cause;
+                        switch (gwtCause.getCode()) {
+                        case DUPLICATE_NAME:
+                        case ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT:
+                            username.markInvalid(gwtCause.getMessage());
+                            break;
+                        default:
+                            break;
+                        }
                     }
+                    FailureHandler.handleFormException(formPanel, cause);
                 }
             }
         });

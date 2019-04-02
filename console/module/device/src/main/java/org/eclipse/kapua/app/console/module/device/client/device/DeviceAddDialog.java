@@ -210,7 +210,11 @@ public class DeviceAddDialog extends EntityAddEditDialog {
 
                 @Override
                 public void onFailure(Throwable caught) {
-                    FailureHandler.handle(caught);
+                    exitStatus = false;
+                    if (!isPermissionErrorMessage(caught)) {
+                        FailureHandler.handle(caught);
+                        hide();
+                    }
                 }
 
                 @Override
@@ -336,17 +340,19 @@ public class DeviceAddDialog extends EntityAddEditDialog {
             @Override
             public void onFailure(Throwable cause) {
                 exitStatus = false;
-                FailureHandler.handleFormException(formPanel, cause);
                 status.hide();
                 formPanel.getButtonBar().enable();
                 unmask();
                 submitButton.enable();
                 cancelButton.enable();
-                if (cause instanceof GwtKapuaException) {
-                    GwtKapuaException gwtCause = (GwtKapuaException) cause;
-                    if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
-                        clientIdField.markInvalid(gwtCause.getMessage());
+                if (!isPermissionErrorMessage(cause)) {
+                    if (cause instanceof GwtKapuaException) {
+                        GwtKapuaException gwtCause = (GwtKapuaException) cause;
+                        if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
+                            clientIdField.markInvalid(gwtCause.getMessage());
+                        }
                     }
+                    FailureHandler.handleFormException(formPanel, cause);
                 }
             }
 

@@ -252,8 +252,8 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
             gwtTagQuery.setIds(gwtTagIds);
 
             return query(loadConfig, gwtTagQuery);
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+        } catch (KapuaException e) {
+            KapuaExceptionHandler.handle(e);
             return new BasePagingLoadResult<GwtTag>(new ArrayList<GwtTag>(), 0, 0);
         }
     }

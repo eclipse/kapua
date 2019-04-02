@@ -61,7 +61,9 @@ public class RoleEditDialog extends RoleAddDialog {
             @Override
             public void onFailure(Throwable cause) {
                 exitStatus = false;
-                exitMessage = MSGS.dialogEditLoadFailed(cause.getLocalizedMessage());
+                if (!isPermissionErrorMessage(cause)) {
+                    exitMessage = MSGS.dialogEditLoadFailed(cause.getLocalizedMessage());
+                }
                 unmaskDialog();
                 hide();
             }
@@ -83,7 +85,7 @@ public class RoleEditDialog extends RoleAddDialog {
         GWT_ROLE_SERVICE.update(xsrfToken, selectedRole, new AsyncCallback<GwtRole>() {
 
             @Override
-            public void onSuccess(GwtRole arg0) {
+            public void onSuccess(GwtRole gwtRole) {
                 exitStatus = true;
                 exitMessage = MSGS.dialogEditConfirmation();
                 hide();
@@ -93,17 +95,19 @@ public class RoleEditDialog extends RoleAddDialog {
             public void onFailure(Throwable cause) {
                 exitStatus = false;
                 exitMessage = MSGS.dialogEditError(cause.getLocalizedMessage());
-                FailureHandler.handleFormException(formPanel, cause);
                 status.hide();
                 formPanel.getButtonBar().enable();
                 unmask();
                 submitButton.enable();
                 cancelButton.enable();
-                if (cause instanceof GwtKapuaException) {
-                    GwtKapuaException gwtCause = (GwtKapuaException) cause;
-                    if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
-                        roleNameField.markInvalid(gwtCause.getMessage());
+                if (!isPermissionErrorMessage(cause)) {
+                    if (cause instanceof GwtKapuaException) {
+                        GwtKapuaException gwtCause = (GwtKapuaException) cause;
+                        if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
+                            roleNameField.markInvalid(gwtCause.getMessage());
+                        }
                     }
+                    FailureHandler.handleFormException(formPanel, cause);
                 }
             }
         });

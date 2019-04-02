@@ -40,10 +40,12 @@ public class EndpointDeleteDialog extends EntityDeleteDialog {
         GWT_ENDPOINT_SERVICE.delete(gwtEndpoint.getScopeId(), gwtEndpoint.getId(), new AsyncCallback<Void>() {
 
             @Override
-            public void onFailure(Throwable arg0) {
-                FailureHandler.handle(arg0);
+            public void onFailure(Throwable cause) {
                 exitStatus = false;
-                exitMessage = MSGS.dialogDeleteError(arg0.getLocalizedMessage());
+                if (!isPermissionErrorMessage(cause)) {
+                    FailureHandler.handle(cause);
+                    exitMessage = MSGS.dialogDeleteError(cause.getLocalizedMessage());
+                }
                 hide();
 
             }

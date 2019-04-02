@@ -443,6 +443,7 @@ public class DeviceAssetsValues extends LayoutContainer {
                                                 public void onFailure(Throwable caught) {
                                                     FailureHandler.handle(caught);
                                                     dirty = true;
+                                                    refresh();
                                                 }
 
                                                 @Override

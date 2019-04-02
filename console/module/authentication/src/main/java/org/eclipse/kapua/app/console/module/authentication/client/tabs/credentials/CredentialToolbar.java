@@ -69,7 +69,9 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
     @Override
     protected KapuaDialog getAddDialog() {
         if (selectedUserId != null) {
-            return new CredentialAddDialog(currentSession, selectedUserId, selectedUserName);
+            CredentialAddDialog dialog = new CredentialAddDialog(currentSession, selectedUserId, selectedUserName);
+            dialog.addListener(Events.Hide, getHideDialogListener());
+            return dialog;
         }
         return null;
     }
@@ -80,6 +82,7 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
         CredentialEditDialog dialog = null;
         if (selectedUserId != null && selectedCredential != null) {
             dialog = new CredentialEditDialog(currentSession, selectedCredential, selectedUserId, selectedUserName);
+            dialog.addListener(Events.Hide, getHideDialogListener());
         }
         return dialog;
     }
@@ -90,6 +93,7 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
         CredentialDeleteDialog dialog = null;
         if (selectedCredential != null) {
             dialog = new CredentialDeleteDialog(selectedCredential);
+            dialog.addListener(Events.Hide, getHideDialogListener());
         }
         return dialog;
     }

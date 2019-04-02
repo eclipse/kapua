@@ -323,7 +323,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         TRIGGER_SERVICE.create(xsrfToken, gwtTriggerCreator, new AsyncCallback<GwtTrigger>() {
 
             @Override
-            public void onSuccess(GwtTrigger arg0) {
+            public void onSuccess(GwtTrigger gwtTrigger) {
                 exitStatus = true;
                 exitMessage = JOB_MSGS.dialogAddScheduleConfirmation();
                 hide();
@@ -332,31 +332,33 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
             @Override
             public void onFailure(Throwable cause) {
                 exitStatus = false;
-                FailureHandler.handleFormException(formPanel, cause);
                 status.hide();
                 formPanel.getButtonBar().enable();
                 unmask();
                 submitButton.enable();
                 cancelButton.enable();
-                if (cause instanceof GwtKapuaException) {
-                    GwtKapuaException gwtCause = (GwtKapuaException) cause;
-                    if (gwtCause.getCode().equals(GwtKapuaErrorCode.SCHEDULE_DUPLICATE_NAME)) {
-                        triggerName.markInvalid(gwtCause.getMessage());
-                    } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.RETRY_AND_CRON_BOTH_SELECTED)) {
-                        cronExpression.markInvalid(gwtCause.getMessage());
-                        retryInterval.markInvalid(gwtCause.getMessage());
-                    } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.SAME_START_AND_DATE)) {
-                        startsOn.markInvalid(gwtCause.getMessage());
-                        startsOnTime.markInvalid(gwtCause.getMessage());
-                        endsOn.markInvalid(gwtCause.getMessage());
-                        endsOnTime.markInvalid(gwtCause.getMessage());
-                    } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.TRIGGER_NEVER_FIRE)) {
-                        startsOn.markInvalid(gwtCause.getMessage());
-                        startsOnTime.markInvalid(gwtCause.getMessage());
-                        endsOn.markInvalid(gwtCause.getMessage());
-                        endsOnTime.markInvalid(gwtCause.getMessage());
-                        cronExpression.markInvalid(gwtCause.getMessage());
+                if (!isPermissionErrorMessage(cause)) {
+                    if (cause instanceof GwtKapuaException) {
+                        GwtKapuaException gwtCause = (GwtKapuaException) cause;
+                        if (gwtCause.getCode().equals(GwtKapuaErrorCode.SCHEDULE_DUPLICATE_NAME)) {
+                            triggerName.markInvalid(gwtCause.getMessage());
+                        } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.RETRY_AND_CRON_BOTH_SELECTED)) {
+                            cronExpression.markInvalid(gwtCause.getMessage());
+                            retryInterval.markInvalid(gwtCause.getMessage());
+                        } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.SAME_START_AND_DATE)) {
+                            startsOn.markInvalid(gwtCause.getMessage());
+                            startsOnTime.markInvalid(gwtCause.getMessage());
+                            endsOn.markInvalid(gwtCause.getMessage());
+                            endsOnTime.markInvalid(gwtCause.getMessage());
+                        } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.TRIGGER_NEVER_FIRE)) {
+                            startsOn.markInvalid(gwtCause.getMessage());
+                            startsOnTime.markInvalid(gwtCause.getMessage());
+                            endsOn.markInvalid(gwtCause.getMessage());
+                            endsOnTime.markInvalid(gwtCause.getMessage());
+                            cronExpression.markInvalid(gwtCause.getMessage());
+                        }
                     }
+                    FailureHandler.handleFormException(formPanel, cause);
                 }
             }
         });

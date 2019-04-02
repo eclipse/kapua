@@ -108,30 +108,33 @@ public class AccountEditDialog extends AccountAddDialog {
 
                     @Override
                     public void onFailure(Throwable caught) {
-                        FailureHandler.handleFormException(formPanel, caught);
+                        exitStatus = false;
                         status.hide();
                         formPanel.getButtonBar().enable();
                         unmask();
                         submitButton.enable();
                         cancelButton.enable();
-                        if (caught instanceof GwtKapuaException) {
-                            GwtKapuaException gwtCause = (GwtKapuaException) caught;
-                            switch (gwtCause.getCode()) {
-                            case DUPLICATE_NAME:
-                                accountNameField.markInvalid(gwtCause.getMessage());
-                                break;
-                            case ILLEGAL_ARGUMENT:
-                                if (gwtCause.getArguments()[0].equals("expirationDate")) {
-                                    expirationDateField.markInvalid(MSGS.conflictingExpirationDate());
-                                    ConsoleInfo.display("Error", MSGS.conflictingExpirationDate());
-                                } else if (gwtCause.getArguments()[0].equals("notAllowedExpirationDate")) {
-                                    expirationDateField.markInvalid(MSGS.notAllowedExpirationDate());
-                                    ConsoleInfo.display("Error", MSGS.notAllowedExpirationDate());
+                        if (!isPermissionErrorMessage(caught)) {
+                            if (caught instanceof GwtKapuaException) {
+                                GwtKapuaException gwtCause = (GwtKapuaException) caught;
+                                switch (gwtCause.getCode()) {
+                                case DUPLICATE_NAME:
+                                    accountNameField.markInvalid(gwtCause.getMessage());
+                                    break;
+                                case ILLEGAL_ARGUMENT:
+                                    if (gwtCause.getArguments()[0].equals("expirationDate")) {
+                                        expirationDateField.markInvalid(MSGS.conflictingExpirationDate());
+                                        ConsoleInfo.display("Error", MSGS.conflictingExpirationDate());
+                                    } else if (gwtCause.getArguments()[0].equals("notAllowedExpirationDate")) {
+                                        expirationDateField.markInvalid(MSGS.notAllowedExpirationDate());
+                                        ConsoleInfo.display("Error", MSGS.notAllowedExpirationDate());
+                                    }
+                                    break;
+                                default:
+                                    break;
                                 }
-                                break;
-                            default:
-                                break;
                             }
+                            FailureHandler.handleFormException(formPanel, caught);
                         }
                     }
 

@@ -16,6 +16,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.dialog.TabbedDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaNumberField;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator.FieldType;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
@@ -235,8 +236,13 @@ public class PackageInstallDialog extends TabbedDialog {
             @Override
             public void onFailure(Throwable caught) {
                 exitStatus = false;
-                exitMessage = caught.getMessage();
-                hide();
+                status.hide();
+                unmask();
+                submitButton.enable();
+                cancelButton.enable();
+                if (!isPermissionErrorMessage(caught)) {
+                    FailureHandler.handle(caught);
+                }
             }
         });
     }
