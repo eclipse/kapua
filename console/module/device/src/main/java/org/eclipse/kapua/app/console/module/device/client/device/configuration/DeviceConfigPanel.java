@@ -345,7 +345,7 @@ public class DeviceConfigPanel extends LayoutContainer {
             multiField.setReadOnly(true);
             multiField.setEnabled(false);
         }
-
+        multiField.setLabelStyle("word-break:break-all");
         Field<?> field = null;
         String value = null;
         String[] values = param.getValues();
@@ -457,6 +457,7 @@ public class DeviceConfigPanel extends LayoutContainer {
         if (validator instanceof StringValidator) {
             field.setValidator(validator);
         }
+        field.setLabelStyle("word-break:break-all");
         return field;
     }
 
@@ -484,6 +485,7 @@ public class DeviceConfigPanel extends LayoutContainer {
             field.setValue((String) param.getValue());
             field.setOriginalValue((String) param.getValue());
         }
+        field.setLabelStyle("word-break:break-all");
         return field;
     }
 
@@ -553,6 +555,7 @@ public class DeviceConfigPanel extends LayoutContainer {
                 }
                 break;
         }
+        field.setLabelStyle("word-break:break-all");
         return field;
     }
 
@@ -588,6 +591,7 @@ public class DeviceConfigPanel extends LayoutContainer {
         if (param.getValue() != null) {
             field.setSimpleValue(getKeyFromValue(oMap, param.getValue()));
         }
+        field.setLabelStyle("word-break:break-all");
         return field;
     }
 
@@ -635,7 +639,7 @@ public class DeviceConfigPanel extends LayoutContainer {
             radioFalse.setValue(true);
             radioGroup.setOriginalValue(radioFalse);
         }
-
+        radioGroup.setLabelStyle("word-break:break-all");
         return radioGroup;
     }
 
