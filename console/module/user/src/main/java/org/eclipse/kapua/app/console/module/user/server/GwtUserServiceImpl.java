@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,7 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
@@ -33,29 +34,41 @@ import org.eclipse.kapua.app.console.module.user.shared.util.KapuaGwtUserModelCo
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceDomain;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.Callable;
+import org.eclipse.kapua.service.device.registry.DeviceFactory;
+import org.eclipse.kapua.service.device.registry.DeviceListResult;
+import org.eclipse.kapua.service.device.registry.DeviceQuery;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionDomain;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.Callable;
 
 /**
  * The server side implementation of the RPC service.
@@ -74,6 +87,13 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
     private static final UserService USER_SERVICE = LOCATOR.getService(UserService.class);
     private static final UserFactory USER_FACTORY = LOCATOR.getFactory(UserFactory.class);
+
+    private static final DeviceConnectionService DEVICE_CONNECTION_SERVICE = LOCATOR.getService(DeviceConnectionService.class);
+    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
+
+    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
+    private static final DeviceRegistryService DEVICE_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
+    private static final DeviceFactory DEVICE_FACTORY = LOCATOR.getFactory(DeviceFactory.class);
 
     @Override
     public GwtUser create(GwtXSRFToken xsrfToken, GwtUserCreator gwtUserCreator) throws GwtKapuaException {
@@ -290,6 +310,14 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                     }
                 });
 
+                DeviceConnection deviceConnection = null;
+                if (deviceListQuery(scopeId) != null && AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(new DeviceConnectionDomain(), Actions.read, scopeId))) {
+                for (Device device : deviceListQuery(scopeId).getItems()) {
+                    if (device.getConnectionId() != null) {
+                        deviceConnection = DEVICE_CONNECTION_SERVICE.find(scopeId, device.getConnectionId());
+                        break;
+                    }
+                }}
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userStatus", user.getStatus().toString()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userName", user.getName()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userDisplayName", user.getDisplayName()));
@@ -300,6 +328,8 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 gwtUserDescription.add(new GwtGroupedNVPair("entityInfo", "userCreatedBy", createdUser != null ? createdUser.getName() : null));
                 gwtUserDescription.add(new GwtGroupedNVPair("entityInfo", "userModifiedOn", user.getModifiedOn()));
                 gwtUserDescription.add(new GwtGroupedNVPair("entityInfo", "userModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
+                if (deviceConnection != null && deviceConnection.getReservedUserId() != null && deviceConnection.getReservedUserId().equals(user.getId())) {
+                    gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userReservedConnection", "Yes" )); }
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);
@@ -371,5 +401,17 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         }
 
         return new BasePagingLoadResult<GwtUser>(gwtUsers, loadConfig.getOffset(), totalLength);   
+    }
+
+    /**
+    Method which returns list of all available devices in current scope(if User have Device:read permission), otherwise null is returned.
+     */
+    private DeviceListResult deviceListQuery(KapuaId scopeId) throws KapuaException {
+         DeviceListResult devicesList = null;
+         if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(new DeviceDomain(), Actions.read, scopeId))) {
+         DeviceQuery deviceQuery = DEVICE_FACTORY.newQuery(scopeId);
+         devicesList = DEVICE_SERVICE.query(deviceQuery);
+         }
+         return devicesList;
     }
 }
