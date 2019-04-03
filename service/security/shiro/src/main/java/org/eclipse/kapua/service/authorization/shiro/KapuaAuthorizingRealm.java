@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -93,7 +94,9 @@ public class KapuaAuthorizingRealm extends AuthorizingRealm {
         //
         // Check existence
         if (user == null) {
-            throw new UnknownAccountException();
+            SecurityUtils.getSubject().logout();
+
+            throw new AuthenticationException();
         }
 
         //
