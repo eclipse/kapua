@@ -177,14 +177,16 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
             }
         }
 
-        if (jobContextWrapper.getFromStepIndex() != null) {
-            jobLogger.info("Resetting targets to step index: {}...", jobContextWrapper.getFromStepIndex());
+        if (jobContextWrapper.getResetStepIndex()) {
+            int resetToStepIndex = jobContextWrapper.getFromStepIndex() != null ? jobContextWrapper.getFromStepIndex() : 0;
 
             try {
+                jobLogger.info("Resetting {} targets to step index: {}...", jobExecution.getTargetIds().size(), resetToStepIndex);
+
                 for (KapuaId jobTargetId : jobExecution.getTargetIds()) {
                     JobTarget jobTarget = KapuaSecurityUtils.doPrivileged(() -> JOB_TARGET_SERVICE.find(jobExecution.getScopeId(), jobTargetId));
 
-                    jobTarget.setStepIndex(jobContextWrapper.getFromStepIndex());
+                    jobTarget.setStepIndex(resetToStepIndex);
                     jobTarget.setStatus(JobTargetStatus.PROCESS_AWAITING);
                     jobTarget.setStatusMessage(null);
                     jobTarget.setException(null);
@@ -192,9 +194,9 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
                     KapuaSecurityUtils.doPrivileged(() -> JOB_TARGET_SERVICE.update(jobTarget));
                 }
             } catch (KapuaException e) {
-                jobLogger.error(e, "Resetting targets to step index: {}... ERROR!", jobContextWrapper.getFromStepIndex());
+                jobLogger.error(e, "Resetting {} targets to step index: {}... ERROR!", jobExecution.getTargetIds().size(), resetToStepIndex);
             }
-            jobLogger.info("Resetting targets to step index: {}... DONE!", jobContextWrapper.getFromStepIndex());
+            jobLogger.info("Resetting {} targets to step index: {}... DONE!", jobExecution.getTargetIds().size(), resetToStepIndex);
         }
 
         jobLogger.info("Running before job... DONE!");

@@ -99,6 +99,17 @@ public class JobContextWrapper {
     }
 
     /**
+     * Gets whether or not the {@link org.eclipse.kapua.service.job.targets.JobTarget}s needs to be reset to the given {@link #getFromStepIndex()}.
+     *
+     * @return {@code true} if the {@link org.eclipse.kapua.service.job.targets.JobTarget}s needs to be reset to the given {@link #getFromStepIndex()}, {@code false} otherwise.
+     * @since 1.1.0
+     */
+    public boolean getResetStepIndex() {
+        String resetFromIndexString = getProperties().getProperty(JobContextPropertyNames.RESET_STEP_INDEX);
+        return resetFromIndexString != null && Boolean.valueOf(resetFromIndexString);
+    }
+
+    /**
      * Gets the start step index of the {@link org.eclipse.kapua.service.job.execution.JobExecution}.
      *
      * @return The start step index of the {@link org.eclipse.kapua.service.job.execution.JobExecution}.

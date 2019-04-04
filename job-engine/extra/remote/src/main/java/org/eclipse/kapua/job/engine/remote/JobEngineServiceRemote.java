@@ -29,6 +29,15 @@ import org.quartz.JobDataMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This is a partial implementation of the {@link JobEngineService}.
+ * <p>
+ * It leverages the Quartz Framework to remotely trigger a {@link org.eclipse.kapua.service.job.execution.JobExecution} that is run from the Job Engine (currently) running in the Console container.
+ * <p>
+ * This is a workaround to let the Broker start a {@link org.eclipse.kapua.service.job.execution.JobExecution} when a COMPLETE device management notification is received by the broker.
+ *
+ * @since 1.1.0
+ */
 @KapuaProvider
 public class JobEngineServiceRemote implements JobEngineService {
 
@@ -43,7 +52,7 @@ public class JobEngineServiceRemote implements JobEngineService {
 
     @Override
     public void startJob(KapuaId scopeId, KapuaId jobId) throws KapuaException {
-
+        startJob(scopeId, jobId, new JobStartOptionsRemote());
     }
 
     @Override
@@ -72,32 +81,32 @@ public class JobEngineServiceRemote implements JobEngineService {
             // Create the trigger
             QuartzTriggerUtils.createQuartzTrigger(scopeId, jobId, KAPUA_ID_FACTORY.newKapuaId(IdGenerator.generate()), jobDataMap);
         } catch (Exception e) {
-            KapuaException.internalError(e, "Error!");
+            throw KapuaException.internalError(e, "Error!");
         }
     }
 
     @Override
     public boolean isRunning(KapuaId scopeId, KapuaId jobId) throws KapuaException {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void stopJob(KapuaId scopeId, KapuaId jobId) throws KapuaException {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void stopJobExecution(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) throws KapuaException {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void resumeJobExecution(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) throws KapuaException {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void cleanJobData(KapuaId scopeId, KapuaId jobId) throws KapuaException {
-
+        throw new UnsupportedOperationException();
     }
 }

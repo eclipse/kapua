@@ -115,6 +115,7 @@ public class GwtJobEngineServiceImpl extends KapuaRemoteServiceServlet implement
     @Override
     public void restart(String gwtScopeId, String gwtJobId) throws GwtKapuaException {
         GwtJobStartOptions gwtJobStartOptions = new GwtJobStartOptions();
+        gwtJobStartOptions.setResetStepIndex(true);
         gwtJobStartOptions.setFromStepIndex(0);
         gwtJobStartOptions.setTargetIdSublist(new ArrayList<String>());
 

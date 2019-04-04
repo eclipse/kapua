@@ -53,7 +53,7 @@ public class JobTargetImpl extends AbstractKapuaUpdatableEntity implements JobTa
 
     @Basic
     @Column(name = "step_index", nullable = false, updatable = true)
-    private int stepIndex;
+    private Integer stepIndex;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, updatable = true)

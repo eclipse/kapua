@@ -91,6 +91,12 @@ public class JobDefinitionBuildUtils {
         resumedJobExecutionIdProperty.setValue("#{jobParameters['" + JobContextPropertyNames.RESUMED_KAPUA_EXECUTION_ID + "']}");
         jslPropertyList.add(resumedJobExecutionIdProperty);
 
+        // Reset target step index
+        Property resetSterIndexProperty = new Property();
+        resetSterIndexProperty.setName(JobContextPropertyNames.RESET_STEP_INDEX);
+        resetSterIndexProperty.setValue(String.valueOf(jobStartOptions.getResetStepIndex()));
+        jslPropertyList.add(resetSterIndexProperty);
+
         // Job from step index
         if (jobStartOptions.getFromStepIndex() != null) {
             Property stepFromIndexProperty = new Property();

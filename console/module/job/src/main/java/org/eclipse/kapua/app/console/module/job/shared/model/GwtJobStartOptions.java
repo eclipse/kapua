@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,6 +18,7 @@ import java.util.List;
 public class GwtJobStartOptions implements Serializable {
 
     private List<String> targetIdSublist = new ArrayList<String>();
+    private boolean resetStepIndex;
     private Integer fromStepIndex;
 
     public List<String> getTargetIdSublist() {
@@ -26,6 +27,14 @@ public class GwtJobStartOptions implements Serializable {
 
     public void setTargetIdSublist(List<String> targetIdSublist) {
         this.targetIdSublist = targetIdSublist;
+    }
+
+    public boolean getResetStepIndex() {
+        return resetStepIndex;
+    }
+
+    public void setResetStepIndex(boolean resetStepIndex) {
+        this.resetStepIndex = resetStepIndex;
     }
 
     public Integer getFromStepIndex() {

@@ -20,6 +20,7 @@ import java.util.Set;
 public class JobStartOptionsRemote implements JobStartOptions {
 
     private Set<KapuaId> targetIdSublist;
+    private boolean resetStepIndex;
     private Integer fromStepIndex;
     private boolean enqueue;
 
@@ -56,6 +57,16 @@ public class JobStartOptionsRemote implements JobStartOptions {
     @Override
     public void removeTargetIdToSublist(KapuaId targetId) {
         getTargetIdSublist().remove(targetId);
+    }
+
+    @Override
+    public boolean getResetStepIndex() {
+        return resetStepIndex;
+    }
+
+    @Override
+    public void setResetStepIndex(boolean resetStepIndex) {
+        this.resetStepIndex = resetStepIndex;
     }
 
     @Override
