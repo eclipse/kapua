@@ -162,6 +162,7 @@ public class LoginDialog extends Dialog {
         getButtonBar().add(new FillToolItem());
 
         reset = new Button(CORE_MSGS.loginReset());
+        reset.disable();
 
         reset.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
@@ -288,6 +289,8 @@ public class LoginDialog extends Dialog {
 
     protected void validate() {
         login.setEnabled(true);
+        reset.setEnabled(hasValue(username) &&
+                hasValue(password));
     }
 
     public void reset() {
@@ -295,10 +298,10 @@ public class LoginDialog extends Dialog {
         username.enable();
         password.reset();
         password.enable();
-
         username.focus();
         status.hide();
         getButtonBar().enable();
+        reset.disable();
         password.clearInvalid();
     }
 
