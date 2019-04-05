@@ -66,23 +66,27 @@ public class DeviceManagementNotificationMessageProcessor extends AbstractProces
         LOG.debug("Received notification message from device channel: client id '{}' - {}", message.getMessage().getClientId(), message.getMessage().getChannel());
 
         KapuaNotifyMessage notifyMessage = (KapuaNotifyMessage) message.getMessage();
-
         KapuaNotifyPayload notifyPayload = notifyMessage.getPayload();
 
-        DEVICE_MANAGEMENT_REGISTRY_MANAGER_SERVICE.processOperationNotification(
-                notifyMessage.getScopeId(),
-                notifyPayload.getOperationId(),
-                MoreObjects.firstNonNull(notifyMessage.getSentOn(), notifyMessage.getReceivedOn()),
-                notifyPayload.getResource(),
-                notifyPayload.getStatus(),
-                notifyPayload.getProgress());
+        try {
+            DEVICE_MANAGEMENT_REGISTRY_MANAGER_SERVICE.processOperationNotification(
+                    notifyMessage.getScopeId(),
+                    notifyPayload.getOperationId(),
+                    MoreObjects.firstNonNull(notifyMessage.getSentOn(), notifyMessage.getReceivedOn()),
+                    notifyPayload.getResource(),
+                    notifyPayload.getStatus(),
+                    notifyPayload.getProgress());
 
-        JOB_DEVICE_MANAGEMENT_OPERATION_MANAGER_SERVICE.processJobTargetOnNotification(
-                notifyMessage.getScopeId(),
-                notifyPayload.getOperationId(),
-                MoreObjects.firstNonNull(notifyMessage.getSentOn(), notifyMessage.getReceivedOn()),
-                notifyPayload.getResource(),
-                notifyPayload.getStatus());
+            JOB_DEVICE_MANAGEMENT_OPERATION_MANAGER_SERVICE.processJobTargetOnNotification(
+                    notifyMessage.getScopeId(),
+                    notifyPayload.getOperationId(),
+                    MoreObjects.firstNonNull(notifyMessage.getSentOn(), notifyMessage.getReceivedOn()),
+                    notifyPayload.getResource(),
+                    notifyPayload.getStatus());
+        } catch (Exception e) {
+            LOG.error("Error while processing Device Management Operation Notification message!", e);
+            throw e;
+        }
     }
 
     public void processCommunicationErrorMessage(Exchange exchange, CamelKapuaMessage<?> message) throws KapuaException {

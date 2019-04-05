@@ -173,6 +173,7 @@
                 <include>io.netty:netty</include>
 
                 <include>javax.inject:javax.inject</include>
+                <include>javax.batch:javax.batch-api</include>
 
                 <include>joda-time:joda-time</include>
 
@@ -252,9 +253,13 @@
                 <include>${pom.groupId}:kapua-foreignkeys</include>
                 <include>${pom.groupId}:kapua-guice</include>
                 <include>${pom.groupId}:kapua-job-api</include>
-                <!-- <include>${pom.groupId}:kapua-liquibase</include> -->
+                <include>${pom.groupId}:kapua-job-internal</include>
+                <include>${pom.groupId}:kapua-job-engine-api</include>
+                <include>${pom.groupId}:kapua-job-engine-remote</include>
                 <include>${pom.groupId}:kapua-message-api</include>
                 <include>${pom.groupId}:kapua-message-internal</include>
+                <include>${pom.groupId}:kapua-scheduler-api</include>
+                <include>${pom.groupId}:kapua-scheduler-quartz</include>
                 <include>${pom.groupId}:kapua-security-authentication-api</include>
                 <include>${pom.groupId}:kapua-security-authorization-api</include>
                 <include>${pom.groupId}:kapua-security-certificate-api</include>
