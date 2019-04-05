@@ -27,7 +27,7 @@ import org.eclipse.kapua.service.device.management.packages.DevicePackageManagem
 import org.eclipse.kapua.service.device.management.packages.job.definition.DevicePackageDownloadPropertyKeys;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOptions;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
-import org.eclipse.kapua.service.job.operation.TargetOperation;
+import org.eclipse.kapua.service.job.operation.TargetProcessor;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetStatus;
 
@@ -36,11 +36,11 @@ import javax.batch.runtime.context.StepContext;
 import javax.inject.Inject;
 
 /**
- * {@link TargetOperation} for {@link DevicePackageManagementService#downloadExec(KapuaId, KapuaId, DevicePackageDownloadRequest, Long)}.
+ * {@link TargetProcessor} for {@link DevicePackageManagementService#downloadExec(KapuaId, KapuaId, DevicePackageDownloadRequest, Long)}.
  *
  * @since 1.0.0
  */
-public class DevicePackageDownloadTargetProcessor extends AbstractTargetProcessor implements TargetOperation {
+public class DevicePackageDownloadTargetProcessor extends AbstractTargetProcessor implements TargetProcessor {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 

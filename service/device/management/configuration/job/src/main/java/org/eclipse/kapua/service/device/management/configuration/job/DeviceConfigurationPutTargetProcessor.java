@@ -20,7 +20,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService;
 import org.eclipse.kapua.service.device.management.configuration.job.definition.DeviceConfigurationPutPropertyKeys;
-import org.eclipse.kapua.service.job.operation.TargetOperation;
+import org.eclipse.kapua.service.job.operation.TargetProcessor;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 
 import javax.batch.runtime.context.JobContext;
@@ -28,11 +28,11 @@ import javax.batch.runtime.context.StepContext;
 import javax.inject.Inject;
 
 /**
- * {@link TargetOperation} for {@link DeviceConfigurationManagementService#put(KapuaId, KapuaId, DeviceConfiguration, Long)}.
+ * {@link TargetProcessor} for {@link DeviceConfigurationManagementService#put(KapuaId, KapuaId, DeviceConfiguration, Long)}.
  *
  * @since 1.0.0
  */
-public class DeviceConfigurationPutTargetProcessor extends AbstractTargetProcessor implements TargetOperation {
+public class DeviceConfigurationPutTargetProcessor extends AbstractTargetProcessor implements TargetProcessor {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final DeviceConfigurationManagementService CONFIGURATION_MANAGEMENT_SERVICE = LOCATOR.getService(DeviceConfigurationManagementService.class);

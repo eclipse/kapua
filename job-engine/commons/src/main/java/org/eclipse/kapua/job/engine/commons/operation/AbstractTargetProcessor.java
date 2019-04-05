@@ -16,7 +16,7 @@ import org.eclipse.kapua.job.engine.commons.logger.JobLogger;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobContextWrapper;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
 import org.eclipse.kapua.job.engine.commons.wrappers.StepContextWrapper;
-import org.eclipse.kapua.service.job.operation.TargetOperation;
+import org.eclipse.kapua.service.job.operation.TargetProcessor;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetStatus;
 import org.slf4j.Logger;
@@ -26,14 +26,14 @@ import javax.batch.runtime.context.JobContext;
 import javax.batch.runtime.context.StepContext;
 
 /**
- * {@link TargetOperation} {@code abstract} implementation.
+ * {@link TargetProcessor} {@code abstract} implementation.
  * <p>
- * All {@link org.eclipse.kapua.service.job.step.definition.JobStepDefinition} must provide their own implementation of the {@link TargetOperation}
+ * All {@link org.eclipse.kapua.service.job.step.definition.JobStepDefinition} must provide their own implementation of the {@link TargetProcessor}
  * containing the actual processing logic of the {@link JobTarget}
  *
  * @since 1.0.0
  */
-public abstract class AbstractTargetProcessor implements TargetOperation {
+public abstract class AbstractTargetProcessor implements TargetProcessor {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractTargetProcessor.class);
 

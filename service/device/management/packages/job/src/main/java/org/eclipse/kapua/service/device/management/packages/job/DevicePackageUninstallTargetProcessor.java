@@ -27,7 +27,7 @@ import org.eclipse.kapua.service.device.management.packages.DevicePackageManagem
 import org.eclipse.kapua.service.device.management.packages.job.definition.DevicePackageUninstallPropertyKeys;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOptions;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
-import org.eclipse.kapua.service.job.operation.TargetOperation;
+import org.eclipse.kapua.service.job.operation.TargetProcessor;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetStatus;
 
@@ -36,11 +36,11 @@ import javax.batch.runtime.context.StepContext;
 import javax.inject.Inject;
 
 /**
- * {@link TargetOperation} for {@link DevicePackageManagementService#uninstallExec(KapuaId, KapuaId, DevicePackageUninstallRequest, Long)}.
+ * {@link TargetProcessor} for {@link DevicePackageManagementService#uninstallExec(KapuaId, KapuaId, DevicePackageUninstallRequest, Long)}.
  *
  * @since 1.0.0
  */
-public class DevicePackageUninstallTargetProcessor extends AbstractTargetProcessor implements TargetOperation {
+public class DevicePackageUninstallTargetProcessor extends AbstractTargetProcessor implements TargetProcessor {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
