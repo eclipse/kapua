@@ -17,6 +17,11 @@ import org.eclipse.kapua.model.id.KapuaId;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * {@link JobStartOptions} implementation.
+ *
+ * @since 1.1.0
+ */
 public class JobStartOptionsRemote implements JobStartOptions {
 
     private Set<KapuaId> targetIdSublist;

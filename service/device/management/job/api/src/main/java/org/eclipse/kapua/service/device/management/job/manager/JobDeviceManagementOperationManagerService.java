@@ -35,6 +35,7 @@ import org.eclipse.kapua.service.device.management.registry.operation.DeviceMana
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationProperty;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationQuery;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetAttributes;
 import org.eclipse.kapua.service.job.targets.JobTargetFactory;
@@ -47,6 +48,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
+/**
+ * Default logic to process a {@link org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification}
+ * from a Device after a DEPLOY-V2 has started.
+ *
+ * @since 1.1.0
+ */
 public interface JobDeviceManagementOperationManagerService extends KapuaService {
 
     Logger LOG = LoggerFactory.getLogger(JobDeviceManagementOperationManagerService.class);
@@ -65,6 +72,21 @@ public interface JobDeviceManagementOperationManagerService extends KapuaService
     JobTargetService JOB_TARGET_SERVICE = LOCATOR.getService(JobTargetService.class);
     JobTargetFactory JOB_TARGET_FACTORY = LOCATOR.getFactory(JobTargetFactory.class);
 
+    /**
+     * When a {@link ManagementOperationNotification} with {@link OperationStatus#COMPLETED} or {@link OperationStatus#FAILED} tries to look if this {@link DeviceManagementOperation}
+     * is associated with a {@link org.eclipse.kapua.service.job.Job}.
+     * <p>
+     * If the associaton is found, the related {@link JobTarget#getStatus()} is updated with the result and eventually starts the {@link org.eclipse.kapua.service.job.Job} to continue
+     * the processing of the {@link JobTarget}.
+     *
+     * @param scopeId     The scope {@link KapuaId} of the {@link ManagementOperationNotification}.
+     * @param operationId The {@link ManagementOperationNotification#getOperationId()}.
+     * @param updateOn    The {@link Date} that the {@link ManagementOperationNotification} arrived.
+     * @param resource    The {@link ManagementOperationNotification#getResource()}.
+     * @param status      The {@link ManagementOperationNotification#getStatus()}
+     * @throws KapuaException If something goes bad.
+     * @since 1.1.0
+     */
     default void processJobTargetOnNotification(KapuaId scopeId, KapuaId operationId, Date updateOn, String resource, OperationStatus status) throws KapuaException {
 
         if (OperationStatus.RUNNING.equals(status)) {
@@ -143,23 +165,32 @@ public interface JobDeviceManagementOperationManagerService extends KapuaService
             }
         } while (failed);
 
+        //
+        // If PROCESS_FAILED no need to continue the JobTarget processing
         if (JobTargetStatus.PROCESS_FAILED.equals(jobTarget.getStatus())) {
             return;
         }
 
         //
-        // Look for the job device management operation entity
-
+        // Start the job
         JobStartOptions jobStartOptions = JOB_ENGINE_FACTORY.newJobStartOptions();
         jobStartOptions.addTargetIdToSublist(jobTarget.getId());
         jobStartOptions.setFromStepIndex(jobTarget.getStepIndex());
         jobStartOptions.setEnqueue(true);
 
-        //
-        // Start the job
         JOB_ENGINE_SERVICE.startJob(scopeId, jobDeviceManagementOperation.getJobId(), jobStartOptions);
     }
 
+    /**
+     * Gets the {@link JobDeviceManagementOperation} associated with the given {@link DeviceManagementOperation#getOperationId()}.
+     *
+     * @param scopeId     The scope {@link KapuaId} of the {@link JobDeviceManagementOperation}.
+     * @param operationId The {@link DeviceManagementOperation#getOperationId()} to match.
+     * @return The matched {@link JobDeviceManagementOperation}
+     * @throws KapuaEntityNotFoundException if there is no {@link JobDeviceManagementOperation} with the given {@code operationId}.
+     * @throws KapuaException               If something goes bad.
+     * @since 1.1.0
+     */
     default JobDeviceManagementOperation getJobDeviceManagementOperation(KapuaId scopeId, KapuaId operationId) throws KapuaException {
         JobDeviceManagementOperationQuery query = JOB_DEVICE_MANAGEMENT_OPERATION_FACTORY.newQuery(scopeId);
         query.setPredicate(new AttributePredicateImpl<>(JobDeviceManagementOperationAttributes.DEVICE_MANAGEMENT_OPERATION_ID, operationId));
@@ -175,6 +206,16 @@ public interface JobDeviceManagementOperationManagerService extends KapuaService
     }
 
 
+    /**
+     * Gets the {@link DeviceManagementOperation} that matches the given {@code operationId}.
+     *
+     * @param scopeId     The scope {@link KapuaId} of the {@link DeviceManagementOperation}.
+     * @param operationId The {@link DeviceManagementOperation#getOperationId()} to match.
+     * @return The matched {@link DeviceManagementOperation}.
+     * @throws KapuaEntityNotFoundException if there is no {@link DeviceManagementOperation} with the given {@code operationId}.
+     * @throws KapuaException               If something goes bad.
+     * @since 1.1.0
+     */
     default DeviceManagementOperation getDeviceManagementOperation(KapuaId scopeId, KapuaId operationId) throws KapuaException {
         DeviceManagementOperationQuery query = DEVICE_MANAGEMENT_OPERATION_FACTORY.newQuery(scopeId);
         query.setPredicate(new AttributePredicateImpl<>(DeviceManagementOperationAttributes.OPERATION_ID, operationId));

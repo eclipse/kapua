@@ -30,11 +30,35 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(factoryClass = JobDeviceManagementOperationXmlRegistry.class, factoryMethod = "newJobDeviceManagementOperationCreator")
 public interface JobDeviceManagementOperationCreator extends KapuaEntityCreator<JobDeviceManagementOperation> {
 
+    /**
+     * Gets the {@link org.eclipse.kapua.service.job.Job} {@link KapuaId}.
+     *
+     * @return The {@link org.eclipse.kapua.service.job.Job} {@link KapuaId}.
+     * @since 1.1.0
+     */
     KapuaId getJobId();
 
+    /**
+     * Sets the {@link org.eclipse.kapua.service.job.Job} {@link KapuaId}.
+     *
+     * @param jobId The {@link org.eclipse.kapua.service.job.Job} {@link KapuaId}.
+     * @since 1.1.0
+     */
     void setJobId(KapuaId jobId);
 
+    /**
+     * Gets the {@link org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation} {@link KapuaId}.
+     *
+     * @return The {@link org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation} {@link KapuaId}.
+     * @since 1.1.0
+     */
     KapuaId getDeviceManagementOperationId();
 
+    /**
+     * Sets the {@link org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation} {@link KapuaId}.
+     *
+     * @param deviceManagementOperationId The {@link org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation} {@link KapuaId}.
+     * @since 1.1.0
+     */
     void setDeviceManagementOperationId(KapuaId deviceManagementOperationId);
 }

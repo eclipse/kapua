@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,6 +15,7 @@ import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.scheduler.quartz.job.KapuaJobLauncher;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
@@ -33,11 +34,25 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import java.util.TimeZone;
 
+/**
+ * Utility class to crate Quartz {@link org.quartz.Trigger}s.
+ *
+ * @since 1.1.0
+ */
 public class QuartzTriggerUtils {
 
     private QuartzTriggerUtils() {
     }
 
+    /**
+     * Creates a Quartz {@link org.quartz.Trigger} that starts now.
+     *
+     * @param scopeId        The {@link Job#getScopeId()} to start.
+     * @param jobId          The {@link Job#getId()} to start
+     * @param uniqueId       A unique {@link KapuaId} to associate with the Quartz {@link org.quartz.Trigger}.
+     * @param triggerDataMap The {@link JobDataMap} with properties for the Quartz {@link org.quartz.Trigger}
+     * @since 1.1.0
+     */
     public static void createQuartzTrigger(KapuaId scopeId, KapuaId jobId, KapuaId uniqueId, JobDataMap triggerDataMap) {
         JobKey jobkey = JobKey.jobKey(KapuaJobLauncher.class.getName(), "USER");
 
@@ -86,6 +101,13 @@ public class QuartzTriggerUtils {
         }
     }
 
+    /**
+     * Creates a Quartz {@link org.quartz.Trigger} from the Kapua {@link Trigger}.
+     *
+     * @param trigger The {@link Trigger} from which to extract data.
+     * @throws KapuaException If something goes bad
+     * @since 1.1.0
+     */
     public static void createQuartzTrigger(Trigger trigger) throws KapuaException {
         JobKey jobkey = JobKey.jobKey(KapuaJobLauncher.class.getName(), "USER");
 

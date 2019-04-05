@@ -33,6 +33,8 @@ public class JobDeviceManagementOperationEntityManagerFactory extends AbstractEn
 
     /**
      * Constructs a new entity manager factory and configure it to use the job persistence unit.
+     *
+     * @since 1.1.0
      */
     private JobDeviceManagementOperationEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME,
@@ -44,6 +46,7 @@ public class JobDeviceManagementOperationEntityManagerFactory extends AbstractEn
      * Return the {@link EntityManager} singleton instance
      *
      * @return
+     * @since 1.1.0
      */
     public static JobDeviceManagementOperationEntityManagerFactory getInstance() {
         return instance;

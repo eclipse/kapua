@@ -14,6 +14,11 @@ package org.eclipse.kapua.service.device.management.job.manager.internal;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.device.management.job.manager.JobDeviceManagementOperationManagerService;
 
+/**
+ * {@link JobDeviceManagementOperationManagerService} implementation
+ *
+ * @since 1.1.0
+ */
 @KapuaProvider
 public class JobDeviceManagementOperationManagerServiceImpl implements JobDeviceManagementOperationManagerService {
 }

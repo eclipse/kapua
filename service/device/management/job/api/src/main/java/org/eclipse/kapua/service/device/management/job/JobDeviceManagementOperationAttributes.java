@@ -20,7 +20,14 @@ import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
  */
 public class JobDeviceManagementOperationAttributes extends KapuaNamedEntityAttributes {
 
+    /**
+     * @since 1.1.0
+     */
     public static final String JOB_ID = "jobId";
+
+    /**
+     * @since 1.1.0
+     */
     public static final String DEVICE_MANAGEMENT_OPERATION_ID = "deviceManagementOperationId";
 
 }

@@ -31,6 +31,5 @@ public interface JobDeviceManagementOperationService extends KapuaEntityService<
      * @since 1.1.0
      */
     @Override
-    JobDeviceManagementOperationListResult query(KapuaQuery<JobDeviceManagementOperation> query)
-            throws KapuaException;
+    JobDeviceManagementOperationListResult query(KapuaQuery<JobDeviceManagementOperation> query) throws KapuaException;
 }

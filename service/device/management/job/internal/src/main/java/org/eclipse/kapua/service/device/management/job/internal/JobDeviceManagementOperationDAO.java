@@ -38,6 +38,7 @@ public class JobDeviceManagementOperationDAO {
      * @param jobDeviceManagementOperationCreator
      * @return
      * @throws KapuaException
+     * @since 1.1.0
      */
     public static JobDeviceManagementOperation create(EntityManager em, JobDeviceManagementOperationCreator jobDeviceManagementOperationCreator)
             throws KapuaException {
@@ -57,6 +58,7 @@ public class JobDeviceManagementOperationDAO {
      * @param scopeId
      * @param jobDeviceManagementOperationId
      * @return
+     * @since 1.1.0
      */
     public static JobDeviceManagementOperation find(EntityManager em, KapuaId scopeId, KapuaId jobDeviceManagementOperationId) {
         return ServiceDAO.find(em, JobDeviceManagementOperationImpl.class, scopeId, jobDeviceManagementOperationId);
@@ -69,6 +71,7 @@ public class JobDeviceManagementOperationDAO {
      * @param jobDeviceManagementOperationQuery
      * @return
      * @throws KapuaException
+     * @since 1.1.0
      */
     public static JobDeviceManagementOperationListResult query(EntityManager em, KapuaQuery<JobDeviceManagementOperation> jobDeviceManagementOperationQuery)
             throws KapuaException {
@@ -82,6 +85,7 @@ public class JobDeviceManagementOperationDAO {
      * @param jobDeviceManagementOperationQuery
      * @return
      * @throws KapuaException
+     * @since 1.1.0
      */
     public static long count(EntityManager em, KapuaQuery<JobDeviceManagementOperation> jobDeviceManagementOperationQuery)
             throws KapuaException {
@@ -96,6 +100,7 @@ public class JobDeviceManagementOperationDAO {
      * @param scopeId
      * @param jobDeviceManagementOperationId
      * @throws KapuaEntityNotFoundException If the {@link JobDeviceManagementOperation} is not found
+     * @since 1.1.0
      */
     public static void delete(EntityManager em, KapuaId scopeId, KapuaId jobDeviceManagementOperationId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, JobDeviceManagementOperationImpl.class, scopeId, jobDeviceManagementOperationId);
