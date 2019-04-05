@@ -55,6 +55,7 @@ import org.eclipse.kapua.service.device.registry.DeviceDomain;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
@@ -254,12 +255,11 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
             // If there are results
             if (!users.isEmpty()) {
-                final UserQuery allUsersQuery = USER_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtUserQuery.getScopeId()));
                 UserListResult allUsers = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                     @Override
                     public UserListResult call() throws Exception {
-                        return USER_SERVICE.query(allUsersQuery);
+                        return USER_SERVICE.query(USER_FACTORY.newQuery(KapuaId.ANY));
                     }
                 });
 
@@ -295,20 +295,18 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             final User user = USER_SERVICE.find(scopeId, userId);
 
             if (user != null) {
-                final User createdUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+                UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                     @Override
-                    public User call() throws Exception {
-                        return USER_SERVICE.find(scopeId, user.getCreatedBy());
+                    public UserListResult call() throws Exception {
+                        return USER_SERVICE.query(USER_FACTORY.newQuery(KapuaId.ANY));
                     }
                 });
-                final User modifiedUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
-                    @Override
-                    public User call() throws Exception {
-                        return USER_SERVICE.find(scopeId, user.getModifiedBy());
-                    }
-                });
+                Map<String, String> usernameMap = new HashMap<String, String>();
+                for (User userItem : userListResult.getItems()) {
+                    usernameMap.put(userItem.getId().toCompactId(), userItem.getName());
+                }
 
                 DeviceConnection deviceConnection = null;
                 if (deviceListQuery(scopeId) != null && AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(new DeviceConnectionDomain(), Actions.read, scopeId))) {
@@ -325,9 +323,9 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userPhoneNumber", user.getPhoneNumber()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "expirationDate", user.getExpirationDate()));
                 gwtUserDescription.add(new GwtGroupedNVPair("entityInfo", "userCreatedOn", user.getCreatedOn()));
-                gwtUserDescription.add(new GwtGroupedNVPair("entityInfo", "userCreatedBy", createdUser != null ? createdUser.getName() : null));
+                gwtUserDescription.add(new GwtGroupedNVPair("entityInfo", "userCreatedBy", user.getCreatedBy() != null ? usernameMap.get(user.getCreatedBy().toCompactId()) : null));
                 gwtUserDescription.add(new GwtGroupedNVPair("entityInfo", "userModifiedOn", user.getModifiedOn()));
-                gwtUserDescription.add(new GwtGroupedNVPair("entityInfo", "userModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
+                gwtUserDescription.add(new GwtGroupedNVPair("entityInfo", "userModifiedBy", user.getModifiedBy() != null ? usernameMap.get(user.getModifiedBy().toCompactId()) : null));
                 if (deviceConnection != null && deviceConnection.getReservedUserId() != null && deviceConnection.getReservedUserId().equals(user.getId())) {
                     gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userReservedConnection", "Yes" )); }
             }

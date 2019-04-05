@@ -137,7 +137,7 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
 
                     @Override
                     public UserListResult call() throws Exception {
-                        return userService.query(userFactory.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtTagQuery.getScopeId())));
+                        return userService.query(userFactory.newQuery(KapuaId.ANY));
                     }
                 });
 
@@ -183,29 +183,27 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
             final Tag tag = tagService.find(scopeId, tagId);
 
             if (tag != null) {
-                User createdUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+                UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                     @Override
-                    public User call() throws Exception {
-                        return userService.find(scopeId, tag.getCreatedBy());
+                    public UserListResult call() throws Exception {
+                        return userService.query(userFactory.newQuery(KapuaId.ANY));
                     }
                 });
-                User modifiedUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
-                    @Override
-                    public User call() throws Exception {
-                        return userService.find(scopeId, tag.getModifiedBy());
-                    }
-                });
+                Map<String, String> usernameMap = new HashMap<String, String>();
+                for (User user : userListResult.getItems()) {
+                    usernameMap.put(user.getId().toCompactId(), user.getName());
+                }
 
                 // gwtTagDescription.add(new GwtGroupedNVPair("Entity", "Scope
                 // Id", KapuaGwtCommonsModelConverter.convertKapuaId(tag.getScopeId())));
                 gwtTagDescription.add(new GwtGroupedNVPair("tagInfo", "tagName", tag.getName()));
                 gwtTagDescription.add(new GwtGroupedNVPair("tagInfo", "tagDescription", tag.getDescription()));
                 gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagModifiedOn", tag.getModifiedOn()));
-                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
+                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagModifiedBy", tag.getModifiedBy() != null ? usernameMap.get(tag.getModifiedBy().toCompactId()) : null));
                 gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagCreatedOn", tag.getCreatedOn()));
-                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagCreatedBy", createdUser != null ? createdUser.getName() : null));
+                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagCreatedBy", tag.getCreatedBy() != null ? usernameMap.get(tag.getCreatedBy().toCompactId()) : null));
 
             }
         } catch (Exception e) {

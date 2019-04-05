@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -76,15 +76,16 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
 
             // If there are results
             if (!jobs.isEmpty()) {
-                UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
+                UserListResult usernames = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                     @Override
                     public UserListResult call() throws Exception {
-                        return USER_SERVICE.query(USER_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobQuery.getScopeId())));
+                        return USER_SERVICE.query(USER_FACTORY.newQuery(KapuaId.ANY));
                     }
                 });
+
                 Map<String, String> usernameMap = new HashMap<String, String>();
-                for (User user : userListResult.getItems()) {
+                for (User user : usernames.getItems()) {
                     usernameMap.put(user.getId().toCompactId(), user.getName());
                 }
 
@@ -201,29 +202,26 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
 
             final Job job = JOB_SERVICE.find(scopeId, jobId);
 
-            final User createdUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+            UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                 @Override
-                public User call() throws Exception {
-                    return USER_SERVICE.find(scopeId, job.getCreatedBy());
+                public UserListResult call() throws Exception {
+                    return USER_SERVICE.query(USER_FACTORY.newQuery(KapuaId.ANY));
                 }
             });
 
-            final User modifiedUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
-
-                @Override
-                public User call() throws Exception {
-                    return USER_SERVICE.find(scopeId, job.getModifiedBy());
-                }
-            });
+            Map<String, String> usernameMap = new HashMap<String, String>();
+            for (User user : userListResult.getItems()) {
+                usernameMap.put(user.getId().toCompactId(), user.getName());
+            }
 
             if (job != null) {
                 gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobName", job.getName()));
                 gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobDescription", job.getDescription()));
                 gwtJobDescription.add(new GwtGroupedNVPair("entityInfo", "jobCreatedOn", job.getCreatedOn()));
-                gwtJobDescription.add(new GwtGroupedNVPair("entityInfo", "jobCreatedBy", createdUser != null ? createdUser.getName() : null));
+                gwtJobDescription.add(new GwtGroupedNVPair("entityInfo", "jobCreatedBy", job.getCreatedBy() != null ? usernameMap.get(job.getCreatedBy().toCompactId()) : null));
                 gwtJobDescription.add(new GwtGroupedNVPair("entityInfo", "jobModifiedOn", job.getModifiedOn()));
-                gwtJobDescription.add(new GwtGroupedNVPair("entityInfo", "jobModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
+                gwtJobDescription.add(new GwtGroupedNVPair("entityInfo", "jobModifiedBy", job.getModifiedBy() != null ? usernameMap.get(job.getModifiedBy().toCompactId()) : null));
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);
