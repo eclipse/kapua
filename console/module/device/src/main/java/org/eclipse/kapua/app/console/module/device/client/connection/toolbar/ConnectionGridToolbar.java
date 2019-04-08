@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.connection.toolbar;
 
-import com.extjs.gxt.ui.client.event.Events;
 import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
@@ -44,7 +43,6 @@ public class ConnectionGridToolbar extends EntityCRUDToolbar<GwtDeviceConnection
         ConnectionEditDialog dialog = null;
         if (selectedConnection != null) {
             dialog = new ConnectionEditDialog(currentSession, selectedConnection);
-            dialog.addListener(Events.Hide, getHideDialogListener());
         }
         return dialog;
     }
