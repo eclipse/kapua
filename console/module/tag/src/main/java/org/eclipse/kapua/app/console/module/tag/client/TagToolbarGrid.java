@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,7 +17,6 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTag;
 import org.eclipse.kapua.app.console.module.tag.shared.model.permission.TagSessionPermission;
 
-import com.extjs.gxt.ui.client.event.Events;
 import com.google.gwt.user.client.Element;
 
 public class TagToolbarGrid extends EntityCRUDToolbar<GwtTag> {
@@ -32,9 +31,7 @@ public class TagToolbarGrid extends EntityCRUDToolbar<GwtTag> {
 
     @Override
     protected KapuaDialog getAddDialog() {
-        TagAddDialog dialog = new TagAddDialog(currentSession);
-        dialog.addListener(Events.Hide, getHideDialogListener());
-        return dialog;
+        return new TagAddDialog(currentSession);
     }
 
     @Override
@@ -49,7 +46,6 @@ public class TagToolbarGrid extends EntityCRUDToolbar<GwtTag> {
         TagEditDialog dialog = null;
         if (selectedTag != null) {
             dialog = new TagEditDialog(currentSession, selectedTag);
-            dialog.addListener(Events.Hide, getHideDialogListener());
         }
         return dialog;
     }
@@ -60,7 +56,6 @@ public class TagToolbarGrid extends EntityCRUDToolbar<GwtTag> {
         TagDeleteDialog dialog = null;
         if (selectedTag != null) {
             dialog = new TagDeleteDialog(selectedTag);
-            dialog.addListener(Events.Hide, getHideDialogListener());
         }
         return dialog;
     }

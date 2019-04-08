@@ -24,7 +24,6 @@ import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPr
 import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceSessionPermission;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
@@ -43,9 +42,7 @@ public class DeviceGridToolbar extends EntityCRUDToolbar<GwtDevice> {
 
     @Override
     protected KapuaDialog getAddDialog() {
-        DeviceAddDialog dialog = new DeviceAddDialog(currentSession);
-        dialog.addListener(Events.Hide, getHideDialogListener());
-        return dialog;
+        return new DeviceAddDialog(currentSession);
     }
 
     @Override
@@ -69,7 +66,6 @@ public class DeviceGridToolbar extends EntityCRUDToolbar<GwtDevice> {
         DeviceEditDialog dialog = null;
         if (selectedEntity != null) {
             dialog = new DeviceEditDialog(currentSession, selectedEntity);
-            dialog.addListener(Events.Hide, getHideDialogListener());
         }
         return dialog;
     }
@@ -79,7 +75,6 @@ public class DeviceGridToolbar extends EntityCRUDToolbar<GwtDevice> {
         DeviceDeleteDialog dialog = null;
         if (selectedEntity != null) {
             dialog = new DeviceDeleteDialog(selectedEntity);
-            dialog.addListener(Events.Hide, getHideDialogListener());
         }
         return dialog;
     }
