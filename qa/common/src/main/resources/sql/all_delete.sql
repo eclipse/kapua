@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,7 +18,6 @@ DELETE FROM atht_access_token;
 
 DELETE FROM athz_role WHERE NOT (scope_id = 1 AND id = 1);
 
---DELETE FROM athz_role_permission WHERE NOT (scope_id = 1 AND role_id = 1 AND id IN (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20));
 DELETE FROM athz_role_permission WHERE NOT (scope_id = 1 AND role_id = 1);
 
 DELETE FROM dvc_device_connection;
