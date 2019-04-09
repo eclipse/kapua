@@ -224,7 +224,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         return gwtSession;
     }
 
-    private GwtSession establishSession() throws KapuaException {
+    private GwtSession establishSession() throws KapuaException, GwtKapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
 
         //
@@ -255,67 +255,73 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             }
         });
 
-        //
-        // Convert entities
-        GwtUser gwtUser = KapuaGwtUserModelConverter.convertUser(user);
-        GwtAccount gwtAccount = KapuaGwtAccountModelConverter.convertAccount(account);
+        try {
+            //
+            // Convert entities
+            GwtUser gwtUser = KapuaGwtUserModelConverter.convertUser(user);
+            GwtAccount gwtAccount = KapuaGwtAccountModelConverter.convertAccount(account);
 
-        //
-        // Build the session
-        final GwtSession gwtSession = new GwtSession();
+            //
+            // Build the session
+            final GwtSession gwtSession = new GwtSession();
 
-        // Console info
-        SystemSetting commonsConfig = SystemSetting.getInstance();
-        gwtSession.setVersion(commonsConfig.getString(SystemSettingKey.VERSION));
-        gwtSession.setBuildVersion(commonsConfig.getString(SystemSettingKey.BUILD_VERSION));
-        gwtSession.setBuildNumber(commonsConfig.getString(SystemSettingKey.BUILD_NUMBER));
+            // Console info
+            SystemSetting commonsConfig = SystemSetting.getInstance();
+            gwtSession.setVersion(commonsConfig.getString(SystemSettingKey.VERSION));
+            gwtSession.setBuildVersion(commonsConfig.getString(SystemSettingKey.BUILD_VERSION));
+            gwtSession.setBuildNumber(commonsConfig.getString(SystemSettingKey.BUILD_NUMBER));
 
-        // User info
-        gwtSession.setUserId(gwtUser.getId());
-        gwtSession.setAccountId(gwtAccount.getId());
-        gwtSession.setRootAccountId(gwtAccount.getId());
-        gwtSession.setSelectedAccountId(gwtAccount.getId());
+            // User info
+            gwtSession.setUserId(gwtUser.getId());
+            gwtSession.setAccountId(gwtAccount.getId());
+            gwtSession.setRootAccountId(gwtAccount.getId());
+            gwtSession.setSelectedAccountId(gwtAccount.getId());
 
-        gwtSession.setUserName(gwtUser.getUsername());
-        gwtSession.setUserDisplayName(gwtUser.getDisplayName());
-        gwtSession.setRootAccountName(gwtAccount.getName());
-        gwtSession.setSelectedAccountName(gwtAccount.getName());
+            gwtSession.setUserName(gwtUser.getUsername());
+            gwtSession.setUserDisplayName(gwtUser.getDisplayName());
+            gwtSession.setRootAccountName(gwtAccount.getName());
+            gwtSession.setSelectedAccountName(gwtAccount.getName());
 
-        gwtSession.setAccountPath(gwtAccount.getParentAccountPath());
-        gwtSession.setSelectedAccountPath(gwtAccount.getParentAccountPath());
+            gwtSession.setAccountPath(gwtAccount.getParentAccountPath());
+            gwtSession.setSelectedAccountPath(gwtAccount.getParentAccountPath());
 
-        //
-        // Load permissions
-        KapuaSecurityUtils.doPrivileged(new ThrowingRunnable() {
+            //
+            // Load permissions
+            KapuaSecurityUtils.doPrivileged(new ThrowingRunnable() {
 
-            @Override
-            public void run() throws Exception {
-                AccessInfo userAccessInfo = ACCESS_INFO_SERVICE.findByUserId(user.getScopeId(), user.getId());
+                @Override
+                public void run() throws Exception {
+                    AccessInfo userAccessInfo = ACCESS_INFO_SERVICE.findByUserId(user.getScopeId(), user.getId());
 
-                if (userAccessInfo != null) {
+                    if (userAccessInfo != null) {
 
-                    // Permission info
-                    AccessPermissionListResult accessPermissions = ACCESS_PERMISSION_SERVICE.findByAccessInfoId(userAccessInfo.getScopeId(), userAccessInfo.getId());
-                    for (AccessPermission ap : accessPermissions.getItems()) {
-                        gwtSession.addSessionPermission(convert(ap.getPermission()));
-                    }
+                        // Permission info
+                        AccessPermissionListResult accessPermissions = ACCESS_PERMISSION_SERVICE.findByAccessInfoId(userAccessInfo.getScopeId(), userAccessInfo.getId());
+                        for (AccessPermission ap : accessPermissions.getItems()) {
+                            gwtSession.addSessionPermission(convert(ap.getPermission()));
+                        }
 
-                    // Role info
-                    AccessRoleListResult accessRoles = ACCESS_ROLE_SERVICE.findByAccessInfoId(userAccessInfo.getScopeId(), userAccessInfo.getId());
+                        // Role info
+                        AccessRoleListResult accessRoles = ACCESS_ROLE_SERVICE.findByAccessInfoId(userAccessInfo.getScopeId(), userAccessInfo.getId());
 
-                    for (AccessRole ar : accessRoles.getItems()) {
-                        Role role = ROLE_SERVICE.find(ar.getScopeId(), ar.getRoleId());
+                        for (AccessRole ar : accessRoles.getItems()) {
+                            Role role = ROLE_SERVICE.find(ar.getScopeId(), ar.getRoleId());
 
-                        RolePermissionListResult rolePermissions = ROLE_PERMISSION_SERVICE.findByRoleId(role.getScopeId(), role.getId());
-                        for (RolePermission rp : rolePermissions.getItems()) {
-                            gwtSession.addSessionPermission(convert(rp.getPermission()));
+                            RolePermissionListResult rolePermissions = ROLE_PERMISSION_SERVICE.findByRoleId(role.getScopeId(), role.getId());
+                            for (RolePermission rp : rolePermissions.getItems()) {
+                                gwtSession.addSessionPermission(convert(rp.getPermission()));
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
 
-        return gwtSession;
+            return gwtSession;
+        } catch (Exception e) {
+            logout();
+            KapuaExceptionHandler.handle(e);
+        }
+        return null;
     }
 
     /**
