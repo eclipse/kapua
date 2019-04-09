@@ -203,7 +203,6 @@
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-mqtt</artifactId>
             <version>${activemq.version}</version>
-            <!--<scope>test</scope>-->
         </dependency>
         <dependency>
             <groupId>org.apache.activemq</groupId>
