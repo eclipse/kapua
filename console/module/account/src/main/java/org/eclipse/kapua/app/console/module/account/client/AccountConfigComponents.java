@@ -411,7 +411,7 @@ public class AccountConfigComponents extends LayoutContainer {
 
         // ask for confirmation
         String componentName = devConfPanel.getConfiguration().getComponentName();
-        String message = DEVICES_MSGS.deviceConfigConfirmation(componentName);
+        String message = DEVICES_MSGS.deviceConfigConfirmation();
 
         KapuaMessageBox.confirm(MSGS.confirm(),
                 message,
