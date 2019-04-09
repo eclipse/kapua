@@ -249,17 +249,24 @@ public class EntityManagerSession {
             org.eclipse.kapua.event.ServiceEvent serviceEventBus = ServiceEventScope.get();
             if (serviceEventBus != null) {
                 if (instance instanceof KapuaEntity) {
+                    KapuaEntity kapuaEntity = (KapuaEntity) instance;
                     //make sense to override the entity id and type without checking for previous empty values?
                     //override only if parameters are not evaluated
+                    logger.info("Updating service event entity infos (type, id and scope id) if missing...");
                     if (serviceEventBus.getEntityType() == null || serviceEventBus.getEntityType().trim().length() <= 0) {
-                        logger.debug("Kapua event - update entity type to '{}'", instance.getClass().getName());
-                        serviceEventBus.setEntityType(instance.getClass().getName());
+                        logger.info("Kapua event - update entity type to '{}'", kapuaEntity.getClass().getName());
+                        serviceEventBus.setEntityType(kapuaEntity.getClass().getName());
                     }
                     if (serviceEventBus.getEntityId() == null) {
-                        logger.debug("Kapua event - update entity id to '{}'", ((KapuaEntity) instance).getId());
-                        serviceEventBus.setEntityId(((KapuaEntity) instance).getId());
+                        logger.info("Kapua event - update entity id to '{}'", kapuaEntity.getId());
+                        serviceEventBus.setEntityId(kapuaEntity.getId());
                     }
-                    logger.info("Entity '{}' with id '{}' found!", instance.getClass().getName(), ((KapuaEntity) instance).getId());
+                    if (serviceEventBus.getEntityScopeId() == null) {
+                        logger.info("Kapua event - update entity scope id to '{}'", kapuaEntity.getScopeId());
+                        serviceEventBus.setEntityScopeId(kapuaEntity.getScopeId());
+                    }
+                    logger.info("Updating service event entity infos (type, id and scope id) if missing... DONE");
+                    logger.info("Entity '{}' with id '{}' and scope id '{}' found!", instance.getClass().getName(), kapuaEntity.getId(), kapuaEntity.getScopeId());
                 }
 
                 //insert the kapua event only if it's a new entity

@@ -34,6 +34,7 @@ import org.eclipse.kapua.model.xml.DateXmlAdapter;
         "service",
         "entityType",
         "scopeId",
+        "entityScopeId",
         "entityId",
         "operation",
         "inputs",
@@ -93,6 +94,10 @@ public class ServiceEvent implements Serializable {
     @XmlElement(name = "scopeId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     private KapuaId scopeId;
+
+    @XmlElement(name = "entityScopeId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    private KapuaId entityScopeId;
 
     @XmlElement(name = "entityId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
@@ -237,6 +242,24 @@ public class ServiceEvent implements Serializable {
      */
     public void setScopeId(KapuaId scopeId) {
         this.scopeId = scopeId;
+    }
+
+    /**
+     * Get the entity scope id related to the fired event
+     * 
+     * @return
+     */
+    public KapuaId getEntityScopeId() {
+        return entityScopeId;
+    }
+
+    /**
+     * Set the entity scope id related to the fired event
+     * 
+     * @param entityId
+     */
+    public void setEntityScopeId(KapuaId entityScopeId) {
+        this.entityScopeId = entityScopeId;
     }
 
     /**
