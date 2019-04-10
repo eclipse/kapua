@@ -369,6 +369,12 @@ public class DeviceAssetsPanel extends LayoutContainer {
             radioFalse.setValue(true);
             radioGroup.setOriginalValue(radioFalse);
         }
+        if(channel.getModeEnum().equals(GwtDeviceAssetChannelMode.WRITE)) {
+            radioTrue.setValue(null);
+            radioGroup.setOriginalValue(radioTrue);
+            radioFalse.setValue(null);
+            radioGroup.setOriginalValue(radioFalse);
+        }
 
         return radioGroup;
     }
