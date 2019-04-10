@@ -291,6 +291,12 @@ public class LoginDialog extends Dialog {
         login.setEnabled(true);
         reset.setEnabled(hasValue(username) &&
                 hasValue(password));
+        if(hasValue(username)) {
+            username.clearInvalid();
+        }
+        if(hasValue(password)) {
+            password.clearInvalid();
+        }
     }
 
     public void reset() {
