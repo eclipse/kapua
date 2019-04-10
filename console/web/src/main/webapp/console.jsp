@@ -42,7 +42,8 @@
             Favicon and title definition
          -->
         <title>Eclipse Kapua&trade; Console</title>
-        
+        <link rel="icon" type="image/ico" href="img/icon-color.ico"
+    sizes="32x32" />
         <!-- 
             CSS resources
          -->
