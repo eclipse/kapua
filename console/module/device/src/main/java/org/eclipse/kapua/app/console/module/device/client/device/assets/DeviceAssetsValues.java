@@ -399,7 +399,7 @@ public class DeviceAssetsValues extends LayoutContainer {
 
         // ask for confirmation
         String assetName = assetValuesPanel.getAsset().getName();
-        String message = DEVICE_MSGS.deviceAssetConfirmation(assetName);
+        String message = DEVICE_MSGS.deviceAssetConfirmation();
 
         KapuaMessageBox.confirm(MSGS.confirm(),
                 message,

@@ -467,7 +467,7 @@ public class DeviceConfigComponents extends LayoutContainer {
 
         // ask for confirmation
         String componentName = devConfPanel.getConfiguration().getComponentName();
-        String message = DEVICE_MSGS.deviceConfigConfirmation(componentName);
+        String message = DEVICE_MSGS.deviceConfigConfirmation();
         final boolean isCloudUpdate = "CloudService".equals(componentName);
         if (isCloudUpdate) {
             message = DEVICE_MSGS.deviceCloudConfigConfirmation(componentName);
