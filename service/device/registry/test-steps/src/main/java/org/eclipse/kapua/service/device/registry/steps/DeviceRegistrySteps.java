@@ -74,7 +74,6 @@ import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
-import org.eclipse.kapua.service.device.registry.common.DeviceValidation;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionDomain;
@@ -322,6 +321,34 @@ public class DeviceRegistrySteps extends TestBase {
         stepData.put("DeviceCreator", deviceCreator);
     }
 
+    @Given("^The device ID (.+)$")
+    public void setDeviceId(String deviceId) {
+
+        KapuaId dev;
+
+        if (deviceId.trim().toLowerCase().equals("null")) {
+            dev = null;
+        } else {
+            dev = getKapuaId(deviceId);
+        }
+
+        stepData.put("DeviceId", dev);
+    }
+
+    @Given("^The device client ID \"(.+)\"$")
+    public void setDeviceClientId(String clientId) {
+
+        String id;
+
+        if (clientId.trim().toLowerCase().equals("null")) {
+            id = null;
+        } else {
+            id = clientId;
+        }
+
+        stepData.put("ClientId", id);
+    }
+
     @Given("^A regular device$")
     public void createRegularDevice() {
 
@@ -511,14 +538,22 @@ public class DeviceRegistrySteps extends TestBase {
         }
     }
 
-    @When("^I search for a device with the client ID \"(.+)\"$")
+    @When("^I search for a device with the client ID \"(.*)\"$")
     public void findDeviceWithClientId(String clientId)
             throws Exception {
+
+        String client;
+
+        if (clientId.trim().toLowerCase().equals("null")) {
+            client = null;
+        } else {
+            client = clientId;
+        }
 
         primeException();
         try {
             stepData.remove("Device");
-            Device device = deviceRegistryService.findByClientId(getCurrentScopeId(), clientId);
+            Device device = deviceRegistryService.findByClientId(getCurrentScopeId(), client);
             stepData.put("Device", device);
         } catch (KapuaException ex) {
             verifyException(ex);
@@ -548,6 +583,22 @@ public class DeviceRegistrySteps extends TestBase {
             stepData.remove("Device");
             Device device = deviceRegistryService.findByClientId(getCurrentScopeId(), String.valueOf(random.nextLong()));
             stepData.put("Device", device);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I perform the remembered query$")
+    public void queryForDevices()
+            throws Exception {
+
+        DeviceQuery tmpQuery = (DeviceQuery) stepData.get("DeviceQuery");
+
+        primeException();
+        try {
+            stepData.remove("DeviceList");
+            DeviceListResult deviceList = deviceRegistryService.query(tmpQuery);
+            stepData.put("DeviceList", deviceList);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -617,6 +668,22 @@ public class DeviceRegistrySteps extends TestBase {
         stepData.put("Device", deviceList.getFirstItem());
     }
 
+    @When("^I count the devices based on the remembered query$")
+    public void countForDevices()
+            throws Exception {
+
+        DeviceQuery tmpQuery = (DeviceQuery) stepData.get("DeviceQuery");
+
+        primeException();
+        try {
+            stepData.remove("Count");
+            Long deviceCount = deviceRegistryService.count(tmpQuery);
+            stepData.put("Count", deviceCount);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
     @When("^I count the devices in scope (\\d+)$")
     public void countDevicesInScope(int scope)
             throws Exception {
@@ -655,8 +722,10 @@ public class DeviceRegistrySteps extends TestBase {
             throws Exception {
 
         Device device = (Device) stepData.get("Device");
-        device.setBiosVersion(device.getBiosVersion() + "_upd");
-        device.setCustomAttribute1(device.getCustomAttribute1() + "_upd");
+        if (device != null) {
+            device.setBiosVersion(device.getBiosVersion() + "_upd");
+            device.setCustomAttribute1(device.getCustomAttribute1() + "_upd");
+        }
 
         primeException();
         try {
@@ -692,6 +761,20 @@ public class DeviceRegistrySteps extends TestBase {
         primeException();
         try {
             deviceRegistryService.update(device);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I delete the device with the remembered ID$")
+    public void deleteDeviceWithRememberedId()
+            throws Exception {
+
+        KapuaId deviceId = (KapuaId) stepData.get("DeviceId");
+
+        primeException();
+        try {
+            deviceRegistryService.delete(getCurrentScopeId(), deviceId);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -929,143 +1012,6 @@ public class DeviceRegistrySteps extends TestBase {
         assertNotNull(tmpCreator);
         assertNotNull(tmpQuery);
         assertNotNull(tmpListRes);
-    }
-
-    @When("^I validate the device creator$")
-    public void validateExistingDeviceCreator()
-            throws Exception {
-
-        DeviceCreator deviceCreator = (DeviceCreator) stepData.get("DeviceCreator");
-
-        primeException();
-        try {
-            DeviceValidation.validateCreatePreconditions(deviceCreator);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("^I validate the device for updates$")
-    public void validateExistingDeviceForUpdates()
-            throws Exception {
-
-        Device device = (Device) stepData.get("Device");
-
-        primeException();
-        try {
-            DeviceValidation.validateUpdatePreconditions(device);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("^Validating a find operation for scope (.+) and device (.+)$")
-    public void validateDeviceSearch(String scopeId, String deviceId)
-            throws Exception {
-
-        KapuaId scope;
-        KapuaId dev;
-
-        if (scopeId.trim().toLowerCase().equals("null")) {
-            scope = null;
-        } else {
-            scope = getKapuaId(scopeId);
-        }
-
-        if (deviceId.trim().toLowerCase().equals("null")) {
-            dev = null;
-        } else {
-            dev = getKapuaId(deviceId);
-        }
-
-        primeException();
-        try {
-            DeviceValidation.validateFindPreconditions(scope, dev);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("^Validating a find operation for scope (.+) and client \"(.*)\"$")
-    public void validateDeviceSearchByClientId(String scopeId, String clientId)
-            throws Exception {
-
-        KapuaId scope;
-        String client;
-
-        if (scopeId.trim().toLowerCase().equals("null")) {
-            scope = null;
-        } else {
-            scope = getKapuaId(scopeId);
-        }
-
-        if (clientId.trim().toLowerCase().equals("null")) {
-            client = null;
-        } else {
-            client = clientId;
-        }
-
-        primeException();
-        try {
-            DeviceValidation.validateFindByClientIdPreconditions(scope, client);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("^Validating a delete operation for scope (.+) and device (.+)$")
-    public void validateDeviceDelete(String scopeId, String deviceId)
-            throws Exception {
-
-        KapuaId scope;
-        KapuaId dev;
-
-        if (scopeId.trim().toLowerCase().equals("null")) {
-            scope = null;
-        } else {
-            scope = getKapuaId(scopeId);
-        }
-
-        if (deviceId.trim().toLowerCase().equals("null")) {
-            dev = null;
-        } else {
-            dev = getKapuaId(deviceId);
-        }
-
-        primeException();
-        try {
-            DeviceValidation.validateDeletePreconditions(scope, dev);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("^I validate a query operation$")
-    public void checkQueryOperation()
-            throws Exception {
-
-        DeviceQuery query = (DeviceQuery) stepData.get("DeviceQuery");
-
-        primeException();
-        try {
-            DeviceValidation.validateQueryPreconditions(query);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("^I validate a count operation$")
-    public void checkCountOperation()
-            throws Exception {
-
-        DeviceQuery query = (DeviceQuery) stepData.get("DeviceQuery");
-
-        primeException();
-        try {
-            DeviceValidation.validateCountPreconditions(query);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
     }
 
     // ************************************************************************************
