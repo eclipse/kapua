@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,16 +12,19 @@
 package org.eclipse.kapua.app.console.module.data.client;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.LoadConfig;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
@@ -114,9 +117,15 @@ public class AssetTable extends LayoutContainer {
         assetGrid.getView().setForceFit(true);
         assetGrid.getView().setEmptyText(MSGS.assetTableEmptyText());
         assetGrid.disableTextSelection(false);
+        assetGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         for (SelectionChangedListener<GwtDatastoreAsset> listener : listeners) {
             assetGrid.getSelectionModel().addSelectionChangedListener(listener);
         }
+
+        final GridSelectionModel<GwtDatastoreAsset> gridSelectionModel = assetGrid.getSelectionModel();
+        GridSelectionChangedListener<GwtDatastoreAsset> gridSelectionChangedListener = new GridSelectionChangedListener<GwtDatastoreAsset>();
+        gridSelectionChangedListener.setSelectionModel(gridSelectionModel);
+        gridSelectionModel.addListener(Events.SelectionChange, gridSelectionChangedListener);
     }
 
     public void clearTable() {
