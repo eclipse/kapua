@@ -179,6 +179,11 @@ public class TopicsTable extends LayoutContainer {
                 updateTimestamps(tge.getModel().getChildren());
             }
         });
+
+        final GridSelectionModel<GwtTopic> gridSelectionModel = topicInfoGrid.getSelectionModel();
+        GridSelectionChangedListener<GwtTopic> gridSelectionChangedListener = new GridSelectionChangedListener<GwtTopic>();
+        gridSelectionChangedListener.setSelectionModel(gridSelectionModel);
+        selectionModel.addListener(Events.SelectionChange, gridSelectionChangedListener);
     }
 
     @Override

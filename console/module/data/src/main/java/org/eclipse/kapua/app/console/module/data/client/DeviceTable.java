@@ -12,6 +12,7 @@
 package org.eclipse.kapua.app.console.module.data.client;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
 import com.extjs.gxt.ui.client.data.LoadEvent;
@@ -31,6 +32,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
@@ -168,6 +170,7 @@ public class DeviceTable extends LayoutContainer {
         deviceGrid.getView().setForceFit(true);
         deviceGrid.getView().setEmptyText(DATA_MSGS.deviceTableEmptyText());
         deviceGrid.disableTextSelection(false);
+        deviceGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         for (SelectionChangedListener<GwtDatastoreDevice> listener : listeners) {
             deviceGrid.getSelectionModel().addSelectionChangedListener(listener);
         }
@@ -178,6 +181,11 @@ public class DeviceTable extends LayoutContainer {
                 loader.load();
             }
         });
+
+        final GridSelectionModel<GwtDatastoreDevice> gridSelectionModel = deviceGrid.getSelectionModel();
+        GridSelectionChangedListener<GwtDatastoreDevice> gridSelectionChangedListener = new GridSelectionChangedListener<GwtDatastoreDevice>();
+        gridSelectionChangedListener.setSelectionModel(gridSelectionModel);
+        gridSelectionModel.addListener(Events.SelectionChange, gridSelectionChangedListener);
     }
 
     public void addSelectionChangedListener(SelectionChangedListener<GwtDatastoreDevice> listener) {
