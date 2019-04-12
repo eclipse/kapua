@@ -17,10 +17,18 @@ Than you can run the Kapua full build issuing the command:
 
     mvn clean install
 
+Don't forget to also add the `console` Maven profile if you are interested in building the Web Console as well:
+
+    mvn clean install -Pconsole
+
 If you only want to run Kapua locally for testing you can speed up the build
 by using:
 
     mvn clean install -Pdev -DskipTests=true
+
+Again, add the `console` profile as well if needed:
+
+    mvn clean install -Pdev,console -DskipTests=true
 
 ## Documentation
 
@@ -81,10 +89,18 @@ In order to build Kapua Docker images yourself, execute Maven build with `docker
 
     mvn clean install -Pdocker
 
+Just like building Kapua from the source code, also add the `console` profile to generate the Web Console docker image:
+
+    mvn clean install -Pdocker,console
+
 If you want to speed up the build process you can ask Maven to ignore `-SNAPSHOT` updates
 force it to use only locally present artifacts with the `dev` profile. You can also skip unit tests to speed things even more.
 
     mvn clean install -Pdocker,dev -DskipTests
+
+Again, don't forget the `console` profile if the Web Console image is needed:
+
+    mvn clean install -Pdocker,dev,console -DskipTests
 
 ### Pushing
 
@@ -99,6 +115,8 @@ Pushing to a specific docker registry:
 Pushing to a specific docker registry under a specific account:
 
     mvn -Pdocker deploy -Ddocker.push.registry=registry.hub.docker.com -Ddocker.account=eclipse
+
+Don't forget to add the `console` Maven profile to the console above if you're interested in pushing the Web Console image as well.
 
 By default Kapua applies the following tags to the published images:
 - `latest`
