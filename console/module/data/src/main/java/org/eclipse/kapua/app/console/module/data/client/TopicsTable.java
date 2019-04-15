@@ -17,6 +17,7 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.SortInfo;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -35,6 +36,7 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
@@ -164,6 +166,14 @@ public class TopicsTable extends LayoutContainer {
         topicInfoGrid.getView().setForceFit(true);
         topicInfoGrid.getView().setEmptyText(MSGS.topicInfoGridEmptyText());
         topicInfoGrid.disableTextSelection(false);
+
+        topicInfoGrid.addListener(Events.OnClick, new Listener<BaseEvent>() {
+
+            @Override
+            public void handleEvent(BaseEvent be) {
+                topicInfoGrid.unsinkEvents(Event.ONDBLCLICK);
+            }
+        });
 
         GridSelectionModel<GwtTopic> selectionModel = new GridSelectionModel<GwtTopic>();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
