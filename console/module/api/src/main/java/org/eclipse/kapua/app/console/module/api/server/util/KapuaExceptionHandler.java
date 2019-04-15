@@ -90,6 +90,9 @@ public class KapuaExceptionHandler {
         } else if(t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.PARENT_LIMIT_EXCEEDED_IN_CONFIG.name())) {
             logger.warn("Child accounts limitation error", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.PARENT_LIMIT_EXCEEDED_IN_CONFIG, t, t.getLocalizedMessage());
+        } else if(t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.ADMIN_ROLE_DELETED_ERROR.name())) {
+            logger.warn("Admin role delete error.", t);
+            throw new GwtKapuaException(GwtKapuaErrorCode.ADMIN_ROLE_DELETED_ERROR, t, t.getLocalizedMessage());
         } else if(t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.SUBJECT_UNAUTHORIZED.name())) {
             logger.warn("User unauthorize", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.SUBJECT_UNAUTHORIZED, t, ((SubjectUnauthorizedException)t).getPermission().toString());
