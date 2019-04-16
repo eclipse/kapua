@@ -266,6 +266,29 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> JobStepDAO.delete(em, scopeId, jobStepId));
+        entityManagerSession.onTransactedAction(em -> {
+            JobStep deletedJobStep = JobStepDAO.find(em, scopeId, jobStepId);
+
+            JobStepDAO.delete(em, scopeId, jobStepId);
+
+            //
+            // Shift following steps of one position in the step index
+            JobStepQuery query = new JobStepQueryImpl(scopeId);
+
+            query.setPredicate(
+                    new AndPredicateImpl(
+                            new AttributePredicateImpl<>(JobStepAttributes.JOB_ID, deletedJobStep.getJobId()),
+                            new AttributePredicateImpl<>(JobStepAttributes.STEP_INDEX, deletedJobStep.getStepIndex(), Operator.GREATER_THAN)
+                    )
+            );
+
+            JobStepListResult followingJobStep = JobStepDAO.query(em, query);
+
+            for (JobStep js : followingJobStep.getItems()) {
+                js.setStepIndex(js.getStepIndex() - 1);
+
+                JobStepDAO.update(em, js);
+            }
+        });
     }
 }

@@ -62,8 +62,8 @@ public class JobStepImpl extends AbstractKapuaNamedEntity implements JobStep {
     private KapuaEid jobStepDefinitionId;
 
     @Basic
-    @Column(name = "step_index", nullable = false, updatable = false)
-    private int stepIndex;
+    @Column(name = "step_index", nullable = false, updatable = true)
+    private Integer stepIndex;
 
     @ElementCollection
     @CollectionTable(name = "job_job_step_properties", joinColumns = @JoinColumn(name = "step_id", referencedColumnName = "id"))
