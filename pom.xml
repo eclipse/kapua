@@ -974,6 +974,11 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-qa-markers</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-rest-api-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -997,12 +1002,6 @@
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-security-certificate-internal</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>marker-api</artifactId>
-                <version>${project.version}</version>
-                <scope>test</scope>
             </dependency>
 
             <dependency>
@@ -1436,8 +1435,6 @@
         <module>dev-tools</module>
         <module>deployment</module>
 
-        <!-- JUnit marker interfaces -->
-        <module>marker-api</module>
     </modules>
 
     <profiles>

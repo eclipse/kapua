@@ -17,7 +17,7 @@ import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
 
 import org.assertj.core.api.Assertions;
 import org.eclipse.kapua.service.datastore.client.transport.EsTransportClientProvider;
-import org.eclipse.kapua.test.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.elasticsearch.client.transport.TransportClient;
 import org.junit.Ignore;
 import org.junit.Test;

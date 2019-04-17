@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedPayload;
-import org.eclipse.kapua.test.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

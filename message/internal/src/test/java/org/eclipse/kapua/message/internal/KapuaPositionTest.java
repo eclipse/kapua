@@ -14,7 +14,7 @@ package org.eclipse.kapua.message.internal;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
-import org.eclipse.kapua.test.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

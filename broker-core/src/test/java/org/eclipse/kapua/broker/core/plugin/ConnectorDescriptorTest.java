@@ -18,7 +18,7 @@ import org.eclipse.kapua.broker.core.KapuaBrokerJAXBContextLoader;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MessageType;
 import org.eclipse.kapua.broker.core.setting.BrokerSetting;
 import org.eclipse.kapua.broker.core.setting.BrokerSettingKey;
-import org.eclipse.kapua.test.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

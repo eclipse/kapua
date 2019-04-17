@@ -23,6 +23,12 @@
     <artifactId>kapua-qa-integration-steps</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-rest-api-web</artifactId>
+            <type>war</type>
+        </dependency>
+
         <!-- Required service interfaces -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>

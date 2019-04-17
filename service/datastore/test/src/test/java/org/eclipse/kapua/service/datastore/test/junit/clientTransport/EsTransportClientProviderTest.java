@@ -18,7 +18,7 @@ import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
 import org.eclipse.kapua.service.datastore.client.transport.ClientSettingsKey;
 import org.eclipse.kapua.service.datastore.client.transport.EsTransportClientProvider;
 import org.eclipse.kapua.service.datastore.client.transport.EsTransportClientProviderProxy;
-import org.eclipse.kapua.test.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.elasticsearch.client.Client;
 import org.junit.Ignore;
 import org.junit.Test;

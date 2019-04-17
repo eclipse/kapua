@@ -24,7 +24,7 @@ import org.eclipse.kapua.commons.model.misc.CollisionServiceImpl;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 
-import org.eclipse.kapua.test.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;

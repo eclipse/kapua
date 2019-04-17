@@ -200,7 +200,7 @@
 
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>marker-api</artifactId>
+            <artifactId>kapua-qa-markers</artifactId>
             <scope>compile</scope>
         </dependency>
 
