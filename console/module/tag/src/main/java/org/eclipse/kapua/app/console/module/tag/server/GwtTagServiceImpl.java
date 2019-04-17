@@ -137,7 +137,7 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
 
                     @Override
                     public UserListResult call() throws Exception {
-                        return userService.query(userFactory.newQuery(KapuaId.ANY));
+                        return userService.query(userFactory.newQuery(null));
                     }
                 });
 
@@ -187,7 +187,7 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
 
                     @Override
                     public UserListResult call() throws Exception {
-                        return userService.query(userFactory.newQuery(KapuaId.ANY));
+                        return userService.query(userFactory.newQuery(null));
                     }
                 });
 

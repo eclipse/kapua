@@ -80,7 +80,7 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
 
                     @Override
                     public UserListResult call() throws Exception {
-                        return USER_SERVICE.query(USER_FACTORY.newQuery(KapuaId.ANY));
+                        return USER_SERVICE.query(USER_FACTORY.newQuery(null));
                     }
                 });
 
@@ -206,7 +206,7 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
 
                 @Override
                 public UserListResult call() throws Exception {
-                    return USER_SERVICE.query(USER_FACTORY.newQuery(KapuaId.ANY));
+                    return USER_SERVICE.query(USER_FACTORY.newQuery(null));
                 }
             });
 

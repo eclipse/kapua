@@ -357,7 +357,7 @@ public class ServiceDAO {
         //
         // WHERE
         QueryPredicate kapuaPredicates = kapuaQuery.getPredicate();
-        if ((kapuaQuery.getScopeId() != null) && (!kapuaQuery.getScopeId().equals(KapuaId.ANY))) {
+        if (kapuaQuery.getScopeId() != null) {
 
             AndPredicate scopedAndPredicate = kapuaQuery.andPredicate(
                     kapuaQuery.attributePredicate(KapuaEntityAttributes.SCOPE_ID, kapuaQuery.getScopeId())
