@@ -53,6 +53,7 @@ public class UserEditDialog extends UserAddDialog {
             public void onSuccess(GwtUser gwtUser) {
                 unmaskDialog();
                 populateEditDialog(gwtUser);
+                selectedUser = gwtUser;
             }
 
             @Override
