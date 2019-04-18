@@ -13,8 +13,7 @@ setup and not on a full blown production setup.
 Before running Kapua on Docker, you need to 
 
 1. Install `docker` and `docker-compose`
-1. Run `mvn -f assembly -Pdocker` once to build containers
-
+1. Run `mvn -f assembly -Pdocker` once to build containers. Run `mvn -f assembly -Pconsole,docker` if you also need to build the Web Console image.
 
 Now, you can start Kapua by using Docker Compose. To do so, run
   
