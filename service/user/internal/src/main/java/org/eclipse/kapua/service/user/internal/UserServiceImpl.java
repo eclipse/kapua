@@ -245,7 +245,6 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access
@@ -262,7 +261,6 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         //
         // Argument Validator
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access

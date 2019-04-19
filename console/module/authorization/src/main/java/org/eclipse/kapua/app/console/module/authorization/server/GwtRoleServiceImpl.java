@@ -184,16 +184,16 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             totalLength = Long.valueOf(ROLE_SERVICE.count(roleQuery)).intValue();
 
             if (!roles.isEmpty()) {
-                UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
+                UserListResult usernames = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                     @Override
                     public UserListResult call() throws Exception {
-                        return USER_SERVICE.query(USER_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtRoleQuery.getScopeId())));
+                        return USER_SERVICE.query(USER_FACTORY.newQuery(null));
                     }
                 });
 
                 Map<String, String> usernameMap = new HashMap<String, String>();
-                for (User user : userListResult.getItems()) {
+                for (User user : usernames.getItems()) {
                     usernameMap.put(user.getId().toCompactId(), user.getName());
                 }
 
@@ -225,29 +225,27 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
             // Find
             final Role role = ROLE_SERVICE.find(scopeId, roleId);
-            User createdUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+            UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                 @Override
-                public User call() throws Exception {
-                    return USER_SERVICE.find(scopeId, role.getCreatedBy());
+                public UserListResult call() throws Exception {
+                    return USER_SERVICE.query(USER_FACTORY.newQuery(null));
                 }
             });
-            User modifiedUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
-                @Override
-                public User call() throws Exception {
-                    return USER_SERVICE.find(scopeId, role.getModifiedBy());
-                }
-            });
+            Map<String, String> usernameMap = new HashMap<String, String>();
+            for (User user : userListResult.getItems()) {
+                usernameMap.put(user.getId().toCompactId(), user.getName());
+            }
 
             // If there are results
             if (role != null) {
                 gwtRoleDescription.add(new GwtGroupedNVPair("roleInfo", "roleName", role.getName()));
                 gwtRoleDescription.add(new GwtGroupedNVPair("roleInfo", "roleDescription", role.getDescription()));
                 gwtRoleDescription.add(new GwtGroupedNVPair("entityInfo", "roleModifiedOn", role.getModifiedOn()));
-                gwtRoleDescription.add(new GwtGroupedNVPair("entityInfo", "roleModifiedBy", modifiedUser != null ? modifiedUser.getName() : null));
+                gwtRoleDescription.add(new GwtGroupedNVPair("entityInfo", "roleModifiedBy", role.getModifiedBy() != null ? usernameMap.get(role.getModifiedBy().toCompactId()) : null));
                 gwtRoleDescription.add(new GwtGroupedNVPair("entityInfo", "roleCreatedOn", role.getCreatedOn()));
-                gwtRoleDescription.add(new GwtGroupedNVPair("entityInfo", "roleCreatedBy", createdUser != null ? createdUser.getName() : null));
+                gwtRoleDescription.add(new GwtGroupedNVPair("entityInfo", "roleCreatedBy", role.getCreatedBy() != null ? usernameMap.get(role.getCreatedBy().toCompactId()) : null));
             }
 
         } catch (Throwable t) {

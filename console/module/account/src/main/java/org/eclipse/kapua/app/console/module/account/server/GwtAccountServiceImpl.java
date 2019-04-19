@@ -71,7 +71,6 @@ import org.eclipse.kapua.service.endpoint.EndpointInfoService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
-import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 
 import org.slf4j.Logger;
@@ -212,27 +211,27 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         try {
             final Account account = ACCOUNT_SERVICE.find(scopeId, accountId);
 
-            User userCreatedBy = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
+            UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                 @Override
-                public User call() throws Exception {
-                    return USER_SERVICE.find(scopeId, account.getCreatedBy());
+                public UserListResult call() throws Exception {
+                    return USER_SERVICE.query(USER_FACTORY.newQuery(null));
                 }
             });
-            User userModifiedBy = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 
-                @Override
-                public User call() throws Exception {
-                    return USER_SERVICE.find(scopeId, account.getModifiedBy());
-                }
-            });
+            Map<String, String> usernameMap = new HashMap<String, String>();
+            for (User user : userListResult.getItems()) {
+                usernameMap.put(user.getId().toCompactId(), user.getName());
+            }
 
             final String entityInfo = "entityInfo";
             accountPropertiesPairs.add(new GwtGroupedNVPair(entityInfo, "expirationDate", account.getExpirationDate()));
             accountPropertiesPairs.add(new GwtGroupedNVPair(entityInfo, "accountCreatedOn", account.getCreatedOn()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair(entityInfo, "accountCreatedBy", userCreatedBy != null ? userCreatedBy.getName() : null));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(entityInfo, "accountCreatedBy",
+                    account.getCreatedBy() != null ? usernameMap.get(account.getCreatedBy().toCompactId()) : null));
             accountPropertiesPairs.add(new GwtGroupedNVPair(entityInfo, "accountModifiedOn", account.getModifiedOn()));
-            accountPropertiesPairs.add(new GwtGroupedNVPair(entityInfo, "accountModifiedBy", userModifiedBy != null ? userModifiedBy.getName() : null));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(entityInfo, "accountModifiedBy",
+                    account.getModifiedBy() != null ? usernameMap.get(account.getModifiedBy().toCompactId()) : null));
 
             if (account.getScopeId() != null) {
                 Account parentAccount = KapuaSecurityUtils.doPrivileged(new Callable<Account>() {
@@ -684,12 +683,11 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             totalLength = (int) ACCOUNT_SERVICE.count(query);
 
             if (!accounts.isEmpty()) {
-                final UserQuery userQuery = USER_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtAccountQuery.getScopeId()));
                 UserListResult usernames = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
 
                     @Override
                     public UserListResult call() throws Exception {
-                        return USER_SERVICE.query(userQuery);
+                        return USER_SERVICE.query(USER_FACTORY.newQuery(null));
                     }
                 });
 
