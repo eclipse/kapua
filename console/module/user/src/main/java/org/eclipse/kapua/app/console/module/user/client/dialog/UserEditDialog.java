@@ -16,6 +16,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog.InfoDialogType;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
@@ -29,6 +31,7 @@ import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAs
 public class UserEditDialog extends UserAddDialog {
 
     private GwtUser selectedUser;
+    private boolean isChanged;
 
     private GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
 
@@ -83,6 +86,9 @@ public class UserEditDialog extends UserAddDialog {
     @Override
     protected void preSubmit() {
         super.preSubmit();
+        if (displayName.isDirty()) {
+            isChanged = true;
+        }
     }
 
     @Override
@@ -98,6 +104,10 @@ public class UserEditDialog extends UserAddDialog {
 
             @Override
             public void onSuccess(GwtUser gwtUser) {
+                if (currentSession.getUserName().equals(gwtUser.getUsername()) && isChanged) {
+                    InfoDialog infoDialog = new InfoDialog(InfoDialogType.INFO, USER_MSGS.dialogEditUserName());
+                    infoDialog.show();
+                }
                 exitStatus = true;
                 exitMessage = USER_MSGS.dialogEditConfirmation();
                 hide();
