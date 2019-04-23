@@ -125,6 +125,7 @@ public class DeviceConfigComponents extends LayoutContainer {
     public void setDevice(GwtDevice selectedDevice) {
         dirty = true;
         this.selectedDevice = selectedDevice;
+        refresh();
     }
 
     @Override
