@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.authorization.role.shiro;
 
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
@@ -177,6 +178,9 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         // Check existence
         if (find(scopeId, roleId) == null) {
             throw new KapuaEntityNotFoundException(Role.TYPE, roleId);
+        }
+        if(roleId.equals(KapuaId.ONE)) {
+            throw new KapuaException(KapuaErrorCodes.ADMIN_ROLE_DELETED_ERROR);
         }
 
         //
