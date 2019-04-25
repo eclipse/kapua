@@ -41,6 +41,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.TimeField;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -64,6 +65,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
     protected final KapuaTextField<String> cronExpression;
     private Label startsOnLabel;
     private Label endsOnLabel;
+    private LabelField cronExpressionLabel;
 
     public JobScheduleAddDialog(GwtSession currentSession, String jobId) {
         super(currentSession);
@@ -85,7 +87,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         retryInterval = new KapuaNumberField();
         cronExpression = new KapuaTextField<String>();
 
-        DialogUtils.resizeDialog(this, 400, 250);
+        DialogUtils.resizeDialog(this, 400, 260);
     }
 
     @Override
@@ -121,7 +123,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         startsOn.getDatePicker().addListener(Events.Select, listener);
         startsOnLabel.setText("* " + JOB_MSGS.dialogAddScheduleStartsOnLabel());
         startsOnLabel.setWidth(FORM_LABEL_WIDTH);
-        startsOnLabel.setStyleAttribute("padding", "0px 91px 0px 0px");
+        startsOnLabel.setStyleAttribute("padding", "0px 88px 0px 0px");
         startsOnPanel.add(startsOnLabel);
         startsOnPanel.add(startsOn);
 
@@ -130,7 +132,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         startsOnTime.setEditable(false);
         startsOnTime.setWidth(90);
         startsOnTime.setStyleAttribute("position", "relative");
-        startsOnTime.setStyleAttribute("left", "25px");
+        startsOnTime.setStyleAttribute("left", "27px");
         startsOnTime.setEmptyText(JOB_MSGS.dialogAddScheduleTimePlaceholder());
         startsOnTime.setToolTip(JOB_MSGS.dialogAddScheduleStartsOnTimeTooltip());
         startsOnTime.setTriggerAction(TriggerAction.ALL);
@@ -148,7 +150,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         endsOn.setValidator(new BeforeDateValidator(startsOn));
 
         endsOnLabel.setWidth(FORM_LABEL_WIDTH);
-        endsOnLabel.setStyleAttribute("padding", "0px 96px 0px 0px");
+        endsOnLabel.setStyleAttribute("padding", "0px 93px 0px 0px");
         endsOn.getDatePicker().addListener(Events.Select, listener);
         endsOnPanel.add(endsOnLabel);
         endsOnPanel.add(endsOn);
@@ -157,7 +159,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         endsOnTime.setEditable(false);
         endsOnTime.setWidth(90);
         endsOnTime.setStyleAttribute("position", "relative");
-        endsOnTime.setStyleAttribute("left", "25px");
+        endsOnTime.setStyleAttribute("left", "27px");
         endsOnTime.setEmptyText(JOB_MSGS.dialogAddScheduleTimePlaceholder());
         endsOnTime.setToolTip(JOB_MSGS.dialogAddScheduleEndsOnTimeTooltip());
         endsOnTime.setTriggerAction(TriggerAction.ALL);
@@ -176,6 +178,13 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         cronExpression.setMaxLength(255);
         cronExpression.setToolTip(JOB_MSGS.dialogAddScheduleCronScheduleTooltip());
         mainPanel.add(cronExpression);
+
+        cronExpressionLabel = new LabelField();
+        cronExpressionLabel.setValue(JOB_MSGS.dialogAddScheduleCronFScheduleDescriptionLabel());
+        cronExpressionLabel.setStyleAttribute("margin-top", "-5px");
+        cronExpressionLabel.setStyleAttribute("color", "gray");
+        cronExpressionLabel.setStyleAttribute("font-size", "10px");
+        mainPanel.add(cronExpressionLabel);
 
         bodyPanel.add(mainPanel);
     }
