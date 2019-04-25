@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.user.client.dialog;
 
+import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -22,6 +23,7 @@ import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.SplitTooltipStringUtil;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser.GwtUserStatus;
@@ -34,6 +36,8 @@ public class UserEditDialog extends UserAddDialog {
     private boolean isChanged;
 
     private GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
+    public static final int MAX_LINE_LENGTH = 40;
+    public static final int MAX_TOOLTIP_WIDTH = 300;
 
     public UserEditDialog(GwtSession currentSession, GwtUser selectedUser) {
         super(currentSession);
@@ -160,8 +164,17 @@ public class UserEditDialog extends UserAddDialog {
         infoFieldSet.remove(username);
         usernameLabel.setVisible(true);
         username.setVisible(false);
-        usernameLabel.setValue(gwtUser.getUsername());
-        usernameLabel.setToolTip(USER_MSGS.dialogAddFieldNameEditDialogTooltip());
+        ToolTipConfig toolTipConfig = new ToolTipConfig();
+        toolTipConfig.setMaxWidth(MAX_TOOLTIP_WIDTH);
+        String toolTipText = SplitTooltipStringUtil.splitTooltipString(gwtUser.getUsername(), MAX_LINE_LENGTH);
+        toolTipConfig.setText(toolTipText);
+
+            usernameLabel.setValue(gwtUser.getUsername());
+            usernameLabel.setStyleAttribute("white-space", "nowrap");
+            usernameLabel.setStyleAttribute("text-overflow", "ellipsis");
+            usernameLabel.setStyleAttribute("overflow", "hidden");
+            usernameLabel.setToolTip(toolTipConfig);
+
         if (password != null) {
             password.setVisible(false);
             password.setAllowBlank(true);
@@ -184,4 +197,5 @@ public class UserEditDialog extends UserAddDialog {
         expirationDate.setMaxLength(10);
         formPanel.clearDirtyFields();
     }
+
 }
