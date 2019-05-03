@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,7 +14,6 @@ package org.eclipse.kapua.app.console.module.data.client;
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
@@ -26,6 +25,7 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FlowPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.data.client.messages.ConsoleDataMessages;
@@ -50,12 +50,13 @@ public class DeviceTimestampCellRenderer implements GridCellRenderer<GwtDatastor
 
     @Override
     public Object render(final GwtDatastoreDevice gwtDevice, String s, ColumnData columnData, int i, int i1, ListStore<GwtDatastoreDevice> listStore, final Grid<GwtDatastoreDevice> grid) {
-        final HorizontalPanel hp = new HorizontalPanel();
-        hp.setHeight(15);
+        final FlowPanel flowPanel = new FlowPanel();
+        flowPanel.setHeight("15px");
 
         // Timestamp text
         final Text cellText = new Text();
         cellText.setStyleName("x-grid3-cell");
+        cellText.setStyleAttribute("float", "left");
 
         if (GwtDatastoreDevice.NO_TIMESTAMP.equals(gwtDevice.getTimestamp())) {
             cellText.setText(DATA_MSGS.topicInfoTableNoLastPostDate());
@@ -63,7 +64,7 @@ public class DeviceTimestampCellRenderer implements GridCellRenderer<GwtDatastor
             cellText.setText(gwtDevice.getTimestamp() != null ? gwtDevice.getTimestampFormatted() : DATA_MSGS.topicInfoTableCalculatingLastPostDate());
         }
 
-        hp.add(cellText);
+        flowPanel.add(cellText);
 
         // Refresh button
         final ToolButton refreshButton = new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
@@ -73,11 +74,12 @@ public class DeviceTimestampCellRenderer implements GridCellRenderer<GwtDatastor
                 refreshTimestamp(gwtDevice, cellText, grid);
             }
         });
-        hp.add(refreshButton);
+        refreshButton.setStyleAttribute("float", "left");
+        flowPanel.add(refreshButton);
         refreshButton.hide();
 
         // Show refresh button on mouse over
-        hp.addDomHandler(new MouseOverHandler() {
+        flowPanel.addDomHandler(new MouseOverHandler() {
 
             @Override
             public void onMouseOver(MouseOverEvent arg0) {
@@ -86,7 +88,7 @@ public class DeviceTimestampCellRenderer implements GridCellRenderer<GwtDatastor
         }, MouseOverEvent.getType());
 
         // Hide refresh button on mouse out
-        hp.addDomHandler(new MouseOutHandler() {
+        flowPanel.addDomHandler(new MouseOutHandler() {
 
             @Override
             public void onMouseOut(MouseOutEvent arg0) {
@@ -94,7 +96,7 @@ public class DeviceTimestampCellRenderer implements GridCellRenderer<GwtDatastor
             }
         }, MouseOutEvent.getType());
 
-        return hp;
+        return flowPanel;
     }
 
     private void refreshTimestamp(final GwtDatastoreDevice gwtDevice, final Text cellText, final Grid<GwtDatastoreDevice> grid) {
