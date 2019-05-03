@@ -26,7 +26,7 @@ public class DeviceEditDialog extends DeviceAddDialog {
 
     private GwtDevice selectedDevice;
     public static final int MAX_LINE_LENGTH = 40;
-    public static final int MAX_TOOLTIP_WIDTH = 300;
+    public static final int MAX_TOOLTIP_WIDTH = 400;
 
     public DeviceEditDialog(GwtSession currentSession, GwtDevice selectedDevice) {
         super(currentSession);

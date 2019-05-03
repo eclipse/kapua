@@ -36,7 +36,7 @@ public class UserEditDialog extends UserAddDialog {
     private boolean isChanged;
 
     private GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
-    public static final int MAX_LINE_LENGTH = 40;
+    public static final int MAX_LINE_LENGTH = 30;
     public static final int MAX_TOOLTIP_WIDTH = 300;
 
     public UserEditDialog(GwtSession currentSession, GwtUser selectedUser) {
