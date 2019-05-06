@@ -12,7 +12,7 @@
 package org.eclipse.kapua.app.console.module.api.test;
 
 import org.eclipse.kapua.app.console.module.api.client.util.SplitTooltipStringUtil;
-import org.eclipse.kapua.test.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
