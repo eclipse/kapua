@@ -64,7 +64,7 @@ public class DeviceTabAssets extends KapuaTabItem<GwtDevice> {
             return;
         }
 
-        if (tabsPanel.getSelectedItem() == tabValues) {
+        if (tabsPanel.getSelectedItem() == this) {
             assetsValues.refresh();
         }
     }
