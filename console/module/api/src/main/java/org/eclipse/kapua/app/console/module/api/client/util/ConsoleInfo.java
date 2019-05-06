@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,13 +11,36 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.client.util;
 
+import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.util.Params;
+import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.InfoConfig;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.RootPanel;
 
 public class ConsoleInfo extends Info {
     private static final int CHAR_STEP = 20;
     private static final int STEP_HEIGHT = 18;
+
+    //Private static instance of ConsoleInfo singleton class
+    private static final ConsoleInfo SINGLE_INSTANCE = new ConsoleInfo();
+    private static Timer timer;
+
+    /**
+     * Private ConsoleInfo class constructor
+     */
+    private ConsoleInfo() {
+
+    }
+
+    /**
+     * Method for returning ConsoleInfo singleton instance.
+     * @return static instance of ConsoleInfo class
+     */
+    public static ConsoleInfo getInstance() {
+        return SINGLE_INSTANCE;
+    }
 
     public static void display(String title, String text) {
         display(title, text, 5000);
@@ -48,6 +71,69 @@ public class ConsoleInfo extends Info {
         params.set("keepOnMouseOver", keepOnMouseOver);
         config.params = params;
 
-        display(config);
+        displayInfo(config);
+    }
+
+    /**
+     * Displays a message using the specified config.
+     * 
+     * @param config instance of InfoConfig class
+     */
+    public static void displayInfo(InfoConfig config) {
+        ConsoleInfo.getInstance().show(config);
+    }
+
+    @Override
+    protected void onShowInfo() {
+        RootPanel.get().add(this);
+        el().makePositionable(true);
+        setTitle();
+        setText();
+
+        Point p = position();
+        el().setLeftTop(p.x, p.y);
+        setSize(config.width, config.height);
+
+        afterShow();
+    }
+
+    @Override
+    protected void afterShow() {
+        if (timer != null) {
+            timer.cancel();
+        }
+
+        timer = new Timer() {
+            public void run() {
+                afterHide();
+            }
+        };
+        timer.schedule(config.display);
+    }
+
+    private void setTitle() {
+        if (config.title != null) {
+            head.setVisible(true);
+            if (config.params != null) {
+                config.title = Format.substitute(config.title, config.params);
+            }
+            setHeading(config.title);
+            } else {
+                head.setVisible(false);
+            }
+        }
+
+    private void setText() {
+        if (config.text != null) {
+            if (config.params != null) {
+                config.text = Format.substitute(config.text, config.params);
+            }
+            removeAll();
+            addText(config.text);
+            }
+    }
+
+    protected void afterHide() {
+        RootPanel.get().remove(this);
     }
 }

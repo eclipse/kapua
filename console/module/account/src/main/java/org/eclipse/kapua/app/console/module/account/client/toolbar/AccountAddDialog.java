@@ -354,7 +354,8 @@ public class AccountAddDialog extends EntityAddEditDialog {
 
                     @Override
                     public void onSuccess(GwtAccount account) {
-                        ConsoleInfo.display(MSGS.info(), MSGS.accountCreatedConfirmation());
+                        exitStatus = true;
+                        exitMessage = MSGS.accountCreatedConfirmation();
                         hide();
                     }
                 });
