@@ -21,9 +21,11 @@ public class GwtTriggerCreator extends GwtEntityCreator {
     private String triggerName;
     private Date startsOn;
     private Date endsOn;
+
+    private String triggerType;
+    private List<GwtTriggerProperty> triggerProperties;
     private String cronScheduling;
     private Long retryInterval;
-    private List<GwtTriggerProperty> triggerProperties;
 
     public String getTriggerName() {
         return triggerName;
@@ -49,6 +51,22 @@ public class GwtTriggerCreator extends GwtEntityCreator {
         this.endsOn = endsOn;
     }
 
+    public List<GwtTriggerProperty> getTriggerProperties() {
+        return triggerProperties;
+    }
+
+    public void setTriggerProperties(List<GwtTriggerProperty> triggerProperties) {
+        this.triggerProperties = triggerProperties;
+    }
+
+    public String getTriggerType() {
+        return triggerType;
+    }
+
+    public void setTriggerType(String triggerType) {
+        this.triggerType = triggerType;
+    }
+
     public String getCronScheduling() {
         return cronScheduling;
     }
@@ -63,13 +81,5 @@ public class GwtTriggerCreator extends GwtEntityCreator {
 
     public void setRetryInterval(Long retryInterval) {
         this.retryInterval = retryInterval;
-    }
-
-    public List<GwtTriggerProperty> getTriggerProperties() {
-        return triggerProperties;
-    }
-
-    public void setTriggerProperties(List<GwtTriggerProperty> triggerProperties) {
-        this.triggerProperties = triggerProperties;
     }
 }

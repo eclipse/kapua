@@ -48,4 +48,12 @@ public class GwtTriggerProperty extends KapuaBaseModel {
         set("propertyValue", propertyValue);
     }
 
+    public boolean isEnum() {
+        return get("isEnum");
+    }
+
+    public void setEnum(boolean isEnum) {
+        set("isEnum", isEnum);
+    }
+
 }

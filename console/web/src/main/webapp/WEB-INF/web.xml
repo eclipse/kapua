@@ -74,6 +74,7 @@
         <url-pattern>/jobTarget/*</url-pattern>
         <url-pattern>/jobEngine/*</url-pattern>
         <url-pattern>/trigger/*</url-pattern>
+        <url-pattern>/triggerDefinition/*</url-pattern>
         <url-pattern>/execution/*</url-pattern>
         <url-pattern>/console/*</url-pattern>
         <url-pattern>/file/*</url-pattern>
@@ -386,6 +387,15 @@
     <servlet-mapping>
         <servlet-name>triggerServlet</servlet-name>
         <url-pattern>/trigger</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>triggerDefinitionServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.module.job.server.GwtTriggerDefinitionServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>triggerDefinitionServlet</servlet-name>
+        <url-pattern>/triggerDefinition</url-pattern>
     </servlet-mapping>
 
     <servlet>

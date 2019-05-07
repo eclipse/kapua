@@ -11,9 +11,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.client.schedule;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.extjs.gxt.ui.client.data.BaseListLoader;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.form.TimeField;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
@@ -33,34 +48,46 @@ import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessag
 import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTrigger;
 import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTriggerCreator;
 import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTriggerProperty;
+import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.definition.GwtTriggerDefinition;
+import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.definition.GwtTriggerDefinitionQuery;
+import org.eclipse.kapua.app.console.module.job.shared.service.GwtTriggerDefinitionService;
+import org.eclipse.kapua.app.console.module.job.shared.service.GwtTriggerDefinitionServiceAsync;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtTriggerService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtTriggerServiceAsync;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
-import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.extjs.gxt.ui.client.widget.form.TimeField;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class JobScheduleAddDialog extends EntityAddEditDialog {
 
     protected static final ConsoleJobMessages JOB_MSGS = GWT.create(ConsoleJobMessages.class);
     protected static final ConsoleMessages CONSOLE_MSGS = GWT.create(ConsoleMessages.class);
     private static final ValidationMessages VAL_MSGS = GWT.create(ValidationMessages.class);
-    private static final GwtTriggerServiceAsync TRIGGER_SERVICE = GWT.create(GwtTriggerService.class);
+
+    private static final GwtTriggerServiceAsync GWT_TRIGGER_SERVICE = GWT.create(GwtTriggerService.class);
+    private static final GwtTriggerDefinitionServiceAsync GWT_TRIGGER_DEFINITION_SERVICE = GWT.create(GwtTriggerDefinitionService.class);
+
     private static final String KAPUA_ID_CLASS_NAME = "org.eclipse.kapua.model.id.KapuaId";
 
+    private static final String TRIGGER_DEFINITION_NAME_INTERVAL = "Interval Job";
+    private static final String TRIGGER_DEFINITION_NAME_CRON = "Cron Job";
+    private static final String TRIGGER_DEFINITION_NAME_DEVICE_CONNECT = "Device Connect";
+
     private final String jobId;
+
     protected final KapuaTextField<String> triggerName;
     protected final KapuaDateField startsOn;
     protected final TimeField startsOnTime;
     protected final KapuaDateField endsOn;
     protected final TimeField endsOnTime;
+
+    protected final ComboBox<GwtTriggerDefinition> triggerDefinitionCombo;
+    protected final FieldSet triggerPropertiesFieldSet;
+    protected final Label triggerDefinitionDescription;
+    protected final FormPanel triggerPropertiesPanel;
+
+
     protected final KapuaNumberField retryInterval;
     protected final KapuaTextField<String> cronExpression;
     private Label startsOnLabel;
@@ -84,20 +111,23 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         endsOnTime.setEditable(false);
         startsOnLabel = new Label();
         endsOnLabel = new Label();
+
+        triggerDefinitionCombo = new ComboBox<GwtTriggerDefinition>();
+        triggerPropertiesFieldSet = new FieldSet();
+        triggerDefinitionDescription = new Label();
+        triggerPropertiesPanel = new FormPanel(FORM_LABEL_WIDTH);
+
         retryInterval = new KapuaNumberField();
         cronExpression = new KapuaTextField<String>();
 
-        DialogUtils.resizeDialog(this, 400, 260);
+        DialogUtils.resizeDialog(this, 500, 320);
     }
 
     @Override
     public void createBody() {
         submitButton.disable();
-        FormPanel mainPanel = new FormPanel(140);
-        HorizontalPanel startsOnPanel = new HorizontalPanel();
-        HorizontalPanel endsOnPanel = new HorizontalPanel();
-        endsOnPanel.setStyleAttribute("padding", "4px 0px 4px 0px");
 
+        FormPanel mainPanel = new FormPanel(140);
         Listener<BaseEvent> listener = new Listener<BaseEvent>() {
 
             @Override
@@ -112,72 +142,156 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         triggerName.setToolTip(JOB_MSGS.dialogAddScheduleNameTooltip());
         mainPanel.add(triggerName);
 
+        startsOnLabel.setText("* " + JOB_MSGS.dialogAddScheduleStartsOnLabel());
+        startsOnLabel.setWidth(FORM_LABEL_WIDTH);
+        startsOnLabel.setStyleAttribute("padding", "0px 91px 0px 0px");
+
         startsOn.setFormatValue(true);
         startsOn.setAllowBlank(false);
-        startsOn.setWidth(90);
+        startsOn.setWidth(140);
         startsOn.setEmptyText(JOB_MSGS.dialogAddScheduleDatePlaceholder());
         startsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         startsOn.setToolTip(JOB_MSGS.dialogAddScheduleStartsOnTooltip());
         startsOn.setValidator(new AfterDateValidator(endsOn));
-
         startsOn.getDatePicker().addListener(Events.Select, listener);
-        startsOnLabel.setText("* " + JOB_MSGS.dialogAddScheduleStartsOnLabel());
-        startsOnLabel.setWidth(FORM_LABEL_WIDTH);
-        startsOnLabel.setStyleAttribute("padding", "0px 88px 0px 0px");
-        startsOnPanel.add(startsOnLabel);
-        startsOnPanel.add(startsOn);
+        startsOn.setValue(new Date());
+        startsOn.setMinValue(new Date());
 
         startsOnTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
         startsOnTime.setAllowBlank(false);
         startsOnTime.setEditable(false);
-        startsOnTime.setWidth(90);
+        startsOnTime.setWidth(140);
         startsOnTime.setStyleAttribute("position", "relative");
-        startsOnTime.setStyleAttribute("left", "27px");
+        startsOnTime.setStyleAttribute("left", "25px");
         startsOnTime.setEmptyText(JOB_MSGS.dialogAddScheduleTimePlaceholder());
         startsOnTime.setToolTip(JOB_MSGS.dialogAddScheduleStartsOnTimeTooltip());
         startsOnTime.setTriggerAction(TriggerAction.ALL);
         startsOnTime.addListener(Events.Select, listener);
+        startsOnTime.setDateValue(new Date());
+
+        HorizontalPanel startsOnPanel = new HorizontalPanel();
+        startsOnPanel.add(startsOnLabel);
+        startsOnPanel.add(startsOn);
         startsOnPanel.add(startsOnTime);
         mainPanel.add(startsOnPanel);
 
+        endsOnLabel.setText(JOB_MSGS.dialogAddScheduleEndsOnLabel());
+        endsOnLabel.setStyleAttribute("margin-left", "10px");
+        endsOnLabel.setWidth(FORM_LABEL_WIDTH);
+        endsOnLabel.setStyleAttribute("padding", "0px 96px 0px 0px");
+
         endsOn.setFormatValue(true);
-        endsOn.setWidth(90);
+        endsOn.setWidth(140);
         endsOn.setEmptyText(JOB_MSGS.dialogAddScheduleDatePlaceholder());
         endsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         endsOn.setToolTip(JOB_MSGS.dialogAddScheduleEndsOnTooltip());
-        endsOnLabel.setText(JOB_MSGS.dialogAddScheduleEndsOnLabel());
-        endsOnLabel.setStyleAttribute("margin-left", "10px");
         endsOn.setValidator(new BeforeDateValidator(startsOn));
-
-        endsOnLabel.setWidth(FORM_LABEL_WIDTH);
-        endsOnLabel.setStyleAttribute("padding", "0px 93px 0px 0px");
         endsOn.getDatePicker().addListener(Events.Select, listener);
-        endsOnPanel.add(endsOnLabel);
-        endsOnPanel.add(endsOn);
+        endsOn.setMinValue(new Date());
 
         endsOnTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
         endsOnTime.setEditable(false);
-        endsOnTime.setWidth(90);
+        endsOnTime.setWidth(140);
         endsOnTime.setStyleAttribute("position", "relative");
-        endsOnTime.setStyleAttribute("left", "27px");
+        endsOnTime.setStyleAttribute("left", "25px");
         endsOnTime.setEmptyText(JOB_MSGS.dialogAddScheduleTimePlaceholder());
         endsOnTime.setToolTip(JOB_MSGS.dialogAddScheduleEndsOnTimeTooltip());
         endsOnTime.setTriggerAction(TriggerAction.ALL);
         endsOnTime.addListener(Events.Select, listener);
+
+        HorizontalPanel endsOnPanel = new HorizontalPanel();
+        endsOnPanel.setStyleAttribute("padding", "4px 0px 4px 0px");
+        endsOnPanel.add(endsOnLabel);
+        endsOnPanel.add(endsOn);
         endsOnPanel.add(endsOnTime);
         mainPanel.add(endsOnPanel);
 
+        GwtTriggerDefinitionQuery query = new GwtTriggerDefinitionQuery();
+        query.setScopeId(currentSession.getSelectedAccountId());
+        RpcProxy<ListLoadResult<GwtTriggerDefinition>> triggerDefinitionProxy = new RpcProxy<ListLoadResult<GwtTriggerDefinition>>() {
+
+            @Override
+            protected void load(Object loadConfig, AsyncCallback<ListLoadResult<GwtTriggerDefinition>> callback) {
+                GWT_TRIGGER_DEFINITION_SERVICE.findAll(callback);
+            }
+        };
+
+        BaseListLoader<ListLoadResult<GwtTriggerDefinition>> triggerDefinitionLoader = new BaseListLoader<ListLoadResult<GwtTriggerDefinition>>(triggerDefinitionProxy);
+        triggerDefinitionLoader.addLoadListener(new DialogLoadListener());
+        ListStore<GwtTriggerDefinition> triggerDefinitionStore = new ListStore<GwtTriggerDefinition>(triggerDefinitionLoader);
+        triggerDefinitionCombo.setStore(triggerDefinitionStore);
+        triggerDefinitionCombo.setDisplayField("triggerDefinitionName");
+        triggerDefinitionCombo.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleDefinitionCombo());
+        triggerDefinitionCombo.setToolTip(JOB_MSGS.dialogAddScheduleDefinitionComboTooltip());
+        triggerDefinitionCombo.setEmptyText(JOB_MSGS.dialogAddScheduleDefinitionComboEmpty());
+        triggerDefinitionCombo.setEditable(false);
+        triggerDefinitionCombo.setAllowBlank(false);
+        triggerDefinitionCombo.setForceSelection(true);
+        triggerDefinitionCombo.setTypeAhead(false);
+        triggerDefinitionCombo.setTriggerAction(TriggerAction.ALL);
+        triggerDefinitionCombo.addSelectionChangedListener(new SelectionChangedListener<GwtTriggerDefinition>() {
+
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GwtTriggerDefinition> selectionChangedEvent) {
+                refreshTriggerDefinition(selectionChangedEvent.getSelectedItem());
+            }
+        });
+        mainPanel.add(triggerDefinitionCombo);
+
+        triggerDefinitionDescription.setStyleAttribute("display", "block");
+
+        triggerPropertiesFieldSet.setHeading(JOB_MSGS.dialogAddTriggerPropertiesFieldSetHeading());
+        triggerPropertiesFieldSet.setVisible(false);
+        triggerPropertiesFieldSet.add(triggerDefinitionDescription);
+        triggerPropertiesFieldSet.add(triggerPropertiesPanel);
+        mainPanel.add(triggerPropertiesFieldSet);
+
+        bodyPanel.add(mainPanel);
+
+    }
+
+    private void refreshTriggerDefinition(GwtTriggerDefinition gwtTriggerDefinition) {
+        triggerPropertiesFieldSet.setVisible(true);
+        triggerDefinitionDescription.setText(gwtTriggerDefinition.getDescription() + ".");
+        triggerPropertiesPanel.removeAll();
+
+        if (TRIGGER_DEFINITION_NAME_INTERVAL.equals(gwtTriggerDefinition.getTriggerDefinitionName())) {
         retryInterval.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleRetryIntervalLabel());
+            retryInterval.setAllowBlank(false);
         retryInterval.setAllowDecimals(false);
         retryInterval.setMinValue(1);
         retryInterval.setMaxLength(9);
         retryInterval.setToolTip(JOB_MSGS.dialogAddScheduleRetryIntervalTooltip());
-        mainPanel.add(retryInterval);
-
+            triggerPropertiesPanel.add(retryInterval);
+        } else if (TRIGGER_DEFINITION_NAME_CRON.equals(gwtTriggerDefinition.getTriggerDefinitionName())) {
         cronExpression.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleCronScheduleLabel());
+            cronExpression.setAllowBlank(false);
         cronExpression.setMaxLength(255);
         cronExpression.setToolTip(JOB_MSGS.dialogAddScheduleCronScheduleTooltip());
-        mainPanel.add(cronExpression);
+            triggerPropertiesPanel.add(cronExpression);
+
+            cronExpression.addListener(Events.Blur, new Listener<BaseEvent>() {
+                @Override
+                public void handleEvent(BaseEvent baseEvent) {
+                    GWT_TRIGGER_SERVICE.validateCronExpression(cronExpression.getValue(), new AsyncCallback<Boolean>() {
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            ConsoleInfo.display(MSGS.popupError(), JOB_MSGS.unableToValidateCronExpression());
+                            cronExpression.markInvalid(VAL_MSGS.invalidCronExpression());
+    }
+
+                        @Override
+                        public void onSuccess(Boolean result) {
+                            if (!result) {
+                                cronExpression.markInvalid(VAL_MSGS.invalidCronExpression());
+                            }
+        }
+                    });
+    }
+            });
+        } else if (TRIGGER_DEFINITION_NAME_DEVICE_CONNECT.equals(gwtTriggerDefinition.getTriggerDefinitionName())) {
+            // No field to render
+        }
 
         cronExpressionLabel = new LabelField();
         cronExpressionLabel.setValue(JOB_MSGS.dialogAddScheduleCronFScheduleDescriptionLabel());
@@ -186,122 +300,63 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         cronExpressionLabel.setStyleAttribute("font-size", "10px");
         mainPanel.add(cronExpressionLabel);
 
-        bodyPanel.add(mainPanel);
+        triggerPropertiesPanel.layout(true);
     }
 
-    public void validateJobSchedule() {
-        if (triggerName.getValue() == null || startsOn.getValue() == null || startsOnTime.getValue() == null || (retryInterval.getValue() == null && cronExpression.getValue() == null)) {
-            ConsoleInfo.display("Error", CONSOLE_MSGS.allFieldsRequired());
-        } else if (endsOn.getValue() != null && endsOnTime.getValue() == null) {
-            ConsoleInfo.display("Error", CONSOLE_MSGS.specifyEndTime());
-        } else if (endsOn.getValue() == null && endsOnTime.getValue() != null) {
-            ConsoleInfo.display("Error", CONSOLE_MSGS.specifyEndDate());
-        }
-    }
+    public boolean validateDateTimeRange() {
+        startsOn.clearInvalid();
+        startsOnTime.clearInvalid();
+        endsOn.clearInvalid();
+        endsOnTime.clearInvalid();
 
-    @Override
-    protected void preSubmit() {
-        validateJobSchedule();
-        cronExpression.clearInvalid();
+        Date startDate = startsOn.getValue();
+        startDate.setHours(startsOnTime.getValue().getHour());
+        startDate.setMinutes(startsOnTime.getValue().getMinutes());
 
-        if (triggerName.getValue() == null) {
-            triggerName.markInvalid(VAL_MSGS.nameRequiredMsg());
+        if (endsOn.getValue() == null && endsOnTime.getValue() == null) {
+            return true;
         }
 
+        if (endsOn.getValue() != null && endsOnTime.getValue() == null) {
+            endsOnTime.markInvalid(VAL_MSGS.endDateWithoutEndTime());
+            return false;
+        }
         if (endsOn.getValue() == null && endsOnTime.getValue() != null) {
             endsOn.markInvalid(VAL_MSGS.endTimeWithoutEndDate());
+            return false;
         }
 
-        if (startsOn.getValue() == null && startsOnTime.getValue() != null) {
-            startsOn.markInvalid(VAL_MSGS.startTimeWithoutStartDate());
-        }
-        if (startsOn.getValue() != null && startsOnTime.getValue() == null) {
-            startsOnTime.markInvalid(VAL_MSGS.startDateWithoutStartTime());
-        }
-        if (startsOn.getValue() != null && endsOn.getValue() != null) {
+        Date endDate = endsOn.getValue();
+        endDate.setHours(endsOnTime.getValue().getHour());
+        endDate.setMinutes(endsOnTime.getValue().getMinutes());
+
+        if (startDate.after(endDate)) {
+
             if (startsOn.getValue().after(endsOn.getValue())) {
                 startsOn.markInvalid(VAL_MSGS.startsOnDateLaterThanEndsOn());
-            }
-        }
-        if (startsOn.getValue() != null && endsOn.getValue() != null && startsOnTime.getValue() != null && endsOnTime.getValue() != null) {
-            if (startsOn.getValue().equals(endsOn.getValue()) && startsOnTime.getValue().getDate().after(endsOnTime.getValue().getDate())) {
+            } else {
                 startsOnTime.markInvalid(VAL_MSGS.startsOnTimeLaterThanEndsOn());
             }
+            return false;
         }
 
-        if (startsOn.getValue() != null) {
-            if (startsOnTime.getValue() == null) {
-                startsOnTime.markInvalid(VAL_MSGS.startDateWithoutStartTime());
+        if (new Date().after(endDate)) {
+            endsOn.markInvalid(VAL_MSGS.endDateOutOfTime());
+            endsOnTime.markInvalid(VAL_MSGS.endDateOutOfTime());
+            return false;
             }
-        } else {
-            startsOn.markInvalid(VAL_MSGS.emptyStartDate());
-            if (startsOnTime.getValue() == null) {
-                startsOnTime.markInvalid(VAL_MSGS.emptyStartTime());
-            }
-        }
-        if (endsOn.getValue() != null) {
-            if (endsOnTime.getValue() == null) {
-                endsOnTime.setAllowBlank(false);
-                endsOnTime.markInvalid(VAL_MSGS.endDateWithoutEndTime());
-            } else {
-                if (startsOn.getValue() != null && endsOn.getValue().before(startsOn.getValue())) {
-                    endsOn.markInvalid(VAL_MSGS.endsOnDateEarlierThanStartsOn());
-                } else if (startsOn.getValue() != null && startsOnTime.getValue() != null && endsOn.getValue().equals(startsOn.getValue()) && endsOnTime.getValue().getDate().before(startsOnTime.getValue().getDate())) {
-                    endsOnTime.markInvalid(VAL_MSGS.endsOnTimeEarlierThanStartsOn());
-                } else {
-                    endsOn.clearInvalid();
-                    endsOnTime.clearInvalid();
-                    startsOn.clearInvalid();
-                }
-            }
-        } else {
-            endsOnTime.setAllowBlank(true);
-        }
 
-        endsOn.addListener(Events.OnBlur, new Listener<BaseEvent>() {
+        return true;
+            }
 
             @Override
-            public void handleEvent(BaseEvent be) {
-                if (endsOn.getValue() == null) {
-                    endsOnTime.clearInvalid();
-                }
-            }
-        });
+    protected void preSubmit() {
 
-        if (endsOnTime.getValue() != null) {
-            if (endsOn.getValue() == null) {
-                endsOn.setAllowBlank(false);
-            }
-        }
-
-        if (cronExpression.getValue() == null && cronExpression.isValid() && retryInterval.getValue() == null && retryInterval.isValid()) {
-            cronExpression.markInvalid(VAL_MSGS.retryIntervalOrCronRequired());
-            retryInterval.markInvalid(VAL_MSGS.retryIntervalOrCronRequired());
+        if (!validateDateTimeRange()) {
             return;
-        } else if (retryInterval.getValue() != null) {
+            }
+
             super.preSubmit();
-        } else if (cronExpression.getValue() != null) {
-            TRIGGER_SERVICE.validateCronExpression(cronExpression.getValue(), new AsyncCallback<Boolean>() {
-
-                @Override
-                public void onFailure(Throwable caught) {
-                    ConsoleInfo.display(MSGS.popupError(), JOB_MSGS.unableToValidateCronExpression());
-                    cronExpression.markInvalid(VAL_MSGS.invalidCronExpression());
-                }
-
-                @Override
-                public void onSuccess(Boolean result) {
-                    if (result) {
-                        JobScheduleAddDialog.super.preSubmit();
-                    } else {
-                        cronExpression.markInvalid(VAL_MSGS.invalidCronExpression());
-                    }
-                }
-            });
-        }
-        if (!triggerName.isValid() || !startsOn.isValid() || !startsOnTime.isValid() || !endsOn.isValid() || !endsOnTime.isValid() || !retryInterval.isValid() || !cronExpression.isValid() ) {
-            formPanel.isValid(false);
-        }
     }
 
     @Override
@@ -309,27 +364,31 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         GwtTriggerCreator gwtTriggerCreator = new GwtTriggerCreator();
 
         gwtTriggerCreator.setScopeId(currentSession.getSelectedAccountId());
-
         gwtTriggerCreator.setTriggerName(triggerName.getValue());
-        if (startsOn.getValue() != null) {
-            Date startsOnDate = startsOn.getValue();
-            startsOnDate.setTime(startsOnDate.getTime() + (3600 * 1000 * startsOnTime.getValue().getHour()) + 60 * 1000 * startsOnTime.getValue().getMinutes());
-            gwtTriggerCreator.setStartsOn(startsOnDate);
+
+        Date startDate = startsOn.getValue();
+        startDate.setHours(startsOnTime.getValue().getHour());
+        startDate.setMinutes(startsOnTime.getValue().getMinutes());
+        gwtTriggerCreator.setStartsOn(startDate);
+
             if (endsOn.getValue() != null && endsOnTime.getValue() != null) {
-                // According to validation, endsOn and endsOnTime should be both either null or having a value
-                Date endsOnDate = endsOn.getValue();
-                endsOnDate.setTime(endsOnDate.getTime() + (3600 * 1000 * endsOnTime.getValue().getHour()) + 60 * 1000 * endsOnTime.getValue().getMinutes());
-                gwtTriggerCreator.setEndsOn(endsOnDate);
+            Date endDate = endsOn.getValue();
+            endDate.setHours(endsOnTime.getValue().getHour());
+            endDate.setMinutes(endsOnTime.getValue().getMinutes());
+            gwtTriggerCreator.setEndsOn(endDate);
             }
-        }
-        gwtTriggerCreator.setRetryInterval(retryInterval.getValue() != null ? retryInterval.getValue().longValue() : null);
-        gwtTriggerCreator.setCronScheduling(cronExpression.getValue());
+
+        gwtTriggerCreator.setTriggerType(triggerDefinitionCombo.getSelection().get(0).getTriggerDefinitionName());
+
         List<GwtTriggerProperty> gwtTriggerPropertyList = new ArrayList<GwtTriggerProperty>();
         gwtTriggerPropertyList.add(new GwtTriggerProperty("scopeId", KAPUA_ID_CLASS_NAME, currentSession.getSelectedAccountId()));
         gwtTriggerPropertyList.add(new GwtTriggerProperty("jobId", KAPUA_ID_CLASS_NAME, jobId));
         gwtTriggerCreator.setTriggerProperties(gwtTriggerPropertyList);
 
-        TRIGGER_SERVICE.create(xsrfToken, gwtTriggerCreator, new AsyncCallback<GwtTrigger>() {
+        gwtTriggerCreator.setRetryInterval(retryInterval.getValue() != null ? retryInterval.getValue().longValue() : null);
+        gwtTriggerCreator.setCronScheduling(cronExpression.getValue());
+
+        GWT_TRIGGER_SERVICE.create(xsrfToken, gwtTriggerCreator, new AsyncCallback<GwtTrigger>() {
 
             @Override
             public void onSuccess(GwtTrigger gwtTrigger) {
