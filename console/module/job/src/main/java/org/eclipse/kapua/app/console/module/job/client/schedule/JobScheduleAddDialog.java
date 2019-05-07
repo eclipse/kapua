@@ -25,6 +25,7 @@ import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.TimeField;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -256,19 +257,26 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         triggerPropertiesPanel.removeAll();
 
         if (TRIGGER_DEFINITION_NAME_INTERVAL.equals(gwtTriggerDefinition.getTriggerDefinitionName())) {
-        retryInterval.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleRetryIntervalLabel());
+            retryInterval.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleRetryIntervalLabel());
             retryInterval.setAllowBlank(false);
-        retryInterval.setAllowDecimals(false);
-        retryInterval.setMinValue(1);
-        retryInterval.setMaxLength(9);
-        retryInterval.setToolTip(JOB_MSGS.dialogAddScheduleRetryIntervalTooltip());
+            retryInterval.setAllowDecimals(false);
+            retryInterval.setMinValue(1);
+            retryInterval.setMaxLength(9);
+            retryInterval.setToolTip(JOB_MSGS.dialogAddScheduleRetryIntervalTooltip());
             triggerPropertiesPanel.add(retryInterval);
         } else if (TRIGGER_DEFINITION_NAME_CRON.equals(gwtTriggerDefinition.getTriggerDefinitionName())) {
-        cronExpression.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleCronScheduleLabel());
+            cronExpression.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleCronScheduleLabel());
             cronExpression.setAllowBlank(false);
-        cronExpression.setMaxLength(255);
-        cronExpression.setToolTip(JOB_MSGS.dialogAddScheduleCronScheduleTooltip());
+            cronExpression.setMaxLength(255);
+            cronExpression.setToolTip(JOB_MSGS.dialogAddScheduleCronScheduleTooltip());
             triggerPropertiesPanel.add(cronExpression);
+
+            cronExpressionLabel = new LabelField();
+            cronExpressionLabel.setValue(JOB_MSGS.dialogAddScheduleCronScheduleDescriptionLabel());
+            cronExpressionLabel.setStyleAttribute("margin-top", "-5px");
+            cronExpressionLabel.setStyleAttribute("color", "gray");
+            cronExpressionLabel.setStyleAttribute("font-size", "10px");
+            triggerPropertiesPanel.add(cronExpressionLabel);
 
             cronExpression.addListener(Events.Blur, new Listener<BaseEvent>() {
                 @Override
@@ -278,27 +286,20 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
                         public void onFailure(Throwable caught) {
                             ConsoleInfo.display(MSGS.popupError(), JOB_MSGS.unableToValidateCronExpression());
                             cronExpression.markInvalid(VAL_MSGS.invalidCronExpression());
-    }
+                        }
 
                         @Override
                         public void onSuccess(Boolean result) {
                             if (!result) {
                                 cronExpression.markInvalid(VAL_MSGS.invalidCronExpression());
                             }
-        }
+                        }
                     });
-    }
+                }
             });
         } else if (TRIGGER_DEFINITION_NAME_DEVICE_CONNECT.equals(gwtTriggerDefinition.getTriggerDefinitionName())) {
             // No field to render
         }
-
-        cronExpressionLabel = new LabelField();
-        cronExpressionLabel.setValue(JOB_MSGS.dialogAddScheduleCronFScheduleDescriptionLabel());
-        cronExpressionLabel.setStyleAttribute("margin-top", "-5px");
-        cronExpressionLabel.setStyleAttribute("color", "gray");
-        cronExpressionLabel.setStyleAttribute("font-size", "10px");
-        mainPanel.add(cronExpressionLabel);
 
         triggerPropertiesPanel.layout(true);
     }
@@ -344,19 +345,19 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
             endsOn.markInvalid(VAL_MSGS.endDateOutOfTime());
             endsOnTime.markInvalid(VAL_MSGS.endDateOutOfTime());
             return false;
-            }
+        }
 
         return true;
-            }
+    }
 
-            @Override
+    @Override
     protected void preSubmit() {
 
         if (!validateDateTimeRange()) {
             return;
-            }
+        }
 
-            super.preSubmit();
+        super.preSubmit();
     }
 
     @Override
@@ -371,12 +372,12 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         startDate.setMinutes(startsOnTime.getValue().getMinutes());
         gwtTriggerCreator.setStartsOn(startDate);
 
-            if (endsOn.getValue() != null && endsOnTime.getValue() != null) {
+        if (endsOn.getValue() != null && endsOnTime.getValue() != null) {
             Date endDate = endsOn.getValue();
             endDate.setHours(endsOnTime.getValue().getHour());
             endDate.setMinutes(endsOnTime.getValue().getMinutes());
             gwtTriggerCreator.setEndsOn(endDate);
-            }
+        }
 
         gwtTriggerCreator.setTriggerType(triggerDefinitionCombo.getSelection().get(0).getTriggerDefinitionName());
 

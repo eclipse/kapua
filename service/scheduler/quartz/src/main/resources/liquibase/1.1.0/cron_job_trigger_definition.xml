@@ -27,7 +27,7 @@
             <column name="created_by" value="1"/>
             <column name="modified_on" valueComputed="${now}"/>
             <column name="modified_by" value="1"/>
-            <column name="name" value="Cron Job Trigger"/>
+            <column name="name" value="Cron Job"/>
             <column name="description" value="Starts the job according to the given CRON expression"/>
             <column name="trigger_type" value="TIMER"/>
             <column name="processor_name" value="org.eclipse.kapua.service.scheduler.trigger.quartz.job.KapuaJobLauncer"/>
