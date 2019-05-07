@@ -38,8 +38,8 @@ public class DeviceEditDialog extends DeviceAddDialog {
         generateBody();
         submitButton.disable();
 
-        // hide fields used for add
-        clientIdField.hide();
+        // remove field used only on Add dialog
+        fieldSet.remove(clientIdField);
         // this protects against odd issue https://github.com/eclipse/kapua/issues/1631
         groupCombo.setAllowBlank(true);
 

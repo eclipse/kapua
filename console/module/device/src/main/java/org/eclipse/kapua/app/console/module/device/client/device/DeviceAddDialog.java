@@ -71,6 +71,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
     protected ComboBox<GwtGroup> groupCombo;
     protected KapuaTextField<String> displayNameField;
     protected SimpleComboBox<GwtDeviceStatus> statusCombo;
+    protected FieldSet fieldSet;
 
     // Security Options fields
     // protected SimpleComboBox<String> credentialsTightCombo;
@@ -141,7 +142,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
         };
 
         // Device general info fieldset
-        FieldSet fieldSet = new FieldSet();
+        fieldSet = new FieldSet();
         FormLayout layout = new FormLayout();
         layout.setLabelWidth(Constants.LABEL_WIDTH_DEVICE_FORM);
         fieldSet.setLayout(layout);
@@ -305,7 +306,7 @@ public class DeviceAddDialog extends EntityAddEditDialog {
     }
 
     public void validateDeviceInput() {
-        if (clientIdField.getValue() == null || displayNameField.getValue() == null || statusCombo.getValue() == null || groupCombo.getValue() == null) {
+        if (clientIdField.isVisible() && clientIdField.getValue() == null || displayNameField.getValue() == null || statusCombo.getValue() == null || groupCombo.getValue() == null) {
             ConsoleInfo.display("Error", MSGS.allFieldsRequired());
         }
     }
