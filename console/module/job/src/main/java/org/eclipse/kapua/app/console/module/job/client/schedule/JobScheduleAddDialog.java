@@ -362,8 +362,6 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
                         } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.TRIGGER_NEVER_FIRE)) {
                             startsOn.markInvalid(gwtCause.getMessage());
                             startsOnTime.markInvalid(gwtCause.getMessage());
-                            endsOn.markInvalid(gwtCause.getMessage());
-                            endsOnTime.markInvalid(gwtCause.getMessage());
                             cronExpression.markInvalid(gwtCause.getMessage());
                         }
                     }
