@@ -25,13 +25,14 @@
     <artifactId>kapua-device-management</artifactId>
 
     <modules>
+        <module>api</module>
+
         <module>asset</module>
         <module>bundle</module>
         <module>command</module>
         <module>configuration</module>
         <module>packages</module>
         <module>request</module>
-        <module>api</module>
 
         <module>registry</module>
         <module>job</module>
