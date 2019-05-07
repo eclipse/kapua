@@ -21,6 +21,7 @@ import org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedMessage;
+import org.eclipse.kapua.service.device.management.job.scheduler.manager.JobDeviceMangementTriggerManagerService;
 import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyMessage;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
 import org.slf4j.Logger;
@@ -40,6 +41,8 @@ public class DeviceMessageListener extends AbstractListener {
     private static final Logger logger = LoggerFactory.getLogger(DeviceMessageListener.class);
 
     private static DeviceLifeCycleService deviceLifeCycleService = KapuaLocator.getInstance().getService(DeviceLifeCycleService.class);
+
+    private static JobDeviceMangementTriggerManagerService jobDeviceManagementTrigggerManagerService = KapuaLocator.getInstance().getService(JobDeviceMangementTriggerManagerService.class);
 
     // metrics
     private Counter metricDeviceBirthMessage;
@@ -70,35 +73,17 @@ public class DeviceMessageListener extends AbstractListener {
         try {
             deviceLifeCycleService.birth(birthMessage.getConnectionId(), birthMessage.getMessage());
             metricDeviceBirthMessage.inc();
-            // //republish BA
-            // Date now = new Date();
-            // KapuaPayload kapuaPayload = birthMessage.getMessage().getPayload();
-            // kapuaPayload.getMetrics().put("server_event_time", Long.toString(now.getTime()));
-            //
-            // birthMessage.getMessage().setSemanticChannel(BIRTH_SEMANTIC_TOPIC);
-            // try {
-            // logger.debug("MESSAGE: {}", kapuaPayload);
-            // JmsAssistantProducerPool pool = JmsAssistantProducerPool.getIOnstance(DESTINATIONS.NO_DESTINATION);
-            // JmsAssistantProducerWrapper producer = null;
-            // try {
-            // producer = pool.borrowObject();
-            // producer.sendRawMessage(birthMessage);
-            // }
-            // finally {
-            // pool.returnObject(producer);
-            // }
-            // }
-            // catch (JMSException e) {
-            // logger.error("An error occurred while publishing device history event: {}", e.getMessage());
-            // return;
-            // }
-            // catch (Throwable t) {
-            // logger.warn("Cannot send birth life cycle message {}! {}", birthMessage.getMessage().getChannel().toString(), t.getMessage(), t);
-            // return;
-            // }
         } catch (KapuaException e) {
             metricDeviceErrorMessage.inc();
             logger.error("Error while processing device birth life-cycle event", e);
+        }
+
+        try {
+            KapuaBirthMessage kapuaBirthMessage = birthMessage.getMessage();
+
+            jobDeviceManagementTrigggerManagerService.processOnConnect(kapuaBirthMessage.getScopeId(), kapuaBirthMessage.getDeviceId());
+        } catch (Exception e) {
+            logger.error("Error while processing device birth to trigger jobs", e);
         }
     }
 

@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.model;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -76,10 +75,9 @@ public abstract class AbstractKapuaNamedEntity extends AbstractKapuaUpdatableEnt
      * <p>
      * It can be used to clone the {@link KapuaUpdatableEntity}
      *
-     * @throws KapuaException if {@link KapuaUpdatableEntity#getEntityAttributes()} and/or {@link KapuaUpdatableEntity#getEntityProperties()} cannot be parsed.
      * @since 1.0.0
      */
-    protected AbstractKapuaNamedEntity(KapuaNamedEntity kapuaNamedEntity) throws KapuaException {
+    protected AbstractKapuaNamedEntity(KapuaNamedEntity kapuaNamedEntity) {
         super(kapuaNamedEntity);
 
         setName(kapuaNamedEntity.getName());
