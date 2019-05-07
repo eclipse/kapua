@@ -17,12 +17,7 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
         logicalFilePath="KapuaDB/changelog-scheduler-1.1.0.xml">
 
-    <include relativeToChangelogFile="true" file="./scheduler-engine-quartz-update_job_launcher.xml"/>
-    <include relativeToChangelogFile="true" file="./trigger-description.xml"/>
-    <include relativeToChangelogFile="true" file="./trigger-trigger_definition_id.xml"/>
-
-    <include relativeToChangelogFile="true" file="./cron_job_trigger_definition.xml"/>
-    <include relativeToChangelogFile="true" file="./interval_job_trigger_definition.xml"/>
-    <include relativeToChangelogFile="true" file="./device_connect_trigger_definition.xml"/>
+    <include relativeToChangelogFile="true" file="./trigger_definition.xml"/>
+    <include relativeToChangelogFile="true" file="./trigger_definition_properties.xml"/>
 
 </databaseChangeLog>
