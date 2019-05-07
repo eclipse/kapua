@@ -12,6 +12,8 @@
 package org.eclipse.kapua.service.scheduler.trigger;
 
 import org.eclipse.kapua.model.KapuaNamedEntity;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -37,23 +39,72 @@ public interface Trigger extends KapuaNamedEntity {
         return TYPE;
     }
 
+
+    /**
+     * @since 1.0.0
+     */
     Date getStartsOn();
 
+    /**
+     * @since 1.0.0
+     */
     void setStartsOn(Date starstOn);
 
+    /**
+     * @since 1.0.0
+     */
     Date getEndsOn();
 
+    /**
+     * @since 1.0.0
+     */
     void setEndsOn(Date endsOn);
 
+    /**
+     * @since 1.0.0
+     * @deprecated since 1.1.0
+     */
+    @Deprecated
     String getCronScheduling();
 
+    /**
+     * @since 1.0.0
+     * @deprecated since 1.1.0
+     */
+    @Deprecated
     void setCronScheduling(String cronScheduling);
 
+    /**
+     * @since 1.0.0
+     * @deprecated since 1.1.0
+     */
+    @Deprecated
     Long getRetryInterval();
 
+    /**
+     * @since 1.0.0
+     * @deprecated since 1.1.0
+     */
+    @Deprecated
     void setRetryInterval(Long retryInterval);
 
-    <P extends TriggerProperty> List<P> getTriggerProperties();
+    /**
+     * @since 1.1.0
+     */
+    KapuaId getTriggerDefinitionId();
 
+    /**
+     * @since 1.1.0
+     */
+    void setTriggerDefinitionId(KapuaId triggerDefinitionId);
+
+    /**
+     * @since 1.0.0
+     */
+    List<TriggerProperty> getTriggerProperties();
+
+    /**
+     * @since 1.0.0
+     */
     void setTriggerProperties(List<TriggerProperty> triggerProperties);
 }

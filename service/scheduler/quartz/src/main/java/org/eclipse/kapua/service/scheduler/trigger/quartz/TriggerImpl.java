@@ -11,16 +11,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
+import com.google.common.collect.Lists;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
+import org.eclipse.kapua.service.scheduler.trigger.definition.quartz.TriggerPropertyImpl;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
@@ -56,6 +62,12 @@ public class TriggerImpl extends AbstractKapuaNamedEntity implements Trigger {
     @Basic
     @Column(name = "retry_interval", nullable = true, updatable = false)
     private Long retryInterval;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "eid", column = @Column(name = "trigger_definition_id"))
+    })
+    private KapuaEid triggerDefinitionId;
 
     @ElementCollection
     @CollectionTable(name = "schdl_trigger_properties", joinColumns = @JoinColumn(name = "trigger_id", referencedColumnName = "id"))
@@ -94,6 +106,7 @@ public class TriggerImpl extends AbstractKapuaNamedEntity implements Trigger {
         setEndsOn(trigger.getEndsOn());
         setCronScheduling(trigger.getCronScheduling());
         setRetryInterval(trigger.getRetryInterval());
+        setTriggerDefinitionId(trigger.getTriggerDefinitionId());
         setTriggerProperties(trigger.getTriggerProperties());
     }
 
@@ -138,12 +151,22 @@ public class TriggerImpl extends AbstractKapuaNamedEntity implements Trigger {
     }
 
     @Override
-    public List<TriggerPropertyImpl> getTriggerProperties() {
+    public KapuaId getTriggerDefinitionId() {
+        return triggerDefinitionId;
+    }
+
+    @Override
+    public void setTriggerDefinitionId(KapuaId triggerDefinitionId) {
+        this.triggerDefinitionId = KapuaEid.parseKapuaId(triggerDefinitionId);
+    }
+
+    @Override
+    public List<TriggerProperty> getTriggerProperties() {
         if (triggerProperties == null) {
             triggerProperties = new ArrayList<>();
         }
 
-        return triggerProperties;
+        return Lists.newArrayList(triggerProperties);
     }
 
     @Override

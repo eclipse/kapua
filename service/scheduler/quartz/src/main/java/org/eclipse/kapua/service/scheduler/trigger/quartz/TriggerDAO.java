@@ -23,9 +23,8 @@ import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
 
 /**
  * Trigger DAO
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class TriggerDAO {
 
@@ -34,7 +33,7 @@ public class TriggerDAO {
 
     /**
      * Creates and return new Trigger
-     * 
+     *
      * @param em
      * @param triggerCreator
      * @return
@@ -48,8 +47,9 @@ public class TriggerDAO {
         triggerImpl.setName(triggerCreator.getName());
         triggerImpl.setStartsOn(triggerCreator.getStartsOn());
         triggerImpl.setEndsOn(triggerCreator.getEndsOn());
-        triggerImpl.setCronScheduling(triggerCreator.getCronScheduling());
-        triggerImpl.setRetryInterval(triggerCreator.getRetryInterval());
+        triggerImpl.setTriggerDefinitionId(triggerCreator.getTriggerDefinitionId());
+//        triggerImpl.setCronScheduling(triggerCreator.getCronScheduling());
+//        triggerImpl.setRetryInterval(triggerCreator.getRetryInterval());
         triggerImpl.setTriggerProperties(triggerCreator.getTriggerProperties());
 
         return ServiceDAO.create(em, triggerImpl);
@@ -57,7 +57,7 @@ public class TriggerDAO {
 
     /**
      * Updates the provided trigger
-     * 
+     *
      * @param em
      * @param trigger
      * @return
@@ -116,8 +116,7 @@ public class TriggerDAO {
      * @param em
      * @param scopeId
      * @param triggerId
-     * @throws KapuaEntityNotFoundException
-     *             If the {@link Trigger} is not found
+     * @throws KapuaEntityNotFoundException If the {@link Trigger} is not found
      */
     public static void delete(EntityManager em, KapuaId scopeId, KapuaId triggerId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, TriggerImpl.class, scopeId, triggerId);

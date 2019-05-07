@@ -11,19 +11,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.quartz.utils;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.scheduler.quartz.job.KapuaJobLauncher;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
+import org.quartz.ScheduleBuilder;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
@@ -101,14 +103,41 @@ public class QuartzTriggerUtils {
         }
     }
 
-    /**
-     * Creates a Quartz {@link org.quartz.Trigger} from the Kapua {@link Trigger}.
-     *
-     * @param trigger The {@link Trigger} from which to extract data.
-     * @throws KapuaException If something goes bad
-     * @since 1.1.0
-     */
-    public static void createQuartzTrigger(Trigger trigger) throws KapuaException {
+
+    public static void createIntervalJobTrigger(Trigger trigger) throws KapuaException {
+        Integer interval = null;
+
+        for (TriggerProperty tp : trigger.getTriggerProperties()) {
+            if ("interval".equals(tp.getName())) {
+                interval = (Integer) ObjectValueConverter.fromString(tp.getPropertyValue(), Integer.class);
+            }
+        }
+
+        if (interval == null) {
+            throw KapuaException.internalError("Invalid interval");
+        }
+
+        createQuartzTriggerWithSchedule(trigger, SimpleScheduleBuilder.repeatSecondlyForever(interval));
+    }
+
+
+    public static void createCronJobTrigger(Trigger trigger) throws KapuaException {
+        String cron = null;
+
+        for (TriggerProperty tp : trigger.getTriggerProperties()) {
+            if ("cronExpression".equals(tp.getName())) {
+                cron = (String) ObjectValueConverter.fromString(tp.getPropertyValue(), String.class);
+            }
+        }
+
+        if (Strings.isNullOrEmpty(cron)) {
+            throw KapuaException.internalError("Invalid cron");
+        }
+
+        createQuartzTriggerWithSchedule(trigger, CronScheduleBuilder.cronSchedule(cron).inTimeZone(TimeZone.getTimeZone("UTC")));
+    }
+
+    public static void createQuartzTriggerWithSchedule(Trigger trigger, ScheduleBuilder scheduleBuilder) throws KapuaException {
         JobKey jobkey = JobKey.jobKey(KapuaJobLauncher.class.getName(), "USER");
 
         SchedulerFactory sf = new StdSchedulerFactory();
@@ -142,7 +171,7 @@ public class QuartzTriggerUtils {
 
         JobDataMap triggerDataMap = new JobDataMap();
         for (TriggerProperty tp : trigger.getTriggerProperties()) {
-            triggerDataMap.put(tp.getName(), KapuaEid.parseCompactId(tp.getPropertyValue()));
+            triggerDataMap.put(tp.getName(), ObjectValueConverter.toString(tp.getPropertyValue()));
         }
 
         // Quartz Trigger definition
@@ -153,11 +182,7 @@ public class QuartzTriggerUtils {
                 .startAt(trigger.getStartsOn())
                 .endAt(trigger.getEndsOn());
 
-        if (trigger.getRetryInterval() != null) {
-            triggerBuilder.withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(trigger.getRetryInterval().intValue()));
-        } else {
-            triggerBuilder.withSchedule(CronScheduleBuilder.cronSchedule(trigger.getCronScheduling()).inTimeZone(TimeZone.getTimeZone("UTC")));
-        }
+        triggerBuilder.withSchedule(scheduleBuilder);
 
         org.quartz.Trigger quarztTrigger = triggerBuilder.build();
         try {

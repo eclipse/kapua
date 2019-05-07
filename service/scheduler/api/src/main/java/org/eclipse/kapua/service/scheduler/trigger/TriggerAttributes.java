@@ -21,6 +21,12 @@ import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
  */
 public class TriggerAttributes extends KapuaNamedEntityAttributes {
 
+    public static final String STARTS_ON = "startsOn";
+
+    public static final String ENDS_ON = "endsOn";
+
+    public static final String TRIGGER_DEFINITION_ID = "triggerDefinitionId";
+
     public static final String TRIGGER_PROPERTIES = "triggerProperties";
 
     public static final String TRIGGER_PROPERTIES_NAME = TRIGGER_PROPERTIES + ".name";
@@ -29,7 +35,4 @@ public class TriggerAttributes extends KapuaNamedEntityAttributes {
 
     public static final String TRIGGER_PROPERTIES_TYPE = TRIGGER_PROPERTIES + ".propertyType";
 
-    public static final String STARTS_ON = "startsOn";
-
-    public static final String ENDS_ON = "endsOn";
 }
