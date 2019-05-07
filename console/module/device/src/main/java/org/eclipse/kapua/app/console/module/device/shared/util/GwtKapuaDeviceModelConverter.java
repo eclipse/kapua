@@ -259,6 +259,9 @@ public class GwtKapuaDeviceModelConverter {
             if (sortField.equals("startedOnFormatted")) {
                 sortField = DeviceManagementOperationAttributes.STARTED_ON;
             }
+            if (sortField.equals("endedOnFormatted")) {
+                sortField = DeviceManagementOperationAttributes.ENDED_ON;
+            }
             query.setSortCriteria(new FieldSortCriteria(sortField, sortOrder));
         } else {
             query.setSortCriteria(new FieldSortCriteria(DeviceManagementOperationAttributes.STARTED_ON, SortOrder.DESCENDING));
