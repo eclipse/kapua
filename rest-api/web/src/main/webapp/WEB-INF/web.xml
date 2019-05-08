@@ -14,9 +14,9 @@
 <!-- This web.xml file is not required when using Servlet 3.0 container, 
     see implementation details http://jersey.java.net/nonav/documentation/latest/jax-rs.html -->
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-    id="WebApp_ID" version="3.0">
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         id="WebApp_ID" version="3.0">
 
     <display-name>Kapua REST API</display-name>
 
@@ -24,7 +24,7 @@
     <!-- Listeners -->
     <listener>
         <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
-    </listener>    
+    </listener>
 
     <listener>
         <listener-class>org.eclipse.kapua.app.api.web.RestApiListener</listener-class>
@@ -41,6 +41,14 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+    <filter>
+        <filter-name>KapuaSessionCleanUpFilter</filter-name>
+        <filter-class>org.eclipse.kapua.app.api.core.filter.KapuaSessionCleanupFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>KapuaSessionCleanUpFilter</filter-name>
+        <url-pattern>/v1/*</url-pattern>
+    </filter-mapping>
 
     <!-- -->
     <!-- Servlets -->
