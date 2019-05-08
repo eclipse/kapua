@@ -149,6 +149,7 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
         column.setId("inputProperty_packageName");
         column.setHeader(DEVICES_MSGS.deviceInstallTabHistoryTableName());
         column.setWidth(200);
+        column.setSortable(false);
         column.setRenderer(
                 new GridCellRenderer() {
                     @Override
@@ -171,6 +172,7 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
         column.setId("inputProperty_packageVersion");
         column.setHeader(DEVICES_MSGS.deviceInstallTabHistoryTableVersion());
         column.setWidth(200);
+        column.setSortable(false);
         column.setRenderer(
                 new GridCellRenderer() {
                     @Override
@@ -191,6 +193,7 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
 
         column = new ColumnConfig();
         column.setId("inputProperty_kapuapackagedownloaduri");
+        column.setSortable(false);
         column.setHeader(DEVICES_MSGS.deviceInstallTabHistoryTableURI());
         column.setWidth(200);
         configs.add(column);
