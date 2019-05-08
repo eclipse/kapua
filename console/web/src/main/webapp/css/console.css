@@ -279,3 +279,7 @@ button::-moz-focus-inner, button::-moz-focus-outer, button:-moz-focusring, butto
 .x-form-radio, .x-form-checkbox {
 	pointer-events: all;
 }
+
+.custom-x-grid3-row {
+	height: auto !important;
+}
