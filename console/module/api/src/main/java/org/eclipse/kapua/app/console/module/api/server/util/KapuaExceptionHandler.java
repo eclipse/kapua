@@ -136,10 +136,10 @@ public class KapuaExceptionHandler {
             } else {
                 throw new GwtKapuaException(GwtKapuaErrorCode.ILLEGAL_ARGUMENT, t, ((KapuaIllegalArgumentException) t).getArgumentName(), ((KapuaIllegalArgumentException) t).getArgumentValue());
             }
-        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.BUNDLE_START_ERROR)){
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.BUNDLE_START_ERROR.name())){
             logger.warn("Bundle could not be started", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.BUNDLE_START_ERROR, t, t.getLocalizedMessage());
-        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.BUNDLE_STOP_ERROR)){
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.BUNDLE_STOP_ERROR.name())){
             logger.warn("Bundle could not be stoped", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.BUNDLE_STOP_ERROR, t, t.getLocalizedMessage());
         } else if (t instanceof KapuaException && ((KapuaException) t).getCode().equals(KapuaErrorCodes.PACKAGE_URI_SYNTAX_ERROR)){
@@ -154,6 +154,8 @@ public class KapuaExceptionHandler {
             throw new GwtKapuaException(GwtKapuaErrorCode.RETRY_AND_CRON_BOTH_SELECTED, t, t.getLocalizedMessage());
         } else if (t instanceof KapuaException && ((KapuaException) t).getCode() == (KapuaErrorCodes.TRIGGER_NEVER_FIRE)){
             throw new GwtKapuaException(GwtKapuaErrorCode.TRIGGER_NEVER_FIRE, t, t.getLocalizedMessage());
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.PERMISSION_DELETE_NOT_ALLOWED.name())) {
+            throw new GwtKapuaException(GwtKapuaErrorCode.PERMISSION_DELETE_NOT_ALLOWED, t, t.getLocalizedMessage());
         } else {
             // all others => log and throw internal error code
             logger.warn("RPC service non-application error", t);

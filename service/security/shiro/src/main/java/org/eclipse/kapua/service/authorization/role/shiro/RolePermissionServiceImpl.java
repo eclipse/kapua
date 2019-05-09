@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.authorization.role.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaEntityUniquenessException;
+import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -131,6 +132,8 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
         entityManagerSession.onTransactedAction(em -> {
             if (RolePermissionDAO.find(em, scopeId, rolePermissionId) == null) {
                 throw new KapuaEntityNotFoundException(RolePermission.TYPE, rolePermissionId);
+            } else if (KapuaId.ONE.equals(rolePermissionId)) {
+                throw new KapuaException(KapuaErrorCodes.PERMISSION_DELETE_NOT_ALLOWED);
             }
 
             RolePermissionDAO.delete(em, scopeId, rolePermissionId);
