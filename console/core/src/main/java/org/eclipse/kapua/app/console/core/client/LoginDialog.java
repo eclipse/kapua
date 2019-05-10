@@ -256,6 +256,7 @@ public class LoginDialog extends Dialog {
             public void onSuccess(GwtSession gwtSession) {
                 currentSession = gwtSession;
                 callMainScreen();
+                ConsoleInfo.hideInfo();
             }
         });
     }

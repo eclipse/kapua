@@ -83,6 +83,10 @@ public class ConsoleInfo extends Info {
         ConsoleInfo.getInstance().show(config);
     }
 
+    public static void hideInfo() {
+        ConsoleInfo.getInstance().afterHide();
+    }
+
     @Override
     protected void onShowInfo() {
         RootPanel.get().add(this);
