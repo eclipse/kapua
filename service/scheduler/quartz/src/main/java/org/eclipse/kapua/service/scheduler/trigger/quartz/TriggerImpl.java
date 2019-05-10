@@ -56,11 +56,11 @@ public class TriggerImpl extends AbstractKapuaNamedEntity implements Trigger {
     private Date endsOn;
 
     @Basic
-    @Column(name = "cron_scheduling", nullable = true, updatable = false)
+    @Column(name = "cron_scheduling", nullable = true, updatable = true)
     private String cronScheduling;
 
     @Basic
-    @Column(name = "retry_interval", nullable = true, updatable = false)
+    @Column(name = "retry_interval", nullable = true, updatable = true)
     private Long retryInterval;
 
     @Embedded

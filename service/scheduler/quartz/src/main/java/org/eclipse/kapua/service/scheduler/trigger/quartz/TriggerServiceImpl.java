@@ -53,6 +53,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * {@link TriggerService} implementation.
@@ -138,6 +140,11 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.write, triggerCreator.getScopeId()));
 
         //
+        // Convert creator to new model.
+        // To be removed after removing of TriggerCreator.cronScheduling and TriggerCreator.retryInterval
+        adaptTriggerCreator(triggerCreator);
+
+        //
         // Check trigger definition
         TriggerDefinition triggerDefinition = TRIGGER_DEFINITION_SERVICE.find(triggerCreator.getScopeId(), triggerCreator.getTriggerDefinitionId());
         ArgumentValidator.notNull(triggerDefinition, "triggerCreator.triggerDefinitionId");
@@ -207,6 +214,8 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
             throw new KapuaEntityNotFoundException(trigger.getType(), trigger.getId());
         }
 
+        adaptTrigger(trigger);
+
         //
         // Check duplicate name
         TriggerQuery query = new TriggerQueryImpl(trigger.getScopeId());
@@ -275,7 +284,9 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> TriggerDAO.find(em, scopeId, triggerId));
+        Trigger trigger = entityManagerSession.onResult(em -> TriggerDAO.find(em, scopeId, triggerId));
+        adaptTrigger(trigger);
+        return trigger;
     }
 
     @Override
@@ -291,7 +302,11 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> TriggerDAO.query(em, query));
+        TriggerListResult triggers = entityManagerSession.onResult(em -> TriggerDAO.query(em, query));
+
+        triggers.getItems().forEach(this::adaptTrigger);
+
+        return triggers;
     }
 
     @Override
@@ -310,4 +325,47 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         return entityManagerSession.onResult(em -> TriggerDAO.count(em, query));
     }
 
+    private void adaptTriggerCreator(TriggerCreator triggerCreator) {
+        if (triggerCreator.getRetryInterval() != null) {
+            triggerCreator.setTriggerDefinitionId(INTERVAL_JOB__TRIGGER.getId());
+            triggerCreator.getTriggerProperties().add(TRIGGER_DEFINITION_FACTORY.newTriggerProperty("interval", Integer.class.getName(), triggerCreator.getRetryInterval().toString()));
+        } else if (triggerCreator.getCronScheduling() != null) {
+            triggerCreator.setTriggerDefinitionId(CRON_JOB__TRIGGER.getId());
+            triggerCreator.getTriggerProperties().add(TRIGGER_DEFINITION_FACTORY.newTriggerProperty("cronExpression", String.class.getName(), triggerCreator.getCronScheduling()));
+        }
+    }
+
+    private void adaptTrigger(Trigger trigger) {
+        boolean converted = false;
+        if (trigger.getRetryInterval() != null) {
+            trigger.setTriggerDefinitionId(INTERVAL_JOB__TRIGGER.getId());
+
+            List<TriggerProperty> triggerProperties = new ArrayList<>(trigger.getTriggerProperties());
+            triggerProperties.add(TRIGGER_DEFINITION_FACTORY.newTriggerProperty("interval", Integer.class.getName(), trigger.getRetryInterval().toString()));
+            trigger.setTriggerProperties(triggerProperties);
+
+            trigger.setRetryInterval(null);
+
+            converted = true;
+
+        } else if (trigger.getCronScheduling() != null) {
+            trigger.setTriggerDefinitionId(CRON_JOB__TRIGGER.getId());
+
+            List<TriggerProperty> triggerProperties = new ArrayList<>(trigger.getTriggerProperties());
+            triggerProperties.add(TRIGGER_DEFINITION_FACTORY.newTriggerProperty("cronExpression", String.class.getName(), trigger.getCronScheduling()));
+            trigger.setTriggerProperties(triggerProperties);
+
+            trigger.setCronScheduling(null);
+
+            converted = true;
+        }
+
+        if (converted) {
+            try {
+                entityManagerSession.onTransactedResult(em -> TriggerDAO.update(em, trigger));
+            } catch (Exception e) {
+                LOG.warn("Cannot convert Trigger to new format!", e);
+            }
+        }
+    }
 }

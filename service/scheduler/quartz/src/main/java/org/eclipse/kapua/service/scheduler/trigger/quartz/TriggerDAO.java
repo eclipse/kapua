@@ -39,8 +39,7 @@ public class TriggerDAO {
      * @return
      * @throws KapuaException
      */
-    public static Trigger create(EntityManager em, TriggerCreator triggerCreator)
-            throws KapuaException {
+    public static Trigger create(EntityManager em, TriggerCreator triggerCreator) {
         //
         // Create Trigger
         TriggerImpl triggerImpl = new TriggerImpl(triggerCreator.getScopeId());
@@ -48,8 +47,6 @@ public class TriggerDAO {
         triggerImpl.setStartsOn(triggerCreator.getStartsOn());
         triggerImpl.setEndsOn(triggerCreator.getEndsOn());
         triggerImpl.setTriggerDefinitionId(triggerCreator.getTriggerDefinitionId());
-//        triggerImpl.setCronScheduling(triggerCreator.getCronScheduling());
-//        triggerImpl.setRetryInterval(triggerCreator.getRetryInterval());
         triggerImpl.setTriggerProperties(triggerCreator.getTriggerProperties());
 
         return ServiceDAO.create(em, triggerImpl);

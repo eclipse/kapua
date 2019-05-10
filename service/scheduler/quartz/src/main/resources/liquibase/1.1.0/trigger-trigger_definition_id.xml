@@ -24,9 +24,7 @@
         </preConditions>
 
         <addColumn tableName="schdl_trigger">
-            <column name="trigger_definition_id" type="bigint(21) unsigned">
-                <constraints nullable="false"/>
-            </column>
+            <column name="trigger_definition_id" type="bigint(21) unsigned"/>
         </addColumn>
     </changeSet>
 

@@ -127,9 +127,9 @@ public class KapuaGwtJobModelConverter {
         KapuaGwtCommonsModelConverter.convertUpdatableEntity(trigger, gwtTrigger);
 
         gwtTrigger.setTriggerName(trigger.getName());
-        gwtTrigger.setCronScheduling(trigger.getCronScheduling());
         gwtTrigger.setStartsOn(trigger.getStartsOn());
         gwtTrigger.setEndsOn(trigger.getEndsOn());
+        gwtTrigger.setCronScheduling(trigger.getCronScheduling());
         gwtTrigger.setRetryInterval(trigger.getRetryInterval());
         gwtTrigger.setTriggerProperties(convertTriggerProperties(trigger.getTriggerProperties()));
 
