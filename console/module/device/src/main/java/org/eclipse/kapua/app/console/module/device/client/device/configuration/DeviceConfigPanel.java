@@ -433,6 +433,15 @@ public class DeviceConfigPanel extends LayoutContainer {
         field.setAllowBlank(true);
         field.setFieldLabel(param.getName());
         field.addPlugin(dirtyPlugin);
+        if (param.getId().equals("WireGraph")) {
+            field.setMaxLength(1000000);
+        }
+        if (param.getId().equals("brokerXml")) {
+            field.setMaxLength(1000000);
+        }
+        if (param.getId().equals("users")) {
+            field.setMaxLength(1000000);
+        }
 
         if (param.isRequired()) {
             field.setAllowBlank(false);
@@ -454,7 +463,7 @@ public class DeviceConfigPanel extends LayoutContainer {
             field.setMaxLength(1);
             field.setValidator(validator);
         }
-        if (validator instanceof StringValidator) {
+        if (validator instanceof StringValidator && !param.getId().equals("WireGraph") && !param.getId().equals("brokerXml") && !param.getId().equals("users")) {
             field.setValidator(validator);
         }
         field.setLabelStyle("word-break:break-all");
