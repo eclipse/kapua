@@ -121,7 +121,7 @@ public class KapuaGwtJobModelConverter {
         return gwtJobStepDefinition;
     }
 
-    public static GwtTrigger convertTrigger(Trigger trigger) {
+    public static GwtTrigger convertTrigger(Trigger trigger, String triggerDefinitionName) {
         GwtTrigger gwtTrigger = new GwtTrigger();
 
         KapuaGwtCommonsModelConverter.convertUpdatableEntity(trigger, gwtTrigger);
@@ -129,8 +129,7 @@ public class KapuaGwtJobModelConverter {
         gwtTrigger.setTriggerName(trigger.getName());
         gwtTrigger.setStartsOn(trigger.getStartsOn());
         gwtTrigger.setEndsOn(trigger.getEndsOn());
-        gwtTrigger.setCronScheduling(trigger.getCronScheduling());
-        gwtTrigger.setRetryInterval(trigger.getRetryInterval());
+        gwtTrigger.setTriggerDefinitionName(triggerDefinitionName);
         gwtTrigger.setTriggerProperties(convertTriggerProperties(trigger.getTriggerProperties()));
 
         return gwtTrigger;

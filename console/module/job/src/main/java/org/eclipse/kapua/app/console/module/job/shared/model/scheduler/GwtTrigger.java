@@ -20,7 +20,6 @@ import java.util.List;
 public class GwtTrigger extends GwtUpdatableEntityModel {
 
     @Override
-    @SuppressWarnings({ "unchecked" })
     public <X> X get(String property) {
         if ("startsOnFormatted".equals(property)) {
             return (X) (DateUtils.formatDateTime(getStartsOn()));
@@ -63,20 +62,12 @@ public class GwtTrigger extends GwtUpdatableEntityModel {
         set("endsOn", endsOn);
     }
 
-    public String getCronScheduling() {
-        return get("cronScheduling");
+    public String getTriggerDefinitionName() {
+        return get("triggerDefinitionName");
     }
 
-    public void setCronScheduling(String cronScheduling) {
-        set("cronScheduling", cronScheduling);
-    }
-
-    public Long getRetryInterval() {
-        return get("retryInterval");
-    }
-
-    public void setRetryInterval(Long retryInterval) {
-        set("retryInterval", retryInterval);
+    public void setTriggerDefinitionName(String triggerDefinitionName) {
+        set("triggerDefinitionName", triggerDefinitionName);
     }
 
     public <P extends GwtTriggerProperty> List<P> getTriggerProperties() {
@@ -90,6 +81,24 @@ public class GwtTrigger extends GwtUpdatableEntityModel {
     public String getJobId() {
         for (GwtTriggerProperty property : getTriggerProperties()) {
             if (property.getPropertyName().equals("jobId")) {
+                return property.getPropertyValue();
+            }
+        }
+        return null;
+    }
+
+    public String getInterval() {
+        for (GwtTriggerProperty property : getTriggerProperties()) {
+            if (property.getPropertyName().equals("interval")) {
+                return property.getPropertyValue();
+            }
+        }
+        return null;
+    }
+
+    public String getCronExpression() {
+        for (GwtTriggerProperty property : getTriggerProperties()) {
+            if (property.getPropertyName().equals("cronExpression")) {
                 return property.getPropertyValue();
             }
         }

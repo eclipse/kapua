@@ -121,8 +121,18 @@ public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements 
             totalLength = (int) TRIGGER_SERVICE.count(triggerQuery);
 
             // Converto to GWT entity
-            for (Trigger trigger : triggerListResult.getItems()) {
-                gwtTriggerList.add(KapuaGwtJobModelConverter.convertTrigger(trigger));
+            for (Trigger t : triggerListResult.getItems()) {
+
+                String triggerDefinitionName = "";
+                if (TRIGGER_DEFINITION_INTERVAL.getId().equals(t.getTriggerDefinitionId())) {
+                    triggerDefinitionName = TRIGGER_DEFINITION_INTERVAL_NAME;
+                } else if (TRIGGER_DEFINITION_CRON.getId().equals(t.getTriggerDefinitionId())) {
+                    triggerDefinitionName = TRIGGER_DEFINITION_CRON_NAME;
+                } else if (TRIGGER_DEFINITION_DEVICE_CONNECT.getId().equals(t.getTriggerDefinitionId())) {
+                    triggerDefinitionName = TRIGGER_DEFINITION_DEVICE_CONNECT_NAME;
+                }
+
+                gwtTriggerList.add(KapuaGwtJobModelConverter.convertTrigger(t, triggerDefinitionName));
             }
 
         } catch (Throwable t) {
@@ -147,15 +157,19 @@ public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements 
             triggerCreator.setEndsOn(gwtTriggerCreator.getEndsOn());
             triggerCreator.setTriggerProperties(GwtKapuaJobModelConverter.convertTriggerProperties(gwtTriggerCreator.getTriggerProperties()));
 
+            String triggerDefinitionName = null;
             if (TRIGGER_DEFINITION_INTERVAL.getName().equals(gwtTriggerCreator.getTriggerType())) {
+                triggerDefinitionName = TRIGGER_DEFINITION_INTERVAL_NAME;
                 triggerCreator.setTriggerDefinitionId(TRIGGER_DEFINITION_INTERVAL.getId());
 
                 triggerCreator.getTriggerProperties().add(TRIGGER_FACTORY.newTriggerProperty("interval", Integer.class.getName(), gwtTriggerCreator.getRetryInterval().toString()));
             } else if (TRIGGER_DEFINITION_CRON.getName().equals(gwtTriggerCreator.getTriggerType())) {
+                triggerDefinitionName = TRIGGER_DEFINITION_CRON_NAME;
                 triggerCreator.setTriggerDefinitionId(TRIGGER_DEFINITION_CRON.getId());
 
                 triggerCreator.getTriggerProperties().add(TRIGGER_FACTORY.newTriggerProperty("cronExpression", String.class.getName(), gwtTriggerCreator.getCronScheduling()));
             } else if (TRIGGER_DEFINITION_DEVICE_CONNECT.getName().equals(gwtTriggerCreator.getTriggerType())) {
+                triggerDefinitionName = TRIGGER_DEFINITION_DEVICE_CONNECT_NAME;
                 triggerCreator.setTriggerDefinitionId(TRIGGER_DEFINITION_DEVICE_CONNECT.getId());
             }
 
@@ -165,44 +179,12 @@ public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements 
 
             // convert to GwtAccount and return
             // reload the user as we want to load all its permissions
-            gwtTrigger = KapuaGwtJobModelConverter.convertTrigger(trigger);
+            gwtTrigger = KapuaGwtJobModelConverter.convertTrigger(trigger, triggerDefinitionName);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
 
         return gwtTrigger;
-    }
-
-    @Override
-    public GwtTrigger update(GwtXSRFToken xsrfToken, GwtTrigger gwtTrigger) throws GwtKapuaException {
-        checkXSRFToken(xsrfToken);
-
-        GwtTrigger gwtTriggerUpdated = null;
-        try {
-            KapuaId scopeId = KapuaEid.parseCompactId(gwtTrigger.getScopeId());
-            KapuaId triggerId = KapuaEid.parseCompactId(gwtTrigger.getId());
-
-            Trigger trigger = TRIGGER_SERVICE.find(scopeId, triggerId);
-
-            if (trigger != null) {
-                //
-                // Update trigger
-                trigger.setName(gwtTrigger.getTriggerName());
-                trigger.setStartsOn(gwtTrigger.getStartsOn());
-                trigger.setEndsOn(gwtTrigger.getEndsOn());
-                trigger.setRetryInterval(gwtTrigger.getRetryInterval());
-                trigger.setCronScheduling(gwtTrigger.getCronScheduling());
-
-                // optlock
-                trigger.setOptlock(gwtTrigger.getOptlock());
-
-                // update the trigger
-                gwtTriggerUpdated = KapuaGwtJobModelConverter.convertTrigger(TRIGGER_SERVICE.update(trigger));
-            }
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
-        }
-        return gwtTriggerUpdated;
     }
 
     @Override

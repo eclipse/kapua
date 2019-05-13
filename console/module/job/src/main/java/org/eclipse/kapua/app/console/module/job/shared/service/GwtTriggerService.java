@@ -39,16 +39,6 @@ public interface GwtTriggerService extends RemoteService {
             throws GwtKapuaException;
 
     /**
-     * Updates a Trigger in the database and returns the refreshed/reloaded entity instance.
-     *
-     * @param gwtTrigger
-     * @return
-     * @throws GwtKapuaException
-     */
-    GwtTrigger update(GwtXSRFToken xsrfToken, GwtTrigger gwtTrigger)
-            throws GwtKapuaException;
-
-    /**
      * Delete the supplied Trigger.
      *
      * @param gwtTriggerId

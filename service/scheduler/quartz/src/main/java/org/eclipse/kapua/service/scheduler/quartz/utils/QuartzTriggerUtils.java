@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,7 +14,9 @@ package org.eclipse.kapua.service.scheduler.quartz.utils;
 import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.type.ObjectTypeConverter;
 import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.scheduler.quartz.job.KapuaJobLauncher;
@@ -110,6 +112,7 @@ public class QuartzTriggerUtils {
         for (TriggerProperty tp : trigger.getTriggerProperties()) {
             if ("interval".equals(tp.getName())) {
                 interval = (Integer) ObjectValueConverter.fromString(tp.getPropertyValue(), Integer.class);
+                break;
             }
         }
 
@@ -127,6 +130,7 @@ public class QuartzTriggerUtils {
         for (TriggerProperty tp : trigger.getTriggerProperties()) {
             if ("cronExpression".equals(tp.getName())) {
                 cron = (String) ObjectValueConverter.fromString(tp.getPropertyValue(), String.class);
+                break;
             }
         }
 
@@ -170,8 +174,17 @@ public class QuartzTriggerUtils {
         TriggerKey triggerKey = TriggerKey.triggerKey(trigger.getId().toCompactId(), trigger.getScopeId().toCompactId());
 
         JobDataMap triggerDataMap = new JobDataMap();
-        for (TriggerProperty tp : trigger.getTriggerProperties()) {
-            triggerDataMap.put(tp.getName(), ObjectValueConverter.toString(tp.getPropertyValue()));
+        try {
+            for (TriggerProperty tp : trigger.getTriggerProperties()) {
+                if (KapuaId.class.getName().equals(tp.getPropertyType())) {
+                    triggerDataMap.put(tp.getName(), KapuaEid.parseCompactId(tp.getPropertyValue()));
+                } else {
+                    triggerDataMap.put(tp.getName(), ObjectValueConverter.fromString(tp.getPropertyValue(), ObjectTypeConverter.fromString(tp.getPropertyType())));
+                }
+            }
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
+            throw new RuntimeException(cnfe);
         }
 
         // Quartz Trigger definition
