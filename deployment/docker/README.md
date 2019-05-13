@@ -18,6 +18,11 @@ Just simply run:
 ./docker-deploy.sh
 ```
 
+PowerShell scripts are also available for Windows systems:
+```bash
+.\docker-deploy.ps1
+```
+
 ### Accessing components
 After deployment and startup of containers, they can be accessed at the following endpoints
 
@@ -47,12 +52,16 @@ To stop and remove all containers, simply run:
 Other than the default deployment it is possible to run other versions of Kapua.
 
 By default the `latest` version of Kapua will be brought up. 
-You can change the version of Kapua by exporting the environment variable `IMAGE_VERSION`.
+You can change the version of Kapua by exporting the environment variable `IMAGE_VERSION`. 
+Please also remember to checkout the related git tag first.
 
 Example:
 ```bash
-export IMAGE_VERSION=1.0.0
-``` 
+git checkout 1.0.0-M5
+export IMAGE_VERSION=1.0.0-M5
+./docker-deploy.sh
+```
+
 #### Building containers from scratch
 If you want to build containers from the code, you'll need to build the whole Kapua Project.
 
