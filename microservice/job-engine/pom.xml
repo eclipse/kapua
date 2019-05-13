@@ -54,6 +54,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- Apache shiro security framework -->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
         <!-- Kapua -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -110,6 +116,14 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-user-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-security-certificate-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-security-certificate-internal</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>

@@ -11,15 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.microservice.jobengine;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.microservice.commons.HttpEndpoint;
 
-import io.vertx.core.Future;
 import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +23,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class JobEngineHttpEndpoint implements HttpEndpoint {
-
-    private final KapuaLocator kapuaLocator = KapuaLocator.getInstance();
-    private final JobEngineService jobEngineService = kapuaLocator.getService(JobEngineService.class);
 
     @Autowired
     private JobEngineServiceAsync jobEngineServiceAsync;
@@ -45,34 +38,39 @@ public class JobEngineHttpEndpoint implements HttpEndpoint {
     }
 
     private void startJob(RoutingContext ctx) {
-        jobEngineServiceAsync.startJob(ctx.get("scopeId"), ctx.get("jobId"), Future.<Void>future().setHandler(result -> {
+        jobEngineServiceAsync.startJob(ctx.vertx(), ctx.get("kapuaSession"), ctx.get("shiroSubject"), ctx.get("scopeId"), ctx.get("jobId"), result -> {
             if (result.succeeded()) {
                 ctx.response().end();
                 ctx.next();
             } else {
-                ctx.fail(result.cause());
+                ctx.fail(500, result.cause());
             }
-        }));
+        });
     }
 
     private void startJobWithOptions(RoutingContext ctx) {
-        KapuaSecurityUtils.setSession(ctx.get("kapuaSession"));
         JobStartOptions jobStartOptions = Json.decodeValue(ctx.getBodyAsString(), JobStartOptions.class);
-        try {
-            jobEngineService.startJob(ctx.get("scopeId"), ctx.get("jobId"), jobStartOptions);
-        } catch (KapuaException ex) {
-            ctx.fail(ex);
-        }
-        ctx.next();
+        jobEngineServiceAsync.startJob(ctx.vertx(), ctx.get("kapuaSession"), ctx.get("shiroSubject"), ctx.get("scopeId"), ctx.get("jobId"), jobStartOptions, result -> {
+            if (result.succeeded()) {
+                ctx.response().end();
+                ctx.next();
+            } else {
+                ctx.fail(500, result.cause());
+            }
+        });
     }
 
     private void isRunning(RoutingContext ctx) {
-        try {
-            ctx.response().end("{ \"isRunning\": " + jobEngineService.isRunning(ctx.get("scopeId"), ctx.get("jobId")) + " }");
-        } catch (KapuaException ex) {
-            ctx.fail(ex);
-        }
-        ctx.next();
+        jobEngineServiceAsync.isRunning(ctx.vertx(), ctx.get("kapuaSession"), ctx.get("shiroSubject"), ctx.get("scopeId"), ctx.get("jobId"), result -> {
+            if (result.succeeded()) {
+                JsonObject jsonResponse = new JsonObject();
+                jsonResponse.put("isRunning", result.result());
+                ctx.response().end(jsonResponse.encode());
+                ctx.next();
+            } else {
+                ctx.fail(500, result.cause());
+            }
+        });
     }
 
 }

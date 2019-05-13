@@ -12,13 +12,17 @@
 package org.eclipse.kapua.microservice.jobengine;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.microservice.commons.BlockingAsyncRequestExecutor;
 import org.eclipse.kapua.model.id.KapuaId;
 
-import io.vertx.core.Future;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,32 +30,41 @@ import org.springframework.stereotype.Service;
 public class JobEngineServiceAsync {
 
     @Autowired
-    private Vertx vertx;
+    private BlockingAsyncRequestExecutor blockingAsyncRequestExecutor;
 
     private final KapuaLocator kapuaLocator = KapuaLocator.getInstance();
     private final JobEngineService jobEngineService = kapuaLocator.getService(JobEngineService.class);
 
-    public void startJob(KapuaId scopeId, KapuaId jobId, Future<Void> resultFuture) {
-        vertx.executeBlocking(blockingFuture -> {
+    public void startJob(Vertx vertx, KapuaSession kapuaSession, Subject shiroSubject, KapuaId scopeId, KapuaId jobId, Handler<AsyncResult<Void>> resultHandler) {
+        blockingAsyncRequestExecutor.executeAsyncRequest(vertx, kapuaSession, shiroSubject, future -> {
             try {
                 jobEngineService.startJob(scopeId, jobId);
-                blockingFuture.complete();
+                future.complete();
             } catch (KapuaException ex) {
-                blockingFuture.fail(ex);
+                future.fail(ex);
             }
-        }, resultFuture);
+        }, resultHandler);
     }
 
-    public Future<Void> startJob(KapuaId scopeId, KapuaId jobId, JobStartOptions jobStartOptions) {
-        vertx.executeBlocking(blockingFuture -> {
-
-        }, result -> {
-
-        });
-        return Future.succeededFuture();
+    public void startJob(Vertx vertx, KapuaSession kapuaSession, Subject shiroSubject, KapuaId scopeId, KapuaId jobId, JobStartOptions jobStartOptions, Handler<AsyncResult<Void>> resultHandler) {
+        blockingAsyncRequestExecutor.executeAsyncRequest(vertx, kapuaSession, shiroSubject, future -> {
+            try {
+                jobEngineService.startJob(scopeId, jobId, jobStartOptions);
+                future.complete();
+            } catch (KapuaException ex) {
+                future.fail(ex);
+            }
+        }, resultHandler);
     }
 
-    public Future<Boolean> isRunning(KapuaId scopeId, KapuaId jobId) {
-        return Future.succeededFuture(true);
+    public void isRunning(Vertx vertx, KapuaSession kapuaSession, Subject shiroSubject, KapuaId scopeId, KapuaId jobId, Handler<AsyncResult<Boolean>> resultHandler) {
+        blockingAsyncRequestExecutor.executeAsyncRequest(vertx, kapuaSession, shiroSubject, future -> {
+            try {
+                Boolean isRunning = jobEngineService.isRunning(scopeId, jobId);
+                future.complete(isRunning);
+            } catch (KapuaException ex) {
+                future.fail(ex);
+            }
+        }, resultHandler);
     }
 }

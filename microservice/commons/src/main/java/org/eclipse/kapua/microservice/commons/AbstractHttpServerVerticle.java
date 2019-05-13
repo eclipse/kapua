@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
@@ -24,8 +23,11 @@ import org.eclipse.kapua.service.authentication.CredentialsFactory;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.http.HttpServerOptions;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
 
 public abstract class AbstractHttpServerVerticle extends AbstractVerticle {
 
@@ -46,15 +48,15 @@ public abstract class AbstractHttpServerVerticle extends AbstractVerticle {
         router.route().handler(BodyHandler.create());
         // Login
         router.route().blockingHandler(ctx -> {
-//            AccessTokenCredentials accessTokenCredentials = credentialsFactory.newAccessTokenCredentials(ctx.request().getHeader("X-Access-Token"));
-//            try {
-//                authenticationService.authenticate(accessTokenCredentials);
-//            } catch (KapuaException ex) {
-//                ctx.fail(ex);
-//            }
-            KapuaSecurityUtils.setSession(new KapuaSession());
+            String accessToken = StringUtils.removeStart(ctx.request().getHeader("Authorization"), "Bearer ");
+            AccessTokenCredentials accessTokenCredentials = credentialsFactory.newAccessTokenCredentials(accessToken);
+            try {
+                authenticationService.authenticate(accessTokenCredentials);
+            } catch (KapuaException ex) {
+                ctx.fail(ex);
+            }
             ctx.put("kapuaSession", KapuaSecurityUtils.getSession());
-            ctx.put("threadContext", vertx.getOrCreateContext());
+            ctx.put("shiroSubject", SecurityUtils.getSubject());
             ctx.next();
         });
         // TODO Put Service Event
@@ -76,7 +78,20 @@ public abstract class AbstractHttpServerVerticle extends AbstractVerticle {
         getHttpEndpoint().forEach(endpoint -> endpoint.registerRoutes(router));
 
         // Logout
-        router.route().blockingHandler(ctx -> KapuaSecurityUtils.clearSession());
+        router.route().blockingHandler(ctx -> {
+            try {
+                authenticationService.logout();
+            } catch (Exception ex) {
+                ctx.fail(500, ex);
+            }
+        });
+
+        // Error handler
+        router.route().failureHandler(ctx -> {
+            JsonObject error = new JsonObject();
+            error.put("error", ctx.failure().getMessage());
+            ctx.response().setStatusCode(ctx.statusCode() == -1 ? 500 : ctx.statusCode()).end(error.encode());
+        });
         vertx.createHttpServer(getHttpServerOptions()).requestHandler(router).listen();
     }
 
