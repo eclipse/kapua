@@ -21,7 +21,7 @@ import org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedMessage;
-import org.eclipse.kapua.service.device.management.job.scheduler.manager.JobDeviceMangementTriggerManagerService;
+import org.eclipse.kapua.service.device.management.job.scheduler.manager.JobDeviceManagementTriggerManagerService;
 import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyMessage;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
 import org.slf4j.Logger;
@@ -42,7 +42,7 @@ public class DeviceMessageListener extends AbstractListener {
 
     private static DeviceLifeCycleService deviceLifeCycleService = KapuaLocator.getInstance().getService(DeviceLifeCycleService.class);
 
-    private static JobDeviceMangementTriggerManagerService jobDeviceManagementTrigggerManagerService = KapuaLocator.getInstance().getService(JobDeviceMangementTriggerManagerService.class);
+    private static JobDeviceManagementTriggerManagerService jobDeviceManagementTriggerManagerService = KapuaLocator.getInstance().getService(JobDeviceManagementTriggerManagerService.class);
 
     // metrics
     private Counter metricDeviceBirthMessage;
@@ -81,7 +81,7 @@ public class DeviceMessageListener extends AbstractListener {
         try {
             KapuaBirthMessage kapuaBirthMessage = birthMessage.getMessage();
 
-            jobDeviceManagementTrigggerManagerService.processOnConnect(kapuaBirthMessage.getScopeId(), kapuaBirthMessage.getDeviceId());
+            jobDeviceManagementTriggerManagerService.processOnConnect(kapuaBirthMessage.getScopeId(), kapuaBirthMessage.getDeviceId());
         } catch (Exception e) {
             logger.error("Error while processing device birth to trigger jobs", e);
         }

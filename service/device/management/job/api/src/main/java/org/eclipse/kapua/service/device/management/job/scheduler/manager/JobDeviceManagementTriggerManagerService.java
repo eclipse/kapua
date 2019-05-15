@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.device.management.job.scheduler.manager;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 
-public interface JobDeviceMangementTriggerManagerService extends KapuaService {
+public interface JobDeviceManagementTriggerManagerService extends KapuaService {
 
     void processOnConnect(KapuaId scopeId, KapuaId deviceId);
 }

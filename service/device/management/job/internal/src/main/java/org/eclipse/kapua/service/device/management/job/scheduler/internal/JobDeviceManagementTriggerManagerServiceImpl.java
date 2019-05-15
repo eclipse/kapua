@@ -19,7 +19,7 @@ import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.device.management.job.scheduler.manager.JobDeviceMangementTriggerManagerService;
+import org.eclipse.kapua.service.device.management.job.scheduler.manager.JobDeviceManagementTriggerManagerService;
 import org.eclipse.kapua.service.job.step.JobStepAttributes;
 import org.eclipse.kapua.service.job.step.JobStepFactory;
 import org.eclipse.kapua.service.job.step.JobStepQuery;
@@ -46,9 +46,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @KapuaProvider
-public class JobDeviceMangementTriggerManagerServiceImpl implements JobDeviceMangementTriggerManagerService {
+public class JobDeviceManagementTriggerManagerServiceImpl implements JobDeviceManagementTriggerManagerService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(JobDeviceMangementTriggerManagerServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JobDeviceManagementTriggerManagerServiceImpl.class);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 

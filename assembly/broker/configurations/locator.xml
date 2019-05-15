@@ -60,7 +60,7 @@
         <api>org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationFactory</api>
 
         <api>org.eclipse.kapua.service.device.management.job.manager.JobDeviceManagementOperationManagerService</api>
-        <api>org.eclipse.kapua.service.device.management.job.scheduler.manager.JobDeviceMangementTriggerManagerService</api>
+        <api>org.eclipse.kapua.service.device.management.job.scheduler.manager.JobDeviceManagementTriggerManagerService</api>
 
         <api>org.eclipse.kapua.service.device.management.registry.manager.DeviceManagementRegistryManagerService</api>
         <api>org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService</api>
