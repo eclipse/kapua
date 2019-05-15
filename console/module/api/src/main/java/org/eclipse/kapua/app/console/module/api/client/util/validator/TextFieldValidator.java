@@ -70,7 +70,8 @@ public class TextFieldValidator implements Validator {
         ALPHABET("alphabet", "^[a-zA-Z_]+$"),
         ALPHANUMERIC("alphanumeric", "^[a-zA-Z0-9_]+$"),
         NUMERIC("numeric", "^[+0-9.]+$"),
-        PACKAGE_VERSION("package_version", "^[a-zA-Z0-9.\\-\\_]*$");
+        PACKAGE_VERSION("package_version", "^[a-zA-Z0-9.\\-\\_]*$"),
+        URL("url", "(http(s)?:\\/\\/.)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)");
 
         private String name;
         private String regex;
