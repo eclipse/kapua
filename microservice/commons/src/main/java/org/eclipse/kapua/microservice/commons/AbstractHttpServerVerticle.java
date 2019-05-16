@@ -16,7 +16,6 @@ import java.util.List;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
@@ -32,7 +31,6 @@ import org.apache.shiro.SecurityUtils;
 public abstract class AbstractHttpServerVerticle extends AbstractVerticle {
 
     private final KapuaLocator kapuaLocator = KapuaLocator.getInstance();
-    private final KapuaIdFactory kapuaIdFactory = kapuaLocator.getFactory(KapuaIdFactory.class);
     private final CredentialsFactory credentialsFactory = kapuaLocator.getFactory(CredentialsFactory.class);
     private final AuthenticationService authenticationService = kapuaLocator.getService(AuthenticationService.class);
 
@@ -59,32 +57,11 @@ public abstract class AbstractHttpServerVerticle extends AbstractVerticle {
             ctx.put("shiroSubject", SecurityUtils.getSubject());
             ctx.next();
         });
-        // TODO Put Service Event
 
-        // Put ScopeId and JobId in context if found
-        router.routeWithRegex("\\/(?<resourceName>[a-zA-Z0-9_-]+)\\/(?<scopeId>[a-zA-Z0-9_-]+)\\/(?<jobId>[a-zA-Z0-9_-]+)").handler(ctx -> {
-            String scopeId = ctx.request().getParam("scopeId");
-            String jobId = ctx.request().getParam("jobId");
-            if (scopeId != null) {
-                ctx.put("scopeId", kapuaIdFactory.newKapuaId(scopeId));
-            }
-            if (jobId != null) {
-                ctx.put("jobId", kapuaIdFactory.newKapuaId(jobId));
-            }
-            ctx.next();
-        });
+        // TODO Put Service Event
 
         // Register child routes
         getHttpEndpoint().forEach(endpoint -> endpoint.registerRoutes(router));
-
-        // Logout
-        router.route().blockingHandler(ctx -> {
-            try {
-                authenticationService.logout();
-            } catch (Exception ex) {
-                ctx.fail(500, ex);
-            }
-        });
 
         // Error handler
         router.route().failureHandler(ctx -> {
@@ -92,6 +69,7 @@ public abstract class AbstractHttpServerVerticle extends AbstractVerticle {
             error.put("error", ctx.failure().getMessage());
             ctx.response().setStatusCode(ctx.statusCode() == -1 ? 500 : ctx.statusCode()).end(error.encode());
         });
+
         vertx.createHttpServer(getHttpServerOptions()).requestHandler(router).listen();
     }
 

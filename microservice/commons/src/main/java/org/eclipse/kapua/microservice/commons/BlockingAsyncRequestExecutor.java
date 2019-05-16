@@ -11,31 +11,44 @@
  *******************************************************************************/
 package org.eclipse.kapua.microservice.commons;
 
+import java.util.concurrent.Callable;
+
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.commons.util.ThrowingRunnable;
 
 import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
-import org.springframework.stereotype.Service;
 
-@Service
 public class BlockingAsyncRequestExecutor {
 
-    public <T> void executeAsyncRequest(Vertx vertx, KapuaSession kapuaSession, Subject shiroSubject, Handler<Future<T>> handler, Handler<AsyncResult<T>> resultFuture) {
+    private BlockingAsyncRequestExecutor() { }
+
+    public static <T> void executeAsyncRequest(Vertx vertx, KapuaSession kapuaSession, Subject shiroSubject, ThrowingRunnable throwingRunnable, Handler<AsyncResult<T>> resultHandler) {
+        executeAsyncRequest(vertx, kapuaSession, shiroSubject, () -> {
+            throwingRunnable.run();
+            return null;
+        }, resultHandler);
+    }
+
+    public static <T> void executeAsyncRequest(Vertx vertx, KapuaSession kapuaSession, Subject shiroSubject, Callable<T> callable, Handler<AsyncResult<T>> resultHandler) {
         vertx.executeBlocking(blockingFuture -> {
             KapuaSecurityUtils.setSession(kapuaSession);
             ThreadContext.bind(shiroSubject);
             ThreadContext.bind(SecurityUtils.getSecurityManager());
-            handler.handle(blockingFuture);
+            try {
+                blockingFuture.complete(callable.call());
+            } catch (Exception ex) {
+                blockingFuture.fail(ex);
+            }
             KapuaSecurityUtils.clearSession();
             ThreadContext.unbindSubject();
             ThreadContext.unbindSecurityManager();
-        }, resultFuture);
+        }, resultHandler);
     }
 
 }

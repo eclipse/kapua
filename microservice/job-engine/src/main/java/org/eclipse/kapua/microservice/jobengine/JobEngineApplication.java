@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticator;
 import org.eclipse.kapua.service.authentication.shiro.realm.AccessTokenAuthenticatingRealm;
 import org.eclipse.kapua.service.authentication.shiro.realm.ApiKeyAuthenticatingRealm;
@@ -52,6 +53,7 @@ public class JobEngineApplication {
     public void init() {
         try {
             initShiro();
+            XmlUtil.setContextProvider(new JobEngineJaxbContextProvider());
         } catch (KapuaException ex) {
             SpringApplication.exit(applicationContext, () -> -1);
         }

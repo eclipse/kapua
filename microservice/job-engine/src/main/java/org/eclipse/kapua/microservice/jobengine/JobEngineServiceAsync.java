@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.microservice.jobengine;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
@@ -23,48 +22,39 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import org.apache.shiro.subject.Subject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class JobEngineServiceAsync {
 
-    @Autowired
-    private BlockingAsyncRequestExecutor blockingAsyncRequestExecutor;
-
     private final KapuaLocator kapuaLocator = KapuaLocator.getInstance();
     private final JobEngineService jobEngineService = kapuaLocator.getService(JobEngineService.class);
 
     public void startJob(Vertx vertx, KapuaSession kapuaSession, Subject shiroSubject, KapuaId scopeId, KapuaId jobId, Handler<AsyncResult<Void>> resultHandler) {
-        blockingAsyncRequestExecutor.executeAsyncRequest(vertx, kapuaSession, shiroSubject, future -> {
-            try {
-                jobEngineService.startJob(scopeId, jobId);
-                future.complete();
-            } catch (KapuaException ex) {
-                future.fail(ex);
-            }
-        }, resultHandler);
+        BlockingAsyncRequestExecutor.executeAsyncRequest(vertx, kapuaSession, shiroSubject, () -> jobEngineService.startJob(scopeId, jobId), resultHandler);
     }
 
     public void startJob(Vertx vertx, KapuaSession kapuaSession, Subject shiroSubject, KapuaId scopeId, KapuaId jobId, JobStartOptions jobStartOptions, Handler<AsyncResult<Void>> resultHandler) {
-        blockingAsyncRequestExecutor.executeAsyncRequest(vertx, kapuaSession, shiroSubject, future -> {
-            try {
-                jobEngineService.startJob(scopeId, jobId, jobStartOptions);
-                future.complete();
-            } catch (KapuaException ex) {
-                future.fail(ex);
-            }
-        }, resultHandler);
+        BlockingAsyncRequestExecutor.executeAsyncRequest(vertx, kapuaSession, shiroSubject, () -> jobEngineService.startJob(scopeId, jobId, jobStartOptions), resultHandler);
     }
 
     public void isRunning(Vertx vertx, KapuaSession kapuaSession, Subject shiroSubject, KapuaId scopeId, KapuaId jobId, Handler<AsyncResult<Boolean>> resultHandler) {
-        blockingAsyncRequestExecutor.executeAsyncRequest(vertx, kapuaSession, shiroSubject, future -> {
-            try {
-                Boolean isRunning = jobEngineService.isRunning(scopeId, jobId);
-                future.complete(isRunning);
-            } catch (KapuaException ex) {
-                future.fail(ex);
-            }
-        }, resultHandler);
+        BlockingAsyncRequestExecutor.executeAsyncRequest(vertx, kapuaSession, shiroSubject, () -> jobEngineService.isRunning(scopeId, jobId), resultHandler);
+    }
+
+    public void stopJob(Vertx vertx, KapuaSession kapuaSession, Subject shiroSubject, KapuaId scopeId, KapuaId jobId, Handler<AsyncResult<Boolean>> resultHandler) {
+        BlockingAsyncRequestExecutor.executeAsyncRequest(vertx, kapuaSession, shiroSubject, () -> jobEngineService.stopJob(scopeId, jobId), resultHandler);
+    }
+
+    public void stopJobExecution(Vertx vertx, KapuaSession kapuaSession, Subject shiroSubject, KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId, Handler<AsyncResult<Boolean>> resultHandler) {
+        BlockingAsyncRequestExecutor.executeAsyncRequest(vertx, kapuaSession, shiroSubject, () -> jobEngineService.stopJobExecution(scopeId, jobId, jobExecutionId), resultHandler);
+    }
+
+    public void resumeJobExecution(Vertx vertx, KapuaSession kapuaSession, Subject shiroSubject, KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId, Handler<AsyncResult<Boolean>> resultHandler) {
+        BlockingAsyncRequestExecutor.executeAsyncRequest(vertx, kapuaSession, shiroSubject, () -> jobEngineService.resumeJobExecution(scopeId, jobId, jobExecutionId), resultHandler);
+    }
+
+    public void cleanJobData(Vertx vertx, KapuaSession kapuaSession, Subject shiroSubject, KapuaId scopeId, KapuaId jobId, Handler<AsyncResult<Boolean>> resultHandler) {
+        BlockingAsyncRequestExecutor.executeAsyncRequest(vertx, kapuaSession, shiroSubject, () -> jobEngineService.cleanJobData(scopeId, jobId), resultHandler);
     }
 }

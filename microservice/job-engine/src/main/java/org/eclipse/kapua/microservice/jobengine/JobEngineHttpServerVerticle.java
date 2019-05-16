@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.microservice.jobengine;
 
+import javax.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,6 +27,11 @@ public class JobEngineHttpServerVerticle extends AbstractHttpServerVerticle {
 
     @Autowired
     private JobEngineHttpEndpoint jobEngineHttpEndpoint;
+
+    @PostConstruct
+    public void init() {
+        jobEngineHttpEndpoint.toString();
+    }
 
     @Override
     protected List<HttpEndpoint> getHttpEndpoint() {
