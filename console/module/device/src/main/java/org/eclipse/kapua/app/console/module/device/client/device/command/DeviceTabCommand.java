@@ -215,8 +215,11 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
 
                     String errorMessage = htmlResult.substring(errorMessageStartIndex, errorMessageEndIndex);
 
-                    if (!errorMessage.isEmpty()) {
+                    if (errorMessage.isEmpty()) {
                         ConsoleInfo.display(MSGS.error(), DEVICE_MSGS.deviceCommandCommunicationError());
+                    }
+                    else {
+                        ConsoleInfo.display(MSGS.error(), errorMessage);
                     }
                     commandInput.unmask();
                 } else {

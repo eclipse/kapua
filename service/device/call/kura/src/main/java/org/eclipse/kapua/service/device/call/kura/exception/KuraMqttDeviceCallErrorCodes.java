@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -40,5 +40,6 @@ public enum KuraMqttDeviceCallErrorCodes implements KapuaErrorCode {
      * Send call error
      */
     CLIENT_SEND_ERROR,
+    CALL_DEVICE_ERROR,
     ;
 }
