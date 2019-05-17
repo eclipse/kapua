@@ -29,16 +29,51 @@ import java.util.List;
 @XmlType(factoryClass = TriggerDefinitionXmlRegistry.class, factoryMethod = "newTriggerDefinitionCreator")
 public interface TriggerDefinitionCreator extends KapuaNamedEntityCreator<TriggerDefinition> {
 
+    /**
+     * Gets the {@link TriggerType}.
+     *
+     * @return The {@link TriggerType}.
+     * @since 1.1.0
+     */
     TriggerType getTriggerType();
 
+    /**
+     * Sets the {@link TriggerType}.
+     *
+     * @param triggerType The {@link TriggerType}.
+     * @since 1.1.0
+     */
     void setTriggerType(TriggerType triggerType);
 
+    /**
+     * Sets the processor name.
+     *
+     * @return The processor name.
+     * @since 1.1.0
+     */
     String getProcessorName();
 
+    /**
+     * Sets the processor name.
+     *
+     * @param processorName The processor name.
+     * @since 1.1.0
+     */
     void setProcessorName(String processorName);
 
+    /**
+     * Gets the {@link TriggerProperty}s.
+     *
+     * @return The {@link TriggerProperty}s.
+     * @since 1.1.0
+     */
     List<TriggerProperty> getTriggerProperties();
 
+    /**
+     * Sets the {@link TriggerProperty}s.
+     *
+     * @param triggerProperties The {@link TriggerProperty}s.
+     * @since 1.1.0
+     */
     void setTriggerProperties(List<TriggerProperty> triggerProperties);
-
 }

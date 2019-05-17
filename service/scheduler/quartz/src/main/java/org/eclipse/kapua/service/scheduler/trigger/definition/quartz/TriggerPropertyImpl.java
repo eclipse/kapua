@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,6 +18,11 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+/**
+ * {@link TriggerProperty} implementation.
+ *
+ * @since 1.0.0
+ */
 @Embeddable
 public class TriggerPropertyImpl implements TriggerProperty {
 
@@ -33,15 +38,34 @@ public class TriggerPropertyImpl implements TriggerProperty {
     @Column(name = "property_value", nullable = false, updatable = false)
     private String propertyValue;
 
+    /**
+     * Constructor
+     *
+     * @since 1.0.0
+     */
     public TriggerPropertyImpl() {
     }
 
+    /**
+     * Clone constructor.
+     *
+     * @param triggerProperty The {@link TriggerProperty} to clone.
+     * @since 1.1.0
+     */
     private TriggerPropertyImpl(TriggerProperty triggerProperty) {
         setName(triggerProperty.getName());
         setPropertyType(triggerProperty.getPropertyType());
         setPropertyValue(triggerProperty.getPropertyValue());
     }
 
+    /**
+     * Constructor.
+     *
+     * @param name          The name.
+     * @param propertyType  The property type.
+     * @param propertyValue The property value.
+     * @since 1.0.0
+     */
     public TriggerPropertyImpl(String name, String propertyType, String propertyValue) {
         setName(name);
         setPropertyType(propertyType);

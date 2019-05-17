@@ -17,7 +17,7 @@ import org.eclipse.kapua.model.KapuaEntityFactory;
  * {@link TriggerDefinitionFactory} definition.
  *
  * @see KapuaEntityFactory
- * @since 1.0.0
+ * @since 1.1.0
  */
 public interface TriggerDefinitionFactory extends KapuaEntityFactory<TriggerDefinition, TriggerDefinitionCreator, TriggerDefinitionQuery, TriggerDefinitionListResult> {
 
@@ -28,7 +28,7 @@ public interface TriggerDefinitionFactory extends KapuaEntityFactory<TriggerDefi
      * @param type  The type to set into the {@link TriggerProperty}.
      * @param value The value to set into the {@link TriggerProperty}.
      * @return The newly instantiated {@link TriggerProperty}.
-     * @since 1.0.0
+     * @since 1.1.0
      */
     TriggerProperty newTriggerProperty(String name, String type, String value);
 

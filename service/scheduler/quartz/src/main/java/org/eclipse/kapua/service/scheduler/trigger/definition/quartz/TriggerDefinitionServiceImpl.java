@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,9 +31,9 @@ import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionS
 
 /**
  * {@link TriggerDefinitionService} exposes APIs to manage {@link TriggerDefinition} objects.<br>
- * It includes APIs to create, update, find, list and delete TriggerDefinitions.<br>
+ * It includes APIs to create, update, find, list and delete {@link TriggerDefinition}s.<br>
  *
- * @since 1.0
+ * @since 1.1.0
  */
 @KapuaProvider
 public class TriggerDefinitionServiceImpl extends AbstractKapuaService implements TriggerDefinitionService {

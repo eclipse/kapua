@@ -9,16 +9,20 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.scheduler.quartz.utils;
+package org.eclipse.kapua.service.scheduler.quartz.driver;
 
 import com.google.common.base.Strings;
-import org.eclipse.kapua.KapuaErrorCodes;
-import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.type.ObjectTypeConverter;
 import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.job.Job;
+import org.eclipse.kapua.service.scheduler.quartz.driver.exception.CannotAddQuartzJobException;
+import org.eclipse.kapua.service.scheduler.quartz.driver.exception.CannotScheduleJobException;
+import org.eclipse.kapua.service.scheduler.quartz.driver.exception.QuartzTriggerDriverException;
+import org.eclipse.kapua.service.scheduler.quartz.driver.exception.SchedulerNotAvailableException;
+import org.eclipse.kapua.service.scheduler.quartz.driver.exception.TriggerNeverFiresException;
 import org.eclipse.kapua.service.scheduler.quartz.job.KapuaJobLauncher;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
@@ -36,6 +40,8 @@ import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 
+import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.TimeZone;
 
 /**
@@ -43,9 +49,9 @@ import java.util.TimeZone;
  *
  * @since 1.1.0
  */
-public class QuartzTriggerUtils {
+public class QuartzTriggerDriver {
 
-    private QuartzTriggerUtils() {
+    private QuartzTriggerDriver() {
     }
 
     /**
@@ -57,18 +63,11 @@ public class QuartzTriggerUtils {
      * @param triggerDataMap The {@link JobDataMap} with properties for the Quartz {@link org.quartz.Trigger}
      * @since 1.1.0
      */
-    public static void createQuartzTrigger(KapuaId scopeId, KapuaId jobId, KapuaId uniqueId, JobDataMap triggerDataMap) {
+    public static void createQuartzTrigger(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull KapuaId uniqueId, @NotNull JobDataMap triggerDataMap) throws QuartzTriggerDriverException {
+
+        Scheduler scheduler = getScheduler();
+
         JobKey jobkey = JobKey.jobKey(KapuaJobLauncher.class.getName(), "USER");
-
-        SchedulerFactory sf = new StdSchedulerFactory();
-        Scheduler scheduler;
-        try {
-            scheduler = sf.getScheduler();
-        } catch (SchedulerException se) {
-            se.printStackTrace();
-            throw new RuntimeException(se);
-        }
-
         JobDetail kapuaJobLauncherJobDetail;
         try {
             kapuaJobLauncherJobDetail = scheduler.getJobDetail(jobkey);
@@ -82,8 +81,7 @@ public class QuartzTriggerUtils {
                 scheduler.addJob(kapuaJobLauncherJobDetail, false);
             }
         } catch (SchedulerException se) {
-            se.printStackTrace();
-            throw new RuntimeException(se);
+            throw new CannotAddQuartzJobException(se, KapuaJobLauncher.class, jobkey);
         }
 
         // Quartz Trigger data map definition
@@ -100,13 +98,11 @@ public class QuartzTriggerUtils {
         try {
             scheduler.scheduleJob(quarztTrigger);
         } catch (SchedulerException se) {
-            se.printStackTrace();
-            throw new RuntimeException(se);
+            throw new CannotScheduleJobException(se, kapuaJobLauncherJobDetail, triggerKey, triggerDataMap);
         }
     }
 
-
-    public static void createIntervalJobTrigger(Trigger trigger) throws KapuaException {
+    public static void createIntervalJobTrigger(@NotNull Trigger trigger) throws KapuaIllegalNullArgumentException, QuartzTriggerDriverException {
         Integer interval = null;
 
         for (TriggerProperty tp : trigger.getTriggerProperties()) {
@@ -117,14 +113,14 @@ public class QuartzTriggerUtils {
         }
 
         if (interval == null) {
-            throw KapuaException.internalError("Invalid interval");
+            throw new KapuaIllegalNullArgumentException("interval");
         }
 
         createQuartzTriggerWithSchedule(trigger, SimpleScheduleBuilder.repeatSecondlyForever(interval));
     }
 
 
-    public static void createCronJobTrigger(Trigger trigger) throws KapuaException {
+    public static void createCronJobTrigger(@NotNull Trigger trigger) throws KapuaIllegalNullArgumentException, QuartzTriggerDriverException {
         String cron = null;
 
         for (TriggerProperty tp : trigger.getTriggerProperties()) {
@@ -135,24 +131,20 @@ public class QuartzTriggerUtils {
         }
 
         if (Strings.isNullOrEmpty(cron)) {
-            throw KapuaException.internalError("Invalid cron");
+            throw new KapuaIllegalNullArgumentException("cronExpression");
         }
 
         createQuartzTriggerWithSchedule(trigger, CronScheduleBuilder.cronSchedule(cron).inTimeZone(TimeZone.getTimeZone("UTC")));
     }
 
-    public static void createQuartzTriggerWithSchedule(Trigger trigger, ScheduleBuilder scheduleBuilder) throws KapuaException {
+    //
+    // Private methods
+    //
+
+    private static void createQuartzTriggerWithSchedule(Trigger trigger, ScheduleBuilder<?> scheduleBuilder) throws QuartzTriggerDriverException {
+        Scheduler scheduler = getScheduler();
+
         JobKey jobkey = JobKey.jobKey(KapuaJobLauncher.class.getName(), "USER");
-
-        SchedulerFactory sf = new StdSchedulerFactory();
-        Scheduler scheduler;
-        try {
-            scheduler = sf.getScheduler();
-        } catch (SchedulerException se) {
-            se.printStackTrace();
-            throw new RuntimeException(se);
-        }
-
         JobDetail kapuaJobLauncherJobDetail;
         try {
             kapuaJobLauncherJobDetail = scheduler.getJobDetail(jobkey);
@@ -166,10 +158,10 @@ public class QuartzTriggerUtils {
                 scheduler.addJob(kapuaJobLauncherJobDetail, false);
             }
         } catch (SchedulerException se) {
-            se.printStackTrace();
-            throw new RuntimeException(se);
+            throw new CannotAddQuartzJobException(se, KapuaJobLauncher.class, jobkey);
         }
 
+        //
         // Quartz Trigger data map definition
         TriggerKey triggerKey = TriggerKey.triggerKey(trigger.getId().toCompactId(), trigger.getScopeId().toCompactId());
 
@@ -183,10 +175,10 @@ public class QuartzTriggerUtils {
                 }
             }
         } catch (ClassNotFoundException cnfe) {
-            cnfe.printStackTrace();
             throw new RuntimeException(cnfe);
         }
 
+        //
         // Quartz Trigger definition
         TriggerBuilder<org.quartz.Trigger> triggerBuilder = TriggerBuilder.newTrigger()
                 .forJob(kapuaJobLauncherJobDetail)
@@ -197,12 +189,33 @@ public class QuartzTriggerUtils {
 
         triggerBuilder.withSchedule(scheduleBuilder);
 
-        org.quartz.Trigger quarztTrigger = triggerBuilder.build();
-        try {
-            scheduler.scheduleJob(quarztTrigger);
-        } catch (SchedulerException se) {
-            se.printStackTrace();
-            throw new KapuaException(KapuaErrorCodes.TRIGGER_NEVER_FIRE);
+        org.quartz.Trigger quartzTrigger = triggerBuilder.build();
+
+        //
+        // Check that fires
+        if (quartzTrigger.getFireTimeAfter(new Date()) == null) {
+            throw new TriggerNeverFiresException(quartzTrigger);
         }
+
+        //
+        // Schedule trigger
+        try {
+            scheduler.scheduleJob(quartzTrigger);
+        } catch (SchedulerException se) {
+            throw new CannotScheduleJobException(se, kapuaJobLauncherJobDetail, triggerKey, triggerDataMap);
+        }
+    }
+
+    private static Scheduler getScheduler() throws SchedulerNotAvailableException {
+        SchedulerFactory sf = new StdSchedulerFactory();
+        Scheduler scheduler;
+
+        try {
+            scheduler = sf.getScheduler();
+        } catch (SchedulerException se) {
+            throw new SchedulerNotAvailableException(se);
+        }
+
+        return scheduler;
     }
 }

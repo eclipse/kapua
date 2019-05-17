@@ -12,7 +12,6 @@
 package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
 import com.google.common.collect.Lists;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -74,7 +73,7 @@ public class TriggerImpl extends AbstractKapuaNamedEntity implements Trigger {
     private List<TriggerPropertyImpl> triggerProperties;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @since 1.0.0
      */
@@ -83,7 +82,7 @@ public class TriggerImpl extends AbstractKapuaNamedEntity implements Trigger {
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param scopeId The scope {@link KapuaId} to set into the {@link Trigger}
      * @since 1.0.0
@@ -95,11 +94,10 @@ public class TriggerImpl extends AbstractKapuaNamedEntity implements Trigger {
     /**
      * Clone constructor.
      *
-     * @param trigger
-     * @throws KapuaException
+     * @param trigger The {@link Trigger} to clone.
      * @since 1.1.0
      */
-    public TriggerImpl(Trigger trigger) throws KapuaException {
+    public TriggerImpl(Trigger trigger) {
         super(trigger);
 
         setStartsOn(trigger.getStartsOn());

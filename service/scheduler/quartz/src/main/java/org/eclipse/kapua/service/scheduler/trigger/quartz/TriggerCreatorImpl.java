@@ -38,10 +38,11 @@ public class TriggerCreatorImpl extends AbstractKapuaNamedEntityCreator<Trigger>
     private List<TriggerProperty> triggerProperties;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
-     * @param name    trigger name
+     * @param scopeId The scope {@link KapuaId}.
+     * @param name    The name.
+     * @since 1.0.0
      */
     public TriggerCreatorImpl(KapuaId scopeId, String name) {
         super(scopeId, name);

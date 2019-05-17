@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.job.scheduler.internal;
 
-import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.JobEngineFactory;
 import org.eclipse.kapua.job.engine.JobEngineService;
@@ -20,11 +20,13 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.job.scheduler.manager.JobDeviceManagementTriggerManagerService;
+import org.eclipse.kapua.service.device.management.job.scheduler.manager.exception.ProcessOnConnectException;
 import org.eclipse.kapua.service.job.step.JobStepAttributes;
 import org.eclipse.kapua.service.job.step.JobStepFactory;
 import org.eclipse.kapua.service.job.step.JobStepQuery;
 import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.targets.JobTarget;
+import org.eclipse.kapua.service.job.targets.JobTargetAttributes;
 import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetListResult;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
@@ -45,6 +47,11 @@ import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionS
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * {@link JobDeviceManagementTriggerManagerService} implementation.
+ *
+ * @since 1.1.0
+ */
 @KapuaProvider
 public class JobDeviceManagementTriggerManagerServiceImpl implements JobDeviceManagementTriggerManagerService {
 
@@ -69,35 +76,40 @@ public class JobDeviceManagementTriggerManagerServiceImpl implements JobDeviceMa
 
     private static final TriggerDefinition DEVICE_CONNECT_TRIGGER;
 
+    /**
+     * Looks fot the "Device Connect" {@link TriggerDefinition} to have access to its {@link TriggerDefinition#getId()}
+     *
+     * @since 1.1.0
+     */
     static {
         TriggerDefinition deviceConnectTrigger = null;
         try {
             TriggerDefinitionQuery query = TRIGGER_DEFINITION_FACTORY.newQuery(null);
-
             query.setPredicate(query.attributePredicate(TriggerDefinitionAttributes.NAME, "Device Connect"));
 
             TriggerDefinitionListResult triggerDefinitions = KapuaSecurityUtils.doPrivileged(() -> TRIGGER_DEFINITION_SERVICE.query(query));
 
             if (triggerDefinitions.isEmpty()) {
-                throw KapuaException.internalError("Error while searching 'Device Connect Trigger'");
+                throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, "Device Connect");
             }
 
             deviceConnectTrigger = triggerDefinitions.getFirstItem();
         } catch (Exception e) {
-            LOG.error("Error while initializing class", e);
+            LOG.error("Error while searching the Trigger Definition named 'Device Connect'", e);
+            throw new ExceptionInInitializerError(e);
         }
 
         DEVICE_CONNECT_TRIGGER = deviceConnectTrigger;
     }
 
     @Override
-    public void processOnConnect(KapuaId scopeId, KapuaId deviceId) {
+    public void processOnConnect(KapuaId scopeId, KapuaId deviceId) throws ProcessOnConnectException {
 
         try {
             JobTargetQuery jobTargetQuery = JOB_TARGET_FACTORY.newQuery(scopeId);
 
             jobTargetQuery.setPredicate(
-                    jobTargetQuery.attributePredicate("jobTargetId", deviceId)
+                    jobTargetQuery.attributePredicate(JobTargetAttributes.JOB_TARGET_ID, deviceId)
             );
 
             JobTargetListResult jobTargetListResult = KapuaSecurityUtils.doPrivileged(() -> JOB_TARGET_SERVICE.query(jobTargetQuery));
@@ -140,7 +152,7 @@ public class JobDeviceManagementTriggerManagerServiceImpl implements JobDeviceMa
             }
 
         } catch (Exception e) {
-            LOG.error("Error while processing BIRTH message ");
+            throw new ProcessOnConnectException(scopeId, deviceId);
         }
     }
 }

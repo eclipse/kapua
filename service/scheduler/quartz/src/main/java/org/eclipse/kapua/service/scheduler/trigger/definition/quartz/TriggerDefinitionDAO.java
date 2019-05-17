@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,9 +22,9 @@ import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionC
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionListResult;
 
 /**
- * TriggerDefinition DAO
+ * {@link TriggerDefinition} DAO.
  *
- * @since 1.0
+ * @since 1.1.0
  */
 public class TriggerDefinitionDAO {
 
@@ -39,8 +39,7 @@ public class TriggerDefinitionDAO {
      * @return
      * @throws KapuaException
      */
-    public static TriggerDefinition create(EntityManager em, TriggerDefinitionCreator triggerDefinitionCreator)
-            throws KapuaException {
+    public static TriggerDefinition create(EntityManager em, TriggerDefinitionCreator triggerDefinitionCreator) {
         //
         // Create TriggerDefinition
 

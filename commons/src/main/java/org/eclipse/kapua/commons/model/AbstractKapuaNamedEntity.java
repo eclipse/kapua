@@ -39,7 +39,7 @@ public abstract class AbstractKapuaNamedEntity extends AbstractKapuaUpdatableEnt
     protected String description;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @since 1.0.0
      */
@@ -48,7 +48,7 @@ public abstract class AbstractKapuaNamedEntity extends AbstractKapuaUpdatableEnt
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param scopeId The scope {@link KapuaId}.
      * @since 1.0.0
@@ -58,10 +58,10 @@ public abstract class AbstractKapuaNamedEntity extends AbstractKapuaUpdatableEnt
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param scopeId The scope {@link KapuaId}.
-     * @param name    The name of this {@link org.eclipse.kapua.model.KapuaEntity}
+     * @param name    The name of this {@link org.eclipse.kapua.model.KapuaEntity}.
      * @since 1.0.0
      */
     public AbstractKapuaNamedEntity(KapuaId scopeId, String name) {
@@ -73,7 +73,7 @@ public abstract class AbstractKapuaNamedEntity extends AbstractKapuaUpdatableEnt
     /**
      * Constructor.
      * <p>
-     * It can be used to clone the {@link KapuaUpdatableEntity}
+     * It can be used to clone the {@link KapuaUpdatableEntity}.
      *
      * @since 1.0.0
      */

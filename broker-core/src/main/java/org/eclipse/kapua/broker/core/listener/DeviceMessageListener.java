@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,26 +22,25 @@ import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedMessage;
 import org.eclipse.kapua.service.device.management.job.scheduler.manager.JobDeviceManagementTriggerManagerService;
-import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyMessage;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Device messages listener (device life cycle).<br>
+ * Device messages listener (device life cycle).
+ * <p>
  * Manage:<br>
- * - BIRTH/DC/LWT/APPS/NOTIFY device messages<br>
+ * - BIRTH/DC/LWT/APPS device messages<br>
  * Republish of the lifecycle messages (once processed by the broker) isn't supported yet (see #136).
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @UriEndpoint(title = "device message processor", syntax = "bean:deviceMessageListener", scheme = "bean")
 public class DeviceMessageListener extends AbstractListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(DeviceMessageListener.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DeviceMessageListener.class);
 
     private static DeviceLifeCycleService deviceLifeCycleService = KapuaLocator.getInstance().getService(DeviceLifeCycleService.class);
-
     private static JobDeviceManagementTriggerManagerService jobDeviceManagementTriggerManagerService = KapuaLocator.getInstance().getService(JobDeviceManagementTriggerManagerService.class);
 
     // metrics
@@ -49,7 +48,6 @@ public class DeviceMessageListener extends AbstractListener {
     private Counter metricDeviceDisconnectMessage;
     private Counter metricDeviceMissingMessage;
     private Counter metricDeviceAppsMessage;
-    private Counter metricDeviceNotifyMessage;
     private Counter metricDeviceUnmatchedMessage;
     private Counter metricDeviceErrorMessage;
 
@@ -59,7 +57,6 @@ public class DeviceMessageListener extends AbstractListener {
         metricDeviceDisconnectMessage = registerCounter("messages", "dc", "count");
         metricDeviceMissingMessage = registerCounter("messages", "missing", "count");
         metricDeviceAppsMessage = registerCounter("messages", "apps", "count");
-        metricDeviceNotifyMessage = registerCounter("messages", "notify", "count");
         metricDeviceUnmatchedMessage = registerCounter("messages", "unmatched", "count");
         metricDeviceErrorMessage = registerCounter("messages", "error", "count");
     }
@@ -67,7 +64,8 @@ public class DeviceMessageListener extends AbstractListener {
     /**
      * Process a birth message.
      *
-     * @param birthMessage
+     * @param birthMessage The birth message to process.
+     * @since 1.0.0
      */
     public void processBirthMessage(CamelKapuaMessage<KapuaBirthMessage> birthMessage) {
         try {
@@ -75,7 +73,7 @@ public class DeviceMessageListener extends AbstractListener {
             metricDeviceBirthMessage.inc();
         } catch (KapuaException e) {
             metricDeviceErrorMessage.inc();
-            logger.error("Error while processing device birth life-cycle event", e);
+            LOG.error("Error while processing device birth life-cycle event", e);
         }
 
         try {
@@ -83,14 +81,15 @@ public class DeviceMessageListener extends AbstractListener {
 
             jobDeviceManagementTriggerManagerService.processOnConnect(kapuaBirthMessage.getScopeId(), kapuaBirthMessage.getDeviceId());
         } catch (Exception e) {
-            logger.error("Error while processing device birth to trigger jobs", e);
+            LOG.error("Error while processing device birth to trigger jobs", e);
         }
     }
 
     /**
      * Process a disconnect message.
      *
-     * @param disconnectMessage
+     * @param disconnectMessage The disconnect message to process.
+     * @since 1.0.0
      */
     public void processDisconnectMessage(CamelKapuaMessage<KapuaDisconnectMessage> disconnectMessage) {
         try {
@@ -98,14 +97,15 @@ public class DeviceMessageListener extends AbstractListener {
             metricDeviceDisconnectMessage.inc();
         } catch (KapuaException e) {
             metricDeviceErrorMessage.inc();
-            logger.error("Error while processing device disconnect life-cycle event", e);
+            LOG.error("Error while processing device disconnect life-cycle event", e);
         }
     }
 
     /**
      * Process an application message.
      *
-     * @param appsMessage
+     * @param appsMessage The apps message to process.
+     * @since 1.0.0
      */
     public void processAppsMessage(CamelKapuaMessage<KapuaAppsMessage> appsMessage) {
         try {
@@ -113,14 +113,15 @@ public class DeviceMessageListener extends AbstractListener {
             metricDeviceAppsMessage.inc();
         } catch (KapuaException e) {
             metricDeviceErrorMessage.inc();
-            logger.error("Error while processing device apps life-cycle event", e);
+            LOG.error("Error while processing device apps life-cycle event", e);
         }
     }
 
     /**
      * Process a missing message.
      *
-     * @param missingMessage
+     * @param missingMessage The missing message to process.
+     * @since 1.0.0
      */
     public void processMissingMessage(CamelKapuaMessage<KapuaMissingMessage> missingMessage) {
         try {
@@ -128,27 +129,18 @@ public class DeviceMessageListener extends AbstractListener {
             metricDeviceMissingMessage.inc();
         } catch (KapuaException e) {
             metricDeviceErrorMessage.inc();
-            logger.error("Error while processing device missing life-cycle event", e);
+            LOG.error("Error while processing device missing life-cycle event", e);
         }
-    }
-
-    /**
-     * Process a notify message.
-     *
-     * @param notifyMessage
-     */
-    public void processNotifyMessage(CamelKapuaMessage<KapuaNotifyMessage> notifyMessage) {
-        logger.info("Received notify message from device channel: {}", notifyMessage.getMessage().getChannel());
-        metricDeviceNotifyMessage.inc();
     }
 
     /**
      * Process a unmatched message.
      *
-     * @param unmatchedMessage
+     * @param unmatchedMessage The unmatched message to process.
+     * @since 1.0.0
      */
     public void processUnmatchedMessage(CamelKapuaMessage<KapuaUnmatchedMessage> unmatchedMessage) {
-        logger.info("Received unmatched message from device channel: {}", unmatchedMessage.getMessage().getChannel());
+        LOG.info("Received unmatched message from device channel: {}", unmatchedMessage.getMessage().getChannel());
         metricDeviceUnmatchedMessage.inc();
     }
 

@@ -14,9 +14,6 @@
 <locator-config>
     <provided>
 
-        <api>org.eclipse.kapua.job.engine.JobEngineService</api>
-        <api>org.eclipse.kapua.job.engine.JobEngineFactory</api>
-
         <api>org.eclipse.kapua.service.account.AccountFactory</api>
         <api>org.eclipse.kapua.service.account.AccountService</api>
 
@@ -120,6 +117,8 @@
         <api>org.eclipse.kapua.service.job.targets.JobTargetService</api>
         <api>org.eclipse.kapua.service.job.targets.JobTargetFactory</api>
 
+        <api>org.eclipse.kapua.service.stream.StreamService</api>
+
         <api>org.eclipse.kapua.service.tag.TagFactory</api>
         <api>org.eclipse.kapua.service.tag.TagService</api>
 
@@ -144,9 +143,8 @@
         <api>org.eclipse.kapua.service.scheduler.trigger.TriggerFactory</api>
         <api>org.eclipse.kapua.service.scheduler.trigger.TriggerService</api>
 
-        <api>org.eclipse.kapua.service.stream.StreamService</api>
 
-        <api>org.eclipse.kapua.transport.TransportClientFactory</api>
+        <api>org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory</api>
 
         <api>org.eclipse.kapua.message.KapuaMessageFactory</api>
         <api>org.eclipse.kapua.message.device.data.KapuaDataMessageFactory</api>
@@ -154,7 +152,10 @@
         <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
         <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
 
-        <api>org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory</api>
+        <api>org.eclipse.kapua.job.engine.JobEngineService</api>
+        <api>org.eclipse.kapua.job.engine.JobEngineFactory</api>
+
+        <api>org.eclipse.kapua.transport.TransportClientFactory</api>
 
         <provide>
             <interceptor>annotation</interceptor>

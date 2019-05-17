@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,20 +22,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link TriggerDefinitionCreator} implementation
+ * {@link TriggerDefinitionCreator} implementation.
  *
- * @since 1.0.0
+ * @since 1.1.0
  */
 public class TriggerDefinitionCreatorImpl extends AbstractKapuaNamedEntityCreator<TriggerDefinition> implements TriggerDefinitionCreator {
 
     private static final long serialVersionUID = 4602067255120049746L;
 
     private TriggerType triggerType;
-    private String readerName;
     private String processorName;
-    private String writerName;
     private List<TriggerProperty> triggerProperties;
 
+    /**
+     * Constructor.
+     *
+     * @param scopeId The scope {@link KapuaId} for the Trigger.
+     * @since 1.1.0
+     */
     public TriggerDefinitionCreatorImpl(KapuaId scopeId) {
         super(scopeId);
     }

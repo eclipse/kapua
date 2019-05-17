@@ -91,9 +91,9 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
 
     protected final KapuaNumberField retryInterval;
     protected final KapuaTextField<String> cronExpression;
-    private Label startsOnLabel;
-    private Label endsOnLabel;
-    private LabelField cronExpressionLabel;
+    protected Label startsOnLabel;
+    protected Label endsOnLabel;
+    protected LabelField cronExpressionLabel;
 
     public JobScheduleAddDialog(GwtSession currentSession, String jobId) {
         super(currentSession);

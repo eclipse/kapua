@@ -9,29 +9,33 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.scheduler.trigger.definition;
+package org.eclipse.kapua.service.scheduler.quartz.driver.exception;
+
+import org.eclipse.kapua.KapuaErrorCode;
 
 /**
- * {@link TriggerType} definition.
- * <p>
- * Possible 'nature' of the {@link TriggerDefinition}
+ * {@link KapuaErrorCode}s for {@link QuartzTriggerDriverException}.
  *
  * @since 1.1.0
  */
-public enum TriggerType {
-
+public enum QuartzTriggerDriverErrorCodes implements KapuaErrorCode {
     /**
-     * An time-based {@link TriggerDefinition}.
-     *
      * @since 1.1.0
      */
-    TIMER,
+    SCHEDULER_NOT_AVAILABLE,
 
     /**
-     * An event-based {@link TriggerDefinition}.
-     *
      * @since 1.1.0
      */
-    EVENT
+    CANNOT_ADD_JOB,
 
+    /**
+     * @since 1.1.0
+     */
+    CANNOT_SCHEDULE_JOB,
+
+    /**
+     * @since 1.1.0
+     */
+    TRIGGER_NEVER_FIRES,
 }

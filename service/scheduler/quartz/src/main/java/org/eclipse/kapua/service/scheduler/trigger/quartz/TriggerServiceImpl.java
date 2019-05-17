@@ -29,7 +29,8 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.scheduler.SchedulerDomains;
 import org.eclipse.kapua.service.scheduler.quartz.SchedulerEntityManagerFactory;
-import org.eclipse.kapua.service.scheduler.quartz.utils.QuartzTriggerUtils;
+import org.eclipse.kapua.service.scheduler.quartz.driver.QuartzTriggerDriver;
+import org.eclipse.kapua.service.scheduler.quartz.driver.exception.TriggerNeverFiresException;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
@@ -181,19 +182,23 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> {
+        try {
+            return entityManagerSession.onTransactedInsert(em -> {
 
-            Trigger trigger = TriggerDAO.create(em, triggerCreator);
+                Trigger trigger = TriggerDAO.create(em, triggerCreator);
 
-            // Quartz Job definition and creation
-            if (INTERVAL_JOB__TRIGGER.getId().equals(triggerCreator.getTriggerDefinitionId())) {
-                QuartzTriggerUtils.createIntervalJobTrigger(trigger);
-            } else if (CRON_JOB__TRIGGER.getId().equals(triggerCreator.getTriggerDefinitionId())) {
-                QuartzTriggerUtils.createCronJobTrigger(trigger);
-            }
+                // Quartz Job definition and creation
+                if (INTERVAL_JOB__TRIGGER.getId().equals(triggerCreator.getTriggerDefinitionId())) {
+                    QuartzTriggerDriver.createIntervalJobTrigger(trigger);
+                } else if (CRON_JOB__TRIGGER.getId().equals(triggerCreator.getTriggerDefinitionId())) {
+                    QuartzTriggerDriver.createCronJobTrigger(trigger);
+                }
 
-            return trigger;
-        });
+                return trigger;
+            });
+        } catch (TriggerNeverFiresException tnfe) {
+            throw new KapuaException(KapuaErrorCodes.TRIGGER_NEVER_FIRE, tnfe);
+        }
     }
 
     @Override

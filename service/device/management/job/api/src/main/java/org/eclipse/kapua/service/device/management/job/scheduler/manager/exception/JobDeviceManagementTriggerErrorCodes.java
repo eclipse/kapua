@@ -9,29 +9,18 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.scheduler.trigger.definition;
+package org.eclipse.kapua.service.device.management.job.scheduler.manager.exception;
+
+import org.eclipse.kapua.KapuaErrorCode;
 
 /**
- * {@link TriggerType} definition.
- * <p>
- * Possible 'nature' of the {@link TriggerDefinition}
- *
  * @since 1.1.0
  */
-public enum TriggerType {
-
+public enum JobDeviceManagementTriggerErrorCodes implements KapuaErrorCode {
     /**
-     * An time-based {@link TriggerDefinition}.
+     * An error occurred when processing "Process on connect" feature.
      *
      * @since 1.1.0
      */
-    TIMER,
-
-    /**
-     * An event-based {@link TriggerDefinition}.
-     *
-     * @since 1.1.0
-     */
-    EVENT
-
+    PROCESS_ON_CONNECT
 }

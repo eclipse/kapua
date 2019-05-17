@@ -22,9 +22,9 @@ import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
 
 /**
- * Trigger DAO
+ * {@link Trigger} DAO
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class TriggerDAO {
 
