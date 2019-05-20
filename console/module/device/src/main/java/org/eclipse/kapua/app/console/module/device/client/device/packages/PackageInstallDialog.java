@@ -15,6 +15,7 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.TabbedDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaNumberField;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
@@ -98,6 +99,7 @@ public class PackageInstallDialog extends TabbedDialog {
             dpURIField.setMaxLength(125);
             dpURIField.setName("dpUri");
             dpURIField.setAllowBlank(false);
+            dpURIField.setValidator(new TextFieldValidator(dpURIField, FieldType.URL));
             dpURIField.setFieldLabel("* " + DEVICE_MSGS.packageInstallDpTabUri());
             dpURIField.setToolTip(DEVICE_MSGS.devicePackagesUrlTooltip());
             packageInfoForm.add(dpURIField, formData);
@@ -191,6 +193,7 @@ public class PackageInstallDialog extends TabbedDialog {
 
     @Override
     public void preSubmit() {
+        validateFields();
         if (!packageInfoForm.isValid()) {
             tabsPanel.setSelection(packageInfoTab);
             return;
@@ -261,5 +264,13 @@ public class PackageInstallDialog extends TabbedDialog {
     @Override
     public KapuaIcon getInfoIcon() {
         return null;
+    }
+
+    public void validateFields() {
+        if (!dpURIField.isValid()) {
+            ConsoleInfo.display("Error", dpURIField.getErrorMessage());
+        } else if (!dpVersionField.isValid()) {
+            ConsoleInfo.display("Error", dpVersionField.getErrorMessage());
+        }
     }
 }
