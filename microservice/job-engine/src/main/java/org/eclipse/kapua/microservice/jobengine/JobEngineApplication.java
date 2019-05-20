@@ -25,6 +25,7 @@ import org.eclipse.kapua.service.authentication.shiro.realm.UserPassAuthenticati
 import org.eclipse.kapua.service.authorization.shiro.KapuaAuthorizingRealm;
 
 import io.vertx.core.Vertx;
+import io.vertx.core.json.Json;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.realm.Realm;
@@ -54,11 +55,17 @@ public class JobEngineApplication {
         try {
             initShiro();
             XmlUtil.setContextProvider(new JobEngineJaxbContextProvider());
+            registerJacksonModule(new JobEngineMicroserviceModule());
         } catch (KapuaException ex) {
             SpringApplication.exit(applicationContext, () -> -1);
         }
         Vertx vertx = Vertx.vertx();
         vertx.deployVerticle(jobEngineHttpServerVerticle);
+    }
+
+    private void registerJacksonModule(JobEngineMicroserviceModule jobEngineMicroserviceModule) {
+        Json.mapper.registerModule(jobEngineMicroserviceModule);
+        Json.prettyMapper.registerModule(jobEngineMicroserviceModule);
     }
 
     private void initShiro() throws KapuaException {

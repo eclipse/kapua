@@ -29,6 +29,7 @@
 
         <module>api</module>
         <module>jbatch</module>
+        <module>proxy</module>
 
         <module>extra</module>
     </modules>
