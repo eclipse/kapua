@@ -50,12 +50,14 @@ public class DevicePackagesUninstallStepDefinition extends AbstractTargetJobStep
         JobStepProperty propertyUninstallRequest = jobStepDefinitionFactory.newStepProperty(
                 DevicePackageUninstallPropertyKeys.PACKAGE_UNINSTALL_REQUEST,
                 DevicePackageUninstallRequest.class.getName(),
+                null,
                 null);
 
         JobStepProperty propertyTimeout = jobStepDefinitionFactory.newStepProperty(
                 DevicePackageDownloadPropertyKeys.TIMEOUT,
                 Long.class.getName(),
-                "30000");
+                "30000",
+                null);
 
         return Arrays.asList(propertyUninstallRequest, propertyTimeout);
     }

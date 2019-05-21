@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="KapuaDB/asset_job_step_definition_property_update.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+
+    <changeSet id="asset_job_step_definition_property_update-1.1.0" author="eurotech">
+        <update tableName="job_job_step_definition_properties">
+            <column name="example_value" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;
+&lt;deviceAssets&gt;&#10;
+    &lt;deviceAsset&gt;&#10;
+        &lt;name&gt;assetName&lt;/name&gt;&#10;
+        &lt;channels&gt;&#10;
+            &lt;channel&gt;&#10;
+                &lt;type&gt;binary&quot;&lt;/type&gt;&#10;
+                &lt;value&gt;EGVzdCBzdHJpbmcgdmFsdWU=&lt;/value&gt;&#10;
+                &lt;name&gt;binaryTest&lt;/name&gt;&#10;
+            &lt;/channel&gt;&#10;
+        &lt;/channels&gt;&#10;
+    &lt;/deviceAsset&gt;&#10;
+&lt;/deviceAssets&gt;"/>
+            <where>name = 'assets'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

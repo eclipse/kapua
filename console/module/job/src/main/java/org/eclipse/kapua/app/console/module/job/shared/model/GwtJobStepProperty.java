@@ -35,6 +35,10 @@ public class GwtJobStepProperty extends KapuaBaseModel {
         return get("propertyValue");
     }
 
+    public String getPropertyExampleValue() {
+        return get("propertyExampleValue");
+    }
+
     public void setPropertyValue(String propertyValue) {
         set("propertyValue", propertyValue, false);
     }

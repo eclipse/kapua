@@ -39,6 +39,9 @@ public abstract class AbstractKapuaUpdatableEntityCreator<E extends KapuaEntity>
 
     @Override
     public Properties getEntityAttributes() {
+        if (entityAttributes==null) {
+            entityAttributes = new Properties();
+        }
         return entityAttributes;
     }
 

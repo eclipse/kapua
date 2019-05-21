@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="KapuaDB/packages_job_step_definition_property_update.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+
+    <changeSet id="packages_job_step_definition_property_update-1.1.0" author="eurotech">
+        <update tableName="job_job_step_definition_properties">
+            <column name="example_value" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;
+&lt;downloadRequest&gt;&#10;
+   &lt;uri&gt;http://download.eclipse.org/kura/releases/3.2.0/org.eclipse.kura.demo.heater_1.0.300.dp&lt;/uri&gt;&#10;
+   &lt;name&gt;heater&lt;/name&gt;&#10;
+   &lt;version&gt;1.0.300&lt;/version&gt;&#10;
+   &lt;install&gt;true&lt;/install&gt;&#10;
+&lt;/downloadRequest&gt;"/>
+            <where>name = 'packageDownloadRequest'</where>
+        </update>
+        <update tableName="job_job_step_definition_properties">
+            <column name="example_value" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;
+&lt;uninstallRequest&gt;&#10;
+    &lt;name&gt;heater&lt;/name&gt;&#10;
+    &lt;version&gt;1.0.300&lt;/version&gt;&#10;
+    &lt;reboot&gt;true&lt;/reboot&gt;&#10;
+    &lt;rebootDelay&gt;30000&lt;/rebootDelay&gt;&#10;
+&lt;/uninstallRequest&gt;"/>
+            <where>name = 'packageUninstallRequest'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

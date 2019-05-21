@@ -32,6 +32,10 @@ public class JobStepPropertyImpl implements JobStepProperty {
     @Column(name = "property_value", nullable = false, updatable = false)
     private String propertyValue;
 
+    @Basic
+    @Column(name = "example_value", nullable = false, updatable = false)
+    private String propertyExampleValue;
+
     public JobStepPropertyImpl() {
     }
 
@@ -39,12 +43,14 @@ public class JobStepPropertyImpl implements JobStepProperty {
         setName(jobStepProperty.getName());
         setPropertyType(jobStepProperty.getPropertyType());
         setPropertyValue(jobStepProperty.getPropertyValue());
+        setPropertyExampleValue(jobStepProperty.getPropertyExampleValue());
     }
 
-    public JobStepPropertyImpl(String name, String propertyType, String propertyValue) {
+    public JobStepPropertyImpl(String name, String propertyType, String propertyValue, String propertyExampleValue) {
         setName(name);
         setPropertyType(propertyType);
         setPropertyValue(propertyValue);
+        setPropertyExampleValue(propertyExampleValue);
     }
 
     public String getName() {
@@ -69,6 +75,14 @@ public class JobStepPropertyImpl implements JobStepProperty {
 
     public void setPropertyValue(String propertyValue) {
         this.propertyValue = propertyValue;
+    }
+
+    public String getPropertyExampleValue() {
+        return propertyExampleValue;
+    }
+
+    public void setPropertyExampleValue(String propertyExampleValue) {
+        this.propertyExampleValue = propertyExampleValue;
     }
 
     public static JobStepPropertyImpl parse(JobStepProperty jobStepProperty) {

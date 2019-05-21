@@ -50,12 +50,14 @@ public class DeviceCommandExecStepDefinition extends AbstractTargetJobStepDefini
         JobStepProperty propertyCommandInput = jobStepDefinitionFactory.newStepProperty(
                 DeviceCommandExecPropertyKeys.COMMAND_INPUT,
                 DeviceCommandInput.class.getName(),
+                null,
                 null);
 
         JobStepProperty propertyTimeout = jobStepDefinitionFactory.newStepProperty(
                 DeviceCommandExecPropertyKeys.TIMEOUT,
                 Long.class.getName(),
-                "30000");
+                "30000",
+                null);
 
         return Arrays.asList(propertyCommandInput, propertyTimeout);
     }

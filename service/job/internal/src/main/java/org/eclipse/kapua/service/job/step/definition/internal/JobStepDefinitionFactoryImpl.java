@@ -51,7 +51,12 @@ public class JobStepDefinitionFactoryImpl implements JobStepDefinitionFactory {
 
     @Override
     public JobStepProperty newStepProperty(String name, String type, String value) {
-        return new JobStepPropertyImpl(name, type, value);
+        return new JobStepPropertyImpl(name, type, value, null);
+    }
+
+    @Override
+    public JobStepProperty newStepProperty(String name, String type, String value, String exampleValue) {
+        return new JobStepPropertyImpl(name, type, value, exampleValue);
     }
 
     @Override

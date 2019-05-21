@@ -50,12 +50,14 @@ public class DeviceAssetWriteStepDefinition extends AbstractTargetJobStepDefinit
         JobStepProperty propertyAssets = jobStepDefinitionFactory.newStepProperty(
                 DeviceAssetWritePropertyKeys.ASSETS,
                 DeviceAssets.class.getName(),
+                null,
                 null);
 
         JobStepProperty propertyTimeout = jobStepDefinitionFactory.newStepProperty(
                 DeviceAssetWritePropertyKeys.TIMEOUT,
                 Long.class.getName(),
-                "30000");
+                "30000",
+                null);
 
         return Arrays.asList(propertyAssets, propertyTimeout);
     }
