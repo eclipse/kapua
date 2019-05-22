@@ -17,7 +17,7 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
         logicalFilePath="KapuaDB/asset_job_step_definition_property_update.xml">
 
-    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+    <include relativeToChangelogFile="true" file="../common-properties.xml"/>
 
     <changeSet id="asset_job_step_definition_property_update-1.1.0" author="eurotech">
         <update tableName="job_job_step_definition_properties">
@@ -27,7 +27,7 @@
         &lt;name&gt;assetName&lt;/name&gt;&#10;
         &lt;channels&gt;&#10;
             &lt;channel&gt;&#10;
-                &lt;type&gt;binary&quot;&lt;/type&gt;&#10;
+                &lt;type&gt;binary&lt;/type&gt;&#10;
                 &lt;value&gt;EGVzdCBzdHJpbmcgdmFsdWU=&lt;/value&gt;&#10;
                 &lt;name&gt;binaryTest&lt;/name&gt;&#10;
             &lt;/channel&gt;&#10;

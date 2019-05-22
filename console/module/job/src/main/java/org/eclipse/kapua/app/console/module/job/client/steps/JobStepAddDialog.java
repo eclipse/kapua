@@ -14,11 +14,15 @@ package org.eclipse.kapua.app.console.module.job.client.steps;
 import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
@@ -74,6 +78,9 @@ public class JobStepAddDialog extends EntityAddEditDialog {
     protected final FieldSet jobStepPropertiesFieldSet;
     protected final Label jobStepDefinitionDescription;
     protected final FormPanel jobStepPropertiesPanel;
+    protected final HorizontalPanel propertiesButtonPanel;
+
+    protected Button exampleButton;
 
     protected static final String PROPERTY_NAME = "propertyName";
     protected static final String PROPERTY_TYPE = "propertyType";
@@ -95,8 +102,13 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         jobStepPropertiesFieldSet = new FieldSet();
         jobStepDefinitionDescription = new Label();
         jobStepPropertiesPanel = new FormPanel(FORM_LABEL_WIDTH);
+        propertiesButtonPanel = new HorizontalPanel();
 
         DialogUtils.resizeDialog(this, 600, 400);
+    }
+
+    protected String getExampleButtonText() {
+        return MSGS.exampleButton();
     }
 
     @Override
@@ -162,7 +174,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
     public void validateJobStep() {
         if (jobStepName.getValue() == null || jobStepDefinitionCombo.getValue() == null) {
             ConsoleInfo.display("Error", CONSOLE_MSGS.allFieldsRequired());
-        } 
+        }
     }
 
     @Override
@@ -223,10 +235,11 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         return JOB_MSGS.dialogAddStepInfo();
     }
 
-    private void refreshJobStepDefinition(GwtJobStepDefinition gwtJobStepDefinition) {
+    protected void refreshJobStepDefinition(GwtJobStepDefinition gwtJobStepDefinition) {
         jobStepPropertiesFieldSet.setVisible(true);
         jobStepDefinitionDescription.setText(gwtJobStepDefinition.getDescription() + ".");
         jobStepPropertiesPanel.removeAll();
+        propertiesButtonPanel.removeAll();
 
         for (GwtJobStepProperty property : gwtJobStepDefinition.getStepProperties()) {
             String propertyType = property.getPropertyType();
@@ -267,13 +280,29 @@ public class JobStepAddDialog extends EntityAddEditDialog {
                 checkBox.setData(PROPERTY_NAME, property.getPropertyName());
                 jobStepPropertiesPanel.add(checkBox);
             } else {
-                TextArea textArea = new TextArea();
+                final TextArea textArea = new TextArea();
                 textArea.setFieldLabel(camelCaseToNormalCase(property.getPropertyName()));
                 textArea.setEmptyText(KapuaSafeHtmlUtils.htmlUnescape(property.getPropertyValue()));
                 textArea.setData(PROPERTY_TYPE, property.getPropertyType());
                 textArea.setData(PROPERTY_NAME, property.getPropertyName());
                 jobStepPropertiesPanel.add(textArea);
+                if (property.getExampleValue() != null) {
+                    exampleButton = new Button(getExampleButtonText());
+                    exampleButton.setStyleAttribute("padding-left", (FORM_LABEL_WIDTH + 5) + "px");
+                    final String exampleValue = KapuaSafeHtmlUtils.htmlUnescape(property.getExampleValue());
+                    exampleButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+                        @Override
+                        public void componentSelected(ButtonEvent ce) {
+                            textArea.setValue(exampleValue);
+                        }
+                    });
+                    propertiesButtonPanel.add(exampleButton);
+                }
             }
+        }
+        if (exampleButton != null) {
+            jobStepPropertiesPanel.add(propertiesButtonPanel);
         }
 
         jobStepPropertiesPanel.layout(true);
@@ -282,12 +311,14 @@ public class JobStepAddDialog extends EntityAddEditDialog {
     protected List<GwtJobStepProperty> readStepProperties() {
         List<GwtJobStepProperty> jobStepProperties = new ArrayList<GwtJobStepProperty>();
         for (Component component : jobStepPropertiesPanel.getItems()) {
-            Field field = (Field) component;
-            GwtJobStepProperty property = new GwtJobStepProperty();
-            property.setPropertyValue(!field.getRawValue().isEmpty() ? field.getRawValue() : null);
-            property.setPropertyType(field.getData(PROPERTY_TYPE).toString());
-            property.setPropertyName(field.getData(PROPERTY_NAME).toString());
-            jobStepProperties.add(property);
+            if (component instanceof Field) {
+                Field field = (Field) component;
+                GwtJobStepProperty property = new GwtJobStepProperty();
+                property.setPropertyValue(!field.getRawValue().isEmpty() ? field.getRawValue() : null);
+                property.setPropertyType(field.getData(PROPERTY_TYPE).toString());
+                property.setPropertyName(field.getData(PROPERTY_NAME).toString());
+                jobStepProperties.add(property);
+            }
         }
         return jobStepProperties;
     }

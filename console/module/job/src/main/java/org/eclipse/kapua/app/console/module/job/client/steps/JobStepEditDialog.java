@@ -51,6 +51,14 @@ public class JobStepEditDialog extends JobStepAddDialog {
         loadJobStep();
     }
 
+    @Override
+    protected void refreshJobStepDefinition(GwtJobStepDefinition gwtJobStepDefinition) {
+        super.refreshJobStepDefinition(gwtJobStepDefinition);
+        if (exampleButton != null) {
+            exampleButton.hide();
+        }
+    }
+
     private void loadJobStep() {
         maskDialog();
         jobStepDefinitionCombo.getStore().getLoader().addLoadListener(new StepDefinitionLoadListener());
@@ -86,8 +94,10 @@ public class JobStepEditDialog extends JobStepAddDialog {
                 }
 
                 for (Component component : jobStepPropertiesPanel.getItems()) {
-                    Field<Object> field = (Field<Object>) component;
-                    field.setValue(propertiesMap.get(field.getData(PROPERTY_NAME)));
+                    if (component instanceof Field) {
+                        Field<Object> field = (Field<Object>) component;
+                        field.setValue(propertiesMap.get(field.getData(PROPERTY_NAME)));
+                    }
                 }
 
                 formPanel.clearDirtyFields();
