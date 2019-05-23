@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.module.job.server;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.google.common.base.Strings;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
@@ -203,12 +204,17 @@ public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements 
 
     @Override
     public boolean validateCronExpression(String cronExpression) throws GwtKapuaException {
+        if (Strings.isNullOrEmpty(cronExpression)) {
+            throw new GwtKapuaException(GwtKapuaErrorCode.UNABLE_TO_PARSE_CRON_EXPRESSION, null);
+        }
+
         try {
             new CronExpression(cronExpression);
-            return true;
         } catch (ParseException paex) {
             throw new GwtKapuaException(GwtKapuaErrorCode.UNABLE_TO_PARSE_CRON_EXPRESSION, paex, paex.getMessage());
         }
+
+        return true;
     }
 
     @Override

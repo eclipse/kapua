@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.client.ui.widget;
 
-import org.eclipse.kapua.app.console.module.api.client.ui.dialog.ActionDialog;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -22,6 +21,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.ActionDialog;
 
 public class KapuaDateField extends DateField {
 
@@ -36,6 +36,7 @@ public class KapuaDateField extends DateField {
         super();
         this.dialog = actionDialog;
         this.enabledDateFieldEvents = true;
+
     }
 
     @Override
@@ -72,13 +73,14 @@ public class KapuaDateField extends DateField {
                         }
                     };
                     timer.schedule(100);
-                };
+                }
             }
         };
 
         KeyNav<ComponentEvent> keyNav = new KeyNav<ComponentEvent>(KapuaDateField.this) {
+            @Override
             public void onKeyPress(ComponentEvent ce) {
-                if (ce.getKeyCode() == KeyCodes.KEY_TAB || ce.getKeyCode() == KeyCodes.KEY_ENTER ) {
+                if (ce.getKeyCode() == KeyCodes.KEY_TAB || ce.getKeyCode() == KeyCodes.KEY_ENTER) {
                     setDateFieldState();
                 }
             }

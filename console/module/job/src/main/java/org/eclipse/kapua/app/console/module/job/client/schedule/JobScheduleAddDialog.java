@@ -121,7 +121,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         retryInterval = new KapuaNumberField();
         cronExpression = new KapuaTextField<String>();
 
-        DialogUtils.resizeDialog(this, 500, 320);
+        DialogUtils.resizeDialog(this, 500, 350);
     }
 
     @Override
@@ -145,7 +145,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
 
         startsOnLabel.setText("* " + JOB_MSGS.dialogAddScheduleStartsOnLabel());
         startsOnLabel.setWidth(FORM_LABEL_WIDTH);
-        startsOnLabel.setStyleAttribute("padding", "0px 91px 0px 0px");
+        startsOnLabel.setStyleAttribute("padding", "0px 88px 0px 0px");
 
         startsOn.setFormatValue(true);
         startsOn.setAllowBlank(false);
@@ -157,13 +157,14 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         startsOn.getDatePicker().addListener(Events.Select, listener);
         startsOn.setValue(new Date());
         startsOn.setMinValue(new Date());
+        startsOn.getMessages().setMinText(JOB_MSGS.dialogAddScheduleStartsOnDateMin(DateTimeFormat.getFormat("dd/MM/yyyy").format(startsOn.getMinValue())));
 
         startsOnTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
         startsOnTime.setAllowBlank(false);
         startsOnTime.setEditable(false);
         startsOnTime.setWidth(140);
         startsOnTime.setStyleAttribute("position", "relative");
-        startsOnTime.setStyleAttribute("left", "25px");
+        startsOnTime.setStyleAttribute("left", "26px");
         startsOnTime.setEmptyText(JOB_MSGS.dialogAddScheduleTimePlaceholder());
         startsOnTime.setToolTip(JOB_MSGS.dialogAddScheduleStartsOnTimeTooltip());
         startsOnTime.setTriggerAction(TriggerAction.ALL);
@@ -179,7 +180,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         endsOnLabel.setText(JOB_MSGS.dialogAddScheduleEndsOnLabel());
         endsOnLabel.setStyleAttribute("margin-left", "10px");
         endsOnLabel.setWidth(FORM_LABEL_WIDTH);
-        endsOnLabel.setStyleAttribute("padding", "0px 96px 0px 0px");
+        endsOnLabel.setStyleAttribute("padding", "0px 92px 0px 0px");
 
         endsOn.setFormatValue(true);
         endsOn.setWidth(140);
@@ -189,12 +190,13 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         endsOn.setValidator(new BeforeDateValidator(startsOn));
         endsOn.getDatePicker().addListener(Events.Select, listener);
         endsOn.setMinValue(new Date());
+        endsOn.getMessages().setMinText(JOB_MSGS.dialogAddScheduleStartsOnDateMin(DateTimeFormat.getFormat("dd/MM/yyyy").format(endsOn.getMinValue())));
 
         endsOnTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
         endsOnTime.setEditable(false);
         endsOnTime.setWidth(140);
         endsOnTime.setStyleAttribute("position", "relative");
-        endsOnTime.setStyleAttribute("left", "25px");
+        endsOnTime.setStyleAttribute("left", "26px");
         endsOnTime.setEmptyText(JOB_MSGS.dialogAddScheduleTimePlaceholder());
         endsOnTime.setToolTip(JOB_MSGS.dialogAddScheduleEndsOnTimeTooltip());
         endsOnTime.setTriggerAction(TriggerAction.ALL);
@@ -257,6 +259,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         triggerPropertiesPanel.removeAll();
 
         if (TRIGGER_DEFINITION_NAME_INTERVAL.equals(gwtTriggerDefinition.getTriggerDefinitionName())) {
+            retryInterval.clearInvalid();
             retryInterval.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleRetryIntervalLabel());
             retryInterval.setAllowBlank(false);
             retryInterval.setAllowDecimals(false);
@@ -265,14 +268,15 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
             retryInterval.setToolTip(JOB_MSGS.dialogAddScheduleRetryIntervalTooltip());
             triggerPropertiesPanel.add(retryInterval);
         } else if (TRIGGER_DEFINITION_NAME_CRON.equals(gwtTriggerDefinition.getTriggerDefinitionName())) {
+            cronExpression.clearInvalid();
             cronExpression.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleCronScheduleLabel());
             cronExpression.setAllowBlank(false);
             cronExpression.setMaxLength(255);
-            cronExpression.setToolTip(JOB_MSGS.dialogAddScheduleCronScheduleTooltip());
+            cronExpression.setToolTip(JOB_MSGS.dialogAddScheduleCronTooltip());
             triggerPropertiesPanel.add(cronExpression);
 
             cronExpressionLabel = new LabelField();
-            cronExpressionLabel.setValue(JOB_MSGS.dialogAddScheduleCronScheduleDescriptionLabel());
+            cronExpressionLabel.setValue(JOB_MSGS.dialogAddScheduleCronDescriptionLabel());
             cronExpressionLabel.setStyleAttribute("margin-top", "-5px");
             cronExpressionLabel.setStyleAttribute("color", "gray");
             cronExpressionLabel.setStyleAttribute("font-size", "10px");
@@ -284,7 +288,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
                     GWT_TRIGGER_SERVICE.validateCronExpression(cronExpression.getValue(), new AsyncCallback<Boolean>() {
                         @Override
                         public void onFailure(Throwable caught) {
-                            ConsoleInfo.display(MSGS.popupError(), JOB_MSGS.unableToValidateCronExpression());
+                            ConsoleInfo.display(MSGS.popupError(), JOB_MSGS.dialogAddScheduleCronUnableToValidate());
                             cronExpression.markInvalid(VAL_MSGS.invalidCronExpression());
                         }
 
@@ -311,6 +315,10 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         endsOnTime.clearInvalid();
 
         Date startDate = startsOn.getValue();
+        if (startDate == null) {
+            startsOn.validate();
+        }
+
         startDate.setHours(startsOnTime.getValue().getHour());
         startDate.setMinutes(startsOnTime.getValue().getMinutes());
 
@@ -354,6 +362,10 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
     protected void preSubmit() {
 
         if (!validateDateTimeRange()) {
+            return;
+        }
+
+        if (!triggerPropertiesPanel.isValid()) {
             return;
         }
 
