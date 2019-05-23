@@ -98,6 +98,7 @@
         <quartz-scheduler.version>2.2.3</quartz-scheduler.version>
         <jetty.version>9.4.12.v20180830</jetty.version>
         <vertx.version>3.7.0</vertx.version>
+        <spring-boot.version>2.1.4.RELEASE</spring-boot.version>
 
         <!-- Plugins versions -->
         <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
@@ -1756,7 +1757,7 @@
             </dependency>
             <dependency>
                 <groupId>io.vertx</groupId>
-                <artifactId>vertx-amqp-bridge</artifactId>
+                <artifactId>vertx-core</artifactId>
                 <version>${vertx.version}</version>
             </dependency>
             <dependency>
@@ -1773,6 +1774,11 @@
                 <groupId>io.vertx</groupId>
                 <artifactId>vertx-dropwizard-metrics</artifactId>
                 <version>${vertx.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter</artifactId>
+                <version>${spring-boot.version}</version>
             </dependency>
 
             <!-- Spring -->
@@ -1803,6 +1809,7 @@
         <module>commons</module>
         <module>locator</module>
         <module>service</module>
+        <module>service-app</module>
         <module>message</module>
         <module>transport</module>
         <module>translator</module>
