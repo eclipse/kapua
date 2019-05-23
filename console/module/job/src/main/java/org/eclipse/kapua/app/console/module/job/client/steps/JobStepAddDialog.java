@@ -172,7 +172,16 @@ public class JobStepAddDialog extends EntityAddEditDialog {
     }
 
     public void validateJobStep() {
-        if (jobStepName.getValue() == null || jobStepDefinitionCombo.getValue() == null) {
+        boolean propIsEmpty = false;
+        for (Component component : jobStepPropertiesPanel.getItems()) {
+            if (component instanceof Field) {
+                if (((Field) component).getRawValue().isEmpty()) {
+                    propIsEmpty = true;
+                    break;
+                }
+            }
+        }
+        if (jobStepName.getValue() == null || jobStepDefinitionCombo.getValue() == null || propIsEmpty) {
             ConsoleInfo.display("Error", CONSOLE_MSGS.allFieldsRequired());
         }
     }
@@ -243,9 +252,16 @@ public class JobStepAddDialog extends EntityAddEditDialog {
 
         for (GwtJobStepProperty property : gwtJobStepDefinition.getStepProperties()) {
             String propertyType = property.getPropertyType();
+            String fieldLabel = camelCaseToNormalCase(property.getPropertyName());
+            if (property.getPropertyValue() == null) {
+                fieldLabel = "* " + fieldLabel;
+            }
             if (propertyType.equals(String.class.getName()) || property.isEnum() || KAPUA_ID_CLASS_NAME.equals(propertyType)) {
                 KapuaTextField<String> textField = new KapuaTextField<String>();
-                textField.setFieldLabel(camelCaseToNormalCase(property.getPropertyName()));
+                if (property.getPropertyValue() == null) {
+                    textField.setAllowBlank(false);
+                }
+                textField.setFieldLabel(fieldLabel);
                 textField.setMaxLength(255);
                 textField.setEmptyText(KapuaSafeHtmlUtils.htmlUnescape(property.getPropertyValue()));
                 textField.setData(PROPERTY_TYPE, property.getPropertyType());
@@ -257,7 +273,10 @@ public class JobStepAddDialog extends EntityAddEditDialog {
                             propertyType.equals(Float.class.getName()) ||
                             propertyType.equals(Double.class.getName())) {
                 NumberField numberField = new NumberField();
-                numberField.setFieldLabel(camelCaseToNormalCase(property.getPropertyName()));
+                if (property.getPropertyValue() == null) {
+                    numberField.setAllowBlank(false);
+                }
+                numberField.setFieldLabel(fieldLabel);
                 numberField.setEmptyText(KapuaSafeHtmlUtils.htmlUnescape(property.getPropertyValue()));
                 numberField.setData(PROPERTY_TYPE, property.getPropertyType());
                 numberField.setData(PROPERTY_NAME, property.getPropertyName());
@@ -274,19 +293,22 @@ public class JobStepAddDialog extends EntityAddEditDialog {
                 jobStepPropertiesPanel.add(numberField);
             } else if (propertyType.equals(Boolean.class.getName())) {
                 CheckBox checkBox = new CheckBox();
-                checkBox.setFieldLabel(camelCaseToNormalCase(property.getPropertyName()));
+                checkBox.setFieldLabel(fieldLabel);
                 checkBox.setValue(Boolean.valueOf(property.getPropertyValue()));
                 checkBox.setData(PROPERTY_TYPE, property.getPropertyType());
                 checkBox.setData(PROPERTY_NAME, property.getPropertyName());
                 jobStepPropertiesPanel.add(checkBox);
             } else {
                 final TextArea textArea = new TextArea();
-                textArea.setFieldLabel(camelCaseToNormalCase(property.getPropertyName()));
-                textArea.setEmptyText(KapuaSafeHtmlUtils.htmlUnescape(property.getPropertyValue()));
+                if (property.getPropertyValue() == null) {
+                    textArea.setAllowBlank(false);
+                }
+                textArea.setFieldLabel(fieldLabel);
                 textArea.setData(PROPERTY_TYPE, property.getPropertyType());
                 textArea.setData(PROPERTY_NAME, property.getPropertyName());
                 jobStepPropertiesPanel.add(textArea);
                 if (property.getExampleValue() != null) {
+
                     exampleButton = new Button(getExampleButtonText());
                     exampleButton.setStyleAttribute("padding-left", (FORM_LABEL_WIDTH + 5) + "px");
                     final String exampleValue = KapuaSafeHtmlUtils.htmlUnescape(property.getExampleValue());
@@ -298,13 +320,11 @@ public class JobStepAddDialog extends EntityAddEditDialog {
                         }
                     });
                     propertiesButtonPanel.add(exampleButton);
+                    propertiesButtonPanel.setStyleAttribute("margin-bottom", "4px");
                 }
+                jobStepPropertiesPanel.add(propertiesButtonPanel);
             }
         }
-        if (exampleButton != null) {
-            jobStepPropertiesPanel.add(propertiesButtonPanel);
-        }
-
         jobStepPropertiesPanel.layout(true);
     }
 
