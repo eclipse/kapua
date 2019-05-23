@@ -1,0 +1,191 @@
+/*******************************************************************************
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.kapua.service.commons.http;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.eclipse.kapua.service.commons.HealthChecker;
+
+import io.vertx.core.Future;
+import io.vertx.core.Vertx;
+import io.vertx.ext.dropwizard.MetricsService;
+import io.vertx.ext.healthchecks.HealthCheckHandler;
+import io.vertx.ext.web.Router;
+
+public class HttpMonitorServiceImpl implements HttpMonitorService {
+
+    private Vertx vertx;
+    private HttpService service;
+    private HttpMonitorServiceConfig config;
+    private Set<HealthChecker> livenessCheckers = new HashSet<>();
+    private Set<HealthChecker> readynessCheckers = new HashSet<>();
+
+    public static class Builder implements HttpMonitorService.Builder {
+
+        private Vertx vertx;
+        private HttpMonitorServiceConfig config;
+        private Set<HealthChecker> livenessCheckers = new HashSet<>();
+        private Set<HealthChecker> readynessCheckers = new HashSet<>();
+
+        public Builder(Vertx vertx) {
+            this(vertx, new HttpMonitorServiceConfig());
+        }
+
+        public Builder(Vertx vertx, HttpMonitorServiceConfig config) {
+            this.vertx = vertx;
+            this.config = config;
+        }
+
+        @Override
+        public void addLivenessChecker(HealthChecker checker) {
+            livenessCheckers.add(checker);
+        }
+
+        @Override
+        public void addReadynessChecker(HealthChecker checker) {
+            readynessCheckers.add(checker);
+        }
+
+        @Override
+        public void setServerConfig(HttpMonitorServiceConfig config) {
+            this.config = config;
+        }
+
+        @Override
+        public HttpMonitorService build() {
+            return new HttpMonitorServiceImpl(this);
+        }
+    }
+
+    private HttpMonitorServiceImpl(Builder builder) {
+        this.vertx = builder.vertx;
+        this.config = builder.config;
+        this.livenessCheckers = builder.livenessCheckers;
+        this.readynessCheckers = builder.readynessCheckers;
+    }
+
+    @Override
+    public Set<HealthChecker> getLivenessCheckers() {
+        return Collections.unmodifiableSet(livenessCheckers);
+    }
+
+    @Override
+    public Set<HealthChecker> getReadynessCheckers() {
+        return Collections.unmodifiableSet(readynessCheckers);
+    }
+
+    @Override
+    public void start(Future<Void> startFuture) throws Exception {
+
+        Set<HttpEndpoint> endpoints = new HashSet<>();
+
+        // Add health checks endpoint
+        if (config.isHealthCheckEnable()) {
+            HealthCheckHandler livenessHandler = HealthCheckHandler.create(vertx);
+            registerLivenessCheckers(livenessHandler);
+            HealthCheckHandler readynessHandler = HealthCheckHandler.create(vertx);
+            registerReadynessCheckers(readynessHandler);
+            HealthChecksEndpoint healthCheckEndpoint = HealthChecksEndpoint.create(livenessHandler, readynessHandler);
+            endpoints.add(healthCheckEndpoint);
+        }
+
+        // Configure Metrics
+        if (config.isMetricsEnable()) {
+            MetricsEndpoint meter = MetricsEndpoint.create(MetricsService.create(vertx));
+            endpoints.add(meter);
+        }
+
+        try {
+            HttpService.Builder builder = HttpService.builder(vertx, config.getHttp());
+            for (HttpEndpoint endpoint : endpoints) {
+                builder.addEndpoint(endpoint);
+            }
+            service = builder.build();
+            service.start(startFuture);
+        } catch (Exception e) {
+            startFuture.fail(e);
+        }
+    }
+
+    @Override
+    public void stop(Future<Void> stopFuture) throws Exception {
+
+        // Stop the deployment
+        if (service != null) {
+            service.stop(stopFuture);
+            return;
+        }
+        stopFuture.complete();
+    }
+
+    private void registerLivenessCheckers(HealthCheckHandler handler) {
+        for (HealthChecker checker : livenessCheckers) {
+            checker.registerChecks(vertx, handler);
+        }
+    }
+
+    private void registerReadynessCheckers(HealthCheckHandler handler) {
+        for (HealthChecker checker : readynessCheckers) {
+            checker.registerChecks(vertx, handler);
+        }
+    }
+
+    private static class HealthChecksEndpoint implements HttpEndpoint {
+
+        private static final String HEALTHCHECK_LIVENESS_PATH = "/monitoring/alive";
+        private static final String HEALTHCHECK_READYNESS_PATH = "/monitoring/ready";
+
+        private HealthCheckHandler livenessHandler;
+        private HealthCheckHandler readynessHandler;
+
+        private HealthChecksEndpoint(HealthCheckHandler livenessHandler, HealthCheckHandler readynessHandler) {
+            this.livenessHandler = livenessHandler;
+            this.readynessHandler = readynessHandler;
+        }
+
+        @Override
+        public void registerRoutes(Router router) {
+            router.get(HEALTHCHECK_READYNESS_PATH).handler(readynessHandler);
+            router.get(HEALTHCHECK_LIVENESS_PATH).handler(livenessHandler);
+        }
+
+        public static HealthChecksEndpoint create(HealthCheckHandler livenessHandler, HealthCheckHandler readynessHandler) {
+            return new HealthChecksEndpoint(livenessHandler, readynessHandler);
+        }
+    }
+
+    private static class MetricsEndpoint implements HttpEndpoint {
+
+        private static final String METRICS_BASENAME_PATH = "/monitoring/metrics/:base";
+        private static final String METRICS_BASE_NAME_PARAM = "base";
+
+        private MetricsService service;
+
+        private MetricsEndpoint(MetricsService service) {
+            this.service = service;
+        }
+
+        @Override
+        public void registerRoutes(Router router) {
+            router.get(METRICS_BASENAME_PATH).handler(ctx -> {
+                String baseName = ctx.request().getParam(METRICS_BASE_NAME_PARAM);
+                ctx.response().end(this.service.getMetricsSnapshot(baseName).toBuffer());
+            });
+        }
+
+        public static MetricsEndpoint create(MetricsService service) {
+            return new MetricsEndpoint(service);
+        }
+    }
+}

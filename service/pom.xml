@@ -26,7 +26,8 @@
 
     <modules>
         <module>api</module>
-
+        <module>commons</module>
+        
         <module>account</module>
         <module>datastore</module>
         <module>device</module>
