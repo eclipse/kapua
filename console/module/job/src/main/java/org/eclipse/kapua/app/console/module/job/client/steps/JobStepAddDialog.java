@@ -22,7 +22,6 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
@@ -36,6 +35,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
@@ -172,17 +174,8 @@ public class JobStepAddDialog extends EntityAddEditDialog {
     }
 
     public void validateJobStep() {
-        boolean propIsEmpty = false;
-        for (Component component : jobStepPropertiesPanel.getItems()) {
-            if (component instanceof Field) {
-                if (((Field) component).getRawValue().isEmpty()) {
-                    propIsEmpty = true;
-                    break;
-                }
-            }
-        }
-        if (jobStepName.getValue() == null || jobStepDefinitionCombo.getValue() == null || propIsEmpty) {
-            ConsoleInfo.display("Error", CONSOLE_MSGS.allFieldsRequired());
+        if (jobStepName.getValue() == null || jobStepDefinitionCombo.getValue() == null || !jobStepPropertiesPanel.isValid()) {
+            ConsoleInfo.display(CONSOLE_MSGS.error(), CONSOLE_MSGS.allFieldsRequired());
         }
     }
 
@@ -308,17 +301,16 @@ public class JobStepAddDialog extends EntityAddEditDialog {
                 textArea.setData(PROPERTY_NAME, property.getPropertyName());
                 jobStepPropertiesPanel.add(textArea);
                 if (property.getExampleValue() != null) {
-
-                    exampleButton = new Button(getExampleButtonText());
-                    exampleButton.setStyleAttribute("padding-left", (FORM_LABEL_WIDTH + 5) + "px");
                     final String exampleValue = KapuaSafeHtmlUtils.htmlUnescape(property.getExampleValue());
-                    exampleButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                    exampleButton = new Button(getExampleButtonText(), new KapuaIcon(IconSet.EDIT), new SelectionListener<ButtonEvent>() {
 
                         @Override
                         public void componentSelected(ButtonEvent ce) {
                             textArea.setValue(exampleValue);
                         }
+
                     });
+                    exampleButton.setStyleAttribute("padding-left", (FORM_LABEL_WIDTH + 5) + "px");
                     propertiesButtonPanel.add(exampleButton);
                     propertiesButtonPanel.setStyleAttribute("margin-bottom", "4px");
                 }

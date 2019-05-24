@@ -11,10 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.api.client.ui.button;
 
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 
 public class Button extends com.extjs.gxt.ui.client.widget.button.Button {
 
@@ -26,6 +25,14 @@ public class Button extends com.extjs.gxt.ui.client.widget.button.Button {
         setText(text);
         setIcon(icon);
         addSelectionListener(listener);
+        addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                ce.getButton().removeStyleName(ce.getButton().getBaseStyle() + "-focus");
+            }
+
+        });
     }
 
     @Override
