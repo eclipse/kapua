@@ -27,7 +27,7 @@
         &lt;name&gt;assetName&lt;/name&gt;&#10;
         &lt;channels&gt;&#10;
             &lt;channel&gt;&#10;
-                &lt;type&gt;binary&lt;/type&gt;&#10;
+                &lt;valueType&gt;binary&lt;/valueType&gt;&#10;
                 &lt;value&gt;EGVzdCBzdHJpbmcgdmFsdWU=&lt;/value&gt;&#10;
                 &lt;name&gt;binaryTest&lt;/name&gt;&#10;
             &lt;/channel&gt;&#10;

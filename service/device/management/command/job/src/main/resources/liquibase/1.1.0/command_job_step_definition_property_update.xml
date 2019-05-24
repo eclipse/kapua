@@ -17,18 +17,15 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
         logicalFilePath="KapuaDB/command_job_step_definition_property_update.xml">
 
-    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+    <include relativeToChangelogFile="true" file="../common-properties.xml"/>
 
     <changeSet id="command_job_step_definition_property_update-1.1.0" author="eurotech">
         <update tableName="job_job_step_definition_properties">
             <column name="example_value" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;
 &lt;commandInput&gt;&#10;
-   &lt;command&gt;ping&lt;/command&gt;&#10;
-   &lt;arguments&gt;&#10;
-    &lt;argument&gt;8.8.8.8&lt;/argument&gt;&#10;
-    &lt;argument&gt;-c 5&lt;/argument&gt;&#10;
-   &lt;/arguments&gt;&#10;
+   &lt;command&gt;ls&lt;/command&gt;&#10;
    &lt;timeout&gt;30000&lt;/timeout&gt;&#10;
+   &lt;runAsynch&gt;false&lt;/runAsynch&gt;&#10;
 &lt;/commandInput&gt;"/>
             <where>name = 'commandInput'</where>
         </update>

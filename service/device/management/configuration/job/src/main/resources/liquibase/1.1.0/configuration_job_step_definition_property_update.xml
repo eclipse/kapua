@@ -17,7 +17,7 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
         logicalFilePath="KapuaDB/configuration_job_step_definition_property_update.xml">
 
-    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+    <include relativeToChangelogFile="true" file="../common-properties.xml"/>
 
     <changeSet id="configuration_job_step_definition_property_update-1.1.0" author="eurotech">
         <update tableName="job_job_step_definition_properties">
@@ -30,7 +30,7 @@
             &lt;value&gt;0.25&lt;/value&gt;&#10;
          &lt;/property&gt;&#10;
          &lt;property name=&quot;publish.rate&quot; array=&quot;false&quot; encrypted=&quot;false&quot; type=&quot;Integer&quot;&gt;&#10;
-            &lt;value&gt;3600&lt;/value&gt;&#10;
+            &lt;value&gt;60&lt;/value&gt;&#10;
          &lt;/property&gt;&#10;
          &lt;property name=&quot;program.stopTime&quot; array=&quot;false&quot; encrypted=&quot;false&quot; type=&quot;String&quot;&gt;&#10;
             &lt;value&gt;22:00&lt;/value&gt;&#10;
