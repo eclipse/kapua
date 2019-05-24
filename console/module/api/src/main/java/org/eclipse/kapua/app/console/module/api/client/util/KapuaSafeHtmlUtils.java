@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -30,6 +30,12 @@ public class KapuaSafeHtmlUtils {
             return null;
         }
 
+        if (safeHtml.indexOf("&amp;") != -1) {
+            safeHtml = safeHtml.replace("&amp;", "&");
+        }
+        if (safeHtml.indexOf("amp;") != -1) {
+            safeHtml = safeHtml.replace("amp;","");
+        }
         if (safeHtml.indexOf("&lt;") != -1) {
             safeHtml = safeHtml.replace("&lt;", "<");
         }
@@ -41,9 +47,6 @@ public class KapuaSafeHtmlUtils {
         }
         if (safeHtml.indexOf("&#39;") != -1) {
             safeHtml = safeHtml.replace("&#39;", "'");
-        }
-        if (safeHtml.indexOf("&amp;") != -1) {
-            safeHtml = safeHtml.replace("&amp;", "&");
         }
         return safeHtml;
     }

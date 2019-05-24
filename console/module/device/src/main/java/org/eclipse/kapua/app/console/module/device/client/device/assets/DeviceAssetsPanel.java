@@ -18,6 +18,7 @@ import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
 import org.eclipse.kapua.app.console.module.api.client.util.FormUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAsset;
@@ -282,15 +283,14 @@ public class DeviceAssetsPanel extends LayoutContainer {
 
         TextField<String> field = new TextField<String>();
         field.setName(channel.getName());
-        field.setValue((String) channel.getValue());
         field.setAllowBlank(true);
         field.setFieldLabel(channel.getName() + " (" + channel.getType() + " - " + channel.getMode() + ")");
         field.setLabelStyle("word-break:break-all");
         field.addPlugin(dirtyPlugin);
 
         if (channel.getValue() != null) {
-            field.setValue((String) channel.getValue());
-            field.setOriginalValue((String) channel.getValue());
+            field.setValue(KapuaSafeHtmlUtils.htmlUnescape((String) channel.getValue()));
+            field.setOriginalValue(KapuaSafeHtmlUtils.htmlUnescape((String) channel.getValue()));
         }
         return field;
     }
