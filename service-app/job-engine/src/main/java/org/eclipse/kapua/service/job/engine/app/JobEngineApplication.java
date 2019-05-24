@@ -11,11 +11,25 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.engine.app;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
+import org.eclipse.kapua.KapuaErrorCodes;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.util.KapuaFileUtils;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
+
+import io.vertx.core.json.Json;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.config.Ini;
+import org.apache.shiro.config.IniSecurityManagerFactory;
+import org.apache.shiro.mgt.SecurityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,22 +96,31 @@ public class JobEngineApplication implements ApplicationRunner {
         Future<Void> startupFuture = Future.future();
         CountDownLatch startupLatch = new CountDownLatch(1);
         Future.succeededFuture()
-                .compose(map -> {
+                .compose(previousResult -> {
+                    // Shiro, JAXB and Jackson initialization
+                    try {
+                        initShiro();
+                        XmlUtil.setContextProvider(new JobEngineJaxbContextProvider());
+                        registerJacksonModule(new JobEngineMicroserviceModule());
+                    } catch (Exception ex) {
+                        return Future.failedFuture(ex);
+                    }
+                    return Future.succeededFuture();
+                })
+                .compose(previousResult -> {
                     // Start service monitoring first
                     Future<String> monitorDeployFuture = Future.future();
                     vertx.deployVerticle(jobEngineServiceMonitor, monitorDeployFuture);
                     return monitorDeployFuture;
                 })
-                .compose(map -> {
+                .compose(previousResult -> {
                     // Start services
-                    @SuppressWarnings("rawtypes")
                     List<Future> deployFutures = new ArrayList<>();
                     for (int i = 0; i < jobEngineServiceInstances; i++) {
                         Future<String> accountServiceDeployFuture = Future.future();
                         deployFutures.add(accountServiceDeployFuture);
                         vertx.deployVerticle(httpJobEngineService, accountServiceDeployFuture);
                     }
-
                     // All services must be started before proceeding
                     return CompositeFuture.all(deployFutures);
                 })
@@ -111,11 +134,32 @@ public class JobEngineApplication implements ApplicationRunner {
                 });
 
         if (!startupLatch.await(startupTimeout, TimeUnit.MILLISECONDS)) {
-            throw new Exception("Prrrr!");
+            throw new TimeoutException();
         } else {
             if (!startupFuture.succeeded()) {
                 throw new Exception(startupFuture.cause());
             }
         }
     }
+
+    private void registerJacksonModule(JobEngineMicroserviceModule jobEngineMicroserviceModule) {
+        Json.mapper.registerModule(jobEngineMicroserviceModule);
+        Json.prettyMapper.registerModule(jobEngineMicroserviceModule);
+    }
+
+    private void initShiro() throws KapuaException {
+        // initialize shiro context for broker plugin from shiro ini file
+        final URL shiroIniUrl = KapuaFileUtils.getAsURL("shiro.ini");
+        Ini shiroIni = new Ini();
+        try (final InputStream input = shiroIniUrl.openStream()) {
+            shiroIni.load(input);
+        } catch (IOException ex) {
+            logger.error("Error loading shiro.ini", ex);
+            throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR);
+        }
+
+        SecurityManager securityManager = new IniSecurityManagerFactory(shiroIni).getInstance();
+        SecurityUtils.setSecurityManager(securityManager);
+    }
+
 }

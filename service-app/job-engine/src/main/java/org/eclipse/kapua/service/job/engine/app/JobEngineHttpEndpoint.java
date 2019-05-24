@@ -9,31 +9,41 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.microservice.jobengine;
+package org.eclipse.kapua.service.job.engine.app;
 
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.microservice.commons.HttpEndpoint;
-import org.eclipse.kapua.microservice.commons.HttpResponseHandler;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdFactory;
+import org.eclipse.kapua.service.commons.http.HttpEndpoint;
+import org.eclipse.kapua.service.commons.http.HttpServiceHandlers;
 
 import io.vertx.core.json.Json;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import io.vertx.ext.web.handler.BodyHandler;
 
-@Service
 public class JobEngineHttpEndpoint implements HttpEndpoint {
 
-    @Autowired
     private JobEngineServiceAsync jobEngineServiceAsync;
 
-    private KapuaIdFactory kapuaIdFactory = KapuaLocator.getInstance().getFactory(KapuaIdFactory.class);
+    private final KapuaLocator kapuaLocator = KapuaLocator.getInstance();
+    private final KapuaIdFactory kapuaIdFactory = kapuaLocator.getFactory(KapuaIdFactory.class);
+
+    public JobEngineHttpEndpoint(JobEngineServiceAsync jobEngineServiceAsync) {
+        this.jobEngineServiceAsync = jobEngineServiceAsync;
+    }
 
     @Override
     public void registerRoutes(Router router) {
+        router.route().handler(BodyHandler.create());
+
+        // Login
+        router.route().blockingHandler(HttpServiceHandlers::authenticationHandler);
+//        router.route().blockingHandler(HttpServiceHandlers.authenticationHandler());
+
+        // TODO Put Service Event
+
         // Service Routes - Start Job
         router.post("/startJob/:scopeId/:jobId").handler(this::startJob);
         // Service Routes - Start Job
@@ -48,51 +58,55 @@ public class JobEngineHttpEndpoint implements HttpEndpoint {
         router.post("/resumeJobExecution/:scopeId/:jobId/:executionId").blockingHandler(this::resumeJobExecution);
         // Service Routes - Clean Job Data
         router.delete("/cleanJobData/:scopeId/:jobId").blockingHandler(this::cleanJobData);
+
+        // Error handler
+        router.route().failureHandler(HttpServiceHandlers::failureHandler);
+//        router.route().failureHandler(HttpServiceHandlers.failureHandler());
     }
 
     private void startJob(RoutingContext ctx) {
         KapuaId scopeId = kapuaIdFactory.newKapuaId(ctx.pathParam("scopeId"));
         KapuaId jobId = kapuaIdFactory.newKapuaId(ctx.pathParam("jobId"));
-        jobEngineServiceAsync.startJob(ctx.vertx(), ctx.get("kapuaSession"), ctx.get("shiroSubject"), scopeId, jobId, HttpResponseHandler.httpRequestHandler(ctx));
+        jobEngineServiceAsync.startJob(ctx.vertx(), ctx.get("kapuaSession"), ctx.get("shiroSubject"), scopeId, jobId, HttpServiceHandlers.httpResponseHandler(ctx));
     }
 
     private void startJobWithOptions(RoutingContext ctx) {
         KapuaId scopeId = kapuaIdFactory.newKapuaId(ctx.pathParam("scopeId"));
         KapuaId jobId = kapuaIdFactory.newKapuaId(ctx.pathParam("jobId"));
         JobStartOptions jobStartOptions = Json.decodeValue(ctx.getBodyAsString(), JobStartOptions.class);
-        jobEngineServiceAsync.startJob(ctx.vertx(), ctx.get("kapuaSession"), ctx.get("shiroSubject"), scopeId, jobId, jobStartOptions, HttpResponseHandler.httpRequestHandler(ctx));
+        jobEngineServiceAsync.startJob(ctx.vertx(), ctx.get("kapuaSession"), ctx.get("shiroSubject"), scopeId, jobId, jobStartOptions, HttpServiceHandlers.httpResponseHandler(ctx));
     }
 
     private void isRunning(RoutingContext ctx) {
         KapuaId scopeId = kapuaIdFactory.newKapuaId(ctx.pathParam("scopeId"));
         KapuaId jobId = kapuaIdFactory.newKapuaId(ctx.pathParam("jobId"));
-        jobEngineServiceAsync.isRunning(ctx.vertx(), ctx.get("kapuaSession"), ctx.get("shiroSubject"), scopeId, jobId, HttpResponseHandler.httpRequestHandler(ctx));
+        jobEngineServiceAsync.isRunning(ctx.vertx(), ctx.get("kapuaSession"), ctx.get("shiroSubject"), scopeId, jobId, HttpServiceHandlers.httpResponseHandler(ctx));
     }
 
     private void stopJob(RoutingContext ctx) {
         KapuaId scopeId = kapuaIdFactory.newKapuaId(ctx.pathParam("scopeId"));
         KapuaId jobId = kapuaIdFactory.newKapuaId(ctx.pathParam("jobId"));
-        jobEngineServiceAsync.stopJob(ctx.vertx(), ctx.get("kapuaSession"), ctx.get("shiroSubject"), scopeId, jobId, HttpResponseHandler.httpRequestHandler(ctx));
+        jobEngineServiceAsync.stopJob(ctx.vertx(), ctx.get("kapuaSession"), ctx.get("shiroSubject"), scopeId, jobId, HttpServiceHandlers.httpResponseHandler(ctx));
     }
 
     private void stopJobExecution(RoutingContext ctx) {
         KapuaId scopeId = kapuaIdFactory.newKapuaId(ctx.pathParam("scopeId"));
         KapuaId jobId = kapuaIdFactory.newKapuaId(ctx.pathParam("jobId"));
         KapuaId jobExecutionId = kapuaIdFactory.newKapuaId(ctx.pathParam("jobExecutionId"));
-        jobEngineServiceAsync.stopJobExecution(ctx.vertx(), ctx.get("kapuaSession"), ctx.get("shiroSubject"), scopeId, jobId, jobExecutionId, HttpResponseHandler.httpRequestHandler(ctx));
+        jobEngineServiceAsync.stopJobExecution(ctx.vertx(), ctx.get("kapuaSession"), ctx.get("shiroSubject"), scopeId, jobId, jobExecutionId, HttpServiceHandlers.httpResponseHandler(ctx));
     }
 
     private void resumeJobExecution(RoutingContext ctx) {
         KapuaId scopeId = kapuaIdFactory.newKapuaId(ctx.pathParam("scopeId"));
         KapuaId jobId = kapuaIdFactory.newKapuaId(ctx.pathParam("jobId"));
         KapuaId jobExecutionId = kapuaIdFactory.newKapuaId(ctx.pathParam("jobExecutionId"));
-        jobEngineServiceAsync.resumeJobExecution(ctx.vertx(), ctx.get("kapuaSession"), ctx.get("shiroSubject"), scopeId, jobId, jobExecutionId, HttpResponseHandler.httpRequestHandler(ctx));
+        jobEngineServiceAsync.resumeJobExecution(ctx.vertx(), ctx.get("kapuaSession"), ctx.get("shiroSubject"), scopeId, jobId, jobExecutionId, HttpServiceHandlers.httpResponseHandler(ctx));
     }
 
     private void cleanJobData(RoutingContext ctx) {
         KapuaId scopeId = kapuaIdFactory.newKapuaId(ctx.pathParam("scopeId"));
         KapuaId jobId = kapuaIdFactory.newKapuaId(ctx.pathParam("jobId"));
-        jobEngineServiceAsync.cleanJobData(ctx.vertx(), ctx.get("kapuaSession"), ctx.get("shiroSubject"), scopeId, jobId, HttpResponseHandler.httpRequestHandler(ctx));
+        jobEngineServiceAsync.cleanJobData(ctx.vertx(), ctx.get("kapuaSession"), ctx.get("shiroSubject"), scopeId, jobId, HttpServiceHandlers.httpResponseHandler(ctx));
     }
 
 }

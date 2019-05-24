@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.microservice.commons;
+package org.eclipse.kapua.service.commons;
 
 import java.util.concurrent.Callable;
 

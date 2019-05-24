@@ -9,15 +9,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.microservice.jobengine;
+package org.eclipse.kapua.service.job.engine.app;
 
-import org.eclipse.kapua.job.engine.JobStartOptions;
+import org.eclipse.kapua.job.engine.jbatch.JobStartOptionsImpl;
 
-import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-public class JobEngineMicroserviceModule extends SimpleModule {
-
-    public JobEngineMicroserviceModule() {
-        setMixInAnnotation(JobStartOptions.class, JobStartOptionMixin.class);
-    }
+@JsonDeserialize(as = JobStartOptionsImpl.class)
+@JsonIgnoreProperties("type")
+public interface JobStartOptionMixin {
 }

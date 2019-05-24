@@ -9,27 +9,25 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.microservice.jobengine;
+package org.eclipse.kapua.service.job.engine.app;
 
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.microservice.commons.BlockingAsyncRequestExecutor;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.commons.BlockingAsyncRequestExecutor;
 
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import org.apache.shiro.subject.Subject;
-import org.springframework.stereotype.Service;
 
 /**
  * Transport-agnostic wrapper for {@link JobEngineService}. {@link JobEngineHttpEndpoint} routes all call methods
  * in this class extracting HTTP specific concepts (e.g. {@link io.vertx.ext.web.RoutingContext} so that this class
  * can be reused by clients for other transports (e.g. AMQP)
  */
-@Service
 public class JobEngineServiceAsync {
 
     private final KapuaLocator kapuaLocator = KapuaLocator.getInstance();
@@ -62,4 +60,5 @@ public class JobEngineServiceAsync {
     public void cleanJobData(Vertx vertx, KapuaSession kapuaSession, Subject shiroSubject, KapuaId scopeId, KapuaId jobId, Handler<AsyncResult<Boolean>> resultHandler) {
         BlockingAsyncRequestExecutor.executeAsyncRequest(vertx, kapuaSession, shiroSubject, () -> jobEngineService.cleanJobData(scopeId, jobId), resultHandler);
     }
+
 }

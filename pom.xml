@@ -1321,11 +1321,6 @@
                 <version>${javax-inject.version}</version>
             </dependency>
             <dependency>
-                <groupId>javax.validation</groupId>
-                <artifactId>validation-api</artifactId>
-                <version>${javax-validation-api.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-core</artifactId>
                 <version>${liquibase.version}</version>
@@ -1336,6 +1331,11 @@
                         <artifactId>logback-classic</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>${javax-validation-api.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.neoscada.utils</groupId>
@@ -1837,7 +1837,6 @@
         <module>dev-tools</module>
         <module>deployment</module>
 
-        <module>microservice</module>
     </modules>
 
     <profiles>

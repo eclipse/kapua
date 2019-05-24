@@ -31,18 +31,7 @@ import io.vertx.ext.dropwizard.DropwizardMetricsOptions;
 @Configuration
 @ComponentScan("org.eclipse.kapua.service.commons")
 @ComponentScan("org.eclipse.kapua.service.job.engine.app")
-// TODO Add component scan for service endpoint (job-engine)
 public class JobEngineApplicationConfig {
-
-// TODO Add builders for the specific service
-//    @Autowired
-//    private JobEngineServiceAsync.Builder jobEngineServiceAsyncBuilder;
-//
-//    @Autowired
-//    private JobEngineRestEndpoint.Builder jobEngineRestEndpointBuilder;
-//
-//    @Autowired
-//    private JobEngineEventBusEndpoint.Builder jobEngineEventBusEndpointBuilder;
 
     @Autowired
     private JobEngineHttpService.Builder serviceBuilder;
@@ -76,22 +65,16 @@ public class JobEngineApplicationConfig {
         return new HttpServiceConfig();
     }
 
-// TODO add bulders for the specific service
-//
-//    @Bean
-//    public AccountServiceAsync asyncAccountService() {
-//        return jobEngineServiceAsyncBuilder.build();
-//    }
-//
-//    @Bean
-//    public AccountsRestEndpoint accountsRestEndpoint() {
-//        return jobEngineRestEndpointBuilder.build();
-//    }
-//
-//    @Bean
-//    public AccountsEventBusEndpoint accountsEventBusEndpoint() {
-//        return jobEngineEventBusEndpointBuilder.build();
-//    }
+    @Bean
+    public JobEngineServiceAsync jobEngineServiceAsync() {
+        return new JobEngineServiceAsync();
+    }
+
+    @Bean
+    @Autowired
+    public JobEngineHttpEndpoint jobEngineHttpEndpoint(JobEngineServiceAsync jobEngineServiceAsync) {
+        return new JobEngineHttpEndpoint(jobEngineServiceAsync);
+    }
 
     @Bean
     public JobEngineHttpService httpAccountService() {
@@ -123,14 +106,7 @@ public class JobEngineApplicationConfig {
 
     @Bean
     public ExitCodeExceptionMapper getExitCodeExceptionMapper() {
-        return new ExitCodeExceptionMapper() {
-
-            @Override
-            public int getExitCode(Throwable exception) {
-                // TODO Auto-generated method stub
-                return 1;
-            }
-
-        };
+        return exception -> 1;
     }
+
 }

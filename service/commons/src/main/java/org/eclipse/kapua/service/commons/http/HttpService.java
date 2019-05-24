@@ -12,32 +12,28 @@
 package org.eclipse.kapua.service.commons.http;
 
 import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
-import io.vertx.ext.web.RoutingContext;
 
 public interface HttpService extends HttpEndpointProvider {
 
-    public static interface Builder {
+    interface Builder {
 
-        public void setServiceConfig(HttpServiceConfig config);
+        void setServiceConfig(HttpServiceConfig config);
 
-        public void addEndpoint(HttpEndpoint endpoint);
+        void addEndpoint(HttpEndpoint endpoint);
 
-        public void authHandler(Handler<RoutingContext> context);
-
-        public HttpService build();
+        HttpService build();
     }
 
-    public void start(Future<Void> startFuture) throws Exception;
+    void start(Future<Void> startFuture) throws Exception;
 
-    public void stop(Future<Void> stopFuture) throws Exception;
+    void stop(Future<Void> stopFuture) throws Exception;
 
-    public static Builder builder(Vertx vertx) {
+    static Builder builder(Vertx vertx) {
         return new HttpServiceImpl.Builder(vertx);
     }
 
-    public static Builder builder(Vertx vertx, HttpServiceConfig config) {
+    static Builder builder(Vertx vertx, HttpServiceConfig config) {
         return new HttpServiceImpl.Builder(vertx, config);
     }
 }

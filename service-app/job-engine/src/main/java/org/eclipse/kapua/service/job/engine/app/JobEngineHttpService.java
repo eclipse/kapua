@@ -22,9 +22,7 @@ import io.vertx.core.Future;
 
 public class JobEngineHttpService extends AbstractVerticle {
 
-// TODO Add endpoionts for the specific service
-//
-//    private AccountsRestEndpoint accountsEndpoint;
+    private JobEngineHttpEndpoint jobEngineHttpEndpoint;
 
     private HttpServiceConfig serverConfig;
 
@@ -32,22 +30,18 @@ public class JobEngineHttpService extends AbstractVerticle {
 
     @Component
     public static class Builder {
-// TODO Add endpoionts for the specific service
-//
-//        private AccountsRestEndpoint accountsEndpoint;
+        private JobEngineHttpEndpoint jobEngineHttpEndpoint;
 
         private HttpServiceConfig serverConfig;
-// TODO Add endpoionts for the specific service
-//
-//        public AccountsRestEndpoint getAccountsRestEndpoint() {
-//            return this.accountsEndpoint;
-//        }
-//
-//        @Autowired
-//        public Builder setAccountsRestEndpoint(AccountsRestEndpoint endpoint) {
-//            this.accountsEndpoint = endpoint;
-//            return this;
-//        }
+        public JobEngineHttpEndpoint getJobEngineHttpEndpoint() {
+            return this.jobEngineHttpEndpoint;
+        }
+
+        @Autowired
+        public Builder setJobEngineHttpEndpoint(JobEngineHttpEndpoint endpoint) {
+            this.jobEngineHttpEndpoint = endpoint;
+            return this;
+        }
 
         public HttpServiceConfig getHttpServiceConfig() {
             return this.serverConfig;
@@ -65,7 +59,7 @@ public class JobEngineHttpService extends AbstractVerticle {
     }
 
     private JobEngineHttpService(Builder builder) {
-//        this.accountsEndpoint = builder.getAccountsRestEndpoint();
+        this.jobEngineHttpEndpoint = builder.getJobEngineHttpEndpoint();
         this.serverConfig = builder.getHttpServiceConfig();
     }
 
@@ -73,8 +67,7 @@ public class JobEngineHttpService extends AbstractVerticle {
     public void start(Future<Void> startFuture) throws Exception {
 
         HttpService.Builder builder = HttpService.builder(vertx, serverConfig);
-// TODO Add endpoionts for the specific service
-//        builder.addEndpoint(accountsEndpoint);
+        builder.addEndpoint(jobEngineHttpEndpoint);
         service = builder.build();
         service.start(startFuture);
     }
@@ -88,4 +81,5 @@ public class JobEngineHttpService extends AbstractVerticle {
         }
         stopFuture.complete();
     }
+
 }

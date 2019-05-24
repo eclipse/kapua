@@ -9,12 +9,15 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.microservice.commons;
+package org.eclipse.kapua.service.job.engine.app;
 
-import io.vertx.ext.web.Router;
+import org.eclipse.kapua.job.engine.JobStartOptions;
 
-public interface HttpEndpoint {
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
-    void registerRoutes(Router router);
+public class JobEngineMicroserviceModule extends SimpleModule {
 
+    public JobEngineMicroserviceModule() {
+        setMixInAnnotation(JobStartOptions.class, JobStartOptionMixin.class);
+    }
 }

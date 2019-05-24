@@ -15,5 +15,6 @@ import io.vertx.ext.web.Router;
 
 public interface HttpEndpoint {
 
-    public void registerRoutes(Router router);
+    void registerRoutes(Router router);
 }
+

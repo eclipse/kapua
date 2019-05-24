@@ -19,11 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.vertx.core.Future;
-import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.ext.web.Router;
-import io.vertx.ext.web.RoutingContext;
 
 public class HttpServiceImpl implements HttpService {
 
@@ -32,14 +30,12 @@ public class HttpServiceImpl implements HttpService {
     private Vertx vertx;
     private HttpServer server;
     private HttpServiceConfig config;
-    private Set<HttpEndpoint> enpoints = new HashSet<>();
-    private Handler<RoutingContext> authHandler;
+    private Set<HttpEndpoint> enpoints;
 
     public static class Builder implements HttpService.Builder {
 
         private Vertx vertx;
         private Set<HttpEndpoint> enpoints = new HashSet<>();
-        private Handler<RoutingContext> authHandler;
         private HttpServiceConfig config;
 
         public Builder(Vertx vertx) {
@@ -49,11 +45,6 @@ public class HttpServiceImpl implements HttpService {
         public Builder(Vertx vertx, HttpServiceConfig config) {
             this.vertx = vertx;
             this.config = config;
-        }
-
-        @Override
-        public void authHandler(Handler<RoutingContext> handler) {
-            this.authHandler = handler;
         }
 
         @Override
@@ -76,7 +67,6 @@ public class HttpServiceImpl implements HttpService {
         this.vertx = builder.vertx;
         this.enpoints = new HashSet<>(builder.enpoints);
         this.config = builder.config;
-        this.authHandler = builder.authHandler;
     }
 
     @Override
@@ -124,12 +114,10 @@ public class HttpServiceImpl implements HttpService {
     }
 
     private void registerRoutes(Router router) {
-        if (this.authHandler != null) {
-            router.route().blockingHandler(this.authHandler);
-        }
 
         for (HttpEndpoint endpoint:enpoints) {
             endpoint.registerRoutes(router);
         }
     }
+
 }
