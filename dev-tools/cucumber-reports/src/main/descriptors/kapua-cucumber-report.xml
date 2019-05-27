@@ -31,87 +31,87 @@
 
         <fileSet>
             <outputDirectory>account-service</outputDirectory>
-            <directory>../../service/account/internal/target/cucumber</directory>
+            <directory>../../service/account/test/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>user-service</outputDirectory>
-            <directory>../../service/user/internal/target/cucumber</directory>
+            <directory>../../service/user/test/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>device-registry-service</outputDirectory>
-            <directory>../../service/device/registry/internal/target/cucumber</directory>
-        </fileSet>
-
-        <fileSet>
-            <outputDirectory>authorization-service</outputDirectory>
-            <directory>../../service/security/shiro/target/cucumber</directory>
+            <directory>../../service/device/registry/test/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>job-service</outputDirectory>
-            <directory>../../service/job/internal/target/cucumber</directory>
+            <directory>../../service/job/test/target/cucumber</directory>
+        </fileSet>
+
+        <fileSet>
+            <outputDirectory>tag-service</outputDirectory>
+            <directory>../../service/tag/test/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>user-service-i9n</outputDirectory>
-            <directory>../../qa/target/cucumber/UserServiceI9n</directory>
+            <directory>../../qa/integration/target/cucumber/UserServiceI9n</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>user-service-lockout-i9n</outputDirectory>
-            <directory>../../qa/target/cucumber/LockoutExpirationI9n</directory>
+            <directory>../../qa/integration/target/cucumber/LockoutExpirationI9n</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>device-service-i9n</outputDirectory>
-            <directory>../../qa/target/cucumber/DeviceI9n</directory>
+            <directory>../../qa/integration/target/cucumber/DeviceI9n</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>device-lifecycle-service-i9n</outputDirectory>
-            <directory>../../qa/target/cucumber/DeviceLifecycleI9n</directory>
+            <directory>../../qa/integration/target/cucumber/DeviceLifecycleI9n</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>connection-user-coupling-i9n</outputDirectory>
-            <directory>../../qa/target/cucumber/ConnectionI9n</directory>
+            <directory>../../qa/integration/target/cucumber/ConnectionI9n</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>device-broker-i9n</outputDirectory>
-            <directory>../../qa/target/cucumber/DeviceBrokerI9n</directory>
+            <directory>../../qa/integration/target/cucumber/DeviceBrokerI9n</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>device-data-i9n</outputDirectory>
-            <directory>../../qa/target/cucumber/DeviceDataI9n</directory>
+            <directory>../../qa/integration/target/cucumber/DeviceDataI9n</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>broker-ACL-i9n</outputDirectory>
-            <directory>../../qa/target/cucumber/BrokerACLI9n</directory>
+            <directory>../../qa/integration/target/cucumber/BrokerACLI9n</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>device-manager-ACL-i9n</outputDirectory>
-            <directory>../../qa/target/cucumber/BrokerACLDeviceManageI9n</directory>
+            <directory>../../qa/integration/target/cucumber/BrokerACLDeviceManageI9n</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>datastore-transport-i9n</outputDirectory>
-            <directory>../../qa/target/cucumber/DatastoreTransportI9n</directory>
+            <directory>../../qa/integration/target/cucumber/DatastoreTransportI9n</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>datastore-rest-i9n</outputDirectory>
-            <directory>../../qa/target/cucumber/DatastoreRestI9n</directory>
+            <directory>../../qa/integration/target/cucumber/DatastoreRestI9n</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>tag-service-i9n</outputDirectory>
-            <directory>../../qa/target/cucumber/TagService</directory>
+            <directory>../../qa/integration/target/cucumber/TagService</directory>
         </fileSet>
         </fileSets>
 
