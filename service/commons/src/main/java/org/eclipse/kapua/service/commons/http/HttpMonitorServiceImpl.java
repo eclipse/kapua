@@ -143,8 +143,9 @@ public class HttpMonitorServiceImpl implements HttpMonitorService {
 
     private static class HealthChecksEndpoint implements HttpEndpoint {
 
-        private static final String HEALTHCHECK_LIVENESS_PATH = "/monitoring/alive";
-        private static final String HEALTHCHECK_READYNESS_PATH = "/monitoring/ready";
+        private static final String HEALTHCHECK_LIVENESS_PATH = "/alive";
+        private static final String HEALTHCHECK_READYNESS_PATH = "/ready";
+        private static final String BASE_PATH = "/monitoring";
 
         private HealthCheckHandler livenessHandler;
         private HealthCheckHandler readynessHandler;
@@ -160,6 +161,11 @@ public class HttpMonitorServiceImpl implements HttpMonitorService {
             router.get(HEALTHCHECK_LIVENESS_PATH).handler(livenessHandler);
         }
 
+        @Override
+        public String getBasePath() {
+            return BASE_PATH;
+        }
+
         public static HealthChecksEndpoint create(HealthCheckHandler livenessHandler, HealthCheckHandler readynessHandler) {
             return new HealthChecksEndpoint(livenessHandler, readynessHandler);
         }
@@ -167,8 +173,9 @@ public class HttpMonitorServiceImpl implements HttpMonitorService {
 
     private static class MetricsEndpoint implements HttpEndpoint {
 
-        private static final String METRICS_BASENAME_PATH = "/monitoring/metrics/:base";
+        private static final String METRICS_BASENAME_PATH = "/metrics/:base";
         private static final String METRICS_BASE_NAME_PARAM = "base";
+        private static final String BASE_PATH = "/monitoring";
 
         private MetricsService service;
 
@@ -182,6 +189,11 @@ public class HttpMonitorServiceImpl implements HttpMonitorService {
                 String baseName = ctx.request().getParam(METRICS_BASE_NAME_PARAM);
                 ctx.response().end(this.service.getMetricsSnapshot(baseName).toBuffer());
             });
+        }
+
+        @Override
+        public String getBasePath() {
+            return BASE_PATH;
         }
 
         public static MetricsEndpoint create(MetricsService service) {

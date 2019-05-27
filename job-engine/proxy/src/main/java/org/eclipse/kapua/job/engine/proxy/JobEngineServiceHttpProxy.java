@@ -29,13 +29,24 @@ import org.eclipse.kapua.job.engine.proxy.setting.JobEngineHttpProxySettingKey;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 
+import com.google.common.base.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @KapuaProvider
 public class JobEngineServiceHttpProxy implements JobEngineService {
 
     private final WebTarget webTarget;
-    private final String jobEngineBaseAddress = JobEngineHttpProxySetting.getInstance().getString(JobEngineHttpProxySettingKey.MICROSERVICE_JOBENGINE_HTTP_BASEADDRESS);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobEngineServiceHttpProxy.class);
 
     public JobEngineServiceHttpProxy() {
+        String jobEngineBaseAddress = JobEngineHttpProxySetting.getInstance().getString(JobEngineHttpProxySettingKey.MICROSERVICE_JOBENGINE_HTTP_BASEADDRESS);
+        if (Strings.isNullOrEmpty(jobEngineBaseAddress)) {
+            String errorCause = "No HTTP base address set for Job Engine Service";
+            LOGGER.error(errorCause);
+            throw new IllegalArgumentException(errorCause);
+        }
+        LOGGER.debug("Job Engine Service HTTP base address: {}", jobEngineBaseAddress);
         webTarget = ClientBuilder.newClient().target(jobEngineBaseAddress);
     }
 
@@ -43,10 +54,11 @@ public class JobEngineServiceHttpProxy implements JobEngineService {
     public void startJob(KapuaId scopeId, KapuaId jobId) throws KapuaException {
         String accessToken = KapuaSecurityUtils.getSession().getAccessToken().getTokenId();
 
-        webTarget.path(String.format("/startJobWithOptions/%s/%s", scopeId.toCompactId(), jobId.toCompactId()))
+        Response response = webTarget.path(String.format("/startJobWithOptions/%s/%s", scopeId.toCompactId(), jobId.toCompactId()))
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .header("Authorization", "Bearer " + accessToken)
-                .post(Entity.text(""));
+                .post(null);
+        System.out.println(response.getStatusInfo());
     }
 
     @Override
@@ -54,10 +66,11 @@ public class JobEngineServiceHttpProxy implements JobEngineService {
         String accessToken = KapuaSecurityUtils.getSession().getAccessToken().getTokenId();
 
         try {
-            webTarget.path(String.format("/startJobWithOptions/%s/%s", scopeId.toCompactId(), jobId.toCompactId()))
+            Response response = webTarget.path(String.format("/startJobWithOptions/%s/%s", scopeId.toCompactId(), jobId.toCompactId()))
                     .request(MediaType.APPLICATION_JSON_TYPE)
                     .header("Authorization", "Bearer " + accessToken)
                     .post(Entity.text(XmlUtil.marshalJson(jobStartOptions)));
+            System.out.println(response.getStatusInfo());
         } catch (JAXBException e) {
             throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e);
         }
@@ -70,7 +83,7 @@ public class JobEngineServiceHttpProxy implements JobEngineService {
         Response response = webTarget.path(String.format("/isRunning/%s/%s", scopeId.toCompactId(), jobId.toCompactId()))
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .header("Authorization", "Bearer " + accessToken)
-                .post(Entity.text(""));
+                .post(null);
         // FIXME Response should be an actual class so that it can be correctly deserialized as a JSON Object
         return Boolean.parseBoolean(response.readEntity(String.class));
     }
@@ -82,7 +95,7 @@ public class JobEngineServiceHttpProxy implements JobEngineService {
         webTarget.path(String.format("/stopJob/%s/%s", scopeId.toCompactId(), jobId.toCompactId()))
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .header("Authorization", "Bearer " + accessToken)
-                .post(Entity.text(""));
+                .post(null);
     }
 
     @Override
@@ -92,7 +105,7 @@ public class JobEngineServiceHttpProxy implements JobEngineService {
         webTarget.path(String.format("/stopJobExecution/%s/%s/%s", scopeId.toCompactId(), jobId.toCompactId(), jobExecutionId.toCompactId()))
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .header("Authorization", "Bearer " + accessToken)
-                .post(Entity.text(""));
+                .post(null);
     }
 
     @Override
@@ -102,7 +115,7 @@ public class JobEngineServiceHttpProxy implements JobEngineService {
         webTarget.path(String.format("/resumeJobExecution/%s/%s/%s", scopeId.toCompactId(), jobId.toCompactId(), jobExecutionId.toCompactId()))
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .header("Authorization", "Bearer " + accessToken)
-                .post(Entity.text(""));
+                .post(null);
     }
 
     @Override
@@ -112,6 +125,6 @@ public class JobEngineServiceHttpProxy implements JobEngineService {
         webTarget.path(String.format("/cleanJobData/%s/%s", scopeId.toCompactId(), jobId.toCompactId()))
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .header("Authorization", "Bearer " + accessToken)
-                .post(Entity.text(""));
+                .post(null);
     }
 }

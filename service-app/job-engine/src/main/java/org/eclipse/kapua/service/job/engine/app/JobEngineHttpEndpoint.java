@@ -21,7 +21,6 @@ import org.eclipse.kapua.service.commons.http.HttpServiceHandlers;
 import io.vertx.core.json.Json;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-import io.vertx.ext.web.handler.BodyHandler;
 
 public class JobEngineHttpEndpoint implements HttpEndpoint {
 
@@ -30,19 +29,23 @@ public class JobEngineHttpEndpoint implements HttpEndpoint {
     private final KapuaLocator kapuaLocator = KapuaLocator.getInstance();
     private final KapuaIdFactory kapuaIdFactory = kapuaLocator.getFactory(KapuaIdFactory.class);
 
+    private final String basePath = "/v1/job-engine";
+
     public JobEngineHttpEndpoint(JobEngineServiceAsync jobEngineServiceAsync) {
         this.jobEngineServiceAsync = jobEngineServiceAsync;
     }
 
     @Override
+    public String getBasePath() {
+        return basePath;
+    }
+
+    @Override
     public void registerRoutes(Router router) {
-        router.route().handler(BodyHandler.create());
 
         // Login
         router.route().blockingHandler(HttpServiceHandlers::authenticationHandler);
 //        router.route().blockingHandler(HttpServiceHandlers.authenticationHandler());
-
-        // TODO Put Service Event
 
         // Service Routes - Start Job
         router.post("/startJob/:scopeId/:jobId").handler(this::startJob);
@@ -58,10 +61,6 @@ public class JobEngineHttpEndpoint implements HttpEndpoint {
         router.post("/resumeJobExecution/:scopeId/:jobId/:executionId").blockingHandler(this::resumeJobExecution);
         // Service Routes - Clean Job Data
         router.delete("/cleanJobData/:scopeId/:jobId").blockingHandler(this::cleanJobData);
-
-        // Error handler
-        router.route().failureHandler(HttpServiceHandlers::failureHandler);
-//        router.route().failureHandler(HttpServiceHandlers.failureHandler());
     }
 
     private void startJob(RoutingContext ctx) {

@@ -71,9 +71,11 @@ public class HttpServiceHandlers {
     }
 
     public static void failureHandler(RoutingContext ctx) {
+        if (!ctx.response().ended()) {
             JsonObject error = new JsonObject();
             error.put("error", ctx.failure().getMessage());
             ctx.response().setStatusCode(ctx.statusCode() == -1 ? 500 : ctx.statusCode()).end(error.encode());
+        }
     }
 
 }

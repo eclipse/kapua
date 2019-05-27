@@ -15,6 +15,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.CorsHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,21 +81,23 @@ public class HttpServiceImpl implements HttpService {
 
         Router router = Router.router(vertx);
         registerRoutes(router);
+//        router.route().failureHandler(HttpServiceHandlers.failureHandler());
+
         server = vertx.createHttpServer()
-                    .requestHandler(router)
-                    .listen(config.getPort(), config.getBindAddress(), listenReq -> {
-                        if (listenReq.succeeded()) {
-                            logger.info("REST endpoint listening on port {} host {}", 
-                                    config.getPort(), 
-                                    config.getBindAddress());
-                            startFuture.complete();
-                        } else {
-                            logger.error("Error starting REST endpoint on port {} host {}: {}", 
-                                    config.getPort(), config.getBindAddress(), 
-                                    listenReq.cause().getMessage());
-                            startFuture.fail((listenReq.cause()));
-                        }
-                    });
+                .requestHandler(router)
+                .listen(config.getPort(), config.getBindAddress(), listenReq -> {
+                    if (listenReq.succeeded()) {
+                        logger.info("REST endpoint listening on port {} host {}",
+                                config.getPort(),
+                                config.getBindAddress());
+                        startFuture.complete();
+                    } else {
+                        logger.error("Error starting REST endpoint on port {} host {}: {}",
+                                config.getPort(), config.getBindAddress(),
+                                listenReq.cause().getMessage());
+                        startFuture.fail((listenReq.cause()));
+                    }
+                });
     }
 
     @Override
@@ -115,8 +119,15 @@ public class HttpServiceImpl implements HttpService {
 
     private void registerRoutes(Router router) {
 
-        for (HttpEndpoint endpoint:enpoints) {
-            endpoint.registerRoutes(router);
+        for (HttpEndpoint endpoint : enpoints) {
+            // TODO check duplicate basepath
+            Router subRouter = Router.router(vertx);
+            subRouter.route().handler(BodyHandler.create());
+            subRouter.route().handler(CorsHandler.create(""));
+            // TODO Put Service Event
+            subRouter.route().failureHandler(HttpServiceHandlers::failureHandler);
+            endpoint.registerRoutes(subRouter);
+            router.mountSubRouter(endpoint.getBasePath(), subRouter);
         }
     }
 

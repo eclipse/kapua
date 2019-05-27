@@ -16,5 +16,8 @@ import io.vertx.ext.web.Router;
 public interface HttpEndpoint {
 
     void registerRoutes(Router router);
+
+    String getBasePath();
+
 }
 
