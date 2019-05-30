@@ -15,7 +15,20 @@ import org.eclipse.kapua.model.id.KapuaId;
 
 public class JobNotRunningException extends JobEngineException {
 
+    private final KapuaId scopeId;
+    private final KapuaId jobId;
+
     public JobNotRunningException(KapuaId scopeId, KapuaId jobId) {
         super(KapuaJobEngineErrorCodes.JOB_NOT_RUNNING, scopeId, jobId);
+        this.scopeId = scopeId;
+        this.jobId = jobId;
+    }
+
+    public KapuaId getScopeId() {
+        return scopeId;
+    }
+
+    public KapuaId getJobId() {
+        return jobId;
     }
 }

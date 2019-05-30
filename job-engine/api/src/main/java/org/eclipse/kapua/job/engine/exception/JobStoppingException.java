@@ -13,13 +13,32 @@ package org.eclipse.kapua.job.engine.exception;
 
 import org.eclipse.kapua.model.id.KapuaId;
 
-public class JobStopppingException extends JobEngineException {
+public class JobStoppingException extends JobEngineException {
 
-    public JobStopppingException(Throwable t, KapuaId scopeId, KapuaId jobId) {
+    private final KapuaId scopeId;
+    private final KapuaId jobId;
+    private final KapuaId executionId;
+
+    public JobStoppingException(Throwable t, KapuaId scopeId, KapuaId jobId) {
         this(t, scopeId, jobId, null);
     }
 
-    public JobStopppingException(Throwable t, KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) {
+    public JobStoppingException(Throwable t, KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) {
         super(KapuaJobEngineErrorCodes.JOB_STOPPING, t, scopeId, jobId, jobExecutionId);
+        this.scopeId = scopeId;
+        this.jobId = jobId;
+        this.executionId = jobExecutionId;
+    }
+
+    public KapuaId getScopeId() {
+        return scopeId;
+    }
+
+    public KapuaId getJobId() {
+        return jobId;
+    }
+
+    public KapuaId getExecutionId() {
+        return executionId;
     }
 }

@@ -1,0 +1,258 @@
+openapi: '3.0.2'
+info:
+  title: 'Eclipse Kapua JobEngine API'
+  version: '1.0'
+paths:
+  /device-jobs/{scopeId}:
+    post:
+      tags:
+        - 'Jobs'
+      description: 'Creates a new Job'
+      responses:
+        200:
+          $ref: '#/components/responses/createJobOk'
+      parameters:
+        - $ref: '#/components/parameters/scopeId'
+  /device-jobs/{scopeId}/{jobId}/start:
+    post:
+      tags:
+        - 'Job Engine'
+      summary: 'Starts a Job'
+      operationId: 'jobEngineStartJob'
+      parameters:
+        - $ref: '#/components/parameters/scopeId'
+        - $ref: '#/components/parameters/jobId'
+      responses:
+        204:
+          $ref: '#/components/responses/startJobOk'
+        default:
+          $ref: '#/components/responses/error'
+  /device-jobs/{scopeId}/{jobId}/start-with-options:
+    post:
+      tags:
+        - 'Job Engine'
+      summary: 'Starts a Job specifying Options'
+      operationId: 'jobEngineStartJobWithOptions'
+      parameters:
+        - $ref: '#/components/parameters/scopeId'
+        - $ref: '#/components/parameters/jobId'
+      requestBody:
+        $ref: '#/components/requestBodies/jobStartOptions'
+      responses:
+        204:
+          $ref: '#/components/responses/startJobOk'
+  /device-jobs/{scopeId}/{jobId}/is-running:
+    get:
+      tags:
+        - 'Job Engine'
+      summary: 'Tells if a Job is currently running'
+      operationId: 'jobEngineIsRunning'
+      parameters:
+        - $ref: '#/components/parameters/scopeId'
+        - $ref: '#/components/parameters/jobId'
+      responses:
+        200:
+          $ref: '#/components/responses/isRunningOk'
+  /device-jobs/{scopeId}/{jobId}/stop:
+    post:
+      tags:
+        - 'Job Engine'
+      summary: 'Stops a Job'
+      operationId: 'jobEngineStopJob'
+      parameters:
+        - $ref: '#/components/parameters/scopeId'
+        - $ref: '#/components/parameters/jobId'
+      responses:
+        204:
+          $ref: '#/components/responses/stopJobOk'
+      deprecated: true
+  /device-jobs/{scopeId}/{jobId}/executions/{executionId}/stop:
+    post:
+      tags:
+        - 'Job Engine'
+      summary: 'Stops a single Job execution'
+      operationId: 'jobEngineStopExecution'
+      parameters:
+        - $ref: '#/components/parameters/scopeId'
+        - $ref: '#/components/parameters/jobId'
+        - $ref: '#/components/parameters/executionId'
+      responses:
+        204:
+          $ref: '#/components/responses/stopExecutionOk'
+  /device-jobs/{scopeId}/{jobId}/executions/{executionId}/resume:
+    post:
+      tags:
+        - 'Job Engine'
+      summary: 'Resumes a Job execution'
+      operationId: 'jobEngineResumeExecution'
+      parameters:
+        - $ref: '#/components/parameters/scopeId'
+        - $ref: '#/components/parameters/jobId'
+        - $ref: '#/components/parameters/executionId'
+      responses:
+        204:
+          $ref: '#/components/responses/resumeExecutionOk'
+  /device-jobs/{scopeId}/{jobId}/clean-data:
+    post:
+      tags:
+        - 'Job Engine'
+      summary: 'Cleans any pending Job data'
+      operationId: 'jobEngineCleanJobData'
+      parameters:
+        - $ref: '#/components/parameters/scopeId'
+        - $ref: '#/components/parameters/jobId'
+      responses:
+        204:
+          $ref: '#/components/responses/cleanJobDataOk'
+components:
+  schemas:
+    kapuaId:
+      type: string
+      pattern: '[A-Za-z0-9-_]+'
+    error:
+      type: object
+      description: 'Details of an error occurred during an API call'
+      properties:
+        message:
+          type: string
+          description: 'A detailed message about the error that occurred'
+        errorCode:
+          type: string
+          description: >
+            An error code to better detail what went wrong
+              * `CLEAN_JOB_DATA`: Job Data could not be cleaned
+                * `arguments[0]`: The ID of the scope owning the Job
+                * `arguments[1]`: The ID of the Job
+              * `ENTITY_NOT_FOUND`: An entity could not be found
+                * `arguments[0]`: The type of the entity who could not be found
+                * `arguments[1]`: The name or the ID of the entity who could not be found
+              * `EXPIRED_SESSION_CREDENTIALS`: The access token is expired
+              * `JOB_CHECK_RUNNING`: The Job is already running
+                * `arguments[0]`: The ID of the scope owning the Job
+                * `arguments[1]`: The ID of the Job
+              * `JOB_NOT_RUNNING`: The Job is already running
+                * `arguments[0]`: The ID of the scope owning the Job
+                * `arguments[1]`: The ID of the Job
+              * `JOB_RESUMING`: The Job could not be resumed
+                * `arguments[0]`: The ID of the scope owning the Job
+                * `arguments[1]`: The ID of the Job
+              * `JOB_STARTING`: The job could not be started
+                * `arguments[0]`: The ID of the scope owning the Job
+                * `arguments[1]`: The ID of the Job
+              * `JOB_STOPPING`: The job could not be stopped
+                * `arguments[0]`: The ID of the scope owning the Job
+                * `arguments[1]`: The ID of the Job
+                * `arguments[2]`: The ID of the Execution
+              * `JOB_TARGET_INVALID`: One or more targets are invalid
+                * `arguments[0]`: The ID of the scope owning the Job
+                * `arguments[1]`: The ID of the Job
+                * `arguments[2]`: An array containing all the IDs of the invalid targets
+              * `ILLEGAL_ARGUMENT`: One or more illegal arguments have been provided
+                * `arguments[0]`: The name of the illegal argument
+                * `arguments[1]`: The value of the illegal argument
+              * `MISSING_TARGETS`: No targets have been added to the job
+                * `arguments[0]`: The ID of the scope owning the Job
+                * `arguments[1]`: The ID of the Job
+              * `MISSING_STEPS`: No steps have been added to the job
+                * `arguments[0]`: The ID of the scope owning the Job
+                * `arguments[1]`: The ID of the Job
+              * `SUBJECT_UNAUTHORIZED`: The user is not authorized to perform the action
+                * `arguments[0]`: An object representing the required permission
+              * `UNAUTHENTICATED`: No valid Access Token has been provided
+          enum:
+            - CLEAN_JOB_DATA
+            - ENTITY_NOT_FOUND
+            - EPXIRED_SESSION_CREDENTIALS
+            - JOB_CHECK_RUNNING
+            - JOB_NOT_RUNNING
+            - JOB_RESUMING
+            - JOB_STARTING
+            - JOB_STOPPING
+            - JOB_TARGET_INVALID
+            - ILLEGAL_ARGUMENT
+            - MISSING_TARGETS
+            - MISSING_STEPS
+            - SUBJECT_UNAUTHORIZED
+            - UNAUTHENTICATED
+        arguments:
+          type: array
+          description: >
+            An optional array containing exception arguments. The content may vary according to the exception,
+            and the array itself may not be defined at all.
+          items: {}
+    job:
+      type: object
+    jobStartOptions:
+      type: object
+      properties:
+        targetIdSublist:
+          type: array
+          items:
+            $ref: '#/components/schemas/kapuaId'
+        fromStepIndex:
+          type: number
+        enqueue:
+          type: boolean
+    isRunningResponse:
+      type: object
+      properties:
+        isRunning:
+          type: boolean
+  requestBodies:
+    jobStartOptions:
+      description: 'An object containing various options to start a Job'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/jobStartOptions'
+  responses:
+    error:
+      description: 'An error has occurred'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+    createJobOk:
+      description: 'The Job was successfully created'
+    startJobOk:
+      description: "The Job started correctly. Please note that the Job may still fail due to a problem encountered while running, but you won't get an error here."
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/job'
+    isRunningOk:
+      description: 'An object with a single property telling whether the Job is running or not'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/isRunningResponse'
+    stopJobOk:
+      description: "The Job stopped correctly. Please note that the actual Job stop may still fail due to a problem encountered while running, but you won't get an error here."
+    stopExecutionOk:
+      description: "The Job execution stopped correctly. Please note that the actual Job execution stop may still fail due to a problem encountered while running, but you won't get an error here."
+    resumeExecutionOk:
+      description: "The Job execution resumed correctly. Please note that the actual Job execution may still fail due to a problem encountered while running, but you won't get an error here."
+    cleanJobDataOk:
+      description: "The Job data has been cleaned successfully."
+  parameters:
+    scopeId:
+      name: 'scopeId'
+      in: 'path'
+      required: true
+      description: 'The ID of the Tenant who holds the Job'
+      schema:
+        $ref: '#/components/schemas/kapuaId'
+    jobId:
+      name: 'jobId'
+      in: 'path'
+      required: true
+      description: 'The ID of the Job to start'
+      schema:
+        $ref: '#/components/schemas/kapuaId'
+    executionId:
+      name: 'executionId'
+      in: 'path'
+      required: true
+      description: 'The ID of the Job to start'
+      schema:
+        $ref: '#/components/schemas/kapuaId'

@@ -17,7 +17,26 @@ import java.util.Set;
 
 public class JobInvalidTargetException extends JobEngineException {
 
+    private final KapuaId scopeId;
+    private final KapuaId jobId;
+    private final Set<KapuaId> targetSublist;
+
     public JobInvalidTargetException(KapuaId scopeId, KapuaId jobId, Set<KapuaId> targetSublist) {
         super(KapuaJobEngineErrorCodes.JOB_TARGET_INVALID, scopeId, jobId, targetSublist);
+        this.scopeId = scopeId;
+        this.jobId = jobId;
+        this.targetSublist = targetSublist;
+    }
+
+    public KapuaId getScopeId() {
+        return scopeId;
+    }
+
+    public KapuaId getJobId() {
+        return jobId;
+    }
+
+    public Set<KapuaId> getTargetSublist() {
+        return targetSublist;
     }
 }

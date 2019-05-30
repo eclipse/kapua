@@ -21,6 +21,7 @@ import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
+import org.eclipse.kapua.job.engine.proxy.KapuaErrorJson;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
 import org.eclipse.kapua.model.config.metatype.KapuaTmetadata;
@@ -49,8 +50,11 @@ import org.eclipse.kapua.service.device.management.packages.model.install.Device
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
+import org.eclipse.persistence.jaxb.MarshallerProperties;
 
 import javax.xml.bind.JAXBContext;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ConsoleJAXBContextProvider implements JAXBContextProvider {
 
@@ -60,6 +64,8 @@ public class ConsoleJAXBContextProvider implements JAXBContextProvider {
     public JAXBContext getJAXBContext() throws KapuaException {
         try {
             if (context == null) {
+                Map<String, Object> properties = new HashMap<String, Object>();
+                properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
                 context = JAXBContextFactory.createContext(new Class<?>[]{
                         KuraDeviceComponentConfiguration.class,
                         KuraDeviceConfiguration.class,
@@ -110,7 +116,10 @@ public class ConsoleJAXBContextProvider implements JAXBContextProvider {
                         EventStoreRecordQuery.class,
                         EventStoreXmlRegistry.class,
 
-                }, null);
+                        KapuaErrorJson.class
+
+                }, properties);
+
             }
             return context;
         } catch (Exception e) {

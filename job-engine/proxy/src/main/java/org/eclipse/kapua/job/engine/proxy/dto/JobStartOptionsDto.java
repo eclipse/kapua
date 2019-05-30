@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.proxy.dto;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.kapua.job.engine.JobStartOptions;
@@ -21,7 +22,7 @@ import org.eclipse.kapua.model.id.KapuaId;
  */
 public class JobStartOptionsDto implements JobStartOptions {
 
-    private Set<KapuaId> targetIdSublist;
+    private Set<KapuaId> targetIdSublist = new HashSet<>();
     private Integer fromStepIndex;
     private boolean resetStepIndex;
     private boolean enqueue;
@@ -38,12 +39,12 @@ public class JobStartOptionsDto implements JobStartOptions {
 
     @Override
     public void removeTargetIdToSublist(KapuaId targetId) {
-        throw new UnsupportedOperationException();
+        targetIdSublist.remove(targetId);
     }
 
     @Override
     public void addTargetIdToSublist(KapuaId targetId) {
-        throw new UnsupportedOperationException();
+        targetIdSublist.add(targetId);
     }
 
     @Override

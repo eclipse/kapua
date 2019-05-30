@@ -15,7 +15,20 @@ import org.eclipse.kapua.model.id.KapuaId;
 
 public class JobCheckRunningException extends CheckRunningJobEngineException {
 
+    private final KapuaId scopeId;
+    private final KapuaId jobId;
+
     public JobCheckRunningException(Throwable t, KapuaId scopeId, KapuaId jobId) {
         super(KapuaJobEngineErrorCodes.JOB_CHECK_RUNNING, t, scopeId, jobId);
+        this.scopeId = scopeId;
+        this.jobId = jobId;
+    }
+
+    public KapuaId getScopeId() {
+        return scopeId;
+    }
+
+    public KapuaId getJobId() {
+        return jobId;
     }
 }

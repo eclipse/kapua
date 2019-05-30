@@ -9,26 +9,17 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.job.engine.exception;
+package org.eclipse.kapua.service.job.engine.app;
 
+import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.model.id.KapuaId;
 
-public class JobMissingStepException extends JobEngineException {
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
-    private final KapuaId scopeId;
-    private final KapuaId jobId;
+public class JobEngineModule extends SimpleModule {
 
-    public JobMissingStepException(KapuaId scopeId, KapuaId jobId) {
-        super(KapuaJobEngineErrorCodes.JOB_STEP_MISSING, scopeId, jobId);
-        this.scopeId = scopeId;
-        this.jobId = jobId;
-    }
-
-    public KapuaId getScopeId() {
-        return scopeId;
-    }
-
-    public KapuaId getJobId() {
-        return jobId;
+    public JobEngineModule() {
+        setMixInAnnotation(JobStartOptions.class, JobStartOptionMixin.class);
+        setMixInAnnotation(KapuaId.class, KapuaIdMixin.class);
     }
 }

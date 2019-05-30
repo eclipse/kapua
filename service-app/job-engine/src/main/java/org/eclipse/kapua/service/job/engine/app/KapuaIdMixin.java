@@ -11,13 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.engine.app;
 
-import org.eclipse.kapua.job.engine.JobStartOptions;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import com.fasterxml.jackson.databind.module.SimpleModule;
+@JsonSerialize(using = KapuaIdSerializer.class)
+@JsonDeserialize(using = KapuaIdDeserializer.class)
+public interface KapuaIdMixin {
 
-public class JobEngineMicroserviceModule extends SimpleModule {
-
-    public JobEngineMicroserviceModule() {
-        setMixInAnnotation(JobStartOptions.class, JobStartOptionMixin.class);
-    }
 }

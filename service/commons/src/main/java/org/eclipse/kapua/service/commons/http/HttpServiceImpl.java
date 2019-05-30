@@ -125,8 +125,8 @@ public class HttpServiceImpl implements HttpService {
             subRouter.route().handler(BodyHandler.create());
             subRouter.route().handler(CorsHandler.create(""));
             // TODO Put Service Event
-            subRouter.route().failureHandler(HttpServiceHandlers::failureHandler);
             endpoint.registerRoutes(subRouter);
+            subRouter.route().failureHandler(HttpServiceHandlers::failureHandler);
             router.mountSubRouter(endpoint.getBasePath(), subRouter);
         }
     }

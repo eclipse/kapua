@@ -25,6 +25,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.KapuaFileUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 
+import com.fasterxml.jackson.databind.Module;
 import io.vertx.core.json.Json;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.config.Ini;
@@ -101,7 +102,7 @@ public class JobEngineApplication implements ApplicationRunner {
                     try {
                         initShiro();
                         XmlUtil.setContextProvider(new JobEngineJaxbContextProvider());
-                        registerJacksonModule(new JobEngineMicroserviceModule());
+                        registerJacksonModule(new JobEngineModule());
                     } catch (Exception ex) {
                         return Future.failedFuture(ex);
                     }
@@ -142,9 +143,9 @@ public class JobEngineApplication implements ApplicationRunner {
         }
     }
 
-    private void registerJacksonModule(JobEngineMicroserviceModule jobEngineMicroserviceModule) {
-        Json.mapper.registerModule(jobEngineMicroserviceModule);
-        Json.prettyMapper.registerModule(jobEngineMicroserviceModule);
+    private void registerJacksonModule(Module jacksonModule) {
+        Json.mapper.registerModule(jacksonModule);
+        Json.prettyMapper.registerModule(jacksonModule);
     }
 
     private void initShiro() throws KapuaException {

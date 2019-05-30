@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.commons.http;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
@@ -38,9 +39,11 @@ public class HttpServiceHandlers {
     public static <T> Handler<AsyncResult<T>> httpResponseHandler(RoutingContext ctx) {
         return result -> {
             if (result.succeeded()) {
-                ctx.response().setStatusCode(200);
                 if (result.result() != null) {
+                    ctx.response().setStatusCode(200);
                     ctx.response().setChunked(true).write(Json.encode(result.result()));
+                } else {
+                    ctx.response().setStatusCode(204);
                 }
                 ctx.response().end();
             } else {
@@ -59,7 +62,7 @@ public class HttpServiceHandlers {
         try {
             AUTHENTICATION_SERVICE.authenticate(accessTokenCredentials);
         } catch (KapuaException ex) {
-            ctx.fail(ex);
+            ctx.fail(403, ex);
         }
         ctx.put("kapuaSession", KapuaSecurityUtils.getSession());
         ctx.put("shiroSubject", SecurityUtils.getSubject());
@@ -73,7 +76,19 @@ public class HttpServiceHandlers {
     public static void failureHandler(RoutingContext ctx) {
         if (!ctx.response().ended()) {
             JsonObject error = new JsonObject();
-            error.put("error", ctx.failure().getMessage());
+            Throwable failure = ctx.failure();
+
+            String errorCode;
+            if (failure instanceof KapuaException) {
+                errorCode = ((KapuaException)failure).getCode().name();
+            } else if (failure instanceof KapuaRuntimeException) {
+                errorCode = ((KapuaRuntimeException)failure).getCode().name();
+            } else {
+                errorCode = "UNKNOWN_ERROR";
+            }
+
+            error.put("message", ctx.failure().getMessage());
+            error.put("errorCode", errorCode);
             ctx.response().setStatusCode(ctx.statusCode() == -1 ? 500 : ctx.statusCode()).end(error.encode());
         }
     }

@@ -15,7 +15,20 @@ import org.eclipse.kapua.model.id.KapuaId;
 
 public class JobStartingException extends JobEngineException {
 
+    private final KapuaId scopeId;
+    private final KapuaId jobId;
+
     public JobStartingException(Throwable t, KapuaId scopeId, KapuaId jobId) {
         super(KapuaJobEngineErrorCodes.JOB_STARTING, t, scopeId, jobId);
+        this.scopeId = scopeId;
+        this.jobId = jobId;
+    }
+
+    public KapuaId getScopeId() {
+        return scopeId;
+    }
+
+    public KapuaId getJobId() {
+        return jobId;
     }
 }

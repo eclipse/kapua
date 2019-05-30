@@ -66,7 +66,6 @@ public class GwtJobEngineServiceImpl extends KapuaRemoteServiceServlet implement
             }
 
             jobStartOptions.setEnqueue(true);
-
             JOB_ENGINE_SERVICE.startJob(scopeId, jobId, jobStartOptions);
         } catch (KapuaException kaex) {
             KapuaExceptionHandler.handle(kaex);
