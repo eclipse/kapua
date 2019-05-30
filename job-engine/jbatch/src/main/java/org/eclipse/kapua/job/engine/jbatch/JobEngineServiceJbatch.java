@@ -18,16 +18,15 @@ import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.jbatch.driver.JbatchDriver;
-import org.eclipse.kapua.job.engine.jbatch.exception.CleanJobDataException;
-import org.eclipse.kapua.job.engine.jbatch.exception.JobCheckRunningException;
-import org.eclipse.kapua.job.engine.jbatch.exception.JobInvalidTargetException;
-import org.eclipse.kapua.job.engine.jbatch.exception.JobMissingStepException;
-import org.eclipse.kapua.job.engine.jbatch.exception.JobMissingTargetException;
-import org.eclipse.kapua.job.engine.jbatch.exception.JobNotRunningException;
-import org.eclipse.kapua.job.engine.jbatch.exception.JobResumingException;
-import org.eclipse.kapua.job.engine.jbatch.exception.JobRunningException;
-import org.eclipse.kapua.job.engine.jbatch.exception.JobStartingException;
-import org.eclipse.kapua.job.engine.jbatch.exception.JobStopppingException;
+import org.eclipse.kapua.job.engine.exception.CleanJobDataException;
+import org.eclipse.kapua.job.engine.exception.JobCheckRunningException;
+import org.eclipse.kapua.job.engine.exception.JobInvalidTargetException;
+import org.eclipse.kapua.job.engine.exception.JobMissingStepException;
+import org.eclipse.kapua.job.engine.exception.JobMissingTargetException;
+import org.eclipse.kapua.job.engine.exception.JobNotRunningException;
+import org.eclipse.kapua.job.engine.exception.JobRunningException;
+import org.eclipse.kapua.job.engine.exception.JobStartingException;
+import org.eclipse.kapua.job.engine.exception.JobStopppingException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
@@ -270,7 +269,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         try {
             JbatchDriver.resumeJob(scopeId, jobId, jobExecutionId);
         } catch (Exception e) {
-            throw new JobResumingException(e, scopeId, jobId, jobExecutionId);
+            throw new JobStopppingException(e, scopeId, jobId, jobExecutionId);
         }
     }
 

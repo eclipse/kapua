@@ -9,15 +9,22 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.job.engine.jbatch.exception;
+package org.eclipse.kapua.job.engine.exception;
 
-import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.KapuaException;
 
-import java.util.Set;
+public abstract class JobEngineException extends KapuaException {
 
-public class JobInvalidTargetException extends JobEngineException {
-
-    public JobInvalidTargetException(KapuaId scopeId, KapuaId jobId, Set<KapuaId> targetSublist) {
-        super(KapuaJobEngineErrorCodes.JOB_TARGET_INVALID, scopeId, jobId, targetSublist);
+    protected JobEngineException(KapuaJobEngineErrorCodes code) {
+        super(code);
     }
+
+    protected JobEngineException(KapuaJobEngineErrorCodes code, Object... arguments) {
+        super(code, arguments);
+    }
+
+    protected JobEngineException(KapuaJobEngineErrorCodes code, Throwable cause, Object... arguments) {
+        super(code, cause, arguments);
+    }
+
 }
