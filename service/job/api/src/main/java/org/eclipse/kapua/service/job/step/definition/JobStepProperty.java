@@ -25,4 +25,8 @@ public interface JobStepProperty {
 
     void setPropertyValue(String propertyValue);
 
+    String getExampleValue();
+
+    void setExampleValue(String exampleValue);
+
 }

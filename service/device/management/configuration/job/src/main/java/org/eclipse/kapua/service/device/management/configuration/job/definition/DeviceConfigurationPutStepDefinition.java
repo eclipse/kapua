@@ -50,12 +50,14 @@ public class DeviceConfigurationPutStepDefinition extends AbstractTargetJobStepD
         JobStepProperty propertyConfiguration = jobStepDefinitionFactory.newStepProperty(
                 DeviceConfigurationPutPropertyKeys.CONFIGURATION,
                 DeviceConfiguration.class.getName(),
+                null,
                 null);
 
         JobStepProperty propertyTimeout = jobStepDefinitionFactory.newStepProperty(
                 DeviceConfigurationPutPropertyKeys.TIMEOUT,
                 Long.class.getName(),
-                "30000");
+                "30000",
+                null);
 
         return Arrays.asList(propertyConfiguration, propertyTimeout);
     }

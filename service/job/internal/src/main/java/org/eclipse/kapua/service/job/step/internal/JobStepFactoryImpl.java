@@ -52,7 +52,7 @@ public class JobStepFactoryImpl implements JobStepFactory {
 
     @Override
     public JobStepProperty newStepProperty(String name, String propertyType, String propertyValue) {
-        return new JobStepPropertyImpl(name, propertyType, propertyValue);
+        return new JobStepPropertyImpl(name, propertyType, propertyValue, null);
     }
 
     @Override

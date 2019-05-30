@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step.definition.internal;
 
+import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-
-import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
 @Embeddable
 public class JobStepPropertyImpl implements JobStepProperty {
@@ -32,6 +32,10 @@ public class JobStepPropertyImpl implements JobStepProperty {
     @Column(name = "property_value", nullable = false, updatable = false)
     private String propertyValue;
 
+    @Basic
+    @Column(name = "example_value", nullable = false, updatable = false)
+    private String propertyExampleValue;
+
     public JobStepPropertyImpl() {
     }
 
@@ -39,36 +43,54 @@ public class JobStepPropertyImpl implements JobStepProperty {
         setName(jobStepProperty.getName());
         setPropertyType(jobStepProperty.getPropertyType());
         setPropertyValue(jobStepProperty.getPropertyValue());
+        setExampleValue(jobStepProperty.getExampleValue());
     }
 
-    public JobStepPropertyImpl(String name, String propertyType, String propertyValue) {
+    public JobStepPropertyImpl(String name, String propertyType, String propertyValue, String propertyExampleValue) {
         setName(name);
         setPropertyType(propertyType);
         setPropertyValue(propertyValue);
+        setExampleValue(propertyExampleValue);
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    @Override
     public String getPropertyType() {
         return propertyType;
     }
 
+    @Override
     public void setPropertyType(String propertyType) {
         this.propertyType = propertyType;
     }
 
+    @Override
     public String getPropertyValue() {
         return propertyValue;
     }
 
+    @Override
     public void setPropertyValue(String propertyValue) {
         this.propertyValue = propertyValue;
+    }
+
+    @Override
+    public String getExampleValue() {
+        return propertyExampleValue;
+    }
+
+    @Override
+    public void setExampleValue(String exampleValue) {
+        this.propertyExampleValue = exampleValue;
     }
 
     public static JobStepPropertyImpl parse(JobStepProperty jobStepProperty) {

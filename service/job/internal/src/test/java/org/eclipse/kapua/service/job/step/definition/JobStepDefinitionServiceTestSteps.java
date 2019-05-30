@@ -173,9 +173,9 @@ public class JobStepDefinitionServiceTestSteps extends AbstractKapuaSteps {
         stepDefinitionData.stepDefinitionCreator.setName(name);
 
         List<JobStepProperty> tmpPropLst = new ArrayList<>();
-        tmpPropLst.add(stepDefinitionFactory.newStepProperty("Property1", "Type1", null));
-        tmpPropLst.add(stepDefinitionFactory.newStepProperty("Property2", "Type2", null));
-        tmpPropLst.add(stepDefinitionFactory.newStepProperty("Property3", "Type3", null));
+        tmpPropLst.add(stepDefinitionFactory.newStepProperty("Property1", "Type1", null, null));
+        tmpPropLst.add(stepDefinitionFactory.newStepProperty("Property2", "Type2", null, null));
+        tmpPropLst.add(stepDefinitionFactory.newStepProperty("Property3", "Type3", null, null));
 
         stepDefinitionData.stepDefinitionCreator.setStepProperties(tmpPropLst);
     }
@@ -188,7 +188,7 @@ public class JobStepDefinitionServiceTestSteps extends AbstractKapuaSteps {
 
         List<JobStepProperty> tmpPropLst = new ArrayList<>();
         for(CucStepProperty prop : list) {
-            tmpPropLst.add(stepDefinitionFactory.newStepProperty(prop.getName(), prop.getType(), null));
+            tmpPropLst.add(stepDefinitionFactory.newStepProperty(prop.getName(), prop.getType(), null, null));
         }
 
         stepDefinitionData.stepDefinitionCreator.setStepProperties(tmpPropLst);
@@ -391,7 +391,7 @@ public class JobStepDefinitionServiceTestSteps extends AbstractKapuaSteps {
         assertNotNull(stepDefinitionFactory.newEntity(ROOT_ID));
         assertNotNull(stepDefinitionFactory.newListResult());
         assertNotNull(stepDefinitionFactory.newQuery(ROOT_ID));
-        assertNotNull(stepDefinitionFactory.newStepProperty("TestName", "TestType", "TestValue"));
+        assertNotNull(stepDefinitionFactory.newStepProperty("TestName", "TestType", "TestValue", "TestExampleValue"));
     }
 
     // ************************************************************************************

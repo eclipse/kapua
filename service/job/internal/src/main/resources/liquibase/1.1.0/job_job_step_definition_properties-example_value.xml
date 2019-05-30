@@ -9,18 +9,20 @@
 
     Contributors:
         Eurotech - initial API and implementation
- -->
+-->
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                             http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+
         logicalFilePath="KapuaDB/changelog-job-1.1.0.xml">
 
-    <include relativeToChangelogFile="true" file="./job_execution-log.xml"/>
-    <include relativeToChangelogFile="true" file="./job_execution_target.xml"/>
-    <include relativeToChangelogFile="true" file="./job_target-status_message.xml"/>
-    <include relativeToChangelogFile="true" file="./job_job_step_properties-example_value.xml"/>
-    <include relativeToChangelogFile="true" file="./job_job_step_definition_properties-example_value.xml"/>
+    <include relativeToChangelogFile="true" file="../common-properties.xml"/>
 
+    <changeSet id="changelog-job_step_definition_properties-1.1.0_addExampleValue" author="eurotech">
+        <addColumn tableName="job_job_step_definition_properties">
+            <column name="example_value" type="text"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -50,12 +50,14 @@ public class DeviceBundleStopStepDefinition extends AbstractTargetJobStepDefinit
         JobStepProperty propertyBundleId = jobStepDefinitionFactory.newStepProperty(
                 DeviceBundlePropertyKeys.BUNDLE_ID,
                 String.class.getName(),
+                null,
                 null);
 
         JobStepProperty propertyTimeout = jobStepDefinitionFactory.newStepProperty(
                 DeviceBundlePropertyKeys.TIMEOUT,
                 Long.class.getName(),
-                "30000");
+                "30000",
+                null);
 
         return Arrays.asList(propertyBundleId, propertyTimeout);
     }

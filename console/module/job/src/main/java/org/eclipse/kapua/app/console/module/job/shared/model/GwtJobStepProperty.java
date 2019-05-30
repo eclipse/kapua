@@ -39,6 +39,14 @@ public class GwtJobStepProperty extends KapuaBaseModel {
         set("propertyValue", propertyValue, false);
     }
 
+    public String getExampleValue() {
+        return get("exampleValue");
+    }
+
+    public void setExampleValue(String exampleValue) {
+        set("exampleValue", exampleValue);
+    }
+
     public boolean isEnum() {
         return get("isEnum");
     }

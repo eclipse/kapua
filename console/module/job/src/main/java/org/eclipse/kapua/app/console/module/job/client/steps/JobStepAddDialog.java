@@ -14,10 +14,13 @@ package org.eclipse.kapua.app.console.module.job.client.steps;
 import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
@@ -32,6 +35,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
@@ -74,6 +80,9 @@ public class JobStepAddDialog extends EntityAddEditDialog {
     protected final FieldSet jobStepPropertiesFieldSet;
     protected final Label jobStepDefinitionDescription;
     protected final FormPanel jobStepPropertiesPanel;
+    protected final HorizontalPanel propertiesButtonPanel;
+
+    protected Button exampleButton;
 
     protected static final String PROPERTY_NAME = "propertyName";
     protected static final String PROPERTY_TYPE = "propertyType";
@@ -95,8 +104,13 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         jobStepPropertiesFieldSet = new FieldSet();
         jobStepDefinitionDescription = new Label();
         jobStepPropertiesPanel = new FormPanel(FORM_LABEL_WIDTH);
+        propertiesButtonPanel = new HorizontalPanel();
 
         DialogUtils.resizeDialog(this, 600, 400);
+    }
+
+    protected String getExampleButtonText() {
+        return MSGS.exampleButton();
     }
 
     @Override
@@ -160,9 +174,9 @@ public class JobStepAddDialog extends EntityAddEditDialog {
     }
 
     public void validateJobStep() {
-        if (jobStepName.getValue() == null || jobStepDefinitionCombo.getValue() == null) {
-            ConsoleInfo.display("Error", CONSOLE_MSGS.allFieldsRequired());
-        } 
+        if (jobStepName.getValue() == null || jobStepDefinitionCombo.getValue() == null || !jobStepPropertiesPanel.isValid()) {
+            ConsoleInfo.display(CONSOLE_MSGS.error(), CONSOLE_MSGS.allFieldsRequired());
+        }
     }
 
     @Override
@@ -223,16 +237,24 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         return JOB_MSGS.dialogAddStepInfo();
     }
 
-    private void refreshJobStepDefinition(GwtJobStepDefinition gwtJobStepDefinition) {
+    protected void refreshJobStepDefinition(GwtJobStepDefinition gwtJobStepDefinition) {
         jobStepPropertiesFieldSet.setVisible(true);
         jobStepDefinitionDescription.setText(gwtJobStepDefinition.getDescription() + ".");
         jobStepPropertiesPanel.removeAll();
+        propertiesButtonPanel.removeAll();
 
         for (GwtJobStepProperty property : gwtJobStepDefinition.getStepProperties()) {
             String propertyType = property.getPropertyType();
+            String fieldLabel = camelCaseToNormalCase(property.getPropertyName());
+            if (property.getPropertyValue() == null) {
+                fieldLabel = "* " + fieldLabel;
+            }
             if (propertyType.equals(String.class.getName()) || property.isEnum() || KAPUA_ID_CLASS_NAME.equals(propertyType)) {
                 KapuaTextField<String> textField = new KapuaTextField<String>();
-                textField.setFieldLabel(camelCaseToNormalCase(property.getPropertyName()));
+                if (property.getPropertyValue() == null) {
+                    textField.setAllowBlank(false);
+                }
+                textField.setFieldLabel(fieldLabel);
                 textField.setMaxLength(255);
                 textField.setEmptyText(KapuaSafeHtmlUtils.htmlUnescape(property.getPropertyValue()));
                 textField.setData(PROPERTY_TYPE, property.getPropertyType());
@@ -244,7 +266,10 @@ public class JobStepAddDialog extends EntityAddEditDialog {
                             propertyType.equals(Float.class.getName()) ||
                             propertyType.equals(Double.class.getName())) {
                 NumberField numberField = new NumberField();
-                numberField.setFieldLabel(camelCaseToNormalCase(property.getPropertyName()));
+                if (property.getPropertyValue() == null) {
+                    numberField.setAllowBlank(false);
+                }
+                numberField.setFieldLabel(fieldLabel);
                 numberField.setEmptyText(KapuaSafeHtmlUtils.htmlUnescape(property.getPropertyValue()));
                 numberField.setData(PROPERTY_TYPE, property.getPropertyType());
                 numberField.setData(PROPERTY_NAME, property.getPropertyName());
@@ -261,33 +286,51 @@ public class JobStepAddDialog extends EntityAddEditDialog {
                 jobStepPropertiesPanel.add(numberField);
             } else if (propertyType.equals(Boolean.class.getName())) {
                 CheckBox checkBox = new CheckBox();
-                checkBox.setFieldLabel(camelCaseToNormalCase(property.getPropertyName()));
+                checkBox.setFieldLabel(fieldLabel);
                 checkBox.setValue(Boolean.valueOf(property.getPropertyValue()));
                 checkBox.setData(PROPERTY_TYPE, property.getPropertyType());
                 checkBox.setData(PROPERTY_NAME, property.getPropertyName());
                 jobStepPropertiesPanel.add(checkBox);
             } else {
-                TextArea textArea = new TextArea();
-                textArea.setFieldLabel(camelCaseToNormalCase(property.getPropertyName()));
-                textArea.setEmptyText(KapuaSafeHtmlUtils.htmlUnescape(property.getPropertyValue()));
+                final TextArea textArea = new TextArea();
+                if (property.getPropertyValue() == null) {
+                    textArea.setAllowBlank(false);
+                }
+                textArea.setFieldLabel(fieldLabel);
                 textArea.setData(PROPERTY_TYPE, property.getPropertyType());
                 textArea.setData(PROPERTY_NAME, property.getPropertyName());
                 jobStepPropertiesPanel.add(textArea);
+                if (property.getExampleValue() != null) {
+                    final String exampleValue = KapuaSafeHtmlUtils.htmlUnescape(property.getExampleValue());
+                    exampleButton = new Button(getExampleButtonText(), new KapuaIcon(IconSet.EDIT), new SelectionListener<ButtonEvent>() {
+
+                        @Override
+                        public void componentSelected(ButtonEvent ce) {
+                            textArea.setValue(exampleValue);
+                        }
+
+                    });
+                    exampleButton.setStyleAttribute("padding-left", (FORM_LABEL_WIDTH + 5) + "px");
+                    propertiesButtonPanel.add(exampleButton);
+                    propertiesButtonPanel.setStyleAttribute("margin-bottom", "4px");
+                }
+                jobStepPropertiesPanel.add(propertiesButtonPanel);
             }
         }
-
         jobStepPropertiesPanel.layout(true);
     }
 
     protected List<GwtJobStepProperty> readStepProperties() {
         List<GwtJobStepProperty> jobStepProperties = new ArrayList<GwtJobStepProperty>();
         for (Component component : jobStepPropertiesPanel.getItems()) {
-            Field field = (Field) component;
-            GwtJobStepProperty property = new GwtJobStepProperty();
-            property.setPropertyValue(!field.getRawValue().isEmpty() ? field.getRawValue() : null);
-            property.setPropertyType(field.getData(PROPERTY_TYPE).toString());
-            property.setPropertyName(field.getData(PROPERTY_NAME).toString());
-            jobStepProperties.add(property);
+            if (component instanceof Field) {
+                Field field = (Field) component;
+                GwtJobStepProperty property = new GwtJobStepProperty();
+                property.setPropertyValue(!field.getRawValue().isEmpty() ? field.getRawValue() : null);
+                property.setPropertyType(field.getData(PROPERTY_TYPE).toString());
+                property.setPropertyName(field.getData(PROPERTY_NAME).toString());
+                jobStepProperties.add(property);
+            }
         }
         return jobStepProperties;
     }

@@ -27,6 +27,18 @@ public interface JobStepDefinitionFactory extends KapuaEntityFactory<JobStepDefi
      * @param name  The name to set into the {@link JobStepProperty}.
      * @param type  The type to set into the {@link JobStepProperty}.
      * @param value The value to set into the {@link JobStepProperty}.
+     * @param exampleValue The example value to set into the {@link JobStepProperty}
+     * @return The newly instantiated {@link JobStepProperty}.
+     * @since 1.1.0
+     */
+    JobStepProperty newStepProperty(String name, String type, String value, String exampleValue);
+
+    /**
+     * Instantiates a new {@link JobStepProperty}.
+     *
+     * @param name  The name to set into the {@link JobStepProperty}.
+     * @param type  The type to set into the {@link JobStepProperty}.
+     * @param value The value to set into the {@link JobStepProperty}.
      * @return The newly instantiated {@link JobStepProperty}.
      * @since 1.0.0
      */

@@ -50,12 +50,14 @@ public class DevicePackagesDownloadStepDefinition extends AbstractTargetJobStepD
         JobStepProperty propertyDownloadRequest = jobStepDefinitionFactory.newStepProperty(
                 DevicePackageDownloadPropertyKeys.PACKAGE_DOWNLOAD_REQUEST,
                 DevicePackageDownloadRequest.class.getName(),
+                null,
                 null);
 
         JobStepProperty propertyTimeout = jobStepDefinitionFactory.newStepProperty(
                 DevicePackageDownloadPropertyKeys.TIMEOUT,
                 Long.class.getName(),
-                "30000");
+                "30000",
+                null);
 
         return Arrays.asList(propertyDownloadRequest, propertyTimeout);
     }
