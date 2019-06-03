@@ -65,6 +65,13 @@ public enum KapuaJobEngineErrorCodes implements KapuaErrorCode {
     JOB_STARTING,
 
     /**
+     * The {@link org.eclipse.kapua.service.job.Job} resume has thrown an error.
+     *
+     * @since 1.0.0
+     */
+    JOB_RESUMING,
+
+    /**
      * The {@link org.eclipse.kapua.service.job.Job} is currently running
      *
      * @since 1.0.0
@@ -77,13 +84,6 @@ public enum KapuaJobEngineErrorCodes implements KapuaErrorCode {
      * @since 1.0.0
      */
     JOB_CHECK_RUNNING,
-
-    /**
-     * The {@link org.eclipse.kapua.service.job.Job} resume has thrown an error.
-     *
-     * @since 1.0.0
-     */
-    JOB_RESUMING,
 
     /**
      * The {@link org.eclipse.kapua.service.job.Job} stop has thrown an error.

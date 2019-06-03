@@ -272,7 +272,6 @@ public class JobEngineServiceJbatch implements JobEngineService {
         } catch (Exception e) {
             throw new JobResumingException(e, scopeId, jobId, jobExecutionId);
         }
-
     }
 
     @Override
