@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.model;
 
-import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
 
 /**
@@ -36,20 +35,4 @@ public interface DevicePackageOptions {
      * @since 1.1.0
      */
     void setTimeout(Long timeout);
-
-    /**
-     * Gets the {@link DeviceManagementOperation} forced {@link DeviceManagementOperation#getOperationId()}.
-     *
-     * @return The {@link DeviceManagementOperation} forced {@link DeviceManagementOperation#getOperationId()}.
-     * @since 1.1.0
-     */
-    KapuaId getForcedOperationId();
-
-    /**
-     * The {@link DeviceManagementOperation} forced {@link DeviceManagementOperation#getOperationId()}.
-     *
-     * @param forcedOperationId The {@link DeviceManagementOperation} forced {@link DeviceManagementOperation#getOperationId()}.
-     * @since 1.1.0
-     */
-    void setForcedOperationId(KapuaId forcedOperationId);
 }

@@ -12,16 +12,10 @@
 package org.eclipse.kapua.service.device.management.packages.job;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.id.IdGenerator;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.job.engine.commons.operation.AbstractTargetProcessor;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationCreator;
-import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationFactory;
-import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationService;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService;
 import org.eclipse.kapua.service.device.management.packages.job.definition.DevicePackageDownloadPropertyKeys;
@@ -40,15 +34,12 @@ import javax.inject.Inject;
  *
  * @since 1.0.0
  */
-public class DevicePackageDownloadTargetProcessor extends AbstractTargetProcessor implements TargetProcessor {
+public class DevicePackageDownloadTargetProcessor extends AbstractDevicePackageTargetProcessor implements TargetProcessor {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
     private static final DevicePackageManagementService PACKAGES_MANAGEMENT_SERVICE = LOCATOR.getService(DevicePackageManagementService.class);
     private static final DevicePackageFactory DEVICE_PACKAGE_FACTORY = LOCATOR.getFactory(DevicePackageFactory.class);
-
-    private static final JobDeviceManagementOperationService JOB_DEVICE_MANAGEMENT_OPERATION_SERVICE = LOCATOR.getService(JobDeviceManagementOperationService.class);
-    private static final JobDeviceManagementOperationFactory JOB_DEVICE_MANAGEMENT_OPERATION_FACTORY = LOCATOR.getFactory(JobDeviceManagementOperationFactory.class);
 
     @Inject
     JobContext jobContext;
@@ -70,15 +61,6 @@ public class DevicePackageDownloadTargetProcessor extends AbstractTargetProcesso
 
         KapuaId scopeId = jobTarget.getScopeId();
         KapuaId jobId = jobTarget.getJobId();
-        KapuaId operationId = new KapuaEid(IdGenerator.generate());
-
-        //
-        // Save the jobId-deviceManementOperationId pair to track resuming
-        JobDeviceManagementOperationCreator jobDeviceManagementOperationCreator = JOB_DEVICE_MANAGEMENT_OPERATION_FACTORY.newCreator(scopeId);
-        jobDeviceManagementOperationCreator.setJobId(jobId);
-        jobDeviceManagementOperationCreator.setDeviceManagementOperationId(operationId);
-
-        KapuaSecurityUtils.doPrivileged(() -> JOB_DEVICE_MANAGEMENT_OPERATION_SERVICE.create(jobDeviceManagementOperationCreator));
 
         //
         // Extract parameters from context
@@ -89,9 +71,12 @@ public class DevicePackageDownloadTargetProcessor extends AbstractTargetProcesso
         // Send the request
         DevicePackageDownloadOptions packageDownloadOptions = DEVICE_PACKAGE_FACTORY.newDevicePackageDownloadOptions();
         packageDownloadOptions.setTimeout(timeout);
-        packageDownloadOptions.setForcedOperationId(operationId);
 
-        KapuaSecurityUtils.doPrivileged(() -> PACKAGES_MANAGEMENT_SERVICE.downloadExec(scopeId, jobTarget.getJobTargetId(), packageDownloadRequest, packageDownloadOptions));
+        KapuaId operationId = KapuaSecurityUtils.doPrivileged(() -> PACKAGES_MANAGEMENT_SERVICE.downloadExec(scopeId, jobTarget.getJobTargetId(), packageDownloadRequest, packageDownloadOptions));
+
+        //
+        // Save the jobId-deviceManagementOperationId pair to track resuming
+        createJobDeviceManagementOperation(scopeId, jobId, jobTarget, operationId);
     }
 
     @Override
