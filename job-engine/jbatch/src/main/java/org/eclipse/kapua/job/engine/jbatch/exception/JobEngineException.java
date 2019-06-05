@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,7 +13,7 @@ package org.eclipse.kapua.job.engine.jbatch.exception;
 
 import org.eclipse.kapua.KapuaException;
 
-public class JobEngineException extends KapuaException {
+public abstract class JobEngineException extends KapuaException {
 
     protected JobEngineException(KapuaJobEngineErrorCodes code) {
         super(code);

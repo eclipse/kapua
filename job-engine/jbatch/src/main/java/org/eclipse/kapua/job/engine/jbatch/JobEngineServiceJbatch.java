@@ -24,6 +24,7 @@ import org.eclipse.kapua.job.engine.jbatch.exception.JobInvalidTargetException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobMissingStepException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobMissingTargetException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobNotRunningException;
+import org.eclipse.kapua.job.engine.jbatch.exception.JobResumingException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobRunningException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobStartingException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobStopppingException;
@@ -253,6 +254,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         //
         // Check execution existence
         JobExecution jobExecution = JOB_EXECUTION_SERVICE.find(scopeId, jobExecutionId);
+
         if (jobExecution == null) {
             throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
         }
@@ -268,7 +270,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         try {
             JbatchDriver.resumeJob(scopeId, jobId, jobExecutionId);
         } catch (Exception e) {
-            throw new JobStopppingException(e, scopeId, jobId, jobExecutionId);
+            throw new JobResumingException(e, scopeId, jobId, jobExecutionId);
         }
 
     }
