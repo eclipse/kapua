@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (c) 2021 Eurotech and/or its affiliates and others
+
+    This program and the accompanying materials are made
+    available under the terms of the Eclipse Public License 2.0
+    which is available at https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<routes xmlns="http://camel.apache.org/schema/spring">
+    <route errorHandlerRef="authRouteMessageErrorHandler" id="authRoute">
+        <from uri="amqp:queue://auth_request?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
+        <!--  handling timeout and communication exceptions in a retry queue -->
+        <onException>
+            <exception>org.eclipse.kapua.KapuaException</exception>
+            <redeliveryPolicy maximumRedeliveries="0" logRetryAttempted="true" retryAttemptedLogLevel="WARN"/>
+            <handled>
+                <constant>true</constant>
+            </handled>
+            <bean ref="kapuaCamelFilter" method="bridgeError"/>
+            <to uri="amqp:queue:notProcessableMessage"/>
+        </onException>
+        <pipeline>
+            <choice id="main">
+                <when id="doLogin">
+                    <simple>${header.action} == 'brokerConnect'</simple>
+                    <bean ref="authenticationServiceConverter" method="convertToAuthRequest"/>
+                    <bean ref="authenticationServiceListener" method="brokerConnect"/>
+                </when>
+                <when id="doLogout">
+                    <simple>${header.action} == 'brokerDisconnect'</simple>
+                    <bean ref="authenticationServiceConverter" method="convertToAuthRequest"/>
+                    <bean ref="authenticationServiceListener" method="brokerDisconnect"/>
+                </when>
+                <when id="getAccount">
+                    <simple>${header.action} == 'getAccount'</simple>
+                    <bean ref="authenticationServiceConverter" method="convertToGetAccount"/>
+                    <bean ref="authenticationServiceListener" method="getAccount"/>
+                </when>
+            </choice>
+            <to uri="amqp:queue://auth_response"/>
+        </pipeline>
+    </route>
+    <route id="notProcessableMessage">
+        <from uri="amqp:queue://notProcessableMessage?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=1&amp;maxConcurrentConsumers=2"/>
+        <pipeline>
+            <to uri="bean:errorMessageListener?method=processMessage"/>
+        </pipeline>
+    </route>
+</routes>

@@ -18,11 +18,11 @@ import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.broker.client.message.CamelKapuaMessage;
-import org.eclipse.kapua.broker.client.message.MessageType;
-import org.eclipse.kapua.consumer.commons.CommonMetrics;
-import org.eclipse.kapua.consumer.commons.converter.AbstractKapuaConverter;
-import org.eclipse.kapua.consumer.commons.converter.ConverterMetrics;
+import org.eclipse.kapua.service.camel.CommonMetrics;
+import org.eclipse.kapua.service.camel.converter.AbstractKapuaConverter;
+import org.eclipse.kapua.service.camel.converter.ConverterMetrics;
+import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
+import org.eclipse.kapua.service.client.message.MessageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

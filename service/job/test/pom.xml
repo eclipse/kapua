@@ -42,11 +42,15 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-scheduler-quartz</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-job-test-steps</artifactId>
             <scope>test</scope>
         </dependency>
 
-        <!-- -->
         <!-- Log -->
         <dependency>
             <groupId>ch.qos.logback</groupId>

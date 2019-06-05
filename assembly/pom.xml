@@ -36,10 +36,12 @@
 
         <module>events-broker</module>
 
-        <module>broker</module>
+        <module>broker-activemq</module>
+        <module>broker-artemis</module>
         <module>api</module>
 
         <module>consumer</module>
+        <module>service</module>
         <module>job-engine</module>
     </modules>
 

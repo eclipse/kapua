@@ -20,6 +20,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaOptimisticLockingException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
@@ -53,6 +54,7 @@ import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -247,7 +249,7 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
      * @param scopeId  The {@link Device#getScopeId()} of the {@link Device} that generated the {@link KapuaLifecycleMessage}.
      * @param deviceId The {@link Device#getId()} of the {@link Device} that generated the {@link KapuaLifecycleMessage}.
      * @param resource The resource used to publish the {@link KapuaLifecycleMessage}
-     * @param message  The {@link KapuaLifecycleMessage} from which to extranct data.
+     * @param message  The {@link KapuaLifecycleMessage} from which to extract data.
      * @throws KapuaException if storing the {@link DeviceEvent} throws a {@link KapuaException}
      * @since 1.2.0
      */
@@ -263,7 +265,7 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
      *
      * @param device   The {@link Device} that generated the {@link KapuaLifecycleMessage}.
      * @param resource The resource used to publish the {@link KapuaLifecycleMessage}
-     * @param message  The {@link KapuaLifecycleMessage} from which to extranct data.
+     * @param message  The {@link KapuaLifecycleMessage} from which to extract data.
      * @throws KapuaException if storing the {@link DeviceEvent} throws a {@link KapuaException}
      * @since 1.2.0
      */
@@ -272,6 +274,7 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
         DeviceEventCreator deviceEventCreator = DEVICE_EVENT_FACTORY.newCreator(device.getScopeId(), device.getId(), message.getReceivedOn(), resource);
         deviceEventCreator.setResponseCode(KapuaResponseCode.ACCEPTED);
         deviceEventCreator.setSentOn(message.getSentOn());
+        deviceEventCreator.setReceivedOn(Date.from(KapuaDateUtils.getKapuaSysDate()));
 
         if (message.getPayload() != null) {
             deviceEventCreator.setEventMessage(message.getPayload().toDisplayString());

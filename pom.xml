@@ -97,8 +97,7 @@
         <opencsv.version>3.7</opencsv.version>
         <paho.version>1.2.1</paho.version>
         <protobuf.version>3.8.0</protobuf.version>
-        <qpid-jms-client.version>0.51.0</qpid-jms-client.version>
-        <qpid-amqp-1-0-client-jms.version>0.32</qpid-amqp-1-0-client-jms.version>
+        <qpid-jms-client.version>0.59.0</qpid-jms-client.version>
         <qpid-proton.version>0.31.0</qpid-proton.version>
         <qpid-geronimo-jms.version>1.0-alpha-2</qpid-geronimo-jms.version>
         <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
@@ -512,22 +511,17 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-broker-core</artifactId>
+                <artifactId>kapua-broker-activemq-plugin</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-broker-client</artifactId>
+                <artifactId>kapua-broker-artemis-plugin</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-consumer</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-consumer-commons</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -548,6 +542,11 @@
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-consumer-telemetry-app</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-client-security</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -943,6 +942,26 @@
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-service-storable-internal</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-service-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-service-authentication</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-service-authentication-app</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-service-camel</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -2366,6 +2385,11 @@
             <!-- Camel -->
             <dependency>
                 <groupId>org.apache.camel</groupId>
+                <artifactId>camel-api</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
                 <artifactId>camel-core</artifactId>
                 <version>${camel.version}</version>
             </dependency>
@@ -2390,8 +2414,31 @@
                 <version>${camel.version}</version>
             </dependency>
 
-            <!-- -->
-            <!-- Spring -->
+            <!-- Springboot -->
+            <!-- http://localhost:8080/actuator/health -->
+            <dependency>
+                <groupId>org.apache.camel.springboot</groupId>
+                <artifactId>camel-spring-boot</artifactId>
+                <version>${camel.version}</version> <!-- use the same version as your Camel core version -->
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel.springboot</groupId>
+                <artifactId>camel-spring-boot-starter</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+
+            <!-- Artemis -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-actuator</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <!-- spring -->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aop</artifactId>
@@ -2482,12 +2529,25 @@
                 <artifactId>spring-security-crypto</artifactId>
                 <version>${spring-security.version}</version>
             </dependency>
-
-            <!-- AMQP -->
             <dependency>
-                <groupId>org.apache.qpid</groupId>
-                <artifactId>qpid-amqp-1-0-client-jms</artifactId>
-                <version>${qpid-amqp-1-0-client-jms.version}</version>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>artemis-core-client</artifactId>
+                <version>${artemis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>artemis-commons</artifactId>
+                <version>${artemis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>artemis-server</artifactId>
+                <version>${artemis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>artemis-mqtt-protocol</artifactId>
+                <version>${artemis.version}</version>
             </dependency>
 
         </dependencies>

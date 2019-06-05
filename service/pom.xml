@@ -40,6 +40,10 @@
         <module>tag</module>
         <module>user</module>
 
+        <module>camel</module>
+        <module>client</module>
+        <module>authentication</module>
+        <module>authentication-app</module>
     </modules>
 
 </project>

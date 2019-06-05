@@ -212,6 +212,23 @@ public enum SystemSettingKey implements SettingKey {
      * Internal connector password
      */
     BROKER_INTERNAL_CONNECTOR_PASSWORD("broker.connector.internal.password"),
+    //TODO should be moved to service-api
+    /**
+     * Service bus host
+     */
+    SERVICE_BUS_HOST("commons.service_bus.host"),
+    /**
+     * Service bus port
+     */
+    SERVICE_BUS_PORT("commons.service_bus.port"),
+    /**
+     * Service bus username
+     */
+    SERVICE_BUS_USERNAME("commons.service_bus.username"),
+    /**
+     * Service bus password
+     */
+    SERVICE_BUS_PASSWORD("commons.service_bus.password"),
 
     /**
      * Metrics JMX disabled

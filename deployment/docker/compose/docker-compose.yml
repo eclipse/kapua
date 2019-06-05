@@ -4,11 +4,13 @@ services:
   db:
     container_name: db
     image: kapua/kapua-sql:${IMAGE_VERSION}
+    container_name: db
     ports:
       - "3306:3306"
   es:
     container_name: es
     image: docker.elastic.co/elasticsearch/elasticsearch:7.8.1
+    container_name: es
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -21,9 +23,11 @@ services:
   events-broker:
     container_name: events-broker
     image: kapua/kapua-events-broker:${IMAGE_VERSION}
+    container_name: events-broker
     ports:
       - "5672:5672"
   message-broker:
+    image: kapua/kapua-broker-artemis:${IMAGE_VERSION}
     container_name: message-broker
     image: kapua/kapua-broker:${IMAGE_VERSION}
     expose:
@@ -32,7 +36,7 @@ services:
       - "1883:1883"
       - "8883:8883"
       - "5682:5672"
-      - "61614:61614"
+      - "61616:61616"
     depends_on:
       - db
       - events-broker
@@ -47,9 +51,21 @@ services:
       - KAPUA_KEYSTORE
       - KAPUA_KEYSTORE_PASSWORD
       - LOGBACK_LOG_LEVEL
+  service-authentication:
+    image: kapua/kapua-service-authentication:${IMAGE_VERSION}
+    container_name: service-auth
+    ports:
+      - 8100:8080
+      - 8011:8001
+    depends_on:
+      - db
+      - events-broker
+    environment:
+      - LOGBACK_LOG_LEVEL
   consumer-telemetry:
     container_name: consumer-telemetry
     image: kapua/kapua-consumer-telemetry:${IMAGE_VERSION}
+    container_name: consumer-telemetry
     ports:
       - "8090:8080"
     depends_on:
@@ -64,6 +80,7 @@ services:
   consumer-lifecycle:
     container_name: consumer-lifecycle
     image: kapua/kapua-consumer-lifecycle:${IMAGE_VERSION}
+    container_name: consumer-lifecycle
     ports:
       - "8091:8080"
     depends_on:
@@ -77,6 +94,7 @@ services:
   kapua-console:
     container_name: kapua-console
     image: kapua/kapua-console:${IMAGE_VERSION}
+    container_name: console
     ports:
       - "8080:8080"
       - "8443:8443"
@@ -110,6 +128,7 @@ services:
   kapua-api:
     container_name: kapua-api
     image: kapua/kapua-api:${IMAGE_VERSION}
+    container_name: rest-api
     ports:
       - "8081:8080"
       - "8444:8443"
@@ -133,6 +152,7 @@ services:
   job-engine:
     container_name: job-engine
     image: kapua/kapua-job-engine:${IMAGE_VERSION}
+    container_name: job-engine
     expose:
       - 8080
     depends_on:

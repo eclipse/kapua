@@ -132,7 +132,7 @@
 
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-broker-core</artifactId>
+            <artifactId>kapua-broker-artemis-plugin</artifactId>
         </dependency>
 
         <!-- External dependencies -->

@@ -179,6 +179,7 @@ public class KapuaSession implements Serializable {
      * @param principal
      */
     public KapuaSession(KapuaPrincipal principal) {
+        trustedMode = true;
         scopeId = principal.getAccountId();
         userId = principal.getUserId();
     }
