@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019, 2021 Eurotech and/or its affiliates and others
+
+    This program and the accompanying materials are made
+    available under the terms of the Eclipse Public License 2.0
+    which is available at https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<assembly
+        xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+
+    <id>kapua-broker-artemis</id>
+
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+
+    <files>
+        <file>
+            <source>${project.basedir}/entrypoint/run-broker</source>
+            <outputDirectory>/opt/artemis</outputDirectory>
+            <fileMode>0755</fileMode>
+        </file>
+    </files>
+
+    <fileSets>
+        <!-- Expanded ActiveMQ Runtime -->
+        <fileSet>
+            <outputDirectory>/opt/artemis</outputDirectory>
+            <directory>${project.build.directory}/dependencies/artemis/apache-artemis-${artemis.version}</directory>
+            <fileMode>0644</fileMode>
+            <!-- <excludes>
+                <exclude>activemq-all-*</exclude>
+                <exclude>webapps-demo/</exclude>
+            </excludes> -->
+        </fileSet>
+
+        <fileSet>
+            <directory>${project.basedir}/configurations</directory>
+            <outputDirectory>opt/artemis/base-configuration/</outputDirectory>
+            <fileMode>0644</fileMode>
+        </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/certificates</directory>
+            <outputDirectory>opt/artemis/certificates/</outputDirectory>
+            <fileMode>0644</fileMode>
+        </fileSet>
+    </fileSets>
+
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>opt/artemis/base-lib</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <useProjectArtifact>false</useProjectArtifact>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <fileMode>0644</fileMode>
+            <includes>
+                <include>ch.qos.logback:logback-core</include>
+                <include>ch.qos.logback:logback-classic</include>
+                <include>org.slf4j:log4j-over-slf4j</include>
+                <include>org.slf4j:slf4j-api</include>
+                <include>commons-configuration:commons-configuration</include>
+                <include>commons-lang:commons-lang</include>
+                <include>io.dropwizard.metrics:metrics-core</include>
+                <include>org.apache.qpid:qpid-jms-client</include>
+
+                <include>com.fasterxml.jackson.core:jackson-core</include>
+                <include>com.fasterxml.jackson.core:jackson-databind</include>
+                <include>com.fasterxml.jackson.core:jackson-annotations</include>
+
+                <include>org.eclipse.kapua:kapua-commons</include>
+                <include>org.eclipse.kapua:kapua-service-api</include>
+                <include>org.eclipse.kapua:kapua-client-security</include>
+                <include>org.eclipse.kapua:kapua-security-authentication-api</include>
+
+                <include>${pom.groupId}:kapua-broker-artemis-plugin</include>
+            </includes>
+        </dependencySet>
+    </dependencySets>
+</assembly>

@@ -27,7 +27,6 @@
     <artifactId>kapua-consumer</artifactId>
 
     <modules>
-        <module>commons</module>
         <module>lifecycle</module>
         <module>telemetry</module>
         <module>lifecycle-app</module>

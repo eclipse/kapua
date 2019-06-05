@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2016, 2021 Eurotech and/or its affiliates and others
+
+    This program and the accompanying materials are made
+    available under the terms of the Eclipse Public License 2.0
+    which is available at https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        Eurotech - initial API and implementation
+        Red Hat Inc
+ -->
+<!DOCTYPE xml>
+<locator-config>
+    <provided>
+        <api>org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionFactory</api>
+        <api>org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionService</api>
+        <api>org.eclipse.kapua.service.authorization.AuthorizationService</api>
+        <api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory</api>
+        <api>org.eclipse.kapua.service.authorization.permission.PermissionFactory</api>
+        <api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService</api>
+
+        <api>org.eclipse.kapua.service.certificate.CertificateService</api>
+        <api>org.eclipse.kapua.service.certificate.CertificateFactory</api>
+        <api>org.eclipse.kapua.service.certificate.info.CertificateInfoService</api>
+        <api>org.eclipse.kapua.service.certificate.info.CertificateInfoFactory</api>
+
+        <!-- TODO only test, to remove asap -->
+        <api>org.eclipse.kapua.service.tag.TagService</api>
+
+
+        <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
+
+        <api>org.eclipse.kapua.message.KapuaMessageFactory</api>
+        <api>org.eclipse.kapua.message.device.data.KapuaDataMessageFactory</api>
+        <api>org.eclipse.kapua.message.device.lifecycle.KapuaLifecycleMessageFactory</api>
+
+        <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
+
+        <api>org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory</api>
+        <provide>
+            <interceptor>annotation</interceptor>
+            <with>Impl</with>
+        </provide>
+    </provided>
+    <packages>
+        <package>org.eclipse.kapua.commons</package>
+        <package>org.eclipse.kapua.message</package>
+        <package>org.eclipse.kapua.model.config</package>
+        <package>org.eclipse.kapua.service</package>
+    </packages>
+</locator-config>
