@@ -33,12 +33,17 @@
         <property name="routeCount" value="2"></property>
     </bean>
 
-    <bean id="connectionFactory" class="org.apache.qpid.amqp_1_0.jms.impl.ConnectionFactoryImpl" factory-method="createFromURL">
-        <constructor-arg index="0" type="java.lang.String" value="amqp://${BROKER_INTERNAL_USERNAME}:${BROKER_INTERNAL_PASSWORD}@${BROKER_HOST}:${BROKER_PORT}" />
+    <bean id="connectionFactory" class="org.eclipse.kapua.service.client.amqp.ServiceConnectionFactoryImpl">
+        <constructor-arg name="host" type="java.lang.String" value="${BROKER_HOST}"/>
+        <constructor-arg name="port" type="int" value="${BROKER_PORT}"/>
+        <constructor-arg name="username" type="java.lang.String" value="${BROKER_INTERNAL_USERNAME}"/>
+        <constructor-arg name="password" type="java.lang.String" value="${BROKER_INTERNAL_PASSWORD}"/>
+        <constructor-arg name="clientId" type="java.lang.String" value="${CONSUMER_HOST}"/>
     </bean>
     <bean id="cachingConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
         <property name="targetConnectionFactory" ref="connectionFactory"/>
         <property name="sessionCacheSize" value="10" /> <!-- it's the maximum number of cached sessions  -->
+        <property name="reconnectOnException" value="true"/>
     </bean>
     <bean id="amqp" class="org.apache.camel.component.amqp.AMQPComponent">
         <property name="connectionFactory" ref="cachingConnectionFactory"/>
@@ -46,21 +51,27 @@
     </bean>
 
     <!-- session filers (to bind Kapua and Shiro thread context) -->
-    <bean id="kapuaCamelFilter" class="org.eclipse.kapua.consumer.commons.converter.KapuaCamelFilter"/>
+    <bean id="kapuaCamelFilter" class="org.eclipse.kapua.service.camel.converter.KapuaCamelFilter"/>
 
     <bean id="deviceManagementNotificationConverter" class="org.eclipse.kapua.consumer.lifecycle.converter.DeviceManagementNotificationConverter"/>
     <bean id="kapuaLifeCycleConverter" class="org.eclipse.kapua.consumer.lifecycle.converter.KapuaLifeCycleConverter"/>
     <bean id="deviceMessageListener" class="org.eclipse.kapua.consumer.lifecycle.listener.DeviceMessageListener"/>
     <bean id="deviceManagementNotificationMessageProcessor" class="org.eclipse.kapua.consumer.lifecycle.listener.DeviceManagementNotificationMessageProcessor"/>
-    <bean id="errorMessageListener" class="org.eclipse.kapua.consumer.commons.listener.error.ErrorMessageListener"/>
+    <bean id="errorMessageListener" class="org.eclipse.kapua.service.camel.listener.error.ErrorMessageListener"/>
 
-    <bean id="jaxbContextLoader" class="org.eclipse.kapua.consumer.commons.xml.ConsumerJAXBContextLoader"
+    <bean id="jaxbContextLoader" class="org.eclipse.kapua.service.camel.xml.ServiceJAXBContextLoader"
         init-method="init"/>
 
-    <bean id="databaseCheckUpdate" class="org.eclipse.kapua.consumer.commons.DatabaseCheckUpdate"
+    <bean id="databaseCheckUpdate" class="org.eclipse.kapua.service.camel.DatabaseCheckUpdate"
         depends-on="jaxbContextLoader"/>
 
-    <camel:camelContext id="lifecycleContext" depends-on="databaseCheckUpdate">
+    <!-- starts event bus and other components with a lifecycle -->
+    <bean id="application" class="org.eclipse.kapua.service.camel.application.KapuaApplication"
+        init-method="init"
+        destroy-method="destroy"
+        depends-on="databaseCheckUpdate"/>
+
+    <camel:camelContext id="lifecycleContext" depends-on="application">
         <!-- exception/error handler -->
         <camel:errorHandler id="mainRouteMessageErrorHandler" redeliveryPolicyRef="kapuaRedeliveryPolicy"
             type="DeadLetterChannel"

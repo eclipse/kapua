@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+    Copyright (c) 2019, 2021 Red Hat Inc and others
+
+    This program and the accompanying materials are made
+    available under the terms of the Eclipse Public License 2.0
+    which is available at https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        Red Hat Inc - initial API and implementation
+        Eurotech
+ -->
+<broker xmlns="http://activemq.org/schema">
+
+    <security-manager class-name="org.eclipse.kapua.broker.artemis.plugin.security.SecurityPlugin">
+        <property key="version" value="1.0" />
+        <property key="something" value="value" />
+    </security-manager>
+    <!--
+    <jaas-security  domain="activemq"/>
+    -->
+
+    <!-- artemis.URI.instance is parsed from artemis.instance by the CLI startup.
+        This is to avoid situations where you could have spaces or special characters on this URI -->
+    <server configuration="file:///opt/artemis/kapua/etc/broker.xml"/>
+
+   <!-- The web server is only bound to localhost by default -->
+    <web bind="http://localhost:8161" path="web">
+        <!--
+        <app url="activemq-branding" war="activemq-branding.war"/>
+        <app url="artemis-plugin" war="artemis-plugin.war"/>
+         -->
+        <!-- jolokia is moved inside comnsole so no more joolokia.war to deploy -->
+        <app url="console" war="console.war"/>
+    </web>
+
+</broker>

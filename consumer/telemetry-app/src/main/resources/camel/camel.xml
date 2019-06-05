@@ -14,18 +14,19 @@
 
 <routes xmlns="http://camel.apache.org/schema/spring">
     <route errorHandlerRef="messageErrorHandler" id="telemetryRoute" >
-        <from uri="amqp:queue://Consumer.kapua-sys:telemetrylisteners:EXACTLY_ONCE.VirtualTopic.>?asyncConsumer=true&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=20&amp;maxConcurrentConsumers=50"/>
+        <from uri="amqp:topic://#?asyncConsumer=true&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;subscriptionDurable=true&amp;subscriptionName=telemetryConsumers&amp;subscriptionShared=true&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
         <!--  handling timeout and communication exceptions in a retry queue -->
         <pipeline>
-            <bean ref="kapuaCamelFilter" method="bindSession"/>
             <choice id="choiceForwarded">
                 <when id="systemMessageFilter">
                     <simple>${header.originalTopic} regex '^(?!\$EDC\.).*'</simple>
+                    <!-- keep here the bind/unbind of the kapua session so we can avoid the null check in bind method of KapuaCamelFilter because the Artemis internal messages have no KapuaSession in their header -->
+                    <bean ref="kapuaCamelFilter" method="bindSession"/>
                     <bean ref="kapuaDataConverter" method="convertToData"/>
                     <to uri="bean:dataStorageMessageProcessor?method=processMessage"/>
+                    <bean ref="kapuaCamelFilter" method="unbindSession"/>
                 </when>
             </choice>
-            <bean ref="kapuaCamelFilter" method="unbindSession"/>
         </pipeline>
     </route>
     <route errorHandlerRef="messageErrorHandler" id="dataMessageCommunicationErrorRoute">
