@@ -14,7 +14,7 @@
 
 -- changeset hekonsek:1 
 
-CREATE TABLE tst_liquibase (
+CREATE TABLE TST_LIQUIBASE (
   id                         BIGINT(21) 	  UNSIGNED NOT NULL,
 
   PRIMARY KEY (id),

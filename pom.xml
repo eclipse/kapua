@@ -48,7 +48,7 @@
         <guava-failureaccess.version>1.0.1</guava-failureaccess.version>
         <guava-listenablefuture.version>9999.0-empty-to-avoid-conflict-with-guava</guava-listenablefuture.version>
         <guice.version>4.1.0</guice.version>
-        <h2.version>1.4.192</h2.version>
+        <h2.version>1.4.199</h2.version>
         <httpcomponents.version>4.5.2</httpcomponents.version>
         <javassist.version>3.19.0-GA</javassist.version>
         <javax-inject.version>1</javax-inject.version>
