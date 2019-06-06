@@ -44,7 +44,7 @@
         <elasticsearch.version>2.3.4</elasticsearch.version>
         <findbugs.version>2.0.1</findbugs.version>
         <gson.version>2.7</gson.version>
-        <guava.version>19.0</guava.version>
+        <guava.version>27.1-jre</guava.version>
         <guice.version>4.1.0</guice.version>
         <h2.version>1.4.192</h2.version>
         <httpcomponents.version>4.5.2</httpcomponents.version>
