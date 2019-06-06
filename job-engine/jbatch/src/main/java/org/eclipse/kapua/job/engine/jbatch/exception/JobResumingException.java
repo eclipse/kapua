@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,20 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.jbatch.exception;
 
-import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.model.id.KapuaId;
 
-public class StopJobEngineException extends KapuaException {
+public class JobResumingException extends JobEngineException {
 
-    protected StopJobEngineException(KapuaJobEngineErrorCodes code) {
-        super(code);
+    public JobResumingException(Throwable t, KapuaId scopeId, KapuaId jobId) {
+        this(t, scopeId, jobId, null);
     }
 
-    protected StopJobEngineException(KapuaJobEngineErrorCodes code, Object... arguments) {
-        super(code, arguments);
+    public JobResumingException(Throwable t, KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) {
+        super(KapuaJobEngineErrorCodes.JOB_RESUMING, t, scopeId, jobId, jobExecutionId);
     }
-
-    protected StopJobEngineException(KapuaJobEngineErrorCodes code, Throwable cause, Object... arguments) {
-        super(code, cause, arguments);
-    }
-
 }
