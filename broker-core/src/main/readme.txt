@@ -40,7 +40,7 @@ replacing the ******* in the original file (this is an extract)
 copy all the jars needed by the application to the lib/kapua directory (this is the current list):
 
   358048  4 Ago 16:02 commons-configuration-1.9.jar
- 2308517  4 Ago 11:58 guava-19.0.jar
+ 2308517  4 Ago 11:58 guava-27.1.jar
   162116  4 Ago 16:04 javax.persistence-2.1.1.jar
    17750  4 Ago 16:26 jbcrypt-0.3m.jar
     6583  4 Ago 12:29 metrics-annotation-3.1.2.jar
