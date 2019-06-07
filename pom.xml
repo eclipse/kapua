@@ -78,6 +78,7 @@
         <log4j2-mock.version>0.0.1</log4j2-mock.version>
         <qpid-jms-client.version>0.40.0</qpid-jms-client.version>
         <qpid-proton.version>0.31.0</qpid-proton.version>
+        <qpid-geronimo-jms.version>1.0-alpha-2</qpid-geronimo-jms.version>
         <quartz-scheduler.version>2.2.3</quartz-scheduler.version>
 
         <!-- Plugins versions -->
@@ -1209,6 +1210,7 @@
                 <version>0.5.2</version>
             </dependency>
 
+
             <dependency>
                 <groupId>org.apache.qpid</groupId>
                 <artifactId>qpid-jms-client</artifactId>
@@ -1220,6 +1222,17 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <dependency>
+                <groupId>org.apache.qpid</groupId>
+                <artifactId>proton-j</artifactId>
+                <version>${qpid-proton.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-jms_2.0_spec</artifactId>
+                <version>${qpid-geronimo-jms.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-all</artifactId>
