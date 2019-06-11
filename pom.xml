@@ -78,6 +78,7 @@
         <qpid-jms-client.version>0.40.0</qpid-jms-client.version>
         <qpid-proton.version>0.31.0</qpid-proton.version>
         <qpid-geronimo-jms.version>1.0-alpha-2</qpid-geronimo-jms.version>
+        <netty-all.version>4.1.34.Final</netty-all.version>
         <quartz-scheduler.version>2.2.3</quartz-scheduler.version>
         <jetty.version>9.4.12.v20180830</jetty.version>
 
@@ -1319,6 +1320,8 @@
                 <artifactId>qpid-jms-client</artifactId>
                 <version>${qpid-jms-client.version}</version>
                 <exclusions>
+                    <!-- Excluding io.netty artifacts since we are importing them separately -->
+                    <!-- Do not remove this unless a CQ for those dependencies if files-->
                     <exclusion>
                         <groupId>io.netty</groupId>
                         <artifactId>*</artifactId>
@@ -1339,7 +1342,7 @@
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-all</artifactId>
-                <version>${elasticsearch-netty-4.version}</version>
+                <version>${netty-all.version}</version>
             </dependency>
 
             <!-- -->
