@@ -582,7 +582,7 @@ public class JobServiceSteps extends TestBase {
         stepDefinitionCreator.setName(name);
 
         List<JobStepProperty> tmpPropLst = new ArrayList<>();
-        for(CucJobStepProperty prop : list) {
+        for (CucJobStepProperty prop : list) {
             tmpPropLst.add(jobStepDefinitionFactory.newStepProperty(prop.getName(), prop.getType(), null));
         }
         stepDefinitionCreator.setStepProperties(tmpPropLst);
@@ -682,7 +682,7 @@ public class JobServiceSteps extends TestBase {
             stepData.remove("JobStepDefinition");
             JobStepDefinition stepDefinition = jobStepDefinitionService.find(getCurrentScopeId(), currentStepDefId);
             stepData.put("JobStepDefinition", stepDefinition);
-        } catch(KapuaException ex) {
+        } catch (KapuaException ex) {
             verifyException(ex);
         }
     }
@@ -721,7 +721,7 @@ public class JobServiceSteps extends TestBase {
 
     @When("^I delete the step definition$")
     public void deleteExistingStepDefinition()
-            throws Exception{
+            throws Exception {
 
         KapuaId currentStepDefId = (KapuaId) stepData.get("CurrentJobStepDefinitionId");
 
@@ -795,7 +795,7 @@ public class JobServiceSteps extends TestBase {
         assertEquals("The step definition has a wrong step type!", stepDefinitionCreator.getStepType(), stepDefinition.getStepType());
         assertNotNull("The step definition has no properties!", stepDefinition.getStepProperties());
         assertEquals("The step definition has a wrong number of properties!", stepDefinitionCreator.getStepProperties().size(), stepDefinition.getStepProperties().size());
-        for(int i = 0; i < stepDefinitionCreator.getStepProperties().size(); i++) {
+        for (int i = 0; i < stepDefinitionCreator.getStepProperties().size(); i++) {
             assertEquals(stepDefinitionCreator.getStepProperties().get(i).getName(), stepDefinition.getStepProperties().get(i).getName());
             assertEquals(stepDefinitionCreator.getStepProperties().get(i).getPropertyType(), stepDefinition.getStepProperties().get(i).getPropertyType());
             assertEquals(stepDefinitionCreator.getStepProperties().get(i).getPropertyValue(), stepDefinition.getStepProperties().get(i).getPropertyValue());
@@ -837,7 +837,7 @@ public class JobServiceSteps extends TestBase {
         assertNotNull(jobStepDefinitionFactory.newEntity(SYS_SCOPE_ID));
         assertNotNull(jobStepDefinitionFactory.newListResult());
         assertNotNull(jobStepDefinitionFactory.newQuery(SYS_SCOPE_ID));
-        assertNotNull(jobStepDefinitionFactory.newStepProperty("TestName", "TestType", "TestValue"));
+        assertNotNull(jobStepDefinitionFactory.newStepProperty("TestName", "TestType", "TestValue", "TestExampleValue"));
     }
 
 
@@ -1520,10 +1520,14 @@ public class JobServiceSteps extends TestBase {
     private JobTargetStatus parseJobTargetStatusFromString(String stat) {
 
         switch (stat.toUpperCase().trim()) {
-            case "PROCESS_AWAITING": return JobTargetStatus.PROCESS_AWAITING;
-            case "PROCESS_FAILED": return JobTargetStatus.PROCESS_FAILED;
-            case "PROCESS_OK": return JobTargetStatus.PROCESS_OK;
-            default: return JobTargetStatus.PROCESS_FAILED;
+            case "PROCESS_AWAITING":
+                return JobTargetStatus.PROCESS_AWAITING;
+            case "PROCESS_FAILED":
+                return JobTargetStatus.PROCESS_FAILED;
+            case "PROCESS_OK":
+                return JobTargetStatus.PROCESS_OK;
+            default:
+                return JobTargetStatus.PROCESS_FAILED;
         }
     }
 
