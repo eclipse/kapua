@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.lifecycle.internal;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -85,7 +86,12 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
             device = deviceRegistryService.create(deviceCreator);
         } else {
             device = deviceRegistryService.find(scopeId, deviceId);
-            device.setDisplayName(payload.getDisplayName());
+
+            // If the BirthMessage does not contain a 'Display Name' keep the one registered on the DeviceRegistryService.
+            if (!Strings.isNullOrEmpty(payload.getDisplayName())) {
+                device.setDisplayName(payload.getDisplayName());
+            }
+
             device.setSerialNumber(payload.getSerialNumber());
             device.setModelId(payload.getModelId());
             device.setModelName(payload.getModelName());
