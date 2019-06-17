@@ -15,9 +15,10 @@ import org.eclipse.kapua.commons.setting.SettingKey;
 
 public enum KapuaCertificateSettingKeys implements SettingKey {
 
-    CERTIFICATE_JWT_PRIVATE_KEY("certificate.jwt.private.key"),
-    CERTIFICATE_JWT_PRIVATE_KEY_PASSWORD("certificate.jwt.private.key.password"),
-    CERTIFICATE_JWT_CERTIFICATE("certificate.jwt.certificate");
+    CERTIFICATE_JWT_ISSUER("certificate.jwt.issuer"),
+    CERTIFICATE_JWT_VALIDITY("certificate.jwt.validity"),
+    CERTIFICATE_JWT_KEYLENGTH("certificate.jwt.keylength");
+
 
     private String key;
 

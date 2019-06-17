@@ -22,6 +22,11 @@ docker_common() {
 }
 
 docker_compose() {
+    if [[ -z ${KAPUA_JWT_CERTIFICATE} ]] || [[ -z ${KAPUA_JWT_PRIVATE_KEY} ]]; then
+        echo "Either KAPUA_JWT_CERTIFICATE or KAPUA_JWT_PRIVATE_KEY are not set. For more information please refer to the Kapua Documentation."
+        exit 1;
+    fi
+
     declare -a COMPOSE_FILES;
 
     if [[ -n "${KAPUA_BROKER_DEBUG_PORT}" ]]; then

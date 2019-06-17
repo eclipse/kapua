@@ -11,29 +11,43 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate.info.internal;
 
+import java.util.List;
+
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.certificate.CertificateQuery;
-import org.eclipse.kapua.service.certificate.CertificateService;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.certificate.CertificateDomains;
 import org.eclipse.kapua.service.certificate.CertificateUsage;
 import org.eclipse.kapua.service.certificate.info.CertificateInfo;
 import org.eclipse.kapua.service.certificate.info.CertificateInfoCreator;
 import org.eclipse.kapua.service.certificate.info.CertificateInfoListResult;
-import org.eclipse.kapua.service.certificate.info.CertificateInfoQuery;
 import org.eclipse.kapua.service.certificate.info.CertificateInfoService;
-import org.eclipse.kapua.service.certificate.internal.CertificateQueryImpl;
+import org.eclipse.kapua.service.certificate.internal.CertificateEntityManagerFactory;
+import org.eclipse.kapua.service.certificate.internal.CertificateInfoDAO;
 
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @KapuaProvider
-public class CertificateInfoServiceImpl implements CertificateInfoService {
+public class CertificateInfoServiceImpl extends AbstractKapuaService implements CertificateInfoService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CertificateInfoServiceImpl.class);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final CertificateService CERTIFICATE_SERVICE = LOCATOR.getService(CertificateService.class);
+
+    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
+    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
+
+    public CertificateInfoServiceImpl() {
+        super(CertificateEntityManagerFactory.getInstance());
+    }
 
     @Override
     public CertificateInfo create(CertificateInfoCreator creator) {
@@ -47,25 +61,30 @@ public class CertificateInfoServiceImpl implements CertificateInfoService {
 
     @Override
     public CertificateInfoListResult query(KapuaQuery<CertificateInfo> query) throws KapuaException {
+
+        //
+        // Argument Validation
         ArgumentValidator.notNull(query, "query");
 
-        CertificateQuery certificateQuery = new CertificateQueryImpl(query);
-        certificateQuery.setIncludeInherited(((CertificateInfoQuery) query).getIncludeInherited());
+        //
+        // Check Access
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(CertificateDomains.CERTIFICATE_DOMAIN, Actions.read, query.getScopeId()));
 
-        CertificateInfoListResult publicCertificates = new CertificateInfoListResultImpl();
-        publicCertificates.addItem(CERTIFICATE_SERVICE.query(certificateQuery).getFirstItem());
-
-        return publicCertificates;
+        return entityManagerSession.doAction(em -> CertificateInfoDAO.query(em, query));
     }
 
     @Override
     public long count(KapuaQuery<CertificateInfo> query) throws KapuaException {
+
+        //
+        // Argument Validation
         ArgumentValidator.notNull(query, "query");
 
-        CertificateQuery privateQuery = new CertificateQueryImpl(query);
-        privateQuery.setIncludeInherited(((CertificateInfoQuery) query).getIncludeInherited());
+        //
+        // Check Access
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(CertificateDomains.CERTIFICATE_DOMAIN, Actions.read, query.getScopeId()));
 
-        return CERTIFICATE_SERVICE.count(privateQuery);
+        return entityManagerSession.doAction(em -> CertificateInfoDAO.count(em, query));
     }
 
     @Override
@@ -77,4 +96,5 @@ public class CertificateInfoServiceImpl implements CertificateInfoService {
     public List<CertificateInfo> findAncestorsCertificates(KapuaId scopeId, CertificateUsage usage) {
         throw new UnsupportedOperationException();
     }
+
 }

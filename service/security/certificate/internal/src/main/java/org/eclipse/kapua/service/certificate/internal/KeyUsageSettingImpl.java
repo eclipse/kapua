@@ -11,15 +11,30 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate.internal;
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
 import org.eclipse.kapua.service.certificate.KeyUsage;
 import org.eclipse.kapua.service.certificate.KeyUsageSetting;
 
 import java.util.Objects;
 
+@Embeddable
 public class KeyUsageSettingImpl implements KeyUsageSetting {
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "key_usage")
     private KeyUsage keyUsage;
+
+    @Basic
+    @Column(name = "allowed")
     private boolean allowed;
+
+    @Basic
+    @Column(name = "kapua_allowed")
     private Boolean kapuaAllowed;
 
     protected KeyUsageSettingImpl() {
@@ -29,6 +44,12 @@ public class KeyUsageSettingImpl implements KeyUsageSetting {
         setKeyUsage(keyUsageSetting.getKeyUsage());
         setAllowed(keyUsageSetting.getAllowed());
         setKapuaAllowed(keyUsageSetting.getKapuaAllowed());
+    }
+
+    public KeyUsageSettingImpl(KeyUsage keyUsage, boolean allowed, Boolean kapuaAllowed) {
+        this.keyUsage = keyUsage;
+        this.allowed = allowed;
+        this.kapuaAllowed = kapuaAllowed;
     }
 
     @Override
@@ -57,8 +78,8 @@ public class KeyUsageSettingImpl implements KeyUsageSetting {
     }
 
     @Override
-    public void setKapuaAllowed(Boolean allowed) {
-        this.allowed = allowed;
+    public void setKapuaAllowed(Boolean kapuaAllowed) {
+        this.kapuaAllowed = kapuaAllowed;
     }
 
     public static KeyUsageSettingImpl parse(KeyUsageSetting keyUsageSetting) {

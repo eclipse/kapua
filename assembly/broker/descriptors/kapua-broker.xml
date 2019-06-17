@@ -195,6 +195,8 @@
                 <include>org.apache.qpid:qpid-jms-client</include>
                 <include>org.apache.shiro:shiro-core</include>
                 <include>org.bitbucket.b_c:jose4j</include>
+                <include>org.bouncycastle:bcpkix-jdk15on</include>
+                <include>org.bouncycastle:bcprov-jdk15on</include>
                 <include>org.eclipse.paho:org.eclipse.paho.client.mqttv3</include>
                 <include>org.eclipse.persistence:org.eclipse.persistence.jpa</include>
                 <include>org.eclipse.persistence:org.eclipse.persistence.jpa.jpql</include>

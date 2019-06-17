@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="KapuaDB/changelog-certificate-1.1.0_createCertificate.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+
+    <changeSet id="changelog-certificate-1.1.0_createCertificate" author="eurotech">
+        <createTable tableName="crt_certificate">
+            <column name="scope_id" type="bigint(21) unsigned">
+                <constraints nullable="false" />
+            </column>
+            <column name="id" type="bigint(21) unsigned">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="text">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_on" type="timestamp(3)" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_on" type="timestamp(3)" defaultValueComputed="${now}"/>
+            <column name="modified_by" type="bigint(21) unsigned"/>
+
+            <column name="certificate" type="text">
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="int" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="serial" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="algorithm" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="subject" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="issuer" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="not_before" type="datetime" defaultValueComputed="${now}">
+                <constraints nullable="false" />
+            </column>
+            <column name="not_after" type="datetime" defaultValueComputed="${now}">
+                <constraints nullable="false" />
+            </column>
+            <column name="status" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="signature" type="blob(512)" />
+            <column name="private_key" type="text" />
+            <column name="is_ca" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ca_id" type="bigint(21) unsigned" />
+            <column name="password" type="varchar(255)"/>
+            <column name="forwardable" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="optlock" type="int unsigned" />
+            <column name="attributes" type="text" />
+            <column name="properties" type="text" />
+        </createTable>
+
+        <createIndex tableName="crt_certificate" indexName="idx_crt_certificate_scope_id">
+            <column name="scope_id"/>
+        </createIndex>
+
+        <addUniqueConstraint tableName="crt_certificate" constraintName="uc_scopeId_name" columnNames="scope_id, name"/>
+
+    </changeSet>
+</databaseChangeLog>

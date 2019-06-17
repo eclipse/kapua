@@ -11,13 +11,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate.internal;
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
 import org.eclipse.kapua.service.certificate.CertificateUsage;
 
 import java.util.Objects;
 
+@Embeddable
 public class CertificateUsageImpl implements CertificateUsage {
 
+    @Basic
+    @Column(name = "name")
     private String name;
+
+    public CertificateUsageImpl() { }
 
     public CertificateUsageImpl(String name) {
         setName(name);

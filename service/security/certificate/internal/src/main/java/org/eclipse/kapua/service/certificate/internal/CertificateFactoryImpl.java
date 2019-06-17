@@ -39,7 +39,7 @@ public class CertificateFactoryImpl implements CertificateFactory {
 
     @Override
     public CertificateCreator newCreator(KapuaId scopeId) {
-        throw new UnsupportedOperationException();
+        return new CertificateCreatorImpl(scopeId);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class CertificateFactoryImpl implements CertificateFactory {
 
     @Override
     public CertificateGenerator newCertificateGenerator() {
-        return null;
+        return new CertificateGeneratorImpl();
     }
 
     @Override

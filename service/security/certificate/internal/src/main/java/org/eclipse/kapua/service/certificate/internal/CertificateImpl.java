@@ -11,26 +11,42 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate.internal;
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.certificate.Certificate;
-import org.eclipse.kapua.service.certificate.info.internal.CertificateInfoImpl;
 
 /**
  * {@link Certificate} implementation
  *
  * @since 1.0.0
  */
-public class CertificateImpl extends CertificateInfoImpl implements Certificate {
+@Entity(name = "Certificate")
+@Table(name = "crt_certificate")
+public class CertificateImpl extends AbstractCertificateImpl implements Certificate {
 
+    @Basic
+    @Column(name = "private_key", updatable = false)
     private String privateKey;
+
+    @Basic
+    @Column(name = "password", updatable = false)
     private String password;
+
+    public CertificateImpl() { }
 
     public CertificateImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
-    public CertificateImpl(Certificate certificate) {
-        throw new UnsupportedOperationException();
+    public CertificateImpl(Certificate certificate) throws KapuaException {
+        super(certificate);
+        setPassword(certificate.getPassword());
+        setPrivateKey(certificate.getPrivateKey());
     }
 
     @Override
