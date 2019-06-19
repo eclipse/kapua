@@ -215,21 +215,24 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
 
         KapuaId kapuaExecutionId = jobContextWrapper.getKapuaExecutionId();
         if (kapuaExecutionId == null) {
-            String msg = String.format("Cannot update job execution (internal reference [%d]). Cannot find 'executionId' in JobContext", jobContextWrapper.getExecutionId());
-            LOG.error(msg);
+            LOG.error("Cannot update job execution (internal reference [{}]). Cannot find 'executionId' in JobContext", jobContextWrapper.getExecutionId());
             // Don't send any exception to prevent the job engine to set the job exit status as failed!
         } else {
             JobExecution jobExecution = KapuaSecurityUtils.doPrivileged(() -> JOB_EXECUTION_SERVICE.find(jobContextWrapper.getScopeId(), kapuaExecutionId));
 
-            jobExecution.setLog(jobLogger.flush());
-            jobExecution.setEndedOn(new Date());
+            if (jobExecution != null) {
+                jobExecution.setLog(jobLogger.flush());
+                jobExecution.setEndedOn(new Date());
 
-            KapuaSecurityUtils.doPrivileged(() -> JOB_EXECUTION_SERVICE.update(jobExecution));
+                KapuaSecurityUtils.doPrivileged(() -> JOB_EXECUTION_SERVICE.update(jobExecution));
 
-            checkQueuedJobExecutions(
-                    jobContextWrapper.getScopeId(),
-                    jobContextWrapper.getJobId(),
-                    jobContextWrapper.getKapuaExecutionId());
+                checkQueuedJobExecutions(
+                        jobContextWrapper.getScopeId(),
+                        jobContextWrapper.getJobId(),
+                        jobContextWrapper.getKapuaExecutionId());
+            } else {
+                LOG.warn("Cannot find job execution with id: {}. This is likely to happen with the Job has been forcibly deleted.", kapuaExecutionId);
+            }
         }
         jobLogger.info("Running after job... DONE!");
     }

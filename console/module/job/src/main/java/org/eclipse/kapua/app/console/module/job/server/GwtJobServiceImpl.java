@@ -193,6 +193,20 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
     }
 
     @Override
+    public void deleteForced(GwtXSRFToken xsrfToken, String gwtScopeId, String gwtJobId) throws GwtKapuaException {
+        checkXSRFToken(xsrfToken);
+
+        try {
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtScopeId);
+            KapuaId jobId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobId);
+
+            JOB_SERVICE.deleteForced(scopeId, jobId);
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+        }
+    }
+
+    @Override
     public ListLoadResult<GwtGroupedNVPair> findJobDescription(String gwtScopeId,
                                                                String gwtJobId) throws GwtKapuaException {
         List<GwtGroupedNVPair> gwtJobDescription = new ArrayList<GwtGroupedNVPair>();

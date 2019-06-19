@@ -17,7 +17,6 @@ import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.CreatedByNameCellRenderer;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
@@ -75,6 +74,7 @@ public class JobGrid extends EntityGrid<GwtJob> {
         getToolbar().getEditEntityButton().setEnabled(selectedItem != null && currentSession.hasPermission(JobSessionPermission.write()));
         getToolbar().getDeleteEntityButton().setEnabled(selectedItem != null && currentSession.hasPermission(JobSessionPermission.delete()));
 
+        ((JobGridToolbar) getToolbar()).getDeleteForcedJobButton().setEnabled(selectedItem != null && currentSession.hasPermission(JobSessionPermission.deleteAll()));
         ((JobGridToolbar) getToolbar()).getStartJobButton().setEnabled(selectedItem != null && currentSession.hasPermission(JobSessionPermission.execute()));
         ((JobGridToolbar) getToolbar()).getStopJobButton().setEnabled(selectedItem != null && currentSession.hasPermission(JobSessionPermission.execute()));
         ((JobGridToolbar) getToolbar()).getRestartJobButton().setEnabled(selectedItem != null && currentSession.hasPermission(JobSessionPermission.execute()));
