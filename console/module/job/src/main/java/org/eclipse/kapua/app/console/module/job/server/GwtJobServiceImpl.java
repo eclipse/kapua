@@ -68,7 +68,7 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
         try {
 
             // Convert from GWT entity
-            JobQuery jobQuery = GwtKapuaJobModelConverter.convertJobQuery(gwtJobQuery, loadConfig);
+            final JobQuery jobQuery = GwtKapuaJobModelConverter.convertJobQuery(gwtJobQuery, loadConfig);
 
             // query
             JobListResult jobs = JOB_SERVICE.query(jobQuery);
@@ -80,7 +80,7 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
 
                     @Override
                     public UserListResult call() throws Exception {
-                        return USER_SERVICE.query(USER_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobQuery.getScopeId())));
+                        return USER_SERVICE.query(USER_FACTORY.newQuery(jobQuery.getScopeId()));
                     }
                 });
                 Map<String, String> usernameMap = new HashMap<String, String>();
@@ -192,14 +192,28 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
     }
 
     @Override
+    public void deleteForced(GwtXSRFToken xsrfToken, String gwtScopeId, String gwtJobId) throws GwtKapuaException {
+        checkXSRFToken(xsrfToken);
+
+        try {
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtScopeId);
+            KapuaId jobId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobId);
+
+            JOB_SERVICE.deleteForced(scopeId, jobId);
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+        }
+    }
+
+    @Override
     public ListLoadResult<GwtGroupedNVPair> findJobDescription(String gwtScopeId,
                                                                String gwtJobId) throws GwtKapuaException {
         List<GwtGroupedNVPair> gwtJobDescription = new ArrayList<GwtGroupedNVPair>();
         try {
-            KapuaId scopeId = KapuaEid.parseCompactId(gwtScopeId);
+            final KapuaId scopeId = KapuaEid.parseCompactId(gwtScopeId);
             KapuaId jobId = KapuaEid.parseCompactId(gwtJobId);
 
-            Job job = JOB_SERVICE.find(scopeId, jobId);
+            final Job job = JOB_SERVICE.find(scopeId, jobId);
 
             final User createdUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 

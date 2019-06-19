@@ -12,6 +12,7 @@
 package org.eclipse.kapua.app.console.module.job.client;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
@@ -31,6 +32,7 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
 
     private Button startJobButton;
     private Button stopJobButton;
+    private Button deleteForcedJobButton;
 
     public JobGridToolbar(GwtSession currentSession) {
         super(currentSession);
@@ -42,6 +44,10 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
 
     public Button getStopJobButton() {
         return stopJobButton;
+    }
+
+    public Button getDeleteForcedJobButton() {
+        return deleteForcedJobButton;
     }
 
     @Override
@@ -68,6 +74,20 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
         });
         stopJobButton.disable();
         addExtraButton(stopJobButton);
+
+        deleteForcedJobButton = new Button(JOB_MSGS.jobDeleteForcedButton(), new KapuaIcon(IconSet.EXCLAMATION_TRIANGLE), new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                JobDeleteForcedDialog dialog = new JobDeleteForcedDialog(gridSelectionModel.getSelectedItem());
+                dialog.addListener(Events.Hide, getHideDialogListener());
+                dialog.show();
+            }
+        });
+        deleteForcedJobButton.disable();
+        if (currentSession.hasPermission(JobSessionPermission.deleteAll())) {
+            addExtraButton(deleteForcedJobButton);
+        }
 
         super.onRender(target, index);
 

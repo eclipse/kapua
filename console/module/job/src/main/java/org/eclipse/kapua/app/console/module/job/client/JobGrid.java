@@ -70,6 +70,7 @@ public class JobGrid extends EntityGrid<GwtJob> {
         getToolbar().getEditEntityButton().setEnabled(selectedItem != null && currentSession.hasPermission(JobSessionPermission.write()));
         getToolbar().getDeleteEntityButton().setEnabled(selectedItem != null && currentSession.hasPermission(JobSessionPermission.delete()));
 
+        ((JobGridToolbar) getToolbar()).getDeleteForcedJobButton().setEnabled(selectedItem != null && currentSession.hasPermission(JobSessionPermission.deleteAll()));
         ((JobGridToolbar) getToolbar()).getStartJobButton().setEnabled(selectedItem != null && currentSession.hasPermission(JobSessionPermission.execute()));
         ((JobGridToolbar) getToolbar()).getStopJobButton().setEnabled(selectedItem != null && currentSession.hasPermission(JobSessionPermission.execute()));
     }

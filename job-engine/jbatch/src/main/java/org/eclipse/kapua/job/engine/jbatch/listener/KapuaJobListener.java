@@ -66,7 +66,7 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
         List<Long> runningExecutionsIds = BatchRuntime.getJobOperator().getRunningExecutions(jobContextWrapper.getJobName());
         if (runningExecutionsIds != null && runningExecutionsIds.size() > 1) {
             throw new KapuaIllegalStateException(String.format("Cannot start job [%s]. Another instance of this job is running.", jobContextWrapper.getJobName()));
-        }
+                }
 
         LOG.info("JOB {} - {} - Running before job... DONE!", jobContextWrapper.getJobId(), jobContextWrapper.getJobName());
     }
@@ -84,11 +84,11 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
             LOG.error(msg);
             // TODO will send service events when the feature will be implemented
         }
-        JobExecution jobExecution = KapuaSecurityUtils.doPrivileged(() -> JOB_EXECUTION_SERVICE.find(jobContextWrapper.getScopeId(), kapuaExecutionId));
+            JobExecution jobExecution = KapuaSecurityUtils.doPrivileged(() -> JOB_EXECUTION_SERVICE.find(jobContextWrapper.getScopeId(), kapuaExecutionId));
 
-        jobExecution.setEndedOn(new Date());
+            jobExecution.setEndedOn(new Date());
 
-        KapuaSecurityUtils.doPrivileged(() -> JOB_EXECUTION_SERVICE.update(jobExecution));
+            KapuaSecurityUtils.doPrivileged(() -> JOB_EXECUTION_SERVICE.update(jobExecution));
 
         LOG.info("JOB {} - {} - Running after job... DONE!", jobContextWrapper.getJobId(), jobContextWrapper.getJobName());
     }
