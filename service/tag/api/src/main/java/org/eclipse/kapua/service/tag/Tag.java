@@ -11,17 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.tag;
 
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdFactory;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-import java.math.BigInteger;
 
 /**
  * {@link Tag} {@link org.eclipse.kapua.model.KapuaEntity} definition
@@ -37,7 +34,7 @@ import java.math.BigInteger;
 public interface Tag extends KapuaNamedEntity {
 
     @XmlTransient
-    KapuaId ANY = KapuaLocator.getInstance().getFactory(KapuaIdFactory.class).newKapuaId(BigInteger.ONE.negate());
+    KapuaId ANY = KapuaId.ANY;
 
     String TYPE = "tag";
 

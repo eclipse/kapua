@@ -25,7 +25,7 @@ import org.eclipse.kapua.locator.internal.guice.ServiceA;
 import org.eclipse.kapua.locator.internal.guice.ServiceB;
 import org.eclipse.kapua.locator.internal.guice.ServiceC;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.test.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;

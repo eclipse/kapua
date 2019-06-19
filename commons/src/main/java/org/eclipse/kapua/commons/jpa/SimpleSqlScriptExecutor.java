@@ -34,6 +34,7 @@ public class SimpleSqlScriptExecutor {
     private static final String WILDCAR_ANY = "*";
 
     private static final String RUN_SCRIPT_CMD = "RUNSCRIPT FROM '%s'";
+    private static final String RUN_RESOURCE_CMD = "RUNSCRIPT FROM 'classpath:%s'";
 
     /**
      * Default sql scripts path
@@ -133,6 +134,20 @@ public class SimpleSqlScriptExecutor {
         addQueries(createScripts);
         addQueries(seedScripts);
         addQueries(deleteScripts);
+        return this;
+    }
+
+    /**
+     * Creates and configure a {@link SimpleSqlScriptExecutor} adding the SQL script from the resources that matches the supplied name
+     *
+     * @param resourceName
+     *            the name of the requested resource file
+     * @return
+     */
+    public SimpleSqlScriptExecutor scanResources(String resourceName) {
+
+        clearQueries();
+        addQuery(String.format(RUN_RESOURCE_CMD, resourceName));
         return this;
     }
 

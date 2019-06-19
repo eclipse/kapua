@@ -18,7 +18,7 @@ import org.eclipse.kapua.kura.simulator.simulation.Configuration;
 import org.eclipse.kapua.kura.simulator.simulation.Configuration.Application;
 import org.eclipse.kapua.kura.simulator.simulation.Configuration.MetricsMapping;
 import org.eclipse.kapua.kura.simulator.simulation.Configuration.Topic;
-import org.eclipse.kapua.test.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 

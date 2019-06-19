@@ -13,7 +13,7 @@ package org.eclipse.kapua.commons.model.id;
 
 import java.math.BigInteger;
 
-import org.eclipse.kapua.test.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

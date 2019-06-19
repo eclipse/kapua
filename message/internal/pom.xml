@@ -48,11 +48,6 @@
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-guice</artifactId>
             <scope>test</scope>
         </dependency>
@@ -76,7 +71,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>marker-api</artifactId>
+            <artifactId>kapua-qa-markers</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -554,6 +554,16 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-datastore-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-datastore-test-steps</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-device-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -694,6 +704,16 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-device-registry-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-device-registry-test-steps</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-stream-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -705,6 +725,16 @@
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-security-authorization-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-security-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-security-test-steps</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -730,6 +760,16 @@
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-job-internal</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-job-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-job-test-steps</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -775,6 +815,16 @@
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-account-internal</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-account-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-account-test-steps</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -839,12 +889,32 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-user-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-user-test-steps</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-tag-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-tag-internal</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-tag-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-tag-test-steps</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -884,17 +954,27 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-test</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-qa-steps</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-qa</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-qa-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-qa-integration-steps</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-qa-markers</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -922,12 +1002,6 @@
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-security-certificate-internal</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>marker-api</artifactId>
-                <version>${project.version}</version>
-                <scope>test</scope>
             </dependency>
 
             <dependency>
@@ -1337,10 +1411,7 @@
         <module>transport</module>
         <module>translator</module>
         <module>broker-core</module>
-        <module>test</module>
         <module>qa</module>
-        <module>qa-steps</module>
-        <module>qa-openshift</module>
 
         <module>sso</module>
 
@@ -1364,8 +1435,6 @@
         <module>dev-tools</module>
         <module>deployment</module>
 
-        <!-- JUnit marker interfaces -->
-        <module>marker-api</module>
     </modules>
 
     <profiles>

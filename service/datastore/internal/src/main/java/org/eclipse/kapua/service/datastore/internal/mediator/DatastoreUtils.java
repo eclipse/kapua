@@ -19,9 +19,9 @@ import com.google.common.hash.Hashing;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
-import org.eclipse.kapua.locator.KapuaLocator;
+//import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.datastore.MessageStoreService;
+//import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 
@@ -56,7 +56,7 @@ import java.util.regex.Pattern;
 public class DatastoreUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(DatastoreUtils.class);
-    private static final MessageStoreService MESSAGE_STORE_SERVICE = KapuaLocator.getInstance().getService(MessageStoreService.class);
+//    private static final MessageStoreService MESSAGE_STORE_SERVICE = KapuaLocator.getInstance().getService(MessageStoreService.class);
 
     private DatastoreUtils() {
     }

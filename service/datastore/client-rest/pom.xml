@@ -37,13 +37,6 @@
             <artifactId>rest</artifactId>
         </dependency>
 
-        <!-- test dependencies -->
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
   </dependencies>
   
 </project>

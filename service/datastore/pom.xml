@@ -31,6 +31,8 @@
         <module>client-embedded</module>
         <module>client-rest</module>
         <module>client-transport</module>
+        <module>test</module>
+        <module>test-steps</module>
     </modules>
 
 </project>

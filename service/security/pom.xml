@@ -29,6 +29,7 @@
         <module>certificate</module>
         <module>registration</module>
         <module>shiro</module>
+        <module>test-steps</module>
     </modules>
 
 </project>

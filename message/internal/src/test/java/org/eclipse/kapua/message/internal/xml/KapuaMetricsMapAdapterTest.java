@@ -15,7 +15,7 @@ import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
 import org.eclipse.kapua.message.internal.MessageJAXBContextProvider;
-import org.eclipse.kapua.test.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
