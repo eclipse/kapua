@@ -60,7 +60,7 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
     private static final UserFactory USER_FACTORY = LOCATOR.getFactory(UserFactory.class);
 
     @Override
-    public PagingLoadResult<GwtJob> query(PagingLoadConfig loadConfig, final GwtJobQuery gwtJobQuery) throws GwtKapuaException {
+    public PagingLoadResult<GwtJob> query(PagingLoadConfig loadConfig, GwtJobQuery gwtJobQuery) throws GwtKapuaException {
         //
         // Do query
         int totalLength = 0;
@@ -193,13 +193,13 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
 
     @Override
     public ListLoadResult<GwtGroupedNVPair> findJobDescription(String gwtScopeId,
-            String gwtJobId) throws GwtKapuaException {
+                                                               String gwtJobId) throws GwtKapuaException {
         List<GwtGroupedNVPair> gwtJobDescription = new ArrayList<GwtGroupedNVPair>();
         try {
-            final KapuaId scopeId = KapuaEid.parseCompactId(gwtScopeId);
+            KapuaId scopeId = KapuaEid.parseCompactId(gwtScopeId);
             KapuaId jobId = KapuaEid.parseCompactId(gwtJobId);
 
-            final Job job = JOB_SERVICE.find(scopeId, jobId);
+            Job job = JOB_SERVICE.find(scopeId, jobId);
 
             final User createdUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
 

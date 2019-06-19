@@ -216,6 +216,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         if (JbatchDriver.isRunningJob(scopeId, jobId)) {
             throw new JobRunningException(scopeId, jobId);
         }
+
         try {
             JbatchDriver.cleanJobData(scopeId, jobId);
         } catch (Exception ex) {
