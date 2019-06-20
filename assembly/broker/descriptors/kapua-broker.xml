@@ -173,6 +173,7 @@
                 <include>commons-io:commons-io</include>
 
                 <include>io.dropwizard.metrics:metrics-core</include>
+                <include>io.github.classgraph:classgraph</include>
                 <include>io.netty:netty-all</include>
                 <include>io.netty:netty</include>
 

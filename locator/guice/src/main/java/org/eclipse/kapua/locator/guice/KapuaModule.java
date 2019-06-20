@@ -12,15 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator.guice;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.reflect.ClassPath;
-import com.google.common.reflect.ClassPath.ClassInfo;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.matcher.Matcher;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.multibindings.Multibinder;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ScanResult;
 import org.aopalliance.intercept.MethodInterceptor;
+
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.core.InterceptorBind;
@@ -31,6 +32,7 @@ import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.service.KapuaService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,23 +84,17 @@ public class KapuaModule extends AbstractModule {
             Collection<String> packageNames = locatorConfig.getPackageNames();
 
             ClassLoader classLoader = this.getClass().getClassLoader();
-            ClassPath classPath = ClassPath.from(classLoader);
             boolean initialize = true;
 
             // Among all the classes in the configured packages, retain only the ones
             // annotated with @KapuaProvider annotation
             Set<Class<?>> providers = new HashSet<>();
-            for (String packageName : packageNames) {
-                // Use the class loader of this (module) class
-                ImmutableSet<ClassInfo> classInfos = classPath.getTopLevelClassesRecursive(packageName);
-                for (ClassInfo classInfo : classInfos) {
-                    logger.trace("CLASS: {}", classInfo.getName());
-                    Class<?> theClass = Class.forName(classInfo.getName(), !initialize, classLoader);
-                    KapuaProvider serviceProvider = theClass.getAnnotation(KapuaProvider.class);
-                    if (serviceProvider != null) {
-                        providers.add(theClass);
-                    }
-                }
+            ScanResult scanResult = new ClassGraph()
+                    .whitelistPackages(packageNames.toArray(new String[0]))
+                    .enableAnnotationInfo()
+                    .scan();
+            for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(KapuaProvider.class.getCanonicalName())) {
+                providers.add(classInfo.loadClass());
             }
 
             // Provided names are the objects provided by the module (services or factories

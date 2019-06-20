@@ -34,6 +34,7 @@
         <assertj.version>3.2.0</assertj.version>
         <bouncycastle.version>1.60</bouncycastle.version>
         <camel.version>2.16.3</camel.version>
+        <classgraph.version>4.8.39</classgraph.version>
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <commons-cli.version>1.4</commons-cli.version>
         <commons-codec.version>1.9</commons-codec.version>
@@ -99,7 +100,7 @@
         <quartz-scheduler.version>2.2.3</quartz-scheduler.version>
         <jetty.version>9.4.12.v20180830</jetty.version>
         <vertx.version>3.7.0</vertx.version>
-        <spring-boot.version>2.1.4.RELEASE</spring-boot.version>
+        <spring-boot.version>2.1.5.RELEASE</spring-boot.version>
 
         <!-- Plugins versions -->
         <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
@@ -417,6 +418,18 @@
                         <includes>**/*.java, **/*.xml</includes>
                         <excludes>**/target/**/*, **/.settings/**/*, maven/**/*, .maven/**/*, .idea/**/*, **/node/**/*</excludes>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -1084,6 +1097,11 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-service-app-job-engine</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-console-web</artifactId>
@@ -1790,6 +1808,11 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter</artifactId>
                 <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.classgraph</groupId>
+                <artifactId>classgraph</artifactId>
+                <version>${classgraph.version}</version>
             </dependency>
 
             <!-- Spring -->

@@ -111,7 +111,60 @@ public class CertificateServiceImpl extends AbstractKapuaService implements Cert
                     certificateGenerator.setStatus(CertificateStatus.VALID);
                     certificateGenerator.setForwardable(true);
 
-                    generate(certificateGenerator);
+                    //
+                    // Argument validation
+                    ArgumentValidator.notNull(certificateGenerator, "certificateGenerator");
+                    ArgumentValidator.notNull(certificateGenerator.getName(), "certificateGenerator.name");
+                    ArgumentValidator.notNull(certificateGenerator.getDescription(), "certificateGenerator.description");
+                    ArgumentValidator.numRange(certificateGenerator.getKeyLength(), 512, Long.MAX_VALUE, "certificateGenerator.keyLength");
+                    ArgumentValidator.notNull(certificateGenerator.getIssuer(), "certificateGenerator.issuer");
+                    ArgumentValidator.notNull(certificateGenerator.getSubject(), "certificateGenerator.subject");
+                    ArgumentValidator.notNull(certificateGenerator.getNotBefore(), "certificateGenerator.notBefore");
+                    ArgumentValidator.notNull(certificateGenerator.getNotAfter(), "certificateGenerator.notAfter");
+                    ArgumentValidator.notNull(certificateGenerator.getStatus(), "certificateGenerator.status");
+                    ArgumentValidator.notNull(certificateGenerator.getForwardable(), "certificateGenerator.forwardable");
+
+                    //
+                    // Do generate
+                    try {
+                        KeyPairGenerator kpGen = KeyPairGenerator.getInstance("RSA");
+                        kpGen.initialize(certificateGenerator.getKeyLength(), new SecureRandom());
+
+                        KeyPair keyPair = kpGen.generateKeyPair();
+
+                        X509Certificate x509Certificate = CertificateUtils.generateCertificate(
+                                certificateGenerator.getIssuer(),
+                                certificateGenerator.getSubject(),
+                                certificateGenerator.getNotBefore(),
+                                certificateGenerator.getNotAfter(),
+                                keyPair.getPublic(),
+                                keyPair.getPrivate()
+                        );
+
+                        try (StringWriter certificateSw = new StringWriter(); StringWriter privateKeySw = new StringWriter()) {
+
+                            try (JcaPEMWriter pw = new JcaPEMWriter(certificateSw)) {
+                                pw.writeObject(x509Certificate);
+                            }
+
+                            try (JcaPEMWriter pw = new JcaPEMWriter(privateKeySw)) {
+                                pw.writeObject(new JcaPKCS8Generator(keyPair.getPrivate(), null));
+                            }
+
+                            CertificateCreator creator = CERTIFICATE_FACTORY.newCreator(KapuaSecurityUtils.getSession().getScopeId());
+                            creator.setName(certificateGenerator.getName());
+                            creator.setDescription(certificateGenerator.getDescription());
+                            creator.setCertificateUsages(certificateGenerator.getCertificateUsages());
+                            creator.setStatus(certificateGenerator.getStatus());
+                            creator.setCertificate(certificateSw.toString());
+                            creator.setPrivateKey(privateKeySw.toString());
+                            creator.setForwardable(certificateGenerator.getForwardable());
+
+                            entityManagerSession.doTransactedAction(em -> CertificateDAO.create(em, creator, x509Certificate));
+                        }
+                    } catch (Exception t) {
+                        throw new KapuaCertificateException(KapuaErrorCodes.INTERNAL_ERROR, t);
+                    }
                 }
             });
         } catch (Exception e) {
@@ -141,7 +194,7 @@ public class CertificateServiceImpl extends AbstractKapuaService implements Cert
         // Check Access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(CertificateDomains.CERTIFICATE_DOMAIN, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onResult(em -> CertificateDAO.query(em, query));
+        return entityManagerSession.doAction(em -> CertificateDAO.query(em, query));
     }
 
     @Override
@@ -166,60 +219,7 @@ public class CertificateServiceImpl extends AbstractKapuaService implements Cert
 
     @Override
     public Certificate generate(CertificateGenerator certificateGenerator) throws KapuaException {
-        //
-        // Argument validation
-        ArgumentValidator.notNull(certificateGenerator, "certificateGenerator");
-        ArgumentValidator.notNull(certificateGenerator.getName(), "certificateGenerator.name");
-        ArgumentValidator.notNull(certificateGenerator.getDescription(), "certificateGenerator.description");
-        ArgumentValidator.numRange(certificateGenerator.getKeyLength(), 512, Long.MAX_VALUE, "certificateGenerator.keyLength");
-        ArgumentValidator.notNull(certificateGenerator.getIssuer(), "certificateGenerator.issuer");
-        ArgumentValidator.notNull(certificateGenerator.getSubject(), "certificateGenerator.subject");
-        ArgumentValidator.notNull(certificateGenerator.getNotBefore(), "certificateGenerator.notBefore");
-        ArgumentValidator.notNull(certificateGenerator.getNotAfter(), "certificateGenerator.notAfter");
-        ArgumentValidator.notNull(certificateGenerator.getStatus(), "certificateGenerator.status");
-        ArgumentValidator.notNull(certificateGenerator.getForwardable(), "certificateGenerator.forwardable");
-
-        //
-        // Do generate
-        try {
-            KeyPairGenerator kpGen = KeyPairGenerator.getInstance("RSA");
-            kpGen.initialize(certificateGenerator.getKeyLength(), new SecureRandom());
-
-            KeyPair keyPair = kpGen.generateKeyPair();
-
-            X509Certificate x509Certificate = CertificateUtils.generateCertificate(
-                    certificateGenerator.getIssuer(),
-                    certificateGenerator.getSubject(),
-                    certificateGenerator.getNotBefore(),
-                    certificateGenerator.getNotAfter(),
-                    keyPair.getPublic(),
-                    keyPair.getPrivate()
-            );
-
-            try (StringWriter certificateSw = new StringWriter(); StringWriter privateKeySw = new StringWriter()) {
-
-                try (JcaPEMWriter pw = new JcaPEMWriter(certificateSw)) {
-                    pw.writeObject(x509Certificate);
-                }
-
-                try (JcaPEMWriter pw = new JcaPEMWriter(privateKeySw)) {
-                    pw.writeObject(new JcaPKCS8Generator(keyPair.getPrivate(), null));
-                }
-
-                CertificateCreator creator = CERTIFICATE_FACTORY.newCreator(KapuaSecurityUtils.getSession().getScopeId());
-                creator.setName(certificateGenerator.getName());
-                creator.setDescription(certificateGenerator.getDescription());
-                creator.setCertificateUsages(certificateGenerator.getCertificateUsages());
-                creator.setStatus(certificateGenerator.getStatus());
-                creator.setCertificate(certificateSw.toString());
-                creator.setPrivateKey(privateKeySw.toString());
-                creator.setForwardable(certificateGenerator.getForwardable());
-
-                return entityManagerSession.onTransactedInsert(em -> CertificateDAO.create(em, creator, x509Certificate));
-            }
-        } catch (Exception t) {
-            throw new KapuaCertificateException(KapuaErrorCodes.INTERNAL_ERROR, t);
-        }
+        throw new UnsupportedOperationException();
     }
 
     @Override

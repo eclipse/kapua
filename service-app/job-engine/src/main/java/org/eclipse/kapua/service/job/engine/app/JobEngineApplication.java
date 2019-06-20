@@ -16,16 +16,23 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
+import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.KapuaFileUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 
 import com.fasterxml.jackson.databind.Module;
+import com.google.common.base.MoreObjects;
 import io.vertx.core.json.Json;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.config.Ini;
@@ -44,6 +51,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
+import org.springframework.boot.liquibase.LiquibaseServiceLocatorApplicationListener;
 
 @SpringBootApplication
 public class JobEngineApplication implements ApplicationRunner {
@@ -88,6 +96,11 @@ public class JobEngineApplication implements ApplicationRunner {
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(JobEngineApplication.class);
         app.setBannerMode(Banner.Mode.CONSOLE);
+        // Removing LiquibaseServiceLocatorApplicationListener avoids SpringPackageScanClassResolver,
+        // who is only compatible with Liquibase >= 3.2.3
+        app.setListeners(app.getListeners().stream()
+                .filter((listener) -> !(listener instanceof LiquibaseServiceLocatorApplicationListener))
+                .collect(Collectors.toSet()));
         app.run(args);
     }
 
@@ -97,6 +110,28 @@ public class JobEngineApplication implements ApplicationRunner {
         Future<Void> startupFuture = Future.future();
         CountDownLatch startupLatch = new CountDownLatch(1);
         Future.succeededFuture()
+                .compose(previousResult -> {
+                    SystemSetting config = SystemSetting.getInstance();
+                    if (config.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
+                        logger.info("Initialize Liquibase embedded client.");
+                        String dbUsername = config.getString(SystemSettingKey.DB_USERNAME);
+                        String dbPassword = config.getString(SystemSettingKey.DB_PASSWORD);
+                        String schema = MoreObjects.firstNonNull(config.getString(SystemSettingKey.DB_SCHEMA_ENV), config.getString(SystemSettingKey.DB_SCHEMA));
+
+                        // initialize driver
+                        try {
+                            Class.forName(config.getString(SystemSettingKey.DB_JDBC_DRIVER));
+                        } catch (ClassNotFoundException e) {
+                            logger.warn("Could not find jdbc driver: {}", config.getString(SystemSettingKey.DB_JDBC_DRIVER));
+                            return Future.failedFuture(e);
+                        }
+
+                        logger.debug("Starting Liquibase embedded client update - URL: {}, user/pass: {}/{}", JdbcConnectionUrlResolvers.resolveJdbcUrl(), dbUsername, dbPassword);
+
+                        new KapuaLiquibaseClient(JdbcConnectionUrlResolvers.resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
+                    }
+                    return Future.succeededFuture();
+                })
                 .compose(previousResult -> {
                     // Shiro, JAXB and Jackson initialization
                     try {

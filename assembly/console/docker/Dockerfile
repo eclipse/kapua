@@ -25,7 +25,7 @@ ENV DATASTORE_CLIENT org.eclipse.kapua.service.datastore.client.rest.RestDatasto
 ENV SQL_DB_ADDR db
 ENV SQL_DB_PORT 3306
 
-ENV JOB_ENGINE_ADDR http://job-engine
+ENV JOB_ENGINE_ADDR http://job-engine:8080
 
 ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5672)?jms.sendTimeout=1000
 
