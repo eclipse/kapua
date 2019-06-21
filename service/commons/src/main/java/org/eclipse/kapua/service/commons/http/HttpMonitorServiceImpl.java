@@ -28,15 +28,15 @@ public class HttpMonitorServiceImpl implements HttpMonitorService {
     private Vertx vertx;
     private HttpService service;
     private HttpMonitorServiceConfig config;
-    private Set<HealthChecker> livenessCheckers = new HashSet<>();
-    private Set<HealthChecker> readynessCheckers = new HashSet<>();
+    private Set<HealthChecker> livenessCheckers;
+    private Set<HealthChecker> readinessCheckers;
 
     public static class Builder implements HttpMonitorService.Builder {
 
         private Vertx vertx;
         private HttpMonitorServiceConfig config;
         private Set<HealthChecker> livenessCheckers = new HashSet<>();
-        private Set<HealthChecker> readynessCheckers = new HashSet<>();
+        private Set<HealthChecker> readinessCheckers = new HashSet<>();
 
         public Builder(Vertx vertx) {
             this(vertx, new HttpMonitorServiceConfig());
@@ -53,8 +53,8 @@ public class HttpMonitorServiceImpl implements HttpMonitorService {
         }
 
         @Override
-        public void addReadynessChecker(HealthChecker checker) {
-            readynessCheckers.add(checker);
+        public void addReadinessChecker(HealthChecker checker) {
+            readinessCheckers.add(checker);
         }
 
         @Override
@@ -72,7 +72,7 @@ public class HttpMonitorServiceImpl implements HttpMonitorService {
         this.vertx = builder.vertx;
         this.config = builder.config;
         this.livenessCheckers = builder.livenessCheckers;
-        this.readynessCheckers = builder.readynessCheckers;
+        this.readinessCheckers = builder.readinessCheckers;
     }
 
     @Override
@@ -81,8 +81,8 @@ public class HttpMonitorServiceImpl implements HttpMonitorService {
     }
 
     @Override
-    public Set<HealthChecker> getReadynessCheckers() {
-        return Collections.unmodifiableSet(readynessCheckers);
+    public Set<HealthChecker> getReadinessCheckers() {
+        return Collections.unmodifiableSet(readinessCheckers);
     }
 
     @Override
@@ -94,9 +94,9 @@ public class HttpMonitorServiceImpl implements HttpMonitorService {
         if (config.isHealthCheckEnable()) {
             HealthCheckHandler livenessHandler = HealthCheckHandler.create(vertx);
             registerLivenessCheckers(livenessHandler);
-            HealthCheckHandler readynessHandler = HealthCheckHandler.create(vertx);
-            registerReadynessCheckers(readynessHandler);
-            HealthChecksEndpoint healthCheckEndpoint = HealthChecksEndpoint.create(livenessHandler, readynessHandler);
+            HealthCheckHandler readinessHandler = HealthCheckHandler.create(vertx);
+            registerReadynessCheckers(readinessHandler);
+            HealthChecksEndpoint healthCheckEndpoint = HealthChecksEndpoint.create(livenessHandler, readinessHandler);
             endpoints.add(healthCheckEndpoint);
         }
 
@@ -136,7 +136,7 @@ public class HttpMonitorServiceImpl implements HttpMonitorService {
     }
 
     private void registerReadynessCheckers(HealthCheckHandler handler) {
-        for (HealthChecker checker : readynessCheckers) {
+        for (HealthChecker checker : readinessCheckers) {
             checker.registerChecks(vertx, handler);
         }
     }
@@ -144,20 +144,20 @@ public class HttpMonitorServiceImpl implements HttpMonitorService {
     private static class HealthChecksEndpoint implements HttpEndpoint {
 
         private static final String HEALTHCHECK_LIVENESS_PATH = "/alive";
-        private static final String HEALTHCHECK_READYNESS_PATH = "/ready";
+        private static final String HEALTHCHECK_READINESS_PATH = "/ready";
         private static final String BASE_PATH = "/monitoring";
 
         private HealthCheckHandler livenessHandler;
-        private HealthCheckHandler readynessHandler;
+        private HealthCheckHandler readinessHandler;
 
-        private HealthChecksEndpoint(HealthCheckHandler livenessHandler, HealthCheckHandler readynessHandler) {
+        private HealthChecksEndpoint(HealthCheckHandler livenessHandler, HealthCheckHandler readinessHandler) {
             this.livenessHandler = livenessHandler;
-            this.readynessHandler = readynessHandler;
+            this.readinessHandler = readinessHandler;
         }
 
         @Override
         public void registerRoutes(Router router) {
-            router.get(HEALTHCHECK_READYNESS_PATH).handler(readynessHandler);
+            router.get(HEALTHCHECK_READINESS_PATH).handler(readinessHandler);
             router.get(HEALTHCHECK_LIVENESS_PATH).handler(livenessHandler);
         }
 

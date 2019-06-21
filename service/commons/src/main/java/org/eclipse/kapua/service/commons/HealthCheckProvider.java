@@ -17,5 +17,5 @@ public interface HealthCheckProvider {
 
     public Set<HealthChecker> getLivenessCheckers();
 
-    public Set<HealthChecker> getReadynessCheckers();
+    public Set<HealthChecker> getReadinessCheckers();
 }

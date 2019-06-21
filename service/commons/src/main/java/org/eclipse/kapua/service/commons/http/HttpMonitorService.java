@@ -23,7 +23,7 @@ public interface HttpMonitorService extends HealthCheckProvider {
 
         public void addLivenessChecker(HealthChecker checker);
 
-        public void addReadynessChecker(HealthChecker checker);
+        public void addReadinessChecker(HealthChecker checker);
 
         public void setServerConfig(HttpMonitorServiceConfig config);
 
