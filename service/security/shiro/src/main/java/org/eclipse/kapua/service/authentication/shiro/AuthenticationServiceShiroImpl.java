@@ -330,7 +330,9 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             }
             return null;
         });
-        return createAccessToken((KapuaEid) expiredAccessToken.getScopeId(), (KapuaEid) expiredAccessToken.getUserId());
+        AccessToken newAccessToken = createAccessToken((KapuaEid) expiredAccessToken.getScopeId(), (KapuaEid) expiredAccessToken.getUserId());
+        establishSession(SecurityUtils.getSubject(),newAccessToken);
+        return newAccessToken;
     }
 
     @Override
