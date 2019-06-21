@@ -56,6 +56,10 @@
         <api>org.eclipse.kapua.service.device.call.DeviceCallFactory</api>
         <api>org.eclipse.kapua.service.device.call.DeviceMessageFactory</api>
 
+        <api>org.eclipse.kapua.service.device.management.job.manager.JobDeviceManagementOperationManagerService</api>
+        <api>org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationService</api>
+        <api>org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationFactory</api>
+
         <api>org.eclipse.kapua.service.device.management.registry.manager.DeviceManagementRegistryManagerService</api>
         <api>org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService</api>
         <api>org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory</api>
@@ -71,6 +75,12 @@
         <api>org.eclipse.kapua.service.device.registry.event.DeviceEventFactory</api>
         <api>org.eclipse.kapua.service.device.registry.event.DeviceEventService</api>
         <api>org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService</api>
+
+        <api>org.eclipse.kapua.service.job.targets.JobTargetService</api>
+        <api>org.eclipse.kapua.service.job.targets.JobTargetFactory</api>
+
+        <api>org.eclipse.kapua.job.engine.JobEngineService</api>
+        <api>org.eclipse.kapua.job.engine.JobEngineFactory</api>
 
         <api>org.eclipse.kapua.service.tag.TagFactory</api>
         <api>org.eclipse.kapua.service.tag.TagService</api>
@@ -93,6 +103,7 @@
     </provided>
     <packages>
         <package>org.eclipse.kapua.commons</package>
+        <package>org.eclipse.kapua.job.engine.remote</package>
         <package>org.eclipse.kapua.service</package>
         <package>org.eclipse.kapua.transport</package>
         <package>org.eclipse.kapua.message</package>

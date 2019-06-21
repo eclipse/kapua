@@ -80,6 +80,9 @@
         <api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService</api>
         <api>org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory</api>
 
+        <api>org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationService</api>
+        <api>org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationFactory</api>
+
         <api>org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService</api>
         <api>org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory</api>
 
@@ -127,9 +130,10 @@
     </provided>
     <packages>
         <package>org.eclipse.kapua.commons</package>
-        <package>org.eclipse.kapua.job</package>
         <package>org.eclipse.kapua.message</package>
         <package>org.eclipse.kapua.service</package>
         <package>org.eclipse.kapua.transport</package>
+        <package>org.eclipse.kapua.job.engine.jbatch</package>
+        <package>org.eclipse.kapua.job.engine.queue.jbatch</package>
     </packages>
 </locator-config>

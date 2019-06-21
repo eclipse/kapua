@@ -17,6 +17,7 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
         logicalFilePath="KapuaDB/changelog-scheduler-1.1.0.xml">
 
+    <include relativeToChangelogFile="true" file="./scheduler-engine-quartz-update_job_launcher.xml"/>
     <include relativeToChangelogFile="true" file="./trigger-description.xml"/>
 
 </databaseChangeLog>

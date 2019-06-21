@@ -316,6 +316,7 @@ public class GwtKapuaJobModelConverter {
     public static JobStartOptions convertJobStartOptions(GwtJobStartOptions gwtJobStartOptions) {
         JobStartOptions jobStartOptions = JOB_ENGINE_FACTORY.newJobStartOptions();
         jobStartOptions.setTargetIdSublist(convertTargetIdSublist(gwtJobStartOptions.getTargetIdSublist()));
+        jobStartOptions.setResetStepIndex(gwtJobStartOptions.getResetStepIndex());
         jobStartOptions.setFromStepIndex(gwtJobStartOptions.getFromStepIndex());
         return jobStartOptions;
     }

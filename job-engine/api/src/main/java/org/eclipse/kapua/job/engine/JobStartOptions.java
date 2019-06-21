@@ -14,6 +14,7 @@ package org.eclipse.kapua.job.engine;
 import org.eclipse.kapua.KapuaSerializable;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.service.job.targets.JobTarget;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -71,6 +72,22 @@ public interface JobStartOptions extends KapuaSerializable {
      */
     @XmlTransient
     void addTargetIdToSublist(KapuaId targetId);
+
+    /**
+     * Gets whether or not the {@link JobTarget#getStepIndex()} needs to be reset to the given {@link #getFromStepIndex()}.
+     *
+     * @return {@code true} if the {@link JobTarget#getStepIndex()} needs to be reset to the given {@link #getFromStepIndex()}, {@code false} otherwise.
+     * @since 1.1.0
+     */
+    boolean getResetStepIndex();
+
+    /**
+     * Sets whether or not the {@link JobTarget#getStepIndex()} needs to be reset to the given {@link #getFromStepIndex()}.
+     *
+     * @param resetStepIndex {@code true} if the {@link JobTarget#getStepIndex()} needs to be reset to the given {@link #getFromStepIndex()}, {@code false} otherwise.
+     * @since 1.1.0
+     */
+    void setResetStepIndex(boolean resetStepIndex);
 
     /**
      * Gets the starting {@link org.eclipse.kapua.service.job.step.JobStep} index.

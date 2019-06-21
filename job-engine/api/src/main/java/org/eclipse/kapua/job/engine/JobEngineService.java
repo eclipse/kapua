@@ -15,6 +15,8 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * {@link JobEngineService} definition.
  *
@@ -30,7 +32,7 @@ public interface JobEngineService extends KapuaService {
      * @throws KapuaException if something goes bad when starting the job
      * @since 1.0.0
      */
-    void startJob(KapuaId scopeId, KapuaId jobId) throws KapuaException;
+    void startJob(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) throws KapuaException;
 
     /**
      * Starts the {@link org.eclipse.kapua.service.job.Job} with the given {@link JobStartOptions}.
@@ -41,7 +43,7 @@ public interface JobEngineService extends KapuaService {
      * @throws KapuaException if something goes bad when starting the job
      * @since 1.0.0
      */
-    void startJob(KapuaId scopeId, KapuaId jobId, JobStartOptions jobStartOptions) throws KapuaException;
+    void startJob(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull JobStartOptions jobStartOptions) throws KapuaException;
 
     /**
      * Checks whether or not the {@link org.eclipse.kapua.service.job.Job} is running.
@@ -52,7 +54,7 @@ public interface JobEngineService extends KapuaService {
      * @throws KapuaException if something goes bad when checking the status of the job
      * @since 1.0.0
      */
-    boolean isRunning(KapuaId scopeId, KapuaId jobId) throws KapuaException;
+    boolean isRunning(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) throws KapuaException;
 
     /**
      * Stops all the running {@link org.eclipse.kapua.service.job.execution.JobExecution} of the {@link org.eclipse.kapua.service.job.Job}.
@@ -68,7 +70,7 @@ public interface JobEngineService extends KapuaService {
      * @throws KapuaException if something goes bad when checking the status of the job
      * @since 1.0.0
      */
-    void stopJob(KapuaId scopeId, KapuaId jobId) throws KapuaException;
+    void stopJob(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) throws KapuaException;
 
     /**
      * Stops the {@link org.eclipse.kapua.service.job.execution.JobExecution}.
@@ -85,7 +87,7 @@ public interface JobEngineService extends KapuaService {
      * @throws KapuaException if something goes bad when checking the status of the job
      * @since 1.1.0
      */
-    void stopJobExecution(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) throws KapuaException;
+    void stopJobExecution(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull KapuaId jobExecutionId) throws KapuaException;
 
     /**
      * Resumes the {@link org.eclipse.kapua.service.job.execution.JobExecution}.
@@ -96,7 +98,7 @@ public interface JobEngineService extends KapuaService {
      * @throws KapuaException If something goes bad when resuming the {@link org.eclipse.kapua.service.job.execution.JobExecution}
      * @since 1.1.0
      */
-    void resumeJobExecution(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) throws KapuaException;
+    void resumeJobExecution(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull KapuaId jobExecutionId) throws KapuaException;
 
     /**
      * Cleans all the Job related data from the data structures supporting the {@link JobEngineService}
@@ -106,5 +108,5 @@ public interface JobEngineService extends KapuaService {
      * @throws KapuaException if something goes bad when checking the status of the job
      * @since 1.0.0
      */
-    void cleanJobData(KapuaId scopeId, KapuaId jobId) throws KapuaException;
+    void cleanJobData(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) throws KapuaException;
 }

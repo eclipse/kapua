@@ -16,7 +16,8 @@ import org.eclipse.kapua.model.KapuaUpdatableEntityAttributes;
 public class JobTargetAttributes extends KapuaUpdatableEntityAttributes {
 
     public static final String JOB_ID = "jobId";
-    public static final String STEP_INDEX = "stepIndex";
+    public static final String JOB_TARGET_ID = "jobTargetId";
     public static final String STATUS = "status";
+    public static final String STEP_INDEX = "stepIndex";
 
 }

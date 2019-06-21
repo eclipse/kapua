@@ -13,6 +13,6 @@ package org.eclipse.kapua.service.job.operation;
 
 import javax.batch.api.chunk.ItemProcessor;
 
-public interface TargetOperation extends ItemProcessor {
+public interface TargetProcessor extends ItemProcessor {
 
 }

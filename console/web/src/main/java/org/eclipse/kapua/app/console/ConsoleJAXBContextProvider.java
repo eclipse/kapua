@@ -19,6 +19,7 @@ import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreXmlRegistry;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.event.ServiceEvent;
+import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
 import org.eclipse.kapua.model.config.metatype.KapuaTmetadata;
@@ -46,7 +47,6 @@ import org.eclipse.kapua.service.device.management.packages.model.download.Devic
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
-import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 
 import javax.xml.bind.JAXBContext;
@@ -59,7 +59,7 @@ public class ConsoleJAXBContextProvider implements JAXBContextProvider {
     public JAXBContext getJAXBContext() throws KapuaException {
         try {
             if (context == null) {
-                context = JAXBContextFactory.createContext(new Class<?>[] {
+                context = JAXBContextFactory.createContext(new Class<?>[]{
                         KuraDeviceComponentConfiguration.class,
                         KuraDeviceConfiguration.class,
                         KuraDeploymentPackage.class,
@@ -106,7 +106,7 @@ public class ConsoleJAXBContextProvider implements JAXBContextProvider {
                         EventStoreRecordCreator.class,
                         EventStoreRecordListResult.class,
                         EventStoreRecordQuery.class,
-                        EventStoreXmlRegistry.class
+                        EventStoreXmlRegistry.class,
 
                 }, null);
             }

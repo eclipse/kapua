@@ -173,6 +173,7 @@
                 <include>io.netty:netty</include>
 
                 <include>javax.inject:javax.inject</include>
+                <include>javax.batch:javax.batch-api</include>
 
                 <include>joda-time:joda-time</include>
 
@@ -209,6 +210,7 @@
                 <include>org.hdrhistogram:HdrHistogram</include>
                 <include>org.javassist:javassist</include>
                 <include>org.liquibase:liquibase-core</include>
+                <include>org.quartz-scheduler:quartz</include>
                 <include>org.reflections:reflections</include>
                 <include>org.slf4j:log4j-over-slf4j</include>
                 <include>org.slf4j:slf4j-api</include>
@@ -238,6 +240,8 @@
                 <include>${pom.groupId}:kapua-device-management-command-internal</include>
                 <include>${pom.groupId}:kapua-device-management-configuration-api</include>
                 <include>${pom.groupId}:kapua-device-management-configuration-internal</include>
+                <include>${pom.groupId}:kapua-device-management-job-api</include>
+                <include>${pom.groupId}:kapua-device-management-job-internal</include>
                 <include>${pom.groupId}:kapua-device-management-packages-api</include>
                 <include>${pom.groupId}:kapua-device-management-packages-internal</include>
                 <include>${pom.groupId}:kapua-device-management-request-api</include>
@@ -248,8 +252,14 @@
                 <include>${pom.groupId}:kapua-device-registry-internal</include>
                 <include>${pom.groupId}:kapua-foreignkeys</include>
                 <include>${pom.groupId}:kapua-guice</include>
+                <include>${pom.groupId}:kapua-job-api</include>
+                <include>${pom.groupId}:kapua-job-internal</include>
+                <include>${pom.groupId}:kapua-job-engine-api</include>
+                <include>${pom.groupId}:kapua-job-engine-remote</include>
                 <include>${pom.groupId}:kapua-message-api</include>
                 <include>${pom.groupId}:kapua-message-internal</include>
+                <include>${pom.groupId}:kapua-scheduler-api</include>
+                <include>${pom.groupId}:kapua-scheduler-quartz</include>
                 <include>${pom.groupId}:kapua-security-authentication-api</include>
                 <include>${pom.groupId}:kapua-security-authorization-api</include>
                 <include>${pom.groupId}:kapua-security-certificate-api</include>

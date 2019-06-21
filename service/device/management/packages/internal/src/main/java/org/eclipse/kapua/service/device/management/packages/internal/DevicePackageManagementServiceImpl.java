@@ -123,7 +123,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
                 DeviceManagementSetting config = DeviceManagementSetting.getInstance();
                 String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
-                String body = null;
+                String body;
                 try {
                     body = new String(responsePayload.getBody(), charEncoding);
                 } catch (Exception e) {
@@ -178,7 +178,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
         //
         // Generate requestId
-        KapuaId operationId = packageDownloadOptions.getForcedOperationId() != null ? packageDownloadOptions.getForcedOperationId() : new KapuaEid(IdGenerator.generate());
+        KapuaId operationId = new KapuaEid(IdGenerator.generate());
 
         //
         // Prepare the request
@@ -220,8 +220,6 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         //
         // Check response
         if (!responseMessage.getResponseCode().isAccepted()) {
-            KapuaResponsePayload responsePayload = responseMessage.getPayload();
-
             closeManagementOperation(scopeId, deviceId, operationId, responseMessage);
 
             throw new KapuaException(KapuaErrorCodes.DOWNLOAD_PACKAGE_EXCEPTION);
@@ -359,7 +357,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
         //
         // Generate requestId
-        KapuaId operationId = packageInstallOptions.getForcedOperationId() != null ? packageInstallOptions.getForcedOperationId() : new KapuaEid(IdGenerator.generate());
+        KapuaId operationId = new KapuaEid(IdGenerator.generate());
 
         //
         // Prepare the request
@@ -454,15 +452,15 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
             DeviceManagementSetting config = DeviceManagementSetting.getInstance();
             String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
-            String body = null;
+            String body;
             try {
                 body = new String(responsePayload.getBody(), charEncoding);
             } catch (Exception e) {
-                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, responsePayload.getBody());
+                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, (Object) responsePayload.getBody());
 
             }
 
-            DevicePackageInstallOperation installOperation = null;
+            DevicePackageInstallOperation installOperation;
             try {
                 installOperation = XmlUtil.unmarshal(body, DevicePackageInstallOperationImpl.class);
             } catch (Exception e) {
@@ -505,7 +503,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
         //
         // Generate requestId
-        KapuaId operationId = packageUninstallOptions.getForcedOperationId() != null ? packageUninstallOptions.getForcedOperationId() : new KapuaEid(IdGenerator.generate());
+        KapuaId operationId = new KapuaEid(IdGenerator.generate());
 
         //
         // Prepare the request
@@ -600,7 +598,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
             DeviceManagementSetting config = DeviceManagementSetting.getInstance();
             String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
-            String body = null;
+            String body;
             try {
                 body = new String(responsePayload.getBody(), charEncoding);
             } catch (Exception e) {
@@ -608,7 +606,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
             }
 
-            DevicePackageUninstallOperation uninstallOperation = null;
+            DevicePackageUninstallOperation uninstallOperation;
             try {
                 uninstallOperation = XmlUtil.unmarshal(body, DevicePackageUninstallOperationImpl.class);
             } catch (Exception e) {
