@@ -15,6 +15,7 @@ import com.codahale.metrics.Counter;
 import com.google.common.base.MoreObjects;
 import org.apache.camel.Exchange;
 import org.apache.camel.spi.UriEndpoint;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.message.CamelKapuaMessage;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
@@ -24,6 +25,7 @@ import org.eclipse.kapua.service.device.management.job.manager.JobDeviceManageme
 import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyMessage;
 import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyPayload;
 import org.eclipse.kapua.service.device.management.registry.manager.DeviceManagementRegistryManagerService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,13 +71,13 @@ public class DeviceManagementNotificationMessageProcessor extends AbstractProces
         KapuaNotifyPayload notifyPayload = notifyMessage.getPayload();
 
         try {
-        DEVICE_MANAGEMENT_REGISTRY_MANAGER_SERVICE.processOperationNotification(
-                notifyMessage.getScopeId(),
-                notifyPayload.getOperationId(),
-                MoreObjects.firstNonNull(notifyMessage.getSentOn(), notifyMessage.getReceivedOn()),
-                notifyPayload.getResource(),
-                notifyPayload.getStatus(),
-                notifyPayload.getProgress());
+            DEVICE_MANAGEMENT_REGISTRY_MANAGER_SERVICE.processOperationNotification(
+                    notifyMessage.getScopeId(),
+                    notifyPayload.getOperationId(),
+                    MoreObjects.firstNonNull(notifyMessage.getSentOn(), notifyMessage.getReceivedOn()),
+                    notifyPayload.getResource(),
+                    notifyPayload.getStatus(),
+                    notifyPayload.getProgress());
 
             JOB_DEVICE_MANAGEMENT_OPERATION_MANAGER_SERVICE.processJobTargetOnNotification(
                     notifyMessage.getScopeId(),
