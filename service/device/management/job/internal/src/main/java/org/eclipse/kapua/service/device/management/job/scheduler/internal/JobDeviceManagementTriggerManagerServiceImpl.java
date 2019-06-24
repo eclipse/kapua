@@ -19,6 +19,7 @@ import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.service.device.management.job.scheduler.manager.JobDeviceManagementTriggerManagerService;
 import org.eclipse.kapua.service.device.management.job.scheduler.manager.exception.ProcessOnConnectException;
 import org.eclipse.kapua.service.job.step.JobStepAttributes;
@@ -46,6 +47,8 @@ import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionQ
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
 
 /**
  * {@link JobDeviceManagementTriggerManagerService} implementation.
@@ -105,6 +108,8 @@ public class JobDeviceManagementTriggerManagerServiceImpl implements JobDeviceMa
     @Override
     public void processOnConnect(KapuaId scopeId, KapuaId deviceId) throws ProcessOnConnectException {
 
+        Date now = new Date();
+
         try {
             JobTargetQuery jobTargetQuery = JOB_TARGET_FACTORY.newQuery(scopeId);
 
@@ -134,7 +139,12 @@ public class JobDeviceManagementTriggerManagerServiceImpl implements JobDeviceMa
                         triggerQuery.andPredicate(
                                 triggerQuery.attributePredicate(TriggerAttributes.TRIGGER_DEFINITION_ID, DEVICE_CONNECT_TRIGGER.getId()),
                                 triggerQuery.attributePredicate(TriggerAttributes.TRIGGER_PROPERTIES_TYPE, KapuaId.class.getName()),
-                                triggerQuery.attributePredicate(TriggerAttributes.TRIGGER_PROPERTIES_VALUE, jt.getJobId().toCompactId())
+                                triggerQuery.attributePredicate(TriggerAttributes.TRIGGER_PROPERTIES_VALUE, jt.getJobId().toCompactId()),
+                                triggerQuery.attributePredicate(TriggerAttributes.STARTS_ON, now, AttributePredicate.Operator.LESS_THAN),
+                                triggerQuery.orPredicate(
+                                        triggerQuery.attributePredicate(TriggerAttributes.ENDS_ON, null),
+                                        triggerQuery.attributePredicate(TriggerAttributes.ENDS_ON, now, AttributePredicate.Operator.GREATER_THAN)
+                                )
                         )
                 );
 
