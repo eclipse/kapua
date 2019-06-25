@@ -11,16 +11,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
-import org.eclipse.kapua.KapuaException;
+import com.google.common.collect.Lists;
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
+import org.eclipse.kapua.service.scheduler.trigger.definition.quartz.TriggerPropertyImpl;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
@@ -50,19 +55,25 @@ public class TriggerImpl extends AbstractKapuaNamedEntity implements Trigger {
     private Date endsOn;
 
     @Basic
-    @Column(name = "cron_scheduling", nullable = true, updatable = false)
+    @Column(name = "cron_scheduling", nullable = true, updatable = true)
     private String cronScheduling;
 
     @Basic
-    @Column(name = "retry_interval", nullable = true, updatable = false)
+    @Column(name = "retry_interval", nullable = true, updatable = true)
     private Long retryInterval;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "eid", column = @Column(name = "trigger_definition_id"))
+    })
+    private KapuaEid triggerDefinitionId;
 
     @ElementCollection
     @CollectionTable(name = "schdl_trigger_properties", joinColumns = @JoinColumn(name = "trigger_id", referencedColumnName = "id"))
     private List<TriggerPropertyImpl> triggerProperties;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @since 1.0.0
      */
@@ -71,7 +82,7 @@ public class TriggerImpl extends AbstractKapuaNamedEntity implements Trigger {
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param scopeId The scope {@link KapuaId} to set into the {@link Trigger}
      * @since 1.0.0
@@ -83,17 +94,17 @@ public class TriggerImpl extends AbstractKapuaNamedEntity implements Trigger {
     /**
      * Clone constructor.
      *
-     * @param trigger
-     * @throws KapuaException
+     * @param trigger The {@link Trigger} to clone.
      * @since 1.1.0
      */
-    public TriggerImpl(Trigger trigger) throws KapuaException {
+    public TriggerImpl(Trigger trigger) {
         super(trigger);
 
         setStartsOn(trigger.getStartsOn());
         setEndsOn(trigger.getEndsOn());
         setCronScheduling(trigger.getCronScheduling());
         setRetryInterval(trigger.getRetryInterval());
+        setTriggerDefinitionId(trigger.getTriggerDefinitionId());
         setTriggerProperties(trigger.getTriggerProperties());
     }
 
@@ -138,12 +149,22 @@ public class TriggerImpl extends AbstractKapuaNamedEntity implements Trigger {
     }
 
     @Override
-    public List<TriggerPropertyImpl> getTriggerProperties() {
+    public KapuaId getTriggerDefinitionId() {
+        return triggerDefinitionId;
+    }
+
+    @Override
+    public void setTriggerDefinitionId(KapuaId triggerDefinitionId) {
+        this.triggerDefinitionId = KapuaEid.parseKapuaId(triggerDefinitionId);
+    }
+
+    @Override
+    public List<TriggerProperty> getTriggerProperties() {
         if (triggerProperties == null) {
             triggerProperties = new ArrayList<>();
         }
 
-        return triggerProperties;
+        return Lists.newArrayList(triggerProperties);
     }
 
     @Override

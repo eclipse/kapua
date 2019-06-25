@@ -56,8 +56,8 @@ import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
 
 import java.util.ArrayList;
 import java.util.HashSet;

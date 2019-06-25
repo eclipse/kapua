@@ -20,6 +20,7 @@ import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStepProperty;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobTarget;
 import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTrigger;
 import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTriggerProperty;
+import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.definition.GwtTriggerDefinition;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.execution.JobExecution;
 import org.eclipse.kapua.service.job.step.JobStep;
@@ -27,7 +28,8 @@ import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinition;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,19 +121,32 @@ public class KapuaGwtJobModelConverter {
         return gwtJobStepDefinition;
     }
 
-    public static GwtTrigger convertTrigger(Trigger trigger) {
+    public static GwtTrigger convertTrigger(Trigger trigger, String triggerDefinitionName) {
         GwtTrigger gwtTrigger = new GwtTrigger();
 
         KapuaGwtCommonsModelConverter.convertUpdatableEntity(trigger, gwtTrigger);
 
         gwtTrigger.setTriggerName(trigger.getName());
-        gwtTrigger.setCronScheduling(trigger.getCronScheduling());
         gwtTrigger.setStartsOn(trigger.getStartsOn());
         gwtTrigger.setEndsOn(trigger.getEndsOn());
-        gwtTrigger.setRetryInterval(trigger.getRetryInterval());
+        gwtTrigger.setTriggerDefinitionName(triggerDefinitionName);
         gwtTrigger.setTriggerProperties(convertTriggerProperties(trigger.getTriggerProperties()));
 
         return gwtTrigger;
+    }
+
+    public static GwtTriggerDefinition convertTriggerDefinition(TriggerDefinition triggerDefinition) {
+        GwtTriggerDefinition gwtTriggerDefinition = new GwtTriggerDefinition();
+
+        KapuaGwtCommonsModelConverter.convertEntity(triggerDefinition, gwtTriggerDefinition);
+
+        gwtTriggerDefinition.setTriggerDefinitionName(triggerDefinition.getName());
+        gwtTriggerDefinition.setDescription(triggerDefinition.getDescription());
+        gwtTriggerDefinition.setProcessorName(triggerDefinition.getProcessorName());
+        gwtTriggerDefinition.setTriggerProperties(convertTriggerProperties(triggerDefinition.getTriggerProperties()));
+        gwtTriggerDefinition.setTriggerType(triggerDefinition.getTriggerType().name());
+
+        return gwtTriggerDefinition;
     }
 
     private static List<GwtTriggerProperty> convertTriggerProperties(List<TriggerProperty> triggerPropertyList) {

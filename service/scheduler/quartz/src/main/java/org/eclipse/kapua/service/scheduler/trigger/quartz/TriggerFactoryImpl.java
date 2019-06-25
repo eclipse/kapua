@@ -18,8 +18,9 @@ import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerProperty;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
+import org.eclipse.kapua.service.scheduler.trigger.definition.quartz.TriggerPropertyImpl;
 
 /**
  * {@link TriggerFactory} implementation.

@@ -15,11 +15,14 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
@@ -113,10 +116,24 @@ public class JobTabSchedulesGrid extends EntityGrid<GwtTrigger> {
         columnConfig = new ColumnConfig("endsOnFormatted", JOB_MSGS.gridJobSchedulesColumnHeaderEndsOnFormatted(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("cronScheduling", JOB_MSGS.gridJobSchedulesColumnHeaderCronScheduling(), 200);
+        columnConfig = new ColumnConfig("triggerDefinitionName", JOB_MSGS.gridJobSchedulesColumnHeaderTriggerDefinitionName(), 200);
         columnConfigs.add(columnConfig);
 
-        columnConfig = new ColumnConfig("retryInterval", JOB_MSGS.gridJobSchedulesColumnHeaderRetryInterval(), 200);
+        columnConfig = new ColumnConfig("value", JOB_MSGS.gridJobSchedulesColumnHeaderValue(), 200);
+        columnConfig.setRenderer(new GridCellRenderer<GwtTrigger>() {
+            @Override
+            public Object render(GwtTrigger trigger, String s, ColumnData columnData, int i, int i1, ListStore listStore, Grid grid) {
+                if ("Interval Job".equals(trigger.getTriggerDefinitionName())) {
+                    return trigger.getInterval();
+                } else if ("Cron Job".equals(trigger.getTriggerDefinitionName())) {
+                    return trigger.getCronExpression();
+                } else if ("Device Connect".equals(trigger.getTriggerDefinitionName())) {
+                    return trigger.getCronExpression();
+                }
+
+                return null;
+            }
+        });
         columnConfigs.add(columnConfig);
 
         return columnConfigs;

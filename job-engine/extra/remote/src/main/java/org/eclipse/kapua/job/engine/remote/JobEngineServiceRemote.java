@@ -24,7 +24,7 @@ import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.JobDomains;
-import org.eclipse.kapua.service.scheduler.quartz.utils.QuartzTriggerUtils;
+import org.eclipse.kapua.service.scheduler.quartz.driver.QuartzTriggerDriver;
 import org.quartz.JobDataMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,7 +79,7 @@ public class JobEngineServiceRemote implements JobEngineService {
             jobDataMap.put("jobStartOptions", jobStartOptions);
 
             // Create the trigger
-            QuartzTriggerUtils.createQuartzTrigger(scopeId, jobId, KAPUA_ID_FACTORY.newKapuaId(IdGenerator.generate()), jobDataMap);
+            QuartzTriggerDriver.createQuartzTrigger(scopeId, jobId, KAPUA_ID_FACTORY.newKapuaId(IdGenerator.generate()), jobDataMap);
         } catch (Exception e) {
             throw KapuaException.internalError(e, "Error!");
         }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,20 +9,29 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.scheduler.trigger;
+package org.eclipse.kapua.service.scheduler.trigger.definition;
 
-public interface TriggerProperty {
+/**
+ * {@link TriggerType} definition.
+ * <p>
+ * Possible 'nature' of the {@link TriggerDefinition}
+ *
+ * @since 1.1.0
+ */
+public enum TriggerType {
 
-    String getName();
+    /**
+     * An time-based {@link TriggerDefinition}.
+     *
+     * @since 1.1.0
+     */
+    TIMER,
 
-    void setName(String name);
-
-    String getPropertyType();
-
-    void setPropertyType(String propertyType);
-
-    String getPropertyValue();
-
-    void setPropertyValue(String propertyValue);
+    /**
+     * An event-based {@link TriggerDefinition}.
+     *
+     * @since 1.1.0
+     */
+    EVENT
 
 }

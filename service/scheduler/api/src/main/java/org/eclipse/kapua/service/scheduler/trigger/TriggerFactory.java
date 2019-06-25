@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.scheduler.trigger;
 
 import org.eclipse.kapua.model.KapuaEntityFactory;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
 
 /**
  * {@link TriggerFactory} definition.

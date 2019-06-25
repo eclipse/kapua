@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+-->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="KapuaDB/changelog-scheduler-1.1.0.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml"/>
+
+    <changeSet id="changelog-trigger-definition-1.1.0_createTable" author="eurotech">
+        <createTable tableName="schdl_trigger_definition">
+            <column name="scope_id" type="bigint(21) unsigned"/>
+            <column name="id" type="bigint(21) unsigned" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column name="created_on" type="timestamp(3)" defaultValueComputed="${now}"/>
+            <column name="created_by" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_on" type="timestamp(3)" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="text"/>
+            <column name="trigger_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="processor_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="optlock" type="int unsigned"/>
+            <column name="attributes" type="text"/>
+            <column name="properties" type="text"/>
+        </createTable>
+
+        <sql dbms="h2">ALTER TABLE job_job_step_definition ADD CHECK scope_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE job_job_step_definition ADD CHECK id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE job_job_step_definition ADD CHECK created_by >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE job_job_step_definition ADD CHECK modified_by >= 0;</sql>
+
+        <createIndex tableName="schdl_trigger_definition" indexName="idx_schdl_trigger_definition_scope_id">
+            <column name="scope_id"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex tableName="schdl_trigger_definition" indexName="idx_schdl_trigger_definition_scope_id"/>
+            <dropTable tableName="schdl_trigger_definition"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
