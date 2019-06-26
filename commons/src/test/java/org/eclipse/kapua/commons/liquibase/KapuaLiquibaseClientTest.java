@@ -12,6 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.liquibase;
 
+import org.assertj.core.api.Assertions;
+import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -20,22 +27,22 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-import org.assertj.core.api.Assertions;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
 @Category(JUnitTests.class)
 public class KapuaLiquibaseClientTest {
 
+    private static final String JDBC_URL = "jdbc:h2:mem:kapua;MODE=MySQL;";
+    private static final String USERNAME = "kapua";
+    private static final String PASSWORD = "kapua";
+
+    private static final String TABLE_NAME = "TST_LIQUIBASE";
+
+    private static final String QUERY_SHOW_TABLES = "SHOW TABLES";
+
     private Connection connection;
-    private static final String JDBC_URL = "jdbc:h2:mem:kapua;MODE=MySQL";
 
     @Before
     public void start() throws SQLException {
-        connection = DriverManager.getConnection(JDBC_URL, "kapua", "kapua");
+        connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
         dropAllTables();
     }
 
@@ -52,15 +59,15 @@ public class KapuaLiquibaseClientTest {
         System.setProperty("LIQUIBASE_ENABLED", "true");
 
         // When
-        new KapuaLiquibaseClient(JDBC_URL, "kapua", "kapua").update();
+        new KapuaLiquibaseClient(JDBC_URL, USERNAME, PASSWORD).update();
 
         // Then
-        ResultSet sqlResults = connection.prepareStatement("SHOW TABLES").executeQuery();
+        ResultSet sqlResults = connection.prepareStatement(QUERY_SHOW_TABLES).executeQuery();
         List<String> tables = new LinkedList<>();
         while (sqlResults.next()) {
             tables.add(sqlResults.getString(1));
         }
-        Assertions.assertThat(tables).contains("tst_liquibase");
+        Assertions.assertThat(tables).contains(TABLE_NAME);
     }
 
     @Test
@@ -69,16 +76,16 @@ public class KapuaLiquibaseClientTest {
         System.setProperty("LIQUIBASE_ENABLED", "true");
 
         // When
-        new KapuaLiquibaseClient(JDBC_URL, "kapua", "kapua").update();
-        new KapuaLiquibaseClient(JDBC_URL, "kapua", "kapua").update();
+        new KapuaLiquibaseClient(JDBC_URL, USERNAME, PASSWORD).update();
+        new KapuaLiquibaseClient(JDBC_URL, USERNAME, PASSWORD).update();
 
         // Then
-        ResultSet sqlResults = connection.prepareStatement("SHOW TABLES").executeQuery();
+        ResultSet sqlResults = connection.prepareStatement(QUERY_SHOW_TABLES).executeQuery();
         List<String> tables = new LinkedList<>();
         while (sqlResults.next()) {
             tables.add(sqlResults.getString(1));
         }
-        Assertions.assertThat(tables).contains("tst_liquibase");
+        Assertions.assertThat(tables).contains(TABLE_NAME);
     }
 
     @Test
@@ -88,10 +95,10 @@ public class KapuaLiquibaseClientTest {
         System.setProperty("LIQUIBASE_ENABLED", "false");
 
         // When
-        new KapuaLiquibaseClient(JDBC_URL, "kapua", "kapua").update();
+        new KapuaLiquibaseClient(JDBC_URL, USERNAME, PASSWORD).update();
 
         // Then
-        ResultSet sqlResults = connection.prepareStatement("SHOW TABLES").executeQuery();
+        ResultSet sqlResults = connection.prepareStatement(QUERY_SHOW_TABLES).executeQuery();
         Assertions.assertThat(sqlResults.next()).isFalse();
     }
 
@@ -102,7 +109,7 @@ public class KapuaLiquibaseClientTest {
 
         // When
         try {
-            new KapuaLiquibaseClient(JDBC_URL, "kapua", "kapua", Optional.of("foo")).update();
+            new KapuaLiquibaseClient(JDBC_URL, USERNAME, PASSWORD, Optional.of("foo")).update();
         } catch (Exception e) {
             // Then
             Assertions.assertThat(e).hasMessageContaining("Schema \"FOO\" not found");
@@ -117,9 +124,9 @@ public class KapuaLiquibaseClientTest {
     private void dropAllTables() throws SQLException {
 
         String[] types = {"TABLE"};
-        ResultSet sqlResults = connection.getMetaData().getTables(null, null, "%" , types);
+        ResultSet sqlResults = connection.getMetaData().getTables(null, null, "%", types);
 
-        while(sqlResults.next()) {
+        while (sqlResults.next()) {
             String sqlStatement = String.format("DROP TABLE IF EXISTS %s", sqlResults.getString("TABLE_NAME").toUpperCase());
             connection.prepareStatement(sqlStatement).execute();
         }
