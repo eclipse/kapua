@@ -780,7 +780,7 @@ public class DeviceRegistrySteps extends TestBase {
         }
     }
 
-    @When("^I delete the device with the cleint id \"(.+)\"$")
+    @When("^I delete the device with the client id \"(.+)\"$")
     public void deleteDeviceWithClientId(String clientId)
             throws Exception {
 
@@ -1625,28 +1625,32 @@ public class DeviceRegistrySteps extends TestBase {
 
     @When("^I search for events from device \"(.+)\" in account \"(.+)\"$")
     public void searchForEventsFromDeviceWithClientID(String clientId, String account)
-            throws KapuaException {
+            throws Exception {
 
         DeviceEventQuery tmpQuery;
         Device tmpDev;
         DeviceEventListResult tmpList;
         Account tmpAcc;
 
-        tmpAcc = accountService.findByName(account);
-        Assert.assertNotNull(tmpAcc);
-        Assert.assertNotNull(tmpAcc.getId());
+        try {
+            tmpAcc = accountService.findByName(account);
+            Assert.assertNotNull(tmpAcc);
+            Assert.assertNotNull(tmpAcc.getId());
 
-        tmpDev = deviceRegistryService.findByClientId(tmpAcc.getId(), clientId);
-        Assert.assertNotNull(tmpDev);
-        Assert.assertNotNull(tmpDev.getId());
+            tmpDev = deviceRegistryService.findByClientId(tmpAcc.getId(), clientId);
+            Assert.assertNotNull(tmpDev);
+            Assert.assertNotNull(tmpDev.getId());
 
-        tmpQuery = eventFactory.newQuery(tmpAcc.getId());
-        tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceEventAttributes.DEVICE_ID, tmpDev.getId(), AttributePredicate.Operator.EQUAL));
-        tmpQuery.setSortCriteria(new FieldSortCriteria(DeviceEventAttributes.RECEIVED_ON, FieldSortCriteria.SortOrder.ASCENDING));
-        tmpList = eventService.query(tmpQuery);
+            tmpQuery = eventFactory.newQuery(tmpAcc.getId());
+            tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceEventAttributes.DEVICE_ID, tmpDev.getId(), AttributePredicate.Operator.EQUAL));
+            tmpQuery.setSortCriteria(new FieldSortCriteria(DeviceEventAttributes.RECEIVED_ON, FieldSortCriteria.SortOrder.ASCENDING));
+            tmpList = eventService.query(tmpQuery);
 
-        Assert.assertNotNull(tmpList);
-        stepData.put("DeviceEventList", tmpList);
+            Assert.assertNotNull(tmpList);
+            stepData.put("DeviceEventList", tmpList);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
     }
 
     @Then("^The event matches the creator parameters$")
@@ -2517,5 +2521,42 @@ public class DeviceRegistrySteps extends TestBase {
                 return false;
         }
         return false;
+    }
+
+    @Then("^I create a device with name \"([^\"]*)\"$")
+    public void iCreateADeviceWithName(String clientId) throws Exception {
+        DeviceCreator deviceCreator = deviceFactory.newCreator(getCurrentScopeId());
+        deviceCreator.setClientId(clientId);
+        stepData.put("DeviceCreator", deviceCreator);
+
+        try {
+            primeException();
+            stepData.remove("Device");
+            Device device = deviceRegistryService.create(deviceCreator);
+            stepData.put("Device", device);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @Then("^I try to edit device to clientId \"([^\"]*)\"$")
+    public void iTryToEditDeviceToName(String clientId) throws Exception {
+      Device device = (Device) stepData.get("Device");
+      device.setClientId(clientId);
+
+      try {
+          primeException();
+          Device newDevice = deviceRegistryService.update(device);
+          stepData.put("Device", newDevice);
+      } catch (KapuaException ex) {
+          verifyException(ex);
+      }
+    }
+
+    @Then("^I find device with client id \"([^\"]*)\"$")
+    public void iFindDeviceWithClientId(String deviceName) {
+        Device device = (Device) stepData.get("Device");
+
+        assertEquals(device.getClientId(), deviceName);
     }
 }

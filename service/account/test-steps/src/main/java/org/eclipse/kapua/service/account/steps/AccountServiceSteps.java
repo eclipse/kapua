@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.account.steps;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -34,19 +35,21 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.qa.common.cucumber.CucAccount;
 import org.eclipse.kapua.qa.common.cucumber.CucConfig;
+import org.eclipse.kapua.service.account.AccountService;
+import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
-import org.eclipse.kapua.service.account.AccountFactory;
-import org.eclipse.kapua.service.account.AccountListResult;
-import org.eclipse.kapua.service.account.AccountQuery;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.Organization;
+import org.eclipse.kapua.service.account.AccountQuery;
+import org.eclipse.kapua.service.account.AccountListResult;
+import org.eclipse.kapua.service.account.AccountAttributes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -854,6 +857,44 @@ public class AccountServiceSteps extends TestBase {
         accountCreator.setOrganizationEmail("some@one.com");
 
         return accountCreator;
+    }
+
+    @And("^I find account with name \"([^\"]*)\"$")
+    public void iFindAccountWithName(String accountName) throws Exception {
+        AccountQuery accountQuery = accountFactory.newQuery(getCurrentScopeId());
+        accountQuery.setPredicate(accountQuery.attributePredicate(AccountAttributes.NAME, accountName, AttributePredicate.Operator.EQUAL));
+        AccountListResult accountListResult = accountService.query(accountQuery);
+        assertTrue(accountListResult.getSize() > 0);
+    }
+
+    @And("^I try to edit description to \"([^\"]*)\"$")
+    public void iTryToEditAccountWithName(String description) throws Exception {
+        Account account = (Account) stepData.get("Account");
+        account.setDescription(description);
+
+        try {
+            primeException();
+            accountService.update(account);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @And("^I create a account with name \"([^\"]*)\", organization name \"([^\"]*)\" and email adress \"([^\"]*)\"$")
+    public void iCreateAAccountWithNameOrganizationNameAndEmailAdress(String accountName, String organizationName, String email) throws Exception {
+        AccountCreator accountCreator = accountFactory.newCreator(getCurrentScopeId());
+        accountCreator.setName(accountName);
+        accountCreator.setOrganizationName(organizationName);
+        accountCreator.setOrganizationEmail(email);
+
+        try {
+            primeException();
+            stepData.remove("Account");
+            Account account = accountService.create(accountCreator);
+            stepData.put("Account", account);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
     }
 
     // *****************
