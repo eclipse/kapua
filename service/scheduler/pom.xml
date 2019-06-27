@@ -27,6 +27,7 @@
     <modules>
         <module>api</module>
         <module>quartz</module>
+        <module>test-steps</module>
     </modules>
 
 </project>

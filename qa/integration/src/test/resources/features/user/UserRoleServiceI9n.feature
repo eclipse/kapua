@@ -627,6 +627,62 @@ Feature: User role service integration tests
     Then An exception was thrown
     And I logout
 
+  Scenario: Add scheduler permissions to the role
+  Creating user "user1" and role "test_role", adding permissions with scheduler domain and read, write and delete actions to the "test_role",
+  adding "test_role" to "user1" and after that trying to work with schedules as user1"
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And Scope with ID 1
+    And I select account "kapua-sys"
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+      | boolean | lockoutPolicy.enabled      | false |
+      | integer | lockoutPolicy.maxFailures  | 3     |
+      | integer | lockoutPolicy.resetAfter   | 300   |
+      | integer | lockoutPolicy.lockDuration | 3     |
+    And I create user with name "user1"
+    And Credentials
+      | name  | password      | enabled |
+      | user1 | User@10031995 | true    |
+    And I create the access info entity
+    And I create the following role
+      | scopeId | name      |
+      | 1       | test_role |
+    And I select the domain "job"
+    And I create the following role permission
+      | scopeId | actionName |
+      | 1       | read       |
+      | 1       | write      |
+      | 1       | delete     |
+    And I select the domain "scheduler"
+    And I create the following role permission
+      | scopeId | actionName |
+      | 1       | read       |
+      | 1       | write      |
+      | 1       | delete     |
+    And I add access role to user
+    And I logout
+    Then I login as user with name "user1" and password "User@10031995"
+    And I found trigger properties with name "Interval Job"
+    And A regular trigger creator with the name "TestSchedule" and following properties
+      | name     | type              | value |
+      | interval | java.lang.Integer | 1     |
+    And I try to create a new trigger entity from the existing creator
+    And I try to edit trigger name "TestSchedule1"
+    And I try to delete last created trigger
+    Then No exception was thrown
+    And I logout
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I delete the last created role permissions
+    And I logout
+    Given I login as user with name "user1" and password "User@10031995"
+    And I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: scheduler:write:"
+    And I try to create a new trigger entity from the existing creator
+    Then An exception was thrown
+    And I logout
+
   Scenario: Stop broker after all scenarios
 
     Given Stop Broker
