@@ -71,7 +71,7 @@
         <elasticsearch-client-rest.version>5.3.0</elasticsearch-client-rest.version>
         <elasticsearch-netty-3.version>3.10.6.Final</elasticsearch-netty-3.version>
         <elasticsearch-netty-4.version>4.1.15.Final</elasticsearch-netty-4.version>
-        <jackson.version>2.8.6</jackson.version> <!-- same version used by elasticsearch -->
+        <jackson.version>2.9.9</jackson.version> <!-- Elastic Search uses 2.8.6 -->
         <log4j-api.version>2.8.2</log4j-api.version> <!-- same version used by elasticsearch -->
         <log4j-to-slf4j.version>2.8.2</log4j-to-slf4j.version> <!-- same version used by elasticsearch -->
         <log4j2-mock.version>0.0.1</log4j2-mock.version>
@@ -1290,6 +1290,11 @@
                 <version>${dropwizard-metrics.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations </artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
