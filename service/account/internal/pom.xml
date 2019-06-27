@@ -42,6 +42,7 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-guice</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
