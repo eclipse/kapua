@@ -42,6 +42,8 @@ import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link JobService} implementation
@@ -51,12 +53,15 @@ import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 @KapuaProvider
 public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Job, JobCreator, JobService, JobListResult, JobQuery, JobFactory> implements JobService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(JobServiceImpl.class);
+
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
-    private final static AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
-    private final static PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
+    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
+    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
     private final JobEngineService jobEngineService = LOCATOR.getService(JobEngineService.class);
+
     private final TriggerService triggerService = LOCATOR.getService(TriggerService.class);
     private final TriggerFactory triggerFactory = LOCATOR.getFactory(TriggerFactory.class);
 
@@ -182,6 +187,32 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
     @Override
     public void delete(KapuaId scopeId, KapuaId jobId) throws KapuaException {
+        deleteInternal(scopeId, jobId, false);
+    }
+
+    @Override
+    public void deleteForced(KapuaId scopeId, KapuaId jobId) throws KapuaException {
+        deleteInternal(scopeId, jobId, true);
+    }
+
+    //
+    // Private methods
+        //
+
+    /**
+     * Deletes the {@link Job} like {@link #delete(KapuaId, KapuaId)}.
+     * <p>
+     * If {@code forced} is {@code true} {@link org.eclipse.kapua.service.authorization.permission.Permission} checked will be {@code job:delete:null},
+     * and when invoking {@link JobEngineService#cleanJobData(KapuaId, KapuaId)} any exception is logged and ignored.
+     *
+     * @param scopeId The {@link KapuaId} scopeId of the {@link Job}.
+     * @param jobId   The {@link KapuaId} of the {@link Job}.
+     * @param forced  Whether or not the {@link Job} must be forcibly deleted.
+     * @throws KapuaException In case something bad happens.
+     * @since 1.1.0
+     */
+    private void deleteInternal(KapuaId scopeId, KapuaId jobId, boolean forced) throws KapuaException {
+
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
@@ -189,7 +220,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, forced ? null : scopeId));
 
         //
         // Check existence
@@ -219,8 +250,17 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Do delete
+        try {
         KapuaSecurityUtils.doPrivileged(() -> jobEngineService.cleanJobData(scopeId, jobId));
+        } catch (Exception e) {
+            if (forced) {
+                LOG.warn("Error while cleaning Job data. Ignoring exception since delete is forced! Error: {}", e.getMessage());
+                LOG.debug("Error while cleaning Job data. Ignoring exception since delete is forced!", e);
+            } else {
+                throw e;
+            }
+        }
+
         entityManagerSession.onTransactedAction(em -> JobDAO.delete(em, scopeId, jobId));
     }
-
 }

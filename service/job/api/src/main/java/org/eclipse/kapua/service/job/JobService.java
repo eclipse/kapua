@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.job;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
@@ -37,6 +38,16 @@ public interface JobService extends KapuaEntityService<Job, JobCreator>,
      * @since 1.0.0
      */
     @Override
-    JobListResult query(KapuaQuery<Job> query)
-            throws KapuaException;
+    JobListResult query(KapuaQuery<Job> query) throws KapuaException;
+
+    /**
+     * Forcibly deletes a {@link Job} and all of its related data without checking for {@link org.eclipse.kapua.service.job.execution.JobExecution}s.
+     *
+     * @param scopeId The {@link KapuaId} scopeId of the {@link Job}.
+     * @param jobId   The {@link KapuaId} of the {@link Job}.
+     * @throws KapuaException
+     * @since 1.1.0
+     */
+    void deleteForced(KapuaId scopeId, KapuaId jobId) throws KapuaException;
+
 }

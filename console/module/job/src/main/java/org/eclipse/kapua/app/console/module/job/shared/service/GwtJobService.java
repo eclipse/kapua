@@ -36,8 +36,7 @@ public interface GwtJobService extends RemoteService {
      * @return
      * @throws GwtKapuaException
      */
-    GwtJob create(GwtXSRFToken xsrfToken, GwtJobCreator gwtJobCreator)
-            throws GwtKapuaException;
+    GwtJob create(GwtXSRFToken xsrfToken, GwtJobCreator gwtJobCreator) throws GwtKapuaException;
 
     /**
      * Returns a Job by its Id or null if a job with such Id does not exist.
@@ -46,8 +45,7 @@ public interface GwtJobService extends RemoteService {
      * @return
      * @throws GwtKapuaException
      */
-    GwtJob find(String accountId, String jobId)
-            throws GwtKapuaException;
+    GwtJob find(String accountId, String jobId) throws GwtKapuaException;
 
     /**
      * Updates a Job in the database and returns the refreshed/reloaded entity instance.
@@ -56,8 +54,7 @@ public interface GwtJobService extends RemoteService {
      * @return
      * @throws GwtKapuaException
      */
-    GwtJob update(GwtXSRFToken xsrfToken, GwtJob gwtJob)
-            throws GwtKapuaException;
+    GwtJob update(GwtXSRFToken xsrfToken, GwtJob gwtJob) throws GwtKapuaException;
 
     /**
      * Delete the supplied Job.
@@ -65,9 +62,16 @@ public interface GwtJobService extends RemoteService {
      * @param gwtJobId
      * @throws GwtKapuaException
      */
-    void delete(GwtXSRFToken xsfrToken, String accountId, String gwtJobId)
-            throws GwtKapuaException;
+    void delete(GwtXSRFToken xsfrToken, String accountId, String gwtJobId) throws GwtKapuaException;
 
-    ListLoadResult<GwtGroupedNVPair> findJobDescription(String gwtScopeId, String gwtJobId)
-            throws GwtKapuaException;
+    /**
+     * Delete the supplied Job forcibly.
+     *
+     * @param gwtJobId
+     * @throws GwtKapuaException
+     */
+    void deleteForced(GwtXSRFToken xsfrToken, String accountId, String gwtJobId) throws GwtKapuaException;
+
+
+    ListLoadResult<GwtGroupedNVPair> findJobDescription(String gwtScopeId, String gwtJobId) throws GwtKapuaException;
 }

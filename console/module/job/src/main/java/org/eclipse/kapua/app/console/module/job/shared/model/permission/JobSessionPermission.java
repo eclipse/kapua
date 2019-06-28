@@ -22,7 +22,11 @@ public class JobSessionPermission extends GwtSessionPermission {
     }
 
     private JobSessionPermission(GwtSessionPermissionAction action) {
-        super("job", action, GwtSessionPermissionScope.SELF);
+        this(action, GwtSessionPermissionScope.SELF);
+    }
+
+    private JobSessionPermission(GwtSessionPermissionAction action, GwtSessionPermissionScope scope) {
+        super("job", action, scope);
     }
 
     public static JobSessionPermission read() {
@@ -35,6 +39,10 @@ public class JobSessionPermission extends GwtSessionPermission {
 
     public static JobSessionPermission delete() {
         return new JobSessionPermission(GwtSessionPermissionAction.delete);
+    }
+
+    public static JobSessionPermission deleteAll() {
+        return new JobSessionPermission(GwtSessionPermissionAction.delete, GwtSessionPermissionScope.ALL);
     }
 
     public static JobSessionPermission execute() {
