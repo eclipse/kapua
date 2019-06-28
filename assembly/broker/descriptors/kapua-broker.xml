@@ -159,6 +159,8 @@
                 <include>com.fasterxml.jackson.dataformat:*</include>
                 <include>com.google.code.findbugs:annotations</include>
                 <include>com.google.guava:guava</include>
+                <include>com.google.guava:failureaccess</include>
+                <include>com.google.guava:listenablefuture</include>
                 <include>com.google.inject.extensions:guice-multibindings</include>
                 <include>com.google.inject:guice</include>
                 <include>com.google.protobuf:protobuf-java</include>
