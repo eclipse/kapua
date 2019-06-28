@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,119 +11,77 @@
  *******************************************************************************/
 package org.eclipse.kapua;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.text.MessageFormat;
 import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-import java.util.StringJoiner;
 
 /**
- * Kapua runtime exception.
+ * {@link KapuaRuntimeException}.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class KapuaRuntimeException extends RuntimeException {
 
     private static final long serialVersionUID = 5389531827567100733L;
 
     private static final String KAPUA_ERROR_MESSAGES = "kapua-service-error-messages";
-    private static final String KAPUA_GENERIC_MESSAGE = "Error: {0}";
 
-    private static final Logger logger = LoggerFactory.getLogger(KapuaException.class);
-
-    protected KapuaErrorCode code;
-    protected Object[] args;
+    private final KapuaErrorCode code;
+    private final Object[] args;
 
     /**
-     * Constructor
-     */
-    private KapuaRuntimeException() {
-        super();
-    }
-
-    /**
-     * Constructor
+     * Constructor.
      *
-     * @param message
-     */
-    protected KapuaRuntimeException(String message) {
-        this(message, null);
-    }
-
-    /**
-     * Constructor
-     *
-     * @param throwable
-     */
-    protected KapuaRuntimeException(Throwable throwable) {
-        this(null, throwable);
-    }
-
-    /**
-     * Constructor
-     *
-     * @param message
-     * @param throwable
-     */
-    protected KapuaRuntimeException(String message, Throwable throwable) {
-        super(message, throwable);
-    }
-
-    /**
-     * Builds a new KapuaRuntimeException instance based on the supplied KapuaErrorCode.
-     *
-     * @param code
+     * @param code The {@link KapuaErrorCode} associated with the {@link Exception}
+     * @since 1.0.0
      */
     public KapuaRuntimeException(KapuaErrorCode code) {
         this(code, (Object[]) null);
     }
 
     /**
-     * Builds a new KapuaRuntimeException instance based on the supplied KapuaErrorCode
-     * and optional arguments for the associated exception message.
+     * Constructor.
      *
-     * @param code
-     * @param arguments
+     * @param code      The {@link KapuaErrorCode} associated with the {@link Exception}.
+     * @param arguments The arguments associated with the {@link Exception}.
+     * @since 1.0.0
      */
     public KapuaRuntimeException(KapuaErrorCode code, Object... arguments) {
         this(code, null, arguments);
     }
 
     /**
-     * Builds a new KapuaRuntimeException instance based on the supplied KapuaErrorCode,
+     * Builds a new KapuaException instance based on the supplied KapuaErrorCode,
      * an Throwable cause, and optional arguments for the associated exception message.
      *
-     * @param code
-     * @param cause
-     * @param arguments
+     * @param code      The {@link KapuaErrorCode} associated with the {@link Exception}.
+     * @param cause     The original {@link Throwable}.
+     * @param arguments The arguments associated with the {@link Exception}.
+     * @since 1.0.0
      */
     public KapuaRuntimeException(KapuaErrorCode code, Throwable cause, Object... arguments) {
         super(cause);
+
         this.code = code;
-        args = arguments;
+        this.args = arguments;
     }
 
     /**
-     * Factory method to build an KapuaRuntimeException with the KapuaErrorCode.INTERNAL_ERROR,
-     * an Throwable cause, and optional arguments for the associated exception message.
+     * Factory method to build a {@link KapuaRuntimeException} with the {@link KapuaErrorCodes#INTERNAL_ERROR}.
      *
-     * @param cause
-     * @param message
-     * @return
+     * @param cause   The original {@link Throwable}.
+     * @param message The message associated with the {@link Exception}.
+     * @return A {@link KapuaRuntimeException} with {@link KapuaErrorCodes#INTERNAL_ERROR}.
+     * @since 1.0.0
      */
     public static KapuaRuntimeException internalError(Throwable cause, String message) {
         return new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, cause, message);
     }
 
     /**
-     * Factory method to build an KapuaException with the KapuaErrorCode.INTERNAL_ERROR,
-     * and an Throwable cause.
+     * Factory method to build a {@link KapuaRuntimeException} with the {@link KapuaErrorCodes#INTERNAL_ERROR}.
      *
-     * @param cause
-     * @return
+     * @param cause The original {@link Throwable}.
+     * @return A {@link KapuaRuntimeException} with {@link KapuaErrorCodes#INTERNAL_ERROR}.
+     * @since 1.0.0
      */
     public static KapuaRuntimeException internalError(Throwable cause) {
         String arg = cause.getMessage();
@@ -134,75 +92,60 @@ public class KapuaRuntimeException extends RuntimeException {
     }
 
     /**
-     * Factory method to build an KapuaException with the KapuaErrorCode.INTERNAL_ERROR,
-     * and optional arguments for the associated exception message.
+     * Factory method to build a {@link KapuaRuntimeException} with the {@link KapuaErrorCodes#INTERNAL_ERROR}.
      *
-     * @param message
-     * @return
+     * @param message The message associated with the {@link Exception}.
+     * @return A {@link KapuaRuntimeException} with {@link KapuaErrorCodes#INTERNAL_ERROR}.
+     * @since 1.0.0
      */
     public static KapuaRuntimeException internalError(String message) {
         return new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, null, message);
     }
 
+    //
+    // Getters
+    //
+    protected String getKapuaErrorMessagesBundle() {
+        return KAPUA_ERROR_MESSAGES;
+    }
+
     /**
-     * Get the error code
+     * Gets the {@link KapuaErrorCode}.
      *
-     * @return
+     * @return The {@link KapuaErrorCode}.
+     * @since 1.0.0
      */
     public KapuaErrorCode getCode() {
         return code;
     }
 
     /**
-     * Get message
+     * Gets the arguments.
+     *
+     * @return The arguments.
+     * @since 1.0.0
+     */
+    private Object[] getArgs() {
+        return args;
+    }
+
+    //
+    // Exception messages.
+    //
+
+    /**
+     * @since 1.0.0
      */
     @Override
     public String getMessage() {
-        return getLocalizedMessage(Locale.US);
+        return ExceptionMessageUtils.getLocalizedMessage(getKapuaErrorMessagesBundle(), Locale.US, getCode(), getArgs());
     }
 
     /**
-     * Get localized message
+     * @since 1.0.0
      */
     @Override
     public String getLocalizedMessage() {
-        return getLocalizedMessage(Locale.getDefault());
-    }
-
-    protected String getKapuaErrorMessagesBundle() {
-        return KAPUA_ERROR_MESSAGES;
-    }
-
-    protected String getLocalizedMessage(Locale locale) {
-        String pattern = getMessagePattern(locale, code);
-        if (pattern != null) {
-            return MessageFormat.format(pattern, args);
-        } else {
-            // use the generic message by concatenating all args in one string
-            StringJoiner joiner = new StringJoiner(",");
-            if (args != null && args.length > 0) {
-                for (Object arg : args) {
-                    joiner.add(String.valueOf(arg));
-                }
-            }
-            return MessageFormat.format(KAPUA_GENERIC_MESSAGE, joiner.toString());
-        }
-    }
-
-    private String getMessagePattern(Locale locale, KapuaErrorCode code) {
-        //
-        // Load the message pattern from the bundle
-        String messagePattern = null;
-        ResourceBundle resourceBundle = null;
-        try {
-            resourceBundle = ResourceBundle.getBundle(getKapuaErrorMessagesBundle(), locale);
-            messagePattern = resourceBundle.getString(code.name());
-        } catch (MissingResourceException mre) {
-            // log the failure to load a message bundle
-            logger.warn("Could not load Exception Messages Bundle for Locale {}", locale);
-            return null;
-        }
-
-        return messagePattern;
+        return ExceptionMessageUtils.getLocalizedMessage(getKapuaErrorMessagesBundle(), Locale.getDefault(), getCode(), getArgs());
     }
 }

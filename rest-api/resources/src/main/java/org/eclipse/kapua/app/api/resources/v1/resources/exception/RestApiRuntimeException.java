@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,16 +14,6 @@ package org.eclipse.kapua.app.api.resources.v1.resources.exception;
 import org.eclipse.kapua.KapuaRuntimeException;
 
 public class RestApiRuntimeException extends KapuaRuntimeException {
-
-    /**
-     * Constructor
-     *
-     * @param message
-     * @param throwable
-     */
-    private RestApiRuntimeException(String message, Throwable throwable) {
-        super(message, throwable);
-    }
 
     /**
      * Builds a new {@link RestApiRuntimeException} instance based on the supplied {@link RestApiErrorCodes}.
@@ -54,8 +44,6 @@ public class RestApiRuntimeException extends KapuaRuntimeException {
      * @param arguments
      */
     public RestApiRuntimeException(RestApiErrorCodes code, Throwable cause, Object... arguments) {
-        super(cause);
-        this.code = code;
-        args = arguments;
+        super(code, cause, arguments);
     }
 }

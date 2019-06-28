@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,17 +11,22 @@
  *******************************************************************************/
 package org.eclipse.kapua;
 
+import java.io.Serializable;
+
 /**
- * Kapua error code definition.
+ * {@link KapuaErrorCode} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
-public interface KapuaErrorCode {
+public interface KapuaErrorCode extends Serializable {
 
     /**
-     * Get the error code name
+     * Gets the error code name.
+     * <p>
+     * The name can be used to search the exception message in the {@link java.util.ResourceBundle}.
      *
-     * @return
+     * @return The error code name.
+     * @since 1.0.0
      */
     String name();
 }
