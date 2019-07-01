@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Red Hat Inc and others
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,23 +7,20 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Red Hat Inc - initial API and implementation
+ *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.sso.provider.setting;
+package org.eclipse.kapua.sso.jwt.setting;
 
 import org.eclipse.kapua.commons.setting.SettingKey;
 
-public enum SsoSettingKeys implements SettingKey {
-    SSO_PROVIDER("sso.provider"), //
+public enum SsoJwtSettingKeys implements SettingKey {
 
-    SSO_OPENID_CLIENT_ID("sso.openid.client.id"), //
-    SSO_OPENID_CLIENT_SECRET("sso.openid.client.secret"), //
-    SSO_JWT_OPEN_ID_CONFIG_PATH("sso.jwt.openid.config.path") //
+    SSO_JWT_OPEN_ID_CONFIG_PATH("sso.jwt.openid.config.path"), //
     ;
 
     private final String key;
 
-    private SsoSettingKeys(final String key) {
+    private SsoJwtSettingKeys(final String key) {
         this.key = key;
     }
 

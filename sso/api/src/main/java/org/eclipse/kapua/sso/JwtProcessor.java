@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 Red Hat Inc and others.
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,20 +7,15 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Red Hat Inc - initial API and implementation
+ *     Eurotech - initial API and implementation
  *******************************************************************************/
 package org.eclipse.kapua.sso;
 
-import java.io.IOException;
-import java.net.URI;
+import org.jose4j.jwt.consumer.JwtContext;
 
-import javax.json.JsonObject;
+public interface JwtProcessor extends AutoCloseable {
 
-public interface SingleSignOnService {
+    boolean validate(final String jwt) throws Exception;
 
-    boolean isEnabled();
-
-    String getLoginUri(String state, URI redirectUri);
-
-    JsonObject getAccessToken(String authCode, URI redirectUri) throws IOException;
+    JwtContext process(final String jwt) throws Exception;
 }

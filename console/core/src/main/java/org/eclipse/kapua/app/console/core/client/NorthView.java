@@ -30,7 +30,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.eclipse.kapua.app.console.core.client.util.Logout;
+import org.eclipse.kapua.app.console.core.client.util.TokenCleaner;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationServiceAsync;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
@@ -188,7 +188,7 @@ public class NorthView extends LayoutContainer {
                             @Override
                             public void onSuccess(Void arg0) {
                                 ConsoleInfo.display("Info", "Logged out!");
-                                Logout.logout();
+                                TokenCleaner.cleanToken();
                             }
 
                         });

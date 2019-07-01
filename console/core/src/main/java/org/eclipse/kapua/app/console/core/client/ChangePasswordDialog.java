@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.client;
 
-import org.eclipse.kapua.app.console.core.client.util.Logout;
+import org.eclipse.kapua.app.console.core.client.util.TokenCleaner;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
@@ -108,7 +108,7 @@ public class ChangePasswordDialog extends SimpleDialog {
                     } else if (gwtCaught.getCode().equals(GwtKapuaErrorCode.UNAUTHENTICATED)) {
                         ConsoleInfo.display("Error", ActionDialog.MSGS.changePasswordError(caught.getLocalizedMessage()));
                         hide();
-                        Logout.logout();
+                        TokenCleaner.cleanToken();
                     } else {
                         ConsoleInfo.display("Error", ActionDialog.MSGS.changePasswordError(caught.getLocalizedMessage()));
                     }

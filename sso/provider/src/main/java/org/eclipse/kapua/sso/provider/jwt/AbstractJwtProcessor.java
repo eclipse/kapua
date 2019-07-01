@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Red Hat Inc and others.
+ * Copyright (c) 2017, 2019 Red Hat Inc and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,14 +8,14 @@
  *
  * Contributors:
  *     Red Hat Inc - initial API and implementation
+ *     Eurotech
  *******************************************************************************/
-package org.eclipse.kapua.sso.jwt;
+package org.eclipse.kapua.sso.provider.jwt;
+
+import org.eclipse.kapua.sso.JwtProcessor;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
@@ -23,15 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonString;
-import javax.json.JsonValue;
-
-//import org.eclipse.kapua.sso.jwt.setting.SsoJwtSetting;
-//import org.eclipse.kapua.sso.jwt.setting.SsoJwtSettingKeys;
-//import org.eclipse.kapua.sso.provider.setting.SsoSetting;
-//import org.eclipse.kapua.sso.provider.setting.SsoSettingKeys;
 import org.jose4j.jwk.HttpsJwks;
 import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.consumer.InvalidJwtException;
@@ -40,13 +31,8 @@ import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.jwt.consumer.JwtContext;
 import org.jose4j.keys.resolvers.HttpsJwksVerificationKeyResolver;
 
-/**
- * @deprecated since now there is an abstract jwt processor in the sso provider
- */
-@Deprecated
-public class JwtProcessor implements AutoCloseable {
+public abstract class AbstractJwtProcessor implements JwtProcessor {
 
-    private static final String OPEN_ID_CONFIGURATION_WELL_KNOWN_PATH = ".well-known/openid-configuration";
     private static final String JWKS_URI_WELL_KNOWN_KEY = "jwks_uri";
 
     private static class Processor {
@@ -93,12 +79,28 @@ public class JwtProcessor implements AutoCloseable {
     private String[] expectedIssuers;
     private Duration cacheTimeout;
 
-    public JwtProcessor(final List<String> audiences, final List<String> expectedIssuers, final Duration cacheTimeout) {
+    /**
+     * @param audiences
+     * @param expectedIssuers
+     * @param cacheTimeout
+     * @deprecated This is the old constructor of the JwtProcessor class, not used anymore.
+     */
+    @Deprecated
+    public AbstractJwtProcessor(final List<String> audiences, final List<String> expectedIssuers, final Duration cacheTimeout) {
         this.audiences = audiences.toArray(new String[audiences.size()]);
         this.expectedIssuers = expectedIssuers.toArray(new String[expectedIssuers.size()]);
         this.cacheTimeout = cacheTimeout;
     }
 
+    public AbstractJwtProcessor(final Duration cacheTimeout) throws IOException {
+        List<String> audiences = getJwtAudiences();
+        List<String> expectedIssuers = getJwtExpectedIssuers();
+        this.expectedIssuers = expectedIssuers.toArray(new String[expectedIssuers.size()]);
+        this.audiences = audiences.toArray(new String[audiences.size()]);
+        this.cacheTimeout = cacheTimeout;
+    }
+
+    @Override
     public boolean validate(final String jwt) throws Exception {
         final URI issuer = extractIssuer(jwt);
 
@@ -107,6 +109,7 @@ public class JwtProcessor implements AutoCloseable {
                 .validate(jwt);
     }
 
+    @Override
     public JwtContext process(final String jwt) throws Exception {
         final URI issuer = extractIssuer(jwt);
 
@@ -118,6 +121,12 @@ public class JwtProcessor implements AutoCloseable {
     @Override
     public void close() throws Exception {
     }
+
+    protected abstract String getOpenIdConfPath(final URI issuer);
+
+    protected abstract List<String> getJwtExpectedIssuers() throws IOException;
+
+    protected abstract List<String> getJwtAudiences();
 
     private static URI extractIssuer(final String jwt) throws InvalidJwtException, MalformedClaimException {
 
@@ -140,40 +149,7 @@ public class JwtProcessor implements AutoCloseable {
         return URI.create(issuer);
     }
 
-    private static Optional<URI> retrieveJwksUri(final URI issuer) throws IOException, URISyntaxException {
-
-        final JsonObject jsonObject;
-
-        // Read .well-known resource
-
-        try (final InputStream stream = new URL(issuer.toString() + "/" + OPEN_ID_CONFIGURATION_WELL_KNOWN_PATH).openStream()) {
-        /*final String openIdConfigPath;
-        if (SsoSetting.getInstance().getString(SsoSettingKeys.SSO_JWT_OPEN_ID_CONFIG_PATH)!=null) {
-            openIdConfigPath = SsoSetting.getInstance().getString(SsoSettingKeys.SSO_JWT_OPEN_ID_CONFIG_PATH);
-        } else {
-            openIdConfigPath = issuer.toString() + "/" + OPEN_ID_CONFIGURATION_WELL_KNOWN_PATH;
-        }
-        try (final InputStream stream = new URL(openIdConfigPath).openStream()) {*/
-            // Parse json response
-            jsonObject = Json.createReader(stream).readObject();
-        }
-
-        // Get and clean jwks_uri property
-
-        final JsonValue jwksUriJsonValue = jsonObject.get(JWKS_URI_WELL_KNOWN_KEY);
-
-        // test result
-
-        if (jwksUriJsonValue instanceof JsonString) {
-            return Optional.of(new URI(((JsonString) jwksUriJsonValue).getString()));
-        }
-
-        // return
-
-        return Optional.empty();
-    }
-
-    private Optional<Processor> lookupProcessor(final URI issuer) throws IOException, URISyntaxException {
+    private Optional<Processor> lookupProcessor(final URI issuer) throws IOException {
 
         Processor processor = processors.get(issuer);
 
@@ -188,7 +164,7 @@ public class JwtProcessor implements AutoCloseable {
 
             // create new instance
 
-            final Optional<URI> uri = retrieveJwksUri(issuer);
+            final Optional<URI> uri = JwtUtils.retrieveJwtUri(JWKS_URI_WELL_KNOWN_KEY, getOpenIdConfPath(issuer));
             if (!uri.isPresent()) {
                 return Optional.empty();
             }

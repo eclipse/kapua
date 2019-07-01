@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Red Hat Inc and others.
+ * Copyright (c) 2017, 2019 Red Hat Inc and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,12 +8,15 @@
  *
  * Contributors:
  *     Red Hat Inc - initial API and implementation
+ *     Eurotech
  *******************************************************************************/
 package org.eclipse.kapua.sso.provider;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.util.ServiceLoader;
 
+import org.eclipse.kapua.sso.JwtProcessor;
 import org.eclipse.kapua.sso.SingleSignOnLocator;
 import org.eclipse.kapua.sso.SingleSignOnService;
 import org.eclipse.kapua.sso.provider.SingleSignOnProvider.ProviderLocator;
@@ -23,14 +26,14 @@ import org.eclipse.kapua.sso.provider.setting.SsoSettingKeys;
 
 public class ProviderSingleSignOnLocator implements SingleSignOnLocator, Closeable {
 
-    private ProviderLocator locator;
+    private static ProviderLocator locator;
 
     public ProviderSingleSignOnLocator(final SsoSetting settings) {
         final String providerId = settings.getString(SsoSettingKeys.SSO_PROVIDER, null);
         if (providerId == null) {
-            this.locator = DisabledLocator.INSTANCE;
+            locator = DisabledLocator.INSTANCE;
         } else {
-            this.locator = findProvider(providerId);
+            locator = findProvider(providerId);
         }
     }
 
@@ -45,17 +48,27 @@ public class ProviderSingleSignOnLocator implements SingleSignOnLocator, Closeab
 
     @Override
     public SingleSignOnService getService() {
-        return this.locator.getService();
+        return locator.getService();
+    }
+
+    @Override
+    public JwtProcessor getProcessor() throws IOException {
+        return locator.getProcessor();
     }
 
     private static ProviderLocator findProvider(final String providerId) {
-        for (final SingleSignOnProvider provider : ServiceLoader.load(SingleSignOnProvider.class)) {
-            if (providerId.equals(provider.getId())) {
-                return provider.createLocator();
+        if (locator == null) {
+            synchronized (ProviderSingleSignOnLocator.class) {
+                if (locator == null) {
+                    for (final SingleSignOnProvider provider : ServiceLoader.load(SingleSignOnProvider.class)) {
+                        if (providerId.equals(provider.getId())) {
+                            return provider.createLocator();
+                        }
+                    }
+                    throw new IllegalArgumentException(String.format("Unable to find single sign-on provider '%s'", providerId));
+                }
             }
         }
-
-        throw new IllegalArgumentException(String.format("Unable to find single sign-on provider '%s'", providerId));
+        return locator;
     }
-
 }
