@@ -37,11 +37,8 @@ public class TriggerDefinitionDAO {
      * @param em
      * @param triggerDefinitionCreator
      * @return
-     * @throws KapuaException
      */
     public static TriggerDefinition create(EntityManager em, TriggerDefinitionCreator triggerDefinitionCreator) {
-        //
-        // Create TriggerDefinition
 
         TriggerDefinitionImpl triggerDefinitionImpl = new TriggerDefinitionImpl(triggerDefinitionCreator.getScopeId());
         triggerDefinitionImpl.setName(triggerDefinitionCreator.getName());
@@ -60,8 +57,7 @@ public class TriggerDefinitionDAO {
      * @return
      * @throws KapuaException
      */
-    public static TriggerDefinition update(EntityManager em, TriggerDefinition triggerDefinition)
-            throws KapuaException {
+    public static TriggerDefinition update(EntityManager em, TriggerDefinition triggerDefinition) throws KapuaException {
         //
         // Update triggerDefinition
         TriggerDefinitionImpl triggerDefinitionImpl = (TriggerDefinitionImpl) triggerDefinition;

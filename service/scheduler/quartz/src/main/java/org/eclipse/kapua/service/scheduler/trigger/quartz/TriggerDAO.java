@@ -32,16 +32,13 @@ public class TriggerDAO {
     }
 
     /**
-     * Creates and return new Trigger
+     * Creates and return new {@link Trigger}
      *
      * @param em
      * @param triggerCreator
      * @return
-     * @throws KapuaException
      */
     public static Trigger create(EntityManager em, TriggerCreator triggerCreator) {
-        //
-        // Create Trigger
         TriggerImpl triggerImpl = new TriggerImpl(triggerCreator.getScopeId());
         triggerImpl.setName(triggerCreator.getName());
         triggerImpl.setStartsOn(triggerCreator.getStartsOn());
@@ -53,15 +50,14 @@ public class TriggerDAO {
     }
 
     /**
-     * Updates the provided trigger
+     * Updates the provided {@link Trigger}
      *
      * @param em
      * @param trigger
      * @return
      * @throws KapuaException
      */
-    public static Trigger update(EntityManager em, Trigger trigger)
-            throws KapuaException {
+    public static Trigger update(EntityManager em, Trigger trigger) throws KapuaException {
         //
         // Update trigger
         TriggerImpl triggerImpl = (TriggerImpl) trigger;
