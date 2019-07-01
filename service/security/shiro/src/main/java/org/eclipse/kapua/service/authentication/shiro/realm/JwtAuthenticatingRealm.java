@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -41,11 +41,12 @@ import org.eclipse.kapua.service.authentication.shiro.utils.JwtProcessors;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
-import org.eclipse.kapua.sso.jwt.JwtProcessor;
+import org.eclipse.kapua.sso.JwtProcessor;
 import org.jose4j.jwt.consumer.JwtContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -77,9 +78,12 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm implements Destr
     @Override
     protected void onInit() {
         super.onInit();
-
-        jwtProcessor = JwtProcessors.createDefault();
-        setCredentialsMatcher(new JwtCredentialsMatcher(jwtProcessor));
+        try {
+            jwtProcessor = JwtProcessors.createDefault();
+            setCredentialsMatcher(new JwtCredentialsMatcher(jwtProcessor));
+        } catch (IOException ioe) {
+            throw new ShiroException("Error while creating Jwt Processor!", ioe);
+        }
     }
 
     @Override
@@ -173,17 +177,15 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm implements Destr
                 account,
                 user,
                 credential,
-               null);
+                null);
     }
 
     /**
      * Extract the subject information
      *
-     * @param jwt
-     *            the token to use
+     * @param jwt the token to use
      * @return the subject, never returns {@code null}
-     * @throws ShiroException
-     *             in case the subject could not be extracted
+     * @throws ShiroException in case the subject could not be extracted
      */
     private String extractExternalId(String jwt) {
         final String id;

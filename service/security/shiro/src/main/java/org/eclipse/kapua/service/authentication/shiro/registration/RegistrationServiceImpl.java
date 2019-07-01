@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Red Hat Inc and others.
+ * Copyright (c) 2017, 2019 Red Hat Inc and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,9 +8,11 @@
  *
  * Contributors:
  *     Red Hat Inc - initial API and implementation
+ *     Eurotech
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.registration;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +26,7 @@ import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.registration.RegistrationService;
 import org.eclipse.kapua.service.authentication.shiro.utils.JwtProcessors;
 import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.sso.jwt.JwtProcessor;
+import org.eclipse.kapua.sso.JwtProcessor;
 import org.jose4j.jwt.consumer.JwtContext;
 
 @KapuaProvider
@@ -34,7 +36,7 @@ public class RegistrationServiceImpl implements RegistrationService, AutoCloseab
 
     private final List<RegistrationProcessor> processors = new ArrayList<>();
 
-    public RegistrationServiceImpl() {
+    public RegistrationServiceImpl() throws IOException {
         jwtProcessor = JwtProcessors.createDefault();
 
         for (RegistrationProcessorProvider provider : ServiceLoader.load(RegistrationProcessorProvider.class)) {

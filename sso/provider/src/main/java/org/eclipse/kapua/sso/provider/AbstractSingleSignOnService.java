@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Red Hat Inc and others.
+ * Copyright (c) 2017, 2019 Red Hat Inc and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Red Hat Inc - initial API and implementation
+ *     Eurotech
  *******************************************************************************/
 package org.eclipse.kapua.sso.provider;
 
@@ -45,9 +46,9 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
         this.ssoSettings = ssoSettings;
     }
 
-    protected abstract String getAuthUri();
+    protected abstract String getAuthUri() throws IOException;
 
-    protected abstract String getTokenUri();
+    protected abstract String getTokenUri() throws IOException;
 
     @Override
     public boolean isEnabled() {
@@ -84,7 +85,8 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
     public JsonObject getAccessToken(final String authCode, final URI redirectUri) throws IOException {
         // FIXME: switch to HttpClient implementation: better performance and connection caching
 
-        final URL url = new URL(getTokenUri());
+        URL url = new URL(getTokenUri());
+
         final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
         urlConnection.setRequestMethod("POST");

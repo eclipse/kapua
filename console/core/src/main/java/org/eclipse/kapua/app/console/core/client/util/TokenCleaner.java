@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,20 +12,21 @@
 package org.eclipse.kapua.app.console.core.client.util;
 
 import com.google.gwt.user.client.Window;
+import org.eclipse.kapua.app.console.core.client.KapuaCloudConsole;
 
-public final class Logout {
+public final class TokenCleaner {
 
-    public static final String PARAMETER_ACCESS_TOKEN = "access_token";
-
-    private Logout() {
+    private TokenCleaner() {
     }
 
     /**
      * Clear GWT state and remove SSO token when set
      */
-    public static void logout() {
+    public static void cleanToken() {
         final String url = Window.Location.createUrlBuilder()
-                .removeParameter(PARAMETER_ACCESS_TOKEN)
+                .removeParameter(KapuaCloudConsole.PARAMETER_ACCESS_TOKEN)
+                .removeParameter(KapuaCloudConsole.PARAMETER_ERROR)
+                .removeParameter(KapuaCloudConsole.PARAMETER_ERROR_DESC)
                 .buildString();
         Window.Location.assign(url);
     }

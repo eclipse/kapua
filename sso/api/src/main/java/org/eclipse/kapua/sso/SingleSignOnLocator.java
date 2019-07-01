@@ -11,7 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso;
 
+import java.io.IOException;
+
 public interface SingleSignOnLocator {
 
-    public SingleSignOnService getService();
+    SingleSignOnService getService();
+
+    JwtProcessor getProcessor() throws IOException;
 }
