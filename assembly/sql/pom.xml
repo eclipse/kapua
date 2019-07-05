@@ -46,6 +46,8 @@
                                         <filter>@</filter>
                                         <assembly>
                                             <descriptor>${project.basedir}/descriptors/kapua-sql.xml</descriptor>
+                                            <mode>tgz</mode>
+                                            <tarLongFileMode>posix</tarLongFileMode>
                                         </assembly>
                                         <dockerFile>${project.basedir}/docker/Dockerfile</dockerFile>
                                     </build>

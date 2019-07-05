@@ -266,6 +266,8 @@
                                         <assembly>
                                             <descriptor>${project.basedir}/descriptors/kapua-console-jetty.xml</descriptor>
                                             <basedir>/</basedir>
+                                            <mode>tgz</mode>
+                                            <tarLongFileMode>posix</tarLongFileMode>
                                         </assembly>
                                         <dockerFile>${project.basedir}/docker/Dockerfile</dockerFile>
                                         <filter>@</filter>
