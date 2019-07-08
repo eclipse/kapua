@@ -13,10 +13,10 @@ package org.eclipse.kapua.service.certificate.internal;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.certificate.CertificateInfo;
 import org.eclipse.kapua.service.certificate.CertificateStatus;
 import org.eclipse.kapua.service.certificate.CertificateUsage;
 import org.eclipse.kapua.service.certificate.KeyUsageSetting;
-import org.eclipse.kapua.service.certificate.CertificateInfo;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -28,7 +28,8 @@ public class CertificateInfoImpl extends AbstractKapuaNamedEntity implements Cer
     private Set<KeyUsageSettingImpl> keyUsageSettings;
     private Set<CertificateUsageImpl> certificateUsages;
 
-    public CertificateInfoImpl() { }
+    public CertificateInfoImpl() {
+    }
 
     public CertificateInfoImpl(KapuaId scopeId) {
         super(scopeId);
@@ -38,16 +39,6 @@ public class CertificateInfoImpl extends AbstractKapuaNamedEntity implements Cer
         setCertificate(certificateInfo.getCertificate());
         setKeyUsageSettings(certificateInfo.getKeyUsageSettings());
         setCertificateUsages(certificateInfo.getCertificateUsages());
-    }
-
-    @Override
-    public String getName() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void setName(String name) {
-        throw new UnsupportedOperationException();
     }
 
     @Override
