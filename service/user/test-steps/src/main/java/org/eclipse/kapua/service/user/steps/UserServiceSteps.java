@@ -51,11 +51,21 @@ import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
+import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionQueryImpl;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionFactory;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
+import org.eclipse.kapua.service.authorization.access.AccessPermission;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionAttributes;
+import org.eclipse.kapua.service.authorization.domain.DomainAttributes;
+import org.eclipse.kapua.service.authorization.domain.DomainListResult;
+import org.eclipse.kapua.service.authorization.domain.DomainFactory;
+import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
+import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
-import org.eclipse.kapua.service.user.UserDomain;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
@@ -108,7 +118,10 @@ public class UserServiceSteps extends TestBase {
     private CredentialService credentialService;
     private CredentialFactory credentialFactory;
     private CredentialsFactory credentialsFactory;
-
+    private AccessPermissionService accessPermissionService;
+    private AccessPermissionFactory accessPermissionFactory;
+    private DomainRegistryService domainRegistryService;
+    private DomainFactory domainFactory;
 
     @Inject
     public UserServiceSteps(StepData stepData, DBHelper dbHelper) {
@@ -138,6 +151,10 @@ public class UserServiceSteps extends TestBase {
         permissionFactory = locator.getFactory(PermissionFactory.class);
         credentialFactory = locator.getFactory(CredentialFactory.class);
         credentialsFactory = locator.getFactory(CredentialsFactory.class);
+        accessPermissionService = locator.getService(AccessPermissionService.class);
+        accessPermissionFactory = locator.getFactory(AccessPermissionFactory.class);
+        domainRegistryService = locator.getService(DomainRegistryService.class);
+        domainFactory = locator.getFactory(DomainFactory.class);
 
         if (isUnitTest()) {
             // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
@@ -239,8 +256,13 @@ public class UserServiceSteps extends TestBase {
     @When("^I search for user with name \"(.*)\"$")
     public void searchUserWithName(String userName) throws Exception {
         stepData.remove("User");
-        User user = userService.findByName(userName);
-        stepData.put("User", user);
+        primeException();
+        try {
+            User user = userService.findByName(userName);
+            stepData.put("User", user);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
     }
 
     @When("^I search for users")
@@ -482,6 +504,37 @@ public class UserServiceSteps extends TestBase {
     @Given("^Full permissions$")
     public void givenFullPermissions() throws Exception {
         createPermissions(null, (ComparableUser) stepData.get("LastUser"), (Account) stepData.get("LastAccount"));
+    }
+
+    @Given("^I delete the last permission added to the new User$")
+    public void deletePermissionForUser() throws Exception {
+        AccessPermission accessPermission = (AccessPermission) stepData.get("LastFoundAccessPermission");
+        primeException();
+        try {
+            accessPermissionService.delete(accessPermission.getScopeId(), accessPermission.getId());
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @Given("^I query for the last permission added to the new User$")
+    public void queryForLastAddedPermission() throws Exception {
+        Permission permission = (Permission) stepData.get("LastPermissionAddedToUser");
+        primeException();
+        try {
+            AccessPermissionQuery query = new AccessPermissionQueryImpl(getCurrentScopeId());
+            query.setPredicate(query.attributePredicate(AccessPermissionAttributes.PERMISSION, permission));
+            AccessPermission accessPermission = accessPermissionService.query(query).getFirstItem();
+            stepData.put("LastFoundAccessPermission", accessPermission);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @Given("I find the last permission added to the new user$")
+    public void checkForNullLastAddedPermission() {
+        AccessPermission accessPermission = (AccessPermission) stepData.get("LastFoundAccessPermission");
+        assertNotNull(accessPermission);
     }
 
     @Given("^User A$")
@@ -838,7 +891,7 @@ public class UserServiceSteps extends TestBase {
      * @param account        that user belongs to
      * @return AccessInfoCreator instance for creating user permissions
      */
-    private AccessInfoCreator accessInfoCreatorCreator(List<CucPermission> permissionList, ComparableUser user, Account account) {
+    private AccessInfoCreator accessInfoCreatorCreator(List<CucPermission> permissionList, ComparableUser user, Account account) throws KapuaException {
 
         AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(account.getId());
         accessInfoCreator.setUserId(user.getUser().getId());
@@ -846,15 +899,20 @@ public class UserServiceSteps extends TestBase {
         Set<Permission> permissions = new HashSet<>();
         if (permissionList != null) {
             for (CucPermission cucPermission : permissionList) {
+                stepData.remove("LastPermissionAddedToUser");
                 Actions action = cucPermission.getAction();
                 KapuaEid targetScopeId = cucPermission.getTargetScopeId();
                 if (targetScopeId == null) {
                     targetScopeId = (KapuaEid) account.getId();
                 }
-                Domain domain = new UserDomain();
+                DomainQuery domainQuery = domainFactory.newQuery(null);
+                domainQuery.setPredicate(domainQuery.attributePredicate(DomainAttributes.NAME, cucPermission.getDomain()));
+                DomainListResult listResult = domainRegistryService.query(domainQuery);
+                Domain domain = listResult.getFirstItem().getDomain();
                 Permission permission = permissionFactory.newPermission(domain,
                         action, targetScopeId);
                 permissions.add(permission);
+                stepData.put("LastPermissionAddedToUser", permission);
             }
         } else {
             Permission permission = permissionFactory.newPermission(null, null, null);

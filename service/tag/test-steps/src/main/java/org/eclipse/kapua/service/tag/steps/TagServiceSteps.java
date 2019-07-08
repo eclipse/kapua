@@ -166,6 +166,12 @@ public class TagServiceSteps extends TestBase {
         Assert.assertEquals(tagName, foundTag.getName());
     }
 
+    @Then("^No tag was found$")
+    public void checkNoGroupWasFound() {
+
+        assertNull(stepData.get("tag"));
+    }
+
     @Then("^Tag with name \"([^\"]*)\" is found and deleted$")
     public void tagWithNameIsDeleted(String tagName) throws Throwable {
 
