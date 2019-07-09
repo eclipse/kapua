@@ -53,11 +53,6 @@
         <dependency>
             <groupId>org.eclipse.paho</groupId>
             <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-            <!--
-              - We only requre Paho 1.0.2 in order to be more compatible
-              - with existing software.
-              -->
-            <version>1.0.2</version><!--$NO-MVN-MAN-VER$-->
         </dependency>
 
         <!-- testing dependencies -->

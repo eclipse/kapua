@@ -56,7 +56,7 @@
 
         <bundle>mvn:${project.groupId}/kapua-client-gateway-provider-paho/${project.version}</bundle>
 
-        <bundle dependency="true">mvn:org.eclipse.paho/org.eclipse.paho.client.mqttv3/1.1.1</bundle>
+        <bundle dependency="true">mvn:org.eclipse.paho/org.eclipse.paho.client.mqttv3/${paho.version}</bundle>
     </feature>
 
 </features>
