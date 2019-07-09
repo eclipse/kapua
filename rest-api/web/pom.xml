@@ -23,8 +23,6 @@
     <packaging>war</packaging>
 
     <properties>
-        <jersey.version>2.23.2</jersey.version>
-        <swagger.version>1.5.12</swagger.version>
         <swagger-ui.version>2.1.4</swagger-ui.version>
     </properties>
 
@@ -134,9 +132,6 @@
             <artifactId>kapua-stream-internal</artifactId>
         </dependency>
 
-        <!-- -->
-        <!-- External Libraries -->
-
         <!-- Jersey -->
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
@@ -155,27 +150,22 @@
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-moxy</artifactId>
-            <version>2.23.2</version>
         </dependency>
 
         <!-- Apache shiro security framework -->
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-core</artifactId>
-            <version>${shiro.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-web</artifactId>
-            <version>${shiro.version}</version>
         </dependency>
 
-        <!-- Same version of the Servlet APIs supported in Apache Tomcat 8.0.x -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -203,27 +193,22 @@
         <dependency>
             <groupId>org.elasticsearch.plugin</groupId>
             <artifactId>transport-netty3-client</artifactId>
-            <version>${elasticsearch-client-transport.version}</version>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch.plugin</groupId>
             <artifactId>transport-netty4-client</artifactId>
-            <version>${elasticsearch-client-transport.version}</version>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch.plugin</groupId>
             <artifactId>reindex-client</artifactId>
-            <version>${elasticsearch-client-transport.version}</version>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch.plugin</groupId>
             <artifactId>lang-mustache-client</artifactId>
-            <version>${elasticsearch-client-transport.version}</version>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch.plugin</groupId>
             <artifactId>percolator-client</artifactId>
-            <version>${elasticsearch-client-transport.version}</version>
         </dependency>
     </dependencies>
 

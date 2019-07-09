@@ -29,7 +29,6 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-assembly-java-base</artifactId>
-            <version>${project.version}</version>
             <type>pom</type>
         </dependency>
 
@@ -37,7 +36,6 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-rest-api-web</artifactId>
-            <version>${project.version}</version>
             <type>war</type>
         </dependency>
 
@@ -48,7 +46,6 @@
         <dependency>
             <groupId>aopalliance</groupId>
             <artifactId>aopalliance</artifactId>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -149,8 +146,6 @@
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>javax.persistence</artifactId>
-            <!--TODO manage version in central place -->
-            <version>2.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
@@ -167,7 +162,6 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
-            <version>4.1.3.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>io.dropwizard.metrics</groupId>
@@ -200,7 +194,7 @@
         <dependency>
             <groupId>org.jolokia</groupId>
             <artifactId>jolokia-jvm</artifactId>
-            <version>1.3.4</version>
+            <version>${jolokia-jvm.version}</version>
             <classifier>agent</classifier>
         </dependency>
         <dependency>

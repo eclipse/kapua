@@ -21,6 +21,9 @@
 
     <artifactId>kapua-job-engine-jbatch</artifactId>
 
+    <properties>
+        <jbatch.version>1.0.2</jbatch.version>
+    </properties>
     <dependencies>
         <!-- Implemented dependencies -->
         <dependency>
@@ -67,7 +70,7 @@
         <dependency>
             <groupId>com.ibm.jbatch</groupId>
             <artifactId>com.ibm.jbatch.container</artifactId>
-            <version>1.0.2</version>
+            <version>${jbatch.version}</version>
         </dependency>
 
     </dependencies>

@@ -29,17 +29,8 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
+
             <plugin>
                 <!-- GWT Maven Plugin -->
                 <groupId>org.codehaus.mojo</groupId>
@@ -143,13 +134,11 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-endpoint</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-endpoint</artifactId>
             <classifier>sources</classifier>
-            <version>1.1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -238,7 +227,6 @@
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
-            <version>1.3.2</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -249,13 +237,12 @@
             <!-- Apache shiro security framework web support -->
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-web</artifactId>
-            <version>${shiro.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.neoscada.utils</groupId>
             <artifactId>org.eclipse.scada.utils</artifactId>
-            <version>0.4.0</version>
+            <version>${scada-utils.version}</version>
         </dependency>
 
         <!-- use logback only for testing -->

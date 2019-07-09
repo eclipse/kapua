@@ -27,6 +27,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <docker.account>kapua</docker.account>
+        <osgi.version>6.0.0</osgi.version>
     </properties>
 
     <dependencies>
@@ -37,7 +38,6 @@
         <dependency>
             <groupId>org.eclipse.neoscada.utils</groupId>
             <artifactId>org.eclipse.scada.utils</artifactId>
-            <version>0.4.0</version>
         </dependency>
 
         <dependency>
@@ -68,7 +68,7 @@
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
-            <version>6.0.0</version>
+            <version>${osgi.version}</version>
         </dependency>
 
         <dependency>
@@ -137,8 +137,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <configuration>
-                    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                    </transformer>
                     <shadedArtifactAttached>true</shadedArtifactAttached>
                     <filters>
                         <filter>
