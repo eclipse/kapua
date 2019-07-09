@@ -72,9 +72,6 @@
         <api>org.eclipse.kapua.service.job.targets.JobTargetService</api>
         <api>org.eclipse.kapua.service.job.targets.JobTargetFactory</api>
 
-        <api>org.eclipse.kapua.service.scheduler.trigger.TriggerService</api>
-        <api>org.eclipse.kapua.service.scheduler.trigger.TriggerFactory</api>
-
         <api>org.eclipse.kapua.service.tag.TagService</api>
 
         <api>org.eclipse.kapua.service.user.UserService</api>

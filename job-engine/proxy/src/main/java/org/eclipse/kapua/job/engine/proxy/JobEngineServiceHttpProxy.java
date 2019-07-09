@@ -100,7 +100,6 @@ public class JobEngineServiceHttpProxy implements JobEngineService {
                     .request(MediaType.APPLICATION_JSON_TYPE)
                     .header("Authorization", "Bearer " + accessToken)
                     .post(Entity.json(XmlUtil.marshalJson(jobStartOptions)));
-            System.out.println(response.getStatusInfo());
 
             if (response.getStatus() != 204) {
                 handleErrorResponse(response);

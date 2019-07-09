@@ -124,10 +124,6 @@
             <artifactId>kapua-job-engine-proxy</artifactId>
             <version>1.2.0-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-job-engine-remote</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
