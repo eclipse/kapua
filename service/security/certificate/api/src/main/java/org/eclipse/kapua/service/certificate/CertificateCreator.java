@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Set;
 
 /**
- * {@link CertificateCreator} {@link org.eclipse.kapua.model.KapuaEntityCreator} definition
+ * {@link Certificate} {@link org.eclipse.kapua.model.KapuaEntityCreator}encapsulates all the information needed to create a new {@link Certificate} in the system.
  *
  * @since 1.0.0
  */

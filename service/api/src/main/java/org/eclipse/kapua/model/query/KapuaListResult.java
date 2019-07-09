@@ -119,6 +119,13 @@ public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializabl
     void addItems(@NotNull Collection<? extends E> items);
 
     /**
+     * Add the item to the result list
+     *
+     * @param item The item to add.
+     */
+    void addItem(@NotNull E item);
+
+    /**
      * Clears {@link KapuaEntity} result {@link List}
      *
      * @see List#clear()

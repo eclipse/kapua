@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,15 +12,15 @@
 package org.eclipse.kapua.service.certificate.internal;
 
 import org.eclipse.kapua.commons.model.query.KapuaListResultImpl;
-import org.eclipse.kapua.service.certificate.Certificate;
-import org.eclipse.kapua.service.certificate.CertificateListResult;
+import org.eclipse.kapua.service.certificate.CertificateInfo;
+import org.eclipse.kapua.service.certificate.CertificateInfoListResult;
 
 /**
- * {@link CertificateListResult} implementation.
+ * {@link CertificateInfoListResult} implementation.
  *
  * @since 1.0
  */
 
-public class CertificateListResultImpl extends KapuaListResultImpl<Certificate> implements CertificateListResult {
+public class CertificateInfoListResultImpl extends KapuaListResultImpl<CertificateInfo> implements CertificateInfoListResult {
 
 }

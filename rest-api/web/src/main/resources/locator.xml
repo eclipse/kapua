@@ -42,6 +42,8 @@
 
         <api>org.eclipse.kapua.service.certificate.CertificateService</api>
         <api>org.eclipse.kapua.service.certificate.CertificateFactory</api>
+        <api>org.eclipse.kapua.service.certificate.CertificateInfoService</api>
+        <api>org.eclipse.kapua.service.certificate.CertificateInfoFactory</api>
 
         <api>org.eclipse.kapua.service.datastore.model.StorableIdFactory</api>
 

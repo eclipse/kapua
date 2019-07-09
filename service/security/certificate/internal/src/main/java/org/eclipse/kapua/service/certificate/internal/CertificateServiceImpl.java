@@ -12,7 +12,6 @@
 package org.eclipse.kapua.service.certificate.internal;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -28,16 +27,16 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.certificate.Certificate;
-import org.eclipse.kapua.service.certificate.CertificateCreator;
 import org.eclipse.kapua.service.certificate.CertificateDomains;
-import org.eclipse.kapua.service.certificate.CertificateFactory;
 import org.eclipse.kapua.service.certificate.CertificateGenerator;
-import org.eclipse.kapua.service.certificate.CertificateListResult;
-import org.eclipse.kapua.service.certificate.CertificateService;
 import org.eclipse.kapua.service.certificate.CertificateUsage;
 import org.eclipse.kapua.service.certificate.KeyUsage;
 import org.eclipse.kapua.service.certificate.KeyUsageSetting;
+import org.eclipse.kapua.service.certificate.Certificate;
+import org.eclipse.kapua.service.certificate.CertificateCreator;
+import org.eclipse.kapua.service.certificate.CertificateFactory;
+import org.eclipse.kapua.service.certificate.CertificateListResult;
+import org.eclipse.kapua.service.certificate.CertificateService;
 import org.eclipse.kapua.service.certificate.exception.KapuaCertificateErrorCodes;
 import org.eclipse.kapua.service.certificate.exception.KapuaCertificateException;
 import org.eclipse.kapua.service.certificate.internal.setting.KapuaCertificateSetting;
@@ -55,7 +54,7 @@ import java.util.Set;
 @KapuaProvider
 public class CertificateServiceImpl implements CertificateService {
 
-    public static final Logger LOG = LoggerFactory.getLogger(CertificateServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CertificateServiceImpl.class);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
@@ -127,14 +126,14 @@ public class CertificateServiceImpl implements CertificateService {
         kapuaCertificate.setPassword(setting.getString(KapuaCertificateSettingKeys.CERTIFICATE_JWT_PRIVATE_KEY_PASSWORD));
 
         CertificateListResult result = CERTIFICATE_FACTORY.newListResult();
-        result.addItems(Lists.newArrayList(kapuaCertificate));
+        result.addItem(kapuaCertificate);
 
         return result;
     }
 
     @Override
-    public long count(KapuaQuery<Certificate> query) throws KapuaException {
-        throw new UnsupportedOperationException();
+    public long count(KapuaQuery<Certificate> query) {
+        return 1L;
     }
 
     @Override
@@ -164,7 +163,7 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
-        return EmptyTocd.INSTANCE;
+        return EmptyTocd.getInstance();
     }
 
     @Override
@@ -180,6 +179,10 @@ public class CertificateServiceImpl implements CertificateService {
     public static class EmptyTocd implements KapuaTocd {
 
         private static final EmptyTocd INSTANCE = new EmptyTocd();
+
+        public static EmptyTocd getInstance() {
+            return INSTANCE;
+        }
 
         private EmptyTocd() {
         }

@@ -23,5 +23,4 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = CertificateXmlRegistry.class, factoryMethod = "newListResult")
 public interface CertificateListResult extends KapuaListResult<Certificate> {
-
 }

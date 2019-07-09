@@ -12,38 +12,39 @@
 package org.eclipse.kapua.service.certificate.xml;
 
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.certificate.CertificateGenerator;
-import org.eclipse.kapua.service.certificate.Certificate;
-import org.eclipse.kapua.service.certificate.CertificateCreator;
-import org.eclipse.kapua.service.certificate.CertificateFactory;
-import org.eclipse.kapua.service.certificate.CertificateListResult;
-import org.eclipse.kapua.service.certificate.CertificateQuery;
+import org.eclipse.kapua.service.certificate.CertificateUsage;
+import org.eclipse.kapua.service.certificate.CertificateInfo;
+import org.eclipse.kapua.service.certificate.CertificateInfoCreator;
+import org.eclipse.kapua.service.certificate.CertificateInfoFactory;
+import org.eclipse.kapua.service.certificate.CertificateInfoListResult;
+import org.eclipse.kapua.service.certificate.CertificateInfoQuery;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
 @XmlRegistry
-public class CertificateXmlRegistry {
+public class CertificateInfoXmlRegistry {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final CertificateFactory FACTORY = LOCATOR.getFactory(CertificateFactory.class);
+    private static final CertificateInfoFactory FACTORY = LOCATOR.getFactory(CertificateInfoFactory.class);
 
-    public Certificate newCertificate() {
+    public CertificateInfo newCertificateInfo() {
         return FACTORY.newEntity(null);
     }
 
-    public CertificateCreator newCreator() {
+    public CertificateInfoCreator newCreator() {
         return FACTORY.newCreator(null);
     }
 
-    public CertificateQuery newQuery() {
+    public CertificateInfoQuery newQuery() {
         return FACTORY.newQuery(null);
     }
 
-    public CertificateListResult newListResult() {
+    public CertificateInfoListResult newListResult() {
         return FACTORY.newListResult();
     }
 
-    public CertificateGenerator newCertificateGenerator() {
-        return FACTORY.newCertificateGenerator();
+    public CertificateUsage newCertificateUsage() {
+        return FACTORY.newCertificateUsage(null);
     }
+
 }

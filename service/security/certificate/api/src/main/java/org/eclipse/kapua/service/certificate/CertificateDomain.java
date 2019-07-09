@@ -21,7 +21,7 @@ import java.util.Set;
 
 /**
  * {@link Certificate} domain.<br>
- * Used to describe the {@link Certificate} {@link Domain} in the {@link CertificateService}.
+ * Used to describe the {@link Certificate} and {@link CertificateInfo} {@link Domain} in the {@link CertificateService} and {@link CertificateService}.
  *
  * @since 1.0.0
  */

@@ -21,15 +21,15 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 import java.util.List;
 
-public interface CertificateService extends KapuaEntityService<Certificate, CertificateCreator>,
-        KapuaNamedEntityService<Certificate>,
-        KapuaUpdatableEntityService<Certificate>,
+public interface CertificateInfoService extends KapuaEntityService<CertificateInfo, CertificateInfoCreator>,
+        KapuaNamedEntityService<CertificateInfo>,
+        KapuaUpdatableEntityService<CertificateInfo>,
         KapuaConfigurableService {
 
     @Override
-    CertificateListResult query(KapuaQuery<Certificate> query) throws KapuaException;
+    CertificateInfoListResult query(KapuaQuery<CertificateInfo> query) throws KapuaException;
 
-    Certificate generate(CertificateGenerator generator) throws KapuaException;
+    CertificateInfo generate(CertificateGenerator generator) throws KapuaException;
 
-    List<Certificate> findAncestorsCertificates(KapuaId scopeId, CertificateUsage usage) throws KapuaException;
+    List<CertificateInfo> findAncestorsCertificates(KapuaId scopeId, CertificateUsage usage) throws KapuaException;
 }
