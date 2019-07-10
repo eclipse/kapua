@@ -258,14 +258,6 @@
             <version>0.4.0</version>
         </dependency>
 
-        <!-- use logback only for testing -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-
     </dependencies>
 
 </project>
