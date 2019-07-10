@@ -268,7 +268,6 @@
                     <version>${docker-maven-plugin.version}</version>
                 </plugin>
 
-
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>sql-maven-plugin</artifactId>
@@ -857,6 +856,11 @@
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-job-engine-jbatch</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-job-engine-proxy</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
