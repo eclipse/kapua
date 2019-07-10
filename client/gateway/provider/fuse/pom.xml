@@ -28,6 +28,9 @@
     <name>Eclipse Kapua :: Gateway Client :: Provider :: FUSE MQTT</name>
     <description>An MQTT client implementation based on FUSE MQTT</description>
 
+    <properties>
+        <fuse-mqtt-client.version>1.14</fuse-mqtt-client.version>
+    </properties>
     <dependencies>
 
         <dependency>
@@ -53,7 +56,7 @@
         <dependency>
             <groupId>org.fusesource.mqtt-client</groupId>
             <artifactId>mqtt-client</artifactId>
-            <version>1.14</version>
+            <version>${fuse-mqtt-client.version}</version>
         </dependency>
 
         <!-- testing dependencies -->

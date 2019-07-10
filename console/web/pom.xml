@@ -159,27 +159,22 @@
         <dependency>
             <groupId>org.elasticsearch.plugin</groupId>
             <artifactId>transport-netty3-client</artifactId>
-            <version>${elasticsearch-client-transport.version}</version>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch.plugin</groupId>
             <artifactId>transport-netty4-client</artifactId>
-            <version>${elasticsearch-client-transport.version}</version>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch.plugin</groupId>
             <artifactId>reindex-client</artifactId>
-            <version>${elasticsearch-client-transport.version}</version>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch.plugin</groupId>
             <artifactId>lang-mustache-client</artifactId>
-            <version>${elasticsearch-client-transport.version}</version>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch.plugin</groupId>
             <artifactId>percolator-client</artifactId>
-            <version>${elasticsearch-client-transport.version}</version>
         </dependency>
         <!-- log4j2 for ES -->
         <dependency>

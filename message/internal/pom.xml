@@ -23,6 +23,9 @@
     <artifactId>kapua-message-internal</artifactId>
     <name>${project.artifactId}</name>
 
+    <properties>
+        <jaxb.version>2.2.5</jaxb.version>
+    </properties>
     <dependencies>
         <!-- Internal dependencies -->
         <dependency>
@@ -34,7 +37,7 @@
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
-            <version>2.2.5</version>
+            <version>${jaxb.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-configuration</groupId>

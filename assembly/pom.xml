@@ -39,6 +39,25 @@
         <module>api</module>
     </modules>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-assembly-java-base</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>apache-activemq</artifactId>
+                <classifier>bin</classifier>
+                <type>tar.gz</type>
+                <version>${activemq.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <profiles>
         <!-- Profile used to exclude console module on release process -->
         <profile>

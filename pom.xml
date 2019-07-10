@@ -29,6 +29,7 @@
 
         <!-- Dependencies versions -->
         <activemq.version>5.14.5</activemq.version>
+        <aopalliance.version>1.0</aopalliance.version>
         <artemis.version>2.2.0</artemis.version>
         <assertj.version>3.2.0</assertj.version>
         <camel.version>2.16.3</camel.version>
@@ -37,10 +38,12 @@
         <commons-codec.version>1.9</commons-codec.version>
         <commons-configuration.version>1.9</commons-configuration.version>
         <commons-collections.version>3.2.2</commons-collections.version>
+        <commons-fileupload.versison>1.3.2</commons-fileupload.versison>
         <commons-io.version>2.4</commons-io.version>
         <commons-lang.version>3.4</commons-lang.version>
         <commons-logging.version>1.2</commons-logging.version>
         <commons-pool.version>2.3</commons-pool.version>
+        <compress-lzf.version>1.0.3</compress-lzf.version>
         <cucumber.version>1.2.4</cucumber.version>
         <dropwizard-metrics.version>3.2.2</dropwizard-metrics.version>
         <eclipselink.version>2.6.3</eclipselink.version>
@@ -54,8 +57,13 @@
         <h2.version>1.4.199</h2.version>
         <httpcomponents.version>4.5.2</httpcomponents.version>
         <javassist.version>3.19.0-GA</javassist.version>
+        <javax-batch-api.version>1.0.1</javax-batch-api.version>
         <javax-inject.version>1</javax-inject.version>
+        <javax-json.version>1.0.4</javax-json.version>
+        <javax-persistence.version>2.1.1</javax-persistence.version>
         <joda.version>2.9.4</joda.version>
+        <jolokia-jvm.version>1.3.4</jolokia-jvm.version>
+        <jose4j.version>0.5.2</jose4j.version>
         <junit.version>4.11</junit.version>
         <liquibase.version>3.0.5</liquibase.version>
         <mockito.version>1.10.19</mockito.version>
@@ -63,8 +71,11 @@
         <paho.version>1.2.1</paho.version>
         <protobuf.version>2.6.1</protobuf.version>
         <reflections.version>0.9.10</reflections.version>
+        <scada-utils.version>0.4.0</scada-utils.version>
         <shiro.version>1.3.2</shiro.version>
         <slf4j.version>1.7.26</slf4j.version>
+        <spring-security.version>4.1.3.RELEASE</spring-security.version>
+
         <logback.version>1.2.3</logback.version>
         <snakeyaml.version>1.15</snakeyaml.version>
         <swagger.version>1.5.12</swagger.version>
@@ -89,22 +100,32 @@
         <!-- Plugins versions -->
         <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
         <maven-assembly-plugin.version>3.0.0</maven-assembly-plugin.version>
+        <maven-bundle-plugin.version>3.3.0</maven-bundle-plugin.version>
         <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <maven-dependency-plugin.version>3.0.1</maven-dependency-plugin.version>
         <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+        <maven-enforcer-plugin.version>1.4.1</maven-enforcer-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
         <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
         <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
         <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
+        <maven-shade-plugin.version>3.0.0</maven-shade-plugin.version>
         <maven-source-plugin.version>2.4</maven-source-plugin.version>
+        <maven-war-plugin.version>3.0.0</maven-war-plugin.version>
 
         <checkstyle.version>7.6.1</checkstyle.version>
+        <dependency-check-maven.version>1.4.5</dependency-check-maven.version>
         <docker-maven-plugin.version>0.24.0</docker-maven-plugin.version>
-        <nexus-staging-maven-plugin.version>1.6.5</nexus-staging-maven-plugin.version>
+        <eclipse-lifecycle-mapping.version>1.0.0</eclipse-lifecycle-mapping.version>
         <jacoco.version>0.7.9</jacoco.version>
+        <jacoco-extras.version>0.1.1</jacoco-extras.version>
+        <karaf-maven-plugin.version>4.1.1</karaf-maven-plugin.version>
+        <license-maven-plugin.version>1.9</license-maven-plugin.version>
+        <nexus-staging-maven-plugin.version>1.6.5</nexus-staging-maven-plugin.version>
+        <protoc-jar-maven-plugin.version>3.1.0.5</protoc-jar-maven-plugin.version>
         <sql-maven-plugin.version>1.5</sql-maven-plugin.version>
         <surefire.version>2.20</surefire.version>
 
@@ -152,7 +173,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>1.4.1</version>
+                    <version>${maven-enforcer-plugin.version}</version>
                     <executions>
                         <execution>
                             <id>enforce-maven</id>
@@ -204,7 +225,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>${maven-shade-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -214,24 +235,24 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>${maven-war-plugin.version}</version>
                 </plugin>
 
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>${maven-bundle-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.karaf.tooling</groupId>
                     <artifactId>karaf-maven-plugin</artifactId>
-                    <version>4.1.1</version>
+                    <version>${karaf-maven-plugin.version}</version>
                 </plugin>
 
                 <plugin>
                     <groupId>com.github.os72</groupId>
                     <artifactId>protoc-jar-maven-plugin</artifactId>
-                    <version>3.1.0.5</version>
+                    <version>${protoc-jar-maven-plugin.version}</version>
                 </plugin>
 
                 <plugin>
@@ -262,7 +283,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>license-maven-plugin</artifactId>
-                    <version>1.9</version>
+                    <version>${license-maven-plugin.version}</version>
                     <executions>
                         <execution>
                             <id>default-cli</id>
@@ -285,7 +306,7 @@
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
+                    <version>${eclipse-lifecycle-mapping.version}</version>
                     <configuration>
                         <lifecycleMappingMetadata>
                             <pluginExecutions>
@@ -299,7 +320,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -312,7 +333,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -325,7 +346,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -338,7 +359,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
@@ -417,7 +438,7 @@
             <plugin>
                 <groupId>de.dentrassi.maven</groupId>
                 <artifactId>jacoco-extras</artifactId>
-                <version>0.1.1</version>
+                <version>${jacoco-extras.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -1026,8 +1047,20 @@
                 <version>${project.version}</version>
             </dependency>
 
-            <!-- -->
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-console-web</artifactId>
+                <version>${project.version}</version>
+                <type>war</type>
+            </dependency>
+
             <!-- External dependencies -->
+
+            <dependency>
+                <groupId>aopalliance</groupId>
+                <artifactId>aopalliance</artifactId>
+                <version>${aopalliance.version}</version>
+            </dependency>
 
             <!-- Apache Commons-->
             <dependency>
@@ -1081,7 +1114,6 @@
                 <artifactId>commons-pool2</artifactId>
                 <version>${commons-pool.version}</version>
             </dependency>
-
 
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
@@ -1154,7 +1186,7 @@
             <dependency>
                 <groupId>com.ning</groupId>
                 <artifactId>compress-lzf</artifactId>
-                <version>1.0.3</version>
+                <version>${compress-lzf.version}</version>
             </dependency>
             <dependency>
                 <groupId>info.cukes</groupId>
@@ -1203,18 +1235,43 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.persistence</groupId>
+                <artifactId>javax.persistence</artifactId>
+                <version>${javax-persistence.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.persistence</groupId>
                 <artifactId>org.eclipse.persistence.moxy</artifactId>
+                <version>${eclipselink.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.persistence</groupId>
+                <artifactId>org.eclipse.persistence.jpa</artifactId>
+                <version>${eclipselink.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.persistence</groupId>
+                <artifactId>org.eclipse.persistence.core</artifactId>
+                <version>${eclipselink.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.persistence</groupId>
+                <artifactId>org.eclipse.persistence.asm</artifactId>
+                <version>${eclipselink.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.persistence</groupId>
+                <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
                 <version>${eclipselink.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.glassfish</groupId>
                 <artifactId>javax.json</artifactId>
-                <version>1.0.4</version>
+                <version>${javax-json.version}</version>
             </dependency>
             <dependency>
                 <groupId>javax.batch</groupId>
                 <artifactId>javax.batch-api</artifactId>
-                <version>1.0.1</version>
+                <version>${javax-batch-api.version}</version>
             </dependency>
             <dependency>
                 <groupId>javax.inject</groupId>
@@ -1230,6 +1287,12 @@
                 <groupId>javax.validation</groupId>
                 <artifactId>validation-api</artifactId>
                 <version>${validation-api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse.neoscada.utils</groupId>
+                <artifactId>org.eclipse.scada.utils</artifactId>
+                <version>${scada-utils.version}</version>
             </dependency>
 
             <dependency>
@@ -1258,6 +1321,12 @@
                 <version>${joda.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.jolokia</groupId>
+                <artifactId>jolokia-jvm</artifactId>
+                <version>${jolokia-jvm.version}</version>
+                <classifier>agent</classifier>
+            </dependency>
+            <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
@@ -1266,26 +1335,6 @@
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
                 <version>${assertj.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.persistence</groupId>
-                <artifactId>org.eclipse.persistence.jpa</artifactId>
-                <version>${eclipselink.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.persistence</groupId>
-                <artifactId>org.eclipse.persistence.core</artifactId>
-                <version>${eclipselink.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.persistence</groupId>
-                <artifactId>org.eclipse.persistence.asm</artifactId>
-                <version>${eclipselink.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.persistence</groupId>
-                <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
-                <version>${eclipselink.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
@@ -1297,7 +1346,20 @@
                 <artifactId>snakeyaml</artifactId>
                 <version>${snakeyaml.version}</version>
             </dependency>
+            <dependency>
+                <!-- Apache shiro security framework -->
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-core</artifactId>
+                <version>${shiro.version}</version>
+            </dependency>
+            <dependency>
+                <!-- Apache shiro security framework web support -->
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-web</artifactId>
+                <version>${shiro.version}</version>
+            </dependency>
 
+            <!-- Elasticsearch -->
             <dependency>
                 <groupId>org.elasticsearch</groupId>
                 <artifactId>elasticsearch</artifactId>
@@ -1306,6 +1368,16 @@
             <dependency>
                 <groupId>org.elasticsearch.client</groupId>
                 <artifactId>transport</artifactId>
+                <version>${elasticsearch-client-transport.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch.client</groupId>
+                <artifactId>rest</artifactId>
+                <version>${elasticsearch-client-rest.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch.plugin</groupId>
+                <artifactId>transport-netty3-client</artifactId>
                 <version>${elasticsearch-client-transport.version}</version>
             </dependency>
             <dependency>
@@ -1320,9 +1392,19 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>org.elasticsearch.client</groupId>
-                <artifactId>rest</artifactId>
-                <version>${elasticsearch-client-rest.version}</version>
+                <groupId>org.elasticsearch.plugin</groupId>
+                <artifactId>reindex-client</artifactId>
+                <version>${elasticsearch-client-transport.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch.plugin</groupId>
+                <artifactId>lang-mustache-client</artifactId>
+                <version>${elasticsearch-client-transport.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.elasticsearch.plugin</groupId>
+                <artifactId>percolator-client</artifactId>
+                <version>${elasticsearch-client-transport.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.javassist</groupId>
@@ -1359,9 +1441,8 @@
             <dependency>
                 <groupId>org.bitbucket.b_c</groupId>
                 <artifactId>jose4j</artifactId>
-                <version>0.5.2</version>
+                <version>${jose4j.version}</version>
             </dependency>
-
 
             <dependency>
                 <groupId>org.apache.qpid</groupId>
@@ -1393,7 +1474,12 @@
                 <version>${netty-all.version}</version>
             </dependency>
 
-            <!-- -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-transport-native-epoll</artifactId>
+                <version>${elasticsearch-netty-4.version}</version>
+            </dependency>
+
             <!-- Logging -->
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -1401,7 +1487,7 @@
                 <version>${slf4j.version}</version>
             </dependency>
 
-            <!-- Implementation -->
+            <!-- Logging - Implementation -->
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
@@ -1413,7 +1499,7 @@
                 <version>${logback.version}</version>
             </dependency>
 
-            <!-- Bridge implementations -->
+            <!-- Logging - Bridge implementations -->
             <dependency>
                 <groupId>de.dentrassi.elasticsearch</groupId>
                 <artifactId>log4j2-mock</artifactId>
@@ -1445,7 +1531,6 @@
                 <version>${slf4j.version}</version>
             </dependency>
 
-            <!-- -->
             <!-- Active MQ-->
             <dependency>
                 <groupId>org.apache.activemq</groupId>
@@ -1463,7 +1548,6 @@
                 <version>${artemis.version}</version>
             </dependency>
 
-            <!--            -->
             <!-- Jetty-->
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
@@ -1494,6 +1578,13 @@
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>apache-jstl</artifactId>
                 <version>${jetty.version}</version>
+            </dependency>
+
+            <!-- Spring -->
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-core</artifactId>
+                <version>${spring-security.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -1634,7 +1725,7 @@
                     <plugin>
                         <groupId>org.owasp</groupId>
                         <artifactId>dependency-check-maven</artifactId>
-                        <version>1.4.5</version>
+                        <version>${dependency-check-maven.version}</version>
                         <executions>
                             <execution>
                                 <goals>
