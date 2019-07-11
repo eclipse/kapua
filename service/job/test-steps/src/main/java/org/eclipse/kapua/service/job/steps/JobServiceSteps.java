@@ -1541,4 +1541,38 @@ public class JobServiceSteps extends TestBase {
 
         return tmpCr;
     }
+
+    @Then("^I find a job with name \"([^\"]*)\"$")
+    public void iFindAJobWithName(String jobName) {
+    Job job = (Job) stepData.get("Job");
+    assertEquals(job.getName(), jobName);
+    }
+
+    @Then("^I delete the job with name \"([^\"]*)\"$")
+    public void iDeleteTheJobWithName(String jobName) throws Exception {
+        Job job = (Job) stepData.get("Job");
+
+        try {
+            primeException();
+            if (job.getName().equals(jobName)) {
+                jobService.delete(getCurrentScopeId(), job.getId());
+            }
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @Then("^I try to edit job to name \"([^\"]*)\"$")
+    public void iTryToEditJobToName(String jobName) throws Throwable {
+       Job job = (Job) stepData.get("Job");
+       job.setName(jobName);
+
+       try {
+           primeException();
+           Job newJob = jobService.update(job);
+           stepData.put("Job", newJob);
+       } catch (KapuaException ex) {
+           verifyException(ex);
+       }
+    }
 }

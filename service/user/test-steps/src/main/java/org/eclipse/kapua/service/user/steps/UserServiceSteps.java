@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.user.steps;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -946,6 +947,38 @@ public class UserServiceSteps extends TestBase {
             assertEquals(cucUser.getStatus(), user.getStatus());
         }
         return true;
+    }
+
+    @And("^I create user with name \"([^\"]*)\"$")
+    public void iCreateUserWithName(String userName) throws Exception {
+        stepData.remove("UserCreator");
+        UserCreator userCreator = userFactory.newCreator(getCurrentScopeId());
+        userCreator.setName(userName);
+        stepData.put("UserCreator", userCreator);
+
+        try {
+            primeException();
+            stepData.remove("User");
+            User user = userService.create(userCreator);
+            stepData.put("User", user);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @Then("^I try to edit user to name \"([^\"]*)\"$")
+    public void iTryToEditUserWithName(String newUserName) throws Exception {
+        User user = (User) stepData.get("User");
+        user.setName(newUserName);
+
+        try {
+            primeException();
+            stepData.remove("User");
+            User newUser = userService.update(user);
+            stepData.put("User", newUser);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
     }
 
     // *****************

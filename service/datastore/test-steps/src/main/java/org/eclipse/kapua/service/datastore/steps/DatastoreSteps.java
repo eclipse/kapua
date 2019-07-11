@@ -1213,11 +1213,15 @@ public class DatastoreSteps extends TestBase {
     }
 
     @When("^I search for data message with id \"(.*)\"")
-    public void messageStoreFind(String storeId) throws KapuaException {
-
+    public void messageStoreFind(String storeId) throws Exception {
         Account account = (Account) stepData.get("LastAccount");
-        DatastoreMessage tmpMsg = messageStoreService.find(account.getId(), storableIdFactory.newStorableId(storeId), StorableFetchStyle.SOURCE_FULL);
-        stepData.put("message", tmpMsg);
+        try {
+            primeException();
+            DatastoreMessage tmpMsg = messageStoreService.find(account.getId(), storableIdFactory.newStorableId(storeId), StorableFetchStyle.SOURCE_FULL);
+            stepData.put("message", tmpMsg);
+        } catch (Exception ex) {
+            verifyException(ex);
+        }
     }
 
     @Then("^I don't find message$")

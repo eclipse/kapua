@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.tag.steps;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -145,7 +146,9 @@ public class TagServiceSteps extends TestBase {
     public void tagWithName(String tagName) throws Throwable {
 
         TagCreator tagCreator = tagCreatorCreator(tagName);
-        tagService.create(tagCreator);
+        stepData.remove("tag");
+        Tag tag = tagService.create(tagCreator);
+        stepData.put("tag", tag);
     }
 
     @When("^Tag with name \"([^\"]*)\" is searched$")
@@ -195,5 +198,31 @@ public class TagServiceSteps extends TestBase {
         tagCreator.setName(tagName);
 
         return tagCreator;
+    }
+
+    @And("^Tag name is changed into name \"([^\"]*)\"$")
+    public void tagNameIsChangedIntoName(String tagName) throws Exception {
+       Tag tag = (Tag) stepData.get("tag");
+       tag.setName(tagName);
+
+       try {
+           primeException();
+           stepData.remove("tag");
+           Tag newtag = tagService.update(tag);
+           stepData.put("tag", newtag);
+       } catch (KapuaException ex) {
+           verifyException(ex);
+       }
+    }
+
+    @And("^Tag is deleted$")
+    public void tagIsDeleted() throws Exception {
+        Tag tag = (Tag) stepData.get("tag");
+
+        try {
+            tagService.delete(getCurrentScopeId(), tag.getId());
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
     }
 }

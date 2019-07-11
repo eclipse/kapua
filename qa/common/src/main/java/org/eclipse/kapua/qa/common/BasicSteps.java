@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Red Hat Inc and others.
+ * Copyright (c) 2017, 2019 Red Hat Inc and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,7 @@
 package org.eclipse.kapua.qa.common;
 
 import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -173,5 +174,11 @@ public class BasicSteps extends TestBase {
         } else {
             System.setProperty(key, value);
         }
+    }
+
+    @And("^I expect the exception \"([^\"]*)\"$")
+    public void iExpectTheException(String name) {
+        stepData.put("ExceptionExpected", true);
+        stepData.put("ExceptionName", name);
     }
 }
