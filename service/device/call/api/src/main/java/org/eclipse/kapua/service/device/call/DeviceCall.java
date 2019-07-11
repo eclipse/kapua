@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,84 +11,101 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call;
 
-import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.service.device.call.exception.DeviceCallSendException;
+import org.eclipse.kapua.service.device.call.exception.DeviceCallTimeoutException;
 import org.eclipse.kapua.service.device.call.message.DeviceMessage;
 import org.eclipse.kapua.service.device.call.message.app.request.DeviceRequestMessage;
 import org.eclipse.kapua.service.device.call.message.app.response.DeviceResponseMessage;
 
+import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
+
 /**
- * Device call definition.
+ * {@link DeviceCall} definition.
  *
  * @param <RQ> device request message type
  * @param <RS> device response message type
- * @since 1.0
+ * @since 1.0.0
  */
 public interface DeviceCall<RQ extends DeviceRequestMessage, RS extends DeviceResponseMessage> {
 
     /**
-     * Executes a 'read command'
+     * Executes a 'read' request.
      *
-     * @param requestMessage
-     * @param timeout
-     * @return
-     * @throws KapuaException
+     * @param requestMessage The {@link DeviceRequestMessage} to send.
+     * @param timeout        The timeout of the request.
+     * @return The {@link DeviceResponseMessage}.
+     * @throws DeviceCallTimeoutException if waiting of the response goes on timeout.
+     * @throws DeviceCallSendException    if sending the request produces any error.
+     * @since 1.0.0
      */
-    RS read(RQ requestMessage, Long timeout) throws KapuaException;
+    RS read(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
 
     /**
-     * Executes a 'create command'
+     * Executes a 'create' request.
      *
-     * @param requestMessage
-     * @param timeout
-     * @return
-     * @throws KapuaException
+     * @param requestMessage The {@link DeviceRequestMessage} to send.
+     * @param timeout        The timeout of the request.
+     * @return The {@link DeviceResponseMessage}.
+     * @throws DeviceCallTimeoutException if waiting of the response goes on timeout.
+     * @throws DeviceCallSendException    if sending the request produces any error.
+     * @since 1.0.0
      */
-    RS create(RQ requestMessage, Long timeout) throws KapuaException;
+    RS create(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
 
     /**
-     * Executes a 'write command'
+     * Executes a 'write' request.
      *
-     * @param requestMessage
-     * @param timeout
-     * @return
-     * @throws KapuaException
+     * @param requestMessage The {@link DeviceRequestMessage} to send.
+     * @param timeout        The timeout of the request.
+     * @return The {@link DeviceResponseMessage}.
+     * @throws DeviceCallTimeoutException if waiting of the response goes on timeout.
+     * @throws DeviceCallSendException    if sending the request produces any error.
+     * @since 1.0.0
      */
-    RS write(RQ requestMessage, Long timeout) throws KapuaException;
+    RS write(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
 
     /**
-     * Executes a 'delete command'
+     * Executes a 'delete' request.
      *
-     * @param requestMessage
-     * @param timeout
-     * @return
-     * @throws KapuaException
+     * @param requestMessage The {@link DeviceRequestMessage} to send.
+     * @param timeout        The timeout of the request.
+     * @return The {@link DeviceResponseMessage}.
+     * @throws DeviceCallTimeoutException if waiting of the response goes on timeout.
+     * @throws DeviceCallSendException    if sending the request produces any error.
+     * @since 1.0.0
      */
-    RS delete(RQ requestMessage, Long timeout) throws KapuaException;
+    RS delete(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
 
     /**
-     * Executes an 'execute command'
+     * Executes an 'execute' request.
      *
-     * @param requestMessage
-     * @param timeout
-     * @return
-     * @throws KapuaException
+     * @param requestMessage The {@link DeviceRequestMessage} to send.
+     * @param timeout        The timeout of the request.
+     * @return The {@link DeviceResponseMessage}.
+     * @throws DeviceCallTimeoutException if waiting of the response goes on timeout.
+     * @throws DeviceCallSendException    if sending the request produces any error.
+     * @since 1.0.0
      */
-    RS execute(RQ requestMessage, Long timeout) throws KapuaException;
+    RS execute(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
 
     /**
-     * Executes an 'options command'
+     * Executes an 'options' request.
      *
-     * @param requestMessage
-     * @param timeout
-     * @return
-     * @throws KapuaException
+     * @param requestMessage The {@link DeviceRequestMessage} to send.
+     * @param timeout        The timeout of the request.
+     * @return The {@link DeviceResponseMessage}.
+     * @throws DeviceCallTimeoutException if waiting of the response goes on timeout.
+     * @throws DeviceCallSendException    if sending the request produces any error.
+     * @since 1.0.0
      */
-    RS options(RQ requestMessage, Long timeout) throws KapuaException;
+    RS options(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
 
     /**
-     * Get the device base message type
+     * Get the {@link DeviceMessage} type.
      *
-     * @return
+     * @return The {@link DeviceMessage} {@code class}
+     * @since 1.0.0
      */
     <M extends DeviceMessage> Class<M> getBaseMessageClass();
 }

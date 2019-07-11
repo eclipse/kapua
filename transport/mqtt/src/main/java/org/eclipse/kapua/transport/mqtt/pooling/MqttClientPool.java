@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -27,9 +27,8 @@ import java.util.Map;
  * This serves to optimize communication at the transport level of Kapua.
  * Client borrowed from this pool are already connected and ready to publish and subscribe.
  * </p>
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 public class MqttClientPool extends GenericObjectPool<MqttClient> {
 
@@ -40,7 +39,7 @@ public class MqttClientPool extends GenericObjectPool<MqttClient> {
 
     /**
      * Initialize a {@link MqttClientPool} with the according configuration sourced from {@link MqttClientPoolSetting}.
-     * 
+     *
      * @since 1.0.0
      */
     private MqttClientPool(PooledMqttClientFactory factory) {
@@ -67,7 +66,7 @@ public class MqttClientPool extends GenericObjectPool<MqttClient> {
 
     /**
      * Gets the singleton instance of {@link MqttClientPool}.
-     * 
+     *
      * @return The singleton instance of {@link MqttClientPool}.
      * @since 1.0.0
      */
@@ -86,7 +85,7 @@ public class MqttClientPool extends GenericObjectPool<MqttClient> {
      * <p>
      * Before calling super implementation {@link GenericObjectPool#returnObject(Object)} the {@link MqttClient} is cleaned by invoking the {@link MqttClient#clean()}.
      * </p>
-     * 
+     *
      * @since 1.0.0
      */
     @Override

@@ -1,0 +1,59 @@
+/*******************************************************************************
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.kapua.service.device.call.exception;
+
+import org.eclipse.kapua.service.device.call.message.DeviceMessage;
+
+import javax.validation.constraints.NotNull;
+
+/**
+ * The {@link Exception} to throw when sending the {@link DeviceMessage} causes an error.
+ *
+ * @since 1.1.0
+ */
+public class DeviceCallSendException extends DeviceCallException {
+
+    private final DeviceMessage requestMessage;
+
+    /**
+     * Constructor.
+     *
+     * @param requestMessage The {@link DeviceMessage} that we tried to send.
+     * @since 1.1.0
+     */
+    public DeviceCallSendException(@NotNull DeviceMessage requestMessage) {
+        this(null, requestMessage);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param cause          the root cause of the {@link Exception}.
+     * @param requestMessage The {@link DeviceMessage} that we tried to send.
+     * @since 1.1.0
+     */
+    public DeviceCallSendException(@NotNull Throwable cause, @NotNull DeviceMessage requestMessage) {
+        super(DeviceCallErrorCodes.SEND_ERROR, cause, requestMessage);
+
+        this.requestMessage = requestMessage;
+    }
+
+    /**
+     * Gets the {@link DeviceMessage} that we tried to send.
+     *
+     * @return The {@link DeviceMessage} that we tried to send.
+     * @since 1.1.0
+     */
+    public DeviceMessage getRequestMessage() {
+        return requestMessage;
+    }
+}
