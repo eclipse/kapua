@@ -36,8 +36,7 @@ import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceServi
 import org.eclipse.kapua.app.console.module.device.shared.util.GwtKapuaDeviceModelConverter;
 import org.eclipse.kapua.app.console.module.device.shared.util.KapuaGwtDeviceModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
-import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaPosition;
@@ -255,7 +254,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                     DeviceEventFactory deviceEventFactory = locator.getFactory(DeviceEventFactory.class);
                     DeviceEventQuery query = deviceEventFactory.newQuery(device.getScopeId());
                     query.setLimit(1);
-                    query.setSortCriteria(new FieldSortCriteria(DeviceEventAttributes.RECEIVED_ON, SortOrder.DESCENDING));
+                    query.setSortCriteria(query.fieldSortCriteria(DeviceEventAttributes.RECEIVED_ON, SortOrder.DESCENDING));
 
                     AndPredicate andPredicate = query.andPredicate(
                             query.attributePredicate(DeviceEventAttributes.DEVICE_ID, device.getId()),
@@ -544,7 +543,7 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
             );
 
             query.setPredicate(andPredicate);
-            query.setSortCriteria(new FieldSortCriteria(DeviceEventAttributes.RECEIVED_ON, SortOrder.DESCENDING));
+            query.setSortCriteria(query.fieldSortCriteria(DeviceEventAttributes.RECEIVED_ON, SortOrder.DESCENDING));
             query.setOffset(bplc.getOffset());
             query.setLimit(bplc.getLimit());
 

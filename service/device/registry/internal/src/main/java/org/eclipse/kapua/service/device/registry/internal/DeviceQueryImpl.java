@@ -12,8 +12,8 @@
 package org.eclipse.kapua.service.device.registry.internal;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
-import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
-import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
+import org.eclipse.kapua.commons.model.query.FieldSortCriteriaImpl;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceAttributes;
@@ -32,7 +32,7 @@ public class DeviceQueryImpl extends AbstractKapuaQuery<Device> implements Devic
     private DeviceQueryImpl() {
         super();
 
-        setSortCriteria(new FieldSortCriteria(DeviceAttributes.CLIENT_ID, SortOrder.ASCENDING));
+        setSortCriteria(new FieldSortCriteriaImpl(DeviceAttributes.CLIENT_ID, SortOrder.ASCENDING));
     }
 
     /**

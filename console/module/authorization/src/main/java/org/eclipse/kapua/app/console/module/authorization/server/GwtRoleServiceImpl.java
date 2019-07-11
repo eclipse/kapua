@@ -34,8 +34,8 @@ import org.eclipse.kapua.app.console.module.authorization.shared.service.GwtRole
 import org.eclipse.kapua.app.console.module.authorization.shared.util.GwtKapuaAuthorizationModelConverter;
 import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAuthorizationModelConverter;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
-import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
+import org.eclipse.kapua.model.query.FieldSortCriteria;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
@@ -278,7 +278,7 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             }
 
             SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
-            FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
+            FieldSortCriteria sortCriteria = query.fieldSortCriteria(sortField, sortOrder);
             query.setSortCriteria(sortCriteria);
 
             RolePermissionListResult list = ROLE_PERMISSION_SERVICE.query(query);

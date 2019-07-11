@@ -25,8 +25,8 @@ import org.eclipse.kapua.app.console.module.device.shared.model.device.managemen
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssets;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.registry.GwtDeviceManagementOperationQuery;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
-import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
+import org.eclipse.kapua.model.query.FieldSortCriteria;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
@@ -107,7 +107,7 @@ public class GwtKapuaDeviceModelConverter {
             sortField = DeviceConnectionAttributes.MODIFIED_ON;
         }
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
-        FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
+        FieldSortCriteria sortCriteria = query.fieldSortCriteria(sortField, sortOrder);
         query.setSortCriteria(sortCriteria);
         query.setOffset(loadConfig.getOffset());
         query.setLimit(loadConfig.getLimit());
@@ -229,9 +229,9 @@ public class GwtKapuaDeviceModelConverter {
             if (sortField.equals("lastEventOnFormatted")) {
                 sortField = DeviceAttributes.LAST_EVENT_ON;
             }
-            query.setSortCriteria(new FieldSortCriteria(sortField, sortOrder));
+            query.setSortCriteria(query.fieldSortCriteria(sortField, sortOrder));
         } else {
-            query.setSortCriteria(new FieldSortCriteria(DeviceAttributes.CLIENT_ID, SortOrder.ASCENDING));
+            query.setSortCriteria(query.fieldSortCriteria(DeviceAttributes.CLIENT_ID, SortOrder.ASCENDING));
         }
 
         query.setPredicate(andPred);
@@ -262,9 +262,9 @@ public class GwtKapuaDeviceModelConverter {
             if (sortField.equals("endedOnFormatted")) {
                 sortField = DeviceManagementOperationAttributes.ENDED_ON;
             }
-            query.setSortCriteria(new FieldSortCriteria(sortField, sortOrder));
+            query.setSortCriteria(query.fieldSortCriteria(sortField, sortOrder));
         } else {
-            query.setSortCriteria(new FieldSortCriteria(DeviceManagementOperationAttributes.STARTED_ON, SortOrder.DESCENDING));
+            query.setSortCriteria(query.fieldSortCriteria(DeviceManagementOperationAttributes.STARTED_ON, SortOrder.DESCENDING));
         }
 
         return query;

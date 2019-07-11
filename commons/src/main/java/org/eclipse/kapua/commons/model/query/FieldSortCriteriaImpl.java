@@ -11,7 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.model.query;
 
-import org.eclipse.kapua.model.query.KapuaSortCriteria;
+import org.eclipse.kapua.model.query.FieldSortCriteria;
+import org.eclipse.kapua.model.query.SortOrder;
 
 /**
  * Field sort criteria.
@@ -19,21 +20,7 @@ import org.eclipse.kapua.model.query.KapuaSortCriteria;
  * @since 1.0
  *
  */
-public class FieldSortCriteria implements KapuaSortCriteria {
-
-    /**
-     * Sort order
-     */
-    public enum SortOrder {
-        /**
-         * Ascending
-         */
-        ASCENDING,
-        /**
-         * Descending
-         */
-        DESCENDING;
-    }
+public class FieldSortCriteriaImpl implements FieldSortCriteria {
 
     /**
      * Field attribute name
@@ -51,7 +38,7 @@ public class FieldSortCriteria implements KapuaSortCriteria {
      * @param attributeName
      * @param sortOrder
      */
-    public FieldSortCriteria(String attributeName, SortOrder sortOrder) {
+    public FieldSortCriteriaImpl(String attributeName, SortOrder sortOrder) {
         this.attributeName = attributeName;
         this.sortOrder = sortOrder;
     }
@@ -61,6 +48,7 @@ public class FieldSortCriteria implements KapuaSortCriteria {
      * 
      * @return
      */
+    @Override
     public String getAttributeName() {
         return attributeName;
     }
@@ -70,6 +58,7 @@ public class FieldSortCriteria implements KapuaSortCriteria {
      * 
      * @return
      */
+    @Override
     public SortOrder getSortOrder() {
         return sortOrder;
     }

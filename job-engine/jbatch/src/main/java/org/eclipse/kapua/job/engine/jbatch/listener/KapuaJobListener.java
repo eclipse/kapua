@@ -12,7 +12,7 @@
 package org.eclipse.kapua.job.engine.jbatch.listener;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.commons.logger.JobLogger;
@@ -321,7 +321,7 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
                     )
             );
 
-            jobExecutionQuery.setSortCriteria(new FieldSortCriteria(JobExecutionAttributes.STARTED_ON, FieldSortCriteria.SortOrder.ASCENDING));
+            jobExecutionQuery.setSortCriteria(jobExecutionQuery.fieldSortCriteria(JobExecutionAttributes.STARTED_ON, SortOrder.ASCENDING));
 
             JobExecutionListResult jobExecutions = KapuaSecurityUtils.doPrivileged(() -> JOB_EXECUTION_SERVICE.query(jobExecutionQuery));
 

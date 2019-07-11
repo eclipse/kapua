@@ -23,7 +23,7 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
@@ -1643,7 +1643,7 @@ public class DeviceRegistrySteps extends TestBase {
 
             tmpQuery = eventFactory.newQuery(tmpAcc.getId());
             tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceEventAttributes.DEVICE_ID, tmpDev.getId(), AttributePredicate.Operator.EQUAL));
-            tmpQuery.setSortCriteria(new FieldSortCriteria(DeviceEventAttributes.RECEIVED_ON, FieldSortCriteria.SortOrder.ASCENDING));
+            tmpQuery.setSortCriteria(tmpQuery.fieldSortCriteria(DeviceEventAttributes.RECEIVED_ON, SortOrder.ASCENDING));
             tmpList = eventService.query(tmpQuery);
 
             Assert.assertNotNull(tmpList);

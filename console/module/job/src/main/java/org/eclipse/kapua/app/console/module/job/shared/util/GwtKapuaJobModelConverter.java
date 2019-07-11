@@ -27,8 +27,9 @@ import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStepQuery;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobTargetQuery;
 import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTriggerProperty;
 import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTriggerQuery;
-import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
-import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
+import org.eclipse.kapua.commons.model.query.FieldSortCriteriaImpl;
+import org.eclipse.kapua.model.query.FieldSortCriteria;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.job.engine.JobEngineFactory;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -146,7 +147,7 @@ public class GwtKapuaJobModelConverter {
         }
 
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
-        FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
+        FieldSortCriteria sortCriteria = query.fieldSortCriteria(sortField, sortOrder);
         query.setSortCriteria(sortCriteria);
         query.setPredicate(predicate);
 
@@ -169,7 +170,7 @@ public class GwtKapuaJobModelConverter {
 
             String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? JobTargetAttributes.ENTITY_ID : loadConfig.getSortField();
             SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
-            FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
+            FieldSortCriteria sortCriteria = query.fieldSortCriteria(sortField, sortOrder);
             query.setSortCriteria(sortCriteria);
         }
 
@@ -207,7 +208,7 @@ public class GwtKapuaJobModelConverter {
             } else {
                 sortOrder = SortOrder.ASCENDING;
             }
-            return new FieldSortCriteria(sortField, sortOrder);
+            return new FieldSortCriteriaImpl(sortField, sortOrder);
         } else {
             String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? JobStepAttributes.STEP_INDEX : loadConfig.getSortField();
             if (sortField.equals("jobStepName")) {
@@ -218,7 +219,7 @@ public class GwtKapuaJobModelConverter {
                 sortField = JobStepAttributes.JOB_STEP_DEFINITION_ID;
             }
             SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
-            return new FieldSortCriteria(sortField, sortOrder);
+            return new FieldSortCriteriaImpl(sortField, sortOrder);
         }
     }
 
@@ -277,7 +278,7 @@ public class GwtKapuaJobModelConverter {
         }
 
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
-        FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
+        FieldSortCriteria sortCriteria = query.fieldSortCriteria(sortField, sortOrder);
         query.setSortCriteria(sortCriteria);
         query.setPredicate(andPredicate);
         query.setLimit(loadConfig.getLimit());
@@ -306,7 +307,7 @@ public class GwtKapuaJobModelConverter {
             sortField = JobAttributes.ENDED_ON;
         }
         SortOrder sortOrder = pagingLoadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
-        query.setSortCriteria(new FieldSortCriteria(sortField, sortOrder));
+        query.setSortCriteria(query.fieldSortCriteria(sortField, sortOrder));
         query.setLimit(pagingLoadConfig.getLimit());
         query.setOffset(pagingLoadConfig.getOffset());
 

@@ -16,8 +16,8 @@ import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.tag.shared.model.GwtTagQuery;
-import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
-import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
+import org.eclipse.kapua.model.query.FieldSortCriteria;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
@@ -72,7 +72,7 @@ public class GwtKapuaTagModelConverter {
             sortField = TagAttributes.CREATED_ON;
         }
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
-        FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
+        FieldSortCriteria sortCriteria = query.fieldSortCriteria(sortField, sortOrder);
 
         // Query conversion
         query.setSortCriteria(sortCriteria);

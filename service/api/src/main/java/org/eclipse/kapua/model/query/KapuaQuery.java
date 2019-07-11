@@ -157,15 +157,57 @@ public interface KapuaQuery<E extends KapuaEntity> {
 
     //
     // Predicates factory
+
+    /**
+     * Creates a new {@link AttributePredicate}
+     * @param attributeName     The name of the attribute
+     * @param attributeValue    The value of the attribute
+     * @param <T>               The type of {@code attributeValue}
+     * @return                  A new {@link AttributePredicate} for the given parameters
+     */
     <T> AttributePredicate<T> attributePredicate(String attributeName, T attributeValue);
 
+    /**
+     * Creates a new {@link AttributePredicate}
+     * @param attributeName     The name of the attribute
+     * @param attributeValue    The value of the attribute
+     * @param operator          The operator to apply
+     * @param <T>               The type of {@code attributeValue}
+     * @return                  A new {@link AttributePredicate} for the given parameters
+     */
     <T> AttributePredicate<T> attributePredicate(String attributeName, T attributeValue, AttributePredicate.Operator operator);
 
+    /**
+     * Creates a new, empty {@link AndPredicate}
+     * @return      A new, empty {@link AndPredicate}
+     */
     AndPredicate andPredicate();
 
+    /**
+     * Creates a new {@link AndPredicate} creating a logical AND with all the provided {@link QueryPredicate}
+     * @param queryPredicates       A list of {@link QueryPredicate}s to create the {@link AndPredicate}
+     * @return                      A new {@link AndPredicate}
+     */
     AndPredicate andPredicate(QueryPredicate... queryPredicates);
 
+    /**
+     * Creates a new, empty {@link OrPredicate}
+     * @return      A new, empty {@link OrPredicate}
+     */
     OrPredicate orPredicate();
 
+    /**
+     * Creates a new {@link OrPredicate} creating a logical OR with all the provided {@link QueryPredicate}
+     * @param queryPredicates       A list of {@link QueryPredicate}s to create the {@link OrPredicate}
+     * @return                      A new {@link OrPredicate}
+     */
     OrPredicate orPredicate(QueryPredicate... queryPredicates);
+
+    /**
+     * Creates a new {@link FieldSortCriteria}
+     * @param attributeName         The name of the attribute
+     * @param sortOrder             The {@link SortOrder}
+     * @return
+     */
+    FieldSortCriteria fieldSortCriteria(String attributeName, SortOrder sortOrder);
 }

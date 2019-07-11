@@ -20,7 +20,7 @@ import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModel
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStartOptions;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobEngineService;
 import org.eclipse.kapua.app.console.module.job.shared.util.GwtKapuaJobModelConverter;
-import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.job.engine.JobEngineFactory;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
@@ -94,7 +94,7 @@ public class GwtJobEngineServiceImpl extends KapuaRemoteServiceServlet implement
                         )
                 );
 
-                query.setSortCriteria(new FieldSortCriteria(JobExecutionAttributes.STARTED_ON, FieldSortCriteria.SortOrder.DESCENDING));
+                query.setSortCriteria(query.fieldSortCriteria(JobExecutionAttributes.STARTED_ON, SortOrder.DESCENDING));
                 query.setLimit(1);
 
                 JobExecutionListResult jobExecutions = JOB_EXECUTION_SERVICE.query(query);
