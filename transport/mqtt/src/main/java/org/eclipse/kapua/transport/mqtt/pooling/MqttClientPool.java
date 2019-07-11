@@ -17,6 +17,8 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.transport.mqtt.MqttClient;
 import org.eclipse.kapua.transport.mqtt.pooling.setting.MqttClientPoolSetting;
 import org.eclipse.kapua.transport.mqtt.pooling.setting.MqttClientPoolSettingKeys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +33,8 @@ import java.util.Map;
  * @since 1.0.0
  */
 public class MqttClientPool extends GenericObjectPool<MqttClient> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(MqttClientPool.class);
 
     /**
      * Singleton instance of {@link MqttClientPool}
@@ -71,13 +75,7 @@ public class MqttClientPool extends GenericObjectPool<MqttClient> {
      * @since 1.0.0
      */
     public static MqttClientPool getInstance(String nodeUri) {
-        MqttClientPool mqttClientPool = mqttClientPoolInstances.get(nodeUri);
-        if (mqttClientPool == null) {
-            mqttClientPool = new MqttClientPool(new PooledMqttClientFactory(nodeUri));
-            mqttClientPoolInstances.put(nodeUri, mqttClientPool);
-        }
-
-        return mqttClientPool;
+        return mqttClientPoolInstances.computeIfAbsent(nodeUri, k -> new MqttClientPool(new PooledMqttClientFactory(nodeUri)));
     }
 
     /**
@@ -90,22 +88,20 @@ public class MqttClientPool extends GenericObjectPool<MqttClient> {
      */
     @Override
     public void returnObject(MqttClient kapuaClient) {
-        //
-        // Clean up callback
         try {
+            // Clean up callback
             kapuaClient.clean();
 
-            //
             // Return object to pool
             super.returnObject(kapuaClient);
         } catch (KapuaException e) {
+            LOG.error("Error while returning MqttClient ({}) to the pool. Terminating...", kapuaClient.getClientId());
             try {
                 kapuaClient.terminateClient();
+                LOG.error("Error while returning MqttClient ({}) to the pool. Terminating... DONE! Error was: {}", kapuaClient.getClientId(), e.getMessage());
             } catch (KapuaException e1) {
-                // FIXME: Manage exception
+                LOG.error("Error while returning MqttClient ({}) to the pool. Terminating... ERROR! Error was: {}", kapuaClient.getClientId(), e.getMessage(), e1);
             }
-            // FIXME: Manage exception
-            e.printStackTrace();
         }
     }
 }
