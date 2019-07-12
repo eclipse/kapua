@@ -12,15 +12,16 @@
 package org.eclipse.kapua.commons.model.query;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.OrPredicateImpl;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.FieldSortCriteria;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.KapuaSortCriteria;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.model.query.predicate.OrPredicate;
@@ -55,7 +56,7 @@ public abstract class AbstractKapuaQuery<E extends KapuaEntity> implements Kapua
      * @since 1.0.0
      */
     public AbstractKapuaQuery() {
-        setSortCriteria(new FieldSortCriteria(KapuaEntityAttributes.CREATED_ON, SortOrder.ASCENDING));
+        setSortCriteria(fieldSortCriteria(KapuaEntityAttributes.CREATED_ON, SortOrder.ASCENDING));
     }
 
     /**
@@ -184,5 +185,10 @@ public abstract class AbstractKapuaQuery<E extends KapuaEntity> implements Kapua
     @Override
     public OrPredicate orPredicate(QueryPredicate... queryPredicates) {
         return new OrPredicateImpl(queryPredicates);
+    }
+
+    @Override
+    public FieldSortCriteria fieldSortCriteria(String attributeName, SortOrder sortOrder) {
+        return new FieldSortCriteriaImpl(attributeName, sortOrder);
     }
 }

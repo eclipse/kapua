@@ -16,7 +16,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
-import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -115,7 +115,7 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
         // Check step index
         if (jobStepCreator.getStepIndex() == null) {
             query.setPredicate(query.attributePredicate(JobStepAttributes.JOB_ID, jobStepCreator.getJobId()));
-            query.setSortCriteria(new FieldSortCriteria(JobStepAttributes.STEP_INDEX, FieldSortCriteria.SortOrder.DESCENDING));
+            query.setSortCriteria(query.fieldSortCriteria(JobStepAttributes.STEP_INDEX, SortOrder.DESCENDING));
             query.setLimit(1);
 
             JobStepListResult jobStepListResult = query(query);

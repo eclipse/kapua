@@ -21,8 +21,8 @@ import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCrede
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialQuery;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialStatus;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialType;
-import org.eclipse.kapua.commons.model.query.FieldSortCriteria;
-import org.eclipse.kapua.commons.model.query.FieldSortCriteria.SortOrder;
+import org.eclipse.kapua.model.query.FieldSortCriteria;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -78,7 +78,7 @@ public class GwtKapuaAuthenticationModelConverter {
         }
 
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
-        FieldSortCriteria sortCriteria = new FieldSortCriteria(sortField, sortOrder);
+        FieldSortCriteria sortCriteria = query.fieldSortCriteria(sortField, sortOrder);
         query.setSortCriteria(sortCriteria);
         query.setPredicate(andPredicate);
         query.setOffset(loadConfig.getOffset());
