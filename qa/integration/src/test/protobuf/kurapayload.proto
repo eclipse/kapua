@@ -21,6 +21,8 @@
 //
 // or use maven plugin
 //
+syntax = "proto2";
+
 package kuradatatypes;
 
 option java_package         = "org.eclipse.kura.core.message.protobuf";

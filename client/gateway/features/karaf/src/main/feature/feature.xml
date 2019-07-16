@@ -27,7 +27,7 @@
         <feature version="${project.version}">kapua-client-gateway</feature>
         <bundle>mvn:${project.groupId}/kapua-client-gateway-profile-kura/${project.version}</bundle>
 
-        <bundle dependency="true">mvn:com.google.protobuf/protobuf-java/2.6.1</bundle>
+        <bundle dependency="true">mvn:com.google.protobuf/protobuf-java/${protobuf.version}</bundle>
     </feature>
 
     <feature name="kapua-client-gateway-provider-mqtt" hidden="true"
