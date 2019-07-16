@@ -290,7 +290,10 @@ public final class MessageStoreFacade {
 
         String dataIndexName = SchemaUtil.getDataIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(dataIndexName, MessageSchema.MESSAGE_TYPE_NAME);
-        return new MessageListResultImpl(client.query(typeDescriptor, query, DatastoreMessage.class));
+        MessageListResult result = new MessageListResultImpl(client.query(typeDescriptor, query, DatastoreMessage.class));
+        Integer offset = query.getOffset();
+        result.setLimitExceeded((offset == null ? 0 : offset) + result.getSize() < result.getTotalCount());
+        return result;
     }
 
     /**

@@ -113,6 +113,8 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
         result.getItems().forEach(m -> jsonDatastoreMessages.add(new JsonDatastoreMessage(m)));
         JsonMessageListResult jsonResult = new JsonMessageListResult();
         jsonResult.addItems(jsonDatastoreMessages);
+        jsonResult.setTotalCount(result.getTotalCount());
+        jsonResult.setLimitExceeded(result.isLimitExceeded());
         return jsonResult;
     }
 
