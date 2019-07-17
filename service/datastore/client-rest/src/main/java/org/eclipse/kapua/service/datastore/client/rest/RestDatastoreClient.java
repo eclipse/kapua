@@ -166,9 +166,9 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                         cleanupClient(true);
                     }
                     initClientProvider();
-                    restCallRuntimeExecCount = metricService.getCounter("datastore-rest-client", "rest-client", new String[] { "runtime_exc", "count" });
-                    timeoutRetryCount = metricService.getCounter("datastore-rest-client", "rest-client", new String[] { "timeout_retry", "count" });
-                    timeoutRetryLimitReachedCount = metricService.getCounter("datastore-rest-client", "rest-client", new String[] { "timeout_retry_limit_reached", "count" });
+                    restCallRuntimeExecCount = metricService.getCounter("datastore-rest-client", "rest-client", "runtime_exc", "count");
+                    timeoutRetryCount = metricService.getCounter("datastore-rest-client", "rest-client", "timeout_retry", "count");
+                    timeoutRetryLimitReachedCount = metricService.getCounter("datastore-rest-client", "rest-client", "timeout_retry_limit_reached", "count");
                 }
             }
         }
@@ -228,27 +228,21 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         checkClient();
         Map<String, Object> storableMap = modelContext.marshal(insertRequest.getStorable());
         logger.debug("Insert - converted object: '{}'", storableMap);
-        String json = null;
+        String json;
         try {
             json = MAPPER.writeValueAsString(storableMap);
         } catch (IOException e) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR, e);
         }
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
-        Response insertResponse = restCallTimeoutHandler(new Callable<Response>() {
-
-            @Override
-            public Response call() throws Exception {
-                return esClientProvider.getClient().performRequest(
-                        POST_ACTION,
-                        getInsertTypePath(insertRequest),
-                        Collections.<String, String>emptyMap(),
-                        entity);
-            }
-        }, insertRequest.getTypeDescriptor().getIndex(), "INSERT");
+        Response insertResponse = restCallTimeoutHandler(() -> esClientProvider.getClient().performRequest(
+                POST_ACTION,
+                getInsertTypePath(insertRequest),
+                Collections.emptyMap(),
+                entity), insertRequest.getTypeDescriptor().getIndex(), "INSERT");
 
         if (isRequestSuccessful(insertResponse)) {
-            JsonNode responseNode = null;
+            JsonNode responseNode;
             try {
                 responseNode = MAPPER.readTree(EntityUtils.toString(insertResponse.getEntity()));
             } catch (IOException e) {
@@ -272,27 +266,20 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         updateRequestMap.put(KEY_DOC, storableMap);
         updateRequestMap.put(KEY_DOC_AS_UPSERT, true);
         logger.debug("Upsert - converted object: '{}'", updateRequestMap);
-        String json = null;
+        String json;
         try {
             json = MAPPER.writeValueAsString(updateRequestMap);
         } catch (IOException e) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR, e);
         }
         HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
-        Response updateResponse = restCallTimeoutHandler(new Callable<Response>() {
-
-            @Override
-            public Response call() throws Exception {
-                return esClientProvider.getClient().performRequest(
-                        POST_ACTION,
-                        getUpsertPath(updateRequest.getTypeDescriptor(), updateRequest.getId()),
-                        Collections.<String, String>emptyMap(),
-                        entity);
-            }
-
-        }, updateRequest.getTypeDescriptor().getIndex(), "UPSERT");
+        Response updateResponse = restCallTimeoutHandler(() -> esClientProvider.getClient().performRequest(
+                POST_ACTION,
+                getUpsertPath(updateRequest.getTypeDescriptor(), updateRequest.getId()),
+                Collections.emptyMap(),
+                entity), updateRequest.getTypeDescriptor().getIndex(), "UPSERT");
         if (isRequestSuccessful(updateResponse)) {
-            JsonNode responseNode = null;
+            JsonNode responseNode;
             try {
                 responseNode = MAPPER.readTree(EntityUtils.toString(updateResponse.getEntity()));
             } catch (IOException e) {
@@ -331,22 +318,15 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
             }
             bulkOperation.append(", \"doc_as_upsert\": true }\n");
         }
-        Response updateResponse = restCallTimeoutHandler(new Callable<Response>() {
-
-            @Override
-            public Response call() throws Exception {
-                return esClientProvider.getClient().performRequest(
-                        POST_ACTION,
-                        getBulkPath(),
-                        Collections.<String, String>emptyMap(),
-                        EntityBuilder.create().setText(bulkOperation.toString()).build(),
-                        new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
-            }
-
-        }, "multi-index", "UPSERT BULK");
+        Response updateResponse = restCallTimeoutHandler(() -> esClientProvider.getClient().performRequest(
+                POST_ACTION,
+                getBulkPath(),
+                Collections.emptyMap(),
+                EntityBuilder.create().setText(bulkOperation.toString()).build(),
+                new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString())), "multi-index", "UPSERT BULK");
         if (isRequestSuccessful(updateResponse)) {
             BulkUpdateResponse bulkResponse = new BulkUpdateResponse();
-            JsonNode responseNode = null;
+            JsonNode responseNode;
             try {
                 responseNode = MAPPER.readTree(EntityUtils.toString(updateResponse.getEntity()));
             } catch (IOException e) {
@@ -406,19 +386,12 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         logger.debug("Query - converted query: '{}'", queryMap);
         long totalCount = 0;
         ArrayNode resultsNode = null;
-        Response queryResponse = restCallTimeoutHandler(new Callable<Response>() {
-
-            @Override
-            public Response call() throws Exception {
-                return esClientProvider.getClient().performRequest(
-                        GET_ACTION,
-                        getSearchPath(typeDescriptor),
-                        Collections.<String, String>emptyMap(),
-                        EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).build(),
-                        new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
-            }
-
-        }, typeDescriptor.getIndex(), "QUERY");
+        Response queryResponse = restCallTimeoutHandler(() -> esClientProvider.getClient().performRequest(
+                GET_ACTION,
+                getSearchPath(typeDescriptor),
+                Collections.emptyMap(),
+                EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).build(),
+                new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "QUERY");
         if (isRequestSuccessful(queryResponse)) {
             JsonNode responseNode;
             try {
@@ -427,7 +400,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, e);
             }
             JsonNode hitsNode = responseNode.get(KEY_HITS);
-            totalCount = hitsNode.get(KEY_TOTAL).asInt();
+            totalCount = hitsNode.get(KEY_TOTAL).asLong();
             if (totalCount > Integer.MAX_VALUE) {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, "Total hits exceeds integer max value");
             }
@@ -458,28 +431,21 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         JsonNode queryMap = queryConverter.convertQuery(query);
         logger.debug("Query - converted query: '{}'", queryMap);
         long totalCount = 0;
-        Response queryResponse = restCallTimeoutHandler(new Callable<Response>() {
-
-            @Override
-            public Response call() throws Exception {
-                return esClientProvider.getClient().performRequest(
-                        GET_ACTION,
-                        getSearchPath(typeDescriptor),
-                        Collections.<String, String>emptyMap(),
-                        EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).build(),
-                        new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
-            }
-
-        }, typeDescriptor.getIndex(), "COUNT");
+        Response queryResponse = restCallTimeoutHandler(() -> esClientProvider.getClient().performRequest(
+                GET_ACTION,
+                getSearchPath(typeDescriptor),
+                Collections.emptyMap(),
+                EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).build(),
+                new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "COUNT");
         if (isRequestSuccessful(queryResponse)) {
-            JsonNode responseNode = null;
+            JsonNode responseNode;
             try {
                 responseNode = MAPPER.readTree(EntityUtils.toString(queryResponse.getEntity()));
             } catch (IOException e) {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, e);
             }
             JsonNode hitsNode = responseNode.get(KEY_HITS);
-            totalCount = hitsNode.get(KEY_TOTAL).asInt();
+            totalCount = hitsNode.get(KEY_TOTAL).asLong();
             if (totalCount > Integer.MAX_VALUE) {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_HITS_MAX_VALUE_EXCEDEED);
             }
@@ -494,16 +460,10 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     public void delete(TypeDescriptor typeDescriptor, String id) throws ClientException {
         logger.debug("Delete - id: '{}'", id);
         checkClient();
-        Response deleteResponse = restCallTimeoutHandler(new Callable<Response>() {
-
-            @Override
-            public Response call() throws Exception {
-                return esClientProvider.getClient().performRequest(
-                        DELETE_ACTION,
-                        getIdPath(typeDescriptor, id),
-                        Collections.<String, String>emptyMap());
-            }
-        }, typeDescriptor.getIndex(), "DELETE");
+        Response deleteResponse = restCallTimeoutHandler(() -> esClientProvider.getClient().performRequest(
+                DELETE_ACTION,
+                getIdPath(typeDescriptor, id),
+                Collections.emptyMap()), typeDescriptor.getIndex(), "DELETE");
         if (deleteResponse != null && !isRequestSuccessful(deleteResponse)) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR,
                     (deleteResponse.getStatusLine() != null) ? deleteResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
@@ -515,18 +475,12 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         checkClient();
         JsonNode queryMap = queryConverter.convertQuery(query);
         logger.debug("Query - converted query: '{}'", queryMap);
-        Response deleteResponse = restCallTimeoutHandler(new Callable<Response>() {
-
-            @Override
-            public Response call() throws Exception {
-                return esClientProvider.getClient().performRequest(
-                        POST_ACTION,
-                        getDeleteByQueryPath(typeDescriptor),
-                        Collections.<String, String>emptyMap(),
-                        EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).build(),
-                        new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
-            }
-        }, typeDescriptor.getIndex(), "DELETE BY QUERY");
+        Response deleteResponse = restCallTimeoutHandler(() -> esClientProvider.getClient().performRequest(
+                POST_ACTION,
+                getDeleteByQueryPath(typeDescriptor),
+                Collections.emptyMap(),
+                EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).build(),
+                new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "DELETE BY QUERY");
         if (deleteResponse != null && !isRequestSuccessful(deleteResponse)) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR,
                     (deleteResponse.getStatusLine() != null) ? deleteResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
@@ -537,16 +491,10 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     public IndexResponse isIndexExists(IndexRequest indexRequest) throws ClientException {
         logger.debug("Index exists - index name: '{}'", indexRequest.getIndex());
         checkClient();
-        Response isIndexExistsResponse = restCallTimeoutHandler(new Callable<Response>() {
-
-            @Override
-            public Response call() throws Exception {
-                return esClientProvider.getClient().performRequest(
-                        HEAD_ACTION,
-                        getIndexPath(indexRequest.getIndex()),
-                        Collections.<String, String>emptyMap());
-            }
-        }, indexRequest.getIndex(), "INDEX EXIST");
+        Response isIndexExistsResponse = restCallTimeoutHandler(() -> esClientProvider.getClient().performRequest(
+                HEAD_ACTION,
+                getIndexPath(indexRequest.getIndex()),
+                Collections.emptyMap()), indexRequest.getIndex(), "INDEX EXIST");
         if (isIndexExistsResponse != null && isIndexExistsResponse.getStatusLine() != null) {
             if (isIndexExistsResponse.getStatusLine().getStatusCode() == 200) {
                 return new IndexResponse(true);
@@ -561,16 +509,10 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     @Override
     public IndexResponse findIndexes(IndexRequest indexRequest) throws ClientException {
         logger.debug("Find indexes - index prefix: '{}'", indexRequest.getIndex());
-        Response isIndexExistsResponse = restCallTimeoutHandler(new Callable<Response>() {
-
-            @Override
-            public Response call() throws Exception {
-                return esClientProvider.getClient().performRequest(
-                        GET_ACTION,
-                        getFindIndexPath(indexRequest.getIndex()),
-                        Collections.singletonMap("pretty", "true"));
-            }
-        }, indexRequest.getIndex(), "INDEX EXIST");
+        Response isIndexExistsResponse = restCallTimeoutHandler(() -> esClientProvider.getClient().performRequest(
+                GET_ACTION,
+                getFindIndexPath(indexRequest.getIndex()),
+                Collections.singletonMap("pretty", "true")), indexRequest.getIndex(), "INDEX EXIST");
         if (isIndexExistsResponse != null && isIndexExistsResponse.getStatusLine() != null) {
             if (isIndexExistsResponse.getStatusLine().getStatusCode() == 200) {
                 try {
@@ -590,18 +532,14 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     public void createIndex(String indexName, ObjectNode indexSettings) throws ClientException {
         logger.debug("Create index - object: '{}'", indexSettings);
         checkClient();
-        Response createIndexResponse = restCallTimeoutHandler(new Callable<Response>() {
-
-            @Override
-            public Response call() throws Exception {
-                return esClientProvider.getClient().performRequest(
-                        PUT_ACTION,
-                        getIndexPath(indexName),
-                        Collections.<String, String>emptyMap(),
-                        EntityBuilder.create().setText(MAPPER.writeValueAsString(indexSettings)).build(),
-                        new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
-            }
-
+        Response createIndexResponse = restCallTimeoutHandler(() -> {
+            Response response = esClientProvider.getClient().performRequest(
+                    PUT_ACTION,
+                    getIndexPath(indexName),
+                    Collections.emptyMap(),
+                    EntityBuilder.create().setText(MAPPER.writeValueAsString(indexSettings)).build(),
+                    new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
+            return response;
         }, indexName, "CREATE INDEX");
         if (!isRequestSuccessful(createIndexResponse)) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR,
@@ -613,16 +551,10 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     public boolean isMappingExists(TypeDescriptor typeDescriptor) throws ClientException {
         logger.debug("Mapping exists - mapping name: '{} - {}'", typeDescriptor.getIndex(), typeDescriptor.getType());
         checkClient();
-        Response isMappingExistsResponse = restCallTimeoutHandler(new Callable<Response>() {
-
-            @Override
-            public Response call() throws Exception {
-                return esClientProvider.getClient().performRequest(
-                        GET_ACTION,
-                        getMappingPath(typeDescriptor),
-                        Collections.<String, String>emptyMap());
-            }
-        }, typeDescriptor.getIndex(), "MAPPING EXIST");
+        Response isMappingExistsResponse = restCallTimeoutHandler(() -> esClientProvider.getClient().performRequest(
+                GET_ACTION,
+                getMappingPath(typeDescriptor),
+                Collections.emptyMap()), typeDescriptor.getIndex(), "MAPPING EXIST");
         if (isMappingExistsResponse != null && isMappingExistsResponse.getStatusLine() != null) {
             if (isMappingExistsResponse.getStatusLine().getStatusCode() == 200) {
                 return true;
@@ -638,18 +570,12 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     public void putMapping(TypeDescriptor typeDescriptor, JsonNode mapping) throws ClientException {
         logger.debug("Create mapping - object: '{}, index: {}, type: {}'", mapping, typeDescriptor.getIndex(), typeDescriptor.getType());
         checkClient();
-        Response createMappingResponse = restCallTimeoutHandler(new Callable<Response>() {
-
-            @Override
-            public Response call() throws Exception {
-                return esClientProvider.getClient().performRequest(
-                        PUT_ACTION,
-                        getMappingPath(typeDescriptor),
-                        Collections.<String, String>emptyMap(),
-                        EntityBuilder.create().setText(MAPPER.writeValueAsString(mapping)).build(),
-                        new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
-            }
-        }, typeDescriptor.getIndex(), "PUT MAPPING");
+        Response createMappingResponse = restCallTimeoutHandler(() -> esClientProvider.getClient().performRequest(
+                PUT_ACTION,
+                getMappingPath(typeDescriptor),
+                Collections.emptyMap(),
+                EntityBuilder.create().setText(MAPPER.writeValueAsString(mapping)).build(),
+                new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "PUT MAPPING");
         if (!isRequestSuccessful(createMappingResponse)) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR,
                     (createMappingResponse != null && createMappingResponse.getStatusLine() != null) ? createMappingResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
@@ -660,16 +586,10 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     public void refreshAllIndexes() throws ClientException {
         logger.debug("Refresh all indexes");
         checkClient();
-        Response refreshIndexResponse = restCallTimeoutHandler(new Callable<Response>() {
-
-            @Override
-            public Response call() throws Exception {
-                return esClientProvider.getClient().performRequest(
-                        POST_ACTION,
-                        getRefreshAllIndexesPath(),
-                        Collections.<String, String>emptyMap());
-            }
-        }, INDEX_ALL, "REFRESH INDEX");
+        Response refreshIndexResponse = restCallTimeoutHandler(() -> esClientProvider.getClient().performRequest(
+                POST_ACTION,
+                getRefreshAllIndexesPath(),
+                Collections.emptyMap()), INDEX_ALL, "REFRESH INDEX");
         if (!isRequestSuccessful(refreshIndexResponse)) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR,
                     (refreshIndexResponse != null && refreshIndexResponse.getStatusLine() != null) ? refreshIndexResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
@@ -680,16 +600,10 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     public void deleteAllIndexes() throws ClientException {
         logger.debug("Delete all indexes");
         checkClient();
-        Response deleteIndexResponse = restCallTimeoutHandler(new Callable<Response>() {
-
-            @Override
-            public Response call() throws Exception {
-                return esClientProvider.getClient().performRequest(
-                        DELETE_ACTION,
-                        getIndexPath("_all"),
-                        Collections.<String, String>emptyMap());
-            }
-        }, INDEX_ALL, "DELETE INDEX");
+        Response deleteIndexResponse = restCallTimeoutHandler(() -> esClientProvider.getClient().performRequest(
+                DELETE_ACTION,
+                getIndexPath("_all"),
+                Collections.emptyMap()), INDEX_ALL, "DELETE INDEX");
         if (!isRequestSuccessful(deleteIndexResponse)) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR,
                     (deleteIndexResponse != null && deleteIndexResponse.getStatusLine() != null) ? deleteIndexResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
@@ -702,16 +616,12 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         checkClient();
         for (String index : indexes) {
             logger.debug("Delete index {}", index);
-            Response deleteIndexResponse = restCallTimeoutHandler(new Callable<Response>() {
-
-                @Override
-                public Response call() throws Exception {
-                    logger.debug("Deleting index {}", index);
-                    return esClientProvider.getClient().performRequest(
-                            DELETE_ACTION,
-                            getIndexPath(index),
-                            Collections.<String, String>emptyMap());
-                }
+            Response deleteIndexResponse = restCallTimeoutHandler(() -> {
+                logger.debug("Deleting index {}", index);
+                return esClientProvider.getClient().performRequest(
+                        DELETE_ACTION,
+                        getIndexPath(index),
+                        Collections.emptyMap());
             }, index, "DELETE INDEX");
 
             // for that call the deleteIndexResponse=null case could be considered as good response since if an index doesn't exist (404) the delete could be considered successful.
@@ -762,10 +672,10 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         } catch (ResponseException re) {
             if (re.getResponse().getStatusLine().getStatusCode() == 404) {
                 logger.warn("Resource for index '{}' not found on action '{}'! {}", index, operationName, re.getLocalizedMessage());
-                return (T) null;
+                return null;
             } else if (re.getResponse().getStatusLine().getStatusCode() == 400) {
                 logger.warn("Bad request for index '{}' on action '{}'! {}", index, operationName, re.getLocalizedMessage());
-                return (T) null;
+                return null;
             } else {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, re);
             }
@@ -803,7 +713,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     }
 
     private String getBulkPath() {
-        return String.format("/_bulk");
+        return "/_bulk";
     }
 
     private String getInsertTypePath(InsertRequest request) {
