@@ -14,6 +14,8 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
@@ -23,8 +25,10 @@ import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.RefreshTokenCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
+import org.eclipse.kapua.service.authentication.token.LoginInfo;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -142,5 +146,20 @@ public class Authentication extends AbstractKapuaResource {
      */
     private AccessToken login(LoginCredentials loginCredentials) throws Exception {
         return authenticationService.login(loginCredentials);
+    }
+
+    /**
+     * Gets a {@link LoginInfo} object
+     *
+     * @return A {@link LoginInfo} object containing all the permissions and the {@link AccessToken} for the current session
+     * @throws KapuaException
+     */
+    @ApiOperation(nickname = "loginInfo", value = "Gets the Session information", notes = "The response object will contain all the permissions related to the current" +
+            "session, plus all the AccessToken information")
+    @GET
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("info")
+    public LoginInfo loginInfo() throws KapuaException {
+        return authenticationService.getLoginInfo();
     }
 }

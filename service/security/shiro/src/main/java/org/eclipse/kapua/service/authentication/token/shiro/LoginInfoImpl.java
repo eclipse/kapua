@@ -1,0 +1,57 @@
+/*******************************************************************************
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.kapua.service.authentication.token.shiro;
+
+import java.util.Set;
+
+import org.eclipse.kapua.service.authentication.token.AccessToken;
+import org.eclipse.kapua.service.authentication.token.LoginInfo;
+import org.eclipse.kapua.service.authorization.access.AccessPermission;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
+
+public class LoginInfoImpl implements LoginInfo {
+
+    private AccessToken accessToken;
+    private Set<RolePermission> rolePermissions;
+    private Set<AccessPermission> accessPermissions;
+
+    @Override
+    public AccessToken getAccessToken() {
+        return accessToken;
+    }
+
+    @Override
+    public void setAccessToken(AccessToken accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    @Override
+    public Set<RolePermission> getRolePermission() {
+        return rolePermissions;
+    }
+
+    @Override
+    public void setRolePermission(Set<RolePermission> rolePermissions) {
+        this.rolePermissions = rolePermissions;
+    }
+
+    @Override
+    public Set<AccessPermission> getAccessPermission() {
+        return accessPermissions;
+    }
+
+    @Override
+    public void setAccessPermission(Set<AccessPermission> accessPermissions) {
+        this.accessPermissions = accessPermissions;
+    }
+
+}

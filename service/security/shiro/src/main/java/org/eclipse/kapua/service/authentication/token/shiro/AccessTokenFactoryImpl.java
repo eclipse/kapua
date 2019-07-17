@@ -19,6 +19,7 @@ import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
 import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
 import org.eclipse.kapua.service.authentication.token.AccessTokenListResult;
 import org.eclipse.kapua.service.authentication.token.AccessTokenQuery;
+import org.eclipse.kapua.service.authentication.token.LoginInfo;
 
 import java.util.Date;
 
@@ -71,4 +72,10 @@ public class AccessTokenFactoryImpl implements AccessTokenFactory {
             throw new KapuaEntityCloneException(e, AccessToken.TYPE, accessToken);
         }
     }
+
+    @Override
+    public LoginInfo newLoginInfo() {
+        return new LoginInfoImpl();
+    }
+
 }
