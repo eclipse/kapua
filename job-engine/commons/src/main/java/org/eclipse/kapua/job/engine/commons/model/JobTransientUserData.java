@@ -26,7 +26,6 @@ public class JobTransientUserData {
 
     private JobLogger jobLogger;
 
-
     /**
      * Gets the {@link JobLogger}.
      *
