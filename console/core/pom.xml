@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2017 Eurotech and/or its affiliates and others
+    Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -14,50 +14,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <artifactId>kapua-console</artifactId>
         <groupId>org.eclipse.kapua</groupId>
         <version>1.1.0-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>kapua-console-core</artifactId>
-
-    <build>
-        <finalName>adminCore</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-                <!-- GWT Maven Plugin -->
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>gwt-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generateAsync</goal> <!-- Generate Async RPC interfaces -->
-                            <goal>i18n</goal>
-                            <goal>compile</goal> <!-- Compile permutations -->
-                        </goals>
-                    </execution>
-                </executions>
-
-                <configuration>
-                    <module>org.eclipse.kapua.app.console.core.adminCore</module>
-                    <i18nMessagesBundles>
-                        <i18nMessagesBundle>org.eclipse.kapua.app.console.core.client.messages.ConsoleCoreMessages</i18nMessagesBundle>
-                    </i18nMessagesBundles>
-                    <webappDirectory>${project.build.directory}</webappDirectory>
-                    <hostedWebapp>${site.basedir}</hostedWebapp>
-
-                    <runTarget>console.jsp</runTarget>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <dependencies>
         <!-- Console modules -->
@@ -170,7 +135,7 @@
             <artifactId>kapua-console-module-user</artifactId>
             <classifier>sources</classifier>
         </dependency>
-        
+
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-console-module-welcome</artifactId>
@@ -205,10 +170,12 @@
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-servlet</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.extjs</groupId>
@@ -234,7 +201,7 @@
         </dependency>
 
         <dependency>
-            <!-- Apache shiro security framework web support -->
+            <!-- Apache Shiro security framework web support -->
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-web</artifactId>
         </dependency>
@@ -242,9 +209,44 @@
         <dependency>
             <groupId>org.eclipse.neoscada.utils</groupId>
             <artifactId>org.eclipse.scada.utils</artifactId>
-            <version>${scada-utils.version}</version>
         </dependency>
 
     </dependencies>
+
+    <build>
+        <finalName>adminCore</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <!-- GWT Maven Plugin -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generateAsync</goal> <!-- Generate Async RPC interfaces -->
+                            <goal>i18n</goal>
+                            <goal>compile</goal> <!-- Compile permutations -->
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <module>org.eclipse.kapua.app.console.core.adminCore</module>
+                    <i18nMessagesBundles>
+                        <i18nMessagesBundle>org.eclipse.kapua.app.console.core.client.messages.ConsoleCoreMessages</i18nMessagesBundle>
+                    </i18nMessagesBundles>
+                    <webappDirectory>${project.build.directory}</webappDirectory>
+                    <hostedWebapp>${site.basedir}</hostedWebapp>
+
+                    <runTarget>console.jsp</runTarget>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

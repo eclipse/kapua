@@ -1311,7 +1311,6 @@
                 <artifactId>org.eclipse.scada.utils</artifactId>
                 <version>${scada-utils.version}</version>
             </dependency>
-
             <dependency>
                 <!-- Used to parse the Cron expression-->
                 <groupId>org.quartz-scheduler</groupId>
