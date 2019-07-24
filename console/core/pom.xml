@@ -213,13 +213,7 @@
     </dependencies>
 
     <build>
-        <finalName>adminCore</finalName>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-            </plugin>
-
             <plugin>
                 <!-- GWT Maven Plugin -->
                 <groupId>org.codehaus.mojo</groupId>
@@ -234,10 +228,6 @@
                 </executions>
 
                 <configuration>
-                    <webappDirectory>${project.build.directory}</webappDirectory>
-                    <runTarget>console.jsp</runTarget>
-                    <hostedWebapp>${site.basedir}</hostedWebapp>
-
                     <module>org.eclipse.kapua.app.console.core.adminCore</module>
                     <i18nMessagesBundles>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.core.client.messages.ConsoleCoreMessages</i18nMessagesBundle>

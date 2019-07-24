@@ -43,7 +43,7 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-user-api</artifactId>
         </dependency>
-         <dependency>
+        <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-registry-api</artifactId>
         </dependency>
@@ -51,11 +51,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-            </plugin>
-
             <plugin>
                 <!-- GWT Maven Plugin -->
                 <groupId>org.codehaus.mojo</groupId>
