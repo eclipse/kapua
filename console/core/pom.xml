@@ -10,7 +10,6 @@
     Contributors:
         Eurotech - initial API and implementation
  -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -229,21 +228,20 @@
                     <execution>
                         <goals>
                             <goal>generateAsync</goal> <!-- Generate Async RPC interfaces -->
-                            <goal>i18n</goal>
-                            <goal>compile</goal> <!-- Compile permutations -->
+                            <goal>i18n</goal> <!-- Generate internationalization files -->
                         </goals>
                     </execution>
                 </executions>
 
                 <configuration>
+                    <webappDirectory>${project.build.directory}</webappDirectory>
+                    <runTarget>console.jsp</runTarget>
+                    <hostedWebapp>${site.basedir}</hostedWebapp>
+
                     <module>org.eclipse.kapua.app.console.core.adminCore</module>
                     <i18nMessagesBundles>
                         <i18nMessagesBundle>org.eclipse.kapua.app.console.core.client.messages.ConsoleCoreMessages</i18nMessagesBundle>
                     </i18nMessagesBundles>
-                    <webappDirectory>${project.build.directory}</webappDirectory>
-                    <hostedWebapp>${site.basedir}</hostedWebapp>
-
-                    <runTarget>console.jsp</runTarget>
                 </configuration>
             </plugin>
         </plugins>

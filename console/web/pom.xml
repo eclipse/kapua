@@ -26,6 +26,13 @@
     <properties>
         <webappDirectory>${project.build.directory}</webappDirectory>
         <site.basedir>${project.build.directory}/${project.build.finalName}</site.basedir>
+
+        <!-- GWT Compiler options-->
+        <gwt-maven-plugin.compile.draftCompile>false</gwt-maven-plugin.compile.draftCompile>
+        <gwt-maven-plugin.compile.extraJvmArgs>-Xmx2048m -XX:+UseParallelGC</gwt-maven-plugin.compile.extraJvmArgs>
+        <gwt-maven-plugin.compile.optimizationLevel>9</gwt-maven-plugin.compile.optimizationLevel>
+        <gwt-maven-plugin.compile.module>org.eclipse.kapua.app.console.admin</gwt-maven-plugin.compile.module>
+        <gwt-maven-plugin.compile.style>OBF</gwt-maven-plugin.compile.style>
     </properties>
 
     <dependencies>
@@ -244,6 +251,13 @@
                         <goals>
                             <goal>compile</goal>
                         </goals>
+                        <configuration>
+                            <draftCompile>${gwt-maven-plugin.compile.draftCompile}</draftCompile>
+                            <extraJvmArgs>${gwt-maven-plugin.compile.extraJvmArgs}</extraJvmArgs>
+                            <optimizationLevel>${gwt-maven-plugin.compile.optimizationLevel}</optimizationLevel>
+                            <module>${gwt-maven-plugin.compile.module}</module>
+                            <style>${gwt-maven-plugin.compile.style}</style>
+                        </configuration>
                     </execution>
                 </executions>
 
@@ -328,30 +342,26 @@
     </build>
 
     <profiles>
-        <!-- profile to speed up local development builds  -->
         <profile>
+            <!-- Profile to speed up local development builds  -->
             <id>dev</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>gwt-maven-plugin</artifactId>
-                        <configuration>
-                            <!-- we can always enable draft compile -->
-                            <draftCompile>true</draftCompile>
-                            <!-- use "dev" profile, limiting permutations -->
-                            <module>org.eclipse.kapua.app.console.adminDev</module>
-                            <!-- don't optimize -->
-                            <optimizationLevel>0</optimizationLevel>
-                            <!-- enable details -->
-                            <style>DETAILED</style>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
+
+            <properties>
+                <!-- Faster but less optimized -->
+                <gwt-maven-plugin.compile.draftCompile>true</gwt-maven-plugin.compile.draftCompile>
+
+                <!-- Faster but less optimized -->
+                <gwt-maven-plugin.compile.optimizationLevel>0</gwt-maven-plugin.compile.optimizationLevel>
+
+                <!-- Compile less permutation to speed up the process-->
+                <gwt-maven-plugin.compile.module>org.eclipse.kapua.app.console.adminDev</gwt-maven-plugin.compile.module>
+
+                <!-- Faster but less optimized and easier for JS debug-->
+                <gwt-maven-plugin.compile.style>OBF</gwt-maven-plugin.compile.style>
+            </properties>
         </profile>
     </profiles>
 </project>
