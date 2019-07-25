@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,6 +19,7 @@ import org.eclipse.kapua.broker.core.router.ParentEndPoint;
 import org.eclipse.kapua.broker.core.router.SimpleEndPoint;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTdesignate;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
@@ -41,11 +42,17 @@ import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraBundleInfo;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackages;
 import org.eclipse.kapua.service.device.call.kura.model.snapshot.KuraSnapshotIds;
+import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
+import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
+import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
+import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
+import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobListResult;
@@ -93,11 +100,17 @@ public class TestJAXBContextProvider implements JAXBContextProvider {
                         KuraBundle.class,
                         KuraBundles.class,
                         KuraBundleInfo.class,
+                        DeviceAsset.class,
+                        DeviceAssets.class,
                         DevicePackages.class,
                         DeviceBundle.class,
                         DeviceBundles.class,
+                        DeviceCommandInput.class,
                         DeviceConfiguration.class,
                         DeviceComponentConfiguration.class,
+                        DevicePackageInstallRequest.class,
+                        DevicePackageUninstallRequest.class,
+                        DevicePackageDownloadRequest.class,
                         KuraSnapshotIds.class,
                         DeviceSnapshots.class,
                         // Authorization
@@ -122,6 +135,7 @@ public class TestJAXBContextProvider implements JAXBContextProvider {
                         Job.class,
                         JobListResult.class,
                         JobXmlRegistry.class,
+                        JobTargetSublist.class,
                         // Broker core
                         EndPointContainer.class,
                         SimpleEndPoint.class,
