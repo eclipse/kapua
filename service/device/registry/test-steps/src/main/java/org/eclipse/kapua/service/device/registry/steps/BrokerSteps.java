@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -57,6 +57,7 @@ import javax.inject.Inject;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Steps used in integration scenarios with running MQTT broker and process of
@@ -184,6 +185,21 @@ public class BrokerSteps extends TestBase {
         kuraDevice.mqttClientConnect();
     }
 
+    @When("I get the KuraMock device$")
+    public void getKuraMockDevice() throws Exception {
+        Device device = deviceRegistryService.findByClientId(getCurrentScopeId(), "rpione3");
+        if (device != null) {
+            stepData.put("LastDevice", device);
+        }
+    }
+
+    @When("^KuraMock is disconnected$")
+    public void kuraMockDisconnected() throws Exception {
+
+        deviceDeathMessage();
+        kuraDevice.mqttClientDisconnect();
+    }
+
     @When("^Device birth message is sent$")
     public void deviceBirthMessage() throws Exception {
 
@@ -230,6 +246,37 @@ public class BrokerSteps extends TestBase {
         }
     }
 
+    @Then("^Number of received packages is (\\d+)$")
+    public void checkNumberOfReceivedDevicePackages(long number) {
+        @SuppressWarnings("unchecked")
+        List<DevicePackage> receivedPackages = (List<DevicePackage>) stepData.get("packages");
+        assertEquals(number, receivedPackages.size());
+    }
+
+    @Then("Package named (.*) with version (.*) is received$")
+    public void assertPackage(final String packageName, final String version) {
+        final DevicePackage pkg = findPackageByNameAndVersion(packageName, version);
+        Assert.assertEquals(packageName, pkg.getName());
+        Assert.assertEquals(version, pkg.getVersion());
+    }
+
+    private DevicePackage findPackageByNameAndVersion(final String packageSymbolicName, final String version) {
+        List<DevicePackage> savedPackages = (List<DevicePackage>) stepData.get("packages");
+        List<DevicePackage> packages = savedPackages.stream()
+                .filter(bundle -> bundle.getName().equals(packageSymbolicName))
+                .filter(bundle -> bundle.getVersion().equals(version))
+                .collect(Collectors.toList());
+
+        if (packages.isEmpty()) {
+            Assert.fail(String.format("Package %s/%s is not present", packageSymbolicName, version));
+        }
+        if (packages.size() > 1) {
+            Assert.fail(String.format("There is more than one entry for bundle %s/%s", packageSymbolicName, version));
+        }
+
+        return packages.get(0);
+    }
+
     @When("^Bundles are requested$")
     public void requestBundles() throws Exception {
 
@@ -245,6 +292,30 @@ public class BrokerSteps extends TestBase {
         @SuppressWarnings("unchecked")
         List<DeviceBundle> bundles = (List<DeviceBundle>) stepData.get("bundles");
         assertEquals(80, bundles.size());
+    }
+
+    @When("A bundle named (.*) with id (.*) and version (.*) is present and (.*)$")
+    public void bundleIsPresent(String bundleSymbolicName, long id ,String version, String state) {
+        DeviceBundle bundle = findBundleByNameAndVersion(bundleSymbolicName, version);
+        Assert.assertEquals(id, bundle.getId());
+        Assert.assertEquals(state, bundle.getState());
+    }
+
+    private DeviceBundle findBundleByNameAndVersion(final String bundleSymbolicName, final String version) {
+        List<DeviceBundle> savedBundles = (List<DeviceBundle>) stepData.get("bundles");
+        List<DeviceBundle> bundles = savedBundles.stream()
+                .filter(bundle -> bundle.getName().equals(bundleSymbolicName))
+                .filter(bundle -> bundle.getVersion().equals(version))
+                .collect(Collectors.toList());
+
+        if (bundles.isEmpty()) {
+            Assert.fail(String.format("Bundle %s/%s is not present", bundleSymbolicName, version));
+        }
+        if (bundles.size() > 1) {
+            Assert.fail(String.format("There is more than one entry for bundle %s/%s", bundleSymbolicName, version));
+        }
+
+        return bundles.get(0);
     }
 
     @When("^Configuration is requested$")
@@ -369,4 +440,14 @@ public class BrokerSteps extends TestBase {
         }
     }
 
+    @Then("^Device status is \"([^\"]*)\"$")
+    public void deviceStatusIs(String deviceStatus) throws Exception {
+        DeviceConnection deviceConn = null;
+        try {
+            deviceConn = deviceConnectionService.findByClientId(SYS_SCOPE_ID, "rpione3");
+        } catch (KapuaException ex) {
+            return;
+        }
+        assertEquals(deviceStatus, deviceConn.getStatus().toString());
+    }
 }
