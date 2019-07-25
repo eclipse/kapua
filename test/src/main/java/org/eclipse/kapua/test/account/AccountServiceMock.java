@@ -134,7 +134,7 @@ public class AccountServiceMock implements AccountService {
     }
 
     @Override
-    public AccountListResult findChildsRecursively(KapuaId accountId)
+    public AccountListResult findChildrenRecursively(KapuaId accountId)
             throws KapuaException {
         // TODO Auto-generated method stub
         return null;

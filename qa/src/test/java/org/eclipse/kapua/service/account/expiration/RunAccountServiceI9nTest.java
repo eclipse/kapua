@@ -18,7 +18,8 @@ import org.junit.runner.RunWith;
 
 @RunWith(CucumberWithProperties.class)
 @CucumberOptions(
-        features = "classpath:features/account/AccountExpirationI9n.feature",
+        features = {"classpath:features/account/AccountExpirationI9n.feature",
+                    "classpath:features/account/FindSelfAccount.feature"},
         glue = {"org.eclipse.kapua.qa.steps",
                 "org.eclipse.kapua.service.user.steps"
                },
@@ -26,5 +27,5 @@ import org.junit.runner.RunWith;
                   "html:target/cucumber/AccountServiceI9n",
                   "json:target/AccountServiceI9n_cucumber.json"
                  },
-        monochrome=true)
+        monochrome = true)
 public class RunAccountServiceI9nTest {}

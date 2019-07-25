@@ -739,6 +739,26 @@ public class AccountServiceTestSteps extends AbstractKapuaSteps {
         exceptionCaught = true;
     }
 
+    @When("^I look for my account by id$")
+    public void findMyAccountById() throws Exception {
+        account = accountService.find(account.getId());
+    }
+
+    @When("^I look for my account by id and scope id$")
+    public void findMyAccountByIdAndScopeId() throws Exception {
+        account = accountService.find(account.getId(), account.getScopeId());
+    }
+
+    @When("^I look for my account by name$")
+    public void findMyAccountByName() throws Exception {
+        account = accountService.findByName(account.getName());
+    }
+
+    @Then("^I am able to read my account info")
+    public void verifySelfAccount() throws Exception {
+        assertNotNull(account);
+    }
+
     // *****************
     // * Inner Classes *
     // *****************
