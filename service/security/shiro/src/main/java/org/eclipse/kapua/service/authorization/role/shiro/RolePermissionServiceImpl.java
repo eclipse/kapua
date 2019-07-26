@@ -174,7 +174,6 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
     public RolePermissionListResult query(KapuaQuery<RolePermission> query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access
@@ -190,7 +189,6 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
     public long count(KapuaQuery<RolePermission> query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access

@@ -176,7 +176,6 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         //
         // Argument validation
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access
@@ -193,7 +192,6 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         //
         // Argument validation
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access

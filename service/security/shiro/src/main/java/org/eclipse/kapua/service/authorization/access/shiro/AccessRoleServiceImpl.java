@@ -159,7 +159,6 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
     public AccessRoleListResult query(KapuaQuery<AccessRole> query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access
@@ -175,7 +174,6 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
     public long count(KapuaQuery<AccessRole> query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access

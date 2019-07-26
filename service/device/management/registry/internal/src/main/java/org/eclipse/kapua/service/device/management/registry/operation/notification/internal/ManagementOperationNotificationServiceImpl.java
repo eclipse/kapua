@@ -94,7 +94,6 @@ public class ManagementOperationNotificationServiceImpl extends AbstractKapuaSer
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access
@@ -110,7 +109,6 @@ public class ManagementOperationNotificationServiceImpl extends AbstractKapuaSer
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access

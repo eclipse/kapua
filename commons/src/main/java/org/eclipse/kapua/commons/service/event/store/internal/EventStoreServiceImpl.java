@@ -156,7 +156,6 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
     public long count(KapuaQuery<EventStoreRecord> query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access

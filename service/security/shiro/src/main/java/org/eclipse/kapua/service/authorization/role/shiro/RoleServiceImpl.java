@@ -209,7 +209,6 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         //
         // Argument validation
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access
@@ -225,7 +224,6 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         //
         // Argument validation
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access

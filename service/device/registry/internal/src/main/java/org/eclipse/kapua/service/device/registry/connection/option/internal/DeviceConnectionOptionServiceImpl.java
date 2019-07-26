@@ -121,7 +121,6 @@ public class DeviceConnectionOptionServiceImpl extends AbstractKapuaService impl
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access
@@ -139,7 +138,6 @@ public class DeviceConnectionOptionServiceImpl extends AbstractKapuaService impl
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access

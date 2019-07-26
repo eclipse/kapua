@@ -226,7 +226,6 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access
@@ -244,7 +243,6 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access
