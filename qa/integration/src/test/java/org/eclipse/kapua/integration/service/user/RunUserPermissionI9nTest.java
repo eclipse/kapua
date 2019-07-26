@@ -26,7 +26,8 @@ import cucumber.api.CucumberOptions;
                 "org.eclipse.kapua.service.authorization.steps",
                 "org.eclipse.kapua.service.device.registry.steps",
                 "org.eclipse.kapua.service.tag.steps",
-                "org.eclipse.kapua.service.job.steps"
+                "org.eclipse.kapua.service.job.steps",
+                "org.eclipse.kapua.service.datastore.steps"
         },
         plugin = {"pretty",
                 "html:target/cucumber/UserServiceI9n",

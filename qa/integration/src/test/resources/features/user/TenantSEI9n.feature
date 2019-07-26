@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+# Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -47,7 +47,7 @@ Feature: Tenant service with Service Events
     And Credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
-    And Permissions
+    And Add permissions to the last created user
       | domain | action |
       | user   | read   |
       | user   | write  |

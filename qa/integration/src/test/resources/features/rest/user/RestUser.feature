@@ -87,7 +87,7 @@ Feature: REST API tests for User
     And Credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
-    And Permissions
+    And Add permissions to the last created user
       | domain | action |
       | user   | read   |
       | user   | write  |
@@ -110,7 +110,7 @@ Feature: REST API tests for User
     And Credentials
       | name    | password          | enabled |
       | kapua-b | ToManySecrets123# | true    |
-    And Permissions
+    And Add permissions to the last created user
       | domain | action |
       | user   | read   |
       | user   | write  |

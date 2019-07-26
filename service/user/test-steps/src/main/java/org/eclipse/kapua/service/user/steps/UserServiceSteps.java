@@ -44,11 +44,15 @@ import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
+import org.eclipse.kapua.service.authentication.credential.CredentialAttributes;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
+import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
+import org.eclipse.kapua.service.authentication.credential.shiro.CredentialQueryImpl;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
@@ -497,7 +501,41 @@ public class UserServiceSteps extends TestBase {
         createCredentials(cucCredentials);
     }
 
-    @Given("^Permissions$")
+    @Given("^I search for last created user's credentials$")
+    public void searchForLastCreatedCredentials() throws Exception {
+        ComparableUser comparableUser = (ComparableUser) stepData.get("LastUser");
+        primeException();
+        try {
+            CredentialQuery credentialQuery = new CredentialQueryImpl(getCurrentScopeId());
+            credentialQuery.setPredicate(credentialQuery.attributePredicate(CredentialAttributes.USER_ID, comparableUser.getUser().getId()));
+            CredentialListResult credentials = credentialService.query(credentialQuery);
+            stepData.put("CredentialsListFound", credentials);
+            stepData.put("CredentialsCount", credentials.getSize());
+            stepData.put("CredentialFound", credentials.getFirstItem());
+        } catch (KapuaException ke) {
+            verifyException(ke);
+        }
+    }
+
+    @Given("^I find (\\d+) credentials$")
+    public void checkCredentialsNumber(int expectedCount) throws Exception {
+        int count = (int) stepData.get("CredentialsCount");
+        assertEquals(expectedCount, count);
+    }
+
+    @Given("^I delete the last created user's credential$")
+    public void deleteLastCreatedUsersCredentials() throws Exception {
+        Credential credential = (Credential) stepData.get("CredentialFound");
+        primeException();
+        try {
+            credentialService.delete(getCurrentScopeId(), credential.getId());
+
+        } catch (KapuaException ke) {
+            verifyException(ke);
+        }
+    }
+
+    @Given("^Add permissions to the last created user$")
     public void givenPermissions(List<CucPermission> permissionList) throws Exception {
         createPermissions(permissionList, (ComparableUser) stepData.get("LastUser"), (Account) stepData.get("LastAccount"));
     }
@@ -577,6 +615,7 @@ public class UserServiceSteps extends TestBase {
             tmpUser = userIterator.next();
         }
         stepData.put("LastUser", tmpUser);
+        stepData.put("LastUserId", tmpUser.getUser().getId());
         stepData.put("User", tmpUser.getUser());
     }
 
@@ -819,22 +858,16 @@ public class UserServiceSteps extends TestBase {
      */
     private Credential createCredentials(CucCredentials cucCredentials) throws Exception {
         List<Credential> credentialList = new ArrayList<>();
-
-        KapuaSecurityUtils.doPrivileged(() -> {
-            primeException();
-            try {
-                User user = userService.findByName(cucCredentials.getName());
-
-                Credential credential = credentialService.create(credentialCreatorCreator(user.getScopeId(),
-                        user.getId(), cucCredentials.getPassword(),
-                        cucCredentials.getStatus(), cucCredentials.getExpirationDate()));
-                credentialList.add(credential);
-            } catch (KapuaException ke) {
-                verifyException(ke);
-            }
-
-            return null;
-        });
+        primeException();
+        try {
+            User user = userService.findByName(cucCredentials.getName());
+            Credential credential = credentialService.create(credentialCreatorCreator(user.getScopeId(),
+                    user.getId(), cucCredentials.getPassword(),
+                    cucCredentials.getStatus(), cucCredentials.getExpirationDate()));
+            credentialList.add(credential);
+        } catch (KapuaException ke) {
+            verifyException(ke);
+        }
 
         return credentialList.size() == 1 ? credentialList.get(0) : null;
     }

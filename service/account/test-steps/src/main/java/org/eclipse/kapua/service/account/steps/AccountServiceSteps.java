@@ -298,7 +298,7 @@ public class AccountServiceSteps extends TestBase {
             stepData.put("LastAccount", account);
 
             accountService.update(account);
-        } catch (KapuaIllegalNullArgumentException ex) {
+        } catch (KapuaException ex) {
             verifyException(ex);
         }
     }
