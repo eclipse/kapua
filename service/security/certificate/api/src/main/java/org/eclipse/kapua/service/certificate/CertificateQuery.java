@@ -20,6 +20,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+/**
+ * @since 1.0.0
+ */
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = CertificateXmlRegistry.class, factoryMethod = "newQuery")

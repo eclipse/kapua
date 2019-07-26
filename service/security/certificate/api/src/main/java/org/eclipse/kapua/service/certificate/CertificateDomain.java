@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.certificate;
 import org.eclipse.kapua.model.domain.AbstractDomain;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
+import org.eclipse.kapua.service.certificate.info.CertificateInfo;
 
 import java.util.Arrays;
 import java.util.HashSet;

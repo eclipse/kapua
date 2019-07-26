@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate;
 
+import org.eclipse.kapua.service.certificate.info.CertificateInfo;
 import org.eclipse.kapua.service.certificate.xml.CertificateXmlRegistry;
 
 import javax.xml.bind.annotation.XmlAccessType;

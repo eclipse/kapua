@@ -11,8 +11,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate;
 
+/**
+ * @since 1.0.0
+ */
 public enum CertificateStatus {
+    /**
+     * @since 1.0.0
+     */
     VALID,
+
+    /**
+     * @since 1.0.0
+     */
     REVOKED,
+
+    /**
+     * @since 1.0.0
+     */
     SUSPENDED
 }

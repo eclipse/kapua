@@ -43,8 +43,8 @@
 
         <api>org.eclipse.kapua.service.certificate.CertificateService</api>
         <api>org.eclipse.kapua.service.certificate.CertificateFactory</api>
-        <api>org.eclipse.kapua.service.certificate.CertificateInfoService</api>
-        <api>org.eclipse.kapua.service.certificate.CertificateInfoFactory</api>
+        <api>org.eclipse.kapua.service.certificate.info.CertificateInfoService</api>
+        <api>org.eclipse.kapua.service.certificate.info.CertificateInfoFactory</api>
 
         <api>org.eclipse.kapua.service.datastore.MessageStoreService</api>
         <api>org.eclipse.kapua.service.datastore.ClientInfoRegistryService</api>

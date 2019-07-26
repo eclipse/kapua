@@ -25,7 +25,7 @@ import java.util.Set;
 /**
  * {@link CertificateGenerator} encapsulates all the information needed to generate a new {@link Certificate} in the system.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlRootElement(name = "certificateGenerator")
 @XmlAccessorType(XmlAccessType.PROPERTY)

@@ -9,14 +9,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.certificate.internal;
+package org.eclipse.kapua.service.certificate.info.internal;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.certificate.CertificateInfo;
 import org.eclipse.kapua.service.certificate.CertificateStatus;
 import org.eclipse.kapua.service.certificate.CertificateUsage;
 import org.eclipse.kapua.service.certificate.KeyUsageSetting;
+import org.eclipse.kapua.service.certificate.info.CertificateInfo;
+import org.eclipse.kapua.service.certificate.internal.CertificateUsageImpl;
+import org.eclipse.kapua.service.certificate.internal.KeyUsageSettingImpl;
 
 import java.util.Date;
 import java.util.HashSet;

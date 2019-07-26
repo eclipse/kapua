@@ -19,6 +19,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+/**
+ * @since 1.0.0
+ */
 @XmlRootElement(name = "certificates")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = CertificateXmlRegistry.class, factoryMethod = "newListResult")

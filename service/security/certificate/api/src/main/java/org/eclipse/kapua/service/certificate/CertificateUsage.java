@@ -11,20 +11,31 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate;
 
-import org.eclipse.kapua.service.certificate.xml.CertificateInfoXmlRegistry;
+import org.eclipse.kapua.service.certificate.xml.CertificateXmlRegistry;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+/**
+ * @since 1.0.0
+ */
 @XmlRootElement(name = "certificateUsage")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = CertificateInfoXmlRegistry.class, factoryMethod = "newCertificateUsage")
+@XmlType(factoryClass = CertificateXmlRegistry.class, factoryMethod = "newCertificateUsage")
 public interface CertificateUsage {
 
+    /**
+     * @return
+     * @since 1.0.0
+     */
     String getName();
 
+    /**
+     * @param name
+     * @since 1.0.0
+     */
     void setName(String name);
 
 }

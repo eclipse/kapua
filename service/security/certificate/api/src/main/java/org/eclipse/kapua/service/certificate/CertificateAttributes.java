@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate;
 
-import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
+import org.eclipse.kapua.service.certificate.info.CertificateInfoAttributes;
 
 /**
  * {@link CertificateAttributes} attributes.
@@ -19,18 +19,5 @@ import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
  * @see org.eclipse.kapua.model.KapuaEntityAttributes
  * @since 1.0.0
  */
-public class CertificateAttributes extends KapuaNamedEntityAttributes {
-
-    public static final String CA_ID = "caId";
-
-    public static final String FORWARDABLE = "forwardable";
-
-    public static final String SIGNATURE = "signature";
-
-    public static final String STATUS = "status";
-
-    public static final String USAGE = "certificateUsages";
-
-    public static final String USAGE_NAME = USAGE + ".name";
-
+public class CertificateAttributes extends CertificateInfoAttributes {
 }
