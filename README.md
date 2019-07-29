@@ -173,3 +173,15 @@ They will provide more advanced deployment scenarios.
 ### Contributing
 
 If you're interested to get involved in IoT and Eclipse Kapua&trade; project, join the community and give your contribution to the project, please read [how to contribute to Eclipse Kapua&trade;](https://github.com/eclipse/kapua/blob/develop/CONTRIBUTING.md).
+
+### Acknowledgments
+
+![](https://www.yourkit.com/images/yklogo.png)
+
+Thanks to YourKit for providing us an open source license of YourKit Java Profiler!
+
+YourKit supports open source projects with innovative and intelligent tools
+for monitoring and profiling Java and .NET applications.
+YourKit is the creator of [YourKit Java Profiler](https://www.yourkit.com/java/profiler/),
+[YourKit .NET Profiler](https://www.yourkit.com/.net/profiler/)</a>,
+and [YourKit YouMonitor](https://www.yourkit.com/youmonitor/).
