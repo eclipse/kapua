@@ -239,6 +239,7 @@ public class ChannelInfoRegistryFacade {
             QueryMappingException,
             ClientException {
         ArgumentValidator.notNull(query, "query");
+        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
@@ -270,6 +271,7 @@ public class ChannelInfoRegistryFacade {
             ConfigurationException,
             ClientException {
         ArgumentValidator.notNull(query, "query");
+        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();

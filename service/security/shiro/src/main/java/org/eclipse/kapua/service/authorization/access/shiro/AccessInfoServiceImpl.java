@@ -191,7 +191,6 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
     public long count(KapuaQuery<AccessInfo> query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access
