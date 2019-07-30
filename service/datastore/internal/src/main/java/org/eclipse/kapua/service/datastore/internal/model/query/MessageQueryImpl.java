@@ -11,12 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
+import java.util.Collections;
+
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.AbstractStorableQuery;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
+import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 
 /**
@@ -36,6 +39,7 @@ public class MessageQueryImpl extends AbstractStorableQuery<DatastoreMessage> im
      */
     public MessageQueryImpl(KapuaId scopeId) {
         super(scopeId);
+        setSortFields(Collections.singletonList(SortField.descending(MessageSchema.MESSAGE_TIMESTAMP)));
     }
 
     @Override
