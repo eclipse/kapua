@@ -299,7 +299,6 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Argument validation
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access
@@ -319,7 +318,6 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Argument validation
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access

@@ -50,11 +50,11 @@ public class CertificateInfoServiceImpl implements CertificateInfoService {
     @Override
     public CertificateInfoListResult query(KapuaQuery<CertificateInfo> query) throws KapuaException {
 
-        CertificateQuery privateQuery = new CertificateQueryImpl(query);
-        privateQuery.setIncludeInherited(((CertificateInfoQuery) query).getIncludeInherited());
+        CertificateQuery certificateQuery = new CertificateQueryImpl(query);
+        certificateQuery.setIncludeInherited(((CertificateInfoQuery) query).getIncludeInherited());
 
         CertificateInfoListResult publicCertificates = new CertificateInfoListResultImpl();
-        publicCertificates.addItem(PRIVATE_CERTIFICATE_SERVICE.query(privateQuery).getFirstItem());
+        publicCertificates.addItem(PRIVATE_CERTIFICATE_SERVICE.query(certificateQuery).getFirstItem());
 
         return publicCertificates;
     }

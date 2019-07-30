@@ -129,7 +129,6 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access
@@ -145,7 +144,6 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access

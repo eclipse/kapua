@@ -218,7 +218,6 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access
@@ -234,7 +233,6 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
         //
         // Check Access
