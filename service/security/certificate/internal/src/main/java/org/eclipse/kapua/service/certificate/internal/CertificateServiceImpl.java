@@ -104,7 +104,7 @@ public class CertificateServiceImpl implements CertificateService {
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(CertificateDomains.CERTIFICATE_DOMAIN, Actions.write, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(CertificateDomains.CERTIFICATE_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Create the default certificate

@@ -897,6 +897,32 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
+    @When("^I look for my account by id$")
+    public void findMyAccountById() throws Exception {
+        Account account = (Account) stepData.get("LastAccount");
+        Account selfAccount = accountService.find(account.getId());
+        stepData.put("LastAccount",selfAccount);
+    }
+
+    @When("^I look for my account by id and scope id$")
+    public void findMyAccountByIdAndScopeId() throws Exception {
+        Account account = (Account) stepData.get("LastAccount");
+        Account selfAccount = accountService.find(account.getId(), account.getScopeId());
+        stepData.put("LastAccount",selfAccount);
+    }
+
+    @When("^I look for my account by name$")
+    public void findMyAccountByName() throws Exception {
+        Account account = (Account) stepData.get("LastAccount");
+        Account selfAccount = accountService.findByName(account.getName());
+        stepData.put("LastAccount",selfAccount);
+    }
+
+    @Then("^I am able to read my account info")
+    public void verifySelfAccount() throws Exception {
+        assertNotNull(stepData.get("LastAccount"));
+    }
+
     // *****************
     // * Inner Classes *
     // *****************
