@@ -157,8 +157,6 @@ public class DatastoreMediator implements MessageStoreMediator,
         channelInfo.setFirstMessageId(message.getDatastoreId());
         channelInfo.setFirstMessageOn(message.getTimestamp());
         channelInfo.setId(new StorableIdImpl(ChannelInfoField.getOrDeriveId(null, channelInfo)));
-        clientInfo.setFirstMessageId(message.getDatastoreId());
-        clientInfo.setFirstMessageOn(message.getTimestamp());
         channelInfoStoreFacade.upstore(channelInfo);
 
         KapuaPayload payload = message.getPayload();

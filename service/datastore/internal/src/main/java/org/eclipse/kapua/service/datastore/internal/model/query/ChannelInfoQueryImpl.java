@@ -11,11 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
+import java.util.Collections;
+
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.AbstractStorableQuery;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
+import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 
 /**
@@ -35,6 +39,7 @@ public class ChannelInfoQueryImpl extends AbstractStorableQuery<ChannelInfo> imp
      */
     public ChannelInfoQueryImpl(KapuaId scopeId) {
         super(scopeId);
+        setSortFields(Collections.singletonList(SortField.ascending(ChannelInfoSchema.CHANNEL_NAME)));
     }
 
     @Override
