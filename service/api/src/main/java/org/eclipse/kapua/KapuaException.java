@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua;
 
+import javax.validation.constraints.NotNull;
 import java.util.Locale;
 
 /**
@@ -40,7 +41,7 @@ public class KapuaException extends Exception {
      * @param code The {@link KapuaErrorCode} associated with the {@link Exception}
      * @since 1.0.0
      */
-    public KapuaException(KapuaErrorCode code) {
+    public KapuaException(@NotNull KapuaErrorCode code) {
         this(code, (Object[]) null);
     }
 
@@ -51,7 +52,7 @@ public class KapuaException extends Exception {
      * @param arguments The arguments associated with the {@link Exception}.
      * @since 1.0.0
      */
-    public KapuaException(KapuaErrorCode code, Object... arguments) {
+    public KapuaException(@NotNull KapuaErrorCode code, Object... arguments) {
         this(code, null, arguments);
     }
 
@@ -64,7 +65,7 @@ public class KapuaException extends Exception {
      * @param arguments The arguments associated with the {@link Exception}.
      * @since 1.0.0
      */
-    public KapuaException(KapuaErrorCode code, Throwable cause, Object... arguments) {
+    public KapuaException(@NotNull KapuaErrorCode code, Throwable cause, Object... arguments) {
         super(cause);
 
         this.code = code;
@@ -79,7 +80,7 @@ public class KapuaException extends Exception {
      * @return A {@link KapuaException} with {@link KapuaErrorCodes#INTERNAL_ERROR}.
      * @since 1.0.0
      */
-    public static KapuaException internalError(Throwable cause, String message) {
+    public static KapuaException internalError(@NotNull Throwable cause, String message) {
         return new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, cause, message);
     }
 
@@ -90,7 +91,7 @@ public class KapuaException extends Exception {
      * @return A {@link KapuaException} with {@link KapuaErrorCodes#INTERNAL_ERROR}.
      * @since 1.0.0
      */
-    public static KapuaException internalError(Throwable cause) {
+    public static KapuaException internalError(@NotNull Throwable cause) {
         String arg = cause.getMessage();
         if (arg == null) {
             arg = cause.getClass().getName();
@@ -105,13 +106,20 @@ public class KapuaException extends Exception {
      * @return A {@link KapuaException} with {@link KapuaErrorCodes#INTERNAL_ERROR}.
      * @since 1.0.0
      */
-    public static KapuaException internalError(String message) {
+    public static KapuaException internalError(@NotNull String message) {
         return new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, null, message);
     }
 
     //
     // Getters
     //
+
+    /**
+     * Gets the {@link java.util.ResourceBundle} name from which to source the error messages for {@link KapuaException}s.
+     *
+     * @return The {@link java.util.ResourceBundle} name.
+     * @since 1.0.0
+     */
     protected String getKapuaErrorMessagesBundle() {
         return KAPUA_ERROR_MESSAGES;
     }

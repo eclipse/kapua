@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,23 +9,28 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call;
+package org.eclipse.kapua.service.device.call.exception;
 
-import org.eclipse.kapua.model.KapuaObjectFactory;
+import org.eclipse.kapua.KapuaErrorCode;
 
 /**
- * {@link DeviceCallFactory} definition.
- *
- * @since 1.0.0
+ * @since 1.1.0
  */
-public interface DeviceCallFactory extends KapuaObjectFactory {
+public enum DeviceCallErrorCodes implements KapuaErrorCode {
+
 
     /**
-     * Creates a new {@link DeviceCall}
+     * An error occurred when sending the {@link org.eclipse.kapua.service.device.call.message.DeviceMessage}.
      *
-     * @return The newly created {@link DeviceCall}
-     * @since 1.0.0
+     * @since 1.1.0
      */
-    DeviceCall newDeviceCall();
+    SEND_ERROR,
+
+    /**
+     * A response as not been received within the given timeout.
+     *
+     * @since 1.1.0
+     */
+    TIMEOUT
 
 }

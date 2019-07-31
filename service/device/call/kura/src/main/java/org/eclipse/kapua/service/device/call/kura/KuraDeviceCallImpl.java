@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,9 +15,12 @@ package org.eclipse.kapua.service.device.call.kura;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.message.Message;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.call.DeviceCall;
+import org.eclipse.kapua.service.device.call.exception.DeviceCallSendException;
+import org.eclipse.kapua.service.device.call.exception.DeviceCallTimeoutException;
 import org.eclipse.kapua.service.device.call.kura.exception.KuraMqttDeviceCallErrorCodes;
 import org.eclipse.kapua.service.device.call.kura.exception.KuraMqttDeviceCallException;
 import org.eclipse.kapua.service.device.call.message.kura.KuraMessage;
@@ -30,8 +33,11 @@ import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.transport.TransportClientFactory;
 import org.eclipse.kapua.transport.TransportFacade;
+import org.eclipse.kapua.transport.exception.TransportTimeoutException;
 import org.eclipse.kapua.transport.message.TransportMessage;
 
+import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,57 +45,82 @@ import java.util.Random;
 
 /**
  * {@link DeviceCall} {@link Kura} implementation.
+ *
+ * @since 1.0.0
  */
-@SuppressWarnings("rawtypes")
 public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraResponseMessage> {
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
+
+    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
+
+    private static final TransportClientFactory TRANSPORT_CLIENT_FACTORY = LOCATOR.getFactory(TransportClientFactory.class);
+
+
     @Override
-    public KuraResponseMessage create(KuraRequestMessage requestMessage, Long timeout)
-            throws KapuaException {
-        return send(requestMessage, timeout);
+    public KuraResponseMessage create(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout)
+            throws DeviceCallTimeoutException, DeviceCallSendException {
+        return sendInternal(requestMessage, timeout);
     }
 
     @Override
-    public KuraResponseMessage read(KuraRequestMessage requestMessage, Long timeout)
-            throws KapuaException {
-        return send(requestMessage, timeout);
+    public KuraResponseMessage read(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout)
+            throws DeviceCallTimeoutException, DeviceCallSendException {
+        return sendInternal(requestMessage, timeout);
     }
 
     @Override
-    public KuraResponseMessage options(KuraRequestMessage requestMessage, Long timeout)
-            throws KapuaException {
-        return send(requestMessage, timeout);
+    public KuraResponseMessage options(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout)
+            throws DeviceCallTimeoutException, DeviceCallSendException {
+        return sendInternal(requestMessage, timeout);
     }
 
     @Override
-    public KuraResponseMessage delete(KuraRequestMessage requestMessage, Long timeout)
-            throws KapuaException {
-        return send(requestMessage, timeout);
+    public KuraResponseMessage delete(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout)
+            throws DeviceCallTimeoutException, DeviceCallSendException {
+        return sendInternal(requestMessage, timeout);
     }
 
     @Override
-    public KuraResponseMessage execute(KuraRequestMessage requestMessage, Long timeout)
-            throws KapuaException {
-        return send(requestMessage, timeout);
+    public KuraResponseMessage execute(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout)
+            throws DeviceCallTimeoutException, DeviceCallSendException {
+        return sendInternal(requestMessage, timeout);
     }
 
     @Override
-    public KuraResponseMessage write(KuraRequestMessage requestMessage, Long timeout)
-            throws KapuaException {
-        return send(requestMessage, timeout);
+    public KuraResponseMessage write(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout)
+            throws DeviceCallTimeoutException, DeviceCallSendException {
+        return sendInternal(requestMessage, timeout);
     }
 
-    @SuppressWarnings({ "unchecked" })
-    private KuraResponseMessage send(KuraRequestMessage requestMessage, Long timeout)
-            throws KuraMqttDeviceCallException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
-        AccountService accountService = locator.getService(AccountService.class);
-        KuraResponseMessage response = null;
+    @Override
+    public Class<KuraMessage> getBaseMessageClass() {
+        return KuraMessage.class;
+    }
+
+    //
+    // Private methods
+    //
+
+    /**
+     * Sends the {@link KuraRequestMessage} and waits for the response if the {@code timeout} is given.
+     *
+     * @param requestMessage The {@link KuraRequestMessage} to send.
+     * @param timeout        The timeout of waiting the {@link KuraResponseMessage}.
+     * @return The {@link KuraResponseMessage} received.
+     * @throws DeviceCallTimeoutException if waiting of the response goes on timeout.
+     * @throws DeviceCallSendException    if sending the request produces any error.
+     * @since 1.0.0
+     */
+    private KuraResponseMessage sendInternal(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException {
+
+        KuraResponseMessage response;
         TransportFacade transportFacade = null;
         try {
-            Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.findByName(requestMessage.getChannel().getScope()));
-            Device device = deviceRegistryService.findByClientId(account.getId(), requestMessage.getChannel().getClientId());
+            Account account = KapuaSecurityUtils.doPrivileged(() -> ACCOUNT_SERVICE.findByName(requestMessage.getChannel().getScope()));
+            Device device = DEVICE_REGISTRY_SERVICE.findByClientId(account.getId(), requestMessage.getChannel().getClientId());
             String serverIp = device.getConnection().getServerIp();
 
             //
@@ -98,8 +129,8 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
 
             //
             // Get Kura to transport translator for the request and vice versa
-            Translator translatorKuraTransport = getTranslator(KuraRequestMessage.class, transportFacade.getMessageClass());
-            Translator translatorTransportKura = getTranslator(transportFacade.getMessageClass(), KuraResponseMessage.class);
+            Translator<KuraRequestMessage, TransportMessage> translatorKuraTransport = getTranslator(KuraRequestMessage.class, transportFacade.getMessageClass());
+            Translator<TransportMessage, KuraResponseMessage> translatorTransportKura = getTranslator(transportFacade.getMessageClass(), KuraResponseMessage.class);
 
             //
             // Make the request
@@ -121,20 +152,20 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
 
             //
             // Do send
-            try {
-                // Set current timestamp
-                requestMessage.setTimestamp(new Date());
+            // Set current timestamp
+            requestMessage.setTimestamp(new Date());
 
-                // Send
-                TransportMessage transportResponseMessage = transportFacade.sendSync((TransportMessage) translatorKuraTransport.translate(requestMessage), timeout);
+            // Send
+            TransportMessage transportRequestMessage = translatorKuraTransport.translate(requestMessage);
+            TransportMessage transportResponseMessage = transportFacade.sendSync(transportRequestMessage, timeout);
 
-                // Translate response
-                response = (KuraResponseMessage) translatorTransportKura.translate(transportResponseMessage);
-            } catch (KapuaException e) {
-                throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CLIENT_SEND_ERROR, e);
-            }
-        } catch (KapuaException ke) {
-            throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CALL_ERROR, ke);
+            // Translate response
+            response = translatorTransportKura.translate(transportResponseMessage);
+
+        } catch (TransportTimeoutException te) {
+            throw new DeviceCallTimeoutException(te, timeout);
+        } catch (KapuaException se) {
+            throw new DeviceCallSendException(se, requestMessage);
         } finally {
             if (transportFacade != null) {
                 transportFacade.clean();
@@ -144,34 +175,39 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
         return response;
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public Class<KuraMessage> getBaseMessageClass() {
-        return KuraMessage.class;
-    }
-
-    //
-    // Private methods
-    //
-    private TransportFacade borrowClient(String serverIp)
-            throws KuraMqttDeviceCallException {
+    /**
+     * Picks a {@link TransportFacade} to send the {@link KuraResponseMessage}.
+     *
+     * @param serverIp
+     * @return The {@link TransportFacade} to use to send the {@link KuraResponseMessage}.
+     * @throws KuraMqttDeviceCallException If getting the {@link TransportFacade} causes an {@link Exception}.
+     * @since 1.0.0
+     */
+    private TransportFacade borrowClient(String serverIp) throws KuraMqttDeviceCallException {
         TransportFacade transportFacade;
         Map<String, Object> configParameters = new HashMap<>();
         configParameters.put("serverAddress", serverIp);
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            TransportClientFactory transportClientFactory = locator.getFactory(TransportClientFactory.class);
-            transportFacade = transportClientFactory.getFacade(configParameters);
+            transportFacade = TRANSPORT_CLIENT_FACTORY.getFacade(configParameters);
         } catch (Exception e) {
             throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CALL_ERROR, e);
         }
         return transportFacade;
     }
 
-    @SuppressWarnings("unchecked")
-    private Translator getTranslator(Class from, Class to)
-            throws KuraMqttDeviceCallException {
-        Translator translator;
+    /**
+     * Gets the translator for the given {@link Message} types.
+     *
+     * @param from The {@link Message} type from which to translate.
+     * @param to   The {@link Message} type to which to translate.
+     * @param <F>  The {@link Message} {@code class}from which to translate.
+     * @param <T>  The {@link Message} {@code class} to which to translate.
+     * @return The {@link Translator} found.
+     * @throws KuraMqttDeviceCallException If error occurs while searching the {@link Translator}.
+     * @since 1.0.0
+     */
+    private <F extends Message, T extends Message> Translator getTranslator(Class<F> from, Class<T> to) throws KuraMqttDeviceCallException {
+        Translator<F, T> translator;
         try {
             translator = Translator.getTranslatorFor(from, to);
         } catch (KapuaException e) {

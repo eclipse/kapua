@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,18 +11,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.transport;
 
-import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.transport.exception.TransportSendException;
+import org.eclipse.kapua.transport.exception.TransportTimeoutException;
 import org.eclipse.kapua.transport.message.TransportChannel;
 import org.eclipse.kapua.transport.message.TransportMessage;
 import org.eclipse.kapua.transport.message.TransportPayload;
 
+import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
+
 /**
  * API to use the Transport layer for the device communication.
  *
- * @param <C>  FIXME [javadoc] document generic
- * @param <P>  FIXME [javadoc] document generic
- * @param <MQ> The {@link TransportMessage} implementation class that the implementation of {@link org.eclipse.kapua.transport} API uses for request messages to the device.
- * @param <MS> The {@link TransportMessage} implementation class that the implementation of {@link org.eclipse.kapua.transport} API uses for response messages to the device.
+ * @param <C>  The {@link TransportChannel} implementation class for the request.
+ * @param <P>  The {@link TransportPayload} implementation class for the request.
+ * @param <MQ> The {@link TransportMessage} implementation class for the request.
+ * @param <MS> The {@link TransportMessage} implementation class for the response.
  * @author alberto.codutti
  * @since 1.0.0
  */
@@ -36,26 +40,25 @@ public interface TransportFacade<C extends TransportChannel, P extends Transport
      * Send a request message to a device waiting for the response.
      * <p>
      * The timeout is optional. If {@code null} the default one defined by the implementation will be used.
-     * </p>
      *
      * @param message The request message to send.
      * @param timeout The timeout for the operation.
      * @return The response to the request message.
-     * @throws KapuaException FIXME [javadoc] document exception
+     * @throws TransportTimeoutException if waiting of the response goes on timeout.
+     * @throws TransportSendException    if sending the request produces any error.
      * @since 1.0.0
      */
-    public MS sendSync(MQ message, Long timeout)
-            throws KapuaException;
+    MS sendSync(@NotNull MQ message, @Nullable Long timeout) throws TransportTimeoutException, TransportSendException;
 
     /**
      * Send a request message to a device without waiting for the response
      *
      * @param message The request message to send.
-     * @throws KapuaException FIXME document exception
+     * @throws TransportTimeoutException if waiting of the response goes on timeout.
+     * @throws TransportSendException    if sending the request produces any error.
      * @since 1.0.0
      */
-    public void sendAsync(MQ message)
-            throws KapuaException;
+    void sendAsync(@NotNull MQ message) throws TransportTimeoutException, TransportSendException;
 
     //
     // Utilities
@@ -63,31 +66,28 @@ public interface TransportFacade<C extends TransportChannel, P extends Transport
 
     /**
      * Gets the id of the instance of {@link TransportFacade}
-     * FIXME [javadoc] Change it in "getId()"?
      *
      * @return The id of this {@link TransportFacade}
      * @since 1.0.0
      */
-    public String getClientId();
+    String getClientId();
 
     /**
      * Executes clean operations for this {@link TransportFacade}
      * <p>
      * This method must be called by the device layer after being used.
-     * </p>
      *
      * @since 1.0.0
      */
-    public void clean();
+    void clean();
 
     /**
      * Returns the {@code class} of the type of {@link TransportMessage} implementation used by this implementation of the {@link TransportFacade}.
      * <p>
-     * <p>
      * This is meant to be used while requesting a translator from the device layer to the transport layer.
-     * </p>
      *
      * @return The {@code class} of the type of {@link TransportMessage} implementation used by this implementation of the {@link TransportFacade}.
+     * @since 1.0.0
      */
-    public Class<MQ> getMessageClass();
+    Class<MQ> getMessageClass();
 }

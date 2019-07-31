@@ -57,10 +57,12 @@
         <h2.version>1.4.199</h2.version>
         <httpcomponents.version>4.5.2</httpcomponents.version>
         <javassist.version>3.19.0-GA</javassist.version>
+        <javax-annotation-api.version>1.2</javax-annotation-api.version>
         <javax-batch-api.version>1.0.1</javax-batch-api.version>
         <javax-inject.version>1</javax-inject.version>
         <javax-json.version>1.0.4</javax-json.version>
         <javax-persistence.version>2.1.1</javax-persistence.version>
+        <javax-validation-api.version>1.1.0.Final</javax-validation-api.version>
         <joda.version>2.9.4</joda.version>
         <jolokia-jvm.version>1.3.4</jolokia-jvm.version>
         <jose4j.version>0.5.2</jose4j.version>
@@ -79,7 +81,6 @@
         <logback.version>1.2.3</logback.version>
         <snakeyaml.version>1.15</snakeyaml.version>
         <swagger.version>1.5.12</swagger.version>
-        <validation-api.version>1.1.0.Final</validation-api.version>
         <cucumber.version>1.2.4</cucumber.version>
         <elasticsearch.version>5.3.0</elasticsearch.version>
         <elasticsearch-client-transport.version>5.3.0</elasticsearch-client-transport.version>
@@ -1270,6 +1271,11 @@
                 <version>${javax-json.version}</version>
             </dependency>
             <dependency>
+                <groupId>javax.annotation</groupId>
+                <artifactId>javax.annotation-api</artifactId>
+                <version>${javax-annotation-api.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>javax.batch</groupId>
                 <artifactId>javax.batch-api</artifactId>
                 <version>${javax-batch-api.version}</version>
@@ -1280,16 +1286,15 @@
                 <version>${javax-inject.version}</version>
             </dependency>
             <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>${javax-validation-api.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-core</artifactId>
                 <version>${liquibase.version}</version>
             </dependency>
-            <dependency>
-                <groupId>javax.validation</groupId>
-                <artifactId>validation-api</artifactId>
-                <version>${validation-api.version}</version>
-            </dependency>
-
             <dependency>
                 <groupId>org.eclipse.neoscada.utils</groupId>
                 <artifactId>org.eclipse.scada.utils</artifactId>
