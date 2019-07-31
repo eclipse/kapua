@@ -11,11 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
+import java.util.Collections;
+
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.AbstractStorableQuery;
 import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoField;
+import org.eclipse.kapua.service.datastore.internal.schema.MetricInfoSchema;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 
 /**
@@ -34,6 +38,7 @@ public class MetricInfoQueryImpl extends AbstractStorableQuery<MetricInfo> imple
      */
     public MetricInfoQueryImpl(KapuaId scopeId) {
         super(scopeId);
+        setSortFields(Collections.singletonList(SortField.ascending(MetricInfoSchema.METRIC_MTR_NAME_FULL)));
     }
 
     @Override
