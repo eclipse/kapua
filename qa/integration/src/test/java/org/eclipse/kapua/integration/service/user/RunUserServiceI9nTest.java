@@ -21,8 +21,7 @@ import cucumber.api.CucumberOptions;
 @RunWith(CucumberWithProperties.class)
 @CucumberOptions(
         features = {
-                "classpath:features/user/UserServiceI9n.feature",
-                "classpath:features/user/UserRoleServiceI9n.feature"
+                "classpath:features/user/UserServiceI9n.feature"
         },
         glue = {"org.eclipse.kapua.qa.common",
                 "org.eclipse.kapua.service.account.steps",

@@ -28,11 +28,12 @@ import org.junit.runner.RunWith;
                 "org.eclipse.kapua.service.device.registry.steps",
                 "org.eclipse.kapua.service.job.steps",
                 "org.eclipse.kapua.service.tag.steps",
-                "org.eclipse.kapua.service.datastore.steps"
+                "org.eclipse.kapua.service.datastore.steps",
+                "org.eclipse.kapua.service.scheduler.steps"
         },
         plugin = {"pretty",
-                "html:target/cucumber/UserServiceI9n",
-                "json:target/UserServiceI9n_cucumber.json"
+                "html:target/cucumber/UserRoleServiceI9n",
+                "json:target/UserRoleServiceI9n_cucumber.json"
         },
         strict = true,
         monochrome = true)

@@ -286,6 +286,7 @@ public class AuthorizationServiceSteps extends TestBase {
         Role role = (Role) stepData.get("Role");
         Domain domain = (Domain) stepData.get("Domain");
         RolePermission rolePermission = null;
+        ArrayList<RolePermission> rolePermissions = new ArrayList<>();
 
         stepData.remove("RolePermission");
 
@@ -302,7 +303,10 @@ public class AuthorizationServiceSteps extends TestBase {
             rolePermissionCreator.setPermission(permissionFactory.newPermission(domain.getDomain(), tmpCPerm.getAction(), tmpCPerm.getTargetScopeId()));
 
             try {
+                stepData.remove("RolePermissions");
                 rolePermission = rolePermissionService.create(rolePermissionCreator);
+                rolePermissions.add(rolePermission);
+                stepData.put("RolePermissions", rolePermissions);
             } catch (KapuaException ex) {
                 verifyException(ex);
             }
@@ -2116,6 +2120,20 @@ public class AuthorizationServiceSteps extends TestBase {
             stepData.remove("Group");
             Group group = groupService.create(groupCreator);
             stepData.put("Group", group);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @And("^I delete the last created role permissions$")
+    public void iDeleteTheLastCreatedRolePermissions() throws Exception {
+        ArrayList<RolePermission> rolePermissions = (ArrayList<RolePermission>) stepData.get("RolePermissions");
+
+        try {
+            primeException();
+            for(RolePermission rolePermission : rolePermissions) {
+                rolePermissionService.delete(rolePermission.getScopeId(), rolePermission.getId());
+            }
         } catch (KapuaException ex) {
             verifyException(ex);
         }
