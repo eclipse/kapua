@@ -941,6 +941,21 @@ public class JobServiceSteps extends TestBase {
         }
     }
 
+    @When("I search the database for created job steps and I find (\\d+)$")
+    public void searchJobSteps(int count) throws Exception {
+        KapuaId currentJobId = (KapuaId) stepData.get("CurrentJobId");
+        primeException();
+        try {
+            JobStepQuery tmpQuery = jobStepFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.attributePredicate(JobStepAttributes.JOB_ID, currentJobId, AttributePredicate.Operator.EQUAL));
+            JobStepListResult jobStepListResult = jobStepService.query(tmpQuery);
+            assertEquals(count, jobStepListResult.getSize());
+        } catch (KapuaException ke) {
+            verifyException(ke);
+        }
+
+    }
+
     @When("^I change the step name to \"(.+)\"$")
     public void updateStepName(String name)
             throws Exception {
