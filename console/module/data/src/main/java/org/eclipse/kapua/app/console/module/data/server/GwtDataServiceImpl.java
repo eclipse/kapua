@@ -64,6 +64,7 @@ import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.OrPredicate;
 import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
 import org.eclipse.kapua.service.datastore.model.query.SortDirection;
 import org.eclipse.kapua.service.datastore.model.query.SortField;
@@ -442,6 +443,13 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         }
         RangePredicate dateRangePredicate = STORABLE_PREDICATE_FACTORY.newRangePredicate(MessageField.TIMESTAMP.field(), startDate, endDate);
         andPredicate.getPredicates().add(dateRangePredicate);
+        if (headers != null) {
+            OrPredicate metricsPredicate = STORABLE_PREDICATE_FACTORY.newOrPredicate();
+            for (GwtHeader header : headers) {
+                metricsPredicate.getPredicates().add(STORABLE_PREDICATE_FACTORY.newExistsPredicate(String.format(MessageSchema.MESSAGE_METRICS + ".%s", header.getName())));
+            }
+            andPredicate.getPredicates().add(metricsPredicate);
+        }
         query.setPredicate(andPredicate);
         if (!StringUtils.isEmpty(loadConfig.getSortField())) {
             String sortField = loadConfig.getSortField();

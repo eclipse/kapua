@@ -77,4 +77,7 @@ public interface StorablePredicateFactory extends KapuaObjectFactory {
      * @return The newly instantiated {@link ExistsPredicate}.
      */
     ExistsPredicate newExistsPredicate(String fieldName);
+
+    OrPredicate newOrPredicate();
+
 }
