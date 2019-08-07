@@ -16,6 +16,7 @@ import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ExistsPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MetricPredicate;
+import org.eclipse.kapua.service.datastore.model.query.OrPredicate;
 import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorableField;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
@@ -52,6 +53,11 @@ public class StorablePredicateFactoryImpl implements StorablePredicateFactory {
     @Override
     public ExistsPredicate newExistsPredicate(String fieldName) {
         return new ExistsPredicateImpl(fieldName);
+    }
+
+    @Override
+    public OrPredicate newOrPredicate() {
+        return new OrPredicateImpl();
     }
 
 }

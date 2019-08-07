@@ -44,6 +44,11 @@ public interface PredicateConstants {
     String MUST_KEY = "must";
 
     /**
+     * Must term
+     */
+    String SHOULD_KEY = "should";
+
+    /**
      * Prefix term
      */
     String PREFIX_KEY = "prefix";
