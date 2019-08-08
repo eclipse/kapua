@@ -256,7 +256,7 @@ public class ServiceEvent implements Serializable {
     /**
      * Set the entity scope id related to the fired event
      * 
-     * @param entityId
+     * @param entityScopeId
      */
     public void setEntityScopeId(KapuaId entityScopeId) {
         this.entityScopeId = entityScopeId;
