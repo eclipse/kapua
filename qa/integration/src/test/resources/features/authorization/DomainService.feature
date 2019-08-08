@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 Eurotech and/or its affiliates and others
+# Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -18,7 +18,7 @@ Feature: Domain Service tests
 
     When I login as user with name "kapua-sys" and password "kapua-password"
     When I count the domain entries in the database
-    Then I count 20
+    Then I count 21
 
   Scenario: Regular domain
   Create a regular domain entry. The newly created entry must match the

@@ -156,6 +156,8 @@
         <api>org.eclipse.kapua.service.scheduler.trigger.TriggerFactory</api>
         <api>org.eclipse.kapua.service.scheduler.trigger.TriggerService</api>
 
+        <api>org.eclipse.kapua.service.endpoint.EndpointInfoService</api>
+        <api>org.eclipse.kapua.service.endpoint.EndpointInfoFactory</api>
 
         <api>org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory</api>
 

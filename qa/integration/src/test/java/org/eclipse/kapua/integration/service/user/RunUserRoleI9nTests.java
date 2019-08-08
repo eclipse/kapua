@@ -29,7 +29,8 @@ import org.junit.runner.RunWith;
                 "org.eclipse.kapua.service.job.steps",
                 "org.eclipse.kapua.service.tag.steps",
                 "org.eclipse.kapua.service.datastore.steps",
-                "org.eclipse.kapua.service.scheduler.steps"
+                "org.eclipse.kapua.service.scheduler.steps",
+                "org.eclipse.kapua.service.endpoint.steps"
         },
         plugin = {"pretty",
                 "html:target/cucumber/UserRoleServiceI9n",
