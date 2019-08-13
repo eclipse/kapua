@@ -88,18 +88,18 @@ import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.StorableIdFactory;
 import org.eclipse.kapua.service.datastore.model.StorableListResult;
-import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
-import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
-import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
-import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
-import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
-import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
 import org.eclipse.kapua.service.datastore.model.query.SortDirection;
+import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
+import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
+import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
+import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
+import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
+import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
-import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
-import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
+import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
@@ -131,6 +131,92 @@ import java.util.stream.Collectors;
 public class DatastoreSteps extends TestBase {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatastoreSteps.class);
+
+    @Then("^Number of received data messages is different than (\\d+)$")
+    public void numberOfReceivedDataMessagesIsDifferentThan(int numberOfMessages) {
+        long count = (long) stepData.get("messageCountResult");
+        assertNotEquals(numberOfMessages, count);
+    }
+
+    @And("^I set the following metrics with messages from the list \"([^\"]*)\"$")
+    public void iSetTheFollowingMetricsFromTheList(String lstKey, List<CucMetric> metLst) throws Exception {
+        List<KapuaDataMessage> tmpMsgLst = (List<KapuaDataMessage>) stepData.get(lstKey);
+
+        for (CucMetric tmpMet : metLst) {
+            KapuaDataMessage tmpMsg = tmpMsgLst.get(tmpMet.getMessage());
+            tmpMsg.setPayload(dataMessageFactory.newKapuaDataPayload());
+
+            switch (tmpMet.getType().trim().toLowerCase()) {
+                case "string": {
+                    tmpMsg.getPayload().getMetrics().put(tmpMet.getMetric(), tmpMet.getValue());
+                    break;
+                }
+                case "int": {
+                    tmpMsg.getPayload().getMetrics().put(tmpMet.getMetric(), Integer.valueOf(tmpMet.getValue()));
+                    break;
+                }
+                case "double": {
+                    tmpMsg.getPayload().getMetrics().put(tmpMet.getMetric(), Double.valueOf(tmpMet.getValue()));
+                    break;
+                }
+                case "bool": {
+                    tmpMsg.getPayload().getMetrics().put(tmpMet.getMetric(), Boolean.valueOf(tmpMet.getValue().trim().toUpperCase()));
+                    break;
+                }
+                default: {
+                    fail(String.format("Unknown metric type [%s]", tmpMet.getType()));
+                    break;
+                }
+            }
+        }
+    }
+
+    @When("^I create message query for following metrics$")
+    public void iCreateMessageQueryForMetrics(List<String> metricList) throws Exception {
+        Account account = (Account) stepData.get("LastAccount");
+        List<MessageQuery> listOfMessageQueries = new ArrayList<>();
+
+        try {
+            for (String metricName : metricList) {
+                MessageQuery messageQuery = createBaseMessageQuery(account.getId(), 100);
+                messageQuery.setPredicate(storablePredicateFactory.newExistsPredicate(String.format(MessageSchema.MESSAGE_METRICS + ".%s", metricName)));
+
+                stepData.put("messageQuery", messageQuery);
+                listOfMessageQueries.add(messageQuery);
+            }
+            stepData.put("ListOfMessageQueries", listOfMessageQueries);
+        } catch (Exception ex) {
+            verifyException(ex);
+        }
+    }
+
+    @And("^I count data messages for more metrics$")
+    public void iCountDataMessagesForMoreMetrics() throws Exception {
+        List<Long> metricCountList = new ArrayList<>();
+        List<MessageQuery> messageQueries = (List<MessageQuery>) stepData.get("ListOfMessageQueries");
+
+        for(MessageQuery messageQuery : messageQueries) {
+           long countMetric = messageStoreService.count(messageQuery);
+            metricCountList.add(countMetric);
+        }
+        stepData.put("MetricCountList", metricCountList);
+    }
+
+    @Then("^I count (\\d+) data messages$")
+    public void iCountMessages(long metricCount) throws AssertionError {
+        List<Long> listOfCounts = (List<Long>) (stepData.get("MetricCountList"));
+
+        try {
+            long endMetricCount = 0;
+
+            for (Long num : listOfCounts) {
+                endMetricCount += num;
+            }
+            assertEquals("This two values are not equal", metricCount, endMetricCount);
+        } catch (AssertionError assertError) {
+            verifyAssertionError(assertError);
+        }
+    }
 
     // *****************
     // * Inner Classes *
@@ -1146,6 +1232,21 @@ public class DatastoreSteps extends TestBase {
         stepData.put(lstKey, tmpList);
     }
 
+    @And("^I create message query for metric \"(.*)\"$")
+    public void iQueryForMessages(String metricName) throws Exception {
+        Account account = (Account) stepData.get("LastAccount");
+
+        try {
+            MessageQuery messageQuery = createBaseMessageQuery(account.getId(), 100);
+            messageQuery.setPredicate(storablePredicateFactory.newExistsPredicate(String.format(MessageSchema.MESSAGE_METRICS + ".%s", metricName)));
+
+            stepData.put("messageQuery", messageQuery);
+        } catch (Exception ex) {
+            verifyException(ex);
+        }
+    }
+
+
     @When("^I count the current account clients and store the count as \"(.*)\"$")
     public void countAccountClients(String countKey) throws KapuaException {
 
@@ -1413,10 +1514,15 @@ public class DatastoreSteps extends TestBase {
     }
 
     @Then("^I get message count (\\d+)$")
-    public void getDesiredMessageCountResult(int desiredCount) {
+    public void getDesiredMessageCountResult(int desiredCount) throws AssertionError {
 
-        long count = (long) stepData.get("messageCountResult");
-        assertEquals(desiredCount, count);
+        try {
+            primeException();
+            long count = (long) stepData.get("messageCountResult");
+            assertEquals("This two values are not equal", desiredCount, count);
+        } catch (AssertionError assertError) {
+            verifyAssertionError(assertError);
+        }
     }
 
     @Given("^I create channel info query for current account with limit (\\d+)$")

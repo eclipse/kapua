@@ -181,4 +181,24 @@ public class BasicSteps extends TestBase {
         stepData.put("ExceptionExpected", true);
         stepData.put("ExceptionName", name);
     }
+
+    @Then("^An assertion error was thrown$")
+    public void anAssertionErrorWasThrown() {
+        String assertErrorName = stepData.contains("AssertErrorName") ? (String) stepData.get("AssertErrorName") : "Unknown";
+        boolean assertErrorCaught = stepData.contains("AssertErrorCaught") ? (boolean) stepData.get("AssertErrorCaught") : false;
+        assertTrue(String.format("Assert error was expected but was not raised.", assertErrorName), assertErrorCaught);
+    }
+
+    @And("^I expect the assertion error \"([^\"]*)\" with the text \"([^\"]*)\"$")
+    public void iExpectTheAssertErrorWithTheText(String name, String text) {
+        stepData.put("AssertErrorExpected", true);
+        stepData.put("AssertErrorName", name);
+        stepData.put("AssertErrorMessage", text);
+    }
+
+    @And("^No assertion error was thrown$")
+    public void noAssertionErrorWasThrown() {
+        boolean assertErrorCaught = stepData.contains("AssertErrorCaught") ? (boolean) stepData.get("AssertErrorCaught") : false;
+        assertFalse("An unexpected assert error was raised!", assertErrorCaught);
+    }
 }
