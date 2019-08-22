@@ -13,6 +13,8 @@
 package org.eclipse.kapua.commons.jpa;
 
 import com.google.common.base.MoreObjects;
+import org.apache.commons.lang.StringUtils;
+
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 
@@ -32,7 +34,10 @@ public class H2JdbcConnectionUrlResolver implements JdbcConnectionUrlResolver {
         if (schema != null) {
             connectionUrl += ";INIT=CREATE SCHEMA IF NOT EXISTS " + schema + "\\;SET SCHEMA " + schema;
         }
-
+        String additionalOptions = config.getString(SystemSettingKey.DB_CONNECTION_ADDITIONAL_OPTIONS);
+        if (StringUtils.isNotBlank(additionalOptions)) {
+            connectionUrl += ";" + additionalOptions;
+        }
         return connectionUrl;
     }
 

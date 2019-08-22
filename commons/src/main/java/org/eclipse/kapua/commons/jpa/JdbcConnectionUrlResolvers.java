@@ -28,14 +28,15 @@ public final class JdbcConnectionUrlResolvers {
         SystemSetting config = SystemSetting.getInstance();
         String connectionUrlResolverType = config.getString(SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER, "DEFAULT");
         LOG.debug("The following JDBC connection URL resolver type will be used: {}", connectionUrlResolverType);
-        if (connectionUrlResolverType.equals("DEFAULT")) {
-            return new DefaultConfigurableJdbcConnectionUrlResolver().connectionUrl();
-        } else if ("H2".equals(connectionUrlResolverType)) {
-            return new H2JdbcConnectionUrlResolver().connectionUrl();
-        } else if ("MariaDB".equals(connectionUrlResolverType)) {
-            return new MariaDBJdbcConnectionUrlResolver().connectionUrl();
-        } else {
-            throw new IllegalArgumentException("Unknown JDBC connection URL resolver type: " + connectionUrlResolverType);
+        switch (connectionUrlResolverType) {
+            case "DEFAULT":
+                return new DefaultConfigurableJdbcConnectionUrlResolver().connectionUrl();
+            case "H2":
+                return new H2JdbcConnectionUrlResolver().connectionUrl();
+            case "MariaDB":
+                return new MariaDBJdbcConnectionUrlResolver().connectionUrl();
+            default:
+                throw new IllegalArgumentException("Unknown JDBC connection URL resolver type: " + connectionUrlResolverType);
         }
     }
 
