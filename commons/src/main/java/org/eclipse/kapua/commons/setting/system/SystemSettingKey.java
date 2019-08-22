@@ -89,11 +89,7 @@ public enum SystemSettingKey implements SettingKey {
     /**
      * Database use ssl connection
      */
-    DB_CONNECTION_USESSL("commons.db.connection.useSsl"),
-    /**
-     * Database verify ssl connection (trust server/client certificates)
-     */
-    DB_CONNECTION_VERIFYSSL("commons.db.connection.sslVerify"),
+    DB_CONNECTION_USE_SSL("commons.db.connection.useSsl"),
     /**
      * Database truststore url
      */
@@ -102,7 +98,10 @@ public enum SystemSettingKey implements SettingKey {
      * Database truststore password
      */
     DB_CONNECTION_TRUSTSTORE_PWD("commons.db.connection.trust.store.pwd"),
-
+    /**
+     * Any additional option that can be passed to the JDBC connection string
+     */
+    DB_CONNECTION_ADDITIONAL_OPTIONS("commons.db.connection.additionalOptions"),
     /**
      * Database schema name
      */
