@@ -35,7 +35,10 @@ import javax.net.ssl.SSLContext;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
-import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.ssl.TrustStrategy;
@@ -229,8 +232,9 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
         if (addresses == null || addresses.isEmpty()) {
             throw new ClientUnavailableException(PROVIDER_NO_NODE_CONFIGURED_MSG);
         }
+        ClientSettings settings = ClientSettings.getInstance();
         List<HttpHost> hosts = new ArrayList<HttpHost>();
-        boolean sslEnabled = ClientSettings.getInstance().getBoolean(ClientSettingsKey.ELASTICSEARCH_SSL_ENABLED, false);
+        boolean sslEnabled = settings.getBoolean(ClientSettingsKey.ELASTICSEARCH_SSL_ENABLED, false);
         logger.info("ES Rest Client - SSL {}enabled", (sslEnabled ? "" : "NOT "));
         for (InetSocketAddress address : addresses) {
             hosts.add(new HttpHost(address.getAddress(), address.getHostName(), address.getPort(), (sslEnabled ? SCHEMA_SSL : SCHEMA_UNTRUSTED)));
@@ -243,18 +247,22 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
                 initTrustStore(sslBuilder);
 
                 final SSLContext sslContext = sslBuilder.build();
-                restClientBuilder.setHttpClientConfigCallback(new RestClientBuilder.HttpClientConfigCallback() {
-
-                    @Override
-                    public HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpClientBuilder) {
-                        return httpClientBuilder.setSSLContext(sslContext);
-                    }
-                });
+                restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setSSLContext(sslContext));
             } catch (KeyStoreException | NoSuchAlgorithmException | KeyManagementException | UnrecoverableKeyException e) {
                 throw new ClientUnavailableException(PROVIDER_FAILED_TO_CONFIGURE_SSL_MSG, e);
             }
         }
-        return restClientBuilder.build();
+
+        final String username = settings.getString(ClientSettingsKey.ELASTICSEARCH_USERNAME);
+        final String password = settings.getString(ClientSettingsKey.ELASTICSEARCH_PASSWORD);
+        if(StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
+            final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+            credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
+            restClientBuilder.setHttpClientConfigCallback((httpClientBuilder) -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider));
+        }
+
+        return restClientBuilder
+                .build();
     }
 
     static void initKeyStore(SSLContextBuilder sslBuilder) throws UnrecoverableKeyException, ClientUnavailableException, NoSuchAlgorithmException, KeyStoreException {

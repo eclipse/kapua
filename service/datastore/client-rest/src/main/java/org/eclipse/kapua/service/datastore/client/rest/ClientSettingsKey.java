@@ -30,6 +30,14 @@ public enum ClientSettingsKey implements SettingKey {
      */
     ELASTICSEARCH_NODE("datastore.elasticsearch.node"),
     /**
+     * Elasticsearch Username
+     */
+    ELASTICSEARCH_USERNAME("datastore.elasticsearch.username"),
+    /**
+     * Elasticsearch Password
+     */
+    ELASTICSEARCH_PASSWORD("datastore.elasticsearch.password"),
+    /**
      * Elasticsearch port
      */
     ELASTICSEARCH_PORT("datastore.elasticsearch.port"),
