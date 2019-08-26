@@ -17,7 +17,9 @@ import org.junit.runner.RunWith;
 
 @RunWith(CucumberWithProperties.class)
 @CucumberOptions(
-        features = "classpath:features/job/JobEngineServiceOfflineDeviceI9n.feature",
+        features = { "classpath:features/job/JobEngineServiceStartOfflineDeviceI9n.feature",
+                "classpath:features/job/JobEngineServiceStartOnlineDeviceI9n.feature"
+        },
         glue = { "org.eclipse.kapua.service.job.steps",
                 "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.qa.common",

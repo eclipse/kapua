@@ -291,7 +291,7 @@ public class BrokerSteps extends TestBase {
     public void bundlesReceived() {
         @SuppressWarnings("unchecked")
         List<DeviceBundle> bundles = (List<DeviceBundle>) stepData.get("bundles");
-        assertEquals(80, bundles.size());
+        assertEquals(137, bundles.size());
     }
 
     @When("A bundle named (.*) with id (.*) and version (.*) is present and (.*)$")
