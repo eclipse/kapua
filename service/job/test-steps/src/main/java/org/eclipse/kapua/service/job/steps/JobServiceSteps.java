@@ -1536,6 +1536,21 @@ public class JobServiceSteps extends TestBase {
         }
     }
 
+    @When("^I restart a job$")
+    public void restartJob() throws Exception {
+        primeException();
+        KapuaId currentJobId = (KapuaId) stepData.get("CurrentJobId");
+        try {
+            JobStartOptions jobStartOptions = jobEngineFactory.newJobStartOptions();
+            jobStartOptions.setResetStepIndex(true);
+            jobStartOptions.setFromStepIndex(0);
+            jobStartOptions.setEnqueue(true);
+            jobEngineService.startJob(getCurrentScopeId(), currentJobId, jobStartOptions);
+        } catch (KapuaException ke) {
+            verifyException(ke);
+        }
+    }
+
     @And("^I add targets to job$")
     public void addTargetsToJob() throws Exception {
         JobTargetCreator jobTargetCreator = jobTargetFactory.newCreator(getCurrentScopeId());
