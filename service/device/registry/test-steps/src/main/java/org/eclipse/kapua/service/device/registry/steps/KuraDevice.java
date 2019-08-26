@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -49,6 +49,11 @@ public class KuraDevice implements MqttCallback {
 
     private static final String CMD_V1_EXEC = "$EDC/kapua-sys/rpione3/CMD-V1/EXEC/command";
 
+    private static final String DEPLOY_V2_EXEC_START_34 = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/start/34";
+
+    private static final String DEPLOY_V2_EXEC_START_95 = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/start/95";
+
+    private static final String DEPLOY_V2_EXEC_STOP_77 = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/stop/77";
     /*
      * Mqtt Broker configuration.
      */
@@ -106,6 +111,8 @@ public class KuraDevice implements MqttCallback {
      * Mqtt client form listening from messages on Mocked Kura device.
      */
     private MqttClient subscribedClient;
+
+    public boolean bundleStateChanged;
 
     public KuraDevice() {
 
@@ -267,7 +274,7 @@ public class KuraDevice implements MqttCallback {
             callbackParam = extractCallback(payload);
 
             responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/REPLY/" + callbackParam.getRequestId();
-            responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_bundles.mqtt").toURI()));
+            responsePayload = Files.readAllBytes(Paths.get(getClass().getResource(bundleStateChanged == true ? "/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_bundles_updated_state.mqtt" : "/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_bundles_inital_state.mqtt").toURI()));
 
             mqttClient.publish(responseTopic, responsePayload, 0, false);
             break;
@@ -285,6 +292,25 @@ public class KuraDevice implements MqttCallback {
             responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/CMD-V1/REPLY/" + callbackParam.getRequestId();
             responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_CMD-V1_REPLY_req-id_command.mqtt").toURI()));
 
+            mqttClient.publish(responseTopic, responsePayload, 0, false);
+            break;
+        case DEPLOY_V2_EXEC_START_34:
+        case DEPLOY_V2_EXEC_START_95:
+            callbackParam = extractCallback(payload);
+
+            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/REPLY/" + callbackParam.getRequestId();
+            responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_DEPLOY-V2_EXEC_START_bundle_id.mqtt").toURI()));
+
+            bundleStateChanged = true;
+            mqttClient.publish(responseTopic, responsePayload, 0, false);
+            break;
+        case DEPLOY_V2_EXEC_STOP_77:
+            callbackParam = extractCallback(payload);
+
+            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/REPLY/" + callbackParam.getRequestId();
+            responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_DEPLOY-V2_EXEC_STOP_bundle_id.mqtt").toURI()));
+
+            bundleStateChanged = true;
             mqttClient.publish(responseTopic, responsePayload, 0, false);
             break;
         default:

@@ -37,9 +37,10 @@
 
       Given I start the Kura Mock
       When Device is connected
-      And I wait 5 seconds
+      And I wait 1 seconds
       Then Device status is "CONNECTED"
       When KuraMock is disconnected
+      And I wait 1 seconds
       Then Device status is "DISCONNECTED"
       When I login as user with name "kapua-sys" and password "kapua-password"
       And I select account "kapua-sys"
@@ -83,9 +84,10 @@
 
       Given I start the Kura Mock
       When Device is connected
-      And I wait 5 seconds
+      And I wait 1 seconds
       Then Device status is "CONNECTED"
       When KuraMock is disconnected
+      And I wait 1 seconds
       Then Device status is "DISCONNECTED"
       When I login as user with name "kapua-sys" and password "kapua-password"
       And I select account "kapua-sys"
@@ -131,13 +133,13 @@
       And I select account "kapua-sys"
       When I start the Kura Mock
       And Device is connected
-      And I wait 5 seconds
+      And I wait 1 seconds
       Then Device status is "CONNECTED"
       And I get the KuraMock device
       And Bundles are requested
-      Then A bundle named org.eclipse.kura.camel.sun.misc with id 65 and version 1.0.0 is present and RESOLVED
+      Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
       When KuraMock is disconnected
-      And I wait 5 seconds
+      And I wait 1 seconds
       Then Device status is "DISCONNECTED"
       And I configure the job service
         | type    | name                   | value |
@@ -156,7 +158,7 @@
       And Search for step definition with the name "Bundle Start"
       And A regular step creator with the name "TestStep" and the following properties
         | name     | type             | value |
-        | bundleId | java.lang.String | 65    |
+        | bundleId | java.lang.String | 34    |
         | timeout  | java.lang.Long   | 10000 |
       When I create a new step entity from the existing creator
       Then No exception was thrown
@@ -171,8 +173,10 @@
       When I start the Kura Mock
       And Device is connected
       And Bundles are requested
-      Then A bundle named org.eclipse.kura.camel.sun.misc with id 65 and version 1.0.0 is present and RESOLVED
-      And KuraMock is disconnected
+      Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+      When KuraMock is disconnected
+      And I wait 1 seconds
+      And Device status is "DISCONNECTED"
       And I logout
 
     Scenario: Starting a job with Bundle Stop step
@@ -185,13 +189,13 @@
       And I select account "kapua-sys"
       When I start the Kura Mock
       And Device is connected
-      And I wait 5 seconds
+      And I wait 1 seconds
       And I get the KuraMock device
       And Bundles are requested
-      And A bundle named org.eclipse.kura.linux.bluetooth with id 63 and version 1.0.7 is present and ACTIVE
+      And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
       Then Device status is "CONNECTED"
       When KuraMock is disconnected
-      And I wait 5 seconds
+      And I wait 1 seconds
       Then Device status is "DISCONNECTED"
       And I configure the job service
         | type    | name                   | value |
@@ -210,7 +214,7 @@
       And Search for step definition with the name "Bundle Stop"
       And A regular step creator with the name "TestStep" and the following properties
         | name     | type             | value |
-        | bundleId | java.lang.String | 63    |
+        | bundleId | java.lang.String | 77    |
         | timeout  | java.lang.Long   | 10000 |
       When I create a new step entity from the existing creator
       Then No exception was thrown
@@ -225,8 +229,10 @@
       When I start the Kura Mock
       And Device is connected
       And Bundles are requested
-      Then A bundle named org.eclipse.kura.linux.bluetooth with id 63 and version 1.0.7 is present and ACTIVE
-      And KuraMock is disconnected
+      And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
+      When KuraMock is disconnected
+      And I wait 1 seconds
+      And Device status is "DISCONNECTED"
       And I logout
 
     Scenario: Starting a job with Configuration Put step
@@ -237,9 +243,10 @@
 
       Given I start the Kura Mock
       When Device is connected
-      And I wait 5 seconds
+      And I wait 1 seconds
       Then Device status is "CONNECTED"
       When KuraMock is disconnected
+      And I wait 1 seconds
       Then Device status is "DISCONNECTED"
       And I login as user with name "kapua-sys" and password "kapua-password"
       And I select account "kapua-sys"
@@ -285,13 +292,13 @@
       And I select account "kapua-sys"
       When I start the Kura Mock
       And Device is connected
-      And I wait 5 seconds
+      And I wait 1 seconds
       Then Device status is "CONNECTED"
       And I get the KuraMock device
       And Packages are requested
       And Number of received packages is 1
       When KuraMock is disconnected
-      And I wait 5 seconds
+      And I wait 1 seconds
       Then Device status is "DISCONNECTED"
       And I configure the job service
         | type    | name                       | value |
@@ -326,7 +333,9 @@
       And Device is connected
       And Packages are requested
       Then Number of received packages is 1
-      And KuraMock is disconnected
+      When KuraMock is disconnected
+      And I wait 1 seconds
+      And Device status is "DISCONNECTED"
       And I logout
 
     Scenario: Starting a job with Package Uninstall Command step
@@ -339,13 +348,14 @@
       And I select account "kapua-sys"
       Then I start the Kura Mock
       When Device is connected
-      And I wait 5 seconds
+      And I wait 1 seconds
       Then Device status is "CONNECTED"
       And I get the KuraMock device
       And Packages are requested
       And Number of received packages is 1
       And Package named org.eclipse.kura.example.ble.tisensortag with version 1.0.0 is received
       When KuraMock is disconnected
+      And I wait 1 seconds
       Then Device status is "DISCONNECTED"
       And I configure the job service
         | type    | name                       | value |
@@ -375,13 +385,14 @@
       Then I count 1
       And I confirm the executed job is finished
       And I search for the last job target in the database
-      And I wait 3 seconds
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
       When I start the Kura Mock
       And Device is connected
       And Packages are requested
       Then Number of received packages is 1
-      And KuraMock is disconnected
+      When KuraMock is disconnected
+      And I wait 1 seconds
+      And Device status is "DISCONNECTED"
       And I logout
 
     # *****************************************************
@@ -394,15 +405,18 @@
     After the executed job is finished, the executed target's step index should
     be 0 and the status PROCESS_FAILED.
 
-      Given I start the Kura Mock
-      When Device is connected
-      And I wait 5 seconds
-      Then Device status is "CONNECTED"
-      When KuraMock is disconnected
-      Then Device status is "DISCONNECTED"
-      When I login as user with name "kapua-sys" and password "kapua-password"
+      Given I login as user with name "kapua-sys" and password "kapua-password"
       And I select account "kapua-sys"
+      When I start the Kura Mock
+      And Device is connected
+      And I wait 1 seconds
+      Then Device status is "CONNECTED"
       And I get the KuraMock device
+      And Bundles are requested
+      Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+      When KuraMock is disconnected
+      And I wait 1 seconds
+      Then Device status is "DISCONNECTED"
       And I configure the job service
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
@@ -426,7 +440,7 @@
       Then Search for step definition with the name "Bundle Start"
       And A regular step creator with the name "TestStep2" and the following properties
         | name     | type             | value |
-        | bundleId | java.lang.String | 136   |
+        | bundleId | java.lang.String | 34    |
         | timeout  | java.lang.Long   | 10000 |
       When I create a new step entity from the existing creator
       And I search the database for created job steps and I find 2
@@ -438,6 +452,13 @@
       And I confirm the executed job is finished
       And I search for the last job target in the database
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
+      When I start the Kura Mock
+      And Device is connected
+      And Bundles are requested
+      Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+      When KuraMock is disconnected
+      And I wait 1 seconds
+      And Device status is "DISCONNECTED"
       And I logout
 
     Scenario: Starting a job with Asset Write and Bundle Start steps
@@ -446,15 +467,18 @@
     After the executed job is finished, the executed target's step index should
     be 0 and the status PROCESS_FAILED.
 
-      Given I start the Kura Mock
-      When Device is connected
-      And I wait 5 seconds
-      Then Device status is "CONNECTED"
-      When KuraMock is disconnected
-      Then Device status is "DISCONNECTED"
-      When I login as user with name "kapua-sys" and password "kapua-password"
+      Given I login as user with name "kapua-sys" and password "kapua-password"
       And I select account "kapua-sys"
+      When I start the Kura Mock
+      And Device is connected
+      And I wait 1 seconds
+      Then Device status is "CONNECTED"
       And I get the KuraMock device
+      And Bundles are requested
+      Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+      When KuraMock is disconnected
+      And I wait 1 seconds
+      Then Device status is "DISCONNECTED"
       And I configure the job service
         | type    | name                   | value |
         | boolean | infiniteChildEntities  | true  |
@@ -478,7 +502,7 @@
       Then Search for step definition with the name "Bundle Start"
       And A regular step creator with the name "TestStep2" and the following properties
         | name     | type             | value |
-        | bundleId | java.lang.String | 136   |
+        | bundleId | java.lang.String | 34    |
         | timeout  | java.lang.Long   | 10000 |
       When I create a new step entity from the existing creator
       And I search the database for created job steps and I find 2
@@ -490,6 +514,12 @@
       And I confirm the executed job is finished
       And I search for the last job target in the database
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
+      When I start the Kura Mock
+      And Bundles are requested
+      Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+      When KuraMock is disconnected
+      And I wait 1 seconds
+      And Device status is "DISCONNECTED"
       And I logout
 
     Scenario: Starting a job with two Bundle Start steps
@@ -502,14 +532,14 @@
       And I select account "kapua-sys"
       When I start the Kura Mock
       And Device is connected
-      And I wait 5 seconds
+      And I wait 1 seconds
       Then Device status is "CONNECTED"
       And I get the KuraMock device
       And Bundles are requested
-      Then  A bundle named log4j with id 36 and version 1.2.17 is present and RESOLVED
-      And A bundle named org.eclipse.kura.camel.sun.misc with id 65 and version 1.0.0 is present and RESOLVED
+      Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+      And A bundle named com.google.guava with id 95 and version 19.0.0 is present and RESOLVED
       When KuraMock is disconnected
-      And I wait 5 seconds
+      And I wait 1 seconds
       Then Device status is "DISCONNECTED"
       And I configure the job service
         | type    | name                   | value |
@@ -528,13 +558,13 @@
       And Search for step definition with the name "Bundle Start"
       And A regular step creator with the name "TestStep1" and the following properties
         | name     | type             | value |
-        | bundleId | java.lang.String | 36    |
+        | bundleId | java.lang.String | 34    |
         | timeout  | java.lang.Long   | 10000 |
       And I create a new step entity from the existing creator
       Then Search for step definition with the name "Bundle Start"
       And A regular step creator with the name "TestStep2" and the following properties
         | name     | type             | value |
-        | bundleId | java.lang.String | 65    |
+        | bundleId | java.lang.String | 95    |
         | timeout  | java.lang.Long   | 10000 |
       When I create a new step entity from the existing creator
       And I search the database for created job steps and I find 2
@@ -549,9 +579,11 @@
       When I start the Kura Mock
       And Device is connected
       And Bundles are requested
-      Then A bundle named org.eclipse.kura.camel.sun.misc with id 65 and version 1.0.0 is present and RESOLVED
-      And  A bundle named log4j with id 36 and version 1.2.17 is present and RESOLVED
-      And KuraMock is disconnected
+      Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+      And A bundle named com.google.guava with id 95 and version 19.0.0 is present and RESOLVED
+      When KuraMock is disconnected
+      And I wait 1 seconds
+      And Device status is "DISCONNECTED"
       And I logout
 
     Scenario: Starting a job with Bundle Stop and Bundle Start steps
@@ -564,13 +596,13 @@
       And I select account "kapua-sys"
       When I start the Kura Mock
       And Device is connected
-      And I wait 5 seconds
+      And I wait 1 seconds
       And I get the KuraMock device
       And Bundles are requested
-      And A bundle named org.eclipse.kura.linux.bluetooth with id 63 and version 1.0.7 is present and ACTIVE
-      Then Device status is "CONNECTED"
+      And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
+      And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
       When KuraMock is disconnected
-      And I wait 5 seconds
+      And I wait 1 seconds
       Then Device status is "DISCONNECTED"
       And I configure the job service
         | type    | name                   | value |
@@ -589,13 +621,13 @@
       And Search for step definition with the name "Bundle Stop"
       And A regular step creator with the name "TestStep1" and the following properties
         | name     | type             | value |
-        | bundleId | java.lang.String | 63    |
+        | bundleId | java.lang.String | 77    |
         | timeout  | java.lang.Long   | 10000 |
       And I create a new step entity from the existing creator
       Then Search for step definition with the name "Bundle Start"
       And A regular step creator with the name "TestStep2" and the following properties
         | name     | type             | value |
-        | bundleId | java.lang.String | 136   |
+        | bundleId | java.lang.String | 34    |
         | timeout  | java.lang.Long   | 10000 |
       When I create a new step entity from the existing creator
       And I search the database for created job steps and I find 2
@@ -610,8 +642,11 @@
       When I start the Kura Mock
       And Device is connected
       And Bundles are requested
-      Then A bundle named org.eclipse.kura.linux.bluetooth with id 63 and version 1.0.7 is present and ACTIVE
-      And KuraMock is disconnected
+      And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
+      And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+      When KuraMock is disconnected
+      And I wait 1 seconds
+      And Device status is "DISCONNECTED"
       And I logout
 
     Scenario: Starting a job with Configuration Put and Bundle Start steps
@@ -620,15 +655,17 @@
     After the executed job is finished, the executed target's step index should
     be 0 and the status PROCESS_FAILED
 
-      Given I start the Kura Mock
-      When Device is connected
-      And I wait 5 seconds
-      Then Device status is "CONNECTED"
-      When KuraMock is disconnected
-      Then Device status is "DISCONNECTED"
-      And I login as user with name "kapua-sys" and password "kapua-password"
+      Given I login as user with name "kapua-sys" and password "kapua-password"
       And I select account "kapua-sys"
+      When I start the Kura Mock
+      And Device is connected
+      And I wait 1 seconds
       And I get the KuraMock device
+      And Bundles are requested
+      And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+      When KuraMock is disconnected
+      And I wait 1 seconds
+      Then Device status is "DISCONNECTED"
       And I configure the job service
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
@@ -652,7 +689,7 @@
       Then Search for step definition with the name "Bundle Start"
       And A regular step creator with the name "TestStep2" and the following properties
         | name     | type             | value |
-        | bundleId | java.lang.String | 136   |
+        | bundleId | java.lang.String | 34    |
         | timeout  | java.lang.Long   | 10000 |
       And I create a new step entity from the existing creator
       And I search the database for created job steps and I find 2
@@ -664,6 +701,13 @@
       And I confirm the executed job is finished
       And I search for the last job target in the database
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
+      When I start the Kura Mock
+      And Device is connected
+      And Bundles are requested
+      And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+      When KuraMock is disconnected
+      And I wait 1 seconds
+      And Device status is "DISCONNECTED"
       And I logout
 
     Scenario: Starting a job with Package Install and Bundle Start steps
@@ -676,13 +720,15 @@
       And I select account "kapua-sys"
       When I start the Kura Mock
       And Device is connected
-      And I wait 5 seconds
+      And I wait 1 seconds
       Then Device status is "CONNECTED"
       And I get the KuraMock device
       And Packages are requested
       And Number of received packages is 1
+      And Bundles are requested
+      And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
       When KuraMock is disconnected
-      And I wait 5 seconds
+      And I wait 1 seconds
       Then Device status is "DISCONNECTED"
       And I configure the job service
         | type    | name                       | value |
@@ -707,7 +753,7 @@
       Then Search for step definition with the name "Bundle Start"
       And A regular step creator with the name "TestStep2" and the following properties
         | name     | type             | value |
-        | bundleId | java.lang.String | 136   |
+        | bundleId | java.lang.String | 34    |
         | timeout  | java.lang.Long   | 10000 |
       When I create a new step entity from the existing creator
       And I search the database for created job steps and I find 2
@@ -723,7 +769,11 @@
       And Device is connected
       And Packages are requested
       Then Number of received packages is 1
-      And KuraMock is disconnected
+      And Bundles are requested
+      And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+      When KuraMock is disconnected
+      And I wait 1 seconds
+      And Device status is "DISCONNECTED"
       And I logout
 
     Scenario: Starting a job with Package Uninstall and Bundle Start steps
@@ -736,13 +786,16 @@
       And I select account "kapua-sys"
       Then I start the Kura Mock
       When Device is connected
-      And I wait 5 seconds
+      And I wait 1 seconds
       Then Device status is "CONNECTED"
       And I get the KuraMock device
       And Packages are requested
       And Number of received packages is 1
       And Package named org.eclipse.kura.example.ble.tisensortag with version 1.0.0 is received
+      And Bundles are requested
+      And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
       When KuraMock is disconnected
+      And I wait 1 seconds
       Then Device status is "DISCONNECTED"
       And I configure the job service
         | type    | name                       | value |
@@ -767,7 +820,7 @@
       Then Search for step definition with the name "Bundle Start"
       And A regular step creator with the name "TestStep2" and the following properties
         | name     | type             | value |
-        | bundleId | java.lang.String | 136   |
+        | bundleId | java.lang.String | 34    |
         | timeout  | java.lang.Long   | 10000 |
       When I create a new step entity from the existing creator
       And I search the database for created job steps and I find 2
@@ -778,13 +831,16 @@
       Then I count 1
       And I confirm the executed job is finished
       And I search for the last job target in the database
-      And I wait 3 seconds
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
       When I start the Kura Mock
       And Device is connected
       And Packages are requested
       Then Number of received packages is 1
-      And KuraMock is disconnected
+      And Bundles are requested
+      And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+      When KuraMock is disconnected
+      And I wait 1 seconds
+      And Device status is "DISCONNECTED"
       And I logout
 
     Scenario: Stop broker after all scenarios
