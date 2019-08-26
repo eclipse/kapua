@@ -167,9 +167,18 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
                     .endAt(trigger.getEndsOn());
 
             if (trigger.getRetryInterval() != null) {
-                triggerBuilder.withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(trigger.getRetryInterval().intValue()));
+                triggerBuilder.withSchedule(
+                        SimpleScheduleBuilder
+                                .repeatSecondlyForever(trigger.getRetryInterval().intValue())
+                                .withMisfireHandlingInstructionFireNow() // This option force a misfired trigger to be always fired
+                );
             } else {
-                triggerBuilder.withSchedule(CronScheduleBuilder.cronSchedule(trigger.getCronScheduling()).inTimeZone(TimeZone.getTimeZone("UTC")));
+                triggerBuilder.withSchedule(
+                        CronScheduleBuilder
+                                .cronSchedule(trigger.getCronScheduling())
+                                .withMisfireHandlingInstructionFireAndProceed() // This option force a misfired trigger to be always fired
+                                .inTimeZone(TimeZone.getTimeZone("UTC"))
+                );
             }
 
             org.quartz.Trigger quarztTrigger = triggerBuilder.build();
