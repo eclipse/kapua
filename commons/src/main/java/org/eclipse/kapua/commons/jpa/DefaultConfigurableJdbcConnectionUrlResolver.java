@@ -55,6 +55,11 @@ public class DefaultConfigurableJdbcConnectionUrlResolver implements JdbcConnect
             dbConnectionString.deleteCharAt(dbConnectionString.length() - 1);
 
         }
+        String additionalOptions = config.getString(SystemSettingKey.DB_CONNECTION_ADDITIONAL_OPTIONS);
+        if (StringUtils.isNotBlank(additionalOptions)) {
+            dbConnectionString.append(additionalOptions)
+                    .append(";");
+        }
         return dbConnectionString.toString();
     }
 

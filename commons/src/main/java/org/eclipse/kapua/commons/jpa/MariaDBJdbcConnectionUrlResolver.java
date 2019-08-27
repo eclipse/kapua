@@ -15,6 +15,8 @@ package org.eclipse.kapua.commons.jpa;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * MariaDB Jdbc url connection resolver implementation
  *
@@ -31,6 +33,10 @@ public class MariaDBJdbcConnectionUrlResolver implements JdbcConnectionUrlResolv
         String dbConnectionScheme = config.getString(SystemSettingKey.DB_CONNECTION_SCHEME);
         String dbConnectionHost = config.getString(SystemSettingKey.DB_CONNECTION_HOST);
         String dbConnectionPort = config.getString(SystemSettingKey.DB_CONNECTION_PORT);
+        boolean useSsl = config.getBoolean(SystemSettingKey.DB_CONNECTION_USE_SSL,false);
+        String trustStore = config.getString(SystemSettingKey.DB_CONNECTION_TRUSTSTORE_URL);
+        String trustStorePwd = config.getString(SystemSettingKey.DB_CONNECTION_TRUSTSTORE_PWD);
+        String additionalOptions = config.getString(SystemSettingKey.DB_CONNECTION_ADDITIONAL_OPTIONS);
 
         StringBuilder dbConnectionString = new StringBuilder().append(dbConnectionScheme)
                 .append("://")
@@ -67,6 +73,27 @@ public class MariaDBJdbcConnectionUrlResolver implements JdbcConnectionUrlResolv
         if (characterEncoding != null) {
             dbConnectionString.append("characterEncoding=")
                     .append(characterEncoding)
+                    .append("&");
+        }
+
+        dbConnectionString.append("useSSL=")
+                .append(useSsl)
+                .append("&");
+
+        if (StringUtils.isNotBlank(trustStore)) {
+            dbConnectionString.append("trustStore=")
+                    .append(trustStore)
+                    .append("&");
+        }
+
+        if (StringUtils.isNotBlank(trustStorePwd)) {
+            dbConnectionString.append("trustStorePassword=")
+                    .append(trustStorePwd)
+                    .append("&");
+        }
+
+        if (StringUtils.isNotBlank(additionalOptions)) {
+            dbConnectionString.append(additionalOptions)
                     .append("&");
         }
 
