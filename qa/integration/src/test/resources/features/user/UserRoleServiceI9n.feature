@@ -23,7 +23,7 @@ Feature: User role service integration tests
     Given Start Event Broker
 
   Scenario: Adding existing roles to user
-    Adding user more than one role
+    Adding more than one role to user
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And Scope with ID 1
@@ -446,7 +446,7 @@ Feature: User role service integration tests
 
   Scenario: Add datastore permissions to the role
   Creating user "user1" and role "test_role", adding permissions with tag datastore and read, write and delete actions to the "test_role",
-  adding "test_role" to "user1" and after that trying to work with data as user1"
+  adding "test_role" to "user1" and after that trying to work with data as "user1"
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And Scope with ID 1
@@ -629,7 +629,7 @@ Feature: User role service integration tests
 
   Scenario: Add scheduler permissions to the role
   Creating user "user1" and role "test_role", adding permissions with scheduler domain and read, write and delete actions to the "test_role",
-  adding "test_role" to "user1" and after that trying to work with schedules as user1"
+  adding "test_role" to "user1" and after that trying to work with schedules as "user1"
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And Scope with ID 1
@@ -680,6 +680,51 @@ Feature: User role service integration tests
     Given I login as user with name "user1" and password "User@10031995"
     And I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: scheduler:write:"
     And I try to create a new trigger entity from the existing creator
+    Then An exception was thrown
+    And I logout
+
+  Scenario: Add endpoint permissions to the role
+  Creating user "user1" and role "test_role", adding permissions with endpoint domain and read, write and delete actions to the "test_role",
+  adding "test_role" to "user1" and after that trying to work with endpoints as "user1"
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And Scope with ID 1
+    And I select account "kapua-sys"
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+      | boolean | lockoutPolicy.enabled      | false |
+      | integer | lockoutPolicy.maxFailures  | 3     |
+      | integer | lockoutPolicy.resetAfter   | 300   |
+      | integer | lockoutPolicy.lockDuration | 3     |
+    And I create user with name "user1"
+    And Credentials
+      | name  | password      | enabled |
+      | user1 | User@10031995 | true    |
+    And I create endpoint with schema "endpoint1", dns "com" and port 8000
+    And I create the access info entity
+    And I create the following role
+      | scopeId | name      |
+      | 1       | test_role |
+    And I select the domain "endpoint_info"
+    And I create the following role permission
+      | scopeId | actionName |
+      | 1       | read       |
+      | 1       | write      |
+      | 1       | delete     |
+    And I add access role to user
+    And I logout
+    Then I login as user with name "user1" and password "User@10031995"
+    And I try to find endpoint with schema "endpoint1"
+    Then I found endpoint with schema "endpoint1"
+    And I logout
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I delete the last created role permissions
+    And I logout
+    Given I login as user with name "user1" and password "User@10031995"
+    And I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: endpoint_info:read:"
+    And I try to find endpoint with schema "endpoint1"
     Then An exception was thrown
     And I logout
 

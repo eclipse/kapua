@@ -27,6 +27,7 @@
     <modules>
         <module>api</module>
         <module>internal</module>
+        <module>test-steps</module>
     </modules>
 
 </project>
