@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.device.registry.steps;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
@@ -56,6 +57,7 @@ import org.junit.Assert;
 import javax.inject.Inject;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,12 +77,12 @@ public class BrokerSteps extends TestBase {
     /**
      * Device birth topic.
      */
-    private static final String MQTT_BIRTH = "$EDC/kapua-sys/rpione3/MQTT/BIRTH";
+    private String mqttBirth;
 
     /**
      * Device death topic.
      */
-    private static final String MQTT_DC = "$EDC/kapua-sys/rpione3/MQTT/DC";
+    private String mqttDc;
 
     /**
      * URI of mqtt broker.
@@ -132,6 +134,7 @@ public class BrokerSteps extends TestBase {
      * Client simulating Kura device
      */
     private KuraDevice kuraDevice;
+    private ArrayList<KuraDevice> kuraDevices = kuraDevices = new ArrayList<>();
 
     /**
      * Scenario scoped step data.
@@ -181,29 +184,49 @@ public class BrokerSteps extends TestBase {
     @When("^I start the Kura Mock$")
     public void startKuraMock() {
 
+        if (!kuraDevices.isEmpty()) {
+            kuraDevices.clear();
+        }
         kuraDevice = new KuraDevice();
         kuraDevice.mqttClientConnect();
+        kuraDevices.add(kuraDevice);
+
+        stepData.put("KuraDevices", kuraDevices);
     }
 
-    @When("I get the KuraMock device$")
+    @When("I get the KuraMock device(?:|s)$")
     public void getKuraMockDevice() throws Exception {
-        Device device = deviceRegistryService.findByClientId(getCurrentScopeId(), "rpione3");
-        if (device != null) {
-            stepData.put("LastDevice", device);
+        ArrayList<Device> deviceList = new ArrayList<>();
+        for (KuraDevice kuraDevice : kuraDevices) {
+            Device device = deviceRegistryService.findByClientId(getCurrentScopeId(), kuraDevice.getClientId());
+            if (device != null) {
+                deviceList.add(device);
+                stepData.put("LastDevice", device);
+            }
         }
+        stepData.put("DeviceList", deviceList);
     }
 
     @When("^KuraMock is disconnected$")
     public void kuraMockDisconnected() throws Exception {
-
+        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get("KuraDevices");
         deviceDeathMessage();
-        kuraDevice.mqttClientDisconnect();
+
+        for (KuraDevice kuraDevice : kuraDevices) {
+            kuraDevice.mqttClientDisconnect();
+        }
     }
 
     @When("^Device birth message is sent$")
     public void deviceBirthMessage() throws Exception {
+        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get("KuraDevices");
 
-        kuraDevice.sendMessageFromFile(MQTT_BIRTH, 0, false, "/mqtt/rpione3_MQTT_BIRTH.mqtt");
+        for(KuraDevice kuraDevice : kuraDevices) {
+            mqttBirth = "$EDC/kapua-sys/"+kuraDevice.getClientId()+"/MQTT/BIRTH";
+            kuraDevice.sendMessageFromFile(mqttBirth, 0, false, "/mqtt/rpione3_MQTT_BIRTH.mqtt");
+
+        }
+
     }
 
     @When("^Device is connected$")
@@ -214,8 +237,12 @@ public class BrokerSteps extends TestBase {
 
     @When("^Device death message is sent$")
     public void deviceDeathMessage() throws Exception {
+        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get("KuraDevices");
 
-        kuraDevice.sendMessageFromFile(MQTT_DC, 0, false, "/mqtt/rpione3_MQTT_DC.mqtt");
+        for(KuraDevice kuraDevice : kuraDevices) {
+            mqttDc = "$EDC/kapua-sys/"+kuraDevice.getClientId()+"/MQTT/DC";
+            kuraDevice.sendMessageFromFile(mqttDc, 0, false, "/mqtt/rpione3_MQTT_DC.mqtt");
+        }
     }
 
     @When("^Device is disconnected$")
@@ -227,12 +254,14 @@ public class BrokerSteps extends TestBase {
     @When("^Packages are requested$")
     public void requestPackages() throws Exception {
 
-        Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, "rpione3");
-        if (device != null) {
-            DevicePackages deploymentPackages = devicePackageManagementService.getInstalled(device.getScopeId(),
-                    device.getId(), null);
-            List<DevicePackage> packages = deploymentPackages.getPackages();
-            stepData.put("packages", packages);
+        for(KuraDevice kuraDevice : kuraDevices) {
+            Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
+            if (device != null) {
+                DevicePackages deploymentPackages = devicePackageManagementService.getInstalled(device.getScopeId(),
+                        device.getId(), null);
+                List<DevicePackage> packages = deploymentPackages.getPackages();
+                stepData.put("packages", packages);
+            }
         }
     }
 
@@ -279,12 +308,15 @@ public class BrokerSteps extends TestBase {
 
     @When("^Bundles are requested$")
     public void requestBundles() throws Exception {
+        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get("KuraDevices");
 
-        Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, "rpione3");
-        Assert.assertNotNull(device);
-        DeviceBundles deviceBundles = deviceBundleManagementService.get(device.getScopeId(), device.getId(), null);
-        List<DeviceBundle> bundles = deviceBundles.getBundles();
-        stepData.put("bundles", bundles);
+        for (KuraDevice kuraDevice : kuraDevices) {
+            Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
+            Assert.assertNotNull(device);
+            DeviceBundles deviceBundles = deviceBundleManagementService.get(device.getScopeId(), device.getId(), null);
+            List<DeviceBundle> bundles = deviceBundles.getBundles();
+            stepData.put("bundles", bundles);
+        }
     }
 
     @Then("^Bundles are received$")
@@ -321,11 +353,13 @@ public class BrokerSteps extends TestBase {
     @When("^Configuration is requested$")
     public void requestConfiguration() throws Exception {
 
-        Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, "rpione3");
-        Assert.assertNotNull(device);
-        DeviceConfiguration deviceConfiguration = deviceConfiguratiomManagementService.get(device.getScopeId(), device.getId(), null, null, null);
-        List<DeviceComponentConfiguration> configurations = deviceConfiguration.getComponentConfigurations();
-        stepData.put("configurations", configurations);
+        for (KuraDevice kuraDevice : kuraDevices) {
+            Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
+            Assert.assertNotNull(device);
+            DeviceConfiguration deviceConfiguration = deviceConfiguratiomManagementService.get(device.getScopeId(), device.getId(), null, null, null);
+            List<DeviceComponentConfiguration> configurations = deviceConfiguration.getComponentConfigurations();
+            stepData.put("configurations", configurations);
+        }
     }
 
     @Then("^Configuration is received$")
@@ -338,15 +372,17 @@ public class BrokerSteps extends TestBase {
     @When("^Command (.*) is executed$")
     public void executeCommand(String command) throws Exception {
 
-        Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, "rpione3");
-        DeviceCommandInput commandInput = deviceCommandFactory.newCommandInput();
-        commandInput.setCommand(command);
-        commandInput.setRunAsynch(false);
-        commandInput.setTimeout(0);
-        DeviceCommandOutput deviceCommandOutput = deviceCommandManagementService.exec(device.getScopeId(),
-                device.getId(), commandInput, null);
-        Integer commandExitCode = deviceCommandOutput.getExitCode();
-        stepData.put("commandExitCode", commandExitCode);
+        for(KuraDevice kuraDevice : kuraDevices) {
+            Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
+            DeviceCommandInput commandInput = deviceCommandFactory.newCommandInput();
+            commandInput.setCommand(command);
+            commandInput.setRunAsynch(false);
+            commandInput.setTimeout(0);
+            DeviceCommandOutput deviceCommandOutput = deviceCommandManagementService.exec(device.getScopeId(),
+                    device.getId(), commandInput, null);
+            Integer commandExitCode = deviceCommandOutput.getExitCode();
+            stepData.put("commandExitCode", commandExitCode);
+        }
     }
 
     @Then("^Exit code (\\d+) is received$")
@@ -362,7 +398,9 @@ public class BrokerSteps extends TestBase {
         DeviceConnection deviceConn = null;
         stepData.put("ExceptionCaught", false);
         try {
-            deviceConn = deviceConnectionService.findByClientId(SYS_SCOPE_ID, "rpione3");
+            for(KuraDevice kuraDevice : kuraDevices) {
+                deviceConn = deviceConnectionService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
+            }
         } catch (KapuaException ex) {
             stepData.put("ExceptionCaught", true);
             return;
@@ -443,11 +481,39 @@ public class BrokerSteps extends TestBase {
     @Then("^Device status is \"([^\"]*)\"$")
     public void deviceStatusIs(String deviceStatus) throws Exception {
         DeviceConnection deviceConn = null;
+        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get("KuraDevices");
         try {
-            deviceConn = deviceConnectionService.findByClientId(SYS_SCOPE_ID, "rpione3");
+            for (KuraDevice kuraDevice : kuraDevices) {
+                deviceConn = deviceConnectionService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
+            }
         } catch (KapuaException ex) {
             return;
         }
         assertEquals(deviceStatus, deviceConn.getStatus().toString());
+    }
+
+    @And("^I add (\\d+) devices to Kura Mock$")
+    public void iAddDeviceToKuraMock(int numberOfDevices) {
+
+        if (!kuraDevices.isEmpty()) {
+            kuraDevices.clear();
+        }
+        for (int i = 0; i < numberOfDevices; i++) {
+            String clientId = "device" + i;
+            kuraDevice = new KuraDevice();
+            kuraDevice.addMoreThanOneDeviceToKuraMock(clientId);
+            kuraDevice.mqttClientConnect();
+            kuraDevices.add(kuraDevice);
+        }
+        stepData.put("KuraDevices", kuraDevices);
+    }
+
+    @When("^Device(?:|s) \"([^\"]*)\" connected$")
+    public void deviceConnected(String arg0) throws Exception {
+        try {
+            deviceBirthMessage();
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
     }
 }
