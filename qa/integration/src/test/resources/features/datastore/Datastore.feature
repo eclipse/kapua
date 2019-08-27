@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+# Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -748,6 +748,231 @@ Feature: Datastore tests
       |tba_2/1/1/2 |
       |tba_2/1/1/3 |
     And I delete all indices
+
+  Scenario: Find correct number of messages by corresponding metric
+    Checking of the number of messages that are associated with the correct metrics.
+    Searching for messages is done by one metric.
+
+    Given I start the Kura Mock
+    When Device is connected
+    And I wait for 1 seconds
+    Then Device status is "CONNECTED"
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And I get the KuraMock device
+    And I set the database to device timestamp indexing
+    Then I prepare a number of messages with the following details and remember the list as "TestMessages"
+      | clientId      | topic            |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/3 |
+      | test-client-3 | test_topic/1/2/3 |
+      | test-client-3 | test_topic/1/2/3 |
+      | test-client-4 | test_topic/1/2/3 |
+      | test-client-4 | test_topic/1/2/3 |
+    And I set the following metrics with messages from the list "TestMessages"
+      | message | metric       | type   | value |
+      | 0       | tst-metric-1 | double | 123   |
+      | 1       | tst-metric-1 | double | 123   |
+      | 2       | tst-metric-1 | double | 123   |
+      | 3       | tst-metric-2 | int    | 123   |
+      | 4       | tst-metric-2 | int    | 123   |
+      | 5       | tst-metric-2 | int    | 123   |
+      | 6       | tst-metric-3 | bool   | 123   |
+      | 7       | tst-metric-3 | bool   | 123   |
+      | 8       | tst-metric-4 | string | 123   |
+      | 9       | tst-metric-4 | string | 123   |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+    When I query for the current account metrics and store them as "AccountMetrics"
+    Then There are exactly 4 metrics in the list "AccountMetrics"
+    When I create message query for metric "tst-metric-1"
+    And I count for data message
+    Then I get message count 3
+    When I create message query for metric "tst-metric-2"
+    And I count for data message
+    Then I get message count 3
+    When I create message query for metric "tst-metric-3"
+    And I count for data message
+    Then I get message count 2
+    When I create message query for metric "tst-metric-4"
+    And I count for data message
+    Then I get message count 2
+    And No assertion error was thrown
+    Then I logout
+
+  Scenario: Finding correct number of messages by corresponding two metrics
+    Checking of the number of messages that are associated with the correct metrics.
+    Searching for messages is done by two metrics.
+
+    Given I start the Kura Mock
+    When Device is connected
+    And I wait for 1 seconds
+    Then Device status is "CONNECTED"
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And I get the KuraMock device
+    And I set the database to device timestamp indexing
+    Then I prepare a number of messages with the following details and remember the list as "TestMessages"
+      | clientId      | topic            |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/3 |
+      | test-client-3 | test_topic/1/2/3 |
+      | test-client-3 | test_topic/1/2/3 |
+      | test-client-4 | test_topic/1/2/3 |
+      | test-client-4 | test_topic/1/2/3 |
+    And I set the following metrics with messages from the list "TestMessages"
+      | message | metric       | type   | value |
+      | 0       | tst-metric-1 | double | 123   |
+      | 1       | tst-metric-1 | double | 123   |
+      | 2       | tst-metric-1 | double | 123   |
+      | 3       | tst-metric-2 | int    | 123   |
+      | 4       | tst-metric-2 | int    | 123   |
+      | 5       | tst-metric-2 | int    | 123   |
+      | 6       | tst-metric-3 | bool   | 123   |
+      | 7       | tst-metric-3 | bool   | 123   |
+      | 8       | tst-metric-4 | string | 123   |
+      | 9       | tst-metric-4 | string | 123   |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+    When I query for the current account metrics and store them as "AccountMetrics"
+    Then There are exactly 4 metrics in the list "AccountMetrics"
+    When I create message query for following metrics
+      | tst-metric-1 |
+      | tst-metric-2 |
+    And I count data messages for more metrics
+    Then I count 6 data messages
+    When I create message query for following metrics
+      | tst-metric-3 |
+      | tst-metric-4 |
+    And I count data messages for more metrics
+    Then I count 4 data messages
+    When I create message query for following metrics
+      | tst-metric-1 |
+      | tst-metric-3 |
+    And I count data messages for more metrics
+    Then I count 5 data messages
+    And No assertion error was thrown
+    And I logout
+
+  Scenario: Finding all messages by selecting all metrics
+    Checking of the number of messages that are associated with the correct metrics.
+    Searching for messages is done by all metrics.
+
+    Given I start the Kura Mock
+    When Device is connected
+    And I wait for 1 seconds
+    Then Device status is "CONNECTED"
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And I get the KuraMock device
+    And I set the database to device timestamp indexing
+    Then I prepare a number of messages with the following details and remember the list as "TestMessages"
+      | clientId      | topic            |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/3 |
+      | test-client-3 | test_topic/1/2/3 |
+      | test-client-3 | test_topic/1/2/3 |
+      | test-client-4 | test_topic/1/2/3 |
+      | test-client-4 | test_topic/1/2/3 |
+    And I set the following metrics with messages from the list "TestMessages"
+      | message | metric       | type   | value |
+      | 0       | tst-metric-1 | double | 123   |
+      | 1       | tst-metric-1 | double | 123   |
+      | 2       | tst-metric-1 | double | 123   |
+      | 3       | tst-metric-2 | int    | 123   |
+      | 4       | tst-metric-2 | int    | 123   |
+      | 5       | tst-metric-2 | int    | 123   |
+      | 6       | tst-metric-3 | bool   | 123   |
+      | 7       | tst-metric-3 | bool   | 123   |
+      | 8       | tst-metric-4 | string | 123   |
+      | 9       | tst-metric-4 | string | 123   |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+    When I query for the current account metrics and store them as "AccountMetrics"
+    Then There are exactly 4 metrics in the list "AccountMetrics"
+    When I create message query for following metrics
+      | tst-metric-1 |
+      | tst-metric-2 |
+      | tst-metric-3 |
+      | tst-metric-4 |
+    And I count data messages for more metrics
+    Then I count 10 data messages
+    And No assertion error was thrown
+    And I logout
+
+  Scenario: Finding messages with incorrect metric parameters
+  Checking of the number of messages that are associated with the incorrect metrics.
+  Searching for messages is done by one metric.
+
+    Given I start the Kura Mock
+    When Device is connected
+    And I wait for 1 seconds
+    Then Device status is "CONNECTED"
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And I get the KuraMock device
+    And I set the database to device timestamp indexing
+    Then I prepare a number of messages with the following details and remember the list as "TestMessages"
+      | clientId      | topic            |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/3 |
+      | test-client-3 | test_topic/1/2/3 |
+      | test-client-3 | test_topic/1/2/3 |
+      | test-client-4 | test_topic/1/2/3 |
+      | test-client-4 | test_topic/1/2/3 |
+    And I set the following metrics with messages from the list "TestMessages"
+      | message | metric       | type   | value |
+      | 0       | tst-metric-1 | double | 123   |
+      | 1       | tst-metric-1 | double | 123   |
+      | 2       | tst-metric-1 | double | 123   |
+      | 3       | tst-metric-2 | int    | 123   |
+      | 4       | tst-metric-2 | int    | 123   |
+      | 5       | tst-metric-2 | int    | 123   |
+      | 6       | tst-metric-3 | bool   | 123   |
+      | 7       | tst-metric-3 | bool   | 123   |
+      | 8       | tst-metric-4 | string | 123   |
+      | 9       | tst-metric-4 | string | 123   |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+    When I query for the current account metrics and store them as "AccountMetrics"
+    Then There are exactly 4 metrics in the list "AccountMetrics"
+    When I create message query for metric "tst-metric-1"
+    And I count for data message
+    And I expect the assertion error "AssertionError" with the text "This two values are not equal"
+    And I get message count 2
+    Then An assertion error was thrown
+    When I create message query for metric "tst-metric-2"
+    And I count for data message
+    And I expect the assertion error "AssertionError" with the text "This two values are not equal"
+    And I get message count 2
+    Then An assertion error was thrown
+    When I create message query for metric "tst-metric-3"
+    And I count for data message
+    And I expect the assertion error "AssertionError" with the text "This two values are not equal"
+    And I get message count 1
+    Then An assertion error was thrown
+    When I create message query for metric "tst-metric-4"
+    And I count for data message
+    And I expect the assertion error "AssertionError" with the text "This two values are not equal"
+    And I get message count 1
+    Then An assertion error was thrown
+    And I logout
 
   Scenario: Stop broker after all scenarios
 

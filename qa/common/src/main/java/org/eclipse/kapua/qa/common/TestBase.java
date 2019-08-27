@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -157,6 +157,26 @@ public class TestBase extends Assert {
         stepData.put("ExceptionCaught", true);
         stepData.put("Exception", ex);
     }
+
+    public void verifyAssertionError(AssertionError assetError)
+            throws AssertionError {
+
+        boolean assertErrorExpected = stepData.contains("AssertErrorExpected") ? (boolean)stepData.get("AssertErrorExpected") : false;
+        String assertErrorName = stepData.contains("AssertErrorName") ? ((String)stepData.get("AssertErrorName")).trim() : "";
+        String assertErrorMessage = stepData.contains("AssertErrorMessage") ? ((String)stepData.get("AssertErrorMessage")).trim() : "";
+
+        if (!assertErrorExpected ||
+                (!assertErrorName.isEmpty() && !assetError.getClass().toGenericString().contains(assertErrorName)) ||
+                (!assertErrorMessage.isEmpty() && !assertErrorMessage.trim().contentEquals("*") && !assetError.getMessage().contains(assertErrorMessage))) {
+            scenario.write("An unexpected assert error was raised!");
+            throw(assetError);
+        }
+
+        scenario.write("Assert error raised as expected: " + assetError.getClass().getCanonicalName() + ", " + assetError.getMessage());
+        stepData.put("AssertErrorCaught", true);
+        stepData.put("AssertError", assetError);
+    }
+
 
     public Date parseDateString(String date) {
         DateFormat df = new SimpleDateFormat("dd/mm/yyyy");
