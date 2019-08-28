@@ -116,7 +116,11 @@ public class QuartzTriggerDriver {
             throw new KapuaIllegalNullArgumentException("interval");
         }
 
-        createQuartzTriggerWithSchedule(trigger, SimpleScheduleBuilder.repeatSecondlyForever(interval));
+        createQuartzTriggerWithSchedule(
+                trigger,
+                SimpleScheduleBuilder.repeatSecondlyForever(interval)
+                        .withMisfireHandlingInstructionFireNow() // This option force a misfired trigger to be always fired
+        );
     }
 
 
@@ -134,7 +138,12 @@ public class QuartzTriggerDriver {
             throw new KapuaIllegalNullArgumentException("cronExpression");
         }
 
-        createQuartzTriggerWithSchedule(trigger, CronScheduleBuilder.cronSchedule(cron).inTimeZone(TimeZone.getTimeZone("UTC")));
+        createQuartzTriggerWithSchedule(
+                trigger,
+                CronScheduleBuilder.cronSchedule(cron)
+                        .withMisfireHandlingInstructionFireAndProceed() // This option force a misfired trigger to be always fired
+                        .inTimeZone(TimeZone.getTimeZone("UTC"))
+        );
     }
 
     //
