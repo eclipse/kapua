@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.authentication;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
+import org.eclipse.kapua.service.authentication.token.LoginInfo;
 
 /**
  * AuthenticationService exposes APIs to manage User object under an Account.<br>
@@ -66,5 +67,12 @@ public interface AuthenticationService extends KapuaService {
      * @throws KapuaException an exception is thrown if the credentials are not found on the system, are expired or are disabled
      */
     void verifyCredentials(LoginCredentials loginCredentials) throws KapuaException;
+
+    /**
+     * Return the {@link LoginInfo} related to the current session
+     * @return the {@link LoginInfo} object containing all the permissions related to the current session and the current {@link AccessToken}
+     * @throws KapuaException
+     */
+    LoginInfo getLoginInfo() throws KapuaException;
 
 }
