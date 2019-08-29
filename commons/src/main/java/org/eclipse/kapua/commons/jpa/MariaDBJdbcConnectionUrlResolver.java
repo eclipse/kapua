@@ -33,7 +33,7 @@ public class MariaDBJdbcConnectionUrlResolver implements JdbcConnectionUrlResolv
         String dbConnectionScheme = config.getString(SystemSettingKey.DB_CONNECTION_SCHEME);
         String dbConnectionHost = config.getString(SystemSettingKey.DB_CONNECTION_HOST);
         String dbConnectionPort = config.getString(SystemSettingKey.DB_CONNECTION_PORT);
-        boolean useSsl = config.getBoolean(SystemSettingKey.DB_CONNECTION_USE_SSL,false);
+        boolean useSsl = config.getBoolean(SystemSettingKey.DB_CONNECTION_USE_SSL, Boolean.FALSE);
         String trustStore = config.getString(SystemSettingKey.DB_CONNECTION_TRUSTSTORE_URL);
         String trustStorePwd = config.getString(SystemSettingKey.DB_CONNECTION_TRUSTSTORE_PWD);
         String additionalOptions = config.getString(SystemSettingKey.DB_CONNECTION_ADDITIONAL_OPTIONS);
