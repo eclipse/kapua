@@ -160,5 +160,17 @@ public class EndpointServiceSteps extends TestBase {
 
         assertEquals(endpointSchema, endpointInfo.getSchema());
     }
+
+    @And("^I delete the last created endpoint$")
+    public void iDeleteTheLastCreatedEndpoint() throws Exception {
+        EndpointInfo endpointInfo = (EndpointInfo) stepData.get("EndpointInfo");
+
+        try {
+            primeException();
+            endpointInfoService.delete(getCurrentScopeId(), endpointInfo.getId());
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
 }
 
