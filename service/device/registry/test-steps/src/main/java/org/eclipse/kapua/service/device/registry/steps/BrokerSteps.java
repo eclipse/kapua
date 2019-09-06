@@ -478,7 +478,7 @@ public class BrokerSteps extends TestBase {
         }
     }
 
-    @Then("^Device status is \"([^\"]*)\"$")
+    @Then("^Device(?:|s) status is \"([^\"]*)\"$")
     public void deviceStatusIs(String deviceStatus) throws Exception {
         DeviceConnection deviceConn = null;
         ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get("KuraDevices");

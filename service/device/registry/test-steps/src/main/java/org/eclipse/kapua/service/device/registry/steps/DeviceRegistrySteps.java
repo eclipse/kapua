@@ -1683,7 +1683,7 @@ public class DeviceRegistrySteps extends TestBase {
         Assert.assertEquals(type.trim().toUpperCase(), tmpList.getItem(tmpList.getSize() - 1).getResource().trim().toUpperCase());
     }
 
-    @Then("^I find (\\d+) device events?$")
+    @Then("^I find (\\d+) device event(?:|s)?$")
     public void checkEventListForNumberOfItems(int number) {
 
         DeviceEventListResult eventList = (DeviceEventListResult) stepData.get("DeviceEventList");
