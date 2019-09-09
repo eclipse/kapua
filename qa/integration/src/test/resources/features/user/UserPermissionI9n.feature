@@ -10,8 +10,9 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @user
-@permission
+@userPermission
 @integration
+
 Feature: User Permission tests
 
   Scenario: Start datastore for all scenarios

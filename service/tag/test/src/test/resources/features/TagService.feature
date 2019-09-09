@@ -9,7 +9,6 @@
 # Contributors:
 #     Eurotech
 ###############################################################################
-@default
 @unit
 @tag
 Feature: Tag Service

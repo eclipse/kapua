@@ -9,10 +9,9 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-  @integration
-  @jobs
-  @jobEngineService
-  @jobEngineStartOfflineDevice
+@jobEngineService
+@jobEngineStartOfflineDevice
+@integration
 
   Feature: JobEngineService tests for starting job with offline device
 

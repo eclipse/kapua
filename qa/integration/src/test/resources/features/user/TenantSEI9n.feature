@@ -10,7 +10,9 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @user
+@tenantSE
 @integration
+
 Feature: Tenant service with Service Events
   Basic workflow of Account and User creation and deletion, where Service Events are
   being trigered on create, update and delete action on Account and User service.

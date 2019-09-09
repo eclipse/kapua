@@ -9,9 +9,10 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@integration
 @jobs
 @jobService
+@integration
+
 Feature: Job service CRUD tests
   The Job service is responsible for executing scheduled actions on various targets.
 
