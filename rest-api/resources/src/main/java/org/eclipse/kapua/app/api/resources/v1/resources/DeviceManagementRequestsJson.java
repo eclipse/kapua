@@ -23,7 +23,6 @@ import org.eclipse.kapua.app.api.resources.v1.resources.model.device.management.
 import org.eclipse.kapua.app.api.resources.v1.resources.model.device.management.JsonGenericResponseMessage;
 import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
 import org.eclipse.kapua.service.device.management.request.internal.message.request.GenericRequestMessageImpl;
 import org.eclipse.kapua.service.device.management.request.internal.message.request.GenericRequestPayloadImpl;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestMessage;
@@ -63,7 +62,7 @@ public class DeviceManagementRequestsJson extends AbstractKapuaResource implemen
     @POST
     @Consumes({ MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_JSON })
-    @ApiOperation(nickname = "deviceRequestSend", value = "Sends a request", notes = "Sends a request message to a device", response = DeviceCommandOutput.class)
+    @ApiOperation(nickname = "deviceRequestSend", value = "Sends a request", notes = "Sends a request message to a device", response = JsonGenericResponseMessage.class)
     public JsonGenericResponseMessage sendRequest(
             @ApiParam(value = "The ScopeId of the device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
