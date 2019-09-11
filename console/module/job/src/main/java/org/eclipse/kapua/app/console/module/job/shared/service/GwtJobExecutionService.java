@@ -18,7 +18,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobExecution;
 
-@RemoteServiceRelativePath("execution")
+@RemoteServiceRelativePath("jobExecution")
 public interface GwtJobExecutionService extends RemoteService {
 
     /**

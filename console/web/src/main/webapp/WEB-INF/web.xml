@@ -73,9 +73,9 @@
         <url-pattern>/jobStepDefinition/*</url-pattern>
         <url-pattern>/jobTarget/*</url-pattern>
         <url-pattern>/jobEngine/*</url-pattern>
+        <url-pattern>/jobExecution/*</url-pattern>
         <url-pattern>/trigger/*</url-pattern>
         <url-pattern>/triggerDefinition/*</url-pattern>
-        <url-pattern>/execution/*</url-pattern>
         <url-pattern>/console/*</url-pattern>
         <url-pattern>/file/*</url-pattern>
         <url-pattern>/image/*</url-pattern>
@@ -399,12 +399,12 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>executionServlet</servlet-name>
+        <servlet-name>jobExecutionServlet</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.module.job.server.GwtJobExecutionServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>executionServlet</servlet-name>
-        <url-pattern>/execution</url-pattern>
+        <servlet-name>jobExecutionServlet</servlet-name>
+        <url-pattern>/jobExecution</url-pattern>
     </servlet-mapping>
 
     <servlet>
