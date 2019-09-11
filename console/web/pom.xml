@@ -107,6 +107,12 @@
 
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-guice</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-job-engine-commons</artifactId>
         </dependency>
         <dependency>

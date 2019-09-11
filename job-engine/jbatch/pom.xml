@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-    Copyright (c) 2017 Eurotech and/or its affiliates and others
+    Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -24,13 +24,16 @@
     <properties>
         <jbatch.version>1.0.2</jbatch.version>
     </properties>
+
     <dependencies>
+        <!-- -->
         <!-- Implemented dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-job-engine-api</artifactId>
         </dependency>
 
+        <!-- -->
         <!-- Internal dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -52,11 +55,7 @@
             <artifactId>kapua-service-api</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-guice</artifactId>
-        </dependency>
-
+        <!-- -->
         <!-- External dependencies -->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -71,6 +70,14 @@
             <groupId>com.ibm.jbatch</groupId>
             <artifactId>com.ibm.jbatch.container</artifactId>
             <version>${jbatch.version}</version>
+        </dependency>
+
+        <!-- -->
+        <!-- Test dependencies-->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-guice</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
