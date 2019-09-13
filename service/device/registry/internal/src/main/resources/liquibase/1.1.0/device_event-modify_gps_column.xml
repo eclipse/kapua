@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
+    Copyright (c) 2019 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -15,10 +15,10 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
-        logicalFilePath="KapuaDB/changelog-device-1.1.0.xml">
+        logicalFilePath="KapuaDB/device_event-modify_gps_column.xml">
 
-    <include relativeToChangelogFile="true" file="./device-add-model-name.xml"/>
-    <include relativeToChangelogFile="true" file="./device-remove-modem-constraint.xml"/>
-    <include relativeToChangelogFile="true" file="./device_event-modify_gps_column.xml"/>
+    <changeSet id="device_event-modify_gps_column" author="eurotech">
+        <modifyDataType tableName="dvc_device_event" columnName="pos_altitude" newDataType="decimal(13,8)"/>
+    </changeSet>
 
 </databaseChangeLog>
