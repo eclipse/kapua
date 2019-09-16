@@ -9,9 +9,10 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@integration
 @jobs
 @jobExecutionService
+@integration
+
 Feature: Job Execution service CRUD tests
     The Job service is responsible for maintaining the status of the target step executions.
 

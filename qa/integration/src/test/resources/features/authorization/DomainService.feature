@@ -10,7 +10,9 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @security
+@domainService
 @integration
+
 Feature: Domain Service tests
 
   Scenario: Count domains in a blank database

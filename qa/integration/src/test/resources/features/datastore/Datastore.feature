@@ -12,6 +12,7 @@
 ###############################################################################
 @datastore
 @integration
+
 Feature: Datastore tests
 
   Scenario: Start datastore for all scenarios

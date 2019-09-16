@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.integration.service.job;
+package org.eclipse.kapua.integration.service.jobEngine;
 
 import cucumber.api.CucumberOptions;
 import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
@@ -18,10 +18,10 @@ import org.junit.runner.RunWith;
 @RunWith(CucumberWithProperties.class)
 @CucumberOptions(
         features = {
-                "classpath:features/job/JobEngineServiceStartOfflineDeviceI9n.feature",
-                "classpath:features/job/JobEngineServiceStartOnlineDeviceI9n.feature",
-                "classpath:features/job/JobEngineServiceRestartOnlineDeviceI9n.feature",
-                "classpath:features/job/JobEngineServiceRestartOfflineDeviceI9n.feature"
+                "classpath:features/jobEngine/JobEngineServiceStartOfflineDeviceI9n.feature",
+                "classpath:features/jobEngine/JobEngineServiceStartOnlineDeviceI9n.feature",
+                "classpath:features/jobEngine/JobEngineServiceRestartOnlineDeviceI9n.feature",
+                "classpath:features/jobEngine/JobEngineServiceRestartOfflineDeviceI9n.feature"
         },
         glue = { "org.eclipse.kapua.service.job.steps",
                 "org.eclipse.kapua.service.user.steps",

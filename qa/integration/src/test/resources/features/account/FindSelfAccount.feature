@@ -9,8 +9,10 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@user
+@account
+@accountFindSelf
 @integration
+
 Feature: Self account find feature
   Finding self accounts require a different logic to be applied to the permission
 
