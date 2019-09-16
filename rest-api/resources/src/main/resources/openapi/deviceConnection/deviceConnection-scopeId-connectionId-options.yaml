@@ -1,0 +1,66 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Connection
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/deviceconnections/{connectionId}/options:
+    get:
+      tags:
+        - Device Connection
+      summary: Get the option for a Connection
+      operationId: connectionOptionGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './deviceConnection.yaml#/components/parameters/connectionId'
+      responses:
+        200:
+          description: The Options of the desired Connection
+          content:
+            application/json:
+              schema:
+                $ref: './deviceConnection.yaml#/components/schemas/connectionOptions'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    put:
+      tags:
+        - Device Connection
+      summary: Update the option for a Connection
+      operationId: connectionOptionUpdate
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './deviceConnection.yaml#/components/parameters/connectionId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './deviceConnection.yaml#/components/schemas/connectionOptions'
+      responses:
+        200:
+          description: The updated Options of the desired Connection
+          content:
+            application/json:
+              schema:
+                $ref: './deviceConnection.yaml#/components/schemas/connectionOptions'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

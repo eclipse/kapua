@@ -1,0 +1,137 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Data Message
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/data/messages:
+    get:
+      tags:
+        - Data Message
+      summary: Query the Data Messages
+      operationId: dataMessageQuery
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - description: The ClientID to use as a filter for messages
+          name: clientId
+          in: query
+          schema:
+            type: string
+        - description: The Channel to use as a filter for messages
+          name: channel
+          in: query
+          schema:
+            type: string
+        - description: Restrict the search only to this channel ignoring its children. Only meaningful if channel is set
+          name: strictChannel
+          in: query
+          schema:
+            type: boolean
+        - description: The start date to filter the results. Must come before endDate parameter
+          name: startDate
+          in: query
+          schema:
+            type: string
+            format: 'date-time'
+        - description: The end date to filter the results. Must come after startDate parameter
+          name: endDate
+          in: query
+          schema:
+            type: string
+            format: 'date-time'
+        - description: The metric name to filter results. If filled, `metricType`, `metricMinValue` and `metricMaxValue` are also required
+          name: metricName
+          in: query
+          schema:
+            type: string
+        - description: The metric type to filter results
+          name: metricType
+          in: query
+          schema:
+            type: string
+        - description: The minimum metric value to filter results
+          name: metricMin
+          in: query
+          schema:
+            type: string
+        - description: The maximum metric value to filter results
+          name: metricMax
+          in: query
+          schema:
+            type: string
+        - $ref: '../openapi.yaml#/components/parameters/limit'
+        - $ref: '../openapi.yaml#/components/parameters/offset'
+      responses:
+        200:
+          description: The result of the query
+          content:
+            application/json:
+              schema:
+                $ref: './dataMessage.yaml#/components/schemas/dataMessageListResult'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    post:
+      tags:
+        - Data Message
+      summary: Store a new Message
+      operationId: dataMessageStore
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './dataMessage.yaml#/components/schemas/dataMessage'
+            example:
+              type: jsonDatastoreMessage
+              capturedOn: '2019-09-12T09:25:05.096Z'
+              channel:
+                type: kapuaDataChannel
+                semanticParts:
+                  - heater
+                  - data
+              clientId: Client-Id-1
+              deviceId: WyczTs_GuDM
+              payload:
+                metrics:
+                  - valueType: string
+                    value: 5.0
+                    name: temperatureExternal
+                  - valueType: string
+                    value: 20.0
+                    name: temperatureInternal
+                  - valueType: string
+                    value: 30.0
+                    name: temperatureExhaust
+                  - valueType: string
+                    value: 0
+                    name: errorCode
+              receivedOn: '2019-09-12T09:25:05.102Z'
+              sentOn: '2019-09-12T09:25:05.096Z'
+              datastoreId: bb07d7fc-dc62-492f-b8da-7e28df69e112
+              timestamp: '2019-09-12T09:25:05.096Z'
+      responses:
+        200:
+          description: The ID of the new DataMessage
+          content:
+            application/json:
+              schema:
+                $ref: './dataMessage.yaml#/components/schemas/dataMessageInsertResponse'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

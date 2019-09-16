@@ -1,0 +1,372 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Service Configuration
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    componentId:
+      name: componentId
+      in: path
+      description: The ID of the Component on which to perform the operation
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+  schemas:
+    attributeDefinition:
+      description: The definition for a single configuration value
+#      externalDocs:
+#        description: OSGi Compendium Release 7
+#        url: https://osgi.org/specification/osgi.cmpn/7.0.0/service.metatype.html#i1504333
+      type: object
+      properties:
+        Option:
+          type: array
+          items:
+            type: object
+            properties:
+              label:
+                type: string
+              value:
+                type: string
+        default:
+          description: The default value for this field
+          type: string
+        type:
+          description: The data type of this field
+          type: object
+        cardinality:
+          description: The cardinality of this field
+          type: integer
+        min:
+          description: The minimum allowed value for this field
+          type: string
+        max:
+          description: The maximum allowed value for this field
+          type: string
+        description:
+          description: The description of this field
+          type: string
+        id:
+          description: An unique ID for this field
+          type: string
+        required:
+          description: A flag indicating whether this field is required or not
+          type: boolean
+        name:
+          description: A human readable name for this field
+          type: string
+      example:
+        cardinality: 0
+        default: 'false'
+        description: Whether to allow infinite groups for this account or not.
+        id: infiniteChildEntities
+        name: infiniteChildGroups
+        required: true
+        type: Boolean
+        Option: []
+    propertyDefinition:
+      type: object
+      properties:
+        name:
+          description: The name of the field that is represented by this property
+          type: string
+        array:
+          description: A flag indicating whether this property has an array value or not
+          type: boolean
+        encrypted:
+          description: A flag indicating whether this property value is encrypted or not
+          type: boolean
+        type:
+          description: The data type of this property
+          type: string
+        value:
+          description: The value of this property
+          type: array
+          items:
+            type: string
+      example:
+        name: maxNumberChildEntities
+        array: false
+        encrypted: false
+        type: Integer
+        value:
+          - '0'
+    componentConfiguration:
+      type: object
+      properties:
+        name:
+          description: A name for the Service
+          type: string
+        id:
+          description: An ID for the Service
+          type: string
+        definition:
+          description: An object containing all the Property Definitions
+          type: object
+          properties:
+            id:
+              type: string
+            AD:
+              type: array
+              items:
+                $ref: '#/components/schemas/attributeDefinition'
+            Icon:
+              type: array
+              items:
+                type: object
+                properties:
+                  resource:
+                    type: string
+                  size:
+                    type: integer
+            name:
+              type: string
+            description:
+              type: string
+        properties:
+          description: An object containing all the Property Values
+          type: object
+          properties:
+            property:
+              type: array
+              items:
+                $ref: '#/components/schemas/propertyDefinition'
+      example:
+        name: AccountService
+        id: org.eclipse.kapua.service.account.AccountService
+        definition:
+          description: 'This is the configuration for the kapua AccountService. '
+          id: org.eclipse.kapua.service.account.AccountService
+          name: AccountService
+          AD:
+            - cardinality: 0
+              default: 'false'
+              description: Whether to allow infinite child accounts for this account or not.
+              id: infiniteChildEntities
+              name: infiniteChildAccounts
+              required: true
+              type: Boolean
+              Option: []
+            - cardinality: 0
+              default: '0'
+              description: Maximum number of child accounts that are allowed to be created for this account. Valid if infiniteChildAccounts set to false.
+              id: maxNumberChildEntities
+              min: '0'
+              name: maxNumberChildAccounts
+              required: true
+              type: Integer
+              Option: []
+          Icon:
+            - resource: OSGI-INF/account-service.png
+              size: 32
+        properties:
+          property:
+            - name: maxNumberChildEntities
+              array: false
+              encrypted: false
+              type: Integer
+              value:
+                - '0'
+            - name: infiniteChildEntities
+              array: false
+              encrypted: false
+              type: Boolean
+              value:
+                - 'true'
+    componentConfigurationInput:
+      type: object
+      properties:
+        id:
+          type: string
+        properties:
+          type: object
+          properties:
+            property:
+              type: array
+              items:
+                $ref: '#/components/schemas/propertyDefinition'
+      example:
+        id: org.eclipse.kapua.service.account.AccountService
+        properties:
+          property:
+            - name: maxNumberChildEntities
+              type: Integer
+              value:
+                - '7'
+            - name: infiniteChildEntities
+              type: Boolean
+              value:
+                - 'true'
+    componentConfigurations:
+      type: object
+      properties:
+        configuration:
+          type: array
+          items:
+            $ref: '#/components/schemas/componentConfiguration'
+      example:
+        type: serviceConfiguration
+        configuration:
+          - name: AccountService
+            id: org.eclipse.kapua.service.account.AccountService
+            definition:
+              description: 'This is the configuration for the kapua AccountService. '
+              id: org.eclipse.kapua.service.account.AccountService
+              name: AccountService
+              AD:
+                - cardinality: 0
+                  default: 'false'
+                  description: Whether to allow infinite child accounts for this account or not.
+                  id: infiniteChildEntities
+                  name: infiniteChildAccounts
+                  required: true
+                  type: Boolean
+                  Option: []
+                - cardinality: 0
+                  default: '0'
+                  description: Maximum number of child accounts that are allowed to be created for this account. Valid if infiniteChildAccounts set to false.
+                  id: maxNumberChildEntities
+                  min: '0'
+                  name: maxNumberChildAccounts
+                  required: true
+                  type: Integer
+                  Option: []
+              Icon:
+                - resource: OSGI-INF/account-service.png
+                  size: 32
+            properties:
+              property:
+                - name: maxNumberChildEntities
+                  array: false
+                  encrypted: false
+                  type: Integer
+                  value:
+                    - '0'
+                - name: infiniteChildEntities
+                  array: false
+                  encrypted: false
+                  type: Boolean
+                  value:
+                    - 'true'
+          - name: CredentialService
+            id: org.eclipse.kapua.service.authentication.credential.CredentialService
+            definition:
+              description: 'This is the configuration for the kapua CredentialService. '
+              id: org.eclipse.kapua.service.authentication.credential.CredentialService
+              name: CredentialService
+              AD:
+                - cardinality: 0
+                  default: 'true'
+                  description: User lockout policy enable.
+                  id: lockoutPolicy.enabled
+                  name: lockoutPolicy.enabled
+                  required: true
+                  type: Boolean
+                  Option: []
+                - cardinality: 0
+                  default: '3'
+                  description: Number of consecutive login failures before the user gets locked. Valid if lockout policy is enabled.
+                  id: lockoutPolicy.maxFailures
+                  min: '0'
+                  name: lockoutPolicy.maxFailures
+                  required: true
+                  type: Integer
+                  Option: []
+                - cardinality: 0
+                  default: '3600'
+                  description: The amount of time in seconds required after the last login failure to automatically reset the failure counter.
+                  id: lockoutPolicy.resetAfter
+                  min: '0'
+                  name: lockoutPolicy.resetAfter
+                  required: true
+                  type: Integer
+                  Option: []
+                - cardinality: 0
+                  default: '10800'
+                  description: For a locked user the amount of time in seconds required after the last login failure to automatically unlock the user.
+                  id: lockoutPolicy.lockDuration
+                  min: '0'
+                  name: lockoutPolicy.lockDuration
+                  required: true
+                  type: Integer
+                  Option: []
+              Icon:
+                - resource: OSGI-INF/user-service.png
+                  size: 32
+            properties:
+              property:
+                - name: lockoutPolicy.resetAfter
+                  array: false
+                  encrypted: false
+                  type: Integer
+                  value:
+                    - '3600'
+                - name: lockoutPolicy.lockDuration
+                  array: false
+                  encrypted: false
+                  type: Integer
+                  value:
+                    - '10800'
+                - name: lockoutPolicy.enabled
+                  array: false
+                  encrypted: false
+                  type: Boolean
+                  value:
+                    - 'true'
+                - name: lockoutPolicy.maxFailures
+                  array: false
+                  encrypted: false
+                  type: Integer
+                  value:
+                    - '3'
+    componentConfigurationsInput:
+      type: object
+      properties:
+        configuration:
+          type: array
+          items:
+            $ref: '#/components/schemas/componentConfigurationInput'
+      example:
+        type: serviceConfiguration
+        configuration:
+          - id: org.eclipse.kapua.service.account.AccountService
+            properties:
+              property:
+                - name: maxNumberChildEntities
+                  type: Integer
+                  value:
+                    - '15'
+                - name: infiniteChildEntities
+                  type: Boolean
+                  value:
+                    - false
+          - id: org.eclipse.kapua.service.authentication.credential.CredentialService
+            properties:
+              property:
+                - name: lockoutPolicy.resetAfter
+                  type: Integer
+                  value:
+                    - '36000'
+                - name: lockoutPolicy.lockDuration
+                  type: Integer
+                  value:
+                    - '108000'
+                - name: lockoutPolicy.enabled
+                  type: Boolean
+                  value:
+                    - 'false'
+                - name: lockoutPolicy.maxFailures
+                  type: Integer
+                  value:
+                    - '30'

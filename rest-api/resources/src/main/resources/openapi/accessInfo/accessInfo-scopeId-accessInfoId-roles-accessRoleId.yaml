@@ -1,0 +1,59 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Access Info
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/accessinfos/{accessInfoId}/roles/{accessRoleId}:
+    get:
+      tags:
+        - Access Role
+      summary: Get a single AccessRole
+      operationId: accessRoleGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './accessInfo.yaml#/components/parameters/accessInfoId'
+        - $ref: './accessInfo.yaml#/components/parameters/accessRoleId'
+      responses:
+        200:
+          description: The details of the desired AccessRole
+          content:
+            application/json:
+              schema:
+                $ref: './accessInfo.yaml#/components/schemas/accessRole'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    delete:
+      tags:
+        - Access Role
+      summary: Delete a single AccessRole
+      operationId: accessRoleDelete
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './accessInfo.yaml#/components/parameters/accessInfoId'
+        - $ref: './accessInfo.yaml#/components/parameters/accessRoleId'
+      responses:
+        200:
+          description: The AccessRole has been deleted
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

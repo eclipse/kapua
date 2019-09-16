@@ -1,0 +1,45 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Request
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/devices/{deviceId}/requests:
+    post:
+      tags:
+        - Device Management - Request
+      summary: Perform a Request
+      operationId: deviceRequestExec
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: '../device/device.yaml#/components/parameters/timeout'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './deviceRequest.yaml#/components/schemas/requestInput'
+        required: true
+      responses:
+        200:
+          description: The list of Requests installed on a single Device
+          content:
+            application/json:
+              schema:
+                $ref: './deviceRequest.yaml#/components/schemas/requestOutput'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

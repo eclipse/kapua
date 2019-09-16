@@ -1,0 +1,205 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Accounts
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    accountId:
+      name: accountId
+      in: path
+      description: The ID of the Account on which to perform the operation
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+  schemas:
+    account:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaNamedEntity'
+        - description: |
+            An object that holds all the informations pertaining an Account, including the details about the Contacts of that account.\
+            In Kapua an Account is the container of all other resources (Users, Devices, etc.), and is the equivalent of the concept of Tenant.\
+            Every entity in Kapua will have a `scopeId` property, that holds the ID of the Account who holds that entity.
+          type: object
+          properties:
+            organization:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The Name of the Organization
+                addressLine1:
+                  type: string
+                  description: First line of the Address for the Organization
+                addressLine2:
+                  type: string
+                  description: Second line of the Address for the Organization
+                addressLine3:
+                  type: string
+                  description: Third line of the Address for the Organization
+                zipPostCode:
+                  type: string
+                  description: The Zip / Postcode for the Organization
+                city:
+                  type: string
+                  description: The City of the Organization
+                stateProvinceCounty:
+                  type: string
+                  description: The State / Province / County of the Organization
+                country:
+                  type: string
+                  description: The Country of the Organization
+                personName:
+                  type: string
+                  description: The Name of the Person listed as a Contact for the Organization
+                email:
+                  type: string
+                  description: The Email Address of the Person listed as a Contact for the Organization
+                phoneNumber:
+                  type: string
+                  description: The Phone Number of the Person listed as a Contact for the Organization
+              description: An object containing all the informations related to the Organization who holds the account
+            expirationDate:
+              type: string
+              format: 'date-time'
+              description: The Expiration date and time for the Account. If empty, the Account has no expiration
+            parentAccountPath:
+              type: string
+              description: The full Scope ID Hierarchy for the Account
+#            childAccounts:
+#              type: array
+#              items:
+#                $ref: '#/components/schemas/account'
+#              description: A list of Accounts available in the current Scope
+          example:
+            type: account
+            id: LgJHjS2jvdE
+            scopeId: AQ
+            createdOn: '2019-09-09T10:21:03.775Z'
+            createdBy: AQ
+            modifiedOn: '2019-09-09T10:21:03.789Z'
+            modifiedBy: AQ
+            optlock: 2
+            name: acme-inc
+            expirationDate: '2019-31-12T00:00:00.000Z'
+            organization:
+              addressLine1: 123 Looney Tunes Drive
+              addressLine2: Block 1
+              addressLine3: Apartment 25
+              city: Somewhere City
+              country: United States
+              email: wile.coyote@acme.inc
+              name: ACME Inc.
+              personName: Wile Ethelbert Coyote
+              phoneNumber: +1 (555) 123 4567
+              stateProvinceCounty: Green County, GC
+              zipPostCode: '00100'
+            parentAccountPath: /1/3315290947379772881
+    accountCreator:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaNamedEntityCreator'
+        - description: An object with all the information needed to create a new Account
+          type: object
+          properties:
+            organizationName:
+              type: string
+              description: The Name of the Organization
+            organizationAddressLine1:
+              type: string
+              description: First line of the Address for the Organization
+            organizationAddressLine2:
+              type: string
+              description: Second line of the Address for the Organization
+            organizationAddressLine3:
+              type: string
+              description: Third line of the Address for the Organization
+            organizationZipPostCode:
+              type: string
+              description: The Zip / Postcode for the Organization
+            organizationCity:
+              type: string
+              description: The City of the Organization
+            organizationStateProvinceCounty:
+              type: string
+              description: The State / Province / County of the Organization
+            organizationCountry:
+              type: string
+              description: The Country of the Organization
+            organizatioPpersonName:
+              type: string
+              description: The Name of the Person listed as a Contact for the Organization
+            organizationEmail:
+              type: string
+              format: email
+              description: The Email Address of the Person listed as a Contact for the Organization
+            phoneNumber:
+              type: string
+              description: The Phone Number of the Person listed as a Contact for the Organization
+            expirationDate:
+              type: string
+              format: 'date-time'
+              description: The Expiration date and time for the Account
+          required:
+            - organizationName
+            - organizationEmail
+          example:
+            name: acme-inc
+            organizationName: ACME Inc.
+            organizationEmail: wile.coyote@acme.inc
+            organizationAddressLine1: 123 Looney Tunes Drive
+            organizationAddressLine2: Block 1
+            organizationAddressLine3: Apartment 25
+            organizationZipPostCode: '00100'
+            organizationCity: Somewhere City
+            organizationStateProvinceCounty: Green County, GC
+            organizationCountry: United States
+            organizationPersonName: Wile Ethelbert Coyote
+            phoneNumber: +1 (555) 123 4567
+            expirationDate: '2019-31-12T00:00:00.000Z'
+    accountListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - description: A list container for Account objects
+          type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/account'
+          example:
+            type: accountListResult
+            size: 1
+            limitExceeded: false
+            items:
+              - type: account
+                id: LgJHjS2jvdE
+                scopeId: AQ
+                createdOn: '2019-09-09T10:21:03.775Z'
+                createdBy: AQ
+                modifiedOn: '2019-09-09T10:21:03.789Z'
+                modifiedBy: AQ
+                optlock: 2
+                name: acme-inc
+                organization:
+                  addressLine1: 123 Looney Tunes Drive
+                  addressLine2: Block 1
+                  addressLine3: Apartment 25
+                  city: Somewhere City
+                  country: United States
+                  email: wile.coyote@acme.inc
+                  name: ACME Inc.
+                  personName: Wile Ethelbert Coyote
+                  phoneNumber: +1 (555) 123 4567
+                  stateProvinceCounty: Green County, GC
+                  zipPostCode: '00100'
+                parentAccountPath: /1/3315290947379772881

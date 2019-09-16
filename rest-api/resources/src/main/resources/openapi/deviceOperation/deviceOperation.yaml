@@ -1,0 +1,193 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Device Management - Operations
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    operationId:
+      name: operationId
+      in: path
+      description: The ID of the Registry Operation on which to perform the operation
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+  schemas:
+    deviceOperation:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaUpdatableEntity'
+        - type: object
+          properties:
+            action:
+              $ref: '../device/device.yaml#/components/schemas/action'
+            appId:
+              type: string
+            deviceId:
+              $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            endedOn:
+              type: string
+              format: 'date-time'
+            operationProperties:
+              type: array
+              items:
+                $ref: '#/components/schemas/operationProperty'
+            log:
+              type: string
+            operationId:
+              $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            resource:
+              type: string
+            startedOn:
+              type: string
+              format: 'date-time'
+            status:
+              $ref: '#/components/schemas/operationStatus'
+          example:
+            type: deviceManagementOperation
+            id: cjmXXKvLUY8
+            scopeId: AQ
+            createdOn: '2019-11-15T11:27:24.857Z'
+            createdBy: AQ
+            modifiedOn: '2019-11-15T11:30:01.975Z'
+            modifiedBy: Ag
+            optlock: 3
+            action: EXECUTE
+            appId: DEPLOY
+            deviceId: UVjeGkGVT3A
+            endedOn: '2019-11-15T11:30:01.568Z'
+            operationProperties:
+              - name: kapau.package.download.file.type
+                propertyType: string
+                propertyValue: DEPLOYMENT_PACKAGE
+              - name: kapau.package.download.password
+                propertyType: string
+                propertyValue: kapua-password
+              - name: kapau.package.download.username
+                propertyType: string
+                propertyValue: kapua-sys
+              - name: kapua.package.download.block.delay
+                propertyType: integer
+                propertyValue: '1000'
+              - name: kapua.package.download.block.size
+                propertyType: integer
+                propertyValue: '128'
+              - name: kapua.package.download.block.timeout
+                propertyType: integer
+                propertyValue: '60000'
+              - name: kapua.package.download.install
+                propertyType: boolean
+                propertyValue: 'true'
+              - name: kapua.package.download.name
+                propertyType: string
+                propertyValue: heater
+              - name: kapua.package.download.uri
+                propertyType: java.net.URI
+                propertyValue: 'http://download.eclipse.org/kura/releases/4.1.0/org.eclipse.kura.demo.heater_1.0.500.dp'
+              - name: kapua.package.download.version
+                propertyType: string
+                propertyValue: 1.0.500
+              - name: kapua.package.operation.id
+                propertyType: org.eclipse.kapua.commons.model.id.KapuaEid
+                propertyValue: '2588799701293395515'
+              - name: kapua.package.reboot
+                propertyType: boolean
+                propertyValue: 'false'
+            log: ''
+            operationId: I-1DnL467js
+            resource: DOWNLOAD
+            startedOn: '2019-11-15T11:27:24.842Z'
+            status: COMPLETED
+    deviceOperationListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/deviceOperation'
+          example:
+            type: deviceManagementOperationListResult
+            limitExceeded: false
+            size: 1
+            items:
+              - type: deviceManagementOperation
+                id: cjmXXKvLUY8
+                scopeId: AQ
+                createdOn: '2019-11-15T11:27:24.857Z'
+                createdBy: AQ
+                modifiedOn: '2019-11-15T11:30:01.975Z'
+                modifiedBy: Ag
+                optlock: 3
+                action: EXECUTE
+                appId: DEPLOY
+                deviceId: UVjeGkGVT3A
+                endedOn: '2019-11-15T11:30:01.568Z'
+                operationProperties:
+                  - name: kapau.package.download.file.type
+                    propertyType: string
+                    propertyValue: DEPLOYMENT_PACKAGE
+                  - name: kapau.package.download.password
+                    propertyType: string
+                    propertyValue: kapua-password
+                  - name: kapau.package.download.username
+                    propertyType: string
+                    propertyValue: kapua-sys
+                  - name: kapua.package.download.block.delay
+                    propertyType: integer
+                    propertyValue: '1000'
+                  - name: kapua.package.download.block.size
+                    propertyType: integer
+                    propertyValue: '128'
+                  - name: kapua.package.download.block.timeout
+                    propertyType: integer
+                    propertyValue: '60000'
+                  - name: kapua.package.download.install
+                    propertyType: boolean
+                    propertyValue: 'true'
+                  - name: kapua.package.download.name
+                    propertyType: string
+                    propertyValue: heater
+                  - name: kapua.package.download.uri
+                    propertyType: java.net.URI
+                    propertyValue: 'http://download.eclipse.org/kura/releases/4.1.0/org.eclipse.kura.demo.heater_1.0.500.dp'
+                  - name: kapua.package.download.version
+                    propertyType: string
+                    propertyValue: 1.0.500
+                  - name: kapua.package.operation.id
+                    propertyType: org.eclipse.kapua.commons.model.id.KapuaEid
+                    propertyValue: '2588799701293395515'
+                  - name: kapua.package.reboot
+                    propertyType: boolean
+                    propertyValue: 'false'
+                log: ''
+                operationId: I-1DnL467js
+                resource: DOWNLOAD
+                startedOn: '2019-11-15T11:27:24.842Z'
+                status: COMPLETED
+    operationProperty:
+      type: object
+      properties:
+        name:
+          type: string
+        propertyType:
+          type: string
+        propertyValue:
+          type: string
+    operationStatus:
+      type: string
+      enum:
+        - RUNNING
+        - COMPLETED
+        - FAILED
+        - STALE

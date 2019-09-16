@@ -1,0 +1,105 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - EndpointInfos
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    endpointInfoId:
+      name: endpointInfoId
+      in: path
+      description: The ID of the EndpointInfo on which to perform the operation
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+  schemas:
+    endpointInfo:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaUpdatableEntity'
+        - $ref: '#/components/schemas/endpointInfoCreator'
+        - type: object
+          example:
+            type: endpointInfo
+            id: PEMf9sotlls
+            scopeId: AQ
+            createdOn: '2019-09-13T14:52:19.850Z'
+            createdBy: AQ
+            modifiedOn: '2019-09-13T14:52:19.850Z'
+            modifiedBy: AQ
+            optlock: 1
+            dns: 10.200.12.144
+            port: 1883
+            schema: mqtt
+            secure: false
+            usages:
+              - name: MESSAGE_BROKER
+              - name: PROVISION
+    endpointInfoCreator:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaUpdatableEntityCreator'
+        - type: object
+          properties:
+            schema:
+              type: string
+            dns:
+              type: string
+            port:
+              type: integer
+            secure:
+              type: boolean
+            usages:
+              type: array
+              items:
+                $ref: '#/components/schemas/usage'
+          example:
+            schema: mqtt
+            dns: 10.200.12.148
+            port: '1883'
+            secure: false
+            usages:
+              - name: MESSAGE_BROKER
+              - name: PROVISION
+    endpointInfoListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/endpointInfo'
+          example:
+            type: endpointInfoListResult
+            limitExceeded: false
+            size: 1
+            items:
+              - type: endpointInfo
+                id: PEMf9sotlls
+                scopeId: AQ
+                createdOn: '2019-09-13T14:52:19.850Z'
+                createdBy: AQ
+                modifiedOn: '2019-09-13T14:52:19.850Z'
+                modifiedBy: AQ
+                optlock: 1
+                dns: 10.200.12.148
+                port: 1883
+                schema: mqtt
+                secure: false
+                usages:
+                  - name: MESSAGE_BROKER
+                  - name: PROVISION
+    usage:
+      type: object
+      properties:
+        name:
+          type: string

@@ -1,0 +1,97 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - EndpointInfos
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/endpointInfos/{endpointInfoId}:
+    get:
+      tags:
+        - Endpoint Info
+      summary: Get a single EndpointInfo
+      operationId: endpointInfoGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './endpointInfo.yaml#/components/parameters/endpointInfoId'
+      responses:
+        200:
+          description: The details of the desired EndpointInfo
+          content:
+            application/json:
+              schema:
+                $ref: './endpointInfo.yaml#/components/schemas/endpointInfo'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    put:
+      tags:
+        - Endpoint Info
+      summary: Update a single EndpointInfo
+      operationId: endpointInfoUpdate
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './endpointInfo.yaml#/components/parameters/endpointInfoId'
+      requestBody:
+        description: An object containing the new properties for the EndpointInfo to update
+        content:
+          application/json:
+            schema:
+              $ref: './endpointInfo.yaml#/components/schemas/endpointInfo'
+            example:
+              type: endpointInfo
+              optlock: 1
+              dns: 10.200.12.144
+              port: 1883
+              schema: mqtt
+              secure: false
+              usages:
+                - name: MESSAGE_BROKER
+                - name: PROVISION
+        required: true
+      responses:
+        200:
+          description: The details of the updated EndpointInfo
+          content:
+            application/json:
+              schema:
+                $ref: './endpointInfo.yaml#/components/schemas/endpointInfo'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    delete:
+      tags:
+        - Endpoint Info
+      summary: Delete a single EndpointInfo
+      operationId: endpointInfoDelete
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './endpointInfo.yaml#/components/parameters/endpointInfoId'
+      responses:
+        200:
+          description: The EndpointInfo has been deleted
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

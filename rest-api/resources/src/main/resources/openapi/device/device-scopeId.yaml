@@ -1,0 +1,173 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Devices
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/devices:
+    get:
+      tags:
+        - Device
+      summary: Get all the Devices
+      operationId: deviceList
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - name: tagId
+          in: query
+          description: The tag id to filter results
+          schema:
+            $ref: '../openapi.yaml#/components/schemas/kapuaId'
+        - $ref: './device.yaml#/components/parameters/clientId'
+        - $ref: '../deviceConnection/deviceConnection.yaml#/components/parameters/connectionStatus'
+        - $ref: './device.yaml#/components/parameters/fetchAttributes'
+        - $ref: '../openapi.yaml#/components/parameters/limit'
+        - $ref: '../openapi.yaml#/components/parameters/offset'
+      responses:
+        200:
+          description: The list of the Devices available in the Scope
+          content:
+            application/json:
+              schema:
+                $ref: './device.yaml#/components/schemas/deviceListResult'
+              examples:
+                standard:
+                  value:
+                    type: deviceListResult
+                    limitExceeded: false
+                    size: 1
+                    items:
+                      - type: device
+                        id: WyczTs_GuDM
+                        scopeId: AQ
+                        createdOn: 2019-09-12T09:04:37.315Z
+                        createdBy: Ag
+                        modifiedOn: 2019-09-12T09:04:37.603Z
+                        modifiedBy: Ag
+                        optlock: 2
+                        clientId: Client-Id-1
+                        connectionId: Gd1BfeWwh3s
+                        status: ENABLED
+                        displayName:
+                        lastEventId: YYHQ2i1S-P0
+                        serialNumber: ESF-Docker-RHEL
+                        modelId: ESF-Docker-RHEL
+                        modelName: ESF-Docker-RHEL
+                        biosVersion: N/A
+                        firmwareVersion: N/A
+                        osVersion: 4.9.184-linuxkit #1 SMP Tue Jul 2 22:58:16 UTC 2019
+                        jvmVersion: 25.161-b12 mixed mode
+                        osgiFrameworkVersion: 1.8.0
+                        applicationFrameworkVersion: ESF_6.0.0
+                        connectionInterface: lo (00:00:00:00:00:00)
+                        connectionIp: 127.0.0.1
+                        applicationIdentifiers: heaterPROV-V2DEPLOY-V2VPNCLIENT-V2CONF-V1CERT-V1ASSET-V1CMD-V1
+                        acceptEncoding: gzip
+                        tagIds: []
+                with-fetch-attributes:
+                  value:
+                      type: deviceListResult
+                      limitExceeded: false
+                      size: 1
+                      items:
+                        - type: device
+                          id: WyczTs_GuDM
+                          scopeId: AQ
+                          createdOn: 2019-09-12T09:04:37.315Z
+                          createdBy: Ag
+                          modifiedOn: 2019-09-12T09:04:37.603Z
+                          modifiedBy: Ag
+                          optlock: 2
+                          clientId: Client-Id-1
+                          connectionId: Gd1BfeWwh3s
+                          connection:
+                            id: Gd1BfeWwh3s
+                            scopeId: AQ
+                            createdOn: 2019-09-12T09:04:32.101Z
+                            createdBy: Ag
+                            modifiedOn: 2019-09-12T09:04:32.101Z
+                            modifiedBy: Ag
+                            optlock: 1
+                            status: CONNECTED
+                            clientId: Client-Id-1
+                            userId: Ag
+                            allowUserChange: false
+                            userCouplingMode: INHERITED
+                            protocol: MQTT
+                            clientIp: tcp://172.21.0.1:59596
+                            serverIp: broker
+                          status: ENABLED
+                          displayName:
+                          lastEventId: YYHQ2i1S-P0
+                          lastEvent:
+                            id: YYHQ2i1S-P0
+                            scopeId: AQ
+                            createdOn: 2019-09-12T09:04:37.392Z
+                            createdBy: Ag
+                            deviceId: WyczTs_GuDM
+                            receivedOn: 2019-09-12T09:04:32.646Z
+                            position:
+                              altitude: 0
+                              latitude: 0
+                              longitude: 0
+                            resource: BIRTH
+                            action: CREATE
+                            responseCode: ACCEPTED
+                            eventMessage: acceptEncoding=gzip~~applicationFramework=Kura~~applicationFrameworkVersion=ESF_6.0.0~~applicationIdentifiers=heaterPROV-V2DEPLOY-V2VPNCLIENT-V2CONF-V1CERT-V1ASSET-V1CMD-V1~~availableProcessors=4~~bios=N/A~~biosVersion=N/A~~connectionInterface=lo (00:00:00:00:00:00)~~connectionIp=127.0.0.1~~containerFramework=Eclipse~~containerFrameworkVersion=1.8.0~~displayName=~~firmware=N/A~~firmwareVersion=N/A~~jvm=Java HotSpot(TM) 64-Bit Server VM~~jvmProfile=Java(TM) SE Runtime Environment 1.8.0_161-b12~~jvmVersion=25.161-b12 mixed mode~~modelId=ESF-Docker-RHEL~~modelName=ESF-Docker-RHEL~~os=Linux~~osArch=amd64~~osVersion=4.9.184-linuxkit #1 SMP Tue Jul 2 22:58:16 UTC 2019~~partNumber=ESF-Docker-RHEL~~serialNumber=ESF-Docker-RHEL~~totalMemory=1023488~~uptime=187894320
+                          serialNumber: ESF-Docker-RHEL
+                          modelId: ESF-Docker-RHEL
+                          modelName: ESF-Docker-RHEL
+                          biosVersion: N/A
+                          firmwareVersion: N/A
+                          osVersion: 4.9.184-linuxkit #1 SMP Tue Jul 2 22:58:16 UTC 2019
+                          jvmVersion: 25.161-b12 mixed mode
+                          osgiFrameworkVersion: 1.8.0
+                          applicationFrameworkVersion: ESF_6.0.0
+                          connectionInterface: lo (00:00:00:00:00:00)
+                          connectionIp: 127.0.0.1
+                          applicationIdentifiers: heaterPROV-V2DEPLOY-V2VPNCLIENT-V2CONF-V1CERT-V1ASSET-V1CMD-V1
+                          acceptEncoding: gzip
+                          tagIds: []
+
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    post:
+      tags:
+        - Device
+      summary: Create a new Device
+      operationId: deviceCreate
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+      requestBody:
+        description: An object containing the properties for the new Device to be created
+        content:
+          application/json:
+            schema:
+              $ref: './device.yaml#/components/schemas/deviceCreator'
+        required: true
+      responses:
+        200:
+          description: The Device that has just been created
+          content:
+            application/json:
+              schema:
+                $ref: './device.yaml#/components/schemas/device'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

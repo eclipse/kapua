@@ -1,0 +1,38 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Device Management - Snapshot
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  schemas:
+    snapshot:
+      type: object
+      properties:
+        id:
+          type: string
+        timestamp:
+          type: integer
+    snapshots:
+      type: object
+      properties:
+        snapshotId:
+          type: array
+          items:
+            $ref: '#/components/schemas/snapshot'
+      example:
+          type: deviceSnapshots
+          snapshotId:
+            - id: '0'
+              timestamp: 0
+            - id: '1568300687500'
+              timestamp: 1568300687500

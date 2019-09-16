@@ -1,0 +1,96 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Users
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/users/{userId}:
+    get:
+      tags:
+        - User
+      summary: Get a single User
+      operationId: userGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './user.yaml#/components/parameters/userId'
+      responses:
+        200:
+          description: The details of the desired User
+          content:
+            application/json:
+              schema:
+                $ref: './user.yaml#/components/schemas/user'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    put:
+      tags:
+        - User
+      summary: Update a single User
+      operationId: userUpdate
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './user.yaml#/components/parameters/userId'
+      requestBody:
+        description: An object containing the new properties for the User to update
+        content:
+          application/json:
+            schema:
+              $ref: './user.yaml#/components/schemas/user'
+            example:
+              type: user
+              optlock: 2
+              name: donald-duck
+              displayName: Donald Duck
+              email: donald.duck@duckburg.org
+              phoneNumber: +1 (555) 816 1851
+              status: ENABLED
+              userType: INTERNAL
+        required: true
+      responses:
+        200:
+          description: The details of the updated User
+          content:
+            application/json:
+              schema:
+                $ref: './user.yaml#/components/schemas/user'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    delete:
+      tags:
+        - User
+      summary: Delete a single User
+      operationId: userDelete
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './user.yaml#/components/parameters/userId'
+      responses:
+        200:
+          description: The User has been deleted
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

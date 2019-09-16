@@ -1,0 +1,262 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Access Infos
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    accessInfoId:
+      description: The ID of the AccessInfo on which to perform the operation
+      name: accessInfoId
+      in: path
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+    accessPermissionId:
+      name: accessPermissionId
+      in: path
+      description: The ID of the AccessPermission on which to perform the operation
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+    accessRoleId:
+      name: accessRoleId
+      in: path
+      description: The ID of the AccessRole on which to perform the operation
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+    userId:
+      name: userId
+      in: query
+      description: The ID of the User to use as a filter in the query
+      schema:
+        allOf:
+          - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+  schemas:
+    accessInfo:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaUpdatableEntity'
+        - description: An AccessInfo represents all the security objects (Roles and Permissions) that can be attached to a User. There will be exactly one AccessInfo object for every User
+          type: object
+          properties:
+            userId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+                - description: The ID of the User to which this AccessInfo is attached to
+          example:
+            type: accessInfo
+            id: AQ
+            scopeId: AQ
+            createdOn: '2019-09-10T15:08:50.799Z'
+            createdBy: AQ
+            modifiedOn: '2019-09-10T15:08:50.799Z'
+            modifiedBy: AQ
+            optlock: 0
+            userId: AQ
+    accessInfoCreator:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaEntityCreator'
+        - description: An object that contains the informations needed to create an AccessInfo
+          type: object
+          properties:
+            permissions:
+              description: An Array of Permission objects to attach to the new AccessInfo
+              type: array
+              items:
+                $ref: '#/components/schemas/permission'
+            userId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+                - description: The ID of the User to which the AccessInfo will be assigned
+            roleIds:
+              description: An Array of IDs whose Roles will be attached to the new AccessInfo
+              type: array
+              items:
+                $ref: '../openapi.yaml#/components/schemas/kapuaId'
+          example:
+            permissions:
+              - domain: broker
+                action: connect
+                targetScopeId: AQ
+                forwardable: false
+            userId: fjo0iXJEQh0
+            roleIds:
+              - CdIaNmq-Ggk
+    accessInfoListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - description: A container for a list of AccessInfo objects
+          type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/accessInfo'
+          example:
+            type: accessInfoListResult
+            limitExceeded: false
+            size: 2
+            items:
+              - type: accessInfo
+                id: Ag
+                scopeId: AQ
+                createdOn: '2019-09-10T15:08:50.799Z'
+                createdBy: AQ
+                modifiedOn: '2019-09-10T15:08:50.799Z'
+                modifiedBy: AQ
+                optlock: 0
+                userId: Ag
+              - type: accessInfo
+                id: AQ
+                scopeId: AQ
+                createdOn: '2019-09-10T15:08:50.799Z'
+                createdBy: AQ
+                modifiedOn: '2019-09-10T15:08:50.799Z'
+                modifiedBy: AQ
+                optlock: 0
+                userId: AQ
+    permission:
+      description: The representation of a Permission
+      type: object
+      properties:
+        domain:
+          description: The domain name in which the Permission acts. `*` means "Any Domains"
+          type: string
+        action:
+          description: The action that is permitted. `*` means "Any Action in the given Domain"
+          type: string
+        groupId:
+          allOf:
+            - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            - description: The ID of the Group to which the Permission applies. A `null` value means "Any group in the Scope"
+        targetScopeId:
+          allOf:
+            - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            - description: The Scope ID to which the Permission applies. A `null` value means "Any scope in the system"
+        forwardable:
+          description: When `true`, this permission is also active descending the entire Accounts hierarchy
+          type: boolean
+      required:
+        - domain
+        - action
+      example:
+        domain: broker
+        action: connect
+        targetScopeId: AQ
+        forwardable: false
+    accessPermission:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaEntity'
+        - description: An object that represents the link between an AccessInfo and a Permission
+          type: object
+          properties:
+            accessInfoId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+                - description: The ID of the AccessInfo
+            permission:
+              $ref: '#/components/schemas/permission'
+          example:
+            type: accessPermission
+            id: AQ
+            scopeId: AQ
+            createdOn: '2019-11-12T14:15:47.000Z'
+            createdBy: AQ
+            accessInfoId: Ag
+            permission:
+              domain: broker
+              action: connect
+              targetScopeId: AQ
+              forwardable: false
+    accessPermissionCreator:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaEntityCreator'
+        - description: An object that contains the informations needed to create an AccessPermission
+          type: object
+          properties:
+            accessInfoId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+                - description: The ID of the AccessInfo to which attach the Permission
+            permission:
+              $ref: '#/components/schemas/permission'
+          required:
+            - accessInfoId
+            - permission
+    accessPermissionListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - description: A container for a list of AccessPermission objects
+          type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/accessPermission'
+          example:
+            type: accessPermissionListResult
+            limitExceeded: false
+            size: 1
+            items:
+              - type: accessPermission
+                id: Io4dVUnrBtE
+                scopeId: AQ
+                createdOn: 2019-09-11T14:14:15.786Z
+                createdBy: AQ
+                accessInfoId: FPRcCYjzgqs
+                permission:
+                  domain: broker
+                  action: connect
+                  forwardable: false
+    accessRole:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaEntity'
+        - description: An object that represents the link between an AccessInfo and a Role
+          type: object
+          properties:
+            accessInfoId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+                - description: The ID of the AccessInfo
+            roleId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+                - description: The ID of the Role attached to the AccessInfo
+    accessRoleCreator:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaEntityCreator'
+        - description: An object that contains the informations needed to create an AccessRole
+          type: object
+          properties:
+            accessInfoId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+                - description: The ID of the AccessInfo to which attach the Permission
+            roleId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+                - description: The ID of the AccessInfo
+          required:
+            - accessInfoId
+            - roleId
+    accessRoleListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - description: A container for a list of AccessRole objects
+          type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/accessRole'

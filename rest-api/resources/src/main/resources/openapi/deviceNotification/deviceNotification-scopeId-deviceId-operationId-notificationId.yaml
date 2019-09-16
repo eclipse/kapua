@@ -1,0 +1,61 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Device Management - Notifications
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/devices/{deviceId}/operations/{operationId}/notifications/{notificationId}:
+    get:
+      tags:
+        - Device Management - Notification
+      summary: Get a single Device Registry Notification
+      operationId: deviceRegistryNotificationGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: '../deviceOperation/deviceOperation.yaml#/components/parameters/operationId'
+        - $ref: './deviceNotification.yaml#/components/parameters/notificationId'
+      responses:
+        200:
+          description: The details of the desired Registry Notification
+          content:
+            application/json:
+              schema:
+                $ref: './deviceNotification.yaml#/components/schemas/deviceNotification'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    delete:
+      tags:
+        - Device Management - Notification
+      summary: Delete a single Registry Notification
+      operationId: deviceRegistryNotificationDelete
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: '../deviceOperation/deviceOperation.yaml#/components/parameters/operationId'
+        - $ref: './deviceNotification.yaml#/components/parameters/notificationId'
+      responses:
+        200:
+          description: The Registry Notification has been deleted
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

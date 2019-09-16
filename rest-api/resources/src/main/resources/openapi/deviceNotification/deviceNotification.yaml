@@ -1,0 +1,85 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Device Management - Notifications
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    notificationId:
+      name: notificationId
+      in: path
+      description: The ID of the Registry Notification on which to perform the operation
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+  schemas:
+    deviceNotification:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaEntity'
+        - properties:
+            operationId:
+              $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            progress:
+              type: integer
+            resource:
+              type: string
+            sentOn:
+              type: string
+              format: 'date-time'
+            status:
+              $ref: '../deviceOperation/deviceOperation.yaml#/components/schemas/deviceOperation'
+          example:
+            type: managementOperationNotification
+            id: RGoRWw9Pkhc
+            scopeId: AQ
+            createdOn: '2019-11-15T11:27:25.331Z'
+            createdBy: Ag
+            operationId: cjmXXKvLUY8
+            progress: 0
+            resource: download
+            sentOn: '2019-11-15T11:27:25.267Z'
+            status: RUNNING
+    deviceNotificationListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/deviceNotification'
+          example:
+            type: managementOperationNotificationListResult
+            limitExceeded: false
+            size: 2
+            items:
+              - type: managementOperationNotification
+                id: RGoRWw9Pkhc
+                scopeId: AQ
+                createdOn: '2019-11-15T11:27:25.331Z'
+                createdBy: Ag
+                operationId: cjmXXKvLUY8
+                progress: 0
+                resource: download
+                sentOn: '2019-11-15T11:27:25.267Z'
+                status: RUNNING
+              - type: managementOperationNotification
+                id: f1Hu1T8iIRw
+                scopeId: AQ
+                createdOn: '2019-11-15T11:27:32.331Z'
+                createdBy: Ag
+                operationId: cjmXXKvLUY8
+                progress: 5
+                resource: download
+                sentOn: '2019-11-15T11:27:32.277Z'
+                status: RUNNING

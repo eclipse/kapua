@@ -1,0 +1,302 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Devices
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    deviceId:
+      name: deviceId
+      in: path
+      description: The ID of the Device on which to perform the operation
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+    timeout:
+      name: timeout
+      in: query
+      description: The timeout for the request in milliseconds
+      schema:
+        type: integer
+        default: 10000
+    fetchAttributes:
+      name: fetchAttributes
+      in: query
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - connection
+            - lastEvent
+    clientId:
+      name: clientId
+      in: query
+      description: The client id to filter results
+      schema:
+        type: string
+  schemas:
+    device:
+      properties:
+        groupId:
+          allOf:
+            - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            - description: The ID of the Access Group to which this Device is assigned to
+        clientId:
+          type: string
+          readOnly: true
+          description: The Kura Client ID of this device
+        connectionId:
+          allOf:
+            - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            - description: The ID of the Connection of this Device
+              readOnly: true
+        connection:
+          $ref: '../deviceConnection/deviceConnection.yaml#/components/schemas/connection'
+        status:
+          $ref: '#/components/schemas/status'
+        displayName:
+          description: The Kura Display Name of this Device
+          type: string
+        lastEventId:
+          allOf:
+            - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            - description: The ID of the last recorded Event from this Device
+              readOnly: true
+        lastEvent:
+          $ref: '#/components/schemas/event'
+        serialNumber:
+          description: The Serial Number of this Device
+          type: string
+        modelId:
+          description: The Model ID (not an Kapua ID) of this Device
+          type: string
+        modelName:
+          description: The Model Name of this Device
+          type: string
+        imei:
+          description: The IMEI Code of this Device
+          type: string
+        imsi:
+          description: The IMSI Code of this Device
+          type: string
+        iccid:
+          description: The ICCID Code of this Device
+          type: string
+        biosVersion:
+          description: The BIOS Version running on this Device
+          type: string
+        firmwareVersion:
+          description: The Firmware Version of this Device
+          type: string
+        osVersion:
+          description: The OS Version running on this Device
+          type: string
+        jvmVersion:
+          description: The JVM Version running on this Device
+          type: string
+        osgiFrameworkVersion:
+          description: The OSGi Framework Version running on this Device
+          type: string
+        applicationFrameworkVersion:
+          description: The Application Framework Version running on this Device
+          type: string
+        connectionInterface:
+          description: The Primary Connection Interface Name of this Device
+          type: string
+        connectionIp:
+          description: The IP Address of the Primary Connection Interface on this Device
+          type: string
+        applicationIdentifiers:
+          description: A string listing all the Kura Applications running on this Device
+          type: string
+        acceptEncoding:
+          description: The MIME Encoding accepted by this Device
+          type: string
+        customAttribute1:
+          description: A Custom Attirbute of this Device - 1
+          type: string
+        customAttribute2:
+          description: A Custom Attirbute of this Device - 2
+          type: string
+        customAttribute3:
+          description: A Custom Attirbute of this Device - 3
+          type: string
+        customAttribute4:
+          description: A Custom Attirbute of this Device - 4
+          type: string
+        customAttribute5:
+          description: A Custom Attirbute of this Device - 5
+          type: string
+        tagIds:
+          type: array
+          items:
+            allOf:
+              - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      example:
+          type: device
+          id: dIVxI5QpFUI
+          scopeId: AQ
+          createdOn: '2019-09-12T12:08:12.179Z'
+          createdBy: AQ
+          modifiedOn: '2019-09-12T12:08:12.179Z'
+          modifiedBy: AQ
+          optlock: 1
+          clientId: testDevice
+          status: ENABLED
+          displayName: Test Device
+          serialNumber: 1234567890
+          modelId: Test Model
+          biosVersion: N/A
+          firmwareVersion: N/A
+          osVersion: 3.13.0-93-generic
+          jvmVersion: 24.111-b01 mixed mode
+          osgiFrameworkVersion: 1.7.0
+          acceptEncoding: gzip
+          tagIds: []
+    deviceCreator:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaUpdatableEntityCreator'
+        - type: object
+          properties:
+            groupId:
+              $ref: '#/components/schemas/device/properties/groupId'
+            clientId:
+              $ref: '#/components/schemas/device/properties/clientId'
+            status:
+              $ref: '#/components/schemas/status'
+            lastEventId:
+              $ref: '#/components/schemas/device/properties/lastEventId'
+            displayName:
+              $ref: '#/components/schemas/device/properties/displayName'
+            serialNumber:
+              $ref: '#/components/schemas/device/properties/serialNumber'
+            modelId:
+              $ref: '#/components/schemas/device/properties/modelId'
+            modelName:
+              $ref: '#/components/schemas/device/properties/modelName'
+            imei:
+              $ref: '#/components/schemas/device/properties/imei'
+            imsi:
+              $ref: '#/components/schemas/device/properties/imsi'
+            iccid:
+              $ref: '#/components/schemas/device/properties/iccid'
+            biosVersion:
+              $ref: '#/components/schemas/device/properties/biosVersion'
+            firmwareVersion:
+              $ref: '#/components/schemas/device/properties/firmwareVersion'
+            osVersion:
+              $ref: '#/components/schemas/device/properties/osVersion'
+            jvmVersion:
+              $ref: '#/components/schemas/device/properties/jvmVersion'
+            osgiFrameworkVersion:
+              $ref: '#/components/schemas/device/properties/osgiFrameworkVersion'
+            applicationFrameworkVersion:
+              $ref: '#/components/schemas/device/properties/applicationFrameworkVersion'
+            connectionInterface:
+              $ref: '#/components/schemas/device/properties/connectionInterface'
+            connectionIp:
+              $ref: '#/components/schemas/device/properties/connectionIp'
+            applicationIdentifiers:
+              $ref: '#/components/schemas/device/properties/applicationIdentifiers'
+            acceptEncoding:
+              $ref: '#/components/schemas/device/properties/acceptEncoding'
+            customAttribute1:
+              $ref: '#/components/schemas/device/properties/customAttribute1'
+            customAttribute2:
+              $ref: '#/components/schemas/device/properties/customAttribute2'
+            customAttribute3:
+              $ref: '#/components/schemas/device/properties/customAttribute3'
+            customAttribute4:
+              $ref: '#/components/schemas/device/properties/customAttribute4'
+            customAttribute5:
+              $ref: '#/components/schemas/device/properties/customAttribute5'
+          required:
+            - clientId
+          example:
+            clientId: testDevice
+            status: ENABLED
+            displayName: Test Device
+            serialNumber: 1234567890
+            modelId: Test Model
+            biosVersion: N/A
+            firmwareVersion: N/A
+            osVersion: 3.13.0-93-generic ##140-Ubuntu SMP Mon Jul 18 21:21:05 UTC 2016
+            jvmVersion: 24.111-b01 mixed mode
+            osgiFrameworkVersion: 1.7.0
+            acceptEncoding: gzip
+            deviceCredentialsMode: LOOSE
+    deviceListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/device'
+    status:
+      type: string
+      enum:
+        - ENABLED
+        - DISABLED
+    action:
+      type: string
+      enum:
+        - READ
+        - CREATE
+        - WRITE
+        - DELETE
+        - OPTIONS
+        - EXECUTE
+    event:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaEntity'
+        - type: object
+          properties:
+            sentOn:
+              type: string
+              format: 'date-time'
+            receivedOn:
+              type: string
+              format: 'date-time'
+            position:
+              $ref: '../dataMessage/dataMessage.yaml#/components/schemas/position'
+            resource:
+              type: string
+            action:
+              $ref: '#/components/schemas/action'
+            responseCode:
+              type: string
+              enum:
+                - ACCEPTED
+                - BAD_REQUEST
+                - NOT_FOUND
+                - INTERNAL_ERROR
+            eventMessage:
+              type: string
+          example:
+            id: YYHQ2i1S-P0
+            scopeId: AQ
+            createdOn: '2019-09-12T09:04:37.392Z'
+            createdBy: Ag
+            deviceId: WyczTs_GuDM
+            receivedOn: '2019-09-12T09:04:32.646Z'
+            position:
+              altitude: 0
+              latitude: 0
+              longitude: 0
+            resource: BIRTH
+            action: CREATE
+            responseCode: ACCEPTED
+            eventMessage: 'acceptEncoding=gzip~~applicationFramework=Kura~~applicationFrameworkVersion=ESF_6.0.0~~applicationIdentifiers=heaterPROV-V2DEPLOY-V2VPNCLIENT-V2CONF-V1CERT-V1ASSET-V1CMD-V1~~availableProcessors=4~~bios=N/A~~biosVersion=N/A~~connectionInterface=lo (00:00:00:00:00:00)~~connectionIp=127.0.0.1~~containerFramework=Eclipse~~containerFrameworkVersion=1.8.0~~displayName=~~firmware=N/A~~firmwareVersion=N/A~~jvm=Java HotSpot(TM) 64-Bit Server VM~~jvmProfile=Java(TM) SE Runtime Environment 1.8.0_161-b12~~jvmVersion=25.161-b12 mixed mode~~modelId=ESF-Docker-RHEL~~modelName=ESF-Docker-RHEL~~os=Linux~~osArch=amd64~~osVersion=4.9.184-linuxkit #1 SMP Tue Jul 2 22:58:16 UTC 2019~~partNumber=ESF-Docker-RHEL~~serialNumber=ESF-Docker-RHEL~~totalMemory=1023488~~uptime=187894320'

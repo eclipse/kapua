@@ -1,0 +1,163 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Roles
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    roleId:
+      name: roleId
+      in: path
+      description: The ID of the Role on which to perform the operation
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+    rolePermissionId:
+      name: rolePermissionId
+      in: path
+      description: The ID of the RolePermission on which to perform the operation
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+  schemas:
+    role:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaNamedEntity'
+        - type: object
+          example:
+            type: role
+            id: KmhOD4JHfwk
+            scopeId: AQ
+            createdOn: '2019-09-16T07:33:26.719Z'
+            createdBy: AQ
+            modifiedOn: '2019-09-16T07:33:26.719Z'
+            modifiedBy: AQ
+            optlock: 1
+            name: new-role
+            description: A new role
+    roleCreator:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaNamedEntityCreator'
+        - type: object
+          properties:
+            permissions:
+              type: array
+              items:
+                $ref: '../accessInfo/accessInfo.yaml#/components/schemas/permission'
+          example:
+            name: new-role
+            description: A new role
+            permissions:
+              - domain: broker
+                action: connect
+                forwardable: true
+    roleListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/role'
+          example:
+            type: roleListResult
+            limitExceeded: false
+            size: 2
+            items:
+              - type: role
+                id: AQ
+                scopeId: AQ
+                createdOn: '2019-09-10T15:08:50.701Z'
+                createdBy: AQ
+                modifiedOn: '2019-09-10T15:08:50.701Z'
+                modifiedBy: AQ
+                optlock: 0
+                name: admin
+              - type: role
+                id: OYLRT30Z9sA
+                scopeId: AQ
+                createdOn: '2019-09-11T14:48:33.531Z'
+                createdBy: AQ
+                modifiedOn: '2019-09-11T14:48:33.531Z'
+                modifiedBy: AQ
+                optlock: 1
+                name: role
+                description: desc
+    rolePermissionCreator:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaEntityCreator'
+        - type: object
+          properties:
+            permission:
+              $ref: '../accessInfo/accessInfo.yaml#/components/schemas/permission'
+          example:
+            permission:
+              domain: account
+              action: read
+              forwardable: true
+    rolePermission:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaEntity'
+        - type: object
+          properties:
+            roleId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            permission:
+              $ref: '../accessInfo/accessInfo.yaml#/components/schemas/permission'
+          example:
+            type: rolePermission
+            id: BpbQqk31GLc
+            scopeId: AQ
+            createdOn: '2019-09-16T07:49:51.117Z'
+            createdBy: AQ
+            roleId: OYLRT30Z9sA
+            permission:
+              domain: domain
+              action: read
+              forwardable: true
+    rolePermissionListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/rolePermission'
+          example:
+            type: rolePermissionListResult
+            limitExceeded: false
+            size: 2
+            items:
+              - type: rolePermission
+                id: BPJyd1ObUK8
+                scopeId: AQ
+                createdOn: '2019-09-16T07:46:06.191Z'
+                createdBy: AQ
+                roleId: OYLRT30Z9sA
+                permission:
+                  domain: broker
+                  action: connect
+                  forwardable: true
+              - type: rolePermission
+                id: Zi4XYBuG7Xw
+                scopeId: AQ
+                createdOn: '2019-09-16T07:46:14.082Z'
+                createdBy: AQ
+                roleId: OYLRT30Z9sA
+                permission:
+                  domain: device
+                  action: read
+                  forwardable: true

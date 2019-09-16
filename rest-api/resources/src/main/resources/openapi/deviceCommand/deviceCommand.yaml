@@ -1,0 +1,78 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Device Management - Command
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  schemas:
+    commandInput:
+      description: An object containing the Command to be executed on a Device
+      type: object
+      properties:
+        command:
+          type: string
+        password:
+          type: string
+          format: password
+        arguments:
+          properties:
+            argument:
+              oneOf:
+                - description: An array of strings containing multiple arguments for the command
+                  type: array
+                  items:
+                    type: string
+                - description: A string containing the argument for the command
+                  type: string
+        timeout:
+          type: integer
+        workingDir:
+          type: string
+        body:
+          type: string
+          format: base64
+        environment:
+          type: array
+          items:
+            type: string
+        runAsynch:
+          type: boolean
+        stdin:
+          type: string
+      example:
+        command: ls
+        arguments:
+          argument: -lisa
+        timeout: 60000
+    commandOutput:
+      description: The output of a Command executed on a Device
+      type: object
+      properties:
+        stderr:
+          type: string
+        stdout:
+          type: string
+        exceptionMessage:
+          type: string
+        exceptionStack:
+          type: string
+        exitCode:
+          type: integer
+        hasTimedout:
+          type: boolean
+      example:
+        type: deviceCommandOutput
+        stderr: ""
+        stdout: "total 40\n12503707 4 drwxrwxrwt 1 root root 4096 Sep 13 07:44 .\n12507178 4 drwxr-xr-x 1 root root 4096 Sep 12 08:03 ..\n61409843 4 drwxrwxrwt 2 root root 4096 Feb 28  2018 .ICE-unix\n61409845 4 drwxrwxrwt 2 root root 4096 Feb 28  2018 .Test-unix\n61409838 4 drwxrwxrwt 2 root root 4096 Feb 28  2018 .X11-unix\n61409844 4 drwxrwxrwt 2 root root 4096 Feb 28  2018 .XIM-unix\n61409846 4 drwxrwxrwt 2 root root 4096 Feb 28  2018 .font-unix\n12503708 4 drwxr-xr-x 3 root root 4096 Sep 12 08:03 .kura\n12507353 4 drwxr-xr-x 2 root root 4096 Sep 12 08:03 hsperfdata_root\n12507385 4 drwxr-xr-x 3 root root 4096 Sep 12 08:03 kura\n"
+        exitCode: 0
+        hasTimedout: false

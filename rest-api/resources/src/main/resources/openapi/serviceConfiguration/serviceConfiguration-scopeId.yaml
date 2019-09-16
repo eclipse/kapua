@@ -1,0 +1,61 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Service Configuration
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/serviceConfigurations:
+    get:
+      tags:
+        - Service Configuration
+      summary: Read multiple Configurations
+      operationId: serviceConfigurationsRead
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+      responses:
+        200:
+          description: The list of the Configurations
+          content:
+            application/json:
+              schema:
+                $ref: './serviceConfiguration.yaml#/components/schemas/componentConfigurations'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    put:
+      tags:
+        - Service Configuration
+      summary: Update multiple Configurations
+      operationId: serviceConfigurationsWrite
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './serviceConfiguration.yaml#/components/schemas/componentConfigurationsInput'
+        required: true
+      responses:
+        200:
+          description: The list of the Configurations
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
