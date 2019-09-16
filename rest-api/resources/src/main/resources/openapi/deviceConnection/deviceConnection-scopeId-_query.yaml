@@ -1,0 +1,37 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Connection
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/deviceconnections/_query:
+    post:
+      tags:
+        - Device Connection
+      summary: Query the Connections
+      operationId: connectionQuery
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+      requestBody:
+        $ref: '../openapi.yaml#/components/requestBodies/kapuaQuery'
+      responses:
+        200:
+          description: The result of the query
+          content:
+            application/json:
+              schema:
+                $ref: './deviceConnection.yaml#/components/schemas/connectionListResult'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

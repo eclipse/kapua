@@ -1,0 +1,65 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Access Infos
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/accessinfos:
+    get:
+      tags:
+        - Access Info
+      summary: Get all the AccessInfo
+      operationId: accessInfoList
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './accessInfo.yaml#/components/parameters/userId'
+        - $ref: '../openapi.yaml#/components/parameters/limit'
+        - $ref: '../openapi.yaml#/components/parameters/offset'
+      responses:
+        200:
+          description: The list of the AccessInfo objects available in the Scope
+          content:
+            application/json:
+              schema:
+                $ref: './accessInfo.yaml#/components/schemas/accessInfoListResult'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    post:
+      tags:
+        - Access Info
+      summary: Create an AccessInfo
+      operationId: accessInfoCreate
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+      requestBody:
+        description: The AccessInfoCreator object to create the new AccessInfo
+        content:
+          application/json:
+            schema:
+              $ref: './accessInfo.yaml#/components/schemas/accessInfoCreator'
+        required: true
+      responses:
+        200:
+          description: The AccessInfo that has just been created
+          content:
+            application/json:
+              schema:
+                $ref: './accessInfo.yaml#/components/schemas/accessInfoListResult'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

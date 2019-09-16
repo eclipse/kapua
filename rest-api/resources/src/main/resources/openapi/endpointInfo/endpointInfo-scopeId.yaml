@@ -1,0 +1,71 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - EndpointInfos
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/endpointInfos:
+    get:
+      tags:
+        - Endpoint Info
+      summary: Get all the EndpointInfos
+      operationId: endpointInfoList
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - name: usage
+          in: query
+          description: The endpointInfo usage to filter results
+          schema:
+            type: string
+        - $ref: '../openapi.yaml#/components/parameters/limit'
+        - $ref: '../openapi.yaml#/components/parameters/offset'
+      responses:
+        200:
+          description: The list of the EndpointInfos available in the Scope
+          content:
+            application/json:
+              schema:
+                $ref: './endpointInfo.yaml#/components/schemas/endpointInfoListResult'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    post:
+      tags:
+        - Endpoint Info
+      summary: Create a new EndpointInfo
+      operationId: endpointInfoCreate
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+      requestBody:
+        description: An object containing the properties for the new EndpointInfo to be created
+        content:
+          application/json:
+            schema:
+              $ref: './endpointInfo.yaml#/components/schemas/endpointInfoCreator'
+        required: true
+      responses:
+        200:
+          description: The EndpointInfo that has just been created
+          content:
+            application/json:
+              schema:
+                $ref: './endpointInfo.yaml#/components/schemas/endpointInfo'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

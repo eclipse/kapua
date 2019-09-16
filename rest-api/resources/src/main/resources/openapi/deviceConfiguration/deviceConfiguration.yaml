@@ -1,0 +1,228 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Device Management - Configuration
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    componentId:
+      name: componentId
+      in: path
+      description: The ID of the Component on which to perform the operation
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+  schemas:
+    attributeDefinition:
+      type: object
+      properties:
+        Option:
+          type: array
+          items:
+            type: object
+            properties:
+              label:
+                type: string
+              value:
+                type: string
+        default:
+          type: string
+        type:
+          type: object
+        cardinality:
+          type: integer
+        min:
+          type: string
+        max:
+          type: string
+        description:
+          type: string
+        id:
+          type: string
+        required:
+          type: boolean
+        name:
+          type: string
+      example:
+        cardinality: 0
+        description: The default wire graph JSON
+        id: WireGraph
+        name: WireGraph
+        required: true
+        type: String
+        Option: []
+    propertyDefinition:
+      type: object
+      properties:
+        name:
+          type: string
+        array:
+          type: boolean
+        encrypted:
+          type: boolean
+        type:
+          type: string
+        value:
+          type: array
+          items:
+            type: string
+      example:
+        name: kura.service.pid
+        array: false
+        encrypted: false
+        type: String
+        value:
+          - org.eclipse.kura.wire.graph.WireGraphService
+    componentConfiguration:
+      type: object
+      properties:
+        id:
+          type: string
+        definition:
+          type: object
+          properties:
+            id:
+              type: string
+            AD:
+              type: array
+              items:
+                $ref: '#/components/schemas/attributeDefinition'
+            Icon:
+              type: array
+              items:
+                type: object
+                properties:
+                  resource:
+                    type: string
+                  size:
+                    type: integer
+            name:
+              type: string
+            description:
+              type: string
+        properties:
+          type: object
+          properties:
+            property:
+              type: array
+              items:
+                $ref: '#/components/schemas/propertyDefinition'
+      example:
+        id: org.eclipse.kura.wire.graph.WireGraphService
+        definition:
+          description: WireGraphService metatype
+          id: org.eclipse.kura.wire.graph.WireGraphService
+          name: WireGraphService
+          AD:
+            - cardinality: 0
+              description: The default wire graph JSON
+              id: WireGraph
+              name: WireGraph
+              required: true
+              type: String
+              Option: []
+          Icon: []
+        properties:
+          property:
+            - name: WireGraph
+              array: false
+              encrypted: false
+              type: String
+              value:
+                - '{"components":[{"pid":"asset1","inputPortCount":1,"outputPortCount":1,"renderingProperties":{"position":{"x":-580,"y":-120},"inputPortNames":{},"outputPortNames":{}}},{"pid":"asset2","inputPortCount":1,"outputPortCount":1,"renderingProperties":{"position":{"x":-1100,"y":-100},"inputPortNames":{},"outputPortNames":{}}}],"wires":[]}'
+            - name: kura.service.pid
+              array: false
+              encrypted: false
+              type: String
+              value:
+                - org.eclipse.kura.wire.graph.WireGraphService
+            - name: service.pid
+              array: false
+              encrypted: false
+              type: String
+              value:
+                - org.eclipse.kura.wire.graph.WireGraphService
+    componentConfigurationInput:
+      type: object
+      properties:
+        id:
+          type: string
+        properties:
+          type: object
+          properties:
+            property:
+              type: array
+              items:
+                $ref: '#/components/schemas/propertyDefinition'
+    componentConfigurations:
+      type: object
+      properties:
+        configuration:
+          type: array
+          items:
+            $ref: '#/components/schemas/componentConfiguration'
+      example:
+        type: deviceConfiguration
+        configuration:
+          - id: org.eclipse.kura.wire.graph.WireGraphService
+            definition:
+              description: WireGraphService metatype
+              id: org.eclipse.kura.wire.graph.WireGraphService
+              name: WireGraphService
+              AD:
+                - cardinality: 0
+                  description: The default wire graph JSON
+                  id: WireGraph
+                  name: WireGraph
+                  required: true
+                  type: String
+                  Option: []
+              Icon: []
+            properties:
+              property:
+                - name: WireGraph
+                  array: false
+                  encrypted: false
+                  type: String
+                  value:
+                    - '{"components":[{"pid":"asset1","inputPortCount":1,"outputPortCount":1,"renderingProperties":{"position":{"x":-580,"y":-120},"inputPortNames":{},"outputPortNames":{}}},{"pid":"asset2","inputPortCount":1,"outputPortCount":1,"renderingProperties":{"position":{"x":-1100,"y":-100},"inputPortNames":{},"outputPortNames":{}}}],"wires":[]}'
+                - name: kura.service.pid
+                  array: false
+                  encrypted: false
+                  type: String
+                  value:
+                    - org.eclipse.kura.wire.graph.WireGraphService
+                - name: service.pid
+                  array: false
+                  encrypted: false
+                  type: String
+                  value:
+                    - org.eclipse.kura.wire.graph.WireGraphService
+    componentConfigurationsInput:
+      type: object
+      properties:
+        configuration:
+          type: array
+          items:
+            $ref: '#/components/schemas/componentConfigurationInput'
+      example:
+        configuration:
+          - id: org.eclipse.kura.wire.graph.WireGraphService
+            properties:
+              property:
+                - name: kura.service.pid
+                  array: false
+                  encrypted: false
+                  type: String
+                  value:
+                    - org.eclipse.kura.wire.graph.WireGraphService

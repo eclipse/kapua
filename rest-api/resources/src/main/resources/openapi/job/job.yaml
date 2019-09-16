@@ -1,0 +1,62 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Jobs
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    jobId:
+      name: jobId
+      in: path
+      description: The ID of the Job on which to perform the operation
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+  schemas:
+    job:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaNamedEntity'
+        - type: object
+          example:
+            type: job
+            id: auSoU2ph1bY
+            scopeId: AQ
+            createdOn: '2019-12-06T10:59:47.000Z'
+            createdBy: AQ
+            modifiedOn: '2019-12-06T10:59:47.000Z'
+            modifiedBy: AQ
+            optlock: 1
+            name: new_job
+    jobListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/job'
+          example:
+            type: jobListResult
+            limitExceeded: false
+            size: 1
+            items:
+              - type: job
+                id: auSoU2ph1bY
+                scopeId: AQ
+                createdOn: '2019-12-06T10:59:47.000Z'
+                createdBy: AQ
+                modifiedOn: '2019-12-06T10:59:47.000Z'
+                modifiedBy: AQ
+                optlock: 1
+                name: new_job

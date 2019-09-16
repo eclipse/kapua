@@ -1,0 +1,101 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Devices
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/devices/{deviceId}:
+    get:
+      tags:
+        - Device
+      summary: Get a single Device
+      operationId: deviceGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './device.yaml#/components/parameters/deviceId'
+      responses:
+        200:
+          description: The details of the desired Device
+          content:
+            application/json:
+              schema:
+                $ref: './device.yaml#/components/schemas/device'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    put:
+      tags:
+        - Device
+      summary: Update a single Device
+      operationId: deviceUpdate
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './device.yaml#/components/parameters/deviceId'
+      requestBody:
+        description: An object containing the new properties for the Device to update
+        content:
+          application/json:
+            schema:
+              $ref: './device.yaml#/components/schemas/device'
+            example:
+              type: device
+              optlock: 1
+              status: ENABLED
+              displayName: Test Device
+              serialNumber: 1234567890
+              modelId: Test Model
+              biosVersion: N/A
+              firmwareVersion: N/A
+              osVersion: 3.13.0-93-generic
+              jvmVersion: 24.111-b01 mixed mode
+              osgiFrameworkVersion: 1.7.0
+              acceptEncoding: gzip
+              tagIds: []
+        required: true
+      responses:
+        200:
+          description: The details of the updated Device
+          content:
+            application/json:
+              schema:
+                $ref: './device.yaml#/components/schemas/device'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    delete:
+      tags:
+        - Device
+      summary: Delete a single Device
+      operationId: deviceDelete
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './device.yaml#/components/parameters/deviceId'
+      responses:
+        200:
+          description: The Device has been deleted
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

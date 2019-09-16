@@ -1,0 +1,52 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Data Metric
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/data/metrics:
+    get:
+      tags:
+        - Data Metric
+      summary: Query the Data Metrics
+      operationId: dataMetricQuery
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - name: clientId
+          in: query
+          schema:
+            type: string
+          description: The client ID to filter results
+        - name: channel
+          in: query
+          schema:
+            type: string
+          description: The channel to filter results. It allows '#' wildcard in last channel level
+        - name: name
+          in: query
+          schema:
+            type: string
+          description: The metric name to filter results
+        - $ref: '../openapi.yaml#/components/parameters/limit'
+        - $ref: '../openapi.yaml#/components/parameters/offset'
+      responses:
+        200:
+          description: The result of the query
+          content:
+            application/json:
+              schema:
+                $ref: './dataMetric.yaml#/components/schemas/metricInfoListResult'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

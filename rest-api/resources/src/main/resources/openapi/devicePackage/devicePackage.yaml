@@ -1,0 +1,63 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Device Management - Package
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  schemas:
+    devicePackage:
+      type: object
+      description: A Device Package
+      properties:
+          name:
+            type: string
+          version:
+            type: string
+          bundleInfos:
+            type: object
+            properties:
+              bundleInfo:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    version:
+                      type: string
+          installDate:
+            type: string
+            format: 'date-time'
+      example:
+        name: org.eclipse.kura.demo.heater
+        version: 1.0.300
+        bundleInfos:
+          bundleInfo:
+            - name: org.eclipse.kura.demo.heater
+              version: 1.0.300
+    devicePackages:
+      type: object
+      properties:
+        devicePackage:
+          type: array
+          items:
+            $ref: '#/components/schemas/devicePackage'
+      example:
+        type: devicePackages
+        devicePackage:
+          - name: org.eclipse.kura.demo.heater
+            version: 1.0.300
+            bundleInfos:
+              bundleInfo:
+                - name: org.eclipse.kura.demo.heater
+                  version: 1.0.300

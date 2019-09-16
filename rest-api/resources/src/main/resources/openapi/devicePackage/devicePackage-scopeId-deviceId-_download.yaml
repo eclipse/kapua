@@ -1,0 +1,68 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Package
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/devices/{deviceId}/packages/_download:
+    post:
+      tags:
+        - Device Management - Package
+      summary: Download and install a Package
+      operationId: devicePackageDownload
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: '../device/device.yaml#/components/parameters/timeout'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                uri:
+                  type: string
+                name:
+                  type: string
+                version:
+                  type: string
+                install:
+                  type: boolean
+                reboot:
+                  type: boolean
+                rebootDelay:
+                  type: integer
+              required:
+                - uri
+                - name
+                - version
+            example:
+              uri: http://download.eclipse.org/kura/releases/4.1.0/org.eclipse.kura.demo.heater_1.0.500.dp
+              name: heater
+              version: 1.0.500
+              install: true
+              reboot: false
+              rebootDelay: 0
+        required: true
+      responses:
+        200:
+          description: |
+            The Package Install request has been successfully received. However, this does NOT mean that the package has been successfully installed, since the Package Install
+            is an asynchronous operation and may still be in progress. APIs are available at `device/{deviceId}/operations` and `device/{deviceId}/operations/{operationId}/notifications`
+            to track asynchronous operations.
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

@@ -1,0 +1,92 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Groups
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/groups/{groupId}:
+    get:
+      tags:
+        - Group
+      summary: Get a single Group
+      operationId: groupGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './group.yaml#/components/parameters/groupId'
+      responses:
+        200:
+          description: The details of the desired Group
+          content:
+            application/json:
+              schema:
+                $ref: './group.yaml#/components/schemas/group'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    put:
+      tags:
+        - Group
+      summary: Update a single Group
+      operationId: groupUpdate
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './group.yaml#/components/parameters/groupId'
+      requestBody:
+        description: An object containing the new properties for the Group to update
+        content:
+          application/json:
+            schema:
+              $ref: './group.yaml#/components/schemas/group'
+            example:
+              type: group
+              optlock: 1
+              name: group-1
+              description: An Access Group
+        required: true
+      responses:
+        200:
+          description: The details of the updated Group
+          content:
+            application/json:
+              schema:
+                $ref: './group.yaml#/components/schemas/group'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    delete:
+      tags:
+        - Group
+      summary: Delete a single Group
+      operationId: groupDelete
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './group.yaml#/components/parameters/groupId'
+      responses:
+        200:
+          description: The Group has been deleted
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

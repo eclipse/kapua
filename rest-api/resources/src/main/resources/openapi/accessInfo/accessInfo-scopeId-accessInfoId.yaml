@@ -1,0 +1,57 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Access Info
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/accessinfos/{accessInfoId}:
+    get:
+      tags:
+        - Access Info
+      summary: Get a single AccessInfo
+      operationId: accessInfoGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './accessInfo.yaml#/components/parameters/accessInfoId'
+      responses:
+        200:
+          description: The details of the desired AccessInfo
+          content:
+            application/json:
+              schema:
+                $ref: './accessInfo.yaml#/components/schemas/accessInfo'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    delete:
+      tags:
+        - Access Info
+      summary: Delete a single AccessInfo
+      operationId: accessInfoDelete
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './accessInfo.yaml#/components/parameters/accessInfoId'
+      responses:
+        200:
+          description: The AccessInfo has been deleted
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

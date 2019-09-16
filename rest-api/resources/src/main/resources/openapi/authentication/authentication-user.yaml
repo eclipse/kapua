@@ -1,0 +1,51 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Authentication
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /authentication/user:
+    post:
+      tags:
+        - Authentication
+      summary: Login - User and Password
+      operationId: authenticationUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  allOf:
+                    - $ref: './authentication.yaml#/components/schemas/username'
+                password:
+                  allOf:
+                    - $ref: './authentication.yaml#/components/schemas/password'
+              required:
+                - username
+                - password
+            examples:
+              kapua-sys:
+                description: Default kapua-sys login credentials
+                value:
+                  username: kapua-sys
+                  password: kapua-password
+      responses:
+        200:
+          description: The new AccessToken
+          content:
+            application/json:
+              schema:
+                $ref: './authentication.yaml#/components/schemas/accessToken'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+      security: []

@@ -1,0 +1,102 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Roles
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/roles/{roleId}:
+    get:
+      tags:
+        - Role
+      summary: Get a single Role
+      operationId: roleGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './role.yaml#/components/parameters/roleId'
+      responses:
+        200:
+          description: The details of the desired Role
+          content:
+            application/json:
+              schema:
+                $ref: './role.yaml#/components/schemas/role'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    put:
+      tags:
+        - Role
+      summary: Update a single Role
+      operationId: roleUpdate
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './role.yaml#/components/parameters/roleId'
+      requestBody:
+        description: An object containing the new properties for the Role to update
+        content:
+          application/json:
+            schema:
+              $ref: './role.yaml#/components/schemas/role'
+            example:
+              optlock: 1
+              name: new-role-2
+              description: A new Description for a new Role
+        required: true
+      responses:
+        200:
+          description: The details of the updated Role
+          content:
+            application/json:
+              schema:
+                $ref: './role.yaml#/components/schemas/role'
+              example:
+                type: role
+                id: KmhOD4JHfwk
+                scopeId: AQ
+                createdOn: '2019-09-16T07:33:26.719Z'
+                createdBy: AQ
+                modifiedOn: '2019-09-16T07:41:37.001Z'
+                modifiedBy: AQ
+                optlock: 2
+                name: new-role-2
+                description: A new Description for a new Role
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    delete:
+      tags:
+        - Role
+      summary: Delete a single Role
+      operationId: roleDelete
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './role.yaml#/components/parameters/roleId'
+      responses:
+        200:
+          description: The Role has been deleted
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

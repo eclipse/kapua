@@ -1,0 +1,70 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Asset
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/devices/{deviceId}/assets/_write:
+    post:
+      tags:
+        - Device Management - Asset
+      summary: Write the values for the Assets of a single Device
+      operationId: deviceAssetWrite
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: '../device/device.yaml#/components/parameters/timeout'
+      requestBody:
+        description: An Asset list to be updated on the desired Devica
+        content:
+          application/json:
+            schema:
+              $ref: './deviceAsset.yaml#/components/schemas/deviceAssetValues'
+            example:
+              type: deviceAssets
+              deviceAsset:
+                - name: asset2
+                  channels:
+                    - valueType: integer
+                      value: 12
+                      name: Channel-2
+                    - valueType: integer
+                      value: 80
+                      name: Channel-3
+        required: true
+      responses:
+        200:
+          description: The updated Asset list for the desired Device with updated values
+          content:
+            application/json:
+              schema:
+                $ref: './deviceAsset.yaml#/components/schemas/deviceAssetValues'
+              example:
+                type: deviceAssets
+                deviceAsset:
+                  - name: asset2
+                    channels:
+                      - valueType: integer
+                        value: 12
+                        name: Channel-2
+                        timestamp: '2019-09-12T15:40:18.278Z'
+                      - valueType: integer
+                        value: 80
+                        name: Channel-3
+                        timestamp: '2019-09-12T15:40:18.278Z'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

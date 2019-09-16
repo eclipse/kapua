@@ -1,0 +1,94 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Roles
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/roles/{roleId}/permissions:
+    get:
+      tags:
+        - Role
+      summary: Get all the Role Permissions
+      operationId: rolePermissionList
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './role.yaml#/components/parameters/roleId'
+        - name: name
+          in: query
+          description: The domain name to filter results
+          schema:
+            type: string
+        - name: action
+          in: query
+          description: The action to filter results
+          schema:
+            type: string
+        - $ref: '../openapi.yaml#/components/parameters/limit'
+        - $ref: '../openapi.yaml#/components/parameters/offset'
+      responses:
+        200:
+          description: The list of the RolePermissions available in the Scope
+          content:
+            application/json:
+              schema:
+                $ref: './role.yaml#/components/schemas/rolePermissionListResult'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    post:
+      tags:
+        - Role
+      summary: Create a new RolePermission
+      operationId: rolePermissionCreate
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './role.yaml#/components/parameters/roleId'
+      requestBody:
+        description: An object containing the properties for the new RolePermission to be created
+        content:
+          application/json:
+            schema:
+              $ref: './role.yaml#/components/schemas/rolePermissionCreator'
+            example:
+              permission:
+                domain: account
+                action: read
+                forwardable: true
+        required: true
+      responses:
+        200:
+          description: The Role Permissionthat has just been created
+          content:
+            application/json:
+              schema:
+                $ref: './role.yaml#/components/schemas/rolePermission'
+              example:
+                type: rolePermission
+                id: BpbQqk31GLc
+                scopeId: AQ
+                createdOn: '2019-09-16T07:49:51.117Z'
+                createdBy: AQ
+                roleId: OYLRT30Z9sA
+                permission:
+                  domain: domain
+                  action: read
+                  forwardable: true
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

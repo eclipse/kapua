@@ -1,0 +1,40 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Authentication
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /authentication/jwt:
+    post:
+      tags:
+        - Authentication
+      summary: Login - JWT
+      operationId: authenticationJwt
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                jwt:
+                  $ref: './authentication.yaml#/components/schemas/jwt'
+              required:
+                - jwt
+      responses:
+        200:
+          description: The new AccessToken
+          content:
+            application/json:
+              schema:
+                $ref: './authentication.yaml#/components/schemas/accessToken'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+      security: []

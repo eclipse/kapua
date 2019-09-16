@@ -1,0 +1,64 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Device Management - Command
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/devices/{deviceId}/commands/_execute:
+    post:
+      tags:
+        - Device Management - Command
+      summary: Execute a Command
+      operationId: deviceCommandExecute
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: '../device/device.yaml#/components/parameters/timeout'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './deviceCommand.yaml#/components/schemas/commandInput'
+            examples:
+              singleArgument:
+                description: A command with a single argument
+                value:
+                  command: ls
+                  arguments:
+                    argument: -lisa
+                  timeout: 60000
+              multipleArguments:
+                description: A command with multiple arguments
+                value:
+                  command: ls
+                  arguments:
+                    argument:
+                      - -l
+                      - -i
+                      - -s
+                      - -a
+                  timeout: 60000
+        required: true
+      responses:
+        200:
+          description: The output of the Command executed on a single Device
+          content:
+            application/json:
+              schema:
+                $ref: './deviceCommand.yaml#/components/schemas/commandOutput'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

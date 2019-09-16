@@ -1,0 +1,86 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Asset
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/devices/{deviceId}/assets:
+    get:
+      tags:
+        - Device Management - Asset
+      summary: Get the Assets Definitions of a single Device
+      operationId: deviceAssetList
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: '../device/device.yaml#/components/parameters/timeout'
+      responses:
+        200:
+          description: The list of Assets definition of a single Device
+          content:
+            application/json:
+              schema:
+                $ref: './deviceAsset.yaml#/components/schemas/deviceAssetDefinitions'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    post:
+      tags:
+        - Device Management - Asset
+      summary: Get the Assets Definitions of a single Device
+      operationId: deviceAssetListFiltered
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: '../device/device.yaml#/components/parameters/timeout'
+      requestBody:
+        description: An object containing the list of Assets to use as a filter
+        content:
+          application/json:
+            schema:
+              $ref: './deviceAsset.yaml#/components/schemas/deviceAssetDefinitions'
+            example:
+              deviceAsset:
+                - name: asset2
+      responses:
+        200:
+          description: The list of Assets definition of a single Device according to the filter
+          content:
+            application/json:
+              schema:
+                $ref: './deviceAsset.yaml#/components/schemas/deviceAssetDefinitions'
+              example:
+                type: deviceAssets
+                deviceAsset:
+                  - name: asset2
+                    channels:
+                      - valueType: integer
+                        name: Channel-1
+                        mode: READ
+                      - valueType: integer
+                        name: Channel-2
+                        mode: WRITE
+                      - valueType: integer
+                        name: Channel-3
+                        mode: READ_WRITE
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

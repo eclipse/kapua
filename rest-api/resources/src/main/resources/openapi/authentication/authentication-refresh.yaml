@@ -1,0 +1,51 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Authentication
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /authentication/refresh:
+    post:
+      tags:
+        - Authentication
+      summary: Refresh an AccessToken
+      description: |
+        Creates a new AccessToken from an existing (even if expired) AccessToken and a Refresh Token that must be still valid.
+        Regardless of the expiration date, the AccessToken provided to the refresh operation WILL be invalidated
+      operationId: authenticationRefresh
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+                  format: uuid
+                tokenId:
+                  $ref: './authentication.yaml#/components/schemas/jwt'
+              required:
+                - refreshToken
+                - tokenId
+      responses:
+        200:
+          description: The new AccessToken
+          content:
+            application/json:
+              schema:
+                $ref: './authentication.yaml#/components/schemas/accessToken'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+      security: []

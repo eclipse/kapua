@@ -1,0 +1,38 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Jobs Targets
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/jobs/{jobId}/targets:
+    get:
+      tags:
+        - Job - Target
+      summary: Get all the Jobs Targets
+      operationId: jobTargetList
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../job/job.yaml#/components/parameters/jobId'
+        - $ref: '../openapi.yaml#/components/parameters/limit'
+        - $ref: '../openapi.yaml#/components/parameters/offset'
+      responses:
+        200:
+          description: The list of the Jobs available in the Scope
+          content:
+            application/json:
+              schema:
+                $ref: './jobTarget.yaml#/components/schemas/jobTargetListResult'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

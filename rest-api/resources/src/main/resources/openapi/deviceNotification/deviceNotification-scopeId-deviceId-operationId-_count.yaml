@@ -1,0 +1,35 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Device Management - Notifications
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/devices/{deviceId}/operations/{operationId}/notifications/_count:
+    post:
+      tags:
+        - Device Management - Notification
+      summary: Count the Registry Notifications
+      operationId: deviceRegistryNotificationCount
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: '../deviceOperation/deviceOperation.yaml#/components/parameters/operationId'
+      requestBody:
+        $ref: '../openapi.yaml#/components/requestBodies/kapuaQuery'
+      responses:
+        200:
+          $ref: '../openapi.yaml#/components/responses/countResult'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

@@ -1,0 +1,144 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Device Management - Request
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  schemas:
+    requestInput:
+      type: object
+      description: A Device Request
+      properties:
+        position:
+          $ref: '../dataMessage/dataMessage.yaml#/components/schemas/position'
+        channel:
+          type: object
+          properties:
+            semanticParts:
+              type: array
+              items:
+                type: string
+            appName:
+              type: string
+            version:
+              type: string
+            method:
+              $ref: '../device/device.yaml#/components/schemas/action'
+            resources:
+              type: array
+              items:
+                type: string
+      example:
+        channel:
+          type: genericRequestChannel
+          method: EXECUTE
+          appName: CMD
+          version: V1
+          resources:
+            - command
+        payload:
+          metrics:
+            - valueType: string
+              value: sleep
+              name: command.command
+            - valueType: string
+              value: '180'
+              name: command.argument
+    requestOutput:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        scopeId:
+          allOf:
+            - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+        deviceId:
+          allOf:
+            - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+        clientId:
+          type: string
+        receivedOn:
+          type: string
+          format: 'date-time'
+        sentOn:
+          type: string
+          format: 'date-time'
+        capturedOn:
+          type: string
+          format: 'date-time'
+        position:
+          $ref: '../dataMessage/dataMessage.yaml#/components/schemas/position'
+        channel:
+          type: object
+          properties:
+            appName:
+              type: string
+            version:
+              type: string
+            semanticParts:
+              type: array
+              items:
+                type: string
+        payload:
+          type: object
+          properties:
+            exceptionMessage:
+              type: string
+            exceptionStack:
+              type: string
+            metrics:
+              type: array
+              items:
+                type: object
+            body:
+              type: string
+              format: base64
+        responseCode:
+          type: string
+          enum:
+            - ACCEPTED
+            - BAD_REQUEST
+            - NOT_FOUND
+            - INTERNAL_ERROR
+      example:
+        capturedOn: '2019-09-13T13:53:09.447Z'
+        channel:
+          appName: CMD
+          version: V1
+        payload:
+          metrics:
+            - valueType: string
+              value: 'false'
+              name: command.timedout
+            - valueType: string
+              value: |
+                sleep: missing operand
+                Try 'sleep --help' for more information.
+              name: command.stderr
+            - valueType: string
+              name: kapua.response.exception.stack
+            - valueType: string
+              name: kapua.response.exception.message
+            - valueType: string
+              value: '1'
+              name: command.exit.code
+            - valueType: string
+              value: ''
+              name: command.stdout
+            - valueType: string
+              value: '200'
+              name: response.code
+        receivedOn: '2019-09-13T13:53:09.466Z'
+        scopeId: AQ
+        sentOn: '2019-09-13T13:53:09.447Z'

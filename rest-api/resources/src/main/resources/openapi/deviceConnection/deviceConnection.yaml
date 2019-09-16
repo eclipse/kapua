@@ -1,0 +1,140 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Device Connection
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    connectionId:
+      name: connectionId
+      in: path
+      description: The ID of the Connection on which to perform the operation
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+    connectionStatus:
+      name: status
+      in: query
+      description: The connection status to filter results
+      schema:
+        $ref: './deviceConnection.yaml#/components/schemas/connectionStatus'
+  schemas:
+    connection:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaUpdatableEntity'
+        - type: object
+          properties:
+            status:
+              $ref: '#/components/schemas/connectionStatus'
+            clientId:
+              type: string
+            userId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            allowUserChange:
+              type: boolean
+            userCouplingMode:
+              $ref: '#/components/schemas/userCouplingMode'
+            reservedUserId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            protocol:
+              type: string
+            clientIp:
+              type: string
+            serverIp:
+              type: string
+              readOnly: true
+          example:
+            type: deviceConnection
+            id: Gd1BfeWwh3s
+            scopeId: AQ
+            createdOn: '2019-09-12T09:04:32.101Z'
+            createdBy: Ag
+            modifiedOn: '2019-09-13T08:04:49.927Z'
+            modifiedBy: Ag
+            optlock: 17
+            status: CONNECTED
+            clientId: Client-Id-1
+            userId: Ag
+            allowUserChange: false
+            userCouplingMode: INHERITED
+            protocol: MQTT
+            clientIp: tcp://172.21.0.1:44400
+            serverIp: broker
+    connectionListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/connection'
+          example:
+            type: deviceConnectionListResult
+            limitExceeded: false
+            size: 1
+            items:
+              - type: deviceConnection
+                id: Gd1BfeWwh3s
+                scopeId: AQ
+                createdOn: '2019-09-12T09:04:32.101Z'
+                createdBy: Ag
+                modifiedOn: '2019-09-13T08:04:49.927Z'
+                modifiedBy: Ag
+                optlock: 17
+                status: CONNECTED
+                clientId: Client-Id-1
+                userId: Ag
+                allowUserChange: false
+                userCouplingMode: INHERITED
+                protocol: MQTT
+                clientIp: tcp://172.21.0.1:44400
+                serverIp: broker
+    connectionOptions:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaUpdatableEntity'
+        - type: object
+          properties:
+            allowUserChange:
+              type: boolean
+            userCouplingMode:
+              $ref: '#/components/schemas/userCouplingMode'
+            reservedUserId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+          example:
+            type: deviceConnectionOption
+            id: Gd1BfeWwh3s
+            scopeId: AQ
+            createdOn: '2019-09-12T09:04:32.101Z'
+            createdBy: Ag
+            modifiedOn: '2019-09-13T08:04:49.927Z'
+            modifiedBy: Ag
+            optlock: 17
+            allowUserChange: false
+            userCouplingMode: INHERITED
+    userCouplingMode:
+      type: string
+      enum:
+        - INHERITED
+        - LOOSE
+        - STRICT
+    connectionStatus:
+      type: string
+      enum:
+        - 'CONNECTED'
+        - 'DISCONNECTED'
+        - 'MISSING'
+        - 'NULL'

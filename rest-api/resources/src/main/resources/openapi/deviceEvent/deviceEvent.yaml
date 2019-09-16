@@ -1,0 +1,76 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Device Event
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    deviceEventId:
+      name: deviceEventId
+      in: path
+      description: The ID of the Device Event on which to perform the operation
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+  schemas:
+    deviceEvent:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaEntity'
+        - type: object
+          properties:
+            deviceId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            sentOn:
+              type: string
+              format: 'date-time'
+            receivedOn:
+              type: string
+              format: 'date-time'
+            position:
+              $ref: '../dataMessage/dataMessage.yaml#/components/schemas/position'
+            resource:
+              type: string
+            action:
+              type: string
+            responseCode:
+              type: string
+              enum:
+                - ACCEPTED
+                - BAD_REQUEST
+                - NOT_FOUND
+                - INTERNAL_ERROR
+            eventMessage:
+              type: string
+          example:
+            type: deviceEvent
+            id: JYINy4IMGK4
+            scopeId: AQ
+            createdOn: '2019-09-13T12:00:31.738Z'
+            createdBy: AQ
+            deviceId: IaIA6xbNR7E
+            sentOn: '2019-09-13T12:00:31.687Z'
+            receivedOn: '2019-09-13T12:00:31.718Z'
+            resource: CONFIGURATION
+            action: READ
+            responseCode: ACCEPTED
+            eventMessage:
+    deviceEventListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/deviceEvent'

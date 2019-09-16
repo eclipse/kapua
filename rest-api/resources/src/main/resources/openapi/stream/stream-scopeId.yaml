@@ -1,0 +1,63 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Streams
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/streams/messages:
+    post:
+      tags:
+        - Stream
+      summary: Publish a message
+      operationId: streamMessage
+      description: Publishes a fire-and-forget message to a topic composed of [account-name] / [client-id] / [semtantic-parts]
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '../dataMessage/dataMessage.yaml#/components/schemas/dataMessage'
+            example:
+              capturedOn: '2019-09-12T09:25:05.096Z'
+              channel:
+                type: kapuaDataChannel
+                semanticParts:
+                  - heater
+                  - data
+              clientId: Client-Id-1
+              deviceId: IaIA6xbNR7E
+              payload:
+                metrics:
+                  - valueType: string
+                    value: 5
+                    name: temperatureExternal
+                  - valueType: string
+                    value: 20
+                    name: temperatureInternal
+                  - valueType: string
+                    value: 30
+                    name: temperatureExhaust
+                  - valueType: string
+                    value: 0
+                    name: errorCode
+              receivedOn: '2019-09-12T09:25:05.102Z'
+              sentOn: '2019-09-12T09:25:05.096Z'
+              timestamp: '2019-09-12T09:25:05.096Z'
+      responses:
+        200:
+          description: The message has been sent successfully
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

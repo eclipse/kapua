@@ -1,0 +1,128 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Jobs Triggers
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    triggerId:
+      name: triggerId
+      in: path
+      description: The ID of the Job Trigger on which to perform the operation
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+  schemas:
+    jobTrigger:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaNamedEntity'
+        - type: object
+          example:
+            type: trigger
+            id: OlIPEFS4MYU
+            scopeId: AQ
+            createdOn: '2019-12-06T11:01:16.000Z'
+            createdBy: AQ
+            modifiedOn: '2019-12-06T11:01:16.000Z'
+            modifiedBy: AQ
+            optlock: 1
+            name: cron
+            endsOn: '2019-12-07T01:30:00+01:00'
+            startsOn: '2019-12-06T12:00:00+01:00'
+            triggerDefinitionId: AQ
+            triggerProperties:
+              - name: cronExpression
+                propertyType: java.lang.String
+                propertyValue: '* 0/5 * * * ?'
+              - name: jobId
+                propertyType: org.eclipse.kapua.model.id.KapuaId
+                propertyValue: auSoU2ph1bY
+              - name: scopeId
+                propertyType: org.eclipse.kapua.model.id.KapuaId
+                propertyValue: AQ
+    jobTriggerListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/jobTrigger'
+          example:
+            type: triggerListResult
+            limitExceeded: false
+            size: 3
+            items:
+              - type: trigger
+                id: Q5psa2kJzks
+                scopeId: AQ
+                createdOn: '2019-12-06T11:00:49.000Z'
+                createdBy: AQ
+                modifiedOn: '2019-12-06T11:00:49.000Z'
+                modifiedBy: AQ
+                optlock: 1
+                name: interval
+                startsOn: '2019-12-06T12:00:00+01:00'
+                triggerDefinitionId: Ag
+                triggerProperties:
+                  - name: interval
+                    propertyType: java.lang.Integer
+                    propertyValue: '3600'
+                  - name: jobId
+                    propertyType: org.eclipse.kapua.model.id.KapuaId
+                    propertyValue: auSoU2ph1bY
+                  - name: scopeId
+                    propertyType: org.eclipse.kapua.model.id.KapuaId
+                    propertyValue: AQ
+              - type: trigger
+                id: OlIPEFS4MYU
+                scopeId: AQ
+                createdOn: '2019-12-06T11:01:16.000Z'
+                createdBy: AQ
+                modifiedOn: '2019-12-06T11:01:16.000Z'
+                modifiedBy: AQ
+                optlock: 1
+                name: cron
+                endsOn: '2019-12-07T01:30:00+01:00'
+                startsOn: '2019-12-06T12:00:00+01:00'
+                triggerDefinitionId: AQ
+                triggerProperties:
+                  - name: cronExpression
+                    propertyType: java.lang.String
+                    propertyValue: '* 0/5 * * * ?'
+                  - name: jobId
+                    propertyType: org.eclipse.kapua.model.id.KapuaId
+                    propertyValue: auSoU2ph1bY
+                  - name: scopeId
+                    propertyType: org.eclipse.kapua.model.id.KapuaId
+                    propertyValue: AQ
+              - type: trigger
+                id: GOQMkJEQCPg
+                scopeId: AQ
+                createdOn: '2019-12-06T11:01:24.000Z'
+                createdBy: AQ
+                modifiedOn: '2019-12-06T11:01:24.000Z'
+                modifiedBy: AQ
+                optlock: 1
+                name: device_conn
+                startsOn: '2019-12-06T12:00:00+01:00'
+                triggerDefinitionId: Aw
+                triggerProperties:
+                  - name: jobId
+                    propertyType: org.eclipse.kapua.model.id.KapuaId
+                    propertyValue: auSoU2ph1bY
+                  - name: scopeId
+                    propertyType: org.eclipse.kapua.model.id.KapuaId
+                    propertyValue: AQ
+
