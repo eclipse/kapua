@@ -684,13 +684,12 @@ Feature: User role service integration tests
     Then An exception was thrown
     And I logout
 
-  Scenario: Add endpoint permissions to the role
-  Creating user "user1" and role "test_role", adding permissions with endpoint domain and read, write and delete actions to the "test_role",
+  Scenario: Add endpoint_info permissions to the role
+  Creating user "user1" and role "test_role", adding permissions with endpoint_info domain and read, write and delete actions to the "test_role",
   adding "test_role" to "user1" and after that trying to work with endpoints as "user1"
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And Scope with ID 1
-    And I select account "kapua-sys"
     And I configure user service
       | type    | name                       | value |
       | boolean | infiniteChildEntities      | true  |
@@ -710,15 +709,21 @@ Feature: User role service integration tests
       | 1       | test_role |
     And I select the domain "endpoint_info"
     And I create the following role permission
-      | scopeId | actionName |
-      | 1       | read       |
-      | 1       | write      |
-      | 1       | delete     |
+      | scopeId | actionName | targetScopeId |
+      | 1       | read       | 1             |
+      | 1       | write      | 1             |
+      | 1       | delete     | 1             |
     And I add access role to user
     And I logout
     Then I login as user with name "user1" and password "User@10031995"
     And I try to find endpoint with schema "endpoint1"
     Then I found endpoint with schema "endpoint1"
+    When I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: endpoint_info:write:"
+    And I create endpoint with schema "endpoint2", dns "dns" and port 20000
+    Then An exception was thrown
+    When I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: endpoint_info:delete:"
+    And I delete the last created endpoint
+    Then An exception was thrown
     And I logout
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I delete the last created role permissions
