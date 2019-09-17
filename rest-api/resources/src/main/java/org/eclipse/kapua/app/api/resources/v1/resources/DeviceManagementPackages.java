@@ -30,7 +30,6 @@ import org.eclipse.kapua.service.device.management.packages.DevicePackageManagem
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
-import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 import org.eclipse.kapua.service.device.registry.Device;
 
 import io.swagger.annotations.Api;
@@ -60,7 +59,7 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
      */
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @ApiOperation(nickname = "devicePackageGet", value = "Gets a list of packages", notes = "Returns the list of all the packages installed on the device.", response = DeviceSnapshots.class)
+    @ApiOperation(nickname = "devicePackageGet", value = "Gets a list of packages", notes = "Returns the list of all the packages installed on the device.", response = DevicePackages.class)
     public DevicePackages get(
             @ApiParam(value = "The ScopeId of the Device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,

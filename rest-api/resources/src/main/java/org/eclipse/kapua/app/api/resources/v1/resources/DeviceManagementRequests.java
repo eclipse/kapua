@@ -20,7 +20,6 @@ import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
 import org.eclipse.kapua.service.device.management.request.DeviceRequestManagementService;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestMessage;
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseMessage;
@@ -56,7 +55,7 @@ public class DeviceManagementRequests extends AbstractKapuaResource {
     @POST
     @Consumes({MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_XML})
-    @ApiOperation(nickname = "deviceRequestSend", value = "Sends a request", notes = "Sends a request message to a device", response = DeviceCommandOutput.class)
+    @ApiOperation(nickname = "deviceRequestSend", value = "Sends a request", notes = "Sends a request message to a device", response = GenericResponseMessage.class)
     public GenericResponseMessage sendRequest(
             @ApiParam(value = "The ScopeId of the device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
