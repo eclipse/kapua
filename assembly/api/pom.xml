@@ -24,6 +24,10 @@
     <packaging>pom</packaging>
     <artifactId>kapua-assembly-api</artifactId>
 
+    <properties>
+        <nodejs.version>10.16.3</nodejs.version>
+    </properties>
+
     <dependencies>
 
         <dependency>
@@ -223,6 +227,31 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>install-node-and-npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>install-swagger-cli</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>install -g swagger-cli</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <nodeVersion>v${nodejs.version}</nodeVersion>
+                    <installDirectory>target</installDirectory>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
@@ -244,7 +273,51 @@
                             </artifactItems>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>unpack-openapi</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.eclipse.kapua</groupId>
+                                    <artifactId>kapua-rest-api-resources</artifactId>
+                                    <version>${project.version}</version>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/tmp</outputDirectory>
+                                    <includes>openapi/**/*</includes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-openapi</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>${project.build.directory}/bin/swagger-cli</executable>
+                    <arguments>
+                        <argument>bundle</argument>
+                        <argument>--dereference</argument>
+                        <argument>-t</argument>
+                        <argument>yaml</argument>
+                        <argument>-o</argument>
+                        <argument>${project.build.directory}/tmp/openapi.yaml</argument>
+                        <argument>${project.build.directory}/tmp/openapi/openapi.yaml</argument>
+                    </arguments>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
