@@ -12,8 +12,6 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
@@ -41,8 +39,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-//@Api(value = "Devices Operations", authorizations = {@Authorization(value = "kapuaAccessToken")})
-@Path("{scopeId}/devices/{deviceId}/operations")
+//@Path("{scopeId}/devices/{deviceId}/operations")
 public class DeviceManagementOperations extends AbstractKapuaResource {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
@@ -61,15 +58,14 @@ public class DeviceManagementOperations extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "deviceManagementOperationSimpleQuery", value = "Gets the DeviceManagementOperation list in the scope", notes = "Returns the list of all the deviceManagementOperations associated to the current selected scope.", response = DeviceManagementOperationListResult.class)
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public DeviceManagementOperationListResult simpleQuery(
-            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The client id to filter results.") @PathParam("deviceId") EntityId deviceId,
-            @ApiParam(value = "The resource of the DeviceManagementOperation in which to search results") @QueryParam("resource") String resource,
-            @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
-            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("deviceId") EntityId deviceId,
+            @QueryParam("resource") String resource,
+            @QueryParam("offset") @DefaultValue("0") int offset,
+            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
         DeviceManagementOperationQuery query = deviceManagementOperationFactory.newQuery(scopeId);
 
         AndPredicate andPredicate = query.andPredicate();
@@ -97,15 +93,14 @@ public class DeviceManagementOperations extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "deviceManagementOperationQuery", value = "Queries the DeviceManagementOperations", notes = "Queries the DeviceManagementOperations with the given DeviceManagementOperations parameter returning all matching DeviceManagementOperations", response = DeviceManagementOperationListResult.class)
     @POST
     @Path("_query")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public DeviceManagementOperationListResult query(
-            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The id of the Device in which to search results") @PathParam("deviceId") EntityId deviceId,
-            @ApiParam(value = "The DeviceManagementOperationQuery to use to filter results.", required = true) DeviceManagementOperationQuery query) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("deviceId") EntityId deviceId,
+            DeviceManagementOperationQuery query) throws Exception {
         query.setScopeId(scopeId);
 
         AndPredicate andPredicate = query.andPredicate();
@@ -125,15 +120,14 @@ public class DeviceManagementOperations extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "deviceManagementOperationCount", value = "Counts the DeviceManagementOperations", notes = "Counts the DeviceManagementOperations with the given DeviceManagementOperationQuery parameter returning the number of matching DeviceManagementOperations", response = CountResult.class)
     @POST
     @Path("_count")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public CountResult count(
-            @ApiParam(value = "The ScopeId in which to count results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The id of the Device in which to count results") @PathParam("deviceId") EntityId deviceId,
-            @ApiParam(value = "The DeviceManagementOperationQuery to use to filter count results", required = true) DeviceManagementOperationQuery query) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("deviceId") EntityId deviceId,
+            DeviceManagementOperationQuery query) throws Exception {
         query.setScopeId(scopeId);
         query.setPredicate(query.attributePredicate(DeviceManagementOperationAttributes.DEVICE_ID, deviceId));
 
@@ -150,14 +144,13 @@ public class DeviceManagementOperations extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "deviceManagementOperationFind", value = "Get an DeviceManagementOperation", notes = "Returns the DeviceManagementOperation specified by the \"deviceManagementOperationId\" path parameter.", response = DeviceManagementOperation.class)
     @GET
     @Path("{deviceManagementOperationId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public DeviceManagementOperation find(
-            @ApiParam(value = "The ScopeId of the requested DeviceManagementOperation.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The id of the requested Device", required = true) @PathParam("deviceId") EntityId deviceId,
-            @ApiParam(value = "The id of the requested DeviceManagementOperation", required = true) @PathParam("deviceManagementOperationId") EntityId deviceManagementOperationId) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("deviceId") EntityId deviceId,
+            @PathParam("deviceManagementOperationId") EntityId deviceManagementOperationId) throws Exception {
         DeviceManagementOperationQuery query = deviceManagementOperationFactory.newQuery(scopeId);
 
         AndPredicate andPredicate = query.andPredicate(
@@ -187,12 +180,11 @@ public class DeviceManagementOperations extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "deviceManagementOperationDelete", value = "Delete a DeviceManagementOperation", notes = "Deletes the DeviceManagementOperation specified by the \"deviceManagementOperationId\" path parameter.")
     @DELETE
     @Path("{deviceManagementOperationId}")
     public Response deleteDeviceManagementOperation(@PathParam("scopeId") ScopeId scopeId,
-                                                    @ApiParam(value = "The id of the Device in which to delete the ManagementOperation.", required = true) @PathParam("deviceId") EntityId deviceId,
-                                                    @ApiParam(value = "The id of the DeviceManagementOperation to be deleted", required = true) @PathParam("deviceManagementOperationId") EntityId deviceManagementOperationId) throws Exception {
+                                                    @PathParam("deviceId") EntityId deviceId,
+                                                    @PathParam("deviceManagementOperationId") EntityId deviceManagementOperationId) throws Exception {
         deviceManagementOperationRegistryService.delete(scopeId, deviceManagementOperationId);
 
         return returnOk();

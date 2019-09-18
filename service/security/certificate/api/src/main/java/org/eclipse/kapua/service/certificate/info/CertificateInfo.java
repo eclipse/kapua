@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate.info;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
@@ -69,7 +68,6 @@ public interface CertificateInfo extends KapuaNamedEntity {
 
     @XmlElement(name = "signature")
     @XmlJavaTypeAdapter(BinaryXmlAdapter.class)
-    @ApiModelProperty(dataType = "string")
     byte[] getSignature();
 
     void setSignature(byte[] signature);
@@ -108,7 +106,6 @@ public interface CertificateInfo extends KapuaNamedEntity {
 
     @XmlElement(name = "caId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getCaId();
 
     void setCaId(KapuaId caId);

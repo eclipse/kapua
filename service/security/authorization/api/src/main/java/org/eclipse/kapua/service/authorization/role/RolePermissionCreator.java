@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
@@ -52,7 +51,6 @@ public interface RolePermissionCreator extends KapuaEntityCreator<RolePermission
      */
     @XmlElement(name = "roleId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getRoleId();
 
     /**

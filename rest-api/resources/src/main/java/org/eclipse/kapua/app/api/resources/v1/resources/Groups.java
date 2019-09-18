@@ -12,10 +12,6 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
@@ -44,7 +40,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Api(value = "Groups", authorizations = {@Authorization(value = "kapuaAccessToken")})
 @Path("{scopeId}/groups")
 public class Groups extends AbstractKapuaResource {
 
@@ -63,14 +58,13 @@ public class Groups extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "groupSimpleQuery", value = "Gets the Group list in the scope", notes = "Returns the list of all the groups associated to the current selected scope.", response = GroupListResult.class)
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public GroupListResult simpleQuery(
-            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The group name to filter results.") @QueryParam("name") String name,
-            @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
-            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,
+            @QueryParam("name") String name,
+            @QueryParam("offset") @DefaultValue("0") int offset,
+            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
         GroupQuery query = groupFactory.newQuery(scopeId);
 
         AndPredicate andPredicate = query.andPredicate();
@@ -94,14 +88,13 @@ public class Groups extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "groupQuery", value = "Queries the Groups", notes = "Queries the Groups with the given GroupQuery parameter returning all matching Groups", response = GroupListResult.class)
     @POST
     @Path("_query")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public GroupListResult query(
-            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The GroupQuery to use to filter results.", required = true) GroupQuery query) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,
+            GroupQuery query) throws Exception {
         query.setScopeId(scopeId);
 
         return groupService.query(query);
@@ -116,14 +109,13 @@ public class Groups extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "groupCount", value = "Counts the Groups", notes = "Counts the Groups with the given GroupQuery parameter returning the number of matching Groups", response = CountResult.class)
     @POST
     @Path("_count")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public CountResult count(
-            @ApiParam(value = "The ScopeId in which to count results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The GroupQuery to use to filter count results", required = true) GroupQuery query) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,
+            GroupQuery query) throws Exception {
         query.setScopeId(scopeId);
 
         return new CountResult(groupService.count(query));
@@ -137,13 +129,12 @@ public class Groups extends AbstractKapuaResource {
      * @param groupCreator Provides the information for the new {@link Group} to be created.
      * @return The newly created {@link Group} object.
      */
-    @ApiOperation(nickname = "groupCreate", value = "Create a Group", notes = "Creates a new Group based on the information provided in GroupCreator parameter.", response = Group.class)
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Group create(
-            @ApiParam(value = "The ScopeId in which to create the Group", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "Provides the information for the new Group to be created", required = true) GroupCreator groupCreator) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,
+            GroupCreator groupCreator) throws Exception {
         groupCreator.setScopeId(scopeId);
 
         return groupService.create(groupCreator);
@@ -158,13 +149,12 @@ public class Groups extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "groupFind", value = "Get an Group", notes = "Returns the Group specified by the \"groupId\" path parameter.", response = Group.class)
     @GET
     @Path("{groupId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Group find(
-            @ApiParam(value = "The ScopeId of the requested Group.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The id of the requested Group", required = true) @PathParam("groupId") EntityId groupId) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("groupId") EntityId groupId) throws Exception {
         Group group = groupService.find(scopeId, groupId);
 
         if (group == null) {
@@ -184,15 +174,14 @@ public class Groups extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "groupUpdate", value = "Update an Group", notes = "Updates a new Group based on the information provided in the Group parameter.", response = Group.class)
     @PUT
     @Path("{groupId}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Group update(
-            @ApiParam(value = "The ScopeId of the requested Group.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The id of the requested Group", required = true) @PathParam("groupId") EntityId groupId,
-            @ApiParam(value = "The modified Group whose attributed need to be updated", required = true) Group group) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("groupId") EntityId groupId,
+            Group group) throws Exception {
         group.setScopeId(scopeId);
         group.setId(groupId);
 
@@ -208,12 +197,11 @@ public class Groups extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "groupDelete", value = "Delete an Group", notes = "Deletes the Group specified by the \"groupId\" path parameter.")
     @DELETE
     @Path("{groupId}")
     public Response deleteGroup(
-            @ApiParam(value = "The ScopeId of the Group to delete.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The id of the Group to be deleted", required = true) @PathParam("groupId") EntityId groupId) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("groupId") EntityId groupId) throws Exception {
         groupService.delete(scopeId, groupId);
 
         return returnOk();

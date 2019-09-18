@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
@@ -46,7 +45,6 @@ public interface CredentialCreator extends KapuaEntityCreator<Credential> {
      */
     @XmlElement(name = "userId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getUserId();
 
     /**
@@ -85,7 +83,6 @@ public interface CredentialCreator extends KapuaEntityCreator<Credential> {
      *
      * @param plainKey
      */
-    @ApiModelProperty(name = "credentialKey")
     void setCredentialPlainKey(String plainKey);
 
     @XmlElement(name = "expirationDate")

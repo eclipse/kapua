@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.message;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.xml.MessageXmlRegistry;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -76,7 +75,6 @@ public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> ex
      */
     @XmlElement(name = "scopeId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getScopeId();
 
     /**
@@ -112,7 +110,6 @@ public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> ex
      */
     @XmlElement(name = "deviceId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getDeviceId();
 
     /**

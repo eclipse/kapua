@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.model;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
@@ -73,7 +72,6 @@ public interface MetricInfo extends Storable {
      */
     @XmlElement(name = "scopeId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getScopeId();
 
     /**

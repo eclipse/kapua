@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.model;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.KapuaSerializable;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
@@ -48,7 +47,6 @@ public interface KapuaEntity extends KapuaSerializable {
      */
     @XmlElement(name = "id")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getId();
 
     /**
@@ -67,7 +65,6 @@ public interface KapuaEntity extends KapuaSerializable {
      */
     @XmlElement(name = "scopeId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getScopeId();
 
     /**
@@ -96,6 +93,5 @@ public interface KapuaEntity extends KapuaSerializable {
      */
     @XmlElement(name = "createdBy")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getCreatedBy();
 }

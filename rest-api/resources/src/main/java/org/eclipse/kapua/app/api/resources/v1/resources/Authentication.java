@@ -11,10 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
@@ -35,7 +31,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Api("Authentication")
 @Path("/authentication")
 public class Authentication extends AbstractKapuaResource {
 
@@ -51,13 +46,12 @@ public class Authentication extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "authenticationUser", value = "Authenticate an user", notes = "Authenticates an user with username and password and returns " +
-            "the authentication token to be used in subsequent REST API calls.", response = AccessToken.class)
+
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("user")
-    public AccessToken loginUsernamePassword(@ApiParam(value = "The username and password authentication credential of a user.", required = true) UsernamePasswordCredentials authenticationCredentials) throws Exception {
+    public AccessToken loginUsernamePassword(UsernamePasswordCredentials authenticationCredentials) throws Exception {
         return login(authenticationCredentials);
     }
 
@@ -70,13 +64,12 @@ public class Authentication extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "authenticationApiKey", value = "Authenticate an user", notes = "Authenticates an user with API KEY and returns " +
-            "the authentication token to be used in subsequent REST API calls.", response = AccessToken.class)
+
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("apikey")
-    public AccessToken loginApiKey(@ApiParam(value = "The API KEY authentication credential of a user.", required = true) ApiKeyCredentials authenticationCredentials) throws Exception {
+    public AccessToken loginApiKey(ApiKeyCredentials authenticationCredentials) throws Exception {
         return login(authenticationCredentials);
     }
 
@@ -89,13 +82,12 @@ public class Authentication extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "authenticationJwt", value = "Authenticate an user", notes = "Authenticates an user with a JWT and returns " +
-            "the authentication token to be used in subsequent REST API calls.", response = AccessToken.class)
+
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("jwt")
-    public AccessToken loginJwt(@ApiParam(value = "The JWT authentication credential of a user.", required = true) JwtCredentials authenticationCredentials) throws Exception {
+    public AccessToken loginJwt(JwtCredentials authenticationCredentials) throws Exception {
         return login(authenticationCredentials);
     }
 
@@ -107,7 +99,6 @@ public class Authentication extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "authenticationLogout", value = "Logs out an user", notes = "Terminates the current session and invalidates the access token")
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -126,13 +117,12 @@ public class Authentication extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "authenticationRefresh", value = "Refreshes an AccessToken", notes = "Both the current AccessToken and the Refresh token will be invalidated. "
-            + "If also the Refresh token is expired, the user will have to restart with a new login.")
+
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("refresh")
-    public AccessToken refresh(@ApiParam(value = "The current AccessToken's tokenId and refreshToken", required = true) RefreshTokenCredentials refreshTokenCredentials) throws Exception {
+    public AccessToken refresh(RefreshTokenCredentials refreshTokenCredentials) throws Exception {
         return authenticationService.refreshAccessToken(refreshTokenCredentials.getTokenId(), refreshTokenCredentials.getRefreshToken());
     }
 
@@ -154,8 +144,7 @@ public class Authentication extends AbstractKapuaResource {
      * @return A {@link LoginInfo} object containing all the permissions and the {@link AccessToken} for the current session
      * @throws KapuaException
      */
-    @ApiOperation(nickname = "loginInfo", value = "Gets the Session information", notes = "The response object will contain all the permissions related to the current" +
-            "session, plus all the AccessToken information")
+
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("info")

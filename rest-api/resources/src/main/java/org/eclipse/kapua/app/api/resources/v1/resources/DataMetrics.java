@@ -21,8 +21,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import io.swagger.annotations.Authorization;
-
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.StorableEntityId;
@@ -41,11 +39,6 @@ import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 
 import com.google.common.base.Strings;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
-@Api(value = "Data Metrics", authorizations = { @Authorization(value = "kapuaAccessToken") })
 @Path("{scopeId}/data/metrics")
 public class DataMetrics extends AbstractKapuaResource {
 
@@ -72,19 +65,16 @@ public class DataMetrics extends AbstractKapuaResource {
      * @return The {@link MetricInfoListResult} of all the metricInfos associated to the current selected scope.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "dataMetricSimpleQuery",
-            value = "Gets the MetricInfo list in the scope", //
-            notes = "Returns the list of all the metricInfos associated to the current selected scope.", //
-            response = MetricInfoListResult.class)
+
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public MetricInfoListResult simpleQuery( //
-            @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,//
-            @ApiParam(value = "The client id to filter results") @QueryParam("clientId") String clientId, //
-            @ApiParam(value = "The channel to filter results. It allows '#' wildcard in last channel level") @QueryParam("channel") String channel,
-            @ApiParam(value = "The metric name to filter results") @QueryParam("name") String name,
-            @ApiParam(value = "The result set offset", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,//
-            @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,//
+            @QueryParam("clientId") String clientId, //
+            @QueryParam("channel") String channel,
+            @QueryParam("name") String name,
+            @QueryParam("offset") @DefaultValue("0") int offset,//
+            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
         AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
         if (!Strings.isNullOrEmpty(clientId)) {
             TermPredicate clientIdPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MetricInfoField.CLIENT_ID, clientId);
@@ -123,13 +113,10 @@ public class DataMetrics extends AbstractKapuaResource {
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @ApiOperation(nickname = "dataMetricQuery",
-            value = "Queries the MetricInfos", //
-            notes = "Queries the MetricInfos with the given MetricInfoQuery parameter returning all matching MetricInfos",  //
-            response = MetricInfoListResult.class)
+
     public MetricInfoListResult query( //
-            @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "The MetricInfoQuery to use to filter results", required = true) MetricInfoQuery query) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId, //
+            MetricInfoQuery query) throws Exception {
         query.setScopeId(scopeId);
         query.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
         return METRIC_INFO_REGISTRY_SERVICE.query(query);
@@ -149,13 +136,10 @@ public class DataMetrics extends AbstractKapuaResource {
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @ApiOperation(nickname = "dataMetricCount",
-            value = "Counts the MetricInfos", //
-            notes = "Counts the MetricInfos with the given MetricInfoQuery parameter returning the number of matching MetricInfos", //
-            response = CountResult.class)
+
     public CountResult count( //
-            @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "The MetricInfoQuery to use to filter count results", required = true) MetricInfoQuery query) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId, //
+            MetricInfoQuery query) throws Exception {
         query.setScopeId(scopeId);
 
         return new CountResult(METRIC_INFO_REGISTRY_SERVICE.count(query));
@@ -171,13 +155,10 @@ public class DataMetrics extends AbstractKapuaResource {
     @GET
     @Path("{metricInfoId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @ApiOperation(nickname = "dataMetricFind",
-            value = "Gets an MetricInfo", //
-            notes = "Gets the MetricInfo specified by the metricInfoId path parameter", //
-            response = MetricInfo.class)
-    public MetricInfo find( //
-            @ApiParam(value = "The ScopeId of the requested MetricInfo.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "The id of the requested MetricInfo", required = true) @PathParam("metricInfoId") StorableEntityId metricInfoId) throws Exception {
+
+    public MetricInfo find(
+            @PathParam("scopeId") ScopeId scopeId, //
+            @PathParam("metricInfoId") StorableEntityId metricInfoId) throws Exception {
         MetricInfo metricInfo = METRIC_INFO_REGISTRY_SERVICE.find(scopeId, metricInfoId);
 
         return returnNotNullEntity(metricInfo);

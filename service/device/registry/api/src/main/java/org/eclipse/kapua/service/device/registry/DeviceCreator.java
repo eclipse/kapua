@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.KapuaUpdatableEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
@@ -75,7 +74,6 @@ public interface DeviceCreator extends KapuaUpdatableEntityCreator<Device> {
      */
     @XmlElement(name = "groupId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getGroupId();
 
     /**
@@ -122,7 +120,6 @@ public interface DeviceCreator extends KapuaUpdatableEntityCreator<Device> {
      */
     @XmlElement(name = "connectionId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getConnectionId();
 
     /**
@@ -139,7 +136,6 @@ public interface DeviceCreator extends KapuaUpdatableEntityCreator<Device> {
      */
     @XmlElement(name = "lastEventId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getLastEventId();
 
     /**

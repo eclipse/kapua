@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.permission;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
@@ -100,7 +99,6 @@ public interface Permission {
      */
     @XmlElement(name = "targetScopeId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getTargetScopeId();
 
     /**
@@ -119,7 +117,6 @@ public interface Permission {
      */
     @XmlElement(name = "groupId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getGroupId();
 
     /**

@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.model;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
@@ -36,7 +35,6 @@ public interface KapuaEntityCreator<E extends KapuaEntity> {
      */
     @XmlElement(name = "scopeId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getScopeId();
 
     /**

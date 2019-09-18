@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.KapuaNamedEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
@@ -53,7 +52,6 @@ public interface CertificateCreator extends KapuaNamedEntityCreator<Certificate>
 
     @XmlElement(name = "caId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getCaId();
 
     void setCaId(KapuaId caId);

@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -69,7 +68,6 @@ public interface AccessRole extends KapuaEntity {
      */
     @XmlElement(name = "accessInfoId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getAccessInfoId();
 
     /**
@@ -88,6 +86,5 @@ public interface AccessRole extends KapuaEntity {
      */
     @XmlElement(name = "roleId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getRoleId();
 }
