@@ -11,9 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event.internal;
 
+import javax.persistence.OptimisticLockException;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaOptimisticLockingException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -44,6 +45,9 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceEventServiceImpl.class);
 
+    private static final int MAX_ITERATION = 3;
+    private static final double MAX_WAIT = 200d;
+
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
     private final DeviceRegistryService deviceRegistryService;
@@ -63,11 +67,6 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
 
     @Override
     public DeviceEvent create(DeviceEventCreator deviceEventCreator) throws KapuaException {
-        return create(deviceEventCreator, true);
-    }
-
-    @Override
-    public DeviceEvent create(DeviceEventCreator deviceEventCreator, boolean updateDeviceLastEventId) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(deviceEventCreator, "deviceEventCreator");
@@ -86,23 +85,26 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
 
         // Create the event
         DeviceEvent deviceEvent = entityManagerSession.onTransactedInsert(entityManager -> DeviceEventDAO.create(entityManager, deviceEventCreator));
-
-        // Update last event id if necessary
-        if (updateDeviceLastEventId) {
-            Device device = deviceRegistryService.find(deviceEvent.getScopeId(), deviceEvent.getDeviceId());
-            if (device != null) {
-                device.setLastEventId(deviceEvent.getId());
-
-                try {
+        int iteration = 0;
+        do {
+            try {
+                Device device = deviceRegistryService.find(deviceEvent.getScopeId(), deviceEvent.getDeviceId());
+                if (device != null) {
+                    device.setLastEventId(deviceEvent.getId());
                     deviceRegistryService.update(device);
-                } catch (KapuaOptimisticLockingException kole) {
-                    LOG.warn("Update of field 'lastEventOn' failed due to concurrent updates on the device: {} ({}) - {} {}. Error: {}", device.getId(), device.getClientId(), deviceEvent.getReceivedOn(), deviceEvent.getResource(),kole.getMessage());
-                    LOG.debug("Update of field 'lastEventOn' failed due to concurrent updates on the device: {} ({}) - {} {}. See following exception...", device.getId(), device.getClientId(), deviceEvent.getReceivedOn(), deviceEvent.getResource());
-                    LOG.debug("Error:", kole);
+                }
+                break;
+            }
+            catch (OptimisticLockException e) {
+                LOG.warn("Concurrent update for device id {}... try again (if maximum attempts is not reach)", deviceEvent.getDeviceId());
+                try {
+                    Thread.sleep((long)(Math.random() * MAX_WAIT));
+                } catch (InterruptedException e1) {
+                    LOG.warn("Error while waiting {}", e.getMessage());
                 }
             }
         }
-
+        while(iteration++ < MAX_ITERATION);
         return deviceEvent;
     }
 

@@ -12,7 +12,9 @@
 package org.eclipse.kapua.service.device.registry.lifecycle.internal;
 
 import com.google.common.base.Strings;
+
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaOptimisticLockingException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -33,7 +35,10 @@ import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
+import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventServiceImpl;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link DeviceLifeCycleService} implementation.
@@ -42,6 +47,11 @@ import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleServic
  */
 @KapuaProvider
 public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
+
+    private static final Logger logger = LoggerFactory.getLogger(DeviceEventServiceImpl.class);
+
+    private static final int MAX_ITERATION = 3;
+    private static final double MAX_WAIT = 500d;
 
     @Override
     public void birth(KapuaId connectionId, KapuaBirthMessage message)
@@ -55,7 +65,7 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
         // Device update
         KapuaLocator locator = KapuaLocator.getInstance();
         DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
-        Device device;
+        Device device = null;
         if (deviceId == null) {
             String clientId = channel.getClientId();
 
@@ -85,34 +95,52 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
 
             device = deviceRegistryService.create(deviceCreator);
         } else {
-            device = deviceRegistryService.find(scopeId, deviceId);
+            int iteration = 0;
+            do {
+                try {
+                    device = deviceRegistryService.find(scopeId, deviceId);
 
-            // If the BirthMessage does not contain a 'Display Name' keep the one registered on the DeviceRegistryService.
-            if (!Strings.isNullOrEmpty(payload.getDisplayName())) {
-                device.setDisplayName(payload.getDisplayName());
+                    // If the BirthMessage does not contain a 'Display Name' keep the one registered on the DeviceRegistryService.
+                    if (!Strings.isNullOrEmpty(payload.getDisplayName())) {
+                        device.setDisplayName(payload.getDisplayName());
+                    }
+
+                    device.setSerialNumber(payload.getSerialNumber());
+                    device.setModelId(payload.getModelId());
+                    device.setModelName(payload.getModelName());
+                    device.setImei(payload.getModemImei());
+                    device.setImsi(payload.getModemImsi());
+                    device.setIccid(payload.getModemIccid());
+                    device.setBiosVersion(payload.getBiosVersion());
+                    device.setFirmwareVersion(payload.getFirmwareVersion());
+                    device.setOsVersion(payload.getOsVersion());
+                    device.setJvmVersion(payload.getJvmVersion());
+                    device.setOsgiFrameworkVersion(payload.getContainerFrameworkVersion());
+                    device.setApplicationFrameworkVersion(payload.getApplicationFrameworkVersion());
+                    device.setConnectionInterface(payload.getConnectionInterface());
+                    device.setConnectionIp(payload.getConnectionIp());
+                    device.setApplicationIdentifiers(payload.getApplicationIdentifiers());
+                    device.setAcceptEncoding(payload.getAcceptEncoding());
+
+                    // issue #57
+                    device.setConnectionId(connectionId);
+
+                    device = deviceRegistryService.update(device);
+                    break;
+                }
+                catch (KapuaOptimisticLockingException e) {
+                    logger.warn("Concurrent update for device {}... try again (if maximum attempts is not reach)", device.getClientId());
+                    if (iteration++ >= MAX_ITERATION) {
+                        throw e;
+                    }
+                    try {
+                        Thread.sleep((long)(Math.random() * MAX_WAIT));
+                    } catch (InterruptedException e1) {
+                        logger.warn("Error while waiting {}", e.getMessage(), e);
+                    }
+                }
             }
-
-            device.setSerialNumber(payload.getSerialNumber());
-            device.setModelId(payload.getModelId());
-            device.setModelName(payload.getModelName());
-            device.setImei(payload.getModemImei());
-            device.setImsi(payload.getModemImsi());
-            device.setIccid(payload.getModemIccid());
-            device.setBiosVersion(payload.getBiosVersion());
-            device.setFirmwareVersion(payload.getFirmwareVersion());
-            device.setOsVersion(payload.getOsVersion());
-            device.setJvmVersion(payload.getJvmVersion());
-            device.setOsgiFrameworkVersion(payload.getContainerFrameworkVersion());
-            device.setApplicationFrameworkVersion(payload.getApplicationFrameworkVersion());
-            device.setConnectionInterface(payload.getConnectionInterface());
-            device.setConnectionIp(payload.getConnectionIp());
-            device.setApplicationIdentifiers(payload.getApplicationIdentifiers());
-            device.setAcceptEncoding(payload.getAcceptEncoding());
-
-            // issue #57
-            device.setConnectionId(connectionId);
-
-            deviceRegistryService.update(device);
+            while(iteration < MAX_ITERATION);
         }
 
         //
