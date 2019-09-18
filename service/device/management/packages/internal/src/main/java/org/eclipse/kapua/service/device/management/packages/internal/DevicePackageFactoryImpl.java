@@ -17,9 +17,11 @@ import org.eclipse.kapua.service.device.management.packages.model.DevicePackage;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageBundleInfo;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageBundleInfos;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
+import org.eclipse.kapua.service.device.management.packages.model.download.AdvancedPackageDownloadOptions;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOperation;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOptions;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
+import org.eclipse.kapua.service.device.management.packages.model.download.internal.AdvancedPackageDownloadOptionsImpl;
 import org.eclipse.kapua.service.device.management.packages.model.download.internal.DevicePackageDownloadOperationImpl;
 import org.eclipse.kapua.service.device.management.packages.model.download.internal.DevicePackageDownloadOptionsImpl;
 import org.eclipse.kapua.service.device.management.packages.model.download.internal.DevicePackageDownloadRequestImpl;
@@ -39,7 +41,7 @@ import org.eclipse.kapua.service.device.management.packages.model.uninstall.inte
 /**
  * {@link DevicePackageFactory} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @KapuaProvider
 public class DevicePackageFactoryImpl implements DevicePackageFactory {
@@ -80,6 +82,11 @@ public class DevicePackageFactoryImpl implements DevicePackageFactory {
     @Override
     public DevicePackageDownloadOptions newDevicePackageDownloadOptions() {
         return new DevicePackageDownloadOptionsImpl();
+    }
+
+    @Override
+    public AdvancedPackageDownloadOptions newAdvancedPackageDownloadOptions() {
+        return new AdvancedPackageDownloadOptionsImpl();
     }
 
     //

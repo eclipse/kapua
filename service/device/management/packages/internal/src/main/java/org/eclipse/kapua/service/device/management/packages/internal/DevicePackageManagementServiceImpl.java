@@ -46,6 +46,7 @@ import org.eclipse.kapua.service.device.management.packages.message.internal.Pac
 import org.eclipse.kapua.service.device.management.packages.message.internal.PackageResponseMessage;
 import org.eclipse.kapua.service.device.management.packages.message.internal.PackageResponsePayload;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
+import org.eclipse.kapua.service.device.management.packages.model.download.AdvancedPackageDownloadOptions;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOperation;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOptions;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
@@ -189,14 +190,30 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         packageRequestChannel.setPackageResource(PackageResource.DOWNLOAD);
 
         PackageRequestPayload packageRequestPayload = new PackageRequestPayload();
+
+        // Basic options
         packageRequestPayload.setOperationId(operationId);
         packageRequestPayload.setPackageDownloadURI(packageDownloadRequest.getUri());
         packageRequestPayload.setPackageDownloadName(packageDownloadRequest.getName());
         packageRequestPayload.setPackageDownloadVersion(packageDownloadRequest.getVersion());
+        packageRequestPayload.setPackageDownloadUsername(packageDownloadRequest.getUsername());
+        packageRequestPayload.setPackageDownloadPassword(packageDownloadRequest.getPassword());
+        packageRequestPayload.setPackageDownloadFileHash(packageDownloadRequest.getFileHash());
+        packageRequestPayload.setPackageDownloadFileType(packageDownloadRequest.getFileType());
         packageRequestPayload.setPackageDownloadnstall(packageDownloadRequest.getInstall());
         packageRequestPayload.setReboot(packageDownloadRequest.getReboot());
         packageRequestPayload.setRebootDelay(packageDownloadRequest.getRebootDelay());
 
+        // Advanced ones
+        AdvancedPackageDownloadOptions advancedOptions = packageDownloadRequest.getAdvancedOptions();
+
+        packageRequestPayload.setPackageDownloadBlockSize(advancedOptions.getBlockSize());
+        packageRequestPayload.setPackageDownloadBlockDelay(advancedOptions.getBlockDelay());
+        packageRequestPayload.setPackageDownloadBlockTimeout(advancedOptions.getBlockTimeout());
+        packageRequestPayload.setPackageDownloadBlockSize(advancedOptions.getNotifyBlockSize());
+        packageRequestPayload.setPackageDownloadInstallVerifierURI(advancedOptions.getInstallVerifierURI());
+
+        // Message
         PackageRequestMessage packageRequestMessage = new PackageRequestMessage();
         packageRequestMessage.setScopeId(scopeId);
         packageRequestMessage.setDeviceId(deviceId);

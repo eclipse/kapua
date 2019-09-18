@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,7 @@ import org.eclipse.kapua.service.device.management.packages.model.DevicePackage;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageBundleInfo;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageBundleInfos;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
+import org.eclipse.kapua.service.device.management.packages.model.download.AdvancedPackageDownloadOptions;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOperation;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOptions;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
@@ -84,6 +85,14 @@ public interface DevicePackageFactory extends KapuaObjectFactory {
     DevicePackageDownloadOptions newDevicePackageDownloadOptions();
 
     /**
+     * Creates a new {@link AdvancedPackageDownloadOptions}
+     *
+     * @return the newly created {@link AdvancedPackageDownloadOptions}
+     * @since 1.1.0
+     */
+    AdvancedPackageDownloadOptions newAdvancedPackageDownloadOptions();
+
+    /**
      * Creates a new {@link DevicePackageDownloadOperation}
      *
      * @return the newly created {@link DevicePackageDownloadOperation}
@@ -110,7 +119,6 @@ public interface DevicePackageFactory extends KapuaObjectFactory {
      * @since 1.1.0
      */
     DevicePackageInstallOptions newDevicePackageInstallOptions();
-
 
     //
     // Uninstall operation
