@@ -41,6 +41,9 @@ public class KapuaSecurityContext extends SecurityContext {
     private boolean hasDeviceView;
     private boolean hasDeviceManage;
 
+    //flag to help the correct lifecycle handling
+    private boolean missing;
+
     public KapuaSecurityContext(KapuaConnectionContext kcc,
             AuthorizationMap authMap) {
         super(kcc.getPrincipal().getName());
@@ -98,5 +101,13 @@ public class KapuaSecurityContext extends SecurityContext {
 
     public KapuaSession getKapuaSession() {
         return kapuaSession;
+    }
+
+    public void setMissing() {
+        missing = true;
+    }
+
+    public boolean isMissing() {
+        return missing;
     }
 }

@@ -17,7 +17,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.broker.core.plugin.Acl;
 import org.eclipse.kapua.broker.core.plugin.KapuaConnectionContext;
-import org.eclipse.kapua.broker.core.plugin.KapuaDuplicateClientIdException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
@@ -100,27 +99,9 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
 
     @Override
     public boolean disconnect(KapuaConnectionContext kcc, Throwable error) {
-        boolean stealingLinkDetected = false;
+        boolean stealingLinkDetected = isStealingLink(kcc, error);
         boolean deviceOwnedByTheCurrentNode = true;
         logger.debug("Old connection id: {} - new connection id: {} - error: {} - error cause: {}", kcc.getOldConnectionId(), kcc.getConnectionId(), error, (error!=null ? error.getCause() : "null"), error);
-        if (kcc.getOldConnectionId() != null) {
-            stealingLinkDetected = !kcc.getOldConnectionId().equals(kcc.getConnectionId());
-        }
-        else {
-            logger.error("Cannot find connection id for client id {} on connection map. Correct connection id is {} - IP: {}",
-                    kcc.getClientId(),
-                    kcc.getConnectionId(),
-                    kcc.getClientIp());
-        }
-        if (!stealingLinkDetected && (error instanceof KapuaDuplicateClientIdException || (error!=null && error.getCause() instanceof KapuaDuplicateClientIdException))) {
-            stealingLinkDetected = true;
-            logger.warn("Detected Stealing link for cliend id {} - account id {} - last connection id was {} - current connection id is {} - IP: {} - No disconnection info will be added!",
-                    kcc.getClientId(),
-                    kcc.getScopeId(),
-                    kcc.getOldConnectionId(),
-                    kcc.getConnectionId(),
-                    kcc.getClientIp());
-        }
         if (stealingLinkDetected) {
             loginMetric.getStealingLinkDisconnect().inc();
             logger.debug("Skip device connection status update since is coming from a stealing link condition. Client id: {} - Connection id: {}",
@@ -151,16 +132,22 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
                             kcc.getClientIp());
                 }
                 if(deviceOwnedByTheCurrentNode) {
-                    deviceConnection.setStatus(error == null ? DeviceConnectionStatus.DISCONNECTED : DeviceConnectionStatus.MISSING);
-                    try {
-                        KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.update(deviceConnection));
-                    } catch (Exception e) {
-                        throw new ShiroException("Error while updating the device connection status!", e);
+                    //update status only if the old status wasn't missing
+                    if (DeviceConnectionStatus.MISSING.equals(deviceConnection.getStatus())) {
+                        logger.warn("Skipping device status update for device {} since last status was MISSING!", deviceConnection.getClientId());
+                    }
+                    else {
+                        deviceConnection.setStatus(error == null && !kcc.isMissing() ? DeviceConnectionStatus.DISCONNECTED : DeviceConnectionStatus.MISSING);
+                        try {
+                            KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.update(deviceConnection));
+                        } catch (Exception e) {
+                            throw new ShiroException("Error while updating the device connection status!", e);
+                        }
                     }
                 }
             }
         }
-        return !stealingLinkDetected && deviceOwnedByTheCurrentNode;
+        return !stealingLinkDetected && deviceOwnedByTheCurrentNode && !kcc.isMissing();
     }
 
     @Override
