@@ -28,7 +28,7 @@ before_script:
   - export PATH=${M2_HOME}/bin:${PATH}
   - export BUILD_OPTS=""
   - export CONFIG_OVERRIDES="-Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true  -Dbroker.host=localhost"
-  - export MAVEN_OPTS="-Xmx1024m"
+  - export MAVEN_OPTS="-Xmx4096m"
   - hash -r
 
 jobs:
@@ -80,7 +80,11 @@ jobs:
     - bash <(curl -s https://codecov.io/bash)
   - stage: test
     script:
-    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @jobEngineService" verify
+    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @jobEngineServiceStart" verify
+    - bash <(curl -s https://codecov.io/bash)
+  - stage: test
+    script:
+    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @jobEngineServiceRestart" verify
     - bash <(curl -s https://codecov.io/bash)
   - stage: test
     script:

@@ -9,7 +9,7 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@jobEngineService
+@jobEngineServiceStart
 @jobEngineStartOnlineDevice
 @integration
 
@@ -37,7 +37,7 @@ Feature: JobEngineService start job tests with online device
 
     Given I start the Kura Mock
     When Device is connected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "CONNECTED"
     When I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -45,18 +45,6 @@ Feature: JobEngineService start job tests with online device
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 1 device event
     And The type of the last event is "BIRTH"
-    And I configure the job service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
-    And I configure the job target service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
-    And I configure the job step service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Command Execution"
@@ -75,10 +63,10 @@ Feature: JobEngineService start job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_OK"
     When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "COMMAND"
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
@@ -90,7 +78,7 @@ Feature: JobEngineService start job tests with online device
 
     Given I start the Kura Mock
     When Device is connected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "CONNECTED"
     When I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -98,18 +86,6 @@ Feature: JobEngineService start job tests with online device
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 1 device event
     And The type of the last event is "BIRTH"
-    And I configure the job service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
-    And I configure the job target service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
-    And I configure the job step service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Command Execution"
@@ -131,7 +107,7 @@ Feature: JobEngineService start job tests with online device
     Then I find 1 device event
     And The type of the last event is "BIRTH"
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
@@ -145,26 +121,14 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     When I start the Kura Mock
     And Device is connected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "CONNECTED"
     And I get the KuraMock device
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
-    And I configure the job service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job target service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job step service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Start"
@@ -183,12 +147,12 @@ Feature: JobEngineService start job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_OK"
     When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 device event
+    Then I find 3 device events
     And The type of the last event is "BUNDLE"
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
     And KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
@@ -202,26 +166,14 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     When I start the Kura Mock
     And Device is connected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "CONNECTED"
     And I get the KuraMock device
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
-    And I configure the job service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job target service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job step service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Start"
@@ -240,12 +192,12 @@ Feature: JobEngineService start job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     Then KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
@@ -259,26 +211,14 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     When I start the Kura Mock
     And Device is connected
-    And I wait 1 seconds
+    And I wait 1 second
     And I get the KuraMock device
     And Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
     Then Device status is "CONNECTED"
     When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
-    And I configure the job service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job target service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job step service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Stop"
@@ -297,12 +237,12 @@ Feature: JobEngineService start job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_OK"
     When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 device event
+    Then I find 3 device events
     And The type of the last event is "BUNDLE"
     Then Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and RESOLVED
     Then KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
@@ -317,26 +257,14 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     When I start the Kura Mock
     And Device is connected
-    And I wait 1 seconds
+    And I wait 1 second
     And I get the KuraMock device
     And Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
     Then Device status is "CONNECTED"
     When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
-    And I configure the job service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job target service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job step service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Stop"
@@ -355,15 +283,15 @@ Feature: JobEngineService start job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Then Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
     And KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
-#
+
     # *****************************************************
     # * Starting a job with one Target and multiple Steps *
     # *****************************************************
@@ -386,19 +314,7 @@ Feature: JobEngineService start job tests with online device
     Then A bundle named org.eclipse.kura.wire.component.conditional.provider with id 128 and version 1.0.0 is present and ACTIVE
     When I search for events from device "rpione3" in account "kapua-sys"
     And The type of the last event is "BUNDLE"
-    Then I find 3 device event
-    And I configure the job service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job target service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job step service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
+    Then I find 3 device events
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Command Execution"
@@ -425,12 +341,12 @@ Feature: JobEngineService start job tests with online device
     And I confirm the step index is 1 and status is "PROCESS_OK"
     When I search for events from device "rpione3" in account "kapua-sys"
     And The type of the last event is "BUNDLE"
-    Then I find 5 device event
+    Then I find 5 device events
     When Command pwd is executed
     And Bundles are requested
     Then A bundle named org.eclipse.kura.wire.component.conditional.provider with id 128 and version 1.0.0 is present and ACTIVE
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
@@ -452,19 +368,7 @@ Feature: JobEngineService start job tests with online device
     Then A bundle named org.eclipse.kura.wire.component.conditional.provider with id 128 and version 1.0.0 is present and ACTIVE
     When I search for events from device "rpione3" in account "kapua-sys"
     And The type of the last event is "BUNDLE"
-    Then I find 3 device event
-    And I configure the job service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job target service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job step service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
+    Then I find 3 device events
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Command Execution"
@@ -496,7 +400,7 @@ Feature: JobEngineService start job tests with online device
     And Bundles are requested
     Then A bundle named org.eclipse.kura.wire.component.conditional.provider with id 128 and version 1.0.0 is present and ACTIVE
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
@@ -510,27 +414,15 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     When I start the Kura Mock
     And Device is connected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "CONNECTED"
     And I get the KuraMock device
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     And A bundle named com.google.guava with id 95 and version 19.0.0 is present and RESOLVED
     When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
-    And I configure the job service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job target service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job step service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Start"
@@ -547,7 +439,7 @@ Feature: JobEngineService start job tests with online device
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I start a job
-    And I wait 30 seconds
+    And I wait 15 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -555,13 +447,13 @@ Feature: JobEngineService start job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 1 and status is "PROCESS_OK"
     When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 4 device event
+    Then I find 4 device events
     And The type of the last event is "BUNDLE"
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
     And A bundle named com.google.guava with id 95 and version 19.0.0 is present and ACTIVE
     And KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
@@ -575,27 +467,15 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     When I start the Kura Mock
     And Device is connected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "CONNECTED"
     And I get the KuraMock device
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     And A bundle named com.google.guava with id 95 and version 19.0.0 is present and RESOLVED
     When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
-    And I configure the job service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job target service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job step service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Start"
@@ -612,7 +492,7 @@ Feature: JobEngineService start job tests with online device
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I start a job
-    And I wait 30 seconds
+    And I wait 15 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -620,13 +500,13 @@ Feature: JobEngineService start job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     And A bundle named com.google.guava with id 95 and version 19.0.0 is present and RESOLVED
     And KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
@@ -640,27 +520,15 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     When I start the Kura Mock
     And Device is connected
-    And I wait 1 seconds
+    And I wait 1 second
     And I get the KuraMock device
     And Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     Then Device status is "CONNECTED"
     When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
-    And I configure the job service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job target service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job step service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Stop"
@@ -677,7 +545,7 @@ Feature: JobEngineService start job tests with online device
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I start a job
-    And I wait 30 seconds
+    And I wait 15 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -685,13 +553,13 @@ Feature: JobEngineService start job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 1 and status is "PROCESS_OK"
     When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 4 device event
+    Then I find 4 device events
     And The type of the last event is "BUNDLE"
     Then Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and RESOLVED
     And A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
     And KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
@@ -705,27 +573,15 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     When I start the Kura Mock
     And Device is connected
-    And I wait 1 seconds
+    And I wait 1 second
     And I get the KuraMock device
     And Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     Then Device status is "CONNECTED"
     When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
-    And I configure the job service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job target service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job step service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Stop"
@@ -742,7 +598,7 @@ Feature: JobEngineService start job tests with online device
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I start a job
-    And I wait 30 seconds
+    And I wait 15 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -750,20 +606,20 @@ Feature: JobEngineService start job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Then Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
     And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     And KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
-    # *****************************************************
-    # * Starting a job with multiple Targets and one Step *
-    # *****************************************************
-
+#    # *****************************************************
+#    # * Starting a job with multiple Targets and one Step *
+#    # *****************************************************
+#
   Scenario: Starting job with valid Command Execution step and multiple devices
   Create a new job. Set a disconnected Kura Mock devices as a job targets.
   Add a new valid Command Execution step to the created job. Start the job.
@@ -774,25 +630,13 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     When I add 2 devices to Kura Mock
     And Devices "are" connected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "CONNECTED"
     And I get the KuraMock devices
     And Command "pwd" is executed
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "COMMAND"
-    And I configure the job service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job target service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job step service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Command Execution"
@@ -812,10 +656,10 @@ Feature: JobEngineService start job tests with online device
     And I confirm the step index is 0 and status is "PROCESS_OK"
     When Command pwd is executed
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 3 device event
+    Then I find 3 device events
     And The type of the last event is "COMMAND"
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
@@ -829,25 +673,13 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     When I add 2 devices to Kura Mock
     And Devices "are" connected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "CONNECTED"
     And I get the KuraMock devices
     And Command "pwd" is executed
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "COMMAND"
-    And I configure the job service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job target service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job step service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Command Execution"
@@ -867,10 +699,10 @@ Feature: JobEngineService start job tests with online device
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When Command pwd is executed
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 3 device event
+    Then I find 3 device events
     And The type of the last event is "COMMAND"
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
@@ -884,27 +716,15 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     When I add 2 devices to Kura Mock
     And Device "are" connected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "CONNECTED"
     And I get the KuraMock devices
     And Bundles are requested
     Then Bundles are received
     Then A bundle named org.eclipse.kura.wire.component.conditional.provider with id 128 and version 1.0.0 is present and ACTIVE
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
-    And I configure the job service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job target service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job step service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Start"
@@ -923,12 +743,12 @@ Feature: JobEngineService start job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_OK"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
     And Bundles are requested
     Then A bundle named org.eclipse.kura.wire.component.conditional.provider with id 128 and version 1.0.0 is present and ACTIVE
     And KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
@@ -942,32 +762,20 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     When I add 2 devices to Kura Mock
     And Device "are" connected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "CONNECTED"
     And I get the KuraMock devices
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
-    And I configure the job service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job target service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job step service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Start"
     And A regular step creator with the name "TestStep" and the following properties
       | name     | type             | value |
-      | bundleId | java.lang.String | *34   |
+      | bundleId | java.lang.String | #34   |
       | timeout  | java.lang.Long   | 10000 |
     When I create a new step entity from the existing creator
     Then No exception was thrown
@@ -980,12 +788,12 @@ Feature: JobEngineService start job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     And KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
@@ -999,26 +807,14 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     When I add 2 devices to Kura Mock
     And Devices "are" connected
-    And I wait 1 seconds
+    And I wait 1 second
     And I get the KuraMock devices
     And Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
     Then Device status is "CONNECTED"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
-    And I configure the job service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job target service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job step service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Stop"
@@ -1039,13 +835,12 @@ Feature: JobEngineService start job tests with online device
     Then Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and RESOLVED
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 3 device event
+    Then I find 3 device events
     And The type of the last event is "BUNDLE"
     Then KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
-
 
   Scenario: Starting a job with invalid Bundle Stop step and multiple devices
   Create a new job and set a connected KuraMock devices as the job targets.
@@ -1057,26 +852,14 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     When I add 2 devices to Kura Mock
     And Devices "are" connected
-    And I wait 1 seconds
+    And I wait 1 second
     And I get the KuraMock devices
     And Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
     Then Device status is "CONNECTED"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
-    And I configure the job service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job target service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job step service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Stop"
@@ -1095,12 +878,12 @@ Feature: JobEngineService start job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Then Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
     And KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
@@ -1118,7 +901,7 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     When I add 2 devices to Kura Mock
     And Devices "are" connected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "CONNECTED"
     And I get the KuraMock devices
     And Command "pwd" is executed
@@ -1126,19 +909,7 @@ Feature: JobEngineService start job tests with online device
     Then A bundle named org.eclipse.kura.wire.component.conditional.provider with id 128 and version 1.0.0 is present and ACTIVE
     When I search for events from device "device0" in account "kapua-sys"
     And The type of the last event is "BUNDLE"
-    Then I find 3 device event
-    And I configure the job service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job target service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job step service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
+    Then I find 3 device events
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Command Execution"
@@ -1165,12 +936,12 @@ Feature: JobEngineService start job tests with online device
     And I confirm the step index is 1 and status is "PROCESS_OK"
     When I search for events from device "device0" in account "kapua-sys"
     And The type of the last event is "BUNDLE"
-    Then I find 3 device event
+    Then I find 3 device events
     When Command pwd is executed
     And Bundles are requested
     Then A bundle named org.eclipse.kura.wire.component.conditional.provider with id 128 and version 1.0.0 is present and ACTIVE
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
@@ -1184,7 +955,7 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     When I add 2 devices to Kura Mock
     And Devices "are" connected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "CONNECTED"
     And I get the KuraMock devices
     And Command "pwd" is executed
@@ -1192,19 +963,7 @@ Feature: JobEngineService start job tests with online device
     Then A bundle named org.eclipse.kura.wire.component.conditional.provider with id 128 and version 1.0.0 is present and ACTIVE
     When I search for events from device "device0" in account "kapua-sys"
     And The type of the last event is "BUNDLE"
-    Then I find 3 device event
-    And I configure the job service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job target service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job step service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
+    Then I find 3 device events
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Command Execution"
@@ -1230,13 +989,13 @@ Feature: JobEngineService start job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 3 device event
+    Then I find 3 device events
     And The type of the last event is "BUNDLE"
     When Command pwd is executed
     And Bundles are requested
     Then A bundle named org.eclipse.kura.wire.component.conditional.provider with id 128 and version 1.0.0 is present and ACTIVE
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
@@ -1250,27 +1009,15 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     When I add 2 devices to Kura Mock
     And Devices "are" connected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "CONNECTED"
     And I get the KuraMock devices
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     And A bundle named com.google.guava with id 95 and version 19.0.0 is present and RESOLVED
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
-    And I configure the job service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job target service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job step service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Start"
@@ -1295,13 +1042,13 @@ Feature: JobEngineService start job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 1 and status is "PROCESS_OK"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
     And A bundle named com.google.guava with id 95 and version 19.0.0 is present and ACTIVE
     And KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
@@ -1315,27 +1062,15 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     When  I add 2 devices to Kura Mock
     And Devices "are" connected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "CONNECTED"
     And I get the KuraMock devices
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     And A bundle named com.google.guava with id 95 and version 19.0.0 is present and RESOLVED
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
-    And I configure the job service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job target service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job step service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Start"
@@ -1360,13 +1095,13 @@ Feature: JobEngineService start job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     And A bundle named com.google.guava with id 95 and version 19.0.0 is present and RESOLVED
     And KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
@@ -1380,27 +1115,15 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     When I add 2 devices to Kura Mock
     And Devices "are" connected
-    And I wait 1 seconds
+    And I wait 1 second
     And I get the KuraMock devices
     And Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
     Then A bundle named org.eclipse.kura.wire.component.conditional.provider with id 128 and version 1.0.0 is present and ACTIVE
     Then Device status is "CONNECTED"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
-    And I configure the job service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job target service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job step service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Stop"
@@ -1425,13 +1148,13 @@ Feature: JobEngineService start job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 1 and status is "PROCESS_OK"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Then Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and RESOLVED
     And A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
     And KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
@@ -1445,27 +1168,15 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     When I add 2 devices to Kura Mock
     And Devices "are" connected
-    And I wait 1 seconds
+    And I wait 1 second
     And I get the KuraMock devices
     And Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
     Then A bundle named org.eclipse.kura.wire.component.conditional.provider with id 128 and version 1.0.0 is present and ACTIVE
     Then Device status is "CONNECTED"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
-    And I configure the job service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job target service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
-    And I configure the job step service
-      | type    | name                   | value |
-      | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Stop"
@@ -1490,13 +1201,13 @@ Feature: JobEngineService start job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device event
+    Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Then Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
     And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     And KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 

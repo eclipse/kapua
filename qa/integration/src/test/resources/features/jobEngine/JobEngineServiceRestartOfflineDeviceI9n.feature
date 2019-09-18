@@ -9,7 +9,7 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@jobEngineService
+@jobEngineServiceRestart
 @jobEngineRestartOfflineDevice
 @integration
 
@@ -40,7 +40,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I wait 1 second
     Then Device status is "CONNECTED"
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I get the KuraMock device
@@ -54,7 +54,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a new step entity from the existing creator
     Then No exception was thrown
     When I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     And I query for the job with the name "TestJob"
     And I query for the execution items for the current job
     Then I count 1
@@ -74,7 +74,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I wait 1 second
     Then Device status is "CONNECTED"
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I get the KuraMock device
@@ -88,7 +88,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a new step entity from the existing creator
     Then No exception was thrown
     When I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     And I query for the job with the name "TestJob"
     And I query for the execution items for the current job
     Then I count 1
@@ -108,7 +108,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I wait 1 second
     Then Device status is "CONNECTED"
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I get the KuraMock device
@@ -122,7 +122,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a new step entity from the existing creator
     Then No exception was thrown
     When I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     And I query for the job with the name "TestJob"
     And I query for the execution items for the current job
     Then I count 1
@@ -145,7 +145,7 @@ Feature: JobEngineService tests for restarting job with offline device
     When Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock device
     And I create a job with the name "TestJob"
@@ -158,7 +158,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a new step entity from the existing creator
     Then No exception was thrown
     When I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     And I query for the job with the name "TestJob"
     And I query for the execution items for the current job
     Then I count 1
@@ -181,7 +181,7 @@ Feature: JobEngineService tests for restarting job with offline device
     When Bundles are requested
     Then A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock device
     And I create a job with the name "TestJob"
@@ -194,7 +194,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a new step entity from the existing creator
     Then No exception was thrown
     When I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     And I query for the job with the name "TestJob"
     And I query for the execution items for the current job
     Then I count 1
@@ -217,7 +217,7 @@ Feature: JobEngineService tests for restarting job with offline device
     When Packages are requested
     Then Number of received packages is 1
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock device
     And I create a job with the name "TestJob"
@@ -230,7 +230,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a new step entity from the existing creator
     Then No exception was thrown
     When I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     And I query for the job with the name "TestJob"
     And I query for the execution items for the current job
     Then I count 1
@@ -253,7 +253,7 @@ Feature: JobEngineService tests for restarting job with offline device
     When Packages are requested
     Then Number of received packages is 1
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock device
     And I create a job with the name "TestJob"
@@ -266,7 +266,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a new step entity from the existing creator
     Then No exception was thrown
     When I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     And I query for the job with the name "TestJob"
     And I query for the execution items for the current job
     Then I count 1
@@ -294,7 +294,7 @@ Feature: JobEngineService tests for restarting job with offline device
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock device
     And I create a job with the name "TestJob"
@@ -314,7 +314,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     When I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     And I query for the job with the name "TestJob"
     And I query for the execution items for the current job
     Then I count 1
@@ -338,7 +338,7 @@ Feature: JobEngineService tests for restarting job with offline device
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock device
     And I create a job with the name "TestJob"
@@ -358,7 +358,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     When I restart a job
-    And I wait 1 second
+    And I wait 2 seconds
     And I query for the job with the name "TestJob"
     And I query for the execution items for the current job
     Then I count 1
@@ -383,7 +383,7 @@ Feature: JobEngineService tests for restarting job with offline device
     When Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock device
     And I create a job with the name "TestJob"
@@ -402,7 +402,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     And I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -427,7 +427,7 @@ Feature: JobEngineService tests for restarting job with offline device
     When Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock device
     And I create a job with the name "TestJob"
@@ -446,7 +446,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     When I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     And I query for the job with the name "TestJob"
     And I query for the execution items for the current job
     Then I count 1
@@ -469,7 +469,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     And KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock device
     Given I create a job with the name "TestJob"
@@ -488,7 +488,7 @@ Feature: JobEngineService tests for restarting job with offline device
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -511,7 +511,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock device
     Given I create a job with the name "TestJob"
@@ -530,7 +530,7 @@ Feature: JobEngineService tests for restarting job with offline device
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -553,7 +553,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock device
     Given I create a job with the name "TestJob"
@@ -572,7 +572,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -599,7 +599,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock devices
     Given I create a job with the name "TestJob"
@@ -614,13 +614,12 @@ Feature: JobEngineService tests for restarting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
     And I confirm the executed job is finished
     And I search for the last job target in the database
-    And I wait 5 seconds
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
 
@@ -638,7 +637,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock devices
     Given I create a job with the name "TestJob"
@@ -653,13 +652,12 @@ Feature: JobEngineService tests for restarting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
     And I confirm the executed job is finished
     And I search for the last job target in the database
-    And I wait 3 seconds
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
 
@@ -677,7 +675,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And Packages are requested
     And Number of received packages is 1
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock devices
     Given I create a job with the name "TestJob"
@@ -692,7 +690,7 @@ Feature: JobEngineService tests for restarting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -715,7 +713,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And Packages are requested
     And Number of received packages is 1
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock devices
     Given I create a job with the name "TestJob"
@@ -730,13 +728,12 @@ Feature: JobEngineService tests for restarting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
     And I confirm the executed job is finished
     And I search for the last job target in the database
-    And I wait 5 seconds
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
 
@@ -752,7 +749,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I wait 1 second
     Then Device status is "CONNECTED"
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock devices
     Given I create a job with the name "TestJob"
@@ -767,7 +764,7 @@ Feature: JobEngineService tests for restarting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -789,7 +786,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I wait 1 second
     Then Device status is "CONNECTED"
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock devices
     Given I create a job with the name "TestJob"
@@ -804,13 +801,12 @@ Feature: JobEngineService tests for restarting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
     And I confirm the executed job is finished
     And I search for the last job target in the database
-    And I wait 5 seconds
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
 
@@ -826,7 +822,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I wait 1 second
     Then Device status is "CONNECTED"
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock devices
     Given I create a job with the name "TestJob"
@@ -841,13 +837,12 @@ Feature: JobEngineService tests for restarting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
     And I confirm the executed job is finished
     And I search for the last job target in the database
-    And I wait 5 seconds
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
 
@@ -870,7 +865,7 @@ Feature: JobEngineService tests for restarting job with offline device
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock devices
     Given I create a job with the name "TestJob"
@@ -892,13 +887,12 @@ Feature: JobEngineService tests for restarting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
     And I confirm the executed job is finished
     And I search for the last job target in the database
-    And I wait 5 seconds
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
 
@@ -917,7 +911,7 @@ Feature: JobEngineService tests for restarting job with offline device
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock devices
     Given I create a job with the name "TestJob"
@@ -939,13 +933,12 @@ Feature: JobEngineService tests for restarting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
     And I confirm the executed job is finished
     And I search for the last job target in the database
-    And I wait 5 seconds
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
 
@@ -965,7 +958,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock devices
     Given I create a job with the name "TestJob"
@@ -987,7 +980,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -1012,7 +1005,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock devices
     Given I create a job with the name "TestJob"
@@ -1034,13 +1027,12 @@ Feature: JobEngineService tests for restarting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
     And I confirm the executed job is finished
     And I search for the last job target in the database
-    And I wait 5 seconds
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
 
@@ -1058,7 +1050,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock devices
     Given I create a job with the name "TestJob"
@@ -1080,7 +1072,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -1103,7 +1095,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock devices
     Given I create a job with the name "TestJob"
@@ -1125,7 +1117,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -1148,7 +1140,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     When KuraMock is disconnected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "DISCONNECTED"
     And I get the KuraMock devices
     Given I create a job with the name "TestJob"
@@ -1170,7 +1162,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I restart a job
-    And I wait 5 seconds
+    And I wait 2 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
