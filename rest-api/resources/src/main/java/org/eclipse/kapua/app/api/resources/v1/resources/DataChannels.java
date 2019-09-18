@@ -21,8 +21,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import io.swagger.annotations.Authorization;
-
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.StorableEntityId;
@@ -43,11 +41,6 @@ import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 
 import com.google.common.base.Strings;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
-@Api(value = "Data Channels", authorizations = { @Authorization(value = "kapuaAccessToken") })
 @Path("{scopeId}/data/channels")
 public class DataChannels extends AbstractKapuaResource {
 
@@ -74,18 +67,15 @@ public class DataChannels extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "dataChannelSimpleQuery",
-            value = "Gets the ChannelInfo list in the scope", //
-            notes = "Returns the list of all the channelInfos associated to the current selected scope.", //
-            response = ChannelInfoListResult.class)
+
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public ChannelInfoListResult simpleQuery( //
-            @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,//
-            @ApiParam(value = "The client id to filter results") @QueryParam("clientId") String clientId, //
-            @ApiParam(value = "The channel name to filter results. It allows '#' wildcard in last channel level") @QueryParam("name") String name, //
-            @ApiParam(value = "The result set offset", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,//
-            @ApiParam(value = "The result set limit", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,//
+            @QueryParam("clientId") String clientId, //
+            @QueryParam("name") String name, //
+            @QueryParam("offset") @DefaultValue("0") int offset,//
+            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
         AndPredicate andPredicate = new AndPredicateImpl();
         if (!Strings.isNullOrEmpty(clientId)) {
             TermPredicate clientIdPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(ChannelInfoField.CLIENT_ID, clientId);
@@ -121,13 +111,10 @@ public class DataChannels extends AbstractKapuaResource {
     @Path("_query")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @ApiOperation(nickname = "dataChannelQuery",
-            value = "Queries the ChannelInfos", //
-            notes = "Queries the ChannelInfos with the given ChannelInfoQuery parameter returning all matching ChannelInfos",  //
-            response = ChannelInfoListResult.class)  //
+      //
     public ChannelInfoListResult query( //
-            @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "The ChannelInfoQuery to use to filter results", required = true) ChannelInfoQuery query) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId, //
+            ChannelInfoQuery query) throws Exception {
         query.setScopeId(scopeId);
         query.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
         return CHANNEL_INFO_REGISTRY_SERVICE.query(query);
@@ -149,13 +136,10 @@ public class DataChannels extends AbstractKapuaResource {
     @Path("_count")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @ApiOperation(nickname = "dataChannelCount",
-            value = "Counts the ChannelInfos", //
-            notes = "Counts the ChannelInfos with the given ChannelInfoQuery parameter returning the number of matching ChannelInfos", //
-            response = CountResult.class)
+
     public CountResult count( //
-            @ApiParam(value = "The ScopeId in which to search results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "The ChannelInfoQuery to use to filter count results", required = true) ChannelInfoQuery query) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId, //
+            ChannelInfoQuery query) throws Exception {
         query.setScopeId(scopeId);
 
         return new CountResult(CHANNEL_INFO_REGISTRY_SERVICE.count(query));
@@ -174,13 +158,10 @@ public class DataChannels extends AbstractKapuaResource {
     @GET
     @Path("{channelInfoId}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @ApiOperation(nickname = "dataChannelFind",
-            value = "Gets an ChannelInfo", //
-            notes = "Gets the ChannelInfo specified by the channelInfoId path parameter", //
-            response = ChannelInfo.class)
+
     public ChannelInfo find( //
-            @ApiParam(value = "The ScopeId of the requested ChannelInfo.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The id of the requested ChannelInfo", required = true) @PathParam("channelInfoId") StorableEntityId channelInfoId) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("channelInfoId") StorableEntityId channelInfoId) throws Exception {
         ChannelInfo channelInfo = CHANNEL_INFO_REGISTRY_SERVICE.find(scopeId, channelInfoId);
 
         return returnNotNullEntity(channelInfo);

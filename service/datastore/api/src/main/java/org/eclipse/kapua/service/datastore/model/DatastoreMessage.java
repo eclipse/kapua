@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.model;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
@@ -99,7 +98,6 @@ public interface DatastoreMessage extends Storable {
      */
     @XmlElement(name = "scopeId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getScopeId();
 
     /**

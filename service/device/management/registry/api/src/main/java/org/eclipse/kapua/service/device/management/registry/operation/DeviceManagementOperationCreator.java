@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.registry.operation;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
@@ -42,7 +41,6 @@ public interface DeviceManagementOperationCreator extends KapuaEntityCreator<Dev
 
     @XmlElement(name = "deviceId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getDeviceId();
 
     void setDeviceId(KapuaId deviceId);
@@ -50,7 +48,6 @@ public interface DeviceManagementOperationCreator extends KapuaEntityCreator<Dev
 
     @XmlElement(name = "operationId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getOperationId();
 
     void setOperationId(KapuaId operationId);

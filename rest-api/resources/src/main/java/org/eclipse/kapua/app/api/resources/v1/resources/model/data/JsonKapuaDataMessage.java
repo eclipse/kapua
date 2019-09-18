@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources.model.data;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.message.JsonKapuaPayload;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.KapuaPosition;
@@ -72,7 +71,6 @@ public class JsonKapuaDataMessage {
 
     @XmlElement(name = "scopeId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     public KapuaId getScopeId() {
         return scopeId;
     }
@@ -83,7 +81,6 @@ public class JsonKapuaDataMessage {
 
     @XmlElement(name = "deviceId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     public KapuaId getDeviceId() {
         return deviceId;
     }

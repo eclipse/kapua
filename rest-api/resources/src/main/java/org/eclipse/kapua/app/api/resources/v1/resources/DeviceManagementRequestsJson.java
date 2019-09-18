@@ -11,10 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
 import org.eclipse.kapua.app.api.resources.v1.resources.marker.JsonSerializationFixed;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
@@ -40,7 +36,6 @@ import javax.ws.rs.core.MediaType;
 /**
  * @see JsonSerializationFixed
  */
-@Api(value = "Devices", authorizations = { @Authorization(value = "kapuaAccessToken") })
 @Path("{scopeId}/devices/{deviceId}/requests")
 public class DeviceManagementRequestsJson extends AbstractKapuaResource implements JsonSerializationFixed {
 
@@ -64,12 +59,11 @@ public class DeviceManagementRequestsJson extends AbstractKapuaResource implemen
     @POST
     @Consumes({ MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_JSON })
-    @ApiOperation(nickname = "deviceRequestSend", value = "Sends a request", notes = "Sends a request message to a device", response = JsonGenericResponseMessage.class)
     public JsonGenericResponseMessage sendRequest(
-            @ApiParam(value = "The ScopeId of the device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The id of the device", required = true) @PathParam("deviceId") EntityId deviceId,
-            @ApiParam(value = "The timeout of the request execution") @QueryParam("timeout") Long timeout,
-            @ApiParam(value = "The input request", required = true) JsonGenericRequestMessage jsonGenericRequestMessage) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("deviceId") EntityId deviceId,
+            @QueryParam("timeout") Long timeout,
+            JsonGenericRequestMessage jsonGenericRequestMessage) throws Exception {
 
         GenericRequestMessage genericRequestMessage = GENERIC_REQUEST_FACTORY.newRequestMessage();
 

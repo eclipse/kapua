@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
@@ -89,7 +88,6 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
      */
     @XmlElement(name = "userId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getUserId();
 
     /**
@@ -136,7 +134,6 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
      */
     @XmlElement(name = "reservedUserId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getReservedUserId();
 
     /**

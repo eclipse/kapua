@@ -70,7 +70,6 @@ public class JsonKapuaPayload {
 
     @XmlElement(name = "body")
     @XmlJavaTypeAdapter(BinaryXmlAdapter.class)
-    @ApiModelProperty(dataType = "string")
     public byte[] getBody() {
         return body;
     }

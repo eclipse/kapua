@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -64,7 +63,6 @@ public interface DeviceEvent extends KapuaEntity {
      */
     @XmlElement(name = "deviceId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getDeviceId();
 
     /**

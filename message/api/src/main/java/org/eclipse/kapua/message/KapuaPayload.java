@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.message;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.commons.util.Payloads;
 import org.eclipse.kapua.message.xml.MessageXmlRegistry;
 import org.eclipse.kapua.message.xml.MetricsXmlAdapter;
@@ -62,7 +61,6 @@ public interface KapuaPayload extends Payload {
      */
     @XmlElement(name = "body")
     @XmlJavaTypeAdapter(BinaryXmlAdapter.class)
-    @ApiModelProperty(dataType = "string")
     byte[] getBody();
 
     /**

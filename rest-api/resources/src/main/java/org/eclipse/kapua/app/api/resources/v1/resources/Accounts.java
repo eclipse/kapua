@@ -12,10 +12,6 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
@@ -44,7 +40,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Api(value = "Accounts", authorizations = {@Authorization(value = "kapuaAccessToken")})
 @Path("{scopeId}/accounts")
 public class Accounts extends AbstractKapuaResource {
 
@@ -63,17 +58,12 @@ public class Accounts extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "accountSimpleQuery",
-            value = "Gets the Account list in the scope", //
-            notes = "Returns the list of all the accounts associated to the current selected scope.", //
-            response = AccountListResult.class) //
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public AccountListResult simpleQuery( //
-                                          @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-                                          @ApiParam(value = "The account name to filter results.") @QueryParam("name") String name, //
-                                          @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset, //
-                                          @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+    public AccountListResult simpleQuery(@PathParam("scopeId") ScopeId scopeId, //
+                                         @QueryParam("name") String name, //
+                                         @QueryParam("offset") @DefaultValue("0") int offset, //
+                                         @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
 
         AccountQuery query = accountFactory.newQuery(scopeId);
 
@@ -98,17 +88,14 @@ public class Accounts extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "accountQuery",
-            value = "Queries the Accounts", //
-            notes = "Queries the Accounts with the given AccountQuery parameter returning all matching Accounts", //
-            response = AccountListResult.class) //
+    //
     @POST
     @Path("_query")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public AccountListResult query(
-            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "The AccountQuery to use to filter results.", required = true) AccountQuery query) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId, //
+            AccountQuery query) throws Exception {
         query.setScopeId(scopeId);
 
         return accountService.query(query);
@@ -123,17 +110,14 @@ public class Accounts extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "accountCount",
-            value = "Counts the Accounts", //
-            notes = "Counts the Accounts with the given AccountQuery parameter returning the number of matching Accounts", //
-            response = CountResult.class)
+
     @POST
     @Path("_count")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public CountResult count(
-            @ApiParam(value = "The ScopeId in which to count results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "The AccountQuery to use to filter count results", required = true) AccountQuery query) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId, //
+            AccountQuery query) throws Exception {
         query.setScopeId(scopeId);
 
         return new CountResult(accountService.count(query));
@@ -149,16 +133,13 @@ public class Accounts extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "accountCreate",
-            value = "Create an Account",  //
-            notes = "Creates a new Account based on the information provided in AccountCreator parameter.",  //
-            response = Account.class)
+
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Account create(
-            @ApiParam(value = "The ScopeId in which to create the Account", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "Provides the information for the new Account to be created", required = true) AccountCreator accountCreator) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId, //
+            AccountCreator accountCreator) throws Exception {
         accountCreator.setScopeId(scopeId);
 
         return accountService.create(accountCreator);
@@ -173,16 +154,13 @@ public class Accounts extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "accountFind",
-            value = "Get an Account",  //
-            notes = "Returns the Account specified by the \"accountId\" path parameter.",  //
-            response = Account.class)
+
     @GET
     @Path("{accountId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Account find(
-            @ApiParam(value = "The ScopeId of the requested Account.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "The id of the requested Account", required = true) @PathParam("accountId") EntityId accountId) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId, //
+            @PathParam("accountId") EntityId accountId) throws Exception {
         Account account = accountService.find(scopeId, accountId);
 
         if (account == null) {
@@ -202,18 +180,15 @@ public class Accounts extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "accountUpdate",
-            value = "Update an Account",  //
-            notes = "Updates a new Account based on the information provided in the Account parameter.",  //
-            response = Account.class)
+
     @PUT
     @Path("{accountId}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Account update(
-            @ApiParam(value = "The ScopeId of the requested Account.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "The id of the requested Account", required = true) @PathParam("accountId") EntityId accountId, //
-            @ApiParam(value = "The modified Account whose attributes needs to be updated", required = true) Account account) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId, //
+            @PathParam("accountId") EntityId accountId, //
+            Account account) throws Exception {
         account.setScopeId(scopeId);
         account.setId(accountId);
 
@@ -229,14 +204,12 @@ public class Accounts extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "accountDelete",
-            value = "Delete an Account",  //
-            notes = "Deletes the Account specified by the \"accountId\" path parameter.")
+
     @DELETE
     @Path("{accountId}")
     public Response deleteAccount(
-            @ApiParam(value = "The ScopeId of the Account to delete.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId, //
-            @ApiParam(value = "The id of the Account to be deleted", required = true) @PathParam("accountId") EntityId accountId) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId, //
+            @PathParam("accountId") EntityId accountId) throws Exception {
         accountService.delete(scopeId, accountId);
 
         return returnOk();

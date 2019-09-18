@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.tag;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
@@ -43,7 +42,6 @@ public interface Taggable {
      */
     @XmlElement(name = "tagId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     <I extends KapuaId> Set<I> getTagIds();
 
 }

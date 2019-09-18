@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.registry.operation.notification;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
@@ -52,7 +51,6 @@ public interface ManagementOperationNotification extends KapuaEntity {
      */
     @XmlElement(name = "operationId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getOperationId();
 
     /**
