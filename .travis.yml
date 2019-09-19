@@ -75,11 +75,11 @@ jobs:
     - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @jobs" verify
     - bash <(curl -s https://codecov.io/bash)
   - stage: test
-      script:
-    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @account"  verify
+    script:
+    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @account" verify
     - bash <(curl -s https://codecov.io/bash)
   - stage: test
-      script:
+    script:
     - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @jobEngineService" verify
     - bash <(curl -s https://codecov.io/bash)
   - stage: test
