@@ -36,7 +36,6 @@ jobs:
   - stage: build
     script:
     - $M2_HOME/bin/mvn -v
-    - $M2_HOME/bin/mvn -B -f external/pom.xml install
     - $M2_HOME/bin/mvn -B ${BUILD_OPTS} -DskipTests clean install
   - stage: test
     script:

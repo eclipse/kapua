@@ -209,10 +209,40 @@
             <groupId>org.slf4j</groupId>
             <artifactId>log4j-over-slf4j</artifactId>
         </dependency>
+
+        <!-- Swagger UI -->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>swagger-ui</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-swagger-ui</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.webjars</groupId>
+                                    <artifactId>swagger-ui</artifactId>
+                                    <version>${swagger-ui.version}</version>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/tmp/swagger-ui</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
