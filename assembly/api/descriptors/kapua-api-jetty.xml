@@ -38,4 +38,17 @@
 
         </dependencySet>
     </dependencySets>
+    <fileSets>
+        <fileSet>
+            <outputDirectory>var/opt/jetty/webapps/root/doc</outputDirectory>
+            <directory>${project.basedir}/resources</directory>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>var/opt/jetty/webapps/root/doc</outputDirectory>
+            <directory>${project.build.directory}/tmp/swagger-ui/META-INF/resources/webjars/swagger-ui/${swagger-ui.version}</directory>
+            <excludes>
+                <exclude>*.gz</exclude>
+            </excludes>
+        </fileSet>
+    </fileSets>
 </assembly>

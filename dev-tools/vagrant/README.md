@@ -50,9 +50,8 @@ $ java -cp /usr/local/h2/h2*.jar org.h2.tools.Server -baseDir /home/vagrant/H2/k
 
 ## Running the Kapua dev-box
 
-Run a full _Kapua_ project build from the project root directory outside of the Vagrant box. If 
+Run a full _Kapua_ project build from the project root directory outside of the Vagrant box.
 ```
-$ mvn clean install -f external/pom.xml
 $ mvn clean install -DskipTests -P console
 ```
 
