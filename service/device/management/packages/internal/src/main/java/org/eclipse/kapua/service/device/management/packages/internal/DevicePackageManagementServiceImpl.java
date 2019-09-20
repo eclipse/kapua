@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.internal;
 
+import com.google.common.base.MoreObjects;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
@@ -38,6 +39,8 @@ import org.eclipse.kapua.service.device.management.packages.internal.exception.P
 import org.eclipse.kapua.service.device.management.packages.internal.exception.PackageInstallStatusManagementException;
 import org.eclipse.kapua.service.device.management.packages.internal.exception.PackageUninstallExecuteManagementException;
 import org.eclipse.kapua.service.device.management.packages.internal.exception.PackageUninstallStatusManagementException;
+import org.eclipse.kapua.service.device.management.packages.internal.setting.PackageManagementServiceSetting;
+import org.eclipse.kapua.service.device.management.packages.internal.setting.PackageManagementServiceSettingKeys;
 import org.eclipse.kapua.service.device.management.packages.message.internal.PackageAppProperties;
 import org.eclipse.kapua.service.device.management.packages.message.internal.PackageRequestChannel;
 import org.eclipse.kapua.service.device.management.packages.message.internal.PackageRequestMessage;
@@ -72,6 +75,8 @@ import java.util.Date;
 public class DevicePackageManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DevicePackageManagementService {
 
     private static final DevicePackageFactory DEVICE_PACKAGE_FACTORY = LOCATOR.getFactory(DevicePackageFactory.class);
+
+    private static final PackageManagementServiceSetting PACKAGE_MANAGEMENT_SERVICE_SETTING = PackageManagementServiceSetting.getInstance();
 
     //
     // Installed
@@ -207,10 +212,10 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         // Advanced ones
         AdvancedPackageDownloadOptions advancedOptions = packageDownloadRequest.getAdvancedOptions();
 
-        packageRequestPayload.setPackageDownloadBlockSize(advancedOptions.getBlockSize());
-        packageRequestPayload.setPackageDownloadBlockDelay(advancedOptions.getBlockDelay());
-        packageRequestPayload.setPackageDownloadBlockTimeout(advancedOptions.getBlockTimeout());
-        packageRequestPayload.setPackageDownloadBlockSize(advancedOptions.getNotifyBlockSize());
+        packageRequestPayload.setPackageDownloadBlockSize(MoreObjects.firstNonNull(advancedOptions.getBlockSize(), PACKAGE_MANAGEMENT_SERVICE_SETTING.getInt(PackageManagementServiceSettingKeys.PACKAGE_MANAGEMENT_SERVICE_SETTING_DOWDLOAD_DEFAULT_BLOCK_SIZE)));
+        packageRequestPayload.setPackageDownloadBlockDelay(MoreObjects.firstNonNull(advancedOptions.getBlockDelay(), PACKAGE_MANAGEMENT_SERVICE_SETTING.getInt(PackageManagementServiceSettingKeys.PACKAGE_MANAGEMENT_SERVICE_SETTING_DOWDLOAD_DEFAULT_BLOCK_DELAY)));
+        packageRequestPayload.setPackageDownloadBlockTimeout(MoreObjects.firstNonNull(advancedOptions.getBlockTimeout(), PACKAGE_MANAGEMENT_SERVICE_SETTING.getInt(PackageManagementServiceSettingKeys.PACKAGE_MANAGEMENT_SERVICE_SETTING_DOWDLOAD_DEFAULT_BLOCK_TIMEOUT)));
+        packageRequestPayload.setPackageDownloadBlockSize(MoreObjects.firstNonNull(advancedOptions.getNotifyBlockSize(), PACKAGE_MANAGEMENT_SERVICE_SETTING.getInt(PackageManagementServiceSettingKeys.PACKAGE_MANAGEMENT_SERVICE_SETTING_DOWDLOAD_DEFAULT_NOTIFY_BLOCK_SIZE)));
         packageRequestPayload.setPackageDownloadInstallVerifierURI(advancedOptions.getInstallVerifierURI());
 
         // Message
