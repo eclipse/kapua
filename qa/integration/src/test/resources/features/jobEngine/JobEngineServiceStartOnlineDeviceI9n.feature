@@ -408,7 +408,7 @@ Feature: JobEngineService start job tests with online device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I start a job
-    And I wait 15 seconds
+    And I wait 30 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -812,7 +812,7 @@ Feature: JobEngineService start job tests with online device
     Then I find 2 device events
     And The type of the last event is "COMMAND"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Command Execution"
     And A regular step creator with the name "TestStep" and the following properties
       | name         | type                                                                   | value                                                                                                                                                 |
@@ -830,7 +830,7 @@ Feature: JobEngineService start job tests with online device
     And I confirm the step index is 0 and status is "PROCESS_OK"
     When Command pwd is executed
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 3 device events
+    Then I find 4 device events
     And The type of the last event is "COMMAND"
     When KuraMock is disconnected
     And I wait 1 second
@@ -855,7 +855,7 @@ Feature: JobEngineService start job tests with online device
     Then I find 2 device events
     And The type of the last event is "COMMAND"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Command Execution"
     And A regular step creator with the name "TestStep" and the following properties
       | name         | type                                                                   | value                                                                                                                                                 |
@@ -900,7 +900,7 @@ Feature: JobEngineService start job tests with online device
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Start"
     And A regular step creator with the name "TestStep" and the following properties
       | name     | type             | value |
@@ -917,7 +917,7 @@ Feature: JobEngineService start job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_OK"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device events
+    Then I find 3 device events
     And The type of the last event is "BUNDLE"
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
@@ -945,7 +945,7 @@ Feature: JobEngineService start job tests with online device
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Start"
     And A regular step creator with the name "TestStep" and the following properties
       | name     | type             | value |
@@ -990,7 +990,7 @@ Feature: JobEngineService start job tests with online device
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Stop"
     And A regular step creator with the name "TestStep" and the following properties
       | name     | type             | value |
@@ -1009,7 +1009,7 @@ Feature: JobEngineService start job tests with online device
     Then Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and RESOLVED
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 3 device events
+    Then I find 4 device events
     And The type of the last event is "BUNDLE"
     Then KuraMock is disconnected
     And I wait 1 second
@@ -1035,7 +1035,7 @@ Feature: JobEngineService start job tests with online device
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Stop"
     And A regular step creator with the name "TestStep" and the following properties
       | name     | type             | value |
@@ -1044,7 +1044,7 @@ Feature: JobEngineService start job tests with online device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 15 seconds
+    And I wait 30 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -1160,7 +1160,7 @@ Feature: JobEngineService start job tests with online device
     And The type of the last event is "BUNDLE"
     Then I find 3 device events
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Command Execution"
     And A regular step creator with the name "TestStep" and the following properties
       | name         | type                                                                   | value                                                                                                                                                 |
@@ -1176,7 +1176,7 @@ Feature: JobEngineService start job tests with online device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I start a job
-    And I wait 15 seconds
+    And I wait 30 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -1185,7 +1185,7 @@ Feature: JobEngineService start job tests with online device
     And I confirm the step index is 1 and status is "PROCESS_OK"
     When I search for events from device "device0" in account "kapua-sys"
     And The type of the last event is "BUNDLE"
-    Then I find 3 device events
+    Then I find 5 device events
     When Command pwd is executed
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
@@ -1214,7 +1214,7 @@ Feature: JobEngineService start job tests with online device
     And The type of the last event is "BUNDLE"
     Then I find 3 device events
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Command Execution"
     And A regular step creator with the name "TestStep" and the following properties
       | name         | type                                                                   | value                                                                                                                                                 |
@@ -1268,7 +1268,7 @@ Feature: JobEngineService start job tests with online device
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Start"
     And A regular step creator with the name "TestStep1" and the following properties
       | name     | type             | value |
@@ -1291,7 +1291,7 @@ Feature: JobEngineService start job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 1 and status is "PROCESS_OK"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device events
+    Then I find 4 device events
     And The type of the last event is "BUNDLE"
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
@@ -1321,7 +1321,7 @@ Feature: JobEngineService start job tests with online device
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Start"
     And A regular step creator with the name "TestStep1" and the following properties
       | name     | type             | value |
@@ -1374,7 +1374,7 @@ Feature: JobEngineService start job tests with online device
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Stop"
     And A regular step creator with the name "TestStep1" and the following properties
       | name     | type             | value |
@@ -1397,7 +1397,7 @@ Feature: JobEngineService start job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 1 and status is "PROCESS_OK"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device events
+    Then I find 4 device events
     And The type of the last event is "BUNDLE"
     Then Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and RESOLVED
@@ -1427,7 +1427,7 @@ Feature: JobEngineService start job tests with online device
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Stop"
     And A regular step creator with the name "TestStep1" and the following properties
       | name     | type             | value |
