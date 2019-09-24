@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,26 +11,35 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.model.download.internal;
 
-import java.net.URI;
-
+import org.eclipse.kapua.service.device.management.packages.model.FileType;
+import org.eclipse.kapua.service.device.management.packages.model.download.AdvancedPackageDownloadOptions;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
 
+import java.net.URI;
+
 /**
- * Device package download request.
- * 
- * @since 1.0
+ * {@link DevicePackageDownloadRequest} implementation.
  *
+ * @since 1.0.0
  */
 public class DevicePackageDownloadRequestImpl implements DevicePackageDownloadRequest {
 
-    public URI uri;
-    public String name;
-    public String version;
+    private URI uri;
+    private String name;
+    private String version;
 
-    public Boolean install;
+    private String username;
+    private String password;
 
-    public Boolean reboot;
-    public Integer rebootDelay;
+    private String fileHash;
+    private FileType fileType;
+
+    private Boolean install;
+
+    private Boolean reboot;
+    private Integer rebootDelay;
+
+    private AdvancedPackageDownloadOptionsImpl advancedOptions;
 
     @Override
     public URI getUri() {
@@ -68,6 +77,46 @@ public class DevicePackageDownloadRequestImpl implements DevicePackageDownloadRe
     }
 
     @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public String getFileHash() {
+        return fileHash;
+    }
+
+    @Override
+    public void setFileHash(String fileHash) {
+        this.fileHash = fileHash;
+    }
+
+    @Override
+    public FileType getFileType() {
+        return fileType;
+    }
+
+    @Override
+    public void setFileType(FileType fileType) {
+        this.fileType = fileType;
+    }
+
+    @Override
     public void setInstall(Boolean install) {
         this.install = install;
     }
@@ -90,5 +139,19 @@ public class DevicePackageDownloadRequestImpl implements DevicePackageDownloadRe
     @Override
     public void setRebootDelay(Integer rebootDelay) {
         this.rebootDelay = rebootDelay;
+    }
+
+    @Override
+    public AdvancedPackageDownloadOptions getAdvancedOptions() {
+        if (advancedOptions == null) {
+            advancedOptions = new AdvancedPackageDownloadOptionsImpl();
+        }
+
+        return advancedOptions;
+    }
+
+    @Override
+    public void setAdvancedOptions(AdvancedPackageDownloadOptions advancedOptions) {
+        this.advancedOptions = AdvancedPackageDownloadOptionsImpl.parse(advancedOptions);
     }
 }

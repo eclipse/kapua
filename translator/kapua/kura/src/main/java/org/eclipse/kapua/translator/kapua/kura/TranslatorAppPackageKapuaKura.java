@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.call.kura.app.PackageMetrics;
@@ -23,6 +22,7 @@ import org.eclipse.kapua.service.device.management.packages.message.internal.Pac
 import org.eclipse.kapua.service.device.management.packages.message.internal.PackageRequestChannel;
 import org.eclipse.kapua.service.device.management.packages.message.internal.PackageRequestMessage;
 import org.eclipse.kapua.service.device.management.packages.message.internal.PackageRequestPayload;
+import org.eclipse.kapua.service.device.management.packages.model.FileType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,9 +30,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Messages translator implementation from {@link PackageRequestMessage} to {@link KuraRequestMessage}
+ * Messages {@link org.eclipse.kapua.translator.Translator} implementation from {@link PackageRequestMessage} to {@link KuraRequestMessage}
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class TranslatorAppPackageKapuaKura extends AbstractTranslatorKapuaKura<PackageRequestChannel, PackageRequestPayload, PackageRequestMessage> {
 
@@ -52,7 +52,18 @@ public class TranslatorAppPackageKapuaKura extends AbstractTranslatorKapuaKura<P
         PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_URI, PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_PACKAGE_URI);
         PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_NAME, PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_PACKAGE_NAME);
         PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_VERSION, PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_PACKAGE_VERSION);
+        PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_USERNAME, PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_USERNAME);
+        PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PASSWORD, PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_PASSWORD);
+        PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_FILE_HASH, PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_HASH);
+        PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_FILE_TYPE, PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_INSTALL_SYSTEM_UPDATE);
         PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_INSTALL, PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_INSTALL);
+
+        // Download advanced properties
+        PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_BLOCK_SIZE, PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_BLOCK_SIZE);
+        PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_BLOCK_DELAY, PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_BLOCK_DELAY);
+        PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_BLOCK_TIMEOUT, PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_TIMEOUT);
+        PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_NOTIFY_BLOCK_SIZE, PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_NOTIFY_BLOCK_SIZE);
+        PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_INSTALL_VERIFIER_URI, PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_INSTALL_VERIFIER_URI);
 
         // Install properties
         PROPERTIES_DICTIONARY.put(PackageAppProperties.APP_PROPERTY_PACKAGE_INSTALL_PACKAGE_NAME, PackageMetrics.APP_METRIC_PACKAGE_INSTALL_PACKAGE_NAME);
@@ -65,7 +76,7 @@ public class TranslatorAppPackageKapuaKura extends AbstractTranslatorKapuaKura<P
     }
 
     @Override
-    protected KuraRequestChannel translateChannel(PackageRequestChannel kapuaChannel) throws KapuaException {
+    protected KuraRequestChannel translateChannel(PackageRequestChannel kapuaChannel) {
         KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
         kuraRequestChannel.setMessageClassification(CONTROL_MESSAGE_CLASSIFIER);
 
@@ -84,18 +95,18 @@ public class TranslatorAppPackageKapuaKura extends AbstractTranslatorKapuaKura<P
             resources.add("packages");
         } else {
             switch (kapuaChannel.getResource()) {
-            case DOWNLOAD:
-                resources.add("download");
-                break;
-            case INSTALL:
-                resources.add("install");
-                break;
-            case UNINSTALL:
-                resources.add("uninstall");
-                break;
+                case DOWNLOAD:
+                    resources.add("download");
+                    break;
+                case INSTALL:
+                    resources.add("install");
+                    break;
+                case UNINSTALL:
+                    resources.add("uninstall");
+                    break;
             }
         }
-        kuraRequestChannel.setResources(resources.toArray(new String[resources.size()]));
+        kuraRequestChannel.setResources(resources.toArray(new String[0]));
 
         //
         // Return Kura Channel
@@ -103,7 +114,7 @@ public class TranslatorAppPackageKapuaKura extends AbstractTranslatorKapuaKura<P
     }
 
     @Override
-    protected KuraRequestPayload translatePayload(PackageRequestPayload kapuaPayload) throws KapuaException {
+    protected KuraRequestPayload translatePayload(PackageRequestPayload kapuaPayload) {
         KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
         Map<String, Object> metrics = kuraRequestPayload.getMetrics();
@@ -120,10 +131,19 @@ public class TranslatorAppPackageKapuaKura extends AbstractTranslatorKapuaKura<P
             metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_URI).getValue(), kapuaPayload.getPackageDownloadURI().toString());
             metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_NAME).getValue(), kapuaPayload.getPackageDownloadName());
             metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_VERSION).getValue(), kapuaPayload.getPackageDownloadVersion());
+            metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_USERNAME).getValue(), kapuaPayload.getPackageDownloadUsername());
+            metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PASSWORD).getValue(), kapuaPayload.getPackageDownloadPassword());
+            metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_FILE_HASH).getValue(), kapuaPayload.getPackageDownloadFileHash());
+            metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_FILE_TYPE).getValue(), FileType.EXECUTABLE_SCRIPT.equals(kapuaPayload.getPackageDownloadFileType()));
             metrics.put(PackageMetrics.APP_METRIC_PACKAGE_DOWNLOAD_PROTOCOL.getValue(), "HTTP");
-            metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_INSTALL).getValue(), kapuaPayload.isPackageDownloadnstall());
+            metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_INSTALL).getValue(), kapuaPayload.isPackageDownloadInstall());
 
-            metrics.put(PackageMetrics.APP_METRIC_PACKAGE_INSTALL_SYS_UPDATE.getValue(), false);
+            metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_BLOCK_SIZE).getValue(), kapuaPayload.getPackageDownloadBlockSize());
+            metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_BLOCK_DELAY).getValue(), kapuaPayload.getPackageDownloadBlockDelay());
+            metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_BLOCK_TIMEOUT).getValue(), kapuaPayload.getPackageDownloadBlockTimeout());
+            metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_NOTIFY_BLOCK_SIZE).getValue(), kapuaPayload.getPackageDownloadNotifyBlockSize());
+            metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_INSTALL_VERIFIER_URI).getValue(), kapuaPayload.getPackageDownloadInstallVerifierURI());
+
         } else if (kapuaPayload.isInstallRequest()) {
             metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_INSTALL_PACKAGE_NAME).getValue(), kapuaPayload.getPackageInstallName());
             metrics.put(PROPERTIES_DICTIONARY.get(PackageAppProperties.APP_PROPERTY_PACKAGE_INSTALL_PACKAGE_VERSION).getValue(), kapuaPayload.getPackageInstallVersion());

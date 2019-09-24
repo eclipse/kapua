@@ -64,6 +64,8 @@ import org.eclipse.kapua.service.device.management.packages.model.DevicePackage;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageBundleInfo;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageBundleInfos;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
+import org.eclipse.kapua.service.device.management.packages.model.FileType;
+import org.eclipse.kapua.service.device.management.packages.model.download.AdvancedPackageDownloadOptions;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOperation;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadStatus;
@@ -176,7 +178,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             KapuaId deviceId = KapuaEid.parseCompactId(gwtPackageInstallRequest.getDeviceId());
 
             DevicePackageDownloadRequest packageDownloadRequest = DEVICE_PACKAGE_FACTORY.newPackageDownloadRequest();
-            URI packageUri = null;
+            URI packageUri;
             try {
                 packageUri = new URI(gwtPackageInstallRequest.getPackageURI());
             } catch (URISyntaxException e) {
@@ -185,9 +187,20 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             packageDownloadRequest.setUri(packageUri);
             packageDownloadRequest.setName(gwtPackageInstallRequest.getPackageName());
             packageDownloadRequest.setVersion(gwtPackageInstallRequest.getPackageVersion());
+            packageDownloadRequest.setUsername(gwtPackageInstallRequest.getUsername());
+            packageDownloadRequest.setPassword(gwtPackageInstallRequest.getPassword());
+            packageDownloadRequest.setFileHash(gwtPackageInstallRequest.getFileHash());
+            packageDownloadRequest.setFileType(FileType.valueOf(gwtPackageInstallRequest.getFileType()));
             packageDownloadRequest.setInstall(true); // Always install
             packageDownloadRequest.setReboot(gwtPackageInstallRequest.isReboot());
             packageDownloadRequest.setRebootDelay(gwtPackageInstallRequest.getRebootDelay());
+
+            AdvancedPackageDownloadOptions advancedOptions = packageDownloadRequest.getAdvancedOptions();
+            advancedOptions.setBlockSize(gwtPackageInstallRequest.getBlockSize());
+            advancedOptions.setBlockDelay(gwtPackageInstallRequest.getBlockDelay());
+            advancedOptions.setBlockTimeout(gwtPackageInstallRequest.getBlockTimeout());
+            advancedOptions.setNotifyBlockSize(gwtPackageInstallRequest.getNotifyBlockSize());
+            advancedOptions.setInstallVerifierURI(gwtPackageInstallRequest.getInstallVerifierURI());
 
             PACKAGE_MANAGEMENT_SERVICE.downloadExec(scopeId, deviceId, packageDownloadRequest, DEVICE_PACKAGE_FACTORY.newDevicePackageDownloadOptions());
         } catch (Throwable t) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.device.management.packages.model.download;
 
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageXmlRegistry;
+import org.eclipse.kapua.service.device.management.packages.model.FileType;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -21,111 +22,203 @@ import javax.xml.bind.annotation.XmlType;
 import java.net.URI;
 
 /**
- * Device package download request definition.
+ * {@link DevicePackageDownloadRequest} definition.
+ * <p>
+ * All the available options to perform a download (and optionally install).
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlRootElement(name = "downloadRequest")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {
-        "uri",
-        "name",
-        "version",
-        "install",
-        "reboot",
-        "rebootDelay"
-}, //
-        factoryClass = DevicePackageXmlRegistry.class, //
-        factoryMethod = "newDevicePackageDownloadRequest")
+@XmlType(factoryClass = DevicePackageXmlRegistry.class, factoryMethod = "newDevicePackageDownloadRequest")
 public interface DevicePackageDownloadRequest {
 
     /**
-     * Get the download URI
+     * Gets the download URI of the file.
      *
-     * @return
+     * @return The download URI of the file.
+     * @since 1.0.0
      */
     @XmlElement(name = "uri")
     URI getUri();
 
     /**
-     * Set the download URI
+     * Sets the download URI of the file.
      *
-     * @param uri
+     * @param uri The download URI of the file.
+     * @since 1.0.0
      */
     void setUri(URI uri);
 
     /**
-     * Get the package name
+     * Gets the package name.
      *
-     * @return
+     * @return The package name.
+     * @since 1.0.0
      */
     @XmlElement(name = "name")
     String getName();
 
     /**
-     * Set the package name
+     * Sets the package name.
      *
-     * @param name
+     * @param name The package name.
+     * @since 1.0.0
      */
     void setName(String name);
 
     /**
-     * Get the package version
+     * Gets the package version.
      *
-     * @return
+     * @return The package version.
+     * @since 1.0.0
      */
     @XmlElement(name = "version")
     String getVersion();
 
     /**
-     * Set the package version
+     * Set the package version.
      *
-     * @param version
+     * @param version The package version.
+     * @since 1.0.0
      */
     void setVersion(String version);
 
     /**
-     * Get the package installed flag
+     * Gets the username to provide as a credential when accessing the URI.
      *
-     * @return
+     * @return The username to provide as a credential when accessing the URI.
+     * @since 1.1.0
+     */
+    String getUsername();
+
+    /**
+     * Sets the username to provide as a credential when accessing the URI.
+     *
+     * @param username The username to provide as a credential when accessing the URI.
+     * @since 1.1.0
+     */
+    void setUsername(String username);
+
+    /**
+     * Gets the password to provide as a credential when accessing the URI.
+     *
+     * @return The password to provide as a credential when accessing the URI.
+     * @since 1.1.0
+     */
+    String getPassword();
+
+    /**
+     * Sets the password to provide as a credential when accessing the URI.
+     *
+     * @param password The password to provide as a credential when accessing the URI.
+     * @since 1.1.0
+     */
+    void setPassword(String password);
+
+    /**
+     * Gets the file hash to verify the downloaded file.
+     * <p>
+     * It must be specifies as {@code {HASH_ALGORITHM}:{HASH_VALUE}}
+     * <p>
+     * Example:
+     * MD5:46cbc7f212b94187cb6480fe9429a89c
+     *
+     * @return The file hash to verify the downloaded file.
+     * @since 1.1.0
+     */
+    String getFileHash();
+
+    /**
+     * Sets the file hash to verify the downloaded file.
+     *
+     * @param fileHash The file hash to verify the downloaded file.
+     * @see DevicePackageDownloadRequest#getFileHash()
+     * @since 1.1.0
+     */
+    void setFileHash(String fileHash);
+
+    /**
+     * Gets the {@link FileType} of the target file to download.
+     *
+     * @return The {@link FileType} of the target file to download.
+     * @since 1.1.0
+     */
+    FileType getFileType();
+
+    /**
+     * Sets the {@link FileType} of the target file to download.
+     *
+     * @param fileType The {@link FileType} of the target file to download.
+     * @since 1.1.0
+     */
+    void setFileType(FileType fileType);
+
+    /**
+     * Gets whether or not install the file right after it has been downloaded.
+     *
+     * @return Whether or not install the file right after it has been downloaded.
+     * @since 1.0.0
      */
     @XmlElement(name = "install")
     Boolean getInstall();
 
     /**
-     * Set the package installed flag
+     * Sets whether or not install the file right after it has been downloaded.
      *
-     * @param install
+     * @param install Whether or not install the file right after it has been downloaded.
+     * @since 1.0.0
      */
     void setInstall(Boolean install);
 
     /**
-     * Get the device reboot flag
+     * Gets whether or not reboot the device after the operation has been completed.
      *
-     * @return
+     * @return Whether or not reboot the device after the operation has been completed.
+     * @since 1.0.0
      */
     @XmlElement(name = "reboot")
     Boolean getReboot();
 
     /**
-     * Set the device reboot flag
+     * Sets whether or not reboot the device after the operation has been completed.
      *
-     * @param reboot
+     * @param reboot Whether or not reboot the device after the operation has been completed.
+     * @since 1.0.0
      */
     void setReboot(Boolean reboot);
 
     /**
-     * Get the reboot delay
+     * Gets the delay after which the device is rebooted when the operation has been completed.
      *
-     * @return
+     * @return The delay after which the device is rebooted when the operation has been completed.
+     * @since 1.0.0
      */
     @XmlElement(name = "rebootDelay")
     Integer getRebootDelay();
 
     /**
-     * Set the reboot delay
+     * Sets the delay after which the device is rebooted when the operation has been completed.
      *
-     * @param rebootDelay
+     * @param rebootDelay The delay after which the device is rebooted when the operation has been completed.
+     * @since 1.0.0
      */
     void setRebootDelay(Integer rebootDelay);
+
+    /**
+     * Gets the {@link AdvancedPackageDownloadOptions} to tune the download operation.
+     *
+     * @return The {@link AdvancedPackageDownloadOptions} to tune the download operation.
+     * @since 1.1.0
+     */
+    @XmlElement(name = "advancedOptions")
+    AdvancedPackageDownloadOptions getAdvancedOptions();
+
+    /**
+     * Sets the {@link AdvancedPackageDownloadOptions} to tune the download operation.
+     *
+     * @param advancedOptions The {@link AdvancedPackageDownloadOptions} to tune the download operation.
+     * @since 1.1.0
+     */
+    void setAdvancedOptions(AdvancedPackageDownloadOptions advancedOptions);
 }

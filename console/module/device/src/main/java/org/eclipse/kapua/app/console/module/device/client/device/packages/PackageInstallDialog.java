@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.packages;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.Text;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.layout.FormData;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.TabbedDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaNumberField;
@@ -21,21 +34,10 @@ import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator.FieldType;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
+import org.eclipse.kapua.app.console.module.device.shared.model.device.management.packages.GwtFileType;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.packages.GwtPackageInstallRequest;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementServiceAsync;
-
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.layout.FormData;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class PackageInstallDialog extends TabbedDialog {
 
@@ -47,6 +49,7 @@ public class PackageInstallDialog extends TabbedDialog {
 
     private TabItem packageInfoTab;
     private TabItem operationOptionsTab;
+    private TabItem advancedOptionsTab;
 
     private FormPanel packageInfoForm;
     private Text dpInfoText;
@@ -54,10 +57,24 @@ public class PackageInstallDialog extends TabbedDialog {
     private KapuaTextField<String> dpNameField;
     private KapuaTextField<String> dpVersionField;
 
+    private SimpleComboBox<GwtFileType> dpFileTypeField;
+    private KapuaTextField<String> dpFileHash;
+    private KapuaTextField<String> usernameField;
+    private KapuaTextField<String> passwordField;
+
     private FormPanel operationOptionsForm;
     private Text operationInfoText;
     private CheckBox operationRebootField;
     private KapuaNumberField operationRebootDelayField;
+
+    private FormPanel advancedOptionsForm;
+    private Text advancedInfoText;
+    private KapuaNumberField blockSizeField;
+    private KapuaNumberField blockDelayField;
+    private KapuaNumberField blockTimeoutField;
+    private KapuaNumberField notifyBlockSizeField;
+    private KapuaTextField<String> installVerifierURIField;
+
 
     public PackageInstallDialog(String scopeId, String deviceId) {
         super();
@@ -65,7 +82,7 @@ public class PackageInstallDialog extends TabbedDialog {
         this.scopeId = scopeId;
         this.deviceId = deviceId;
 
-        DialogUtils.resizeDialog(this, 490, 250);
+        DialogUtils.resizeDialog(this, 490, 350);
     }
 
     @Override
@@ -91,7 +108,7 @@ public class PackageInstallDialog extends TabbedDialog {
             packageInfoForm.setLayout(formLayout);
 
             dpInfoText = new Text();
-            dpInfoText.setText(DEVICE_MSGS.packageInstallDpInfo());
+            dpInfoText.setText(DEVICE_MSGS.packageInstallDpDialogTabInfo());
             dpInfoText.setStyleAttribute("margin-bottom", "10px");
             packageInfoForm.add(dpInfoText);
 
@@ -100,7 +117,7 @@ public class PackageInstallDialog extends TabbedDialog {
             dpURIField.setName("dpUri");
             dpURIField.setAllowBlank(false);
             dpURIField.setValidator(new TextFieldValidator(dpURIField, FieldType.URL));
-            dpURIField.setFieldLabel("* " + DEVICE_MSGS.packageInstallDpTabUri());
+            dpURIField.setFieldLabel("* " + DEVICE_MSGS.packageInstallDpDialogUri());
             dpURIField.setToolTip(DEVICE_MSGS.devicePackagesUrlTooltip());
             packageInfoForm.add(dpURIField, formData);
 
@@ -108,7 +125,7 @@ public class PackageInstallDialog extends TabbedDialog {
             dpNameField.setMaxLength(125);
             dpNameField.setName("dpName");
             dpNameField.setAllowBlank(false);
-            dpNameField.setFieldLabel("* " + DEVICE_MSGS.packageInstallDpTabName());
+            dpNameField.setFieldLabel("* " + DEVICE_MSGS.packageInstallDpDialogName());
             dpNameField.setToolTip(DEVICE_MSGS.devicePackageNameTooltip());
             packageInfoForm.add(dpNameField, formData);
 
@@ -117,9 +134,47 @@ public class PackageInstallDialog extends TabbedDialog {
             dpVersionField.setName("dpVersion");
             dpVersionField.setValidator(new TextFieldValidator(dpVersionField, FieldType.PACKAGE_VERSION));
             dpVersionField.setAllowBlank(false);
-            dpVersionField.setFieldLabel("* " + DEVICE_MSGS.packageInstallDpTabVersion());
-            dpVersionField.setToolTip(DEVICE_MSGS.devicePackageVersionTooltip());
+            dpVersionField.setFieldLabel("* " + DEVICE_MSGS.packageInstallDpDialogVersion());
+            dpVersionField.setToolTip(DEVICE_MSGS.packageInstallDpDialogVersionTooltip());
             packageInfoForm.add(dpVersionField, formData);
+
+            dpFileTypeField = new SimpleComboBox<GwtFileType>();
+            dpFileTypeField.setName("fileType");
+            dpFileTypeField.setFieldLabel(DEVICE_MSGS.packageInstallDpDialogFileType());
+            dpFileTypeField.setToolTip(DEVICE_MSGS.packageInstallDpDialogFileTypeTooltip());
+            dpFileTypeField.setLabelSeparator(":");
+            dpFileTypeField.setEditable(false);
+            dpFileTypeField.setTypeAhead(true);
+            dpFileTypeField.setTriggerAction(ComboBox.TriggerAction.ALL);
+
+            dpFileTypeField.add(GwtFileType.DEPLOYMENT_PACKAGE);
+            dpFileTypeField.add(GwtFileType.EXECUTABLE_SCRIPT);
+            dpFileTypeField.setSimpleValue(GwtFileType.DEPLOYMENT_PACKAGE);
+            packageInfoForm.add(dpFileTypeField, formData);
+
+            dpFileHash = new KapuaTextField<String>();
+            dpFileHash.setMaxLength(125);
+            dpFileHash.setName("fileHash");
+            dpFileHash.setFieldLabel(DEVICE_MSGS.packageInstallDpDialogFileHash());
+            dpFileHash.setToolTip(DEVICE_MSGS.packageInstallDpDialogFileHashTooltip());
+            packageInfoForm.add(dpFileHash, formData);
+
+            usernameField = new KapuaTextField<String>();
+            usernameField.setName("username");
+            usernameField.setMaxLength(256);
+            usernameField.setAllowBlank(true);
+            usernameField.setFieldLabel(DEVICE_MSGS.packageInstallDpDialogUsername());
+            usernameField.setToolTip(DEVICE_MSGS.packageInstallDpDialogUsernameTooltip());
+            packageInfoForm.add(usernameField, formData);
+
+            passwordField = new KapuaTextField<String>();
+            passwordField.setName("password");
+            passwordField.setAllowBlank(true);
+            passwordField.setFieldLabel(DEVICE_MSGS.packageInstallDpDialogPassword());
+            passwordField.setToolTip(DEVICE_MSGS.packageInstallDpDialogPasswordTooltip());
+            passwordField.setPassword(true);
+            passwordField.setMaxLength(255);
+            packageInfoForm.add(passwordField, formData);
         }
 
         // Operation options tab content
@@ -137,14 +192,14 @@ public class PackageInstallDialog extends TabbedDialog {
             operationOptionsForm.setLayout(formLayout);
 
             operationInfoText = new Text();
-            operationInfoText.setText(DEVICE_MSGS.packageInstallOperationInfo());
+            operationInfoText.setText(DEVICE_MSGS.packageInstallDpDialogOperationTabInfo());
             operationInfoText.setStyleAttribute("margin-bottom", "5px");
             operationOptionsForm.add(operationInfoText);
 
             operationRebootField = new CheckBox();
             operationRebootField.setName("reboot");
-            operationRebootField.setFieldLabel(DEVICE_MSGS.packageInstallOperationTabReboot());
-            operationRebootField.setToolTip(DEVICE_MSGS.devicePackageRebootTooltip());
+            operationRebootField.setFieldLabel(DEVICE_MSGS.packageInstallDpDialogOperationReboot());
+            operationRebootField.setToolTip(DEVICE_MSGS.packageInstallDpDialogOperationRebootTooltip());
             operationRebootField.setBoxLabel("");
 
             operationRebootField.addListener(Events.Change, new Listener<BaseEvent>() {
@@ -164,8 +219,8 @@ public class PackageInstallDialog extends TabbedDialog {
 
             operationRebootDelayField = new KapuaNumberField();
             operationRebootDelayField.setName("installRebootDelay");
-            operationRebootDelayField.setFieldLabel(DEVICE_MSGS.packageInstallOperationTabRebootDelay());
-            operationRebootDelayField.setToolTip(DEVICE_MSGS.devicePackageRebootDelayTooltip());
+            operationRebootDelayField.setFieldLabel(DEVICE_MSGS.packageInstallDpDialogOperationRebootDelay());
+            operationRebootDelayField.setToolTip(DEVICE_MSGS.packageInstallDpDialogOperationRebootDelayTooltip());
             operationRebootDelayField.setEmptyText("0");
             operationRebootDelayField.setAllowDecimals(false);
             operationRebootDelayField.setAllowNegative(false);
@@ -176,19 +231,98 @@ public class PackageInstallDialog extends TabbedDialog {
             operationOptionsForm.add(operationRebootDelayField, formData);
         }
 
+        // Advanced options tab content
+        {
+            FormData formData = new FormData("-10");
+
+            FormLayout formLayout = new FormLayout();
+            formLayout.setLabelWidth(FORM_LABEL_WIDTH);
+
+            advancedOptionsForm = new FormPanel();
+            advancedOptionsForm.setFrame(false);
+            advancedOptionsForm.setHeaderVisible(false);
+            advancedOptionsForm.setBodyBorder(false);
+            advancedOptionsForm.setBorders(false);
+            advancedOptionsForm.setLayout(formLayout);
+
+            advancedInfoText = new Text();
+            advancedInfoText.setText(DEVICE_MSGS.packageInstallDpDialogAdvancedTabInfo());
+            advancedInfoText.setStyleAttribute("margin-bottom", "5px");
+            advancedOptionsForm.add(advancedInfoText);
+
+            blockSizeField = new KapuaNumberField();
+            blockSizeField.setName("installBlockSize");
+            blockSizeField.setFieldLabel(DEVICE_MSGS.packageInstallDpDialogAdvancedBlockSize());
+            blockSizeField.setToolTip(DEVICE_MSGS.packageInstallDpDialogAdvancedBlockSizeTooltip());
+            blockSizeField.setAllowDecimals(false);
+            blockSizeField.setAllowNegative(false);
+            blockSizeField.setMaxLength(12);
+            blockSizeField.setMaxValue(2147483646);
+            blockSizeField.setPropertyEditorType(Integer.class);
+            advancedOptionsForm.add(blockSizeField, formData);
+
+            blockDelayField = new KapuaNumberField();
+            blockDelayField.setName("installBlockDelay");
+            blockDelayField.setFieldLabel(DEVICE_MSGS.packageInstallDpDialogAdvancedBlockDelay());
+            blockDelayField.setToolTip(DEVICE_MSGS.packageInstallDpDialogAdvancedBlockDelayTooltip());
+            blockDelayField.setAllowDecimals(false);
+            blockDelayField.setAllowNegative(false);
+            blockDelayField.setMaxLength(12);
+            blockDelayField.setMaxValue(2147483646);
+            blockDelayField.setPropertyEditorType(Integer.class);
+            advancedOptionsForm.add(blockDelayField, formData);
+
+            blockTimeoutField = new KapuaNumberField();
+            blockTimeoutField.setName("installBlockTimeout");
+            blockTimeoutField.setFieldLabel(DEVICE_MSGS.packageInstallDpDialogAdvancedBlockTimeout());
+            blockTimeoutField.setToolTip(DEVICE_MSGS.packageInstallDpDialogAdvancedBlockTimeoutTooltip());
+            blockTimeoutField.setAllowDecimals(false);
+            blockTimeoutField.setAllowNegative(false);
+            blockTimeoutField.setMaxLength(12);
+            blockTimeoutField.setMaxValue(2147483646);
+            blockTimeoutField.setPropertyEditorType(Integer.class);
+            advancedOptionsForm.add(blockTimeoutField, formData);
+
+            notifyBlockSizeField = new KapuaNumberField();
+            notifyBlockSizeField.setName("installNotifyBlockSize");
+            notifyBlockSizeField.setFieldLabel(DEVICE_MSGS.packageInstallDpDialogAdvancedNotifyBlockSize());
+            notifyBlockSizeField.setToolTip(DEVICE_MSGS.packageInstallDpDialogAdvancedNotifyBlockSizeTooltip());
+            notifyBlockSizeField.setAllowDecimals(false);
+            notifyBlockSizeField.setAllowNegative(false);
+            notifyBlockSizeField.setMaxLength(12);
+            notifyBlockSizeField.setMaxValue(2147483646);
+            notifyBlockSizeField.setPropertyEditorType(Integer.class);
+            advancedOptionsForm.add(notifyBlockSizeField, formData);
+
+            installVerifierURIField = new KapuaTextField<String>();
+            installVerifierURIField.setMaxLength(125);
+            installVerifierURIField.setName("installVerifiedURI");
+            installVerifierURIField.setAllowBlank(true);
+            installVerifierURIField.setValidator(new TextFieldValidator(installVerifierURIField, FieldType.URL));
+            installVerifierURIField.setFieldLabel(DEVICE_MSGS.packageInstallDpDialogAdvancedInstallVerifierURI());
+            installVerifierURIField.setToolTip(DEVICE_MSGS.packageInstallDpDialogAdvancedInstallVerifierURITooltip());
+            advancedOptionsForm.add(installVerifierURIField, formData);
+        }
+
         //
         // Tabs setup
-        packageInfoTab = new TabItem(DEVICE_MSGS.packageInstallDpTabTitle());
+        packageInfoTab = new TabItem(DEVICE_MSGS.packageInstallDpDialogTabTitle());
         packageInfoTab.setBorders(false);
         packageInfoTab.setLayout(new FormLayout());
         packageInfoTab.add(packageInfoForm);
         tabsPanel.add(packageInfoTab);
 
-        operationOptionsTab = new TabItem(DEVICE_MSGS.packageInstallOperationTabTitle());
+        operationOptionsTab = new TabItem(DEVICE_MSGS.packageInstallDpDialogOperationTabTitle());
         operationOptionsTab.setBorders(false);
         operationOptionsTab.setLayout(new FormLayout());
         operationOptionsTab.add(operationOptionsForm);
         tabsPanel.add(operationOptionsTab);
+
+        advancedOptionsTab = new TabItem(DEVICE_MSGS.packageInstallDpDialogAdvancedTabTitle());
+        advancedOptionsTab.setBorders(false);
+        advancedOptionsTab.setLayout(new FormLayout());
+        advancedOptionsTab.add(advancedOptionsForm);
+        tabsPanel.add(advancedOptionsTab);
     }
 
     @Override
@@ -215,17 +349,45 @@ public class PackageInstallDialog extends TabbedDialog {
         gwtPackageInstallRequest.setScopeId(scopeId);
         gwtPackageInstallRequest.setDeviceId(deviceId);
 
-        // Operation configuration
+        // Base info
         gwtPackageInstallRequest.setPackageURI(dpURIField.getValue());
         gwtPackageInstallRequest.setPackageName(dpNameField.getValue());
         gwtPackageInstallRequest.setPackageVersion(dpVersionField.getValue());
+        gwtPackageInstallRequest.setFileType(dpFileTypeField.getSimpleValue());
+        gwtPackageInstallRequest.setFileHash(dpFileHash.getValue());
+        gwtPackageInstallRequest.setUsername(usernameField.getValue());
+        gwtPackageInstallRequest.setPassword(passwordField.getValue());
 
+        // Options info
         gwtPackageInstallRequest.setReboot(operationRebootField.getValue());
 
         Number nValue = operationRebootDelayField.getValue();
         if (nValue != null) {
             gwtPackageInstallRequest.setRebootDelay(nValue.intValue() * 1000);
         }
+
+        // Advanced info
+        nValue = blockSizeField.getValue();
+        if (nValue != null) {
+            gwtPackageInstallRequest.setBlockSize(nValue.intValue());
+        }
+
+        nValue = blockDelayField.getValue();
+        if (nValue != null) {
+            gwtPackageInstallRequest.setBlockDelay(nValue.intValue());
+        }
+
+        nValue = blockTimeoutField.getValue();
+        if (nValue != null) {
+            gwtPackageInstallRequest.setBlockTimeout(nValue.intValue());
+        }
+
+        nValue = notifyBlockSizeField.getValue();
+        if (nValue != null) {
+            gwtPackageInstallRequest.setNotifyBlockSize(nValue.intValue());
+        }
+
+        gwtPackageInstallRequest.setInstallVerifierURI(installVerifierURIField.getValue());
 
         GWT_DEVICE_MANAGEMENT_SERVICE.installPackage(xsrfToken, gwtPackageInstallRequest, new AsyncCallback<Void>() {
 

@@ -89,7 +89,13 @@ public class JobDeviceManagementOperationManagerServiceImpl implements JobDevice
 
         //
         // Update the job target
-        JobDeviceManagementOperation jobDeviceManagementOperation = getJobDeviceManagementOperation(scopeId, operationId);
+        JobDeviceManagementOperation jobDeviceManagementOperation;
+        try {
+            jobDeviceManagementOperation = getJobDeviceManagementOperation(scopeId, operationId);
+        } catch (KapuaEntityNotFoundException kenfe) {
+            LOG.warn("The operationId {} does not match any Job. Likely this is run interactively using a DeviceManagementService ", operationId);
+            return;
+        }
 
         short attempts = 0;
         short limit = 3;
@@ -197,20 +203,10 @@ public class JobDeviceManagementOperationManagerServiceImpl implements JobDevice
      */
     private JobDeviceManagementOperation getJobDeviceManagementOperation(KapuaId scopeId, KapuaId operationId) throws KapuaException {
 
-        DeviceManagementOperationQuery deviceManagementOperationQuery = DEVICE_MANAGEMENT_OPERATION_FACTORY.newQuery(scopeId);
-        deviceManagementOperationQuery.setPredicate(
-                deviceManagementOperationQuery.attributePredicate(DeviceManagementOperationAttributes.OPERATION_ID, operationId)
-        );
-
-        DeviceManagementOperationListResult deviceManagementOperationListResult = DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.query(deviceManagementOperationQuery);
-        DeviceManagementOperation deviceManagementOperation = deviceManagementOperationListResult.getFirstItem();
-
-        if (deviceManagementOperation == null) {
-            throw new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, operationId);
-        }
+        DeviceManagementOperation deviceManagementOperation = getDeviceManagementOperation(scopeId, operationId);
 
         JobDeviceManagementOperationQuery query = JOB_DEVICE_MANAGEMENT_OPERATION_FACTORY.newQuery(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(JobDeviceManagementOperationAttributes.DEVICE_MANAGEMENT_OPERATION_ID, deviceManagementOperation.getId()));
+        query.setPredicate(query.attributePredicate(JobDeviceManagementOperationAttributes.DEVICE_MANAGEMENT_OPERATION_ID, deviceManagementOperation.getId()));
 
         JobDeviceManagementOperationListResult operations = JOB_DEVICE_MANAGEMENT_OPERATION_SERVICE.query(query);
         JobDeviceManagementOperation jobDeviceManagementOperation = operations.getFirstItem();
@@ -234,11 +230,11 @@ public class JobDeviceManagementOperationManagerServiceImpl implements JobDevice
      * @since 1.1.0
      */
     private DeviceManagementOperation getDeviceManagementOperation(KapuaId scopeId, KapuaId operationId) throws KapuaException {
-        DeviceManagementOperationQuery query = DEVICE_MANAGEMENT_OPERATION_FACTORY.newQuery(scopeId);
-        query.setPredicate(new AttributePredicateImpl<>(DeviceManagementOperationAttributes.OPERATION_ID, operationId));
+        DeviceManagementOperationQuery deviceManagementOperationQuery = DEVICE_MANAGEMENT_OPERATION_FACTORY.newQuery(scopeId);
+        deviceManagementOperationQuery.setPredicate(deviceManagementOperationQuery.attributePredicate(DeviceManagementOperationAttributes.OPERATION_ID, operationId));
 
-        DeviceManagementOperationListResult operations = DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.query(query);
-        DeviceManagementOperation deviceManagementOperation = operations.getFirstItem();
+        DeviceManagementOperationListResult deviceManagementOperationListResult = DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.query(deviceManagementOperationQuery);
+        DeviceManagementOperation deviceManagementOperation = deviceManagementOperationListResult.getFirstItem();
 
         if (deviceManagementOperation == null) {
             throw new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, operationId);
