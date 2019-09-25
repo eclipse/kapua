@@ -514,7 +514,7 @@ public class ServiceDAO {
             throws KapuaException {
         Predicate predicate = null;
         if (queryPredicate instanceof AttributePredicate) {
-            AttributePredicate attributePredicate = (AttributePredicate) queryPredicate;
+            AttributePredicate<?> attributePredicate = (AttributePredicate<?>) queryPredicate;
             predicate = handleAttributePredicate(attributePredicate, binds, cb, userPermissionRoot, entityType);
         } else if (queryPredicate instanceof AndPredicate) {
             AndPredicate andPredicate = (AndPredicate) queryPredicate;
@@ -577,7 +577,7 @@ public class ServiceDAO {
         return jpaOrPredicates;
     }
 
-    private static <E> Predicate handleAttributePredicate(@NotNull AttributePredicate attrPred,
+    private static <E> Predicate handleAttributePredicate(@NotNull AttributePredicate<?> attrPred,
                                                           @NotNull Map<ParameterExpression, Object> binds,
                                                           @NotNull CriteriaBuilder cb,
                                                           @NotNull Root<E> entityRoot,
@@ -593,7 +593,7 @@ public class ServiceDAO {
         }
 
         // Fields to query properties of sub attributes of the root entity
-        Attribute attribute;
+        Attribute<?, ?> attribute;
         if (attrName.contains(ATTRIBUTE_SEPARATOR)) {
             attribute = entityType.getAttribute(attrName.split(ATTRIBUTE_SEPARATOR_ESCAPED)[0]);
         } else {
@@ -647,7 +647,7 @@ public class ServiceDAO {
 
                 case GREATER_THAN:
                     if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
-                        Comparable comparableAttrValue = (Comparable) attrValue;
+                        Comparable comparableAttrValue = (Comparable<?>) attrValue;
                         Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
                         expr = cb.greaterThan(comparableExpression, comparableAttrValue);
                     } else {
@@ -658,7 +658,7 @@ public class ServiceDAO {
                 case GREATER_THAN_OR_EQUAL:
                     if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
                         Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
-                        Comparable comparableAttrValue = (Comparable) attrValue;
+                        Comparable comparableAttrValue = (Comparable<?>) attrValue;
                         expr = cb.greaterThanOrEqualTo(comparableExpression, comparableAttrValue);
                     } else {
                         throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
@@ -668,7 +668,7 @@ public class ServiceDAO {
                 case LESS_THAN:
                     if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
                         Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
-                        Comparable comparableAttrValue = (Comparable) attrValue;
+                        Comparable comparableAttrValue = (Comparable<?>) attrValue;
                         expr = cb.lessThan(comparableExpression, comparableAttrValue);
                     } else {
                         throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
@@ -677,7 +677,7 @@ public class ServiceDAO {
                 case LESS_THAN_OR_EQUAL:
                     if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
                         Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
-                        Comparable comparableAttrValue = (Comparable) attrValue;
+                        Comparable comparableAttrValue = (Comparable<?>) attrValue;
                         expr = cb.lessThanOrEqualTo(comparableExpression, comparableAttrValue);
                     } else {
                         throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
@@ -722,7 +722,7 @@ public class ServiceDAO {
      * @param groupPredicateName The name of the {@link Group} id field.
      * @since 1.0.0
      */
-    protected static void handleKapuaQueryGroupPredicate(@NotNull KapuaQuery query, @NotNull Domain domain, @NotNull String groupPredicateName) throws KapuaException {
+    protected static void handleKapuaQueryGroupPredicate(@NotNull KapuaQuery<?> query, @NotNull Domain domain, @NotNull String groupPredicateName) throws KapuaException {
 
         if (ACCESS_INFO_FACTORY != null) {
             KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
