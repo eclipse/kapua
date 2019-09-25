@@ -19,8 +19,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.model.query.FieldSortCriteria;
-import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -32,8 +30,10 @@ import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.FieldSortCriteria;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.model.query.predicate.OrPredicate;
@@ -61,6 +61,7 @@ import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import javax.persistence.Embedded;
 import javax.persistence.EntityExistsException;
 import javax.persistence.PersistenceException;
@@ -76,6 +77,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.EntityType;
+import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -152,7 +154,7 @@ public class ServiceDAO {
      * @return The persisted {@link KapuaEntity}.
      * @since 1.0.0
      */
-    public static <E extends KapuaEntity> E create(EntityManager em, E entity) {
+    public static <E extends KapuaEntity> E create(@NotNull EntityManager em, @NotNull E entity) {
         try {
             em.persist(entity);
             em.flush();
@@ -174,20 +176,6 @@ public class ServiceDAO {
         return entity;
     }
 
-    private static boolean isInsertConstraintViolation(PersistenceException e) {
-        Throwable cause = e.getCause();
-        while (cause != null && !(cause instanceof SQLException)) {
-            cause = cause.getCause();
-        }
-
-        if (cause == null) {
-            return false;
-        }
-
-        SQLException innerExc = (SQLException) cause;
-        return SQL_ERROR_CODE_CONSTRAINT_VIOLATION.equals(innerExc.getSQLState());
-    }
-
     /**
      * Find {@link KapuaEntity} utility method
      *
@@ -197,7 +185,7 @@ public class ServiceDAO {
      * @param entityId The {@link KapuaEntity} {@link KapuaId} of the entity to be found.
      * @since 1.0.0
      */
-    public static <E extends KapuaEntity> E find(EntityManager em, Class<E> clazz, KapuaId scopeId, KapuaId entityId) {
+    public static <E extends KapuaEntity> E find(@NotNull EntityManager em, @NotNull Class<E> clazz, @Nullable KapuaId scopeId, @NotNull KapuaId entityId) {
         //
         // Checking existence
         E entityToFind = em.find(clazz, entityId);
@@ -229,7 +217,7 @@ public class ServiceDAO {
      * @throws KapuaEntityNotFoundException If the {@link KapuaEntity} does not exists.
      * @since 1.0.0
      */
-    public static <E extends KapuaUpdatableEntity> E update(EntityManager em, Class<E> clazz, E entity) throws KapuaEntityNotFoundException {
+    public static <E extends KapuaUpdatableEntity> E update(@NotNull EntityManager em, @NotNull Class<E> clazz, @NotNull E entity) throws KapuaEntityNotFoundException {
         //
         // Checking existence
         E entityToUpdate = em.find(clazz, entity.getId());
@@ -261,7 +249,7 @@ public class ServiceDAO {
      * @throws KapuaEntityNotFoundException If the {@link KapuaEntity} does not exists.
      * @since 1.0.0
      */
-    public static <E extends KapuaEntity> void delete(EntityManager em, Class<E> clazz, KapuaId scopeId, KapuaId entityId)
+    public static <E extends KapuaEntity> void delete(@NotNull EntityManager em, @NotNull Class<E> clazz, @NotNull KapuaId scopeId, @NotNull KapuaId entityId)
             throws KapuaEntityNotFoundException {
         //
         // Checking existence
@@ -287,7 +275,7 @@ public class ServiceDAO {
      * @return The {@link KapuaEntity} found, or {@code null} if not found.
      * @since 1.0.0
      */
-    public static <E extends KapuaEntity> E findByField(EntityManager em, Class<E> clazz, String name, String value) {
+    public static <E extends KapuaEntity> E findByField(@NotNull EntityManager em, @NotNull Class<E> clazz, @NotNull String name, @NotNull String value) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<E> criteriaSelectQuery = cb.createQuery(clazz);
 
@@ -329,11 +317,11 @@ public class ServiceDAO {
      * @throws KapuaException If filter predicates in the {@link KapuaQuery} are incorrect. See {@link #handleKapuaQueryPredicates(QueryPredicate, Map, CriteriaBuilder, Root, EntityType)}.
      * @since 1.0.0
      */
-    public static <I extends KapuaEntity, E extends I, L extends KapuaListResult<I>> L query(EntityManager em,
-                                                                                             Class<I> interfaceClass,
-                                                                                             Class<E> implementingClass,
-                                                                                             L resultContainer,
-                                                                                             KapuaQuery<I> kapuaQuery)
+    public static <I extends KapuaEntity, E extends I, L extends KapuaListResult<I>> L query(@NotNull EntityManager em,
+                                                                                             @NotNull Class<I> interfaceClass,
+                                                                                             @NotNull Class<E> implementingClass,
+                                                                                             @NotNull L resultContainer,
+                                                                                             @NotNull KapuaQuery<I> kapuaQuery)
             throws KapuaException {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<E> criteriaSelectQuery = cb.createQuery(implementingClass);
@@ -444,10 +432,10 @@ public class ServiceDAO {
      * @throws KapuaException If filter predicates in the {@link KapuaQuery} are incorrect. See {@link #handleKapuaQueryPredicates(QueryPredicate, Map, CriteriaBuilder, Root, EntityType)}.
      * @since 1.0.0
      */
-    public static <I extends KapuaEntity, E extends I> long count(EntityManager em,
-                                                                  Class<I> interfaceClass,
-                                                                  Class<E> implementingClass,
-                                                                  KapuaQuery<I> kapuaQuery)
+    public static <I extends KapuaEntity, E extends I> long count(@NotNull EntityManager em,
+                                                                  @NotNull Class<I> interfaceClass,
+                                                                  @NotNull Class<E> implementingClass,
+                                                                  @NotNull KapuaQuery<I> kapuaQuery)
             throws KapuaException {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> criteriaSelectQuery = cb.createQuery(Long.class);
@@ -518,11 +506,11 @@ public class ServiceDAO {
      * @return The handled {@link Predicate}
      * @throws KapuaException If any problem occurs.
      */
-    private static <E> Predicate handleKapuaQueryPredicates(QueryPredicate queryPredicate,
-                                                            Map<ParameterExpression, Object> binds,
-                                                            CriteriaBuilder cb,
-                                                            Root<E> userPermissionRoot,
-                                                            EntityType<E> entityType)
+    private static <E> Predicate handleKapuaQueryPredicates(@NotNull QueryPredicate queryPredicate,
+                                                            @NotNull Map<ParameterExpression, Object> binds,
+                                                            @NotNull CriteriaBuilder cb,
+                                                            @NotNull Root<E> userPermissionRoot,
+                                                            @NotNull EntityType<E> entityType)
             throws KapuaException {
         Predicate predicate = null;
         if (queryPredicate instanceof AttributePredicate) {
@@ -538,11 +526,11 @@ public class ServiceDAO {
         return predicate;
     }
 
-    private static <E> Predicate handleAndPredicate(AndPredicate andPredicate,
-                                                    Map<ParameterExpression, Object> binds,
-                                                    CriteriaBuilder cb,
-                                                    Root<E> entityRoot,
-                                                    EntityType<E> entityType)
+    private static <E> Predicate handleAndPredicate(@NotNull AndPredicate andPredicate,
+                                                    @NotNull Map<ParameterExpression, Object> binds,
+                                                    @NotNull CriteriaBuilder cb,
+                                                    @NotNull Root<E> entityRoot,
+                                                    @NotNull EntityType<E> entityType)
             throws KapuaException {
 
         Predicate[] jpaAndPredicates =
@@ -557,11 +545,11 @@ public class ServiceDAO {
 
     }
 
-    private static <E> Predicate handleOrPredicate(OrPredicate orPredicate,
-                                                   Map<ParameterExpression, Object> binds,
-                                                   CriteriaBuilder cb,
-                                                   Root<E> entityRoot,
-                                                   EntityType<E> entityType)
+    private static <E> Predicate handleOrPredicate(@NotNull OrPredicate orPredicate,
+                                                   @NotNull Map<ParameterExpression, Object> binds,
+                                                   @NotNull CriteriaBuilder cb,
+                                                   @NotNull Root<E> entityRoot,
+                                                   @NotNull EntityType<E> entityType)
             throws KapuaException {
 
         Predicate[] jpaOrPredicates =
@@ -575,7 +563,11 @@ public class ServiceDAO {
         return cb.or(jpaOrPredicates);
     }
 
-    private static <E> Predicate[] handlePredicate(List<QueryPredicate> orPredicates, Map<ParameterExpression, Object> binds, CriteriaBuilder cb, Root<E> entityRoot, EntityType<E> entityType) throws KapuaException {
+    private static <E> Predicate[] handlePredicate(@NotNull List<QueryPredicate> orPredicates,
+                                                   @NotNull Map<ParameterExpression, Object> binds,
+                                                   @NotNull CriteriaBuilder cb,
+                                                   @NotNull Root<E> entityRoot,
+                                                   @NotNull EntityType<E> entityType) throws KapuaException {
         Predicate[] jpaOrPredicates = new Predicate[orPredicates.size()];
 
         for (int i = 0; i < orPredicates.size(); i++) {
@@ -585,11 +577,11 @@ public class ServiceDAO {
         return jpaOrPredicates;
     }
 
-    private static <E> Predicate handleAttributePredicate(AttributePredicate attrPred,
-                                                          Map<ParameterExpression, Object> binds,
-                                                          CriteriaBuilder cb,
-                                                          Root<E> entityRoot,
-                                                          EntityType<E> entityType)
+    private static <E> Predicate handleAttributePredicate(@NotNull AttributePredicate attrPred,
+                                                          @NotNull Map<ParameterExpression, Object> binds,
+                                                          @NotNull CriteriaBuilder cb,
+                                                          @NotNull Root<E> entityRoot,
+                                                          @NotNull EntityType<E> entityType)
             throws KapuaException {
         Predicate expr;
         String attrName = attrPred.getAttributeName();
@@ -711,7 +703,7 @@ public class ServiceDAO {
      * @return The {@link Path} expression that matches the given {@code attributeName} parameter.
      * @since 1.0.0
      */
-    private static <E, P> Path<P> extractAttribute(Root<E> entityRoot, String attributeName) {
+    private static <E, P> Path<P> extractAttribute(@NotNull Root<E> entityRoot, @NotNull String attributeName) {
 
         Path<P> expressionPath;
         if (attributeName.contains(ATTRIBUTE_SEPARATOR)) {
@@ -730,7 +722,7 @@ public class ServiceDAO {
      * @param groupPredicateName The name of the {@link Group} id field.
      * @since 1.0.0
      */
-    protected static void handleKapuaQueryGroupPredicate(KapuaQuery query, Domain domain, String groupPredicateName) throws KapuaException {
+    protected static void handleKapuaQueryGroupPredicate(@NotNull KapuaQuery query, @NotNull Domain domain, @NotNull String groupPredicateName) throws KapuaException {
 
         if (ACCESS_INFO_FACTORY != null) {
             KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
@@ -796,7 +788,7 @@ public class ServiceDAO {
         }
     }
 
-    private static boolean checkGroupPermission(Domain domain, List<Permission> groupPermissions, Permission p) {
+    private static boolean checkGroupPermission(@NotNull Domain domain, @NotNull List<Permission> groupPermissions, @NotNull Permission p) {
         if ((p.getDomain() == null || domain.getName().equals(p.getDomain())) &&
                 (p.getAction() == null || Actions.read.equals(p.getAction()))) {
             if (p.getGroupId() == null) {
@@ -807,5 +799,19 @@ public class ServiceDAO {
             }
         }
         return false;
+    }
+
+    private static boolean isInsertConstraintViolation(@NotNull PersistenceException e) {
+        Throwable cause = e.getCause();
+        while (cause != null && !(cause instanceof SQLException)) {
+            cause = cause.getCause();
+        }
+
+        if (cause == null) {
+            return false;
+        }
+
+        SQLException innerExc = (SQLException) cause;
+        return SQL_ERROR_CODE_CONSTRAINT_VIOLATION.equals(innerExc.getSQLState());
     }
 }
