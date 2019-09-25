@@ -44,11 +44,11 @@ public class KuraDevice implements MqttCallback {
     private String deployPackages;
     private String deployBundles;
     private String deployConf;
+    private String putConf;
     private String cmdExec;
     private String deployV2ExecStart34;
     private String deployV2ExecStart95;
     private String deployV2ExecStop77;
-    private String deployV2ExecStart128;
 
     /**
      * URI of mqtt broker.
@@ -107,6 +107,7 @@ public class KuraDevice implements MqttCallback {
     private String clientId;
 
     public boolean bundleStateChanged;
+    public boolean configurationChanged;
 
     public KuraDevice() {
         deployPackages = "$EDC/kapua-sys/rpione3/DEPLOY-V2/GET/packages";
@@ -114,6 +115,8 @@ public class KuraDevice implements MqttCallback {
         deployBundles = "$EDC/kapua-sys/rpione3/DEPLOY-V2/GET/bundles";
 
         deployConf = "$EDC/kapua-sys/rpione3/CONF-V1/GET/configurations";
+
+        putConf = "$EDC/kapua-sys/rpione3/CONF-V1/PUT/configurations";
 
         cmdExec = "$EDC/kapua-sys/rpione3/CMD-V1/EXEC/command";
 
@@ -123,7 +126,6 @@ public class KuraDevice implements MqttCallback {
 
         deployV2ExecStop77 = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/stop/77";
 
-        deployV2ExecStart128 = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/start/128";
         clientId = "rpione3";
 
         mqttClientSetup();
@@ -207,6 +209,8 @@ public class KuraDevice implements MqttCallback {
 
             deployConf = "$EDC/kapua-sys/" + clientId + "/CONF-V1/GET/configurations";
 
+            putConf = "$EDC/kapua-sys/" + clientId + "/CONF-V1/PUT/configurations";
+
             cmdExec = "$EDC/kapua-sys/" + clientId + "/CMD-V1/EXEC/command";
 
             deployV2ExecStart34 = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/EXEC/start/34";
@@ -214,8 +218,6 @@ public class KuraDevice implements MqttCallback {
             deployV2ExecStart95 = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/EXEC/start/95";
 
             deployV2ExecStop77 = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/EXEC/stop/77";
-
-            deployV2ExecStart128 = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/EXEC/start/128";
 
             mqttClient = new MqttClient(BROKER_URI, clientId,
                     new MemoryPersistence());
@@ -330,8 +332,16 @@ public class KuraDevice implements MqttCallback {
             callbackParam = extractCallback(payload);
 
             responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/CONF-V1/REPLY/" + callbackParam.getRequestId();
-            responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_CONF-V1_REPLY_req-id_configurations.mqtt").toURI()));
+            responsePayload = Files.readAllBytes(Paths.get(getClass().getResource( configurationChanged == true ? "/mqtt/KapuaPool-client-id_CONF-V1_REPLY_req-id_updated_configurations.mqtt" : "/mqtt/KapuaPool-client-id_CONF-V1_REPLY_req-id_inital_configurations.mqtt").toURI()));
 
+            mqttClient.publish(responseTopic, responsePayload, 0, false);
+        } else if (topic.equals(putConf)) {
+            callbackParam = extractCallback(payload);
+
+            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/CONF-V1/REPLY/" + callbackParam.getRequestId();
+            responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_CONF-V1_PUT_configurations.mqtt").toURI()));
+
+            configurationChanged = true;
             mqttClient.publish(responseTopic, responsePayload, 0, false);
         } else if (topic.equals(cmdExec)) {
             callbackParam = extractCallback(payload);
@@ -340,7 +350,7 @@ public class KuraDevice implements MqttCallback {
             responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_CMD-V1_REPLY_req-id_command.mqtt").toURI()));
 
             mqttClient.publish(responseTopic, responsePayload, 0, false);
-        } else if (topic.equals(deployV2ExecStart34) || topic.equals(deployV2ExecStart95) || topic.equals(deployV2ExecStart128)) {
+        } else if (topic.equals(deployV2ExecStart34) || topic.equals(deployV2ExecStart95)) {
             callbackParam = extractCallback(payload);
 
             responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/REPLY/" + callbackParam.getRequestId();

@@ -352,6 +352,7 @@ public class BrokerSteps extends TestBase {
 
     @When("^Configuration is requested$")
     public void requestConfiguration() throws Exception {
+        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get("KuraDevices");
 
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
@@ -362,11 +363,37 @@ public class BrokerSteps extends TestBase {
         }
     }
 
+    @When("A Configuration named (.*) has property (.*) with value (.*)$")
+    public void checkConfiguration(String configurationName, String configurationKey, String configurationValue) {
+        DeviceComponentConfiguration configuration = findConfigurationByNameAndValue(configurationName, configurationKey, configurationValue);
+        Assert.assertEquals(configurationName, configuration.getDefinition().getId());
+        Assert.assertTrue(configuration.getProperties().containsKey(configurationKey));
+        Assert.assertTrue(configuration.getProperties().get(configurationKey).toString().equals(configurationValue));
+    }
+
+    private DeviceComponentConfiguration findConfigurationByNameAndValue(final String configurationName, final String configurationKey, final String configurationValue) {
+        List<DeviceComponentConfiguration> savedConfigurations = (List<DeviceComponentConfiguration>) stepData.get("configurations");
+        List<DeviceComponentConfiguration> configurations = savedConfigurations.stream()
+                .filter(configuration -> configuration.getDefinition().getId().equals(configurationName))
+                .filter(configuration -> configuration.getProperties().containsKey(configurationKey)
+                        && configuration.getProperties().get(configurationKey).toString().equals(configurationValue))
+                .collect(Collectors.toList());
+
+        if (configurations.isEmpty()) {
+            Assert.fail(String.format("Configuration %s with value %s for property %s is not present", configurationName, configurationValue, configurationKey));
+        }
+        if (configurations.size() > 1) {
+            Assert.fail(String.format("There is more than one entry for configuration %s", configurationName));
+        }
+
+        return configurations.get(0);
+    }
+
     @Then("^Configuration is received$")
     public void configurationReceived() {
         @SuppressWarnings("unchecked")
         List<DeviceComponentConfiguration> configurations = (List<DeviceComponentConfiguration>) stepData.get("configurations");
-        assertEquals(11, configurations.size());
+        assertEquals(17, configurations.size());
     }
 
     @When("^Command (.*) is executed$")
