@@ -68,6 +68,13 @@ public class TriggerDefinitionDAO {
     /**
      * Finds the triggerDefinition by triggerDefinition identifier
      */
+    public static TriggerDefinition find(EntityManager em, KapuaId triggerDefinitionId) {
+        return ServiceDAO.find(em, TriggerDefinitionImpl.class, null, triggerDefinitionId);
+    }
+
+    /**
+     * Finds the triggerDefinition by triggerDefinition identifier
+     */
     public static TriggerDefinition find(EntityManager em, KapuaId scopeId, KapuaId triggerDefinitionId) {
         return ServiceDAO.find(em, TriggerDefinitionImpl.class, scopeId, triggerDefinitionId);
     }

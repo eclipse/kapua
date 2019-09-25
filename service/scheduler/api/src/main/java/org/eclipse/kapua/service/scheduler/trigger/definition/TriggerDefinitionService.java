@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.scheduler.trigger.definition;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
@@ -25,6 +26,17 @@ import org.eclipse.kapua.service.KapuaUpdatableEntityService;
  */
 public interface TriggerDefinitionService extends KapuaEntityService<TriggerDefinition, TriggerDefinitionCreator>,
         KapuaUpdatableEntityService<TriggerDefinition> {
+
+
+    /**
+     * Finds the {@link TriggerDefinition} by its {@link TriggerDefinition#getId()}
+     *
+     * @param entityId The {@link TriggerDefinition#getId()}
+     * @return The {@link TriggerDefinition} by its {@link TriggerDefinition#getId()}, or {@code null} if does not exists.
+     * @throws KapuaException
+     * @since 1.1.0
+     */
+    TriggerDefinition find(KapuaId entityId) throws KapuaException;
 
     /**
      * Returns the {@link TriggerDefinitionListResult} with elements matching the provided query.
