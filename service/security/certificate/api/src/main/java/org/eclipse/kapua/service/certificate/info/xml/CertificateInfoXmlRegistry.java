@@ -9,15 +9,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.certificate.xml;
+package org.eclipse.kapua.service.certificate.info.xml;
 
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.certificate.CertificateUsage;
-import org.eclipse.kapua.service.certificate.CertificateInfo;
-import org.eclipse.kapua.service.certificate.CertificateInfoCreator;
-import org.eclipse.kapua.service.certificate.CertificateInfoFactory;
-import org.eclipse.kapua.service.certificate.CertificateInfoListResult;
-import org.eclipse.kapua.service.certificate.CertificateInfoQuery;
+import org.eclipse.kapua.service.certificate.info.CertificateInfo;
+import org.eclipse.kapua.service.certificate.info.CertificateInfoCreator;
+import org.eclipse.kapua.service.certificate.info.CertificateInfoFactory;
+import org.eclipse.kapua.service.certificate.info.CertificateInfoListResult;
+import org.eclipse.kapua.service.certificate.info.CertificateInfoQuery;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
@@ -42,9 +41,4 @@ public class CertificateInfoXmlRegistry {
     public CertificateInfoListResult newListResult() {
         return FACTORY.newListResult();
     }
-
-    public CertificateUsage newCertificateUsage() {
-        return FACTORY.newCertificateUsage(null);
-    }
-
 }

@@ -15,16 +15,15 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
-
 import org.eclipse.kapua.app.api.resources.v1.resources.marker.JsonSerializationFixed;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.device.management.JsonGenericRequestMessage;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.device.management.JsonGenericResponseMessage;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.device.management.request.internal.message.request.GenericRequestMessageImpl;
-import org.eclipse.kapua.service.device.management.request.internal.message.request.GenericRequestPayloadImpl;
+import org.eclipse.kapua.service.device.management.request.GenericRequestFactory;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestMessage;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestPayload;
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseMessage;
@@ -46,6 +45,9 @@ import javax.ws.rs.core.MediaType;
 public class DeviceManagementRequestsJson extends AbstractKapuaResource implements JsonSerializationFixed {
 
     private static final DeviceManagementRequests DEVICE_MANAGEMENT_REQUESTS = new DeviceManagementRequests();
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final GenericRequestFactory GENERIC_REQUEST_FACTORY = LOCATOR.getFactory(GenericRequestFactory.class);
 
     /**
      * Sends a request message to a device.
@@ -69,7 +71,7 @@ public class DeviceManagementRequestsJson extends AbstractKapuaResource implemen
             @ApiParam(value = "The timeout of the request execution") @QueryParam("timeout") Long timeout,
             @ApiParam(value = "The input request", required = true) JsonGenericRequestMessage jsonGenericRequestMessage) throws Exception {
 
-        GenericRequestMessage genericRequestMessage = new GenericRequestMessageImpl();
+        GenericRequestMessage genericRequestMessage = GENERIC_REQUEST_FACTORY.newRequestMessage();
 
         genericRequestMessage.setId(jsonGenericRequestMessage.getId());
         genericRequestMessage.setScopeId(scopeId);
@@ -81,7 +83,7 @@ public class DeviceManagementRequestsJson extends AbstractKapuaResource implemen
         genericRequestMessage.setPosition(jsonGenericRequestMessage.getPosition());
         genericRequestMessage.setChannel(jsonGenericRequestMessage.getChannel());
 
-        GenericRequestPayload kapuaDataPayload = new GenericRequestPayloadImpl();
+        GenericRequestPayload kapuaDataPayload = GENERIC_REQUEST_FACTORY.newRequestPayload();
 
         if (jsonGenericRequestMessage.getPayload() != null) {
             kapuaDataPayload.setBody(jsonGenericRequestMessage.getPayload().getBody());

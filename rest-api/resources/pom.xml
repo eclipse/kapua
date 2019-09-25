@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+    Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -13,11 +13,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.eclipse.kapua</groupId>
         <artifactId>kapua-rest-api</artifactId>
         <version>1.1.0-SNAPSHOT</version>
     </parent>
+
     <artifactId>kapua-rest-api-resources</artifactId>
     <packaging>jar</packaging>
 
@@ -26,6 +28,7 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-rest-api-core</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-endpoint-api</artifactId>
@@ -40,14 +43,6 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-datastore-client-transport</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-datastore-client-rest</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-registry-api</artifactId>
         </dependency>
         <dependency>
@@ -56,31 +51,11 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-translator-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-translator-kapua-kura</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-translator-kura-jms</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-translator-kura-mqtt</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-transport-jms</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-transport-mqtt</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-management-registry-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-stream-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -92,8 +67,10 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-stream-api</artifactId>
+            <artifactId>kapua-translator-api</artifactId>
         </dependency>
+
+        <!-- External dependencies -->
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>

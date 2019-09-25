@@ -9,11 +9,11 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.certificate.internal;
+package org.eclipse.kapua.service.certificate.info.internal;
 
 import org.eclipse.kapua.commons.model.query.KapuaListResultImpl;
-import org.eclipse.kapua.service.certificate.CertificateInfo;
-import org.eclipse.kapua.service.certificate.CertificateInfoListResult;
+import org.eclipse.kapua.service.certificate.info.CertificateInfo;
+import org.eclipse.kapua.service.certificate.info.CertificateInfoListResult;
 
 /**
  * {@link CertificateInfoListResult} implementation.

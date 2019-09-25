@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.certificate;
+package org.eclipse.kapua.service.certificate.info;
 
 import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.KapuaNamedEntity;
@@ -17,7 +17,10 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.xml.BinaryXmlAdapter;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
-import org.eclipse.kapua.service.certificate.xml.CertificateInfoXmlRegistry;
+import org.eclipse.kapua.service.certificate.CertificateStatus;
+import org.eclipse.kapua.service.certificate.CertificateUsage;
+import org.eclipse.kapua.service.certificate.KeyUsageSetting;
+import org.eclipse.kapua.service.certificate.info.xml.CertificateInfoXmlRegistry;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -29,6 +32,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Date;
 import java.util.Set;
 
+/**
+ * @since 1.1.0
+ */
 @XmlRootElement(name = "certificateInfo")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = CertificateInfoXmlRegistry.class, factoryMethod = "newCertificateInfo")

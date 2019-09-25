@@ -119,16 +119,6 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-translator-kapua-kura</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-translator-kura-jms</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-transport-api</artifactId>
             <scope>provided</scope>
         </dependency>
@@ -151,11 +141,6 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-certificate-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-security-certificate-internal</artifactId>
-        </dependency>
-        <!-- activemq -->
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-broker</artifactId>

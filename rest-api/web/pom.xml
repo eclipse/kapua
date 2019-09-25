@@ -13,17 +13,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.eclipse.kapua</groupId>
         <artifactId>kapua-rest-api</artifactId>
         <version>1.1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>kapua-rest-api-web</artifactId>
 
+    <artifactId>kapua-rest-api-web</artifactId>
     <packaging>war</packaging>
 
     <dependencies>
-
         <!-- Internal dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -32,6 +32,16 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-guice</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-rest-api-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-rest-api-resources</artifactId>
         </dependency>
 
         <!--  Service implementations dependencies-->
@@ -53,19 +63,40 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-message-internal</artifactId>
+            <artifactId>kapua-device-registry-internal</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-all-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-registry-internal</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-endpoint-internal</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-registry-internal</artifactId>
+            <artifactId>kapua-message-internal</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-security-certificate-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-security-shiro</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-stream-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-tag-internal</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-translator-kapua-kura</artifactId>
@@ -86,46 +117,9 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-transport-mqtt</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-management-all-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-management-registry-internal</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-security-shiro</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-tag-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-security-certificate-internal</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-user-internal</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-rest-api-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-rest-api-resources</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-stream-internal</artifactId>
         </dependency>
 
         <!-- Jersey -->
@@ -149,11 +143,6 @@
         </dependency>
 
         <!-- Apache shiro security framework -->
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-core</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-web</artifactId>

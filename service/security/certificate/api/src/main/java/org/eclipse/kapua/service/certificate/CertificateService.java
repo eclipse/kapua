@@ -21,6 +21,9 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 import java.util.List;
 
+/**
+ * @since 1.0.0
+ */
 public interface CertificateService extends KapuaEntityService<Certificate, CertificateCreator>,
         KapuaNamedEntityService<Certificate>,
         KapuaUpdatableEntityService<Certificate>,

@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate;
 
+/**
+ * @since 1.0.0
+ */
 public class CertificateDomains {
 
     private CertificateDomains() {

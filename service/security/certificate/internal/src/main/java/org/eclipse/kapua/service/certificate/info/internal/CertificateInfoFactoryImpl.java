@@ -9,19 +9,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.certificate.internal;
+package org.eclipse.kapua.service.certificate.info.internal;
 
 import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.certificate.CertificateUsage;
-import org.eclipse.kapua.service.certificate.KeyUsage;
-import org.eclipse.kapua.service.certificate.KeyUsageSetting;
-import org.eclipse.kapua.service.certificate.CertificateInfo;
-import org.eclipse.kapua.service.certificate.CertificateInfoCreator;
-import org.eclipse.kapua.service.certificate.CertificateInfoFactory;
-import org.eclipse.kapua.service.certificate.CertificateInfoListResult;
-import org.eclipse.kapua.service.certificate.CertificateInfoQuery;
+import org.eclipse.kapua.service.certificate.info.CertificateInfo;
+import org.eclipse.kapua.service.certificate.info.CertificateInfoCreator;
+import org.eclipse.kapua.service.certificate.info.CertificateInfoFactory;
+import org.eclipse.kapua.service.certificate.info.CertificateInfoListResult;
+import org.eclipse.kapua.service.certificate.info.CertificateInfoQuery;
 
 @KapuaProvider
 public class CertificateInfoFactoryImpl implements CertificateInfoFactory {
@@ -44,21 +41,6 @@ public class CertificateInfoFactoryImpl implements CertificateInfoFactory {
     @Override
     public CertificateInfoListResult newListResult() {
         return new CertificateInfoListResultImpl();
-    }
-
-    @Override
-    public CertificateUsage newCertificateUsage(String name) {
-        return new CertificateUsageImpl(name);
-    }
-
-    @Override
-    public KeyUsageSetting newKeyUsageSetting(KeyUsage keyUsage, boolean allowed, Boolean kapuaAllowed) {
-        KeyUsageSetting keyUsageSetting = new KeyUsageSettingImpl();
-        keyUsageSetting.setKeyUsage(keyUsage);
-        keyUsageSetting.setAllowed(allowed);
-        keyUsageSetting.setKapuaAllowed(kapuaAllowed);
-
-        return keyUsageSetting;
     }
 
     @Override

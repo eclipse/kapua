@@ -20,6 +20,8 @@ import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.kapua.job.engine.commons.model.JobTransientUserData;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.execution.JobExecution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import javax.batch.runtime.BatchStatus;
@@ -34,6 +36,8 @@ import java.util.Properties;
  * @since 1.0.0
  */
 public class JobContextWrapper {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JobContextWrapper.class);
 
     private JobContext jobContext;
 
@@ -106,7 +110,7 @@ public class JobContextWrapper {
      */
     public boolean getResetStepIndex() {
         String resetFromIndexString = getProperties().getProperty(JobContextPropertyNames.RESET_STEP_INDEX);
-        return resetFromIndexString != null && Boolean.valueOf(resetFromIndexString);
+        return Boolean.parseBoolean(resetFromIndexString);
     }
 
     /**
@@ -128,23 +132,34 @@ public class JobContextWrapper {
      */
     public boolean getEnqueue() {
         String enqueueString = getProperties().getProperty(JobContextPropertyNames.ENQUEUE);
-        return enqueueString != null && Boolean.valueOf(enqueueString);
+        return Boolean.parseBoolean(enqueueString);
     }
 
     /**
      * Gets the {@link JobTransientUserData}.
+     * <p>
+     * If does not exists at the moment, it will instantiate a default {@link JobTransientUserData} and return it.
      *
      * @return The {@link JobTransientUserData}.
      * @since 1.1.0
      */
-    public JobTransientUserData getJobTransientUserData() {
-        JobTransientUserData transientUserData = (JobTransientUserData) getTransientUserData();
-
-        if (transientUserData == null) {
-            transientUserData = new JobTransientUserData();
-            setTransientUserData(transientUserData);
+    public <J extends JobTransientUserData> J getJobTransientUserData() {
+        if (getTransientUserData() == null) {
+            LOG.warn("No JobTransientData has been defined. Using the default one: {}", JobTransientUserData.class.getName());
+            setTransientUserData(new JobTransientUserData());
         }
-        return transientUserData;
+
+        return (J) getTransientUserData();
+    }
+
+    /**
+     * Sets the {@link JobTransientUserData}
+     *
+     * @param jobTransientUserData The {@link JobTransientUserData}.
+     * @since 1.1.0
+     */
+    public <J extends JobTransientUserData> void setJobTransientUserData(J jobTransientUserData) {
+        setTransientUserData(jobTransientUserData);
     }
 
     /**

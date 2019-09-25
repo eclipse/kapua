@@ -14,11 +14,10 @@ package org.eclipse.kapua.service.authentication.shiro.realm;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
-
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.JwtCertificateNotFoundException;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
@@ -26,12 +25,11 @@ import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticatio
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.certificate.CertificateAttributes;
 import org.eclipse.kapua.service.certificate.CertificateStatus;
-import org.eclipse.kapua.service.certificate.CertificateInfo;
-import org.eclipse.kapua.service.certificate.CertificateInfoFactory;
-import org.eclipse.kapua.service.certificate.CertificateInfoQuery;
-import org.eclipse.kapua.service.certificate.CertificateInfoService;
+import org.eclipse.kapua.service.certificate.info.CertificateInfo;
+import org.eclipse.kapua.service.certificate.info.CertificateInfoFactory;
+import org.eclipse.kapua.service.certificate.info.CertificateInfoQuery;
+import org.eclipse.kapua.service.certificate.info.CertificateInfoService;
 import org.eclipse.kapua.service.certificate.util.CertificateUtils;
-
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;

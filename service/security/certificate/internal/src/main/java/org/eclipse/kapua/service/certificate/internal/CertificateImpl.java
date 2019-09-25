@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.certificate.internal;
 
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.certificate.Certificate;
+import org.eclipse.kapua.service.certificate.info.internal.CertificateInfoImpl;
 
 /**
  * {@link Certificate} implementation

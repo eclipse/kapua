@@ -21,14 +21,10 @@ import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.device.management.message.KapuaMethod;
-import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationAttributes;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationCreator;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationListResult;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationProperty;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationQuery;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -44,8 +40,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Arrays;
-import java.util.Date;
 
 //@Api(value = "Devices Operations", authorizations = {@Authorization(value = "kapuaAccessToken")})
 @Path("{scopeId}/devices/{deviceId}/operations")
@@ -142,24 +136,6 @@ public class DeviceManagementOperations extends AbstractKapuaResource {
             @ApiParam(value = "The DeviceManagementOperationQuery to use to filter count results", required = true) DeviceManagementOperationQuery query) throws Exception {
         query.setScopeId(scopeId);
         query.setPredicate(query.attributePredicate(DeviceManagementOperationAttributes.DEVICE_ID, deviceId));
-
-        try {
-            DeviceManagementOperationProperty deviceManagementOperationProperty = deviceManagementOperationFactory.newStepProperty("asd", "string", "qwe");
-
-            DeviceManagementOperationCreator deviceManagementOperationCreator = deviceManagementOperationFactory.newCreator(scopeId);
-            deviceManagementOperationCreator.setStartedOn(new Date());
-            deviceManagementOperationCreator.setDeviceId(deviceId);
-            deviceManagementOperationCreator.setStatus(OperationStatus.COMPLETED);
-            deviceManagementOperationCreator.setAppId("ASD");
-            deviceManagementOperationCreator.setAction(KapuaMethod.CREATE);
-            deviceManagementOperationCreator.setResource("qwe");
-            deviceManagementOperationCreator.setInputProperties(Arrays.asList(deviceManagementOperationProperty));
-
-            deviceManagementOperationRegistryService.create(deviceManagementOperationCreator);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         return new CountResult(deviceManagementOperationRegistryService.count(query));
     }

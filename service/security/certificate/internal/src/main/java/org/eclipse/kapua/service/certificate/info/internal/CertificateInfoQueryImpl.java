@@ -9,12 +9,12 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.certificate.internal;
+package org.eclipse.kapua.service.certificate.info.internal;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.certificate.CertificateInfo;
-import org.eclipse.kapua.service.certificate.CertificateInfoQuery;
+import org.eclipse.kapua.service.certificate.info.CertificateInfo;
+import org.eclipse.kapua.service.certificate.info.CertificateInfoQuery;
 
 public class CertificateInfoQueryImpl extends AbstractKapuaQuery<CertificateInfo> implements CertificateInfoQuery {
 
