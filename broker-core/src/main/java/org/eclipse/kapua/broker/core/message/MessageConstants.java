@@ -37,6 +37,7 @@ public class MessageConstants {
     public static final String METRIC_NODE_ID = "nodeId";
 
     public static final String HEADER_KAPUA_CONNECTION_ID = "KAPUA_CONNECTION_ID";
+    public static final String HEADER_KAPUA_RECEIVED_TIMESTAMP = "KAPUA_RECEIVED_TIMESTAMP";
     public static final String HEADER_KAPUA_CLIENT_ID = "KAPUA_CLIENT_ID";
     public static final String HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL = "KAPUA_DEVICE_PROTOCOL";
     public static final String HEADER_KAPUA_SESSION = "KAPUA_SESSION";
