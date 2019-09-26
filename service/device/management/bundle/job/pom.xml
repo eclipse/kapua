@@ -16,7 +16,7 @@
     <parent>
         <groupId>org.eclipse.kapua</groupId>
         <artifactId>kapua-device-management-bundle</artifactId>
-        <version>1.0.8-SNAPSHOT</version>
+        <version>1.0.8</version>
     </parent>
 
     <artifactId>kapua-device-management-bundle-job</artifactId>
