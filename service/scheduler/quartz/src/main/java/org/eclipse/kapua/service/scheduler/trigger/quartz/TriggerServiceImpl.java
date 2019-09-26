@@ -147,8 +147,10 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check trigger definition
-        TriggerDefinition triggerDefinition = TRIGGER_DEFINITION_SERVICE.find(triggerCreator.getScopeId(), triggerCreator.getTriggerDefinitionId());
-        ArgumentValidator.notNull(triggerDefinition, "triggerCreator.triggerDefinitionId");
+        TriggerDefinition triggerDefinition = TRIGGER_DEFINITION_SERVICE.find(triggerCreator.getTriggerDefinitionId());
+        if (triggerDefinition == null) {
+            throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, triggerCreator.getTriggerDefinitionId());
+        }
 
         for (TriggerProperty jsp : triggerCreator.getTriggerProperties()) {
             for (TriggerProperty jsdp : triggerDefinition.getTriggerProperties()) {

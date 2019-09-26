@@ -84,6 +84,21 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
     }
 
     @Override
+    public TriggerDefinition find(KapuaId stepDefinitionId) throws KapuaException {
+        //
+        // Argument Validation
+        ArgumentValidator.notNull(stepDefinitionId, "stepDefinitionId");
+
+        //
+        // Check Access
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
+
+        //
+        // Do find
+        return entityManagerSession.onResult(em -> TriggerDefinitionDAO.find(em, stepDefinitionId));
+    }
+
+    @Override
     public TriggerDefinition find(KapuaId scopeId, KapuaId stepDefinitionId) throws KapuaException {
         //
         // Argument Validation
