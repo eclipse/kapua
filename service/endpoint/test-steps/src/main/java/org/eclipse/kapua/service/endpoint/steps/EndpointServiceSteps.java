@@ -16,6 +16,7 @@ import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
@@ -137,7 +138,6 @@ public class EndpointServiceSteps extends TestBase {
         }
     }
 
-
     @And("^I try to find endpoint with schema \"([^\"]*)\"$")
     public void iFoundEndpointWithSchema(String schema) throws Exception {
         primeException();
@@ -149,7 +149,7 @@ public class EndpointServiceSteps extends TestBase {
 
             stepData.put("EndpointInfo", endpointInfo);
             stepData.put("EndpointInfoId", endpointInfo.getId());
-        } catch (KapuaException ex) {
+        } catch (Exception ex) {
             verifyException(ex);
         }
     }
@@ -163,11 +163,25 @@ public class EndpointServiceSteps extends TestBase {
 
     @And("^I delete the last created endpoint$")
     public void iDeleteTheLastCreatedEndpoint() throws Exception {
-        EndpointInfo endpointInfo = (EndpointInfo) stepData.get("EndpointInfo");
 
         try {
-            primeException();
-            endpointInfoService.delete(getCurrentScopeId(), endpointInfo.getId());
+            EndpointInfo endpointInfo = (EndpointInfo) stepData.get("EndpointInfo");
+            endpointInfoService.delete(SYS_SCOPE_ID, endpointInfo.getId());
+        } catch (Exception e) {
+            verifyException(e);
+        }
+    }
+
+    @When("^I delete endpoint with schema \"([^\"]*)\"$")
+    public void iDeleteEndpointWithSchema(String schema) throws Throwable {
+        primeException();
+
+        try {
+            EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
+            endpointInfoQuery.setPredicate(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.SCHEMA, schema, AttributePredicate.Operator.EQUAL));
+            EndpointInfo endpointInfo = endpointInfoService.query(endpointInfoQuery).getFirstItem();
+
+            endpointInfoService.delete(SYS_SCOPE_ID, endpointInfo.getId());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
