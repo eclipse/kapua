@@ -314,7 +314,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
     }
 
     /**
-     * See {@link AdvancedPackageDownloadOptions#setBlockTimeout(int)}
+     * See {@link AdvancedPackageDownloadOptions#setBlockTimeout(Integer)}}
      *
      * @since 1.1.0
      */
@@ -334,7 +334,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
     }
 
     /**
-     * See {@link AdvancedPackageDownloadOptions#setNotifyBlockSize(int)}
+     * See {@link AdvancedPackageDownloadOptions#setNotifyBlockSize(Integer)}
      *
      * @since 1.1.0
      */
