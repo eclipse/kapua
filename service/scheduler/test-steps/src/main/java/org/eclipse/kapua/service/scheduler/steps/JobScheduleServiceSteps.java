@@ -201,32 +201,31 @@ public class JobScheduleServiceSteps extends TestBase {
             Trigger trigger = triggerService.create(triggerCreator);
             stepData.put("Trigger", trigger);
             stepData.put("CurrentTriggerId", trigger.getId());
-        } catch (KapuaException ex) {
+        } catch (Exception ex) {
             verifyException(ex);
         }
     }
 
     @And("^I try to edit trigger name \"([^\"]*)\"$")
     public void iTryToEditTriggerName(String newTriggerName) throws Exception {
-        Trigger trigger = (Trigger) stepData.get("Trigger");
-        trigger.setName(newTriggerName);
         try {
+            Trigger trigger = (Trigger) stepData.get("Trigger");
+            trigger.setName(newTriggerName);
             primeException();
             Trigger newTrigger = triggerService.update(trigger);
             stepData.put("Trigger", newTrigger);
-        } catch (KapuaException ex) {
+        } catch (Exception ex) {
             verifyException(ex);
         }
     }
 
     @And("^I try to delete last created trigger$")
     public void iTryToDeleteTrigger() throws Exception {
-        Trigger trigger = (Trigger) stepData.get("Trigger");
-
         try {
+            Trigger trigger = (Trigger) stepData.get("Trigger");
             primeException();
             triggerService.delete(getCurrentScopeId(), trigger.getId());
-        } catch (KapuaException ex) {
+        } catch (Exception ex) {
             verifyException(ex);
         }
     }

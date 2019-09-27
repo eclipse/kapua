@@ -748,6 +748,133 @@ Feature: User Permission tests
     Then No connection was found
     And I logout
 
+  Scenario: Add Scheduler Permissions Without Job Permissions
+  Creating "user1", adding permissions with scheduler domain without adding job permissions.
+  "user1" should not have permissions to do anything as he is not authorized to do anything with jobs.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And A generic user
+      | name  | displayName  | email           | phoneNumber     | status  | userType |
+      | user1 | Kapua User 1 | user1@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
+    And Credentials
+      | name    | password          | enabled |
+      | user1   | ToManySecrets123# | true    |
+    And Add permissions to the last created user
+      | domain    | action |
+      | scheduler | write  |
+      | scheduler | read   |
+      | scheduler | delete |
+    And I logout
+    Then I login as user with name "user1" and password "ToManySecrets123#"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
+    And I found trigger properties with name "Interval Job"
+    And A regular trigger creator with the name "TestSchedule" and following properties
+      | name     | type              | value |
+      | interval | java.lang.Integer | 1     |
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "*"
+    When I try to create a new trigger entity from the existing creator
+    Then An exception was thrown
+    Given I expect the exception "NullPointerException" with the text "*"
+    When I try to edit trigger name "TestSchedule1"
+    Then An exception was thrown
+    Given I expect the exception "NullPointerException" with the text "*"
+    When I try to delete last created trigger
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Add Scheduler Permissions With Job Permissions
+  Creating "user1", adding permissions with scheduler domain with adding job permissions.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And A generic user
+      | name  | displayName  | email           | phoneNumber     | status  | userType |
+      | user1 | Kapua User 1 | user1@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
+    And Credentials
+      | name  | password          | enabled |
+      | user1 | ToManySecrets123# | true    |
+    And Add permissions to the last created user
+      | domain | action |
+      | job    | write  |
+      | job    | read   |
+      | job    | delete |
+    And I logout
+    Then I login as user with name "user1" and password "ToManySecrets123#"
+    And I found trigger properties with name "Interval Job"
+    And A regular trigger creator with the name "TestSchedule" and following properties
+      | name     | type              | value |
+      | interval | java.lang.Integer | 1     |
+    Given I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: scheduler:write:1:*"
+    When I try to create a new trigger entity from the existing creator
+    Then An exception was thrown
+    Given I expect the exception "NullPointerException" with the text "*"
+    When I try to edit trigger name "TestSchedule1"
+    Then An exception was thrown
+    Given I expect the exception "NullPointerException" with the text "*"
+    When I try to delete last created trigger
+    Then An exception was thrown
+    Then I logout
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And Add permissions to the last created user
+      | domain    | action |
+      | scheduler | write  |
+      | scheduler | read   |
+      | scheduler | delete |
+    And I logout
+    Then I login as user with name "user1" and password "ToManySecrets123#"
+    And I found trigger properties with name "Interval Job"
+    And A regular trigger creator with the name "TestSchedule" and following properties
+      | name     | type              | value |
+      | interval | java.lang.Integer | 1     |
+    When I try to create a new trigger entity from the existing creator
+    And I try to edit trigger name "TestSchedule1"
+    And I try to delete last created trigger
+    Then No exception was thrown
+    And I logout
+
+  Scenario: Add Endpoint Permission To The User
+  Creating "user1", adding endpoint permissions to the user and test if user can work with endpoints.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And Scope with ID 1
+    And I select account "kapua-sys"
+    And A generic user
+      | name  | displayName  | email           | phoneNumber     | status  | userType |
+      | user1 | Kapua User 1 | user1@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
+    And Credentials
+      | name  | password          | enabled |
+      | user1 | ToManySecrets123# | true    |
+    And I create endpoint with schema "endpoint1", dns "com" and port 20000
+    And I logout
+    Then I login as user with name "user1" and password "ToManySecrets123#"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: endpoint_info:read:"
+    When I try to find endpoint with schema "endpoint1"
+    Then An exception was thrown
+    Then I logout
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And Add permissions to the last created user
+      | domain        | action | targetScope |
+      | endpoint_info | write  | 1           |
+      | endpoint_info | read   | 1           |
+      | endpoint_info | delete | 1           |
+    Then I logout
+    And I login as user with name "user1" and password "ToManySecrets123#"
+    When I try to find endpoint with schema "endpoint1"
+    Then I found endpoint with schema "endpoint1"
+    Then No exception was thrown
+    Given I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: endpoint_info:write:*:*"
+    When I create endpoint with schema "end2", dns "com" and port 20000
+    Then An exception was thrown
+    When I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: endpoint_info:delete:*:*"
+    And I delete the last created endpoint
+    Then An exception was thrown
+    Then I logout
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    When I delete endpoint with schema "endpoint1"
+    Then No exception was thrown
+    And I logout
+
   Scenario: Stop broker after all scenarios
     Given Stop Broker
 
