@@ -15,6 +15,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.BrokerDomains;
 import org.eclipse.kapua.broker.core.plugin.Acl;
 import org.eclipse.kapua.broker.core.plugin.KapuaConnectionContext;
+import org.eclipse.kapua.broker.core.plugin.KapuaDuplicateClientIdException;
 import org.eclipse.kapua.broker.core.plugin.metric.ClientMetric;
 import org.eclipse.kapua.broker.core.plugin.metric.LoginMetric;
 import org.eclipse.kapua.broker.core.plugin.metric.PublishMetric;
@@ -259,4 +260,28 @@ public abstract class AuthenticationLogic {
             // TODO manage the error message. is it better to throw a more specific exception or keep it obfuscated for security reason?
         }
     }
+
+    protected boolean isStealingLink(KapuaConnectionContext kcc, Throwable error) {
+        boolean stealingLinkDetected = false;
+        if (kcc.getOldConnectionId() != null) {
+            stealingLinkDetected = !kcc.getOldConnectionId().equals(kcc.getConnectionId());
+        }
+        else {
+            logger.error("Cannot find connection id for client id {} on connection map. Correct connection id is {} - IP: {}",
+                    kcc.getClientId(),
+                    kcc.getConnectionId(),
+                    kcc.getClientIp());
+        }
+        if (!stealingLinkDetected && (error instanceof KapuaDuplicateClientIdException || (error!=null && error.getCause() instanceof KapuaDuplicateClientIdException))) {
+            stealingLinkDetected = true;
+            logger.warn("Detected Stealing link for cliend id {} - account id {} - last connection id was {} - current connection id is {} - IP: {} - No disconnection info will be added!",
+                    kcc.getClientId(),
+                    kcc.getScopeId(),
+                    kcc.getOldConnectionId(),
+                    kcc.getConnectionId(),
+                    kcc.getClientIp());
+        }
+        return stealingLinkDetected;
+    }
+
 }

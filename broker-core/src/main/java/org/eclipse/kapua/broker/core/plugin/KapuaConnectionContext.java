@@ -50,6 +50,9 @@ public class KapuaConnectionContext {
     private String brokerIpOrHostName;
     private Certificate[] clientCertificates;
 
+    //flag to help the correct lifecycle handling
+    private boolean missing;
+
     // use to track the allowed destinations for debug purpose
     private List<String> authDestinations;
 
@@ -71,11 +74,12 @@ public class KapuaConnectionContext {
         }
     }
 
-    public KapuaConnectionContext(String brokerId, String brokerIpOrHostName, KapuaPrincipal kapuaPrincipal, String accountName, ConnectionInfo info, String fullClientIdPattern) {
+    public KapuaConnectionContext(String brokerId, String brokerIpOrHostName, KapuaPrincipal kapuaPrincipal, String accountName, ConnectionInfo info, String fullClientIdPattern, boolean missing) {
         authDestinations = new ArrayList<>();
         this.brokerId = brokerId;
         this.brokerIpOrHostName = brokerIpOrHostName;
         this.accountName = accountName;
+        this.missing = missing;
         userName = info.getUserName();
         clientId = kapuaPrincipal.getClientId();
         scopeId = kapuaPrincipal.getAccountId();
@@ -186,6 +190,10 @@ public class KapuaConnectionContext {
 
     public String getBrokerIpOrHostName() {
         return brokerIpOrHostName;
+    }
+
+    public boolean isMissing() {
+        return missing;
     }
 
     public void addAuthDestinationToLog(String message) {

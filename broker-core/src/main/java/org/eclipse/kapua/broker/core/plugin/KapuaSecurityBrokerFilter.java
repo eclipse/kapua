@@ -107,6 +107,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
     private static final String CONNECT_MESSAGE_TOPIC_PATTERN = "VirtualTopic.%s.%s.%s.MQTT.CONNECT";
     private static final String DISCONNECT_MESSAGE_TOPIC_PATTERN = "VirtualTopic.%s.%s.%s.MQTT.DISCONNECT";
+    private static final String MISSING_TOPIC_SUFFIX = "MQTT.LWT";
     private static final String BROKER_IP_RESOLVER_CLASS_NAME;
     private static final String BROKER_ID_RESOLVER_CLASS_NAME;
     private static final String AUTHENTICATOR_CLASS_NAME;
@@ -478,6 +479,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     @Override
     public void removeConnection(ConnectionContext context, ConnectionInfo info, Throwable error)
             throws Exception {
+        logger.error("Throwable on remove connection: {}", error!=null ? error.getMessage() : "N/A");
         if (!isPassThroughConnection(context)) {
             Context loginRemoveConnectionTimeContext = loginMetric.getRemoveConnectionTime().time();
             KapuaConnectionContext kcc = null;
@@ -496,7 +498,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                         throw new ShiroException("Error while find account!", e);
                     }
                 }
-                kcc = new KapuaConnectionContext(brokerIdResolver.getBrokerId(this), brokerIpResolver.getBrokerIpOrHostName(), kapuaPrincipal, account.getName(), info, MULTI_ACCOUNT_CLIENT_ID);
+                kcc = new KapuaConnectionContext(brokerIdResolver.getBrokerId(this), brokerIpResolver.getBrokerIpOrHostName(), kapuaPrincipal, account.getName(), info, MULTI_ACCOUNT_CLIENT_ID, kapuaSecurityContext.isMissing());
                 kcc.updateOldConnectionId(CONNECTION_MAP.get(kcc.getFullClientId()));
                 // TODO fix the kapua session when run as feature will be implemented
                 KapuaSecurityUtils.setSession(new KapuaSession(kapuaPrincipal));
@@ -552,6 +554,12 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             String message = MessageFormat.format("The caracters '+' and '#' cannot be included in a topic! Destination: {0}", messageSend.getDestination());
             throw new SecurityException(message);
         }
+        String originalTopic = null;
+        ActiveMQDestination destination = messageSend.getDestination();
+        if (destination instanceof ActiveMQTopic) {
+            ActiveMQTopic destinationTopic = (ActiveMQTopic) destination;
+            originalTopic = destinationTopic.getTopicName().substring(VT_TOPIC_PREFIX.length());
+        }
         messageSend.setProperty(MessageConstants.HEADER_KAPUA_RECEIVED_TIMESTAMP, KapuaDateUtils.getKapuaSysDate().toEpochMilli());
         if (!isBrokerContext(producerExchange.getConnectionContext())) {
             KapuaSecurityContext kapuaSecurityContext = getKapuaSecurityContext(producerExchange.getConnectionContext());
@@ -572,6 +580,11 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                     throw new SecurityException(message);
                 }
             }
+            if (isLwt(originalTopic)) {
+                //handle the missing message case
+                logger.info("Detected missing message for client {}... Flag session to tell disconnector to avoid disconnect event sending", ((KapuaPrincipal) kapuaSecurityContext.getMainPrincipal()).getClientId());
+                kapuaSecurityContext.setMissing();
+            }
             // FIX #164
             messageSend.setProperty(MessageConstants.HEADER_KAPUA_CONNECTION_ID, Base64.getEncoder().encodeToString(SerializationUtils.serialize(kapuaSecurityContext.getConnectionId())));
             messageSend.setProperty(MessageConstants.HEADER_KAPUA_CLIENT_ID, ((KapuaPrincipal) kapuaSecurityContext.getMainPrincipal()).getClientId());
@@ -583,13 +596,13 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             messageSend.setProperty(MessageConstants.HEADER_KAPUA_BROKER_CONTEXT, true);
         }
         publishMetric.getMessageSizeAllowed().update(messageSend.getSize());
-        ActiveMQDestination destination = messageSend.getDestination();
-        if (destination instanceof ActiveMQTopic) {
-            ActiveMQTopic destinationTopic = (ActiveMQTopic) destination;
-            messageSend.setProperty(MessageConstants.PROPERTY_ORIGINAL_TOPIC, destinationTopic.getTopicName().substring(VT_TOPIC_PREFIX.length()));
-        }
+        messageSend.setProperty(MessageConstants.PROPERTY_ORIGINAL_TOPIC, originalTopic);
         publishMetric.getAllowedMessages().inc();
         super.send(producerExchange, messageSend);
+    }
+
+    private boolean isLwt(String originalTopic) {
+        return originalTopic != null && originalTopic.endsWith(MISSING_TOPIC_SUFFIX);
     }
 
     // ------------------------------------------------------------------
