@@ -269,7 +269,7 @@ Feature: JobEngineService restart job tests with online device
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Start"
     And A regular step creator with the name "TestStep" and the following properties
       | name     | type             | value |
@@ -313,7 +313,7 @@ Feature: JobEngineService restart job tests with online device
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Start"
     And A regular step creator with the name "TestStep" and the following properties
       | name     | type             | value |
@@ -514,7 +514,7 @@ Feature: JobEngineService restart job tests with online device
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Stop"
     And A regular step creator with the name "TestStep" and the following properties
       | name     | type             | value |
@@ -572,7 +572,7 @@ Feature: JobEngineService restart job tests with online device
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Stop"
     And A regular step creator with the name "TestStep" and the following properties
       | name     | type             | value |
@@ -1346,7 +1346,7 @@ Feature: JobEngineService restart job tests with online device
     Then I find 2 device events
     And The type of the last event is "COMMAND"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Command Execution"
     And A regular step creator with the name "TestStep" and the following properties
       | name         | type                                                                    | value                                                                                                                                         |
@@ -1362,7 +1362,7 @@ Feature: JobEngineService restart job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_OK"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device events
+    Then I find 3 device events
     And The type of the last event is "COMMAND"
     Then KuraMock is disconnected
     And I wait 1 second
@@ -1387,7 +1387,7 @@ Feature: JobEngineService restart job tests with online device
     Then I find 2 device events
     And The type of the last event is "COMMAND"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Command Execution"
     And A regular step creator with the name "TestStep" and the following properties
       | name         | type                                                                    | value                                                                                                                                                                        |
@@ -1428,7 +1428,7 @@ Feature: JobEngineService restart job tests with online device
     Then I find 2 device events
     And The type of the last event is "COMMAND"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Command Execution"
     And A regular step creator with the name "TestStep" and the following properties
       | name         | type                                                                    | value                                                                                                                                         |
@@ -1452,7 +1452,7 @@ Feature: JobEngineService restart job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_OK"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device events
+    Then I find 4 device events
     And The type of the last event is "COMMAND"
     Then KuraMock is disconnected
     And I wait 1 second
@@ -1477,7 +1477,7 @@ Feature: JobEngineService restart job tests with online device
     Then I find 2 device events
     And The type of the last event is "COMMAND"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Command Execution"
     And A regular step creator with the name "TestStep" and the following properties
       | name         | type                                                                    | value                                                                                                                                         |
@@ -1527,7 +1527,7 @@ Feature: JobEngineService restart job tests with online device
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Start"
     And A regular step creator with the name "TestStep" and the following properties
       | name     | type             | value |
@@ -1544,7 +1544,7 @@ Feature: JobEngineService restart job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_OK"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device events
+    Then I find 3 device events
     And The type of the last event is "BUNDLE"
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
@@ -1572,7 +1572,7 @@ Feature: JobEngineService restart job tests with online device
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Start"
     And A regular step creator with the name "TestStep" and the following properties
       | name     | type             | value |
@@ -1616,7 +1616,7 @@ Feature: JobEngineService restart job tests with online device
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Start"
     And A regular step creator with the name "TestStep" and the following properties
       | name     | type             | value |
@@ -1633,7 +1633,7 @@ Feature: JobEngineService restart job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_OK"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device events
+    Then I find 3 device events
     And The type of the last event is "BUNDLE"
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
@@ -1646,7 +1646,7 @@ Feature: JobEngineService restart job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_OK"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 3 device events
+    Then I find 5 device events
     And The type of the last event is "BUNDLE"
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
@@ -1673,7 +1673,7 @@ Feature: JobEngineService restart job tests with online device
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Start"
     And A regular step creator with the name "TestStep" and the following properties
       | name     | type             | value |
@@ -1727,7 +1727,7 @@ Feature: JobEngineService restart job tests with online device
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Stop"
     And A regular step creator with the name "TestStep" and the following properties
       | name     | type             | value |
@@ -1744,7 +1744,7 @@ Feature: JobEngineService restart job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_OK"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device events
+    Then I find 3 device events
     And The type of the last event is "BUNDLE"
     Then Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and RESOLVED
@@ -1772,7 +1772,7 @@ Feature: JobEngineService restart job tests with online device
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Stop"
     And A regular step creator with the name "TestStep" and the following properties
       | name     | type             | value |
@@ -1817,7 +1817,7 @@ Feature: JobEngineService restart job tests with online device
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Stop"
     And A regular step creator with the name "TestStep" and the following properties
       | name     | type             | value |
@@ -1834,7 +1834,7 @@ Feature: JobEngineService restart job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_OK"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device events
+    Then I find 3 device events
     And The type of the last event is "BUNDLE"
     Then Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and RESOLVED
@@ -1847,7 +1847,7 @@ Feature: JobEngineService restart job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_OK"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 3 device events
+    Then I find 5 device events
     And The type of the last event is "BUNDLE"
     Then Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and RESOLVED
@@ -1875,7 +1875,7 @@ Feature: JobEngineService restart job tests with online device
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Stop"
     And A regular step creator with the name "TestStep" and the following properties
       | name     | type             | value |
@@ -1938,7 +1938,7 @@ Feature: JobEngineService restart job tests with online device
     And The type of the last event is "BUNDLE"
     And I get the KuraMock devices
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Command Execution"
     And A regular step creator with the name "TestStep" and the following properties
       | name         | type                                                                    | value                                                                                                                                         |
@@ -1953,7 +1953,7 @@ Feature: JobEngineService restart job tests with online device
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     Then I restart a job
-    And I wait 15 seconds
+    And I wait 30 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -1964,7 +1964,7 @@ Feature: JobEngineService restart job tests with online device
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
     And Command pwd is executed
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 5 device events
+    Then I find 7 device events
     And The type of the last event is "COMMAND"
     Then KuraMock is disconnected
     And I wait 1 second
@@ -1991,7 +1991,7 @@ Feature: JobEngineService restart job tests with online device
     And The type of the last event is "COMMAND"
     And I get the KuraMock devices
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Command Execution"
     And A regular step creator with the name "TestStep" and the following properties
       | name         | type                                                                    | value                                                                                                                                                                        |
@@ -2045,7 +2045,7 @@ Feature: JobEngineService restart job tests with online device
     And The type of the last event is "BUNDLE"
     And I get the KuraMock devices
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Command Execution"
     And A regular step creator with the name "TestStep" and the following properties
       | name         | type                                                                    | value                                                                                                                                         |
@@ -2080,7 +2080,7 @@ Feature: JobEngineService restart job tests with online device
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
     And Command pwd is executed
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 5 device events
+    Then I find 9 device events
     And The type of the last event is "COMMAND"
     Then KuraMock is disconnected
     And I wait 1 second
@@ -2107,7 +2107,7 @@ Feature: JobEngineService restart job tests with online device
     And The type of the last event is "BUNDLE"
     And I get the KuraMock devices
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Command Execution"
     And A regular step creator with the name "TestStep" and the following properties
       | name         | type                                                                    | value                                                                                                                                         |
@@ -2169,7 +2169,7 @@ Feature: JobEngineService restart job tests with online device
     And The type of the last event is "BUNDLE"
     And I get the KuraMock devices
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Start"
     And A regular step creator with the name "TestStep" and the following properties
       | name     | type             | value |
@@ -2193,7 +2193,7 @@ Feature: JobEngineService restart job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 1 and status is "PROCESS_OK"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device events
+    Then I find 4 device events
     And The type of the last event is "BUNDLE"
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
@@ -2223,7 +2223,7 @@ Feature: JobEngineService restart job tests with online device
     And The type of the last event is "BUNDLE"
     And I get the KuraMock devices
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Start"
     And A regular step creator with the name "TestStep" and the following properties
       | name     | type             | value |
@@ -2276,7 +2276,7 @@ Feature: JobEngineService restart job tests with online device
     And The type of the last event is "BUNDLE"
     And I get the KuraMock devices
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Start"
     And A regular step creator with the name "TestStep" and the following properties
       | name     | type             | value |
@@ -2292,7 +2292,7 @@ Feature: JobEngineService restart job tests with online device
     Then No exception was thrown
     And I search the database for created job steps and I find 2
     And I restart a job
-    And I wait 15 seconds
+    And I wait 30 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -2300,13 +2300,13 @@ Feature: JobEngineService restart job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 1 and status is "PROCESS_OK"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 2 device events
+    Then I find 4 device events
     And The type of the last event is "BUNDLE"
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
     And A bundle named com.google.guava with id 95 and version 19.0.0 is present and ACTIVE
     Then I restart a job
-    And I wait 15 seconds
+    And I wait 30 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 2
@@ -2314,7 +2314,7 @@ Feature: JobEngineService restart job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 1 and status is "PROCESS_OK"
     When I search for events from device "device0" in account "kapua-sys"
-    Then I find 3 device events
+    Then I find 7 device events
     And The type of the last event is "BUNDLE"
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
@@ -2343,7 +2343,7 @@ Feature: JobEngineService restart job tests with online device
     And The type of the last event is "BUNDLE"
     And I get the KuraMock devices
     Given I create a job with the name "TestJob"
-    And A new job target item
+    And I add targets to job
     And Search for step definition with the name "Bundle Start"
     And A regular step creator with the name "TestStep" and the following properties
       | name     | type             | value |
@@ -2381,6 +2381,250 @@ Feature: JobEngineService restart job tests with online device
     And The type of the last event is "BUNDLE"
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    And A bundle named com.google.guava with id 95 and version 19.0.0 is present and RESOLVED
+    And KuraMock is disconnected
+    And I wait 1 second
+    And Device status is "DISCONNECTED"
+    And I logout
+
+  Scenario: Restarting Job With Valid "Bundle Stop" and "Bundle Start", multiple devices And Step Index=0 For The First Time
+  Create a new job and set a connected KuraMock devices as the job targets.
+  Add a new valid Bundle Stop and Bundle Start steps to the created job. Restart the job.
+  After the executed job is finished, the executed target's step index should
+  be 1 and the status PROCESS_OK
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    When I add 2 devices to Kura Mock
+    And Devices "are" connected
+    And I wait 1 second
+    And Bundles are requested
+    And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
+    And A bundle named com.google.guava with id 95 and version 19.0.0 is present and RESOLVED
+    Then Device status is "CONNECTED"
+    When I search for events from device "device0" in account "kapua-sys"
+    Then I find 2 device events
+    And The type of the last event is "BUNDLE"
+    And I get the KuraMock devices
+    Given I create a job with the name "TestJob"
+    And I add targets to job
+    And Search for step definition with the name "Bundle Stop"
+    And A regular step creator with the name "TestStep" and the following properties
+      | name     | type             | value |
+      | bundleId | java.lang.String | 77    |
+      | timeout  | java.lang.Long   | 10000 |
+    When I create a new step entity from the existing creator
+    And Search for step definition with the name "Bundle Start"
+    And A regular step creator with the name "TestStep2" and the following properties
+      | name     | type             | value |
+      | bundleId | java.lang.String | 95    |
+      | timeout  | java.lang.Long   | 10000 |
+    When I create a new step entity from the existing creator
+    Then No exception was thrown
+    And I search the database for created job steps and I find 2
+    And I restart a job
+    And I wait 30 seconds
+    Given I query for the job with the name "TestJob"
+    When I query for the execution items for the current job
+    Then I count 1
+    And I confirm the executed job is finished
+    And I search for the last job target in the database
+    And I confirm the step index is 1 and status is "PROCESS_OK"
+    When I search for events from device "device0" in account "kapua-sys"
+    Then I find 4 device events
+    And The type of the last event is "BUNDLE"
+    Then Bundles are requested
+    And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and RESOLVED
+    And A bundle named com.google.guava with id 95 and version 19.0.0 is present and ACTIVE
+    And KuraMock is disconnected
+    And I wait 1 second
+    And Device status is "DISCONNECTED"
+    And I logout
+
+  Scenario: Restarting Job With Invalid "Bundle Stop" and "Bundle Start", multiple devices And Step Index=0 For The First Time
+  Create a new job and set a connected KuraMock devices as the job targets.
+  Add a new invalid Bundle Stop and Bundle Start steps to the created job. Restart the job.
+  After the executed job is finished, the executed target's step index should
+  be 0 and the status PROCESS_FAILED
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    When I add 2 devices to Kura Mock
+    And Devices "are" connected
+    And I wait 1 second
+    Then Device status is "CONNECTED"
+    And Bundles are requested
+    And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
+    And A bundle named com.google.guava with id 95 and version 19.0.0 is present and RESOLVED
+    When I search for events from device "device0" in account "kapua-sys"
+    Then I find 2 device events
+    And The type of the last event is "BUNDLE"
+    And I get the KuraMock devices
+    Given I create a job with the name "TestJob"
+    And I add targets to job
+    And Search for step definition with the name "Bundle Stop"
+    And A regular step creator with the name "TestStep" and the following properties
+      | name     | type             | value |
+      | bundleId | java.lang.String | #77   |
+      | timeout  | java.lang.Long   | 10000 |
+    When I create a new step entity from the existing creator
+    And Search for step definition with the name "Bundle Start"
+    And A regular step creator with the name "TestStep2" and the following properties
+      | name     | type             | value |
+      | bundleId | java.lang.String | #95   |
+      | timeout  | java.lang.Long   | 10000 |
+    When I create a new step entity from the existing creator
+    Then No exception was thrown
+    And I search the database for created job steps and I find 2
+    And I restart a job
+    And I wait 15 seconds
+    Given I query for the job with the name "TestJob"
+    When I query for the execution items for the current job
+    Then I count 1
+    And I confirm the executed job is finished
+    And I search for the last job target in the database
+    And I confirm the step index is 0 and status is "PROCESS_FAILED"
+    When I search for events from device "device0" in account "kapua-sys"
+    Then I find 2 device events
+    And The type of the last event is "BUNDLE"
+    Then Bundles are requested
+    And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
+    And A bundle named com.google.guava with id 95 and version 19.0.0 is present and RESOLVED
+    And KuraMock is disconnected
+    And I wait 1 second
+    And Device status is "DISCONNECTED"
+    And I logout
+
+  Scenario: Restarting Job With Valid "Bundle Stop" and "Bundle Start", multiple devices And Step Index=0 For The Second Time
+  Create a new job and set a connected KuraMock devices as the job targets.
+  Add a new valid Bundle Stop step to the created job. Restart the job two times.
+  After the executed job is finished, the executed target's step index should
+  be 1 and the status PROCESS_OK
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    When I add 2 devices to Kura Mock
+    And Devices "are" connected
+    And I wait 1 second
+    And Bundles are requested
+    And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
+    And A bundle named com.google.guava with id 95 and version 19.0.0 is present and RESOLVED
+    Then Device status is "CONNECTED"
+    When I search for events from device "device0" in account "kapua-sys"
+    Then I find 2 device events
+    And The type of the last event is "BUNDLE"
+    And I get the KuraMock devices
+    Given I create a job with the name "TestJob"
+    And I add targets to job
+    And Search for step definition with the name "Bundle Stop"
+    And A regular step creator with the name "TestStep" and the following properties
+      | name     | type             | value |
+      | bundleId | java.lang.String | 77    |
+      | timeout  | java.lang.Long   | 10000 |
+    When I create a new step entity from the existing creator
+    And Search for step definition with the name "Bundle Start"
+    And A regular step creator with the name "TestStep2" and the following properties
+      | name     | type             | value |
+      | bundleId | java.lang.String | 95    |
+      | timeout  | java.lang.Long   | 10000 |
+    When I create a new step entity from the existing creator
+    Then No exception was thrown
+    And I search the database for created job steps and I find 2
+    And I restart a job
+    And I wait 15 seconds
+    Given I query for the job with the name "TestJob"
+    When I query for the execution items for the current job
+    Then I count 1
+    And I confirm the executed job is finished
+    And I search for the last job target in the database
+    And I confirm the step index is 1 and status is "PROCESS_OK"
+    When I search for events from device "device0" in account "kapua-sys"
+    Then I find 4 device events
+    And The type of the last event is "BUNDLE"
+    Then Bundles are requested
+    And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and RESOLVED
+    And A bundle named com.google.guava with id 95 and version 19.0.0 is present and ACTIVE
+    Then I restart a job
+    And I wait 15 seconds
+    Given I query for the job with the name "TestJob"
+    When I query for the execution items for the current job
+    Then I count 2
+    And I confirm the executed job is finished
+    And I search for the last job target in the database
+    And I confirm the step index is 1 and status is "PROCESS_OK"
+    When I search for events from device "device0" in account "kapua-sys"
+    Then I find 7 device events
+    And The type of the last event is "BUNDLE"
+    Then Bundles are requested
+    And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and RESOLVED
+    And A bundle named com.google.guava with id 95 and version 19.0.0 is present and ACTIVE
+    And KuraMock is disconnected
+    And I wait 1 second
+    And Device status is "DISCONNECTED"
+    And I logout
+
+  Scenario: Restarting Job With Invalid "Bundle Stop" and "Bundle Start", multiple devices And Step Index=0 For The Second Time
+  Create a new job and set a connected KuraMock devices as the job targets.
+  Add a new invalid Bundle Stop and Bundle Start steps to the created job. Restart the job two times.
+  After the executed job is finished, the executed target's step index should
+  be 0 and the status PROCESS_FAILED
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    When I add 2 devices to Kura Mock
+    And Devices "are" connected
+    And I wait 1 second
+    And Bundles are requested
+    And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
+    And A bundle named com.google.guava with id 95 and version 19.0.0 is present and RESOLVED
+    Then Device status is "CONNECTED"
+    When I search for events from device "device0" in account "kapua-sys"
+    Then I find 2 device events
+    And The type of the last event is "BUNDLE"
+    And I get the KuraMock devices
+    Given I create a job with the name "TestJob"
+    And I add targets to job
+    And Search for step definition with the name "Bundle Stop"
+    And A regular step creator with the name "TestStep" and the following properties
+      | name     | type             | value |
+      | bundleId | java.lang.String | #77   |
+      | timeout  | java.lang.Long   | 10000 |
+    When I create a new step entity from the existing creator
+    And Search for step definition with the name "Bundle Start"
+    And A regular step creator with the name "TestStep2" and the following properties
+      | name     | type             | value |
+      | bundleId | java.lang.String | #95   |
+      | timeout  | java.lang.Long   | 10000 |
+    When I create a new step entity from the existing creator
+    Then No exception was thrown
+    And I search the database for created job steps and I find 2
+    And I restart a job
+    And I wait 15 seconds
+    Given I query for the job with the name "TestJob"
+    When I query for the execution items for the current job
+    Then I count 1
+    And I confirm the executed job is finished
+    And I search for the last job target in the database
+    And I confirm the step index is 0 and status is "PROCESS_FAILED"
+    When I search for events from device "device0" in account "kapua-sys"
+    Then I find 2 device events
+    And The type of the last event is "BUNDLE"
+    Then Bundles are requested
+    And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
+    And A bundle named com.google.guava with id 95 and version 19.0.0 is present and RESOLVED
+    Then I restart a job
+    And I wait 15 seconds
+    Given I query for the job with the name "TestJob"
+    When I query for the execution items for the current job
+    Then I count 2
+    And I confirm the executed job is finished
+    And I search for the last job target in the database
+    And I confirm the step index is 0 and status is "PROCESS_FAILED"
+    When I search for events from device "device0" in account "kapua-sys"
+    Then I find 3 device events
+    And The type of the last event is "BUNDLE"
+    Then Bundles are requested
+    And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
     And A bundle named com.google.guava with id 95 and version 19.0.0 is present and RESOLVED
     And KuraMock is disconnected
     And I wait 1 second
