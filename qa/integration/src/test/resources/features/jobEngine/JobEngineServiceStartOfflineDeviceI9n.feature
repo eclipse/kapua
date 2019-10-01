@@ -9,7 +9,6 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@jobEngineServiceStart
 @jobEngineStartOfflineDevice
 @integration
 
