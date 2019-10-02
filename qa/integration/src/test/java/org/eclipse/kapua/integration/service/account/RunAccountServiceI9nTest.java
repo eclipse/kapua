@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,6 +13,7 @@
 package org.eclipse.kapua.integration.service.account;
 
 import cucumber.api.CucumberOptions;
+import org.eclipse.kapua.qa.common.cucumber.CucumberProperty;
 import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
 import org.junit.runner.RunWith;
 
@@ -30,4 +31,16 @@ import org.junit.runner.RunWith;
                  },
         strict = true,
         monochrome = true)
+@CucumberProperty(key="DOCKER_HOST", value= "")
+@CucumberProperty(key="DOCKER_CERT_PATH", value= "")
+@CucumberProperty(key="commons.db.schema.update", value= "")
+@CucumberProperty(key="commons.db.connection.host", value= "")
+@CucumberProperty(key="commons.db.connection.port", value= "")
+@CucumberProperty(key="datastore.elasticsearch.nodes", value= "")
+@CucumberProperty(key="datastore.elasticsearch.port", value= "")
+@CucumberProperty(key="datastore.client.class", value= "")
+@CucumberProperty(key="commons.eventbus.url", value= "")
+@CucumberProperty(key="certificate.jwt.private.key", value= "")
+@CucumberProperty(key="certificate.jwt.certificate", value= "")
+@CucumberProperty(key="broker.ip", value= "")
 public class RunAccountServiceI9nTest {}
