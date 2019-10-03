@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,9 +7,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *      Eurotech - initial API and implementation
+ *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.configuration.metatype;
+package org.eclipse.kapua.service.config;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -21,15 +21,15 @@ import javax.xml.bind.annotation.XmlElement;
  * @since 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class XmlConfigPropertiesAdapted {
+public class ServiceXmlConfigPropertiesAdapted {
 
     @XmlElement(name = "property")
-    private XmlConfigPropertyAdapted[] properties;
+    private ServiceXmlConfigPropertyAdapted[] properties;
 
     /**
      * Constructor
      */
-    public XmlConfigPropertiesAdapted() {
+    public ServiceXmlConfigPropertiesAdapted() {
     }
 
     /**
@@ -37,7 +37,7 @@ public class XmlConfigPropertiesAdapted {
      *
      * @return
      */
-    public XmlConfigPropertyAdapted[] getProperties() {
+    public ServiceXmlConfigPropertyAdapted[] getProperties() {
         return properties;
     }
 
@@ -46,7 +46,7 @@ public class XmlConfigPropertiesAdapted {
      *
      * @param properties
      */
-    public void setProperties(XmlConfigPropertyAdapted[] properties) {
+    public void setProperties(ServiceXmlConfigPropertyAdapted[] properties) {
         this.properties = properties;
     }
 }
