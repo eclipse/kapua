@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,9 +7,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *      Eurotech - initial API and implementation
+ *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.configuration.metatype;
+package org.eclipse.kapua.service.device.management.configuration;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlEnumValue;
  * @since 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class XmlConfigPropertyAdapted {
+public class DeviceXmlConfigPropertyAdapted {
 
     @XmlEnum
     public enum ConfigPropertyType {
@@ -72,12 +72,12 @@ public class XmlConfigPropertyAdapted {
     @XmlElement(name = "value")
     private String[] values;
 
-    public XmlConfigPropertyAdapted() {
+    public DeviceXmlConfigPropertyAdapted() {
     }
 
-    public XmlConfigPropertyAdapted(String name,
-            ConfigPropertyType type,
-            String[] values) {
+    public DeviceXmlConfigPropertyAdapted(String name,
+                                          ConfigPropertyType type,
+                                          String[] values) {
         super();
 
         this.type = type;

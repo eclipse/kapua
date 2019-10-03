@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,9 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.configuration;
-
-import org.eclipse.kapua.model.config.metatype.KapuaTocd;
+package org.eclipse.kapua.service.config;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -22,8 +20,10 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Map;
 
+import org.eclipse.kapua.model.config.metatype.KapuaTocd;
+
 /**
- * Device component configuration entity definition.
+ * Service component configuration entity definition.
  *
  * @since 1.0
  */
@@ -34,11 +34,11 @@ import java.util.Map;
         "name",
         "definition",
         "properties"
-}, factoryClass = DeviceConfigurationXmlRegistry.class, factoryMethod = "newComponentConfiguration")
-public interface DeviceComponentConfiguration {
+}, factoryClass = ServiceConfigurationXmlRegistry.class, factoryMethod = "newComponentConfiguration")
+public interface ServiceComponentConfiguration {
 
     /**
-     * Get device configuration component identifier
+     * Get service configuration component identifier
      *
      * @return
      */
@@ -46,14 +46,14 @@ public interface DeviceComponentConfiguration {
     String getId();
 
     /**
-     * Set device configuration component identifier
+     * Set service configuration component identifier
      *
      * @param id
      */
     void setId(String id);
 
     /**
-     * Get device configuration component name
+     * Get service configuration component name
      *
      * @return
      */
@@ -61,14 +61,14 @@ public interface DeviceComponentConfiguration {
     String getName();
 
     /**
-     * Set device configuration component name
+     * Set service configuration component name
      *
      * @param unescapedComponentName
      */
     void setName(String unescapedComponentName);
 
     /**
-     * Get device configuration component definition
+     * Get service configuration component definition
      *
      * @return
      */
@@ -76,23 +76,23 @@ public interface DeviceComponentConfiguration {
     KapuaTocd getDefinition();
 
     /**
-     * Set device configuration component definition
+     * Set service configuration component definition
      *
      * @param definition
      */
     void setDefinition(KapuaTocd definition);
 
     /**
-     * Get device configuration component properties
+     * Get service configuration component properties
      *
      * @return
      */
     @XmlElement(name = "properties")
-    @XmlJavaTypeAdapter(DeviceXmlConfigPropertiesAdapter.class)
+    @XmlJavaTypeAdapter(ServiceXmlConfigPropertiesAdapter.class)
     Map<String, Object> getProperties();
 
     /**
-     * Set device configuration component properties
+     * Set service configuration component properties
      *
      * @param properties
      */

@@ -90,6 +90,9 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 import org.eclipse.kapua.service.authorization.role.RolePermissionXmlRegistry;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleXmlRegistry;
+import org.eclipse.kapua.service.config.ServiceComponentConfiguration;
+import org.eclipse.kapua.service.config.ServiceConfiguration;
+import org.eclipse.kapua.service.config.ServiceConfigurationXmlRegistry;
 import org.eclipse.kapua.service.datastore.client.model.InsertResponse;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
@@ -485,8 +488,12 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     EventStoreRecordCreator.class,
                     EventStoreRecordListResult.class,
                     EventStoreRecordQuery.class,
-                    EventStoreXmlRegistry.class
+                    EventStoreXmlRegistry.class,
 
+                    // Service Config
+                    ServiceConfigurationXmlRegistry.class,
+                    ServiceConfiguration.class,
+                    ServiceComponentConfiguration.class
             }, properties);
         } catch (Exception e) {
             throw new RuntimeException(e);
