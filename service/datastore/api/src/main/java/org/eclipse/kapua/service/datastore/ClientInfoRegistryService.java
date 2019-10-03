@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.datastore;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.config.KapuaConfigurableService;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.StorableId;
@@ -26,8 +25,7 @@ import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
  *
  * @since 1.0.0
  */
-public interface ClientInfoRegistryService extends KapuaService,
-        KapuaConfigurableService {
+public interface ClientInfoRegistryService extends KapuaService {
 
     /**
      * Find client information by identifier
