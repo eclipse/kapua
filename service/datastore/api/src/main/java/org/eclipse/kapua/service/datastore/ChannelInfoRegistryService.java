@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.datastore;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.config.KapuaConfigurableService;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.StorableId;
@@ -26,8 +25,7 @@ import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
  *
  * @since 1.0.0
  */
-public interface ChannelInfoRegistryService extends KapuaService,
-        KapuaConfigurableService {
+public interface ChannelInfoRegistryService extends KapuaService {
 
     /**
      * Find channel information by identifier

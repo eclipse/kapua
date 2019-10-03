@@ -13,7 +13,7 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
+import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -63,7 +63,7 @@ import java.util.List;
  * @since 1.0.0
  */
 @KapuaProvider
-public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableService implements MetricInfoRegistryService {
+public class MetricInfoRegistryServiceImpl extends AbstractKapuaService implements MetricInfoRegistryService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MetricInfoRegistryServiceImpl.class);
 
@@ -80,7 +80,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaConfigurableServ
      * @throws ClientUnavailableException
      */
     public MetricInfoRegistryServiceImpl() throws ClientUnavailableException {
-        super(MetricInfoRegistryService.class.getName(), DatastoreDomains.DATASTORE_DOMAIN, DatastoreEntityManagerFactory.getInstance());
+        super(DatastoreEntityManagerFactory.getInstance());
 
         KapuaLocator locator = KapuaLocator.getInstance();
         accountService = locator.getService(AccountService.class);
