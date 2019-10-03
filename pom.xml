@@ -83,6 +83,7 @@
         <snakeyaml.version>1.15</snakeyaml.version>
         <swagger.version>1.5.12</swagger.version>
         <cucumber.version>1.2.4</cucumber.version>
+        <spotify.version>8.15.1</spotify.version>
         <elasticsearch.version>5.3.0</elasticsearch.version>
         <elasticsearch-client-transport.version>5.3.0</elasticsearch-client-transport.version>
         <elasticsearch-client-rest.version>5.3.0</elasticsearch-client-rest.version>
@@ -1226,6 +1227,11 @@
                 <groupId>info.cukes</groupId>
                 <artifactId>cucumber-guice</artifactId>
                 <version>${cucumber.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-client</artifactId>
+                <version>${spotify.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.camel</groupId>

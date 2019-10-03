@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,8 +32,19 @@ import org.junit.runner.RunWith;
         },
         strict = true,
         monochrome = true )
+@CucumberProperty(key="kapua.config.url", value="")
+@CucumberProperty(key="DOCKER_HOST", value= "")
+@CucumberProperty(key="DOCKER_CERT_PATH", value= "")
+@CucumberProperty(key="commons.db.schema.update", value= "")
+@CucumberProperty(key="commons.db.connection.host", value= "")
+@CucumberProperty(key="commons.db.connection.port", value= "")
+@CucumberProperty(key="datastore.elasticsearch.nodes", value= "")
+@CucumberProperty(key="datastore.elasticsearch.port", value= "")
+@CucumberProperty(key="datastore.client.class", value= "")
+@CucumberProperty(key="commons.eventbus.url", value= "")
+@CucumberProperty(key="certificate.jwt.private.key", value= "")
+@CucumberProperty(key="certificate.jwt.certificate", value= "")
 @CucumberProperty(key="org.eclipse.kapua.qa.broker.extraStartupDelay", value="3")
 @CucumberProperty(key="broker.ip", value="192.168.33.10")
-@CucumberProperty(key="kapua.config.url", value="")
 public class RunBrokerACLDeviceManageI9nTest {
 }
