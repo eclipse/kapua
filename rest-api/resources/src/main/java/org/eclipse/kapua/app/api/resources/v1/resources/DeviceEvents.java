@@ -25,6 +25,7 @@ import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventAttributes;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
@@ -52,6 +53,8 @@ public class DeviceEvents extends AbstractKapuaResource {
     private final DeviceEventService deviceEventService = locator.getService(DeviceEventService.class);
     private final DeviceEventFactory deviceEventFactory = locator.getFactory(DeviceEventFactory.class);
 
+    private final DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
+
     /**
      * Gets the {@link DeviceEvent} list in the scope.
      *
@@ -74,6 +77,10 @@ public class DeviceEvents extends AbstractKapuaResource {
             @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
             @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
         DeviceEventQuery query = deviceEventFactory.newQuery(scopeId);
+
+        if (deviceRegistryService.find(scopeId, deviceId) == null) {
+             throw new KapuaEntityNotFoundException(Device.TYPE, deviceId);
+        }
 
         AndPredicate andPredicate = query.andPredicate(query.attributePredicate(DeviceEventAttributes.DEVICE_ID, deviceId));
 
@@ -107,7 +114,12 @@ public class DeviceEvents extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the Device in which to search results") @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "The DeviceEventQuery to use to filter results.", required = true) DeviceEventQuery query) throws Exception {
+
         query.setScopeId(scopeId);
+
+        if (deviceRegistryService.find(scopeId, deviceId) == null) {
+            throw new KapuaEntityNotFoundException(Device.TYPE, deviceId);
+        }
 
         AndPredicate andPredicate = query.andPredicate(
                 query.attributePredicate(DeviceEventAttributes.DEVICE_ID, deviceId),
@@ -138,6 +150,11 @@ public class DeviceEvents extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId in which to count results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the Device in which to count results") @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "The DeviceEventQuery to use to filter count results", required = true) DeviceEventQuery query) throws Exception {
+
+        if (deviceRegistryService.find(scopeId, deviceId) == null) {
+            throw new KapuaEntityNotFoundException(Device.TYPE, deviceId);
+        }
+
         query.setScopeId(scopeId);
         query.setPredicate(query.attributePredicate(DeviceEventAttributes.DEVICE_ID, deviceId));
 
@@ -162,6 +179,11 @@ public class DeviceEvents extends AbstractKapuaResource {
             @ApiParam(value = "The ScopeId of the requested DeviceEvent.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the requested Device", required = true) @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "The id of the requested DeviceEvent", required = true) @PathParam("deviceEventId") EntityId deviceEventId) throws Exception {
+
+        if (deviceRegistryService.find(scopeId, deviceId) == null) {
+            throw new KapuaEntityNotFoundException(Device.TYPE, deviceId);
+        }
+
         DeviceEventQuery query = deviceEventFactory.newQuery(scopeId);
 
         AndPredicate andPredicate = query.andPredicate(
@@ -197,6 +219,11 @@ public class DeviceEvents extends AbstractKapuaResource {
     public Response deleteDeviceEvent(@PathParam("scopeId") ScopeId scopeId,
                                       @ApiParam(value = "The id of the Device in which to delete the event.", required = true) @PathParam("deviceId") EntityId deviceId,
                                       @ApiParam(value = "The id of the DeviceEvent to be deleted", required = true) @PathParam("deviceEventId") EntityId deviceEventId) throws Exception {
+
+        if (deviceRegistryService.find(scopeId, deviceId) == null) {
+            throw new KapuaEntityNotFoundException(Device.TYPE, deviceId);
+        }
+
         deviceEventService.delete(scopeId, deviceEventId);
 
         return returnOk();
