@@ -34,6 +34,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
@@ -47,13 +48,15 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-@Api(value = "Devices", authorizations = { @Authorization(value = "kapuaAccessToken") })
+@Api(value = "Devices", authorizations = {@Authorization(value = "kapuaAccessToken")})
 @Path("{scopeId}/devices/{deviceId}/events")
 public class DeviceEvents extends AbstractKapuaResource {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final DeviceEventService deviceEventService = locator.getService(DeviceEventService.class);
     private final DeviceEventFactory deviceEventFactory = locator.getFactory(DeviceEventFactory.class);
+
+    private final DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
 
     /**
      * Gets the {@link DeviceEvent} list in the scope.
@@ -75,13 +78,17 @@ public class DeviceEvents extends AbstractKapuaResource {
      */
     @ApiOperation(nickname = "deviceEventSimpleQuery", value = "Gets the DeviceEvent list in the scope", notes = "Returns the list of all the deviceEvents associated to the current selected scope.", response = DeviceEventListResult.class)
     @GET
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public DeviceEventListResult simpleQuery(
             @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The client id to filter results.") @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "The resource of the DeviceEvent in which to search results") @QueryParam("resource") String resource,
             @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
             @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+        if (deviceRegistryService.find(scopeId, deviceId) == null) {
+             throw new KapuaEntityNotFoundException(Device.TYPE, deviceId);
+        }
+
         DeviceEventQuery query = deviceEventFactory.newQuery(scopeId);
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
@@ -114,12 +121,17 @@ public class DeviceEvents extends AbstractKapuaResource {
     @ApiOperation(nickname = "deviceEventQuery", value = "Queries the DeviceEvents", notes = "Queries the DeviceEvents with the given DeviceEvents parameter returning all matching DeviceEvents", response = DeviceEventListResult.class)
     @POST
     @Path("_query")
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public DeviceEventListResult query(
             @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the Device in which to search results") @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "The DeviceEventQuery to use to filter results.", required = true) DeviceEventQuery query) throws Exception {
+
+        if (deviceRegistryService.find(scopeId, deviceId) == null) {
+            throw new KapuaEntityNotFoundException(Device.TYPE, deviceId);
+        }
+
         query.setScopeId(scopeId);
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
@@ -147,12 +159,17 @@ public class DeviceEvents extends AbstractKapuaResource {
     @ApiOperation(nickname = "deviceEventCount", value = "Counts the DeviceEvents", notes = "Counts the DeviceEvents with the given DeviceEventQuery parameter returning the number of matching DeviceEvents", response = CountResult.class)
     @POST
     @Path("_count")
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public CountResult count(
             @ApiParam(value = "The ScopeId in which to count results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the Device in which to count results") @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "The DeviceEventQuery to use to filter count results", required = true) DeviceEventQuery query) throws Exception {
+
+        if (deviceRegistryService.find(scopeId, deviceId) == null) {
+            throw new KapuaEntityNotFoundException(Device.TYPE, deviceId);
+        }
+
         query.setScopeId(scopeId);
         query.setPredicate(new AttributePredicateImpl<>(DeviceEventAttributes.DEVICE_ID, deviceId));
 
@@ -176,11 +193,16 @@ public class DeviceEvents extends AbstractKapuaResource {
     @ApiOperation(nickname = "deviceEventFind", value = "Get an DeviceEvent", notes = "Returns the DeviceEvent specified by the \"deviceEventId\" path parameter.", response = DeviceEvent.class)
     @GET
     @Path("{deviceEventId}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public DeviceEvent find(
             @ApiParam(value = "The ScopeId of the requested DeviceEvent.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the requested Device", required = true) @PathParam("deviceId") EntityId deviceId,
             @ApiParam(value = "The id of the requested DeviceEvent", required = true) @PathParam("deviceEventId") EntityId deviceEventId) throws Exception {
+
+        if (deviceRegistryService.find(scopeId, deviceId) == null) {
+            throw new KapuaEntityNotFoundException(Device.TYPE, deviceId);
+        }
+
         DeviceEventQuery query = deviceEventFactory.newQuery(scopeId);
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
@@ -216,8 +238,13 @@ public class DeviceEvents extends AbstractKapuaResource {
     @DELETE
     @Path("{deviceEventId}")
     public Response deleteDeviceEvent(@PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The id of the Device in which to delete the event.", required = true) @PathParam("deviceId") EntityId deviceId,
-            @ApiParam(value = "The id of the DeviceEvent to be deleted", required = true) @PathParam("deviceEventId") EntityId deviceEventId) throws Exception {
+                                      @ApiParam(value = "The id of the Device in which to delete the event.", required = true) @PathParam("deviceId") EntityId deviceId,
+                                      @ApiParam(value = "The id of the DeviceEvent to be deleted", required = true) @PathParam("deviceEventId") EntityId deviceEventId) throws Exception {
+
+        if (deviceRegistryService.find(scopeId, deviceId) == null) {
+            throw new KapuaEntityNotFoundException(Device.TYPE, deviceId);
+        }
+
         deviceEventService.delete(scopeId, deviceEventId);
 
         return returnOk();
