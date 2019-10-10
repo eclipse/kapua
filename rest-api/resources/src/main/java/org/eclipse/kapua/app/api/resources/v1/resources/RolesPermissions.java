@@ -117,8 +117,9 @@ public class RolesPermissions extends AbstractKapuaResource {
 
         AndPredicate andPredicate = query.andPredicate();
         andPredicate.and(query.attributePredicate(RolePermissionAttributes.ROLE_ID, roleId));
-        andPredicate.and(query.getPredicate());
-
+        if (query.getPredicate() != null) {
+            andPredicate.and(query.getPredicate());
+        }
         query.setPredicate(andPredicate);
 
         return rolePermissionService.query(query);
