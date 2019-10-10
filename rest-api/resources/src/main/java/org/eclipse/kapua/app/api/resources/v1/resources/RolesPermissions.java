@@ -46,7 +46,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Api(value = "Roles", authorizations = { @Authorization(value = "kapuaAccessToken") })
+@Api(value = "Roles", authorizations = {@Authorization(value = "kapuaAccessToken")})
 @Path("{scopeId}/roles/{roleId}/permissions")
 public class RolesPermissions extends AbstractKapuaResource {
 
@@ -69,7 +69,7 @@ public class RolesPermissions extends AbstractKapuaResource {
      */
     @ApiOperation(nickname = "rolePermissionSimpleQuery", value = "Gets the RolePermission list in the scope", notes = "Returns the list of all the rolePermissions associated to the current selected scope.", response = RolePermissionListResult.class)
     @GET
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public RolePermissionListResult simpleQuery(
             @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The id of the Role to filter results.") @PathParam("roleId") EntityId roleId,
@@ -108,8 +108,8 @@ public class RolesPermissions extends AbstractKapuaResource {
     @ApiOperation(nickname = "rolePermissionQuery", value = "Queries the RolePermissions", notes = "Queries the RolePermissions with the given RolePermissionQuery parameter returning all matching RolePermissions", response = RolePermissionListResult.class)
     @POST
     @Path("_query")
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public RolePermissionListResult query(
             @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The Role id in which to search results.") @PathParam("roleId") EntityId roleId,
@@ -118,8 +118,9 @@ public class RolesPermissions extends AbstractKapuaResource {
 
         AndPredicateImpl andPredicate = new AndPredicateImpl();
         andPredicate.and(new AttributePredicateImpl<>(RolePermissionAttributes.ROLE_ID, roleId));
-        andPredicate.and(query.getPredicate());
-
+        if (query.getPredicate() != null) {
+            andPredicate.and(query.getPredicate());
+        }
         query.setPredicate(andPredicate);
 
         return rolePermissionService.query(query);
@@ -138,8 +139,8 @@ public class RolesPermissions extends AbstractKapuaResource {
     @ApiOperation(nickname = "rolePermissionCount", value = "Counts the RolePermissions", notes = "Counts the RolePermissions with the given RolePermissionQuery parameter returning the number of matching RolePermissions", response = CountResult.class)
     @POST
     @Path("_count")
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public CountResult count(
             @ApiParam(value = "The ScopeId in which to count results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The Role id in which to count results.") @PathParam("roleId") EntityId roleId,
@@ -163,8 +164,8 @@ public class RolesPermissions extends AbstractKapuaResource {
      */
     @ApiOperation(nickname = "rolePermissionCreate", value = "Create a RolePermission", notes = "Creates a new RolePermission based on the information provided in RolePermissionCreator parameter.", response = RolePermission.class)
     @POST
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public RolePermission create(
             @ApiParam(value = "The ScopeId in which to create the RolePermission", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "The Role id in which to create the RolePermission.", required = true) @PathParam("roleId") EntityId roleId,
@@ -188,7 +189,7 @@ public class RolesPermissions extends AbstractKapuaResource {
     @ApiOperation(nickname = "rolePermissionFind", value = "Get a RolePermission", notes = "Returns the RolePermission specified by the \"rolePermissionId\" path parameter.", response = RolePermission.class)
     @GET
     @Path("{rolePermissionId}")
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public RolePermission find(
             @ApiParam(value = "The ScopeId of the requested RolePermission.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
             @ApiParam(value = "Specifies the RoleId for the requested RolePermission", required = true) @PathParam("roleId") EntityId roleId,
