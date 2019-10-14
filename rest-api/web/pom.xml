@@ -141,6 +141,12 @@
             <artifactId>jersey-media-moxy</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Apache shiro security framework -->
         <dependency>
             <groupId>org.apache.shiro</groupId>
