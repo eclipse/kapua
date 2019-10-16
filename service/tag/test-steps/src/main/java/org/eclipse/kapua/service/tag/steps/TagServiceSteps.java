@@ -153,13 +153,18 @@ public class TagServiceSteps extends TestBase {
 
     @When("^Tag with name \"([^\"]*)\" is searched$")
     public void tagWithNameIfSearched(String tagName) throws Throwable {
+        try {
+            primeException();
+            TagQuery query = tagFactory.newQuery(SYS_SCOPE_ID);
+            query.setPredicate(query.attributePredicate(TagAttributes.NAME, tagName, AttributePredicate.Operator.EQUAL));
+            TagListResult queryResult = tagService.query(query);
+            Tag foundTag = queryResult.getFirstItem();
+            stepData.put("tag", foundTag);
+            stepData.put("queryResult", queryResult);
+        } catch (KapuaException ke) {
+            verifyException(ke);
+        }
 
-        TagQuery query = tagFactory.newQuery(SYS_SCOPE_ID);
-        query.setPredicate(query.attributePredicate(TagAttributes.NAME, tagName, AttributePredicate.Operator.EQUAL));
-        TagListResult queryResult = tagService.query(query);
-        Tag foundTag = queryResult.getFirstItem();
-        stepData.put("tag", foundTag);
-        stepData.put("queryResult", queryResult);
     }
 
     @Then("^Tag with name \"([^\"]*)\" is found$")

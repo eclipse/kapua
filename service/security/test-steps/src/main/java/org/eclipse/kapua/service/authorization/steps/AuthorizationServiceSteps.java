@@ -2104,10 +2104,16 @@ public class AuthorizationServiceSteps extends TestBase {
 
     @And("^I find role with name \"([^\"]*)\"$")
     public void iFindRoleWithName(String roleName) throws Exception {
-        RoleQuery roleQuery = roleFactory.newQuery(getCurrentScopeId());
-        roleQuery.setPredicate(roleQuery.attributePredicate(RoleAttributes.NAME, roleName, AttributePredicate.Operator.EQUAL));
-        RoleListResult roleListResult = roleService.query(roleQuery);
-        assertTrue(roleListResult.getSize() > 0);
+        try {
+            primeException();
+            RoleQuery roleQuery = roleFactory.newQuery(getCurrentScopeId());
+            roleQuery.setPredicate(roleQuery.attributePredicate(RoleAttributes.NAME, roleName, AttributePredicate.Operator.EQUAL));
+            RoleListResult roleListResult = roleService.query(roleQuery);
+            assertTrue(roleListResult.getSize() > 0);
+        } catch (KapuaException ke) {
+            verifyException(ke);
+        }
+
     }
 
     @And("^I create the group with name \"([^\"]*)\"$")
