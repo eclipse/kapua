@@ -514,7 +514,7 @@ Feature: JobEngineService start job tests with online device
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I start a job
-    And I wait 15 seconds
+    And I wait 30 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -620,7 +620,7 @@ Feature: JobEngineService start job tests with online device
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I start a job
-    And I wait 15 seconds
+    And I wait 30 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -724,7 +724,7 @@ Feature: JobEngineService start job tests with online device
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     Then I start a job
-    And I wait 15 seconds
+    And I wait 30 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -1282,7 +1282,7 @@ Feature: JobEngineService start job tests with online device
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I start a job
-    And I wait 15 seconds
+    And I wait 30 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -1388,7 +1388,7 @@ Feature: JobEngineService start job tests with online device
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I start a job
-    And I wait 15 seconds
+    And I wait 30 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -1493,7 +1493,7 @@ Feature: JobEngineService start job tests with online device
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     Then I start a job
-    And I wait 15 seconds
+    And I wait 30 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
