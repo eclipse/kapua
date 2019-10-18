@@ -13,6 +13,7 @@
 package org.eclipse.kapua.translator.mqtt.kura;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.message.internal.MessageException;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataChannel;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataPayload;
@@ -56,10 +57,14 @@ public class TranslatorDataMqttKura extends Translator<MqttMessage, KuraDataMess
 
     private KuraDataPayload translate(MqttPayload mqttPayload)
             throws KapuaException {
-        byte[] jmsBody = mqttPayload.getBody();
+        byte[] mqttBody = mqttPayload.getBody();
 
         KuraDataPayload kuraPayload = new KuraDataPayload();
-        kuraPayload.readFromByteArray(jmsBody);
+        try {
+            kuraPayload.readFromByteArray(mqttBody);
+        } catch (MessageException ex) {
+            kuraPayload.setBody(mqttBody);
+        }
 
         //
         // Return Kura Payload
