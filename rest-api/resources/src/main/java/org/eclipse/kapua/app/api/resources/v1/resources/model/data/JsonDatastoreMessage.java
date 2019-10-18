@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources.model.data;
 
-import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.Storable;
 import org.eclipse.kapua.service.datastore.model.StorableId;
@@ -52,7 +51,7 @@ public class JsonDatastoreMessage extends JsonKapuaDataMessage implements Storab
         setCapturedOn(datastoreMessage.getCapturedOn());
 
         setPosition(datastoreMessage.getPosition());
-        setChannel((KapuaDataChannel) datastoreMessage.getChannel());
+        setChannel(datastoreMessage.getChannel());
         setPayload(datastoreMessage.getPayload());
     }
 

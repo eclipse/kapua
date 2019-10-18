@@ -48,7 +48,7 @@ public class JsonKapuaPayload {
             XmlAdaptedMetric jsonMetric = new XmlAdaptedMetric();
 
             jsonMetric.setName(metricName);
-            jsonMetric.setValueType(metricName.getClass());
+            jsonMetric.setValueType(metricValue.getClass());
             jsonMetric.setValue(ObjectValueConverter.toString(metricValue));
 
             getMetrics().add(jsonMetric);
