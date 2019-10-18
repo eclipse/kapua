@@ -19,8 +19,6 @@ import org.junit.runner.RunWith;
 @CucumberOptions(
         features = {
                 "classpath:features/jobEngine/JobEngineServiceStartOfflineDeviceI9n.feature",
-                "classpath:features/jobEngine/JobEngineServiceStartOnlineDeviceI9n.feature",
-                "classpath:features/jobEngine/JobEngineServiceRestartOnlineDeviceI9n.feature",
                 "classpath:features/jobEngine/JobEngineServiceRestartOfflineDeviceI9n.feature"
         },
         glue = { "org.eclipse.kapua.service.job.steps",
@@ -34,5 +32,5 @@ import org.junit.runner.RunWith;
                 "json:target/cucumber.json" },
         strict = true,
         monochrome = true)
-public class RunJobEngineServiceI9nTest {
+public class RunJobEngineServiceOfflineDeviceI9nTest {
 }

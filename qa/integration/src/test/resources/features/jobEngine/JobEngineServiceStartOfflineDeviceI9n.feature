@@ -300,7 +300,6 @@
       Then I count 1
       And I confirm the executed job is finished
       And I search for the last job target in the database
-      And I wait 3 seconds
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
       When I start the Kura Mock
       And Device "is" connected
