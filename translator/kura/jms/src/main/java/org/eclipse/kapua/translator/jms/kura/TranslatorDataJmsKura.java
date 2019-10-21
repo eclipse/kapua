@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.message.internal.MessageException;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataChannel;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataPayload;
@@ -26,7 +27,7 @@ import org.eclipse.kapua.transport.message.jms.JmsTopic;
 
 /**
  * Messages translator implementation from {@link org.eclipse.kapua.transport.message.jms.JmsMessage} to {@link org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage}
- * 
+ *
  * @since 1.0
  */
 public class TranslatorDataJmsKura extends Translator<JmsMessage, KuraDataMessage> {
@@ -61,7 +62,11 @@ public class TranslatorDataJmsKura extends Translator<JmsMessage, KuraDataMessag
         KuraDataPayload kuraPayload = null;
         if (jmsPayload.getBody() != null) {
             kuraPayload = new KuraDataPayload();
-            kuraPayload.readFromByteArray(jmsPayload.getBody());
+            try {
+                kuraPayload.readFromByteArray(jmsPayload.getBody());
+            } catch (MessageException ex) {
+                kuraPayload.setBody(jmsPayload.getBody());
+            }
         }
         return kuraPayload;
     }
