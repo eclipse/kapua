@@ -221,9 +221,9 @@
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
       And I logout
 
-    Scenario: Starting a job with Package Install Command step
+    Scenario: Starting a job with Package Install step
       Create a new job and set a disconnected KuraMock device as the job target.
-      Add a new Package Install Command step to the created job. Start the job.
+      Add a new Package Install step to the created job. Start the job.
       After the executed job is finished, the executed target's step index should
       be 0 and the status PROCESS_FAILED
 
@@ -265,9 +265,9 @@
       And Device status is "DISCONNECTED"
       And I logout
 
-    Scenario: Starting a job with Package Uninstall Command step
+    Scenario: Starting a job with Package Uninstall step
       Create a new job and set a disconnected KuraMock device as the job target.
-      Add a new Package Uninstall Command step to the created job. Start the job.
+      Add a new Package Uninstall step to the created job. Start the job.
       After the executed job is finished, the executed target's step index should
       be 0 and the status PROCESS_FAILED
 
@@ -280,7 +280,7 @@
       And I get the KuraMock device
       And Packages are requested
       And Number of received packages is 1
-      And Package named org.eclipse.kura.example.ble.tisensortag with version 1.0.0 is received
+      And Package named org.eclipse.kura.example.beacon with version 1.0.300 is received
       When KuraMock is disconnected
       And I wait 1 second
       Then Device status is "DISCONNECTED"
@@ -288,9 +288,9 @@
       And A new job target item
       And Search for step definition with the name "Package Uninstall"
       And A regular step creator with the name "TestStep" and the following properties
-        | name                     | type                                                                                               | value                                                                                                                                                                                                         |
-        | packageUninstallRequest  | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>org.eclipse.kura.example.ble.tisensortag</name><version>1.0.0</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
-        | timeout                  | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                         |
+        | name                     | type                                                                                               | value                                                                                                                                                                                                  |
+        | packageUninstallRequest  | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>org.eclipse.kura.example.beacon</name><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
+        | timeout                  | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                  |
       When I create a new step entity from the existing creator
       Then No exception was thrown
       And I start a job
@@ -634,7 +634,7 @@
       And I get the KuraMock device
       And Packages are requested
       And Number of received packages is 1
-      And Package named org.eclipse.kura.example.ble.tisensortag with version 1.0.0 is received
+      And Package named org.eclipse.kura.example.beacon with version 1.0.300 is received
       And Bundles are requested
       And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
       When KuraMock is disconnected
@@ -644,9 +644,9 @@
       And A new job target item
       And Search for step definition with the name "Package Uninstall"
       And A regular step creator with the name "TestStep1" and the following properties
-        | name                     | type                                                                                               | value                                                                                                                                                                                                         |
-        | packageUninstallRequest  | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>org.eclipse.kura.example.ble.tisensortag</name><version>1.0.0</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
-        | timeout                  | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                         |
+        | name                     | type                                                                                               | value                                                                                                                                                                                                  |
+        | packageUninstallRequest  | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>org.eclipse.kura.example.beacon</name><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
+        | timeout                  | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                  |
       And I create a new step entity from the existing creator
       Then Search for step definition with the name "Bundle Start"
       And A regular step creator with the name "TestStep2" and the following properties
@@ -813,9 +813,9 @@
       Then I count 2
       And Search for step definition with the name "Package Uninstall"
       And A regular step creator with the name "TestStep" and the following properties
-        | name                    | type                                                                                               | value                                                                                                                                                                         |
-        | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>heater</name><version>1.0.300</version><reboot>true</reboot><rebootDelay>30000</rebootDelay></uninstallRequest> |
-        | timeout                 | java.lang.Long                                                                                     | 30000                                                                                                                                                                         |
+        | name                    | type                                                                                               | value                                                                                                                                                                                                  |
+        | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>org.eclipse.kura.example.beacon</name><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
+        | timeout                 | java.lang.Long                                                                                     | 30000                                                                                                                                                                                                  |
       When I create a new step entity from the existing creator
       Then No exception was thrown
       And I start a job
@@ -1104,9 +1104,9 @@
       Then I count 2
       And Search for step definition with the name "Package Uninstall"
       And A regular step creator with the name "TestStep" and the following properties
-        | name                    | type                                                                                               | value                                                                                                                                                                         |
-        | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>heater</name><version>1.0.300</version><reboot>true</reboot><rebootDelay>30000</rebootDelay></uninstallRequest> |
-        | timeout                 | java.lang.Long                                                                                     | 30000                                                                                                                                                                         |
+        | name                    | type                                                                                               | value                                                                                                                                                                                                  |
+        | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>org.eclipse.kura.example.beacon</name><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
+        | timeout                 | java.lang.Long                                                                                     | 30000                                                                                                                                                                                                  |
       When I create a new step entity from the existing creator
       And Search for step definition with the name "Bundle Start"
       And A regular step creator with the name "TestStep1" and the following properties

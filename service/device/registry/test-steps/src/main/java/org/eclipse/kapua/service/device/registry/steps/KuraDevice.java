@@ -15,9 +15,11 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 
 import org.eclipse.kapua.qa.common.Suppressed;
+import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
 import org.eclipse.kura.core.message.protobuf.KuraPayloadProto;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -42,6 +44,7 @@ public class KuraDevice implements MqttCallback {
      * Topics that Kura device is listening to.
      */
     private String deployPackages;
+    private String deployV2ExecDownloadPackage;
     private String deployBundles;
     private String deployConf;
     private String putConf;
@@ -108,9 +111,12 @@ public class KuraDevice implements MqttCallback {
 
     public boolean bundleStateChanged;
     public boolean configurationChanged;
+    public boolean packageListChanged;
 
     public KuraDevice() {
         deployPackages = "$EDC/kapua-sys/rpione3/DEPLOY-V2/GET/packages";
+
+        deployV2ExecDownloadPackage = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/download";
 
         deployBundles = "$EDC/kapua-sys/rpione3/DEPLOY-V2/GET/bundles";
 
@@ -204,6 +210,8 @@ public class KuraDevice implements MqttCallback {
          */
         try {
             deployPackages = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/GET/packages";
+
+            deployV2ExecDownloadPackage = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/EXEC/download";
 
             deployBundles = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/GET/bundles";
 
@@ -314,13 +322,64 @@ public class KuraDevice implements MqttCallback {
         byte[] responsePayload = null;
         byte[] payload = mqttMessage.getPayload();
 
-        if(topic.equals(deployPackages)) {
+        if (topic.equals(deployPackages)) {
             callbackParam = extractCallback(payload);
 
             responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/REPLY/" + callbackParam.getRequestId();
-            responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_packages.mqtt").toURI()));
+            responsePayload = Files.readAllBytes(Paths.get(getClass().getResource(packageListChanged == true ? "/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_packages_updated_list.mqtt" : "/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_packages_initial_list.mqtt").toURI()));
 
             mqttClient.publish(responseTopic, responsePayload, 0, false);
+        } else if (topic.equals(deployV2ExecDownloadPackage)) {
+            callbackParam = extractCallback(payload);
+            KuraPayload kuraPayloadInitial = new KuraPayload();
+            kuraPayloadInitial.readFromByteArray(payload);
+
+            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/REPLY/" + callbackParam.getRequestId();
+            KuraPayload customKuraPayload1 = new KuraPayload();
+            customKuraPayload1.setTimestamp(new Date());
+            customKuraPayload1.getMetrics().put("response.code", 200);
+            responsePayload = customKuraPayload1.toByteArray();
+            mqttClient.publish(responseTopic, responsePayload, 0, false);
+            Thread.sleep(100);
+
+            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/NOTIFY/" + clientId + "/download";
+            KuraPayload customKuraPayload2 = new KuraPayload();
+            customKuraPayload2.setTimestamp(new Date());
+            customKuraPayload2.getMetrics().put("job.id", kuraPayloadInitial.getMetrics().get("job.id"));
+            customKuraPayload2.getMetrics().put("client.id", clientId);
+            customKuraPayload2.getMetrics().put("dp.download.progress", 50);
+            customKuraPayload2.getMetrics().put("dp.download.size", 20409);
+            customKuraPayload2.getMetrics().put("dp.download.status", "IN_PROGRESS");
+            customKuraPayload2.getMetrics().put("dp.download.index", 0);
+            responsePayload = customKuraPayload2.toByteArray();
+            mqttClient.publish(responseTopic, responsePayload , 0, false);
+            Thread.sleep(100);
+
+            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/NOTIFY/" + clientId + "/download";
+            KuraPayload customKuraPayload3 = new KuraPayload();
+            customKuraPayload3.setTimestamp(new Date());
+            customKuraPayload3.getMetrics().put("job.id", kuraPayloadInitial.getMetrics().get("job.id"));
+            customKuraPayload3.getMetrics().put("client.id", clientId);
+            customKuraPayload3.getMetrics().put("dp.download.progress", 100);
+            customKuraPayload3.getMetrics().put("dp.download.size", 20409);
+            customKuraPayload3.getMetrics().put("dp.download.status", "COMPLETED");
+            customKuraPayload3.getMetrics().put("dp.download.index", 0);
+            responsePayload = customKuraPayload3.toByteArray();
+            mqttClient.publish(responseTopic, responsePayload, 0, false);
+            Thread.sleep(100);
+
+            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/NOTIFY/" + clientId + "/install";
+            KuraPayload customKuraPayload4 = new KuraPayload();
+            customKuraPayload4.setTimestamp(new Date());
+            customKuraPayload4.getMetrics().put("dp.name", "Example Publisher-1.0.300.dp");
+            customKuraPayload4.getMetrics().put("job.id", kuraPayloadInitial.getMetrics().get("job.id"));
+            customKuraPayload4.getMetrics().put("dp.install.progress", 100);
+            customKuraPayload4.getMetrics().put("dp.install.status", "COMPLETED");
+            customKuraPayload4.getMetrics().put("client.id", clientId);
+            responsePayload = customKuraPayload4.toByteArray();
+            mqttClient.publish(responseTopic, responsePayload, 0, false);
+
+            packageListChanged = true;
         } else if (topic.equals(deployBundles)) {
             callbackParam = extractCallback(payload);
 
