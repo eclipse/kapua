@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,9 +17,9 @@ import org.eclipse.kapua.service.device.management.message.notification.KapuaNot
 import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
 
 /**
- * Kapua notify message payload object reference implementation.
+ * {@link KapuaNotifyPayload} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class KapuaNotifyPayloadImpl extends KapuaPayloadImpl implements KapuaNotifyPayload {
 
@@ -27,6 +27,7 @@ public class KapuaNotifyPayloadImpl extends KapuaPayloadImpl implements KapuaNot
     private String resource;
     private OperationStatus status;
     private Integer progress;
+    private String message;
 
     @Override
     public KapuaId getOperationId() {
@@ -66,5 +67,15 @@ public class KapuaNotifyPayloadImpl extends KapuaPayloadImpl implements KapuaNot
     @Override
     public void setProgress(Integer progress) {
         this.progress = progress;
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
+    }
+
+    @Override
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

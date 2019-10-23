@@ -56,6 +56,10 @@ public class ManagementOperationNotificationImpl extends AbstractKapuaEntity imp
     @Column(name = "progress", nullable = false, updatable = false)
     private Integer progress;
 
+    @Basic
+    @Column(name = "message", nullable = true, updatable = false)
+    private String message;
+
     /**
      * Constructor.
      *
@@ -68,7 +72,7 @@ public class ManagementOperationNotificationImpl extends AbstractKapuaEntity imp
     /**
      * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The scope {@link KapuaId}.
      * @since 1.0.0
      */
     public ManagementOperationNotificationImpl(KapuaId scopeId) {
@@ -78,7 +82,7 @@ public class ManagementOperationNotificationImpl extends AbstractKapuaEntity imp
     /**
      * Clone constructor.
      *
-     * @param managementOperationNotification
+     * @param managementOperationNotification The {@link ManagementOperationNotification} to clone.
      * @since 1.1.0
      */
     public ManagementOperationNotificationImpl(ManagementOperationNotification managementOperationNotification) {
@@ -89,6 +93,7 @@ public class ManagementOperationNotificationImpl extends AbstractKapuaEntity imp
         setStatus(managementOperationNotification.getStatus());
         setResource(managementOperationNotification.getResource());
         setProgress(managementOperationNotification.getProgress());
+        setMessage(managementOperationNotification.getMessage());
     }
 
     @Override
@@ -139,5 +144,15 @@ public class ManagementOperationNotificationImpl extends AbstractKapuaEntity imp
     @Override
     public void setProgress(Integer progress) {
         this.progress = progress;
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
+    }
+
+    @Override
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

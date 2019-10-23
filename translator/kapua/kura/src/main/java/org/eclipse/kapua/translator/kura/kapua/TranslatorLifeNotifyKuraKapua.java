@@ -139,6 +139,8 @@ public class TranslatorLifeNotifyKuraKapua extends Translator<KuraNotifyMessage,
                 break;
         }
 
+        kapuaNotifyPayload.setMessage(kuraNotifyPayload.getMessage());
+
         return kapuaNotifyPayload;
     }
 
