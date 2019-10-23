@@ -26,6 +26,7 @@ public class ManagementOperationNotificationCreatorImpl extends AbstractKapuaEnt
     private OperationStatus status;
     private String resource;
     private Integer progress;
+    private String message;
 
     public ManagementOperationNotificationCreatorImpl(KapuaId scopeId) {
         super(scopeId);
@@ -79,5 +80,15 @@ public class ManagementOperationNotificationCreatorImpl extends AbstractKapuaEnt
     @Override
     public void setProgress(Integer progress) {
         this.progress = progress;
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
+    }
+
+    @Override
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

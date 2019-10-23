@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -71,6 +71,37 @@ public class KuraNotifyPayload extends KuraAppPayload implements DeviceNotifyPay
         }
 
         return (Integer) progress;
+    }
+
+    @Override
+    public String getMessage() {
+        Object message = getMetrics().get(KuraNotifyMetrics.NOTIFY_MESSAGE.getValue());
+
+        if (message == null) {
+            message = getMetrics().get(KuraNotifyMetrics.DOWNLOAD_MESSAGE.getValue());
+        }
+
+        if (message == null) {
+            message = getMetrics().get(KuraNotifyMetrics.DOWNLOAD_ERROR_MESSAGE.getValue());
+        }
+
+        if (message == null) {
+            message = getMetrics().get(KuraNotifyMetrics.INSTALL_MESSAGE.getValue());
+        }
+
+        if (message == null) {
+            message = getMetrics().get(KuraNotifyMetrics.INSTALL_ERROR_MESSAGE.getValue());
+        }
+
+        if (message == null) {
+            message = getMetrics().get(KuraNotifyMetrics.UNINSTALL_MESSAGE.getValue());
+        }
+
+        if (message == null) {
+            message = getMetrics().get(KuraNotifyMetrics.UNINSTALL_ERROR_MESSAGE.getValue());
+        }
+
+        return (String) message;
     }
 
     @Override
