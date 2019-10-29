@@ -138,7 +138,7 @@ Feature: JobEngineService start job tests with online device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 15 seconds
+    And I wait 30 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -228,7 +228,7 @@ Feature: JobEngineService start job tests with online device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 15 seconds
+    And I wait 30 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -314,7 +314,7 @@ Feature: JobEngineService start job tests with online device
       | timeout       | java.lang.Long                                                                 | 10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
     Then I create a new step entity from the existing creator
     And I start a job
-    And I wait 15 seconds
+    And I wait 30 seconds
     When I query for the job with the name "TestJob"
     And I query for the execution items for the current job
     Then I count 1
@@ -391,7 +391,7 @@ Feature: JobEngineService start job tests with online device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 15 seconds
+    And I wait 60 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1 or more
@@ -440,6 +440,94 @@ Feature: JobEngineService start job tests with online device
     When Packages are requested
     Then Number of received packages is 1
     And KuraMock is disconnected
+    And I logout
+
+  Scenario: Starting a job with valid Asset Write step
+  Create a new job and set a connected KuraMock device as the job target.
+  Add a new valid Asset Write step to the created job. Start the job.
+  After the executed job is finished, the executed target's step index should
+  be 0 and the status PROCESS_OK
+
+    Given I start the Kura Mock
+    When Device is connected
+    And I wait 1 second
+    Then Device status is "CONNECTED"
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And I get the KuraMock device
+    And Device assets are requested
+    And Asset with name "asset1" and channel with name "channel1" and value 123 are received
+    When I search for events from device "rpione3" in account "kapua-sys"
+    Then I find 2 device event
+    And The type of the last event is "ASSET"
+    Given I create a job with the name "TestJob"
+    And A new job target item
+    And Search for step definition with the name "Asset Write"
+    And A regular step creator with the name "TestStep" and the following properties
+      | name    | type                                                           | value                                                                                                                                                                                                                                    |
+      | assets  | org.eclipse.kapua.service.device.management.asset.DeviceAssets | <?xml version="1.0" encoding="UTF-8"?><deviceAssets><deviceAsset><name>asset1</name><channels><channel><valueType>java.lang.Integer</valueType><value>1233</value><name>channel1</name></channel></channels></deviceAsset></deviceAssets> |
+      | timeout | java.lang.Long                                                 | 10000                                                                                                                                                                                                                                    |
+    When I create a new step entity from the existing creator
+    Then No exception was thrown
+    And I start a job
+    And I wait 30 seconds
+    Given I query for the job with the name "TestJob"
+    When I query for the execution items for the current job
+    Then I count 1
+    And I confirm the executed job is finished
+    And I search for the last job target in the database
+    And I confirm the step index is 0 and status is "PROCESS_OK"
+    When I search for events from device "rpione3" in account "kapua-sys"
+    Then I find 3 device events
+    And Device assets are requested
+    And Asset with name "asset1" and channel with name "channel1" and value 1233 are received
+    When KuraMock is disconnected
+    And I wait 1 second
+    And Device status is "DISCONNECTED"
+    And I logout
+
+  Scenario: Starting a job with invalid Asset Write step
+  Create a new job and set a connected KuraMock device as the job target.
+  Add a new invalid Asset Write step to the created job. Start the job.
+  After the executed job is finished, the executed target's step index should
+  be 0 and the status PROCESS_FAILED
+
+    Given I start the Kura Mock
+    When Device is connected
+    And I wait 1 second
+    Then Device status is "CONNECTED"
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And I get the KuraMock device
+    And Device assets are requested
+    And Asset with name "asset1" and channel with name "channel1" and value 123 are received
+    When I search for events from device "rpione3" in account "kapua-sys"
+    Then I find 2 device event
+    And The type of the last event is "ASSET"
+    Given I create a job with the name "TestJob"
+    And A new job target item
+    And Search for step definition with the name "Asset Write"
+    And A regular step creator with the name "TestStep" and the following properties
+      | name    | type                                                           | value                                                                                                                                                                                                                                    |
+      | assets  | org.eclipse.kapua.service.device.management.asset.DeviceAssets | <?xml version="1.0" encoding="UTF-8"?><deviceAssets><deviceAsset><name>asset1</name><channels><channel><assetValue>java.lang.Integer</assetValue><value>1233</value><name>channel1</name></channel></channels></deviceAsset></deviceAssets> |
+      | timeout | java.lang.Long                                                 | 10000                                                                                                                                                                                                                                    |
+    When I create a new step entity from the existing creator
+    Then No exception was thrown
+    And I start a job
+    And I wait 15 seconds
+    Given I query for the job with the name "TestJob"
+    When I query for the execution items for the current job
+    Then I count 1
+    And I confirm the executed job is finished
+    And I search for the last job target in the database
+    And I confirm the step index is 0 and status is "PROCESS_FAILED"
+    When I search for events from device "rpione3" in account "kapua-sys"
+    Then I find 2 device events
+    And Device assets are requested
+    And Asset with name "asset1" and channel with name "channel1" and value 123 are received
+    When KuraMock is disconnected
+    And I wait 1 second
+    And Device status is "DISCONNECTED"
     And I logout
 
     # *****************************************************
@@ -897,7 +985,7 @@ Feature: JobEngineService start job tests with online device
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I start a job
-    And I wait 45 seconds
+    And I wait 60 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1 or more
@@ -962,6 +1050,116 @@ Feature: JobEngineService start job tests with online device
     And Device status is "DISCONNECTED"
     And I logout
 
+  Scenario: Starting a job with valid Asset Write and Bundle Start steps
+  Create a new job and set a connected KuraMock device as the job target.
+  Add a new valid Asset Write and Bundle Start steps to the created job.
+  Start the job. After the executed job is finished, the executed target's
+  step index should be 1 and the status PROCESS_OK
+
+    Given I start the Kura Mock
+    When Device is connected
+    And I wait 1 second
+    Then Device status is "CONNECTED"
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And I get the KuraMock device
+    When Bundles are requested
+    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    And Device assets are requested
+    And Asset with name "asset1" and channel with name "channel1" and value 123 are received
+    When I search for events from device "rpione3" in account "kapua-sys"
+    Then I find 3 device event
+    And The type of the last event is "ASSET"
+    Given I create a job with the name "TestJob"
+    And A new job target item
+    And Search for step definition with the name "Asset Write"
+    And A regular step creator with the name "TestStep" and the following properties
+      | name    | type                                                           | value                                                                                                                                                                                                                                    |
+      | assets  | org.eclipse.kapua.service.device.management.asset.DeviceAssets | <?xml version="1.0" encoding="UTF-8"?><deviceAssets><deviceAsset><name>asset1</name><channels><channel><valueType>java.lang.Integer</valueType><value>1233</value><name>channel1</name></channel></channels></deviceAsset></deviceAssets> |
+      | timeout | java.lang.Long                                                 | 10000                                                                                                                                                                                                                                    |
+    When I create a new step entity from the existing creator
+    Then Search for step definition with the name "Bundle Start"
+    And A regular step creator with the name "TestStep2" and the following properties
+      | name     | type             | value |
+      | bundleId | java.lang.String | 34    |
+      | timeout  | java.lang.Long   | 10000 |
+    When I create a new step entity from the existing creator
+    And I search the database for created job steps and I find 2
+    Then No exception was thrown
+    And I start a job
+    And I wait 30 seconds
+    Given I query for the job with the name "TestJob"
+    When I query for the execution items for the current job
+    Then I count 1
+    And I confirm the executed job is finished
+    And I search for the last job target in the database
+    And I confirm the step index is 1 and status is "PROCESS_OK"
+    When I search for events from device "rpione3" in account "kapua-sys"
+    Then I find 5 device events
+    When Bundles are requested
+    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
+    And Device assets are requested
+    And Asset with name "asset1" and channel with name "channel1" and value 1233 are received
+    When KuraMock is disconnected
+    And I wait 1 second
+    And Device status is "DISCONNECTED"
+    And I logout
+
+  Scenario: Starting a job with invalid Asset Write and Bundle Start steps
+  Create a new job and set a connected KuraMock device as the job target.
+  Add a new invalid Asset Write and Bundle Start steps to the created job.
+  Start the job. After the executed job is finished, the executed target's
+  step index should be 0 and the status PROCESS_FAILED
+
+    Given I start the Kura Mock
+    When Device is connected
+    And I wait 1 second
+    Then Device status is "CONNECTED"
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And I get the KuraMock device
+    When Bundles are requested
+    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    And Device assets are requested
+    And Asset with name "asset1" and channel with name "channel1" and value 123 are received
+    When I search for events from device "rpione3" in account "kapua-sys"
+    Then I find 3 device event
+    And The type of the last event is "ASSET"
+    Given I create a job with the name "TestJob"
+    And A new job target item
+    And Search for step definition with the name "Asset Write"
+    And A regular step creator with the name "TestStep" and the following properties
+      | name    | type                                                           | value                                                                                                                                                                                                                                    |
+      | assets  | org.eclipse.kapua.service.device.management.asset.DeviceAssets | <?xml version="1.0" encoding="UTF-8"?><deviceAssets><deviceAsset><name>asset1</name><channels><channel><assetValue>java.lang.Integer</assetValue><value>1233</value><name>channel1</name></channel></channels></deviceAsset></deviceAssets> |
+      | timeout | java.lang.Long                                                 | 10000                                                                                                                                                                                                                                    |
+    When I create a new step entity from the existing creator
+    Then Search for step definition with the name "Bundle Start"
+    And A regular step creator with the name "TestStep2" and the following properties
+      | name     | type             | value |
+      | bundleId | java.lang.String | #34   |
+      | timeout  | java.lang.Long   | 10000 |
+    When I create a new step entity from the existing creator
+    And I search the database for created job steps and I find 2
+    Then No exception was thrown
+    And I start a job
+    And I wait 30 seconds
+    Given I query for the job with the name "TestJob"
+    When I query for the execution items for the current job
+    Then I count 1
+    And I confirm the executed job is finished
+    And I search for the last job target in the database
+    And I confirm the step index is 0 and status is "PROCESS_FAILED"
+    When I search for events from device "rpione3" in account "kapua-sys"
+    Then I find 3 device events
+    When Bundles are requested
+    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    And Device assets are requested
+    And Asset with name "asset1" and channel with name "channel1" and value 123 are received
+    When KuraMock is disconnected
+    And I wait 1 second
+    And Device status is "DISCONNECTED"
+    And I logout
+
     # *****************************************************
     # * Starting a job with multiple Targets and one Step *
     # *****************************************************
@@ -993,7 +1191,7 @@ Feature: JobEngineService start job tests with online device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 15 seconds
+    And I wait 30 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -1081,7 +1279,7 @@ Feature: JobEngineService start job tests with online device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 15 seconds
+    And I wait 30 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -1171,7 +1369,7 @@ Feature: JobEngineService start job tests with online device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 15 seconds
+    And I wait 30 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -1258,7 +1456,7 @@ Feature: JobEngineService start job tests with online device
       | timeout       | java.lang.Long                                                                 | 10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
     When I create a new step entity from the existing creator
     Then I start a job
-    And I wait 15 seconds
+    And I wait 30 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -1308,64 +1506,81 @@ Feature: JobEngineService start job tests with online device
     And KuraMock is disconnected
     And I logout
 
-  Scenario: Starting a job with valid Package Install step and multiple devices
+  Scenario: Starting a job with valid Asset Write step and multiple targets
   Create a new job and set a connected KuraMock devices as the job targets.
-  Add a new valid Package Install step to the created job. Start the job.
+  Add a new valid Asset Write step to the created job. Start the job.
   After the executed job is finished, the executed target's step index should
-  be 0 and the status PROCESS_OK.
+  be 0 and the status PROCESS_OK
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I add 2 devices to Kura Mock
-    And Devices "are" connected
+    Given I add 2 devices to Kura Mock
+    When Devices "are" connected
     And I wait 1 second
+    Then Device status is "CONNECTED"
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock devices
-    Then Packages are requested
-    And Number of received packages is 1
+    And Device assets are requested
+    And Asset with name "asset1" and channel with name "channel1" and value 123 are received
+    When I search for events from device "device0" in account "kapua-sys"
+    Then I find 2 device events
+    When I search for events from device "device1" in account "kapua-sys"
+    Then I find 2 device events
+    And The type of the last event is "ASSET"
     Given I create a job with the name "TestJob"
     And I add targets to job
-    And Search for step definition with the name "Package Download / Install"
+    And Search for step definition with the name "Asset Write"
     And A regular step creator with the name "TestStep" and the following properties
-      | name                     | type                                                                                             | value                                                                                                                                                                                                                                                            |
-      | packageDownloadRequest   | org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest | <?xml version="1.0" encoding="UTF-8"?><downloadRequest><uri>http://download.eclipse.org/kura/releases/3.2.0/org.eclipse.kura.example.publisher_1.0.300.dp</uri><name>Example Publisher</name><version>1.0.300</version><install>true</install></downloadRequest> |
-      | timeout                  | java.lang.Long                                                                                   | 30000                                                                                                                                                                                                                                                            |
+      | name    | type                                                           | value                                                                                                                                                                                                                                    |
+      | assets  | org.eclipse.kapua.service.device.management.asset.DeviceAssets | <?xml version="1.0" encoding="UTF-8"?><deviceAssets><deviceAsset><name>asset1</name><channels><channel><valueType>java.lang.Integer</valueType><value>1233</value><name>channel1</name></channel></channels></deviceAsset></deviceAssets> |
+      | timeout | java.lang.Long                                                 | 10000                                                                                                                                                                                                                                    |
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 45 seconds
+    And I wait 30 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
-    Then I count 1 or more
+    Then I count 1
     And I confirm the executed job is finished
     And I search for the last job target in the database
-    And I wait 1 seconds
     And I confirm the step index is 0 and status is "PROCESS_OK"
-    When Packages are requested
-    Then Number of received packages is 2
-    And KuraMock is disconnected
+    When I search for events from device "device0" in account "kapua-sys"
+    Then I find 3 device events
+    When I search for events from device "device1" in account "kapua-sys"
+    Then I find 3 device events
+    And Device assets are requested
+    And Asset with name "asset1" and channel with name "channel1" and value 1233 are received
+    When KuraMock is disconnected
+    And I wait 1 second
+    And Device status is "DISCONNECTED"
     And I logout
 
-  Scenario: Starting a job with invalid Package Install step and multiple devices
+  Scenario: Starting a job with invalid Asset Write step and multiple targets
   Create a new job and set a connected KuraMock devices as the job targets.
-  Add a new invalid Package Install step to the created job. Start the job.
+  Add a new invalid Asset Write step to the created job. Start the job.
   After the executed job is finished, the executed target's step index should
-  be 0 and the status PROCESS_FAILED.
+  be 0 and the status PROCESS_FAILED
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I add 2 devices to Kura Mock
-    And Devices "are" connected
+    Given I add 2 devices to Kura Mock
+    When Devices "are" connected
     And I wait 1 second
+    Then Device status is "CONNECTED"
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock devices
-    And Packages are requested
-    And Number of received packages is 1
+    And Device assets are requested
+    And Asset with name "asset1" and channel with name "channel1" and value 123 are received
+    When I search for events from device "device0" in account "kapua-sys"
+    Then I find 2 device event
+    When I search for events from device "device1" in account "kapua-sys"
+    Then I find 2 device event
+    And The type of the last event is "ASSET"
     Given I create a job with the name "TestJob"
     And I add targets to job
-    And Search for step definition with the name "Package Download / Install"
+    And Search for step definition with the name "Asset Write"
     And A regular step creator with the name "TestStep" and the following properties
-      | name                     | type                                                                                             | value                                                                                                                                                                                                                                                               |
-      | packageDownloadRequest   | org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest | <?xml version="1.0" encoding="UTF-8"?><downloadRequest><uri>###http://download.eclipse.org/kura/releases/3.2.0/org.eclipse.kura.example.publisher_1.0.300.dp</uri><name>Example Publisher</name><version>1.0.300</version><install>true</install></downloadRequest> |
-      | timeout                  | java.lang.Long                                                                                   | 30000                                                                                                                                                                                                                                                               |
+      | name    | type                                                           | value                                                                                                                                                                                                                                    |
+      | assets  | org.eclipse.kapua.service.device.management.asset.DeviceAssets | <?xml version="1.0" encoding="UTF-8"?><deviceAssets><deviceAsset><name>asset1</name><channels><channel><assetValue>java.lang.Integer</assetValue><value>1233</value><name>channel1</name></channel></channels></deviceAsset></deviceAssets> |
+      | timeout | java.lang.Long                                                 | 10000                                                                                                                                                                                                                                    |
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
@@ -1375,11 +1590,16 @@ Feature: JobEngineService start job tests with online device
     Then I count 1
     And I confirm the executed job is finished
     And I search for the last job target in the database
-    And I wait 1 seconds
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
-    When Packages are requested
-    Then Number of received packages is 1
-    And KuraMock is disconnected
+    When I search for events from device "device0" in account "kapua-sys"
+    Then I find 2 device events
+    When I search for events from device "device1" in account "kapua-sys"
+    Then I find 2 device events
+    And Device assets are requested
+    And Asset with name "asset1" and channel with name "channel1" and value 123 are received
+    When KuraMock is disconnected
+    And I wait 1 second
+    And Device status is "DISCONNECTED"
     And I logout
 
     # ***********************************************************
@@ -1802,83 +2022,103 @@ Feature: JobEngineService start job tests with online device
     When KuraMock is disconnected
     And I logout
 
-  Scenario: Starting a job with valid Package Install and Bundle Start steps and multiple devices
-  Create a new job and set a connected KuraMock devices as the job targets. Add new valid Package Install
-  and Bundle Start steps to the created job. Start the job. After the executed job is finished,
-  the executed target's step index should be 1 and the status PROCESS_OK
+  Scenario: Starting a job with valid Asset Write and Bundle Start steps and multiple devices
+  Create a new job and set a connected KuraMock devices as the job targets.
+  Add a new valid Asset Write and Bundle Start steps to the created job.
+  Start the job. After the executed job is finished, the executed target's
+  step index should be 1 and the status PROCESS_OK
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I add 2 devices to Kura Mock
-    And Devices "are" connected
+    Given I add 2 devices to Kura Mock
+    When Devices "are" connected
     And I wait 1 second
+    Then Device status is "CONNECTED"
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock devices
-    And Bundles are requested
+    When Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
-    And Packages are requested
-    Then Number of received packages is 1
+    And Device assets are requested
+    And Asset with name "asset1" and channel with name "channel1" and value 123 are received
+    When I search for events from device "device0" in account "kapua-sys"
+    Then I find 3 device events
+    When I search for events from device "device1" in account "kapua-sys"
+    Then I find 3 device events
+    And The type of the last event is "ASSET"
     Given I create a job with the name "TestJob"
     And I add targets to job
-    And Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep1" and the following properties
+    And Search for step definition with the name "Asset Write"
+    And A regular step creator with the name "TestStep" and the following properties
+      | name    | type                                                           | value                                                                                                                                                                                                                                    |
+      | assets  | org.eclipse.kapua.service.device.management.asset.DeviceAssets | <?xml version="1.0" encoding="UTF-8"?><deviceAssets><deviceAsset><name>asset1</name><channels><channel><valueType>java.lang.Integer</valueType><value>1233</value><name>channel1</name></channel></channels></deviceAsset></deviceAssets> |
+      | timeout | java.lang.Long                                                 | 10000                                                                                                                                                                                                                                    |
+    When I create a new step entity from the existing creator
+    Then Search for step definition with the name "Bundle Start"
+    And A regular step creator with the name "TestStep2" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 34    |
       | timeout  | java.lang.Long   | 10000 |
-    And I create a new step entity from the existing creator
-    And Search for step definition with the name "Package Download / Install"
-    And A regular step creator with the name "TestStep2" and the following properties
-      | name                     | type                                                                                             | value                                                                                                                                                                                                                                                            |
-      | packageDownloadRequest   | org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest | <?xml version="1.0" encoding="UTF-8"?><downloadRequest><uri>http://download.eclipse.org/kura/releases/3.2.0/org.eclipse.kura.example.publisher_1.0.300.dp</uri><name>Example Publisher</name><version>1.0.300</version><install>true</install></downloadRequest> |
-      | timeout                  | java.lang.Long                                                                                   | 30000                                                                                                                                                                                                                                                            |
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
+    Then No exception was thrown
     And I start a job
-    And I wait 45 seconds
+    And I wait 30 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
-    Then I count 1 or more
+    Then I count 1
     And I confirm the executed job is finished
     And I search for the last job target in the database
     And I confirm the step index is 1 and status is "PROCESS_OK"
-    And Bundles are requested
+    When I search for events from device "device0" in account "kapua-sys"
+    Then I find 5 device events
+    When I search for events from device "device1" in account "kapua-sys"
+    Then I find 5 device events
+    When Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
-    And Packages are requested
-    Then Number of received packages is 2
-    And KuraMock is disconnected
-    And I wait 1 seconds
+    And Device assets are requested
+    And Asset with name "asset1" and channel with name "channel1" and value 1233 are received
+    When KuraMock is disconnected
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
-  Scenario: Starting a job with invalid Package Install and Bundle Start steps and multiple devices
-  Create a new job and set a connected KuraMock devices as the job targets. Add new invalid Package Install
-  and Bundle Start steps to the created job. Start the job. After the executed job is finished,
-  the executed target's step index should be 0 and the status PROCESS_FAILED
+  Scenario: Starting a job with invalid Asset Write and Bundle Start steps and multiple devices
+  Create a new job and set a connected KuraMock devices as the job targets.
+  Add a new invalid Asset Write and Bundle Start steps to the created job. Start the job.
+  After the executed job is finished, the executed target's step index should
+  be 0 and the status PROCESS_FAILED
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I add 2 devices to Kura Mock
-    And Devices "are" connected
+    Given I add 2 devices to Kura Mock
+    When Device "are" connected
     And I wait 1 second
+    Then Device status is "CONNECTED"
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock devices
-    And Bundles are requested
+    When Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
-    And Packages are requested
-    Then Number of received packages is 1
+    And Device assets are requested
+    And Asset with name "asset1" and channel with name "channel1" and value 123 are received
+    When I search for events from device "device0" in account "kapua-sys"
+    Then I find 3 device events
+    When I search for events from device "device1" in account "kapua-sys"
+    Then I find 3 device events
+    And The type of the last event is "ASSET"
     Given I create a job with the name "TestJob"
     And I add targets to job
-    And Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep1" and the following properties
+    And Search for step definition with the name "Asset Write"
+    And A regular step creator with the name "TestStep" and the following properties
+      | name    | type                                                           | value                                                                                                                                                                                                                                       |
+      | assets  | org.eclipse.kapua.service.device.management.asset.DeviceAssets | <?xml version="1.0" encoding="UTF-8"?><deviceAssets><deviceAsset><name>asset1</name><channels><channel><assetValue>java.lang.Integer</assetValue><value>1233</value><name>channel1</name></channel></channels></deviceAsset></deviceAssets> |
+      | timeout | java.lang.Long                                                 | 10000                                                                                                                                                                                                                                       |
+    When I create a new step entity from the existing creator
+    Then Search for step definition with the name "Bundle Start"
+    And A regular step creator with the name "TestStep2" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | #34   |
       | timeout  | java.lang.Long   | 10000 |
-    And I create a new step entity from the existing creator
-    And Search for step definition with the name "Package Download / Install"
-    And A regular step creator with the name "TestStep2" and the following properties
-      | name                     | type                                                                                             | value                                                                                                                                                                                                                                                               |
-      | packageDownloadRequest   | org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest | <?xml version="1.0" encoding="UTF-8"?><downloadRequest><uri>###http://download.eclipse.org/kura/releases/3.2.0/org.eclipse.kura.example.publisher_1.0.300.dp</uri><name>Example Publisher</name><version>1.0.300</version><install>true</install></downloadRequest> |
-      | timeout                  | java.lang.Long                                                                                   | 30000                                                                                                                                                                                                                                                               |
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
+    Then No exception was thrown
     And I start a job
     And I wait 15 seconds
     Given I query for the job with the name "TestJob"
@@ -1887,12 +2127,16 @@ Feature: JobEngineService start job tests with online device
     And I confirm the executed job is finished
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
-    And Bundles are requested
+    When I search for events from device "device0" in account "kapua-sys"
+    Then I find 3 device events
+    When I search for events from device "device1" in account "kapua-sys"
+    Then I find 3 device events
+    When Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
-    And Packages are requested
-    Then Number of received packages is 1
-    And KuraMock is disconnected
-    And I wait 1 seconds
+    And Device assets are requested
+    And Asset with name "asset1" and channel with name "channel1" and value 123 are received
+    When KuraMock is disconnected
+    And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
 
