@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.registry.manager;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -25,8 +26,12 @@ import org.eclipse.kapua.service.device.management.registry.operation.DeviceMana
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationProperty;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationQuery;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationAttributes;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationCreator;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationFactory;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationListResult;
+import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationQuery;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,11 +120,11 @@ public interface DeviceManagementRegistryManagerService extends KapuaService {
                 deviceManagementOperation = getDeviceManagementOperation(scopeId, operationId);
                 deviceManagementOperation.setEndedOn(updateOn);
                 deviceManagementOperation.setStatus(finalStatus);
+                deviceManagementOperation.setLog("Generating...");
 
-                DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.update(deviceManagementOperation);
+                deviceManagementOperation = DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.update(deviceManagementOperation);
 
                 LOG.info("Update DeviceManagementOperation {} with status {}...  SUCCEEDED!", operationId, finalStatus);
-                break;
             } catch (Exception e) {
                 failed = true;
                 attempts++;
@@ -132,14 +137,23 @@ public interface DeviceManagementRegistryManagerService extends KapuaService {
             }
         } while (failed);
 
-//        ManagementOperationNotificationQuery query = MANAGEMENT_OPERATION_NOTIFICATION_FACTORY.newQuery(scopeId);
-//        query.setPredicate(query.attributePredicate(ManagementOperationNotificationAttributes.OPERATION_ID, deviceManagementOperation.getId()));
-//
-//        ManagementOperationNotificationListResult notifications = MANAGEMENT_OPERATION_NOTIFICATION_REGISTRY_SERVICE.query(query);
-//
-//        for (ManagementOperationNotification mon : notifications.getItems()) {
-//            MANAGEMENT_OPERATION_NOTIFICATION_REGISTRY_SERVICE.delete(mon.getScopeId(), mon.getId());
-//        }
+        {
+            ManagementOperationNotificationQuery query = MANAGEMENT_OPERATION_NOTIFICATION_FACTORY.newQuery(scopeId);
+            query.setPredicate(query.attributePredicate(ManagementOperationNotificationAttributes.OPERATION_ID, deviceManagementOperation.getId()));
+
+            ManagementOperationNotificationListResult notifications = MANAGEMENT_OPERATION_NOTIFICATION_REGISTRY_SERVICE.query(query);
+
+            StringBuilder logSb = new StringBuilder();
+            for (ManagementOperationNotification mon : notifications.getItems()) {
+                if (!Strings.isNullOrEmpty(mon.getMessage())) {
+                    logSb.append(mon.getSentOn()).append(" - ").append(mon.getMessage()).append("\n");
+                }
+                MANAGEMENT_OPERATION_NOTIFICATION_REGISTRY_SERVICE.delete(mon.getScopeId(), mon.getId());
+            }
+
+            deviceManagementOperation.setLog(logSb.toString());
+            DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.update(deviceManagementOperation);
+        }
     }
 
     default DeviceManagementOperation getDeviceManagementOperation(KapuaId scopeId, KapuaId operationId) throws KapuaException {
