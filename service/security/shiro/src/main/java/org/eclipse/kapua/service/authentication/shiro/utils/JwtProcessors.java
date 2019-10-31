@@ -13,16 +13,15 @@
 package org.eclipse.kapua.service.authentication.shiro.utils;
 
 import org.eclipse.kapua.sso.JwtProcessor;
+import org.eclipse.kapua.sso.exception.SsoJwtException;
 import org.eclipse.kapua.sso.provider.ProviderSingleSignOnLocator;
-
-import java.io.IOException;
 
 public final class JwtProcessors {
 
     private JwtProcessors() {
     }
 
-    public static JwtProcessor createDefault() throws IOException {
+    public static JwtProcessor createDefault() throws SsoJwtException {
         ProviderSingleSignOnLocator singleSignOnLocator = new ProviderSingleSignOnLocator();
         return singleSignOnLocator.getProcessor();
     }

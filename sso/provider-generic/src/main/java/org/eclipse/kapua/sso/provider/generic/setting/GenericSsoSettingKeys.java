@@ -21,7 +21,7 @@ public enum GenericSsoSettingKeys implements SettingKey {
 
     private final String key;
 
-    private GenericSsoSettingKeys(final String key) {
+    GenericSsoSettingKeys(final String key) {
         this.key = key;
     }
 

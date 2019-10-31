@@ -21,7 +21,7 @@ public enum KeycloakSsoSettingKeys implements SettingKey {
 
     private final String key;
 
-    private KeycloakSsoSettingKeys(final String key) {
+    KeycloakSsoSettingKeys(final String key) {
         this.key = key;
     }
 

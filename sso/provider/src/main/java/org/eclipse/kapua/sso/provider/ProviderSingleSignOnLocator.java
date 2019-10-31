@@ -12,22 +12,30 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso.provider;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.ServiceLoader;
-
 import org.eclipse.kapua.sso.JwtProcessor;
 import org.eclipse.kapua.sso.SingleSignOnLocator;
 import org.eclipse.kapua.sso.SingleSignOnService;
+import org.eclipse.kapua.sso.exception.SsoJwtException;
 import org.eclipse.kapua.sso.provider.SingleSignOnProvider.ProviderLocator;
 import org.eclipse.kapua.sso.provider.internal.DisabledLocator;
 import org.eclipse.kapua.sso.provider.setting.SsoSetting;
 import org.eclipse.kapua.sso.provider.setting.SsoSettingKeys;
 
+import java.io.Closeable;
+import java.util.ServiceLoader;
+
+/**
+ * The SingleSignOn service provider locator.
+ */
 public class ProviderSingleSignOnLocator implements SingleSignOnLocator, Closeable {
 
     private static ProviderLocator locator;
 
+    /**
+     * The SignleSignOn provider locator constructor.
+     *
+     * @param settings the {@link SsoSetting} instance.
+     */
     public ProviderSingleSignOnLocator(final SsoSetting settings) {
         final String providerId = settings.getString(SsoSettingKeys.SSO_PROVIDER, null);
         if (providerId == null) {
@@ -37,25 +45,19 @@ public class ProviderSingleSignOnLocator implements SingleSignOnLocator, Closeab
         }
     }
 
+    /**
+     * The public SignleSignOn provider locator constructor.
+     */
     public ProviderSingleSignOnLocator() {
         this(SsoSetting.getInstance());
     }
 
-    @Override
-    public void close() {
-        // nothing to close at the moment
-    }
-
-    @Override
-    public SingleSignOnService getService() {
-        return locator.getService();
-    }
-
-    @Override
-    public JwtProcessor getProcessor() throws IOException {
-        return locator.getProcessor();
-    }
-
+    /**
+     * Find the provider, given a provider id, among the existing ones.
+     *
+     * @param providerId a String reperesenting the provider ID
+     * @return a {@link ProviderLocator} instance.
+     */
     private static ProviderLocator findProvider(final String providerId) {
         if (locator == null) {
             synchronized (ProviderSingleSignOnLocator.class) {
@@ -70,5 +72,20 @@ public class ProviderSingleSignOnLocator implements SingleSignOnLocator, Closeab
             }
         }
         return locator;
+    }
+
+    @Override
+    public void close() {
+        // nothing to close at the moment
+    }
+
+    @Override
+    public SingleSignOnService getService() {
+        return locator.getService();
+    }
+
+    @Override
+    public JwtProcessor getProcessor() throws SsoJwtException {
+        return locator.getProcessor();
     }
 }

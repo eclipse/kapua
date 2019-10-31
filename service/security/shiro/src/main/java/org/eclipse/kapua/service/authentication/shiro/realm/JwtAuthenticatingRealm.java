@@ -42,11 +42,11 @@ import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
 import org.eclipse.kapua.sso.JwtProcessor;
+import org.eclipse.kapua.sso.exception.SsoJwtException;
 import org.jose4j.jwt.consumer.JwtContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -81,8 +81,8 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm implements Destr
         try {
             jwtProcessor = JwtProcessors.createDefault();
             setCredentialsMatcher(new JwtCredentialsMatcher(jwtProcessor));
-        } catch (IOException ioe) {
-            throw new ShiroException("Error while creating Jwt Processor!", ioe);
+        } catch (SsoJwtException sje) {
+            throw new ShiroException("Error while creating Jwt Processor!", sje);
         }
     }
 

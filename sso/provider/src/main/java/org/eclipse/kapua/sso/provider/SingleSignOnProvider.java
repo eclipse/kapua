@@ -13,12 +13,28 @@ package org.eclipse.kapua.sso.provider;
 
 import org.eclipse.kapua.sso.SingleSignOnLocator;
 
+/**
+ * The SingleSignOn service provider interface.
+ */
 public interface SingleSignOnProvider {
 
-    interface ProviderLocator extends SingleSignOnLocator, AutoCloseable {
-    }
-
+    /**
+     * Get the provider ID
+     *
+     * @return the provider ID in the form of a string.
+     */
     String getId();
 
+    /**
+     * Call the provider locator constructor.
+     *
+     * @return a {@link ProviderLocator}.
+     */
     ProviderLocator createLocator();
+
+    /**
+     * The ProviderLocator interface
+     */
+    interface ProviderLocator extends SingleSignOnLocator, AutoCloseable {
+    }
 }

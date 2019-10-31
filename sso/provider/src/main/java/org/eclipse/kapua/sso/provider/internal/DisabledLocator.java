@@ -12,15 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso.provider.internal;
 
-import java.net.URI;
-
-import javax.json.JsonObject;
-
 import org.eclipse.kapua.sso.JwtProcessor;
 import org.eclipse.kapua.sso.SingleSignOnService;
 import org.eclipse.kapua.sso.provider.SingleSignOnProvider.ProviderLocator;
 import org.jose4j.jwt.consumer.JwtContext;
 
+import javax.json.JsonObject;
+import java.net.URI;
+
+/**
+ * A dummy locator to return when the providerId (on the ProviderSingleSignOnLocator) is null.
+ */
 public class DisabledLocator implements ProviderLocator {
 
     public static final ProviderLocator INSTANCE = new DisabledLocator();
@@ -43,6 +45,9 @@ public class DisabledLocator implements ProviderLocator {
         }
     };
 
+    /**
+     * A dummy JwtProcessor.
+     */
     private static final JwtProcessor PROCESSOR = new JwtProcessor() {
 
         @Override
@@ -51,12 +56,12 @@ public class DisabledLocator implements ProviderLocator {
         }
 
         @Override
-        public boolean validate(String jwt) throws Exception {
+        public boolean validate(String jwt) {
             return false;
         }
 
         @Override
-        public JwtContext process(String jwt) throws Exception {
+        public JwtContext process(String jwt) {
             return null;
         }
     };

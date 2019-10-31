@@ -9,29 +9,27 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.sso.provider.keycloak.jwt;
+package org.eclipse.kapua.sso.provider.generic.jwt;
 
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.sso.exception.SsoJwtException;
 import org.eclipse.kapua.sso.provider.jwt.AbstractJwtProcessor;
-import org.eclipse.kapua.sso.provider.keycloak.KeycloakSingleSignOnUtils;
-import org.eclipse.kapua.sso.provider.keycloak.setting.KeycloakSsoSetting;
-import org.eclipse.kapua.sso.provider.keycloak.setting.KeycloakSsoSettingKeys;
 import org.eclipse.kapua.sso.provider.setting.SsoSetting;
 import org.eclipse.kapua.sso.provider.setting.SsoSettingKeys;
 
 import java.net.URI;
 import java.time.Duration;
-import java.util.Collections;
 import java.util.List;
 
 /**
- * The Keycloak JWT Processor.
+ * The generic JWT Processor.
  */
-public class KeycloakJwtProcessor extends AbstractJwtProcessor {
+public class GenericJwtProcessor extends AbstractJwtProcessor {
 
-    private static final SsoSetting SSO_SETTING = SsoSetting.getInstance();
+    private static final KapuaAuthenticationSetting SETTING = KapuaAuthenticationSetting.getInstance();
 
-    public KeycloakJwtProcessor() throws SsoJwtException {
+    public GenericJwtProcessor() throws SsoJwtException {
         super(Duration.ofHours(1));
     }
 
@@ -43,13 +41,15 @@ public class KeycloakJwtProcessor extends AbstractJwtProcessor {
 
     @Override
     protected List<String> getJwtExpectedIssuers() {
-        return Collections.singletonList(
-                KeycloakSsoSetting.getInstance().getString(KeycloakSsoSettingKeys.KEYCLOAK_URI) +
-                        "/auth/realms/" + KeycloakSingleSignOnUtils.getRealm());
+        // TODO: I don't like using KapuaAuthenticationSettingKeys (this also forces to add kapua-security-shiro in the
+        //  dependencies). Move these properties under SSO?
+        return SETTING.getList(String.class, KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_ISSUER_ALLOWED);
     }
 
     @Override
     protected List<String> getJwtAudiences() {
-        return SSO_SETTING.getList(String.class, SsoSettingKeys.SSO_OPENID_CLIENT_ID);
+        // TODO: I don't like using KapuaAuthenticationSettingKeys (this also forces to add kapua-security-shiro in the
+        //  dependencies). Move these properties under SSO?
+        return SETTING.getList(String.class, KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_AUDIENCE_ALLOWED);
     }
 }

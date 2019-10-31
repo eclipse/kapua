@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso.provider.jwt;
 
+import org.eclipse.kapua.sso.exception.SsoJwtException;
+
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonString;
@@ -22,25 +24,32 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Optional;
 
+/**
+ * JWT utility class.
+ */
 public final class JwtUtils {
 
     private JwtUtils() {
     }
 
     /**
-     * Attempts to retrieve a URI from the Well-Known OpenId Configuration given a property
+     * Attempts to retrieve a URI from the Well-Known OpenId Configuration using the given proeprty.
      *
-     * @param property
-     * @return
-     * @throws IOException
+     * @param property the property to get from the JSON response.
+     * @param openIdConfPath the OpendID Connect configuration path.
+     * @return an Optional with a JWT {@link URI} corresponding to the given property if everything is fine, otherwise
+     * an empty Optional.
+     * @throws SsoJwtException if an {@link IOException} is caught.
      */
-    public static Optional<URI> retrieveJwtUri(String property, String openIdConfPath) throws IOException {
+    public static Optional<URI> retrieveJwtUri(String property, String openIdConfPath) throws SsoJwtException {
         final JsonObject jsonObject;
 
         // Read .well-known resource
         try (final InputStream stream = new URL(openIdConfPath).openStream()) {
             // Parse json response
             jsonObject = Json.createReader(stream).readObject();
+        } catch (IOException ioe) {
+            throw new SsoJwtException(ioe);
         }
 
         // Get jwt property

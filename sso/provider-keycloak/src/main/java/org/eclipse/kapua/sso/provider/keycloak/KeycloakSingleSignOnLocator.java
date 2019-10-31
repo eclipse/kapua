@@ -14,21 +14,40 @@ package org.eclipse.kapua.sso.provider.keycloak;
 
 import org.eclipse.kapua.sso.JwtProcessor;
 import org.eclipse.kapua.sso.SingleSignOnService;
+import org.eclipse.kapua.sso.exception.SsoJwtException;
 import org.eclipse.kapua.sso.provider.SingleSignOnProvider.ProviderLocator;
 import org.eclipse.kapua.sso.provider.keycloak.jwt.KeycloakJwtProcessor;
 
-import java.io.IOException;
-
+/**
+ * The Keycloak SingleSignOn service provider locator.
+ */
 public class KeycloakSingleSignOnLocator implements ProviderLocator {
+
+    private static JwtProcessor jwtProcessorInstance;
+    private static SingleSignOnService ssoServiceInstance;
 
     @Override
     public SingleSignOnService getService() {
-        return new KeycloakSingleSignOnService();
+        if (ssoServiceInstance == null) {
+            synchronized (KeycloakSingleSignOnLocator.class) {
+                if (ssoServiceInstance == null) {
+                    ssoServiceInstance = new KeycloakSingleSignOnService();
+                }
+            }
+        }
+        return ssoServiceInstance;
     }
 
     @Override
-    public JwtProcessor getProcessor() throws IOException {
-        return new KeycloakJwtProcessor();
+    public JwtProcessor getProcessor() throws SsoJwtException {
+        if (jwtProcessorInstance == null) {
+            synchronized (KeycloakSingleSignOnLocator.class) {
+                if (jwtProcessorInstance == null) {
+                    jwtProcessorInstance = new KeycloakJwtProcessor();
+                }
+            }
+        }
+        return jwtProcessorInstance;
     }
 
     @Override

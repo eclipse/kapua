@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.registration;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +26,7 @@ import org.eclipse.kapua.service.authentication.registration.RegistrationService
 import org.eclipse.kapua.service.authentication.shiro.utils.JwtProcessors;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.sso.JwtProcessor;
+import org.eclipse.kapua.sso.exception.SsoJwtException;
 import org.jose4j.jwt.consumer.JwtContext;
 
 @KapuaProvider
@@ -36,7 +36,7 @@ public class RegistrationServiceImpl implements RegistrationService, AutoCloseab
 
     private final List<RegistrationProcessor> processors = new ArrayList<>();
 
-    public RegistrationServiceImpl() throws IOException {
+    public RegistrationServiceImpl() throws SsoJwtException {
         jwtProcessor = JwtProcessors.createDefault();
 
         for (RegistrationProcessorProvider provider : ServiceLoader.load(RegistrationProcessorProvider.class)) {
