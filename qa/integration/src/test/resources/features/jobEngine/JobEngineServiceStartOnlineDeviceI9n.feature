@@ -367,12 +367,88 @@ Feature: JobEngineService start job tests with online device
     And Device status is "DISCONNECTED"
     And I logout
 
+  Scenario: Starting a job with valid Package Install step
+  Create a new job and set a connected KuraMock device as the job target.
+  Add a new valid Package Install step to the created job. Start the job.
+  After the executed job is finished, the executed target's step index should
+  be 0 and the status PROCESS_OK.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    When I start the Kura Mock
+    And Device "is" connected
+    And I wait 1 seconds
+    Then Device status is "CONNECTED"
+    And I get the KuraMock device
+    And Packages are requested
+    And Number of received packages is 1
+    Given I create a job with the name "TestJob"
+    And A new job target item
+    And Search for step definition with the name "Package Download / Install"
+    And A regular step creator with the name "TestStep" and the following properties
+      | name                     | type                                                                                             | value                                                                                                                                                                                                                                                            |
+      | packageDownloadRequest   | org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest | <?xml version="1.0" encoding="UTF-8"?><downloadRequest><uri>http://download.eclipse.org/kura/releases/3.2.0/org.eclipse.kura.example.publisher_1.0.300.dp</uri><name>Example Publisher</name><version>1.0.300</version><install>true</install></downloadRequest> |
+      | timeout                  | java.lang.Long                                                                                   | 30000                                                                                                                                                                                                                                                            |
+    When I create a new step entity from the existing creator
+    Then No exception was thrown
+    And I start a job
+    And I wait 15 seconds
+    Given I query for the job with the name "TestJob"
+    When I query for the execution items for the current job
+    Then I count 1 or more
+    And I confirm the executed job is finished
+    And I search for the last job target in the database
+    And I wait 1 seconds
+    And I confirm the step index is 0 and status is "PROCESS_OK"
+    When Packages are requested
+    Then Number of received packages is 2
+    And KuraMock is disconnected
+    And I logout
+
+  Scenario: Starting a job with invalid Package Install step
+  Create a new job and set a connected KuraMock device as the job target.
+  Add a new invalid Package Install step to the created job. Start the job.
+  After the executed job is finished, the executed target's step index should
+  be 0 and the status PROCESS_FAILED.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    When I start the Kura Mock
+    And Device "is" connected
+    And I wait 1 seconds
+    Then Device status is "CONNECTED"
+    And I get the KuraMock device
+    And Packages are requested
+    And Number of received packages is 1
+    Given I create a job with the name "TestJob"
+    And A new job target item
+    And Search for step definition with the name "Package Download / Install"
+    And A regular step creator with the name "TestStep" and the following properties
+      | name                     | type                                                                                             | value                                                                                                                                                                                                                                                               |
+      | packageDownloadRequest   | org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest | <?xml version="1.0" encoding="UTF-8"?><downloadRequest><uri>###http://download.eclipse.org/kura/releases/3.2.0/org.eclipse.kura.example.publisher_1.0.300.dp</uri><name>Example Publisher</name><version>1.0.300</version><install>true</install></downloadRequest> |
+      | timeout                  | java.lang.Long                                                                                   | 30000                                                                                                                                                                                                                                                               |
+    When I create a new step entity from the existing creator
+    Then No exception was thrown
+    And I start a job
+    And I wait 15 seconds
+    Given I query for the job with the name "TestJob"
+    When I query for the execution items for the current job
+    Then I count 1
+    And I confirm the executed job is finished
+    And I search for the last job target in the database
+    And I wait 1 seconds
+    And I confirm the step index is 0 and status is "PROCESS_FAILED"
+    When Packages are requested
+    Then Number of received packages is 1
+    And KuraMock is disconnected
+    And I logout
+
     # *****************************************************
     # * Starting a job with one Target and multiple Steps *
     # *****************************************************
 
   Scenario: Starting job with valid Command Execution and Bundle Start steps
-  Create a new job. Set a disconnected Kura Mock device as a job target.
+  Create a new job. Set a connected Kura Mock device as a job target.
   Add a new valid Command Execution and Bundle Start steps to the created job. Start the job.
   After the executed job is finished, the step index of executed targets should
   be 0 and the status PROCESS_OK
@@ -426,7 +502,7 @@ Feature: JobEngineService start job tests with online device
     And I logout
 
   Scenario: Starting job with invalid Command Execution and Bundle Start steps
-  Create a new job. Set a disconnected Kura Mock device as a job target.
+  Create a new job. Set a connected Kura Mock device as a job target.
   Add a new invalid Command Execution and Bundle Start steps to the created job. Start the job.
   After the executed job is finished, the step index of executed targets should
   be 0 and the status PROCESS_FAILED
@@ -789,12 +865,110 @@ Feature: JobEngineService start job tests with online device
     And Device status is "DISCONNECTED"
     And I logout
 
+  Scenario: Starting a job with valid Package Install and Bundle Start steps
+  Create a new job and set a connected KuraMock device as the job target.
+  Add new valid Package Install and Bundle Start steps to the created job. Start the job.
+  After the executed job is finished, the executed target's step index should
+  be 1 and the status PROCESS_OK
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    When I start the Kura Mock
+    And Device is connected
+    And I wait 1 seconds
+    Then Device status is "CONNECTED"
+    And I get the KuraMock device
+    And Bundles are requested
+    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    And Packages are requested
+    Then Number of received packages is 1
+    Given I create a job with the name "TestJob"
+    And A new job target item
+    And Search for step definition with the name "Bundle Start"
+    And A regular step creator with the name "TestStep1" and the following properties
+      | name     | type             | value |
+      | bundleId | java.lang.String | 34    |
+      | timeout  | java.lang.Long   | 10000 |
+    And I create a new step entity from the existing creator
+    And Search for step definition with the name "Package Download / Install"
+    And A regular step creator with the name "TestStep2" and the following properties
+      | name                     | type                                                                                             | value                                                                                                                                                                                                                                                            |
+      | packageDownloadRequest   | org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest | <?xml version="1.0" encoding="UTF-8"?><downloadRequest><uri>http://download.eclipse.org/kura/releases/3.2.0/org.eclipse.kura.example.publisher_1.0.300.dp</uri><name>Example Publisher</name><version>1.0.300</version><install>true</install></downloadRequest> |
+      | timeout                  | java.lang.Long                                                                                   | 30000                                                                                                                                                                                                                                                            |
+    When I create a new step entity from the existing creator
+    And I search the database for created job steps and I find 2
+    And I start a job
+    And I wait 30 seconds
+    Given I query for the job with the name "TestJob"
+    When I query for the execution items for the current job
+    Then I count 1 or more
+    And I confirm the executed job is finished
+    And I search for the last job target in the database
+    And I confirm the step index is 1 and status is "PROCESS_OK"
+    And Bundles are requested
+    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
+    And Packages are requested
+    Then Number of received packages is 2
+    And KuraMock is disconnected
+    And I wait 1 seconds
+    And Device status is "DISCONNECTED"
+    And I logout
+
+  Scenario: Starting a job with invalid Package Install and Bundle Start steps
+  Create a new job and set a connected KuraMock device as the job target.
+  Add new invalid Package Install and Bundle Start steps to the created job. Start the job.
+  After the executed job is finished, the executed target's step index should
+  be 1 and the status PROCESS_FAILED
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    When I start the Kura Mock
+    And Device is connected
+    And I wait 1 seconds
+    Then Device status is "CONNECTED"
+    And I get the KuraMock device
+    And Bundles are requested
+    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    And Packages are requested
+    Then Number of received packages is 1
+    Given I create a job with the name "TestJob"
+    And A new job target item
+    And Search for step definition with the name "Bundle Start"
+    And A regular step creator with the name "TestStep1" and the following properties
+      | name     | type             | value |
+      | bundleId | java.lang.String | #34   |
+      | timeout  | java.lang.Long   | 10000 |
+    And I create a new step entity from the existing creator
+    And Search for step definition with the name "Package Download / Install"
+    And A regular step creator with the name "TestStep2" and the following properties
+      | name                     | type                                                                                             | value                                                                                                                                                                                                                                                               |
+      | packageDownloadRequest   | org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest | <?xml version="1.0" encoding="UTF-8"?><downloadRequest><uri>###http://download.eclipse.org/kura/releases/3.2.0/org.eclipse.kura.example.publisher_1.0.300.dp</uri><name>Example Publisher</name><version>1.0.300</version><install>true</install></downloadRequest> |
+      | timeout                  | java.lang.Long                                                                                   | 30000                                                                                                                                                                                                                                                               |
+    When I create a new step entity from the existing creator
+    And I search the database for created job steps and I find 2
+    And I start a job
+    And I wait 15 seconds
+    Given I query for the job with the name "TestJob"
+    When I query for the execution items for the current job
+    Then I count 1
+    And I confirm the executed job is finished
+    And I search for the last job target in the database
+    And I confirm the step index is 0 and status is "PROCESS_FAILED"
+    And Bundles are requested
+    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    And Packages are requested
+    Then Number of received packages is 1
+    And KuraMock is disconnected
+    And I wait 1 seconds
+    And Device status is "DISCONNECTED"
+    And I logout
+
     # *****************************************************
     # * Starting a job with multiple Targets and one Step *
     # *****************************************************
 
   Scenario: Starting job with valid Command Execution step and multiple devices
-  Create a new job. Set a disconnected Kura Mock devices as a job targets.
+  Create a new job. Set connected Kura Mock devices as a job targets.
   Add a new valid Command Execution step to the created job. Start the job.
   After the executed job is finished, the step index of executed targets should
   be 0 and the status PROCESS_OK
@@ -837,7 +1011,7 @@ Feature: JobEngineService start job tests with online device
     And I logout
 
   Scenario: Starting job with invalid Command Execution step and multiple devices
-  Create a new job. Set a disconnected Kura Mock devices as a job targets.
+  Create a new job. Set connected Kura Mock devices as a job targets.
   Add a new invalid Command Execution step to the created job. Start the job.
   After the executed job is finished, the step index of executed targets should
   be 0 and the status PROCESS_FAILED
@@ -880,7 +1054,7 @@ Feature: JobEngineService start job tests with online device
     And I logout
 
   Scenario: Starting job with valid Bundle Start step and multiple devices
-  Create a new job. Set a disconnected Kura Mock devices as a job targets.
+  Create a new job. Set connected Kura Mock devices as a job targets.
   Add a new Bundle Start step to the created job. Start the job.
   After the executed job is finished, the step index of executed targets should
   be 0 and the status PROCESS_OK
@@ -926,7 +1100,7 @@ Feature: JobEngineService start job tests with online device
     And I logout
 
   Scenario: Starting job with invalid Bundle Start step and multiple devices
-  Create a new job. Set a disconnected Kura Mock devices as a job targets.
+  Create a new job. Set connected Kura Mock devices as a job targets.
   Add a new Bundle Start step to the created job. Start the job.
   After the executed job is finished, the step index of executed targets should
   be 0 and the status PROCESS_FAILED
@@ -971,7 +1145,7 @@ Feature: JobEngineService start job tests with online device
     And I logout
 
   Scenario: Starting a job with valid Bundle Stop step and multiple devices
-  Create a new job and set a connected KuraMock devices as the job targets.
+  Create a new job and set connected KuraMock devices as the job targets.
   Add a new valid Bundle Stop step to the created job. Start the job.
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_OK
@@ -1016,7 +1190,7 @@ Feature: JobEngineService start job tests with online device
     And I logout
 
   Scenario: Starting a job with invalid Bundle Stop step and multiple devices
-  Create a new job and set a connected KuraMock devices as the job targets.
+  Create a new job and set connected KuraMock devices as the job targets.
   Add a new invalid Bundle Stop step to the created job. Start the job.
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_FAILED
@@ -1061,7 +1235,7 @@ Feature: JobEngineService start job tests with online device
     And I logout
 
   Scenario: Starting a job with valid Configuration Put step and multiple devices
-  Create a new job and set a connected KuraMock device as the job target.
+  Create a new job and set connected KuraMock devices as the job targets.
   Add a new valid Configuration Put step to the created job. Start the job.
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_OK
@@ -1098,7 +1272,7 @@ Feature: JobEngineService start job tests with online device
     And I logout
 
   Scenario: Starting a job with invalid Configuration Put step and multiple devices
-  Create a new job and set a connected KuraMock device as the job target.
+  Create a new job and set connected KuraMock devices as the job targets.
   Add a new invalid Configuration Put step to the created job. Start the job.
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_FAILED
@@ -1140,7 +1314,7 @@ Feature: JobEngineService start job tests with online device
     # ***********************************************************
 
   Scenario: Starting job with valid Command Execution, valid Bundle Start steps and multiple devices
-  Create a new job. Set a disconnected Kura Mock devices as a job targets.
+  Create a new job. Set connected Kura Mock devices as a job targets.
   Add a new valid Command Execution and Bundle Start steps to the created job. Start the job.
   After the executed job is finished, the step index of executed targets should
   be 0 and the status PROCESS_OK
@@ -1194,7 +1368,7 @@ Feature: JobEngineService start job tests with online device
     And I logout
 
   Scenario: Starting job with invalid Command Execution, invalid Bundle Start steps and multiple devices
-  Create a new job. Set a disconnected Kura Mock devices as a job targets.
+  Create a new job. Set connected Kura Mock devices as a job targets.
   Add a new invalid Command Execution and Bundle Start steps to the created job. Start the job.
   After the executed job is finished, the step index of executed targets should
   be 0 and the status PROCESS_FAILED
@@ -1248,7 +1422,7 @@ Feature: JobEngineService start job tests with online device
     And I logout
 
   Scenario: Starting a job with two valid Bundle Start steps and multiple devices
-  Create a new job and set a connected KuraMock devices as the job targets.
+  Create a new job and set connected KuraMock devices as the job targets.
   Add two new valid Bundle Start steps to the created job. Start the job.
   After the executed job is finished, the executed target's step index should
   be 1 and the status PROCESS_OK
@@ -1301,7 +1475,7 @@ Feature: JobEngineService start job tests with online device
     And I logout
 
   Scenario: Starting a job with two invalid Bundle Start steps and multiple devices
-  Create a new job and set a connected KuraMock devices as the job targets.
+  Create a new job and set connected KuraMock devices as the job targets.
   Add two new invalid Bundle Start steps to the created job. Start the job.
   After the executed job is finished, the executed target's step index should
   be 1 and the status PROCESS_FAILED
@@ -1354,7 +1528,7 @@ Feature: JobEngineService start job tests with online device
     And I logout
 
   Scenario: Starting a job with valid Bundle Stop and Bundle Start steps and multiple devices
-  Create a new job and set a connected KuraMock devices as the job targets.
+  Create a new job and set connected KuraMock devices as the job targets.
   Add a new valid Bundle Stop and Bundle Start steps to the created job. Start the job.
   After the executed job is finished, the executed target's step index should
   be 1 and the status PROCESS_OK
@@ -1407,7 +1581,7 @@ Feature: JobEngineService start job tests with online device
     And I logout
 
   Scenario: Starting a job with invalid Bundle Stop and Bundle Start steps and multiple devices
-  Create a new job and set a connected KuraMock devices as the job targets.
+  Create a new job and set connected KuraMock devices as the job targets.
   Add a new invalid Bundle Stop and Bundle Start steps to the created job. Start the job.
   After the executed job is finished, the executed target's step index should
   be 1 and the status PROCESS_FAILED
@@ -1460,7 +1634,7 @@ Feature: JobEngineService start job tests with online device
     And I logout
 
   Scenario: Starting job with valid Configuration Put and Bundle Start steps and multiple devices
-  Create a new job. Set a connected Kura Mock devices as a job target.
+  Create a new job. Set connected Kura Mock devices as a job targets.
   Add a new valid Configuration Put and Bundle Start steps to the created job. Start the job.
   After the executed job is finished, the step index of executed targets should
   be 1 and the status PROCESS_OK
@@ -1508,7 +1682,7 @@ Feature: JobEngineService start job tests with online device
     And I logout
 
   Scenario: Starting job with invalid Configuration Put and Bundle Start steps and multiple devices
-  Create a new job. Set connected Kura Mock devices as a job target.
+  Create a new job. Set connected Kura Mock devices as a job targets.
   Add a new invalid Configuration Put and Bundle Start steps to the created job. Start the job.
   After the executed job is finished, the step index of executed targets should
   be 0 and the status PROCESS_FAILED

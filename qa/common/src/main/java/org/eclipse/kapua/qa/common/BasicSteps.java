@@ -135,6 +135,11 @@ public class BasicSteps extends TestBase {
         assertEquals(num, stepData.get("Count"));
     }
 
+    @Then("^I count (\\d+) or more$")
+    public void checkAsyncCountResult(Long num) {
+        assertTrue((Long) stepData.get("Count") >= num);
+    }
+
     @Then("^I get the integer (\\d+)$")
     public void checkIntResult(int num) {
         assertEquals(num, (int) stepData.get("IntValue"));
