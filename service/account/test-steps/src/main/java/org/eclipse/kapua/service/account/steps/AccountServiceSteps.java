@@ -667,13 +667,18 @@ public class AccountServiceSteps extends TestBase {
 
     @Then("^Account \"(.*)\" has (\\d+) children$")
     public void checkNumberOfChildrenForNamedAccount(String name, int num)
-            throws KapuaException {
+            throws Exception {
 
-        Account tmpAcc = accountService.findByName(name);
-        KapuaQuery<Account> query = accountFactory.newQuery(tmpAcc.getId());
-        long accountCnt = accountService.count(query);
+        try {
+            primeException();
+            Account tmpAcc = accountService.findByName(name);
+            KapuaQuery<Account> query = accountFactory.newQuery(tmpAcc.getId());
+            long accountCnt = accountService.count(query);
 
-        assertEquals(num, accountCnt);
+            assertEquals(num, accountCnt);
+        } catch (KapuaException ke) {
+            verifyException(ke);
+        }
     }
 
     @Then("^The account does not exist$")
