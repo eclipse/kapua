@@ -12,17 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso.provider;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.ServiceLoader;
-
 import org.eclipse.kapua.sso.JwtProcessor;
 import org.eclipse.kapua.sso.SingleSignOnLocator;
 import org.eclipse.kapua.sso.SingleSignOnService;
+import org.eclipse.kapua.sso.exception.SsoJwtException;
 import org.eclipse.kapua.sso.provider.SingleSignOnProvider.ProviderLocator;
 import org.eclipse.kapua.sso.provider.internal.DisabledLocator;
 import org.eclipse.kapua.sso.provider.setting.SsoSetting;
 import org.eclipse.kapua.sso.provider.setting.SsoSettingKeys;
+
+import java.io.Closeable;
+import java.util.ServiceLoader;
 
 public class ProviderSingleSignOnLocator implements SingleSignOnLocator, Closeable {
 
@@ -41,21 +41,6 @@ public class ProviderSingleSignOnLocator implements SingleSignOnLocator, Closeab
         this(SsoSetting.getInstance());
     }
 
-    @Override
-    public void close() {
-        // nothing to close at the moment
-    }
-
-    @Override
-    public SingleSignOnService getService() {
-        return locator.getService();
-    }
-
-    @Override
-    public JwtProcessor getProcessor() throws IOException {
-        return locator.getProcessor();
-    }
-
     private static ProviderLocator findProvider(final String providerId) {
         if (locator == null) {
             synchronized (ProviderSingleSignOnLocator.class) {
@@ -70,5 +55,20 @@ public class ProviderSingleSignOnLocator implements SingleSignOnLocator, Closeab
             }
         }
         return locator;
+    }
+
+    @Override
+    public void close() {
+        // nothing to close at the moment
+    }
+
+    @Override
+    public SingleSignOnService getService() {
+        return locator.getService();
+    }
+
+    @Override
+    public JwtProcessor getProcessor() throws SsoJwtException {
+        return locator.getProcessor();
     }
 }

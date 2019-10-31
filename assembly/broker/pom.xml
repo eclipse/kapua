@@ -156,7 +156,7 @@
 
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-sso-jwt</artifactId>
+            <artifactId>kapua-sso-provider</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>

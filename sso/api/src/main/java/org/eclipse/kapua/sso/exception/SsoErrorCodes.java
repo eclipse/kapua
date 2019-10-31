@@ -9,23 +9,18 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.sso.jwt.setting;
+package org.eclipse.kapua.sso.exception;
 
-import org.eclipse.kapua.commons.setting.SettingKey;
+import org.eclipse.kapua.KapuaErrorCode;
 
-public enum SsoJwtSettingKeys implements SettingKey {
 
-    SSO_JWT_OPEN_ID_CONFIG_PATH("sso.jwt.openid.config.path"), //
-    ;
+public enum SsoErrorCodes implements KapuaErrorCode {
 
-    private final String key;
 
-    private SsoJwtSettingKeys(final String key) {
-        this.key = key;
-    }
-
-    @Override
-    public String key() {
-        return key;
-    }
+    /**
+     * An error occurred when building the JwtProcessor
+     *
+     * @since
+     */
+    JWT_ERROR
 }

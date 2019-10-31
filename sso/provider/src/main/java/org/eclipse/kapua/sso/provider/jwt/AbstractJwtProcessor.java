@@ -13,16 +13,7 @@
 package org.eclipse.kapua.sso.provider.jwt;
 
 import org.eclipse.kapua.sso.JwtProcessor;
-
-import java.io.IOException;
-import java.net.URI;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
+import org.eclipse.kapua.sso.exception.SsoJwtException;
 import org.jose4j.jwk.HttpsJwks;
 import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.consumer.InvalidJwtException;
@@ -31,54 +22,21 @@ import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.jwt.consumer.JwtContext;
 import org.jose4j.keys.resolvers.HttpsJwksVerificationKeyResolver;
 
+import java.net.URI;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 public abstract class AbstractJwtProcessor implements JwtProcessor {
 
     private static final String JWKS_URI_WELL_KNOWN_KEY = "jwks_uri";
-
-    private static class Processor {
-
-        private Instant lastUsed = Instant.now();
-
-        private JwtConsumer consumer;
-
-        public Processor(final URI jwksUri, String[] audiences, String[] expectedIssuers) {
-            final HttpsJwksVerificationKeyResolver resolver = new HttpsJwksVerificationKeyResolver(new HttpsJwks(jwksUri.toString()));
-
-            this.consumer = new JwtConsumerBuilder()
-                    .setVerificationKeyResolver(resolver) // Set resolver key
-                    .setRequireIssuedAt() // Set require reserved claim: iat
-                    .setRequireExpirationTime() // Set require reserved claim: exp
-                    .setRequireSubject() // // Set require reserved claim: sub
-                    .setExpectedIssuers(true, expectedIssuers)
-                    .setExpectedAudience(audiences)
-                    .build();
-        }
-
-        public boolean validate(final String jwt) {
-            try {
-                process(jwt);
-                return true;
-            } catch (InvalidJwtException e) {
-                return false;
-            }
-        }
-
-        public JwtContext process(final String jwt) throws InvalidJwtException {
-            lastUsed = Instant.now();
-            return consumer.process(jwt);
-        }
-
-        public boolean isExpired(final Duration timeout) {
-            return lastUsed.plus(timeout).isBefore(Instant.now());
-        }
-    }
-
     private Map<URI, Processor> processors = new HashMap<>();
-
     private String[] audiences;
     private String[] expectedIssuers;
     private Duration cacheTimeout;
-
     /**
      * @param audiences
      * @param expectedIssuers
@@ -92,7 +50,7 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
         this.cacheTimeout = cacheTimeout;
     }
 
-    public AbstractJwtProcessor(final Duration cacheTimeout) throws IOException {
+    public AbstractJwtProcessor(final Duration cacheTimeout) throws SsoJwtException {
         List<String> audiences = getJwtAudiences();
         List<String> expectedIssuers = getJwtExpectedIssuers();
         this.expectedIssuers = expectedIssuers.toArray(new String[expectedIssuers.size()]);
@@ -100,19 +58,42 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
         this.cacheTimeout = cacheTimeout;
     }
 
-    @Override
-    public boolean validate(final String jwt) throws Exception {
-        final URI issuer = extractIssuer(jwt);
+    private static URI extractIssuer(final String jwt) throws SsoJwtException {
 
+        try {
+            // Parse JWT without validation
+
+            final JwtConsumer jwtConsumer = new JwtConsumerBuilder()
+                    .setSkipAllValidators()
+                    .setDisableRequireSignature()
+                    .setSkipSignatureVerification()
+                    .build();
+
+            final JwtContext jwtContext = jwtConsumer.process(jwt);
+
+            // Resolve Json Web Key Set URI by the issuer
+            String issuer = jwtContext.getJwtClaims().getIssuer();
+            if (issuer.endsWith("/")) {
+                issuer = issuer.substring(0, issuer.length() - 1);
+            }
+
+            return URI.create(issuer);
+        } catch (InvalidJwtException | MalformedClaimException e) {
+            throw new SsoJwtException(e);
+        }
+    }
+
+    @Override
+    public boolean validate(final String jwt) throws SsoJwtException {
+        final URI issuer = extractIssuer(jwt);
         return lookupProcessor(issuer)
                 .orElseThrow(() -> new IllegalStateException("Unable to auto-discover JWT endpoint"))
                 .validate(jwt);
     }
 
     @Override
-    public JwtContext process(final String jwt) throws Exception {
+    public JwtContext process(final String jwt) throws SsoJwtException {
         final URI issuer = extractIssuer(jwt);
-
         return lookupProcessor(issuer)
                 .orElseThrow(() -> new IllegalStateException("Unable to auto-discover JWT endpoint"))
                 .process(jwt);
@@ -124,32 +105,11 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
 
     protected abstract String getOpenIdConfPath(final URI issuer);
 
-    protected abstract List<String> getJwtExpectedIssuers() throws IOException;
+    protected abstract List<String> getJwtExpectedIssuers() throws SsoJwtException;
 
     protected abstract List<String> getJwtAudiences();
 
-    private static URI extractIssuer(final String jwt) throws InvalidJwtException, MalformedClaimException {
-
-        // Parse JWT without validation
-
-        final JwtConsumer jwtConsumer = new JwtConsumerBuilder()
-                .setSkipAllValidators()
-                .setDisableRequireSignature()
-                .setSkipSignatureVerification()
-                .build();
-
-        final JwtContext jwtContext = jwtConsumer.process(jwt);
-
-        // Resolve Json Web Key Set URI by the issuer
-        String issuer = jwtContext.getJwtClaims().getIssuer();
-        if (issuer.endsWith("/")) {
-            issuer = issuer.substring(0, issuer.length() - 1);
-        }
-
-        return URI.create(issuer);
-    }
-
-    private Optional<Processor> lookupProcessor(final URI issuer) throws IOException {
+    private Optional<Processor> lookupProcessor(final URI issuer) throws SsoJwtException {
 
         Processor processor = processors.get(issuer);
 
@@ -175,6 +135,48 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
         // return result
 
         return Optional.of(processor);
+    }
+
+    private static class Processor {
+
+        private Instant lastUsed = Instant.now();
+
+        private JwtConsumer consumer;
+
+        public Processor(final URI jwksUri, String[] audiences, String[] expectedIssuers) {
+            final HttpsJwksVerificationKeyResolver resolver = new HttpsJwksVerificationKeyResolver(new HttpsJwks(jwksUri.toString()));
+
+            this.consumer = new JwtConsumerBuilder()
+                    .setVerificationKeyResolver(resolver) // Set resolver key
+                    .setRequireIssuedAt() // Set require reserved claim: iat
+                    .setRequireExpirationTime() // Set require reserved claim: exp
+                    .setRequireSubject() // // Set require reserved claim: sub
+                    .setExpectedIssuers(true, expectedIssuers)
+                    .setExpectedAudience(audiences)
+                    .build();
+        }
+
+        public boolean validate(final String jwt) {
+            try {
+                process(jwt);
+                return true;
+            } catch (SsoJwtException e) {
+                return false;
+            }
+        }
+
+        public JwtContext process(final String jwt) throws SsoJwtException {
+            try {
+                lastUsed = Instant.now();
+                return consumer.process(jwt);
+            } catch (InvalidJwtException ije) {
+                throw new SsoJwtException(ije);
+            }
+        }
+
+        public boolean isExpired(final Duration timeout) {
+            return lastUsed.plus(timeout).isBefore(Instant.now());
+        }
     }
 
 }

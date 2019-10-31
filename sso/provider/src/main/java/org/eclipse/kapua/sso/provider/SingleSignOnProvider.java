@@ -15,10 +15,10 @@ import org.eclipse.kapua.sso.SingleSignOnLocator;
 
 public interface SingleSignOnProvider {
 
-    interface ProviderLocator extends SingleSignOnLocator, AutoCloseable {
-    }
-
     String getId();
 
     ProviderLocator createLocator();
+
+    interface ProviderLocator extends SingleSignOnLocator, AutoCloseable {
+    }
 }

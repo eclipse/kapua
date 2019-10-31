@@ -11,11 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso;
 
+import org.eclipse.kapua.sso.exception.SsoJwtException;
 import org.jose4j.jwt.consumer.JwtContext;
 
 public interface JwtProcessor extends AutoCloseable {
 
-    boolean validate(final String jwt) throws Exception;
+    boolean validate(final String jwt) throws SsoJwtException;
 
-    JwtContext process(final String jwt) throws Exception;
+    JwtContext process(final String jwt) throws SsoJwtException;
 }

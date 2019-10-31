@@ -12,6 +12,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso.provider;
 
+import org.apache.http.HttpHeaders;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
+import org.eclipse.kapua.sso.SingleSignOnService;
+import org.eclipse.kapua.sso.exception.SsoJwtException;
+import org.eclipse.kapua.sso.provider.setting.SsoSetting;
+import org.eclipse.kapua.sso.provider.setting.SsoSettingKeys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.json.Json;
+import javax.json.JsonObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -20,21 +35,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.json.Json;
-import javax.json.JsonObject;
-
-import org.apache.http.HttpHeaders;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicNameValuePair;
-import org.eclipse.kapua.sso.SingleSignOnService;
-import org.eclipse.kapua.sso.provider.setting.SsoSetting;
-import org.eclipse.kapua.sso.provider.setting.SsoSettingKeys;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class AbstractSingleSignOnService implements SingleSignOnService {
 
@@ -46,9 +46,9 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
         this.ssoSettings = ssoSettings;
     }
 
-    protected abstract String getAuthUri() throws IOException;
+    protected abstract String getAuthUri() throws SsoJwtException;
 
-    protected abstract String getTokenUri() throws IOException;
+    protected abstract String getTokenUri() throws SsoJwtException;
 
     @Override
     public boolean isEnabled() {
@@ -82,45 +82,49 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
     }
 
     @Override
-    public JsonObject getAccessToken(final String authCode, final URI redirectUri) throws IOException {
+    public JsonObject getAccessToken(final String authCode, final URI redirectUri) throws SsoJwtException {
         // FIXME: switch to HttpClient implementation: better performance and connection caching
 
-        URL url = new URL(getTokenUri());
+        try {
+            URL url = new URL(getTokenUri());
 
-        final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
-        urlConnection.setRequestMethod("POST");
-        urlConnection.setRequestProperty(HttpHeaders.CONTENT_TYPE, URLEncodedUtils.CONTENT_TYPE);
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestProperty(HttpHeaders.CONTENT_TYPE, URLEncodedUtils.CONTENT_TYPE);
 
-        final List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-        parameters.add(new BasicNameValuePair("grant_type", "authorization_code"));
-        parameters.add(new BasicNameValuePair("code", authCode));
-        parameters.add(new BasicNameValuePair("client_id", getClientId()));
+            final List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+            parameters.add(new BasicNameValuePair("grant_type", "authorization_code"));
+            parameters.add(new BasicNameValuePair("code", authCode));
+            parameters.add(new BasicNameValuePair("client_id", getClientId()));
 
-        final String clientSecret = getClientSecret();
-        if (clientSecret != null && !clientSecret.isEmpty()) {
-            parameters.add(new BasicNameValuePair("client_secret", clientSecret));
+            final String clientSecret = getClientSecret();
+            if (clientSecret != null && !clientSecret.isEmpty()) {
+                parameters.add(new BasicNameValuePair("client_secret", clientSecret));
+            }
+
+            parameters.add(new BasicNameValuePair("redirect_uri", redirectUri.toString()));
+
+            final UrlEncodedFormEntity entity = new UrlEncodedFormEntity(parameters);
+
+            // Send post request
+
+            urlConnection.setDoOutput(true);
+
+            try (final OutputStream outputStream = urlConnection.getOutputStream()) {
+                entity.writeTo(outputStream);
+            }
+
+            // parse result
+
+            final JsonObject jsonObject;
+            try (final InputStream stream = urlConnection.getInputStream()) {
+                jsonObject = Json.createReader(stream).readObject();
+            }
+            return jsonObject;
+        } catch (IOException ioe) {
+            throw new SsoJwtException(ioe);
         }
-
-        parameters.add(new BasicNameValuePair("redirect_uri", redirectUri.toString()));
-
-        final UrlEncodedFormEntity entity = new UrlEncodedFormEntity(parameters);
-
-        // Send post request
-
-        urlConnection.setDoOutput(true);
-
-        try (final OutputStream outputStream = urlConnection.getOutputStream()) {
-            entity.writeTo(outputStream);
-        }
-
-        // parse result
-
-        final JsonObject jsonObject;
-        try (final InputStream stream = urlConnection.getInputStream()) {
-            jsonObject = Json.createReader(stream).readObject();
-        }
-        return jsonObject;
     }
 
 }

@@ -43,7 +43,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-security-shiro</artifactId>
+            <artifactId>kapua-sso-provider-generic</artifactId>
         </dependency>
     </dependencies>
 </project>

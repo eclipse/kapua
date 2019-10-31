@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso;
 
-import java.io.IOException;
-import java.net.URI;
+import org.eclipse.kapua.sso.exception.SsoJwtException;
 
 import javax.json.JsonObject;
+import java.net.URI;
 
 public interface SingleSignOnService {
 
@@ -22,5 +22,5 @@ public interface SingleSignOnService {
 
     String getLoginUri(String state, URI redirectUri);
 
-    JsonObject getAccessToken(String authCode, URI redirectUri) throws IOException;
+    JsonObject getAccessToken(String authCode, URI redirectUri) throws SsoJwtException;
 }

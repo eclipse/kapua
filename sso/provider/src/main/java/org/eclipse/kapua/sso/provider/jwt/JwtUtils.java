@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso.provider.jwt;
 
+import org.eclipse.kapua.sso.exception.SsoJwtException;
+
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonString;
@@ -34,13 +36,15 @@ public final class JwtUtils {
      * @return
      * @throws IOException
      */
-    public static Optional<URI> retrieveJwtUri(String property, String openIdConfPath) throws IOException {
+    public static Optional<URI> retrieveJwtUri(String property, String openIdConfPath) throws SsoJwtException {
         final JsonObject jsonObject;
 
         // Read .well-known resource
         try (final InputStream stream = new URL(openIdConfPath).openStream()) {
             // Parse json response
             jsonObject = Json.createReader(stream).readObject();
+        } catch (IOException ioe) {
+            throw new SsoJwtException(ioe);
         }
 
         // Get jwt property

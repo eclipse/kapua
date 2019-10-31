@@ -21,6 +21,8 @@ import org.eclipse.kapua.sso.JwtProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * {@link JwtCredentialsMatcher} credential matcher implementation
  *
@@ -32,7 +34,7 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
     private static final Logger logger = LoggerFactory.getLogger(JwtCredentialsMatcher.class);
     private JwtProcessor jwtProcessor;
 
-    public JwtCredentialsMatcher(final JwtProcessor jwtProcessor) {
+    public JwtCredentialsMatcher(@NotNull final JwtProcessor jwtProcessor) {
         this.jwtProcessor = jwtProcessor;
     }
 
