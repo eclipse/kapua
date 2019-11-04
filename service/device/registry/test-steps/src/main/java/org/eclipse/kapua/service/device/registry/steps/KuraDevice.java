@@ -45,6 +45,7 @@ public class KuraDevice implements MqttCallback {
      */
     private String deployPackages;
     private String deployV2ExecDownloadPackage;
+    private String uninstallPackage;
     private String deployBundles;
     private String deployConf;
     private String putConf;
@@ -118,21 +119,14 @@ public class KuraDevice implements MqttCallback {
 
     public KuraDevice() {
         deployPackages = "$EDC/kapua-sys/rpione3/DEPLOY-V2/GET/packages";
-
         deployV2ExecDownloadPackage = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/download";
-
+        uninstallPackage = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/uninstall";
         deployBundles = "$EDC/kapua-sys/rpione3/DEPLOY-V2/GET/bundles";
-
         deployConf = "$EDC/kapua-sys/rpione3/CONF-V1/GET/configurations";
-
         putConf = "$EDC/kapua-sys/rpione3/CONF-V1/PUT/configurations";
-
         cmdExec = "$EDC/kapua-sys/rpione3/CMD-V1/EXEC/command";
-
         deployV2ExecStart34 = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/start/34";
-
         deployV2ExecStart95 = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/start/95";
-
         deployV2ExecStop77 = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/stop/77";
 
         readAssets = "$EDC/kapua-sys/rpione3/ASSET-V1/EXEC/read";
@@ -217,21 +211,14 @@ public class KuraDevice implements MqttCallback {
          */
         try {
             deployPackages = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/GET/packages";
-
             deployV2ExecDownloadPackage = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/EXEC/download";
-
+            uninstallPackage = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/EXEC/uninstall";
             deployBundles = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/GET/bundles";
-
             deployConf = "$EDC/kapua-sys/" + clientId + "/CONF-V1/GET/configurations";
-
             putConf = "$EDC/kapua-sys/" + clientId + "/CONF-V1/PUT/configurations";
-
             cmdExec = "$EDC/kapua-sys/" + clientId + "/CMD-V1/EXEC/command";
-
             deployV2ExecStart34 = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/EXEC/start/34";
-
             deployV2ExecStart95 = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/EXEC/start/95";
-
             deployV2ExecStop77 = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/EXEC/stop/77";
 
             readAssets = "$EDC/kapua-sys/" + clientId + "/ASSET-V1/EXEC/read";
@@ -389,6 +376,33 @@ public class KuraDevice implements MqttCallback {
             customKuraPayload4.getMetrics().put("client.id", clientId);
             responsePayload = customKuraPayload4.toByteArray();
             mqttClient.publish(responseTopic, responsePayload, 0, false);
+
+            packageListChanged = true;
+        } else if (topic.equals(uninstallPackage)) {
+            callbackParam = extractCallback(payload);
+            KuraPayload kuraPayloadInitial = new KuraPayload();
+            kuraPayloadInitial.readFromByteArray(payload);
+
+            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/REPLY/" + callbackParam.getRequestId();
+            KuraPayload customKuraPayload = new KuraPayload();
+
+            customKuraPayload.setTimestamp(new Date());
+            customKuraPayload.getMetrics().put("response.code", 200);
+            responsePayload = customKuraPayload.toByteArray();
+            mqttClient.publish(responseTopic, responsePayload, 0, false);
+            Thread.sleep(15000);
+
+            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/NOTIFY/" + clientId + "/uninstall";
+            KuraPayload customKuraPayload2 = new KuraPayload();
+
+            customKuraPayload2.setTimestamp(new Date());
+            customKuraPayload2.getMetrics().put("job.id", kuraPayloadInitial.getMetrics().get("job.id"));
+            customKuraPayload2.getMetrics().put("dp.name", "org.eclipse.kura.example.publisher");
+            customKuraPayload2.getMetrics().put("dp.uninstall.progress", 100);
+            customKuraPayload2.getMetrics().put("dp.uninstall.status", "COMPLETED");
+            customKuraPayload2.getMetrics().put("client.id", clientId);
+            responsePayload = customKuraPayload2.toByteArray();
+            mqttClient.publish(responseTopic, responsePayload , 0, false);
 
             packageListChanged = true;
         } else if (topic.equals(deployBundles)) {
