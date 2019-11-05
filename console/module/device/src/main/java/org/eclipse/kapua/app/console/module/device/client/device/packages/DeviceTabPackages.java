@@ -40,8 +40,11 @@ import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.client.device.DeviceView;
+import org.eclipse.kapua.app.console.module.device.client.device.packages.button.DeviceManagementOperationLogButton;
 import org.eclipse.kapua.app.console.module.device.client.device.packages.button.PackageInstallButton;
 import org.eclipse.kapua.app.console.module.device.client.device.packages.button.PackageUninstallButton;
+import org.eclipse.kapua.app.console.module.device.client.device.packages.dialog.PackageInstallDialog;
+import org.eclipse.kapua.app.console.module.device.client.device.packages.dialog.PackageUninstallDialog;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeploymentPackage;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
@@ -60,8 +63,10 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
     private ToolBar toolBar;
     private Button refreshButton;
     private Button installButton;
+    private SeparatorToolItem unistallSeparator = new SeparatorToolItem();
     private Button uninstallButton;
-    private SeparatorToolItem separator;
+    private SeparatorToolItem logSeparator = new SeparatorToolItem();
+    private Button logButton;
 
     private TabPanel tabsPanel;
     private DeviceTabPackagesInstalled installedPackageTab;
@@ -169,12 +174,24 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
             }
         });
 
+        logButton = new DeviceManagementOperationLogButton(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                if (selectedEntity != null && selectedEntity.isOnline()) {
+                    openLogDialog();
+                } else {
+                    openDeviceOfflineAlertDialog();
+                }
+            }
+        });
+
         toolBar.add(refreshButton);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(installButton);
-        separator = new SeparatorToolItem();
-        toolBar.add(separator);
+        toolBar.add(unistallSeparator);
         toolBar.add(uninstallButton);
+        toolBar.add(logSeparator);
+        toolBar.add(logButton);
 
         toolBar.disable();
     }
@@ -196,6 +213,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
             @Override
             public void handleEvent(ComponentEvent be) {
                 showUninstallButton();
+                hideLogButton();
                 refresh();
             }
         });
@@ -213,6 +231,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
             public void handleEvent(ComponentEvent be) {
                 setEntity(selectedEntity);
                 hideUninstallButton();
+                hideLogButton();
                 refresh();
             }
         });
@@ -230,6 +249,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
             public void handleEvent(ComponentEvent be) {
                 setEntity(selectedEntity);
                 hideUninstallButton();
+                showLogButton();
                 refresh();
             }
         });
@@ -268,10 +288,10 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
                 Boolean exitStatus = packageInstallDialog.getExitStatus();
                 if (exitStatus == null) { // Operation Aborted
                     if (installedPackageTab.getTreeGrid() != null) {
-                        installedPackageTab.getTreeGrid().getSelectionModel().fireEvent(Events.SelectionChange, 
-                                new SelectionChangedEvent<ModelData>(installedPackageTab.getTreeGrid().getSelectionModel(), 
+                        installedPackageTab.getTreeGrid().getSelectionModel().fireEvent(Events.SelectionChange,
+                                new SelectionChangedEvent<ModelData>(installedPackageTab.getTreeGrid().getSelectionModel(),
                                         installedPackageTab.getTreeGrid().getSelectionModel().getSelectedItems()));
-                    } 
+                    }
                     return;
                 } else {
 
@@ -318,6 +338,10 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
             packageUninstallDialog.show();
 
         }
+    }
+
+    public void openLogDialog() {
+        historyPackageTab.showOperationLog();
     }
 
     public void openDeviceOfflineAlertDialog() {
@@ -386,11 +410,21 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
     private void showUninstallButton() {
         uninstallButton.show();
-        separator.show();
+        unistallSeparator.show();
     }
 
     private void hideUninstallButton() {
         uninstallButton.hide();
-        separator.hide();
+        unistallSeparator.hide();
+    }
+
+    private void showLogButton() {
+        logButton.show();
+        logSeparator.show();
+    }
+
+    private void hideLogButton() {
+        logButton.hide();
+        logSeparator.hide();
     }
 }
