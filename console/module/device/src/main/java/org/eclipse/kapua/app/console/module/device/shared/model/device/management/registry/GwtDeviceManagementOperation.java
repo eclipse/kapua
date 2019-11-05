@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -96,6 +96,18 @@ public class GwtDeviceManagementOperation extends GwtUpdatableEntityModel {
 
     public GwtOperationStatus getStatusEnum() {
         return getStatus() != null ? GwtOperationStatus.valueOf(getStatus()) : null;
+    }
+
+    public String getLog() {
+        return get("log");
+    }
+
+    public String getUnescapedLog() {
+        return getUnescaped("log");
+    }
+
+    public void setLog(String log) {
+        set("log", log);
     }
 
     public void setStatus(String status) {

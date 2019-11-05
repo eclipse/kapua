@@ -126,6 +126,7 @@ public class KapuaGwtDeviceModelConverter {
         gwtDeviceManagementOperation.setAppId(deviceManagementOperation.getAppId());
         gwtDeviceManagementOperation.setActionType(deviceManagementOperation.getAction().name());
         gwtDeviceManagementOperation.setStatus(deviceManagementOperation.getStatus().name());
+        gwtDeviceManagementOperation.setLog(deviceManagementOperation.getLog());
 
         for (DeviceManagementOperationProperty dmop : deviceManagementOperation.getInputProperties()) {
             gwtDeviceManagementOperation.addInputProperty(dmop.getName(), dmop.getPropertyValue());
