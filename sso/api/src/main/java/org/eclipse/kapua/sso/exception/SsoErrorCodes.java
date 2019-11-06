@@ -20,7 +20,7 @@ public enum SsoErrorCodes implements KapuaErrorCode {
     /**
      * An error occurred when building the JwtProcessor
      *
-     * @since
+     * @since 1.2.0
      */
     JWT_ERROR
 }

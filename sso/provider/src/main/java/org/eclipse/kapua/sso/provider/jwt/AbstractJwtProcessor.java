@@ -30,6 +30,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * This class represents an abstract JwtProcessor.
+ * Each sso provider must provide its own JwtProcessor concrete implementation by extending this class.
+ */
 public abstract class AbstractJwtProcessor implements JwtProcessor {
 
     private static final String JWKS_URI_WELL_KNOWN_KEY = "jwks_uri";
@@ -37,19 +41,14 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
     private String[] audiences;
     private String[] expectedIssuers;
     private Duration cacheTimeout;
-    /**
-     * @param audiences
-     * @param expectedIssuers
-     * @param cacheTimeout
-     * @deprecated This is the old constructor of the JwtProcessor class, not used anymore.
-     */
-    @Deprecated
-    public AbstractJwtProcessor(final List<String> audiences, final List<String> expectedIssuers, final Duration cacheTimeout) {
-        this.audiences = audiences.toArray(new String[audiences.size()]);
-        this.expectedIssuers = expectedIssuers.toArray(new String[expectedIssuers.size()]);
-        this.cacheTimeout = cacheTimeout;
-    }
 
+    /**
+     * Constructs and AbstractJwtProcessor with the given expiration time.
+     *
+     * @param cacheTimeout the JwtProcessor expiration time.
+     * @throws SsoJwtException if the concrete implementation of {@link #getJwtExpectedIssuers()
+     * getJwtExpectedIssuers} method throws such exception.
+     */
     public AbstractJwtProcessor(final Duration cacheTimeout) throws SsoJwtException {
         List<String> audiences = getJwtAudiences();
         List<String> expectedIssuers = getJwtExpectedIssuers();
@@ -58,11 +57,17 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
         this.cacheTimeout = cacheTimeout;
     }
 
+    /**
+     * Extract the JWT Issuer URI.
+     *
+     * @param jwt the String containing the JWT.
+     * @return the URI of the JWT issuer.
+     * @throws SsoJwtException if an InvalidJwtException or a MalformedClaimException is catch inside the method.
+     */
     private static URI extractIssuer(final String jwt) throws SsoJwtException {
 
         try {
             // Parse JWT without validation
-
             final JwtConsumer jwtConsumer = new JwtConsumerBuilder()
                     .setSkipAllValidators()
                     .setDisableRequireSignature()
@@ -83,6 +88,13 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
         }
     }
 
+    /**
+     * Validates the JWT passed as parameter.
+     *
+     * @param jwt the String representing the JWT.
+     * @return <tt>true</tt> if the validation succeeds, <tt>false</tt> otherwise.
+     * @throws SsoJwtException if the JWT issuer extraction or the JWT Processor lookup fail
+     */
     @Override
     public boolean validate(final String jwt) throws SsoJwtException {
         final URI issuer = extractIssuer(jwt);
@@ -91,6 +103,13 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
                 .validate(jwt);
     }
 
+    /**
+     * Process the JWT and generate a JwtContext object.
+     *
+     * @param jwt the String representing the JWT.
+     * @return the JwtContext object
+     * @throws SsoJwtException if the JWT issuer extraction or the JWT Processor lookup fail
+     */
     @Override
     public JwtContext process(final String jwt) throws SsoJwtException {
         final URI issuer = extractIssuer(jwt);
@@ -99,22 +118,50 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
                 .process(jwt);
     }
 
+    /**
+     * Closes this resource.
+     *
+     * @throws Exception if the resource cannot be closed.
+     */
     @Override
     public void close() throws Exception {
     }
 
+    /**
+     * Retrieve the OpenID Connect discovery endpoint (the provider's Well-Known Configuration Endpoint).
+     *
+     * @param issuer the String representing the JWT Issuer URI.
+     * @return a String representing the discovery endpoint.
+     */
     protected abstract String getOpenIdConfPath(final URI issuer);
 
+    /**
+     * Retrieve the list of JWT expected issuers.
+     *
+     * @return the list of String containing the JWT issuers.
+     * @throws SsoJwtException if the JWT issuers cannot be retrieved
+     */
     protected abstract List<String> getJwtExpectedIssuers() throws SsoJwtException;
 
+    /**
+     * Retrieve the list of JWT audiences.
+     *
+     * @return the list of String containing the JWT issuers.
+     */
     protected abstract List<String> getJwtAudiences();
 
+    /**
+     * Retrieve a {@link Processor Processor}.
+     *
+     * @param issuer the URI of a JWT issuer.
+     * @return an Optional with a {@link Processor Processor} if everything is fine, otherwise an empty Optional.
+     * @throws SsoJwtException if it fails to retrieve a URI when the processor is null or expired.
+     */
     private Optional<Processor> lookupProcessor(final URI issuer) throws SsoJwtException {
 
         Processor processor = processors.get(issuer);
 
         // test if validator is expired
-
         if (processor != null && processor.isExpired(cacheTimeout)) {
             processors.remove(issuer);
             processor = null;
@@ -137,12 +184,21 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
         return Optional.of(processor);
     }
 
+    /**
+     *
+     */
     private static class Processor {
 
         private Instant lastUsed = Instant.now();
-
         private JwtConsumer consumer;
 
+        /**
+         * Processor constructor.
+         *
+         * @param jwksUri a URI to retrieve JWKs.
+         * @param audiences a list of JWT audiences.
+         * @param expectedIssuers a list of JWT issuers.
+         */
         public Processor(final URI jwksUri, String[] audiences, String[] expectedIssuers) {
             final HttpsJwksVerificationKeyResolver resolver = new HttpsJwksVerificationKeyResolver(new HttpsJwks(jwksUri.toString()));
 
@@ -156,6 +212,12 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
                     .build();
         }
 
+        /**
+         * Validate a JWT.
+         *
+         * @param jwt a JWT in the form of a String.
+         * @return <tt>true</tt> if the validation succeeds, <tt>false</tt> otherwise.
+         */
         public boolean validate(final String jwt) {
             try {
                 process(jwt);
@@ -165,6 +227,13 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
             }
         }
 
+        /**
+         * Process a JWT.
+         *
+         * @param jwt a JWT in the form of a String.
+         * @return a {@link JwtContext} object.
+         * @throws SsoJwtException if an {@link InvalidJwtException} is caught.
+         */
         public JwtContext process(final String jwt) throws SsoJwtException {
             try {
                 lastUsed = Instant.now();
@@ -174,6 +243,12 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
             }
         }
 
+        /**
+         * Check if this Processor is expired.
+         *
+         * @param timeout the JwtProcessor expiration time.
+         * @return <tt>true</tt> if the Processor is expired, <tt>false</tt> otherwise.
+         */
         public boolean isExpired(final Duration timeout) {
             return lastUsed.plus(timeout).isBefore(Instant.now());
         }

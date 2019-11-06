@@ -36,6 +36,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class represents an abstract SingleSignOnService.
+ * Each sso provider must provide its own SingleSignOnService concrete implementation by extending this class.
+ */
 public abstract class AbstractSingleSignOnService implements SingleSignOnService {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractSingleSignOnService.class);

@@ -29,18 +29,16 @@ public class KeycloakSingleSignOnService extends AbstractSingleSignOnService {
         this.keycloakSettings = keycloakSettings;
     }
 
-    protected String getRealm() {
-        return keycloakSettings.getString(KeycloakSsoSettingKeys.KEYCLOAK_REALM, "master");
-    }
-
     @Override
     protected String getAuthUri() {
-        return keycloakSettings.getString(KeycloakSsoSettingKeys.KEYCLOAK_URI) + "/auth/realms/" + getRealm() + "/protocol/openid-connect/auth";
+        return keycloakSettings.getString(KeycloakSsoSettingKeys.KEYCLOAK_URI) + "/auth/realms/" +
+                KeycloakSingleSignOnUtils.getRealm() + "/protocol/openid-connect/auth";
     }
 
     @Override
     protected String getTokenUri() {
-        return keycloakSettings.getString(KeycloakSsoSettingKeys.KEYCLOAK_URI) + "/auth/realms/" + getRealm() + "/protocol/openid-connect/token";
+        return keycloakSettings.getString(KeycloakSsoSettingKeys.KEYCLOAK_URI) + "/auth/realms/" +
+                KeycloakSingleSignOnUtils.getRealm() + "/protocol/openid-connect/token";
     }
 
 }

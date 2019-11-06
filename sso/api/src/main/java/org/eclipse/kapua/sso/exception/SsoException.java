@@ -22,7 +22,7 @@ public abstract class SsoException extends KapuaException {
      * Constructor.
      *
      * @param code The {@link KapuaErrorCode} associated with the {@link Exception}
-     * @since 1.0.0
+     * @since 1.2.0
      */
     public SsoException(KapuaErrorCode code) {
         super(code);
@@ -33,7 +33,7 @@ public abstract class SsoException extends KapuaException {
      *
      * @param code      The {@link KapuaErrorCode} associated with the {@link Exception}.
      * @param arguments The arguments associated with the {@link Exception}.
-     * @since 1.0.0
+     * @since 1.2.0
      */
     public SsoException(KapuaErrorCode code, Object... arguments) {
         super(code, arguments);
@@ -46,7 +46,7 @@ public abstract class SsoException extends KapuaException {
      * @param code      The {@link KapuaErrorCode} associated with the {@link Exception}.
      * @param cause     The original {@link Throwable}.
      * @param arguments The arguments associated with the {@link Exception}.
-     * @since 1.0.0
+     * @since 1.2.0
      */
     public SsoException(KapuaErrorCode code, Throwable cause, Object... arguments) {
         super(code, cause, arguments);

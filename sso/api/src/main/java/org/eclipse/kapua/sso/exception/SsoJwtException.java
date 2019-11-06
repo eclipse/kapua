@@ -18,7 +18,7 @@ public class SsoJwtException extends SsoException {
      * Constructor.
      *
      * @param code The {@link KapuaErrorCode} associated with the {@link Exception}
-     * @since 1.0.0
+     * @since 1.2.0
      */
     public SsoJwtException(KapuaErrorCode code) {
         super(code);
@@ -29,7 +29,7 @@ public class SsoJwtException extends SsoException {
      *
      * @param code      The {@link KapuaErrorCode} associated with the {@link Exception}.
      * @param arguments The arguments associated with the {@link Exception}.
-     * @since 1.0.0
+     * @since 1.2.0
      */
     public SsoJwtException(KapuaErrorCode code, Object... arguments) {
         super(code, arguments);
@@ -42,7 +42,7 @@ public class SsoJwtException extends SsoException {
      * @param code      The {@link KapuaErrorCode} associated with the {@link Exception}.
      * @param cause     The original {@link Throwable}.
      * @param arguments The arguments associated with the {@link Exception}.
-     * @since 1.0.0
+     * @since 1.2.0
      */
     public SsoJwtException(KapuaErrorCode code, Throwable cause, Object... arguments) {
         super(code, cause, arguments);

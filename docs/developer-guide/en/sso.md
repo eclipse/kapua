@@ -42,13 +42,17 @@ documentation to look up the required values:
 
 - **`sso.generic.openid.server.endpoint.auth`** : the endpoint URL to the authentication API.
 - **`sso.generic.openid.server.endpoint.token`** : the endpoint URL to the token API.
+- **`authentication.credential.jwt.issuer.allowed`** : the base URL to the OpenID server provider 
+(by default, it is set to `http://localhost:9090/auth/realms/master` ).
 
 ### Keycloak provider
 
-The keycloak provider can be configured using the following configuration parameters:
+The Keycloak provider can be configured using the following configuration parameters:
 
 - **`sso.keycloak.uri`** : the base URL to the Keycloak server.
 - **`sso.keycloak.realm`** : the name of they realm to use.
+
+Note that the _auth_ and _token_ endpoints are automatically computed by the Keycloak provider.
 
 For more information see the [Keycloak Documentation](http://www.keycloak.org/documentation.html).
 
