@@ -52,6 +52,8 @@ public class KuraDevice implements MqttCallback {
     private String deployV2ExecStart34;
     private String deployV2ExecStart95;
     private String deployV2ExecStop77;
+    private String readAssets;
+    private String writeAsset;
 
     /**
      * URI of mqtt broker.
@@ -112,6 +114,7 @@ public class KuraDevice implements MqttCallback {
     public boolean bundleStateChanged;
     public boolean configurationChanged;
     public boolean packageListChanged;
+    public boolean assetStateChanged;
 
     public KuraDevice() {
         deployPackages = "$EDC/kapua-sys/rpione3/DEPLOY-V2/GET/packages";
@@ -131,6 +134,10 @@ public class KuraDevice implements MqttCallback {
         deployV2ExecStart95 = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/start/95";
 
         deployV2ExecStop77 = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/stop/77";
+
+        readAssets = "$EDC/kapua-sys/rpione3/ASSET-V1/EXEC/read";
+
+        writeAsset = "$EDC/kapua-sys/rpione3/ASSET-V1/EXEC/write";
 
         clientId = "rpione3";
 
@@ -226,6 +233,10 @@ public class KuraDevice implements MqttCallback {
             deployV2ExecStart95 = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/EXEC/start/95";
 
             deployV2ExecStop77 = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/EXEC/stop/77";
+
+            readAssets = "$EDC/kapua-sys/" + clientId + "/ASSET-V1/EXEC/read";
+
+            writeAsset = "$EDC/kapua-sys/" + clientId + "/ASSET-V1/EXEC/write";
 
             mqttClient = new MqttClient(BROKER_URI, clientId,
                     new MemoryPersistence());
@@ -394,7 +405,8 @@ public class KuraDevice implements MqttCallback {
             responsePayload = Files.readAllBytes(Paths.get(getClass().getResource( configurationChanged == true ? "/mqtt/KapuaPool-client-id_CONF-V1_REPLY_req-id_updated_configurations.mqtt" : "/mqtt/KapuaPool-client-id_CONF-V1_REPLY_req-id_inital_configurations.mqtt").toURI()));
 
             mqttClient.publish(responseTopic, responsePayload, 0, false);
-        } else if (topic.equals(putConf)) {
+        }
+        else if (topic.equals(putConf)) {
             callbackParam = extractCallback(payload);
 
             responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/CONF-V1/REPLY/" + callbackParam.getRequestId();
@@ -424,6 +436,21 @@ public class KuraDevice implements MqttCallback {
             responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_DEPLOY-V2_EXEC_STOP_bundle_id.mqtt").toURI()));
 
             bundleStateChanged = true;
+            mqttClient.publish(responseTopic, responsePayload, 0, false);
+        } else if (topic.equals(readAssets)) {
+            callbackParam = extractCallback(payload);
+
+            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/ASSET-V1/REPLY/" + callbackParam.getRequestId();
+            responsePayload = Files.readAllBytes(Paths.get(getClass().getResource(assetStateChanged == true ? "/mqtt/KapuaPool-client-id_ASSET-V1_READ_req-id_assets_updated_assets.mqtt" : "/mqtt/KapuaPool-client-id_ASSET-V1_READ_req-id_assets.mqtt").toURI()));
+
+            mqttClient.publish(responseTopic, responsePayload, 0, false);
+        } else if (topic.equals(writeAsset)) {
+            callbackParam = extractCallback(payload);
+
+            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/ASSET-V1/REPLY/" + callbackParam.getRequestId();
+            responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_ASSET-V1_WRITE_req-id_assets.mqtt").toURI()));
+
+            assetStateChanged = true;
             mqttClient.publish(responseTopic, responsePayload, 0, false);
         } else {
             logger.error("Kapua Mock Device unhandled topic: " + topic);
