@@ -16,6 +16,9 @@ import org.eclipse.kapua.sso.provider.generic.setting.GenericSsoSetting;
 import org.eclipse.kapua.sso.provider.generic.setting.GenericSsoSettingKeys;
 import org.eclipse.kapua.sso.provider.setting.SsoSetting;
 
+/**
+ * The generic SingleSignOn service class.
+ */
 public class GenericSingleSignOnService extends AbstractSingleSignOnService {
 
     private GenericSsoSetting genericSettings;

@@ -22,6 +22,9 @@ import java.net.URI;
 import java.time.Duration;
 import java.util.List;
 
+/**
+ * The generic JWT Processor.
+ */
 public class GenericJwtProcessor extends AbstractJwtProcessor {
 
     private static final KapuaAuthenticationSetting SETTING = KapuaAuthenticationSetting.getInstance();
@@ -30,11 +33,6 @@ public class GenericJwtProcessor extends AbstractJwtProcessor {
         super(Duration.ofHours(1));
     }
 
-    /**
-     *
-     * @param issuer the String representing the JWT Issuer URI.
-     * @return
-     */
     @Override
     protected String getOpenIdConfPath(final URI issuer) {
         return issuer.toString() + "/" +

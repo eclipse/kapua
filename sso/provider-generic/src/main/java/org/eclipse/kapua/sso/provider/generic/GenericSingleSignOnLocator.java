@@ -18,6 +18,9 @@ import org.eclipse.kapua.sso.exception.SsoJwtException;
 import org.eclipse.kapua.sso.provider.SingleSignOnProvider.ProviderLocator;
 import org.eclipse.kapua.sso.provider.generic.jwt.GenericJwtProcessor;
 
+/**
+ * The generic SingleSignOn service provider locator.
+ */
 public class GenericSingleSignOnLocator implements ProviderLocator {
 
     @Override

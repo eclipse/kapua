@@ -20,6 +20,9 @@ import org.jose4j.jwt.consumer.JwtContext;
 import javax.json.JsonObject;
 import java.net.URI;
 
+/**
+ * A dummy locator to return when the providerId (on the ProviderSingleSignOnLocator) is null.
+ */
 public class DisabledLocator implements ProviderLocator {
 
     public static final ProviderLocator INSTANCE = new DisabledLocator();
@@ -42,6 +45,9 @@ public class DisabledLocator implements ProviderLocator {
         }
     };
 
+    /**
+     * A dummy JwtProcessor.
+     */
     private static final JwtProcessor PROCESSOR = new JwtProcessor() {
 
         @Override

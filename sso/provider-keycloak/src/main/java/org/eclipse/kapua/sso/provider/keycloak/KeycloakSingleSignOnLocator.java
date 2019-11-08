@@ -18,6 +18,9 @@ import org.eclipse.kapua.sso.exception.SsoJwtException;
 import org.eclipse.kapua.sso.provider.SingleSignOnProvider.ProviderLocator;
 import org.eclipse.kapua.sso.provider.keycloak.jwt.KeycloakJwtProcessor;
 
+/**
+ * The Keycloak SingleSignOn service provider locator.
+ */
 public class KeycloakSingleSignOnLocator implements ProviderLocator {
 
     @Override

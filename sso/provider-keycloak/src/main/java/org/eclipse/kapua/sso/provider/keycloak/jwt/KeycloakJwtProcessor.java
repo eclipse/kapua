@@ -24,6 +24,9 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The Keycloak JWT Processor.
+ */
 public class KeycloakJwtProcessor extends AbstractJwtProcessor {
 
     private static final SsoSetting SSO_SETTING = SsoSetting.getInstance();
@@ -32,11 +35,6 @@ public class KeycloakJwtProcessor extends AbstractJwtProcessor {
         super(Duration.ofHours(1));
     }
 
-    /**
-     *
-     * @param issuer the String representing the JWT Issuer URI.
-     * @return
-     */
     @Override
     protected String getOpenIdConfPath(final URI issuer) {
         return issuer.toString() + "/" +

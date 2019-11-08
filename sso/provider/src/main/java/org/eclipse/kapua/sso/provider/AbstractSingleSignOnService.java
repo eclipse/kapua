@@ -42,27 +42,60 @@ import java.util.List;
  */
 public abstract class AbstractSingleSignOnService implements SingleSignOnService {
 
+
     private static final Logger logger = LoggerFactory.getLogger(AbstractSingleSignOnService.class);
 
     protected SsoSetting ssoSettings;
 
+    /**
+     * Abstract SingleSignOn constructor.
+     *
+     * @param ssoSettings the {@link SsoSetting} instance.
+     */
     public AbstractSingleSignOnService(SsoSetting ssoSettings) {
         this.ssoSettings = ssoSettings;
     }
 
+    /**
+     * Get the endpoint URL to the authentication API.
+     *
+     * @return the URI representing the authentication endpoint in the form of a String.
+     * @throws SsoJwtException if it fails to get the authentication URI.
+     */
     protected abstract String getAuthUri() throws SsoJwtException;
 
+    /**
+     * Get the endpoint URL to the token API.
+     *
+     * @return the URI representing the token endpoint in the form of a String.
+     * @throws SsoJwtException if it fails to get the token URI.
+     */
     protected abstract String getTokenUri() throws SsoJwtException;
 
+    /**
+     * Check if the service is enabled.
+     *
+     * @return always <tt>true</tt>
+     */
     @Override
     public boolean isEnabled() {
         return true;
     }
 
+    /**
+     * Get the "client id" used when communicating with the OpenID Connect server.
+     *
+     * @return a String representing the OpenID Connect Client ID.
+     */
     protected String getClientId() {
         return ssoSettings.getString(SsoSettingKeys.SSO_OPENID_CLIENT_ID);
     }
 
+    /**
+     * Get the "client secret" used when communicating with the OpenID Connect server.
+     *
+     * @return a String representing the OpenID Connect Client Secret.
+     */
     protected String getClientSecret() {
         return ssoSettings.getString(SsoSettingKeys.SSO_OPENID_CLIENT_SECRET);
     }
@@ -85,6 +118,10 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
         return null;
     }
 
+    /**
+     *
+     * @throws SsoJwtException if an {@link IOException} is caught or the {@link #getTokenUri} method fails.
+     */
     @Override
     public JsonObject getAccessToken(final String authCode, final URI redirectUri) throws SsoJwtException {
         // FIXME: switch to HttpClient implementation: better performance and connection caching

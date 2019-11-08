@@ -89,10 +89,7 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
     }
 
     /**
-     * Validates the JWT passed as parameter.
      *
-     * @param jwt the String representing the JWT.
-     * @return <tt>true</tt> if the validation succeeds, <tt>false</tt> otherwise.
      * @throws SsoJwtException if the JWT issuer extraction or the JWT Processor lookup fail
      */
     @Override
@@ -104,10 +101,7 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
     }
 
     /**
-     * Process the JWT and generate a JwtContext object.
      *
-     * @param jwt the String representing the JWT.
-     * @return the JwtContext object
      * @throws SsoJwtException if the JWT issuer extraction or the JWT Processor lookup fail
      */
     @Override
@@ -118,11 +112,6 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
                 .process(jwt);
     }
 
-    /**
-     * Closes this resource.
-     *
-     * @throws Exception if the resource cannot be closed.
-     */
     @Override
     public void close() throws Exception {
     }
@@ -184,9 +173,6 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
         return Optional.of(processor);
     }
 
-    /**
-     *
-     */
     private static class Processor {
 
         private Instant lastUsed = Instant.now();

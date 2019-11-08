@@ -24,10 +24,18 @@ import org.eclipse.kapua.sso.provider.setting.SsoSettingKeys;
 import java.io.Closeable;
 import java.util.ServiceLoader;
 
+/**
+ * The SingleSignOn service provider locator.
+ */
 public class ProviderSingleSignOnLocator implements SingleSignOnLocator, Closeable {
 
     private static ProviderLocator locator;
 
+    /**
+     * The SignleSignOn provider locator constructor.
+     *
+     * @param settings the {@link SsoSetting} instance.
+     */
     public ProviderSingleSignOnLocator(final SsoSetting settings) {
         final String providerId = settings.getString(SsoSettingKeys.SSO_PROVIDER, null);
         if (providerId == null) {
@@ -37,10 +45,19 @@ public class ProviderSingleSignOnLocator implements SingleSignOnLocator, Closeab
         }
     }
 
+    /**
+     * The public SignleSignOn provider locator constructor.
+     */
     public ProviderSingleSignOnLocator() {
         this(SsoSetting.getInstance());
     }
 
+    /**
+     * Find the provider, given a provider id, among the existing ones.
+     *
+     * @param providerId a String reperesenting the provider ID
+     * @return a {@link ProviderLocator} instance.
+     */
     private static ProviderLocator findProvider(final String providerId) {
         if (locator == null) {
             synchronized (ProviderSingleSignOnLocator.class) {

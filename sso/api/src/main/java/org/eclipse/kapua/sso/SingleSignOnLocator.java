@@ -14,10 +14,25 @@ package org.eclipse.kapua.sso;
 
 import org.eclipse.kapua.sso.exception.SsoJwtException;
 
-// TODO: adopt only one naming convention (SingleSignOn or SSO ?)
+// TODO: currently two naming conventions are used (SingleSignOn and SSO) with the same meaning, adopt only one
+
+/**
+ * SingleSignOn service locator interface.
+ */
 public interface SingleSignOnLocator {
 
+    /**
+     * Retrieve the SSO service.
+     *
+     * @return a {@link SingleSignOnService} object.
+     */
     SingleSignOnService getService();
 
+    /**
+     * Retrieve the JwtProcessor.
+     *
+     * @return a {@link JwtProcessor} object.
+     * @throws SsoJwtException if it fails to retrieve the {@link JwtProcessor}.
+     */
     JwtProcessor getProcessor() throws SsoJwtException;
 }

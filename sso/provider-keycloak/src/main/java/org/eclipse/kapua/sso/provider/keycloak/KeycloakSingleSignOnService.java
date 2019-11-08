@@ -16,6 +16,9 @@ import org.eclipse.kapua.sso.provider.keycloak.setting.KeycloakSsoSetting;
 import org.eclipse.kapua.sso.provider.keycloak.setting.KeycloakSsoSettingKeys;
 import org.eclipse.kapua.sso.provider.setting.SsoSetting;
 
+/**
+ * The Keycloak SingleSignOn service class.
+ */
 public class KeycloakSingleSignOnService extends AbstractSingleSignOnService {
 
     private KeycloakSsoSetting keycloakSettings;

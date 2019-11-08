@@ -20,6 +20,8 @@ public class ProviderImpl implements SingleSignOnProvider {
         return "keycloak";
     }
 
+    // note that even if one might want to avoid creating each time a new locator, each time the createLocator method is
+    // called inside a new ProviderImpl object, so it is not possible to create only one instance of the locator
     @Override
     public ProviderLocator createLocator() {
         return new KeycloakSingleSignOnLocator();

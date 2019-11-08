@@ -14,11 +14,19 @@ package org.eclipse.kapua.sso.provider.keycloak;
 import org.eclipse.kapua.sso.provider.keycloak.setting.KeycloakSsoSetting;
 import org.eclipse.kapua.sso.provider.keycloak.setting.KeycloakSsoSettingKeys;
 
+/**
+ * The Keycloak SingleSignOn service utility class.
+ */
 public class KeycloakSingleSignOnUtils {
 
     private KeycloakSingleSignOnUtils() {
     }
 
+    /**
+     * Get the Keycloak realm.
+     *
+     * @return the Keycloak realm in the form of a String ('master' if no realm is found).
+     */
     public static String getRealm() {
         return KeycloakSsoSetting.getInstance().getString(KeycloakSsoSettingKeys.KEYCLOAK_REALM, "master");
     }
