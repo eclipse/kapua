@@ -70,6 +70,7 @@ This module allows one to automatically create the user in Kapua at the first lo
 If a user with the same name already exists in Kapua, the registration process will fail.
 More precisely, two users are created: one without credentials, representing the SSO user, and one with 
 credentials, representing a gateway user. 
+Both users are placed under a new account with the same name of the SSO user.
 Note that the credential for the gateway user is hardcoded in the SimpleRegistrationProcessor code.
 
 In order to avoid using this registration processor, remove `kapua-security-registration-simple` from the 
@@ -158,7 +159,7 @@ SimpleRegistrationProcessor will fail. It is also possible to use the "_admin_" 
 ### Setting Up a user on Kapua
 
 Using the SimpleRegistrationProcessor, the user "_alice_" in Keycloak will generate "_alice_" 
-and "_alice-broker_" in Kapua.
+and "_alice-broker_" in Kapua, in a dedicated "_alice_" account.
 
 Using the userCreate REST API with the following body (using the _scopeId_ of the desired account 
 and the ID of the user "_admin_" in Keycloak as _externalId_):
