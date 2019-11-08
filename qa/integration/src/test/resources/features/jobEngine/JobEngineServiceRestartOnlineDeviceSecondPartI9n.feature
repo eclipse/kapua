@@ -206,12 +206,12 @@ Feature: JobEngineService restart job tests with online device - second part
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_OK.
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device "is" connected
     And I wait 1 seconds
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     And Packages are requested
     And Number of received packages is 1
@@ -244,12 +244,12 @@ Feature: JobEngineService restart job tests with online device - second part
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_FAILED.
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device "is" connected
     And I wait 1 seconds
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     And Packages are requested
     And Number of received packages is 1
@@ -282,12 +282,12 @@ Feature: JobEngineService restart job tests with online device - second part
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_OK.
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device "is" connected
     And I wait 1 seconds
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     And Packages are requested
     And Number of received packages is 1
@@ -330,12 +330,12 @@ Feature: JobEngineService restart job tests with online device - second part
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_FAILED.
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device "is" connected
     And I wait 1 seconds
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     And Packages are requested
     And Number of received packages is 1
@@ -484,12 +484,12 @@ Feature: JobEngineService restart job tests with online device - second part
   After the executed job is finished, the step index of executed targets should
   be 1 and the status PROCESS_OK
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device "is" connected
     And I wait 1 second
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     Then Configuration is requested
     And A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 5
@@ -533,12 +533,12 @@ Feature: JobEngineService restart job tests with online device - second part
   After the executed job is finished, the step index of executed targets should
   be 0 and the status PROCESS_FAILED
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device "is" connected
     And I wait 1 second
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     Then Configuration is requested
     And A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 5
@@ -582,12 +582,12 @@ Feature: JobEngineService restart job tests with online device - second part
   After the executed job is finished, the step index of executed targets should
   be 1 and the status PROCESS_OK
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device "is" connected
     And I wait 1 second
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     Then Configuration is requested
     And A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 5
@@ -609,7 +609,7 @@ Feature: JobEngineService restart job tests with online device - second part
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     Then I restart a job
-    And I wait 30 seconds
+    And I wait 60 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -621,7 +621,7 @@ Feature: JobEngineService restart job tests with online device - second part
     Then Bundles are requested
     And A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
     Then I restart a job
-    And I wait 30 seconds
+    And I wait 60 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 2
@@ -643,12 +643,12 @@ Feature: JobEngineService restart job tests with online device - second part
   After the executed job is finished, the step index of executed targets should
   be 0 and the status PROCESS_FAILED
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device "is" connected
     And I wait 1 second
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     Then Configuration is requested
     And A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 5
@@ -704,12 +704,12 @@ Feature: JobEngineService restart job tests with online device - second part
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_OK.
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device "is" connected
     And I wait 1 seconds
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     Then Packages are requested
     And Number of received packages is 1
@@ -751,12 +751,12 @@ Feature: JobEngineService restart job tests with online device - second part
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_FAILED.
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device "is" connected
     And I wait 1 seconds
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     Then Packages are requested
     And Number of received packages is 1
@@ -798,12 +798,12 @@ Feature: JobEngineService restart job tests with online device - second part
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_OK.
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device "is" connected
     And I wait 1 seconds
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     Then Packages are requested
     And Number of received packages is 1
@@ -824,7 +824,7 @@ Feature: JobEngineService restart job tests with online device - second part
       | timeout  | java.lang.Long   | 10000 |
     And I create a new step entity from the existing creator
     Then I restart a job
-    And I wait 45 seconds
+    And I wait 60 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1 or more
@@ -858,12 +858,12 @@ Feature: JobEngineService restart job tests with online device - second part
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_FAILED.
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device "is" connected
-    And I wait 1 seconds
+    And I wait 1 second
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     Then Packages are requested
     And Number of received packages is 1
@@ -890,7 +890,7 @@ Feature: JobEngineService restart job tests with online device - second part
     Then I count 1
     And I confirm the executed job is finished
     And I search for the last job target in the database
-    And I wait 1 seconds
+    And I wait 1 second
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When Packages are requested
     Then Number of received packages is 1
@@ -903,7 +903,7 @@ Feature: JobEngineService restart job tests with online device - second part
     Then I count 2
     And I confirm the executed job is finished
     And I search for the last job target in the database
-    And I wait 1 seconds
+    And I wait 1 second
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When Packages are requested
     Then Number of received packages is 1
@@ -1087,7 +1087,7 @@ Feature: JobEngineService restart job tests with online device - second part
 
     Given I start the Kura Mock
     Then I add 2 devices to Kura Mock
-    And I wait 1 seconds
+    And I wait 1 second
     And Devices "are" connected
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -1172,7 +1172,7 @@ Feature: JobEngineService restart job tests with online device - second part
 
     Given I start the Kura Mock
     Then I add 2 devices to Kura Mock
-    And I wait 1 seconds
+    And I wait 1 second
     And Devices "are" connected
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -1612,7 +1612,7 @@ Feature: JobEngineService restart job tests with online device - second part
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     Then I restart a job
-    And I wait 30 seconds
+    And I wait 60 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -1624,7 +1624,7 @@ Feature: JobEngineService restart job tests with online device - second part
     Then Bundles are requested
     And A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
     Then I restart a job
-    And I wait 30 seconds
+    And I wait 60 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 2

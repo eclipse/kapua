@@ -48,9 +48,9 @@ Feature: JobEngineService start job tests with online device
     And A new job target item
     And Search for step definition with the name "Command Execution"
     And A regular step creator with the name "TestStep" and the following properties
-      | name         | type                                                                    | value                                                                                                                                         |
-      | commandInput | org.eclipse.kapua.service.device.management.command.DeviceCommandInput  | <?xml version="1.0" encoding="UTF-8"?><commandInput><command>pwd</command><timeout>30000</timeout><runAsynch>false</runAsynch></commandInput> |
-      | timeout      | java.lang.Long                                                          | 10000                                                                                                                                         |
+      | name         | type                                                                   | value                                                                                                                                         |
+      | commandInput | org.eclipse.kapua.service.device.management.command.DeviceCommandInput | <?xml version="1.0" encoding="UTF-8"?><commandInput><command>pwd</command><timeout>30000</timeout><runAsynch>false</runAsynch></commandInput> |
+      | timeout      | java.lang.Long                                                         | 10000                                                                                                                                         |
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
@@ -89,9 +89,9 @@ Feature: JobEngineService start job tests with online device
     And A new job target item
     And Search for step definition with the name "Command Execution"
     And A regular step creator with the name "TestStep" and the following properties
-      | name         | type                                                                    | value                                                                                                                                                                                 |
-      | commandInput | org.eclipse.kapua.service.device.management.command.DeviceCommandInput  | <?xml version="1.0" encoding="UTF-8"?><commandInputInvalidTag><commandInvalidTag>pwd</commandInvalidTag><timeout>30000</timeout><runAsynch>false</runAsynch></commandInputInvalidTag> |
-      | timeout      | java.lang.Long                                                          | 10000                                                                                                                                                                                 |
+      | name         | type                                                                   | value                                                                                                                                                                                 |
+      | commandInput | org.eclipse.kapua.service.device.management.command.DeviceCommandInput | <?xml version="1.0" encoding="UTF-8"?><commandInputInvalidTag><commandInvalidTag>pwd</commandInvalidTag><timeout>30000</timeout><runAsynch>false</runAsynch></commandInputInvalidTag> |
+      | timeout      | java.lang.Long                                                         | 10000                                                                                                                                                                                 |
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
@@ -116,12 +116,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_OK
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device is connected
     And I wait 1 second
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
@@ -161,12 +161,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_FAILED
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device is connected
     And I wait 1 second
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
@@ -183,7 +183,7 @@ Feature: JobEngineService start job tests with online device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 15 seconds
+    And I wait 30 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -206,11 +206,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_OK
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device is connected
     And I wait 1 second
+    And Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     And Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
@@ -251,11 +252,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_FAILED
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device is connected
     And I wait 1 second
+    And Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     And Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
@@ -309,9 +311,9 @@ Feature: JobEngineService start job tests with online device
     And A new job target item
     And Search for step definition with the name "Configuration Put"
     And A regular step creator with the name "TestStep" and the following properties
-      | name          | type                                                                           | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-      | configuration | org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration  | <?xml version="1.0" encoding="UTF-8"?><configurations xmlns:ns0="http://www.osgi.org/xmlns/metatype/v1.2.0"><configuration><id>org.eclipse.kura.clock.ClockService></id><properties><property name="clock.ntp.host" array="false" encrypted="false" type="String"><value>0.pool.ntp.org</value></property><property name="clock.provider" array="false" encrypted="false" type="String"><value>java-ntp</value></property><property name="clock.ntp.port" array="false" encrypted="false" type="Integer"><value>123</value></property><property name="clock.ntp.max-retry" array="false" encrypted="false" type="Integer"><value>0</value></property><property name="clock.ntp.refresh-interval" array="false" encrypted="false" type="Integer"><value>3600</value></property><property name="clock.set.hwclock" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="enabled" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="clock.ntp.timeout" array="false" encrypted="false" type="Integer"><value>10000</value></property><property name="clock.ntp.retry.interval" array="false" encrypted="false" type="Integer"><value>10</value></property></properties></configuration></configurations>|
-      | timeout       | java.lang.Long                                                                 | 10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+      | name          | type                                                                          | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+      | configuration | org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration | <?xml version="1.0" encoding="UTF-8"?><configurations xmlns:ns0="http://www.osgi.org/xmlns/metatype/v1.2.0"><configuration><id>org.eclipse.kura.clock.ClockService></id><properties><property name="clock.ntp.host" array="false" encrypted="false" type="String"><value>0.pool.ntp.org</value></property><property name="clock.provider" array="false" encrypted="false" type="String"><value>java-ntp</value></property><property name="clock.ntp.port" array="false" encrypted="false" type="Integer"><value>123</value></property><property name="clock.ntp.max-retry" array="false" encrypted="false" type="Integer"><value>0</value></property><property name="clock.ntp.refresh-interval" array="false" encrypted="false" type="Integer"><value>3600</value></property><property name="clock.set.hwclock" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="enabled" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="clock.ntp.timeout" array="false" encrypted="false" type="Integer"><value>10000</value></property><property name="clock.ntp.retry.interval" array="false" encrypted="false" type="Integer"><value>10</value></property></properties></configuration></configurations> |
+      | timeout       | java.lang.Long                                                                | 10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
     Then I create a new step entity from the existing creator
     And I start a job
     And I wait 30 seconds
@@ -347,9 +349,9 @@ Feature: JobEngineService start job tests with online device
     And A new job target item
     And Search for step definition with the name "Configuration Put"
     And A regular step creator with the name "TestStep" and the following properties
-      | name          | type                                                                           | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-      | configuration | org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration  | <?xml version="1.0" encoding="UTF-8"?><configurationsInvalidTag xmlns:ns0="http://www.osgi.org/xmlns/metatype/v1.2.0"><configurationInvalidTag><id>org.eclipse.kura.clock.ClockService></id><properties><property name="clock.ntp.host" array="false" encrypted="false" type="String"><value>0.pool.ntp.org</value></property><property name="clock.provider" array="false" encrypted="false" type="String"><value>java-ntp</value></property><property name="clock.ntp.port" array="false" encrypted="false" type="Integer"><value>123</value></property><property name="clock.ntp.max-retry" array="false" encrypted="false" type="Integer"><value>0</value></property><property name="clock.ntp.refresh-interval" array="false" encrypted="false" type="Integer"><value>3600</value></property><property name="clock.set.hwclock" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="enabled" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="clock.ntp.timeout" array="false" encrypted="false" type="Integer"><value>10000</value></property><property name="clock.ntp.retry.interval" array="false" encrypted="false" type="Integer"><value>10</value></property></properties></configurationInvalidTag></configurationsInvalidTag>|
-      | timeout       | java.lang.Long                                                                 | 10000                                                                                                                                                                                               |
+      | name          | type                                                                          | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+      | configuration | org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration | <?xml version="1.0" encoding="UTF-8"?><configurationsInvalidTag xmlns:ns0="http://www.osgi.org/xmlns/metatype/v1.2.0"><configurationInvalidTag><id>org.eclipse.kura.clock.ClockService></id><properties><property name="clock.ntp.host" array="false" encrypted="false" type="String"><value>0.pool.ntp.org</value></property><property name="clock.provider" array="false" encrypted="false" type="String"><value>java-ntp</value></property><property name="clock.ntp.port" array="false" encrypted="false" type="Integer"><value>123</value></property><property name="clock.ntp.max-retry" array="false" encrypted="false" type="Integer"><value>0</value></property><property name="clock.ntp.refresh-interval" array="false" encrypted="false" type="Integer"><value>3600</value></property><property name="clock.set.hwclock" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="enabled" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="clock.ntp.timeout" array="false" encrypted="false" type="Integer"><value>10000</value></property><property name="clock.ntp.retry.interval" array="false" encrypted="false" type="Integer"><value>10</value></property></properties></configurationInvalidTag></configurationsInvalidTag> |
+      | timeout       | java.lang.Long                                                                | 10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
     Then I create a new step entity from the existing creator
     And I start a job
     And I wait 15 seconds
@@ -372,12 +374,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_OK.
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device "is" connected
     And I wait 1 seconds
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     And Packages are requested
     And Number of received packages is 1
@@ -385,9 +387,9 @@ Feature: JobEngineService start job tests with online device
     And A new job target item
     And Search for step definition with the name "Package Download / Install"
     And A regular step creator with the name "TestStep" and the following properties
-      | name                     | type                                                                                             | value                                                                                                                                                                                                                                                            |
-      | packageDownloadRequest   | org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest | <?xml version="1.0" encoding="UTF-8"?><downloadRequest><uri>http://download.eclipse.org/kura/releases/3.2.0/org.eclipse.kura.example.publisher_1.0.300.dp</uri><name>Example Publisher</name><version>1.0.300</version><install>true</install></downloadRequest> |
-      | timeout                  | java.lang.Long                                                                                   | 30000                                                                                                                                                                                                                                                            |
+      | name                   | type                                                                                             | value                                                                                                                                                                                                                                                            |
+      | packageDownloadRequest | org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest | <?xml version="1.0" encoding="UTF-8"?><downloadRequest><uri>http://download.eclipse.org/kura/releases/3.2.0/org.eclipse.kura.example.publisher_1.0.300.dp</uri><name>Example Publisher</name><version>1.0.300</version><install>true</install></downloadRequest> |
+      | timeout                | java.lang.Long                                                                                   | 30000                                                                                                                                                                                                                                                            |
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
@@ -410,12 +412,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_FAILED.
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device "is" connected
     And I wait 1 seconds
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     And Packages are requested
     And Number of received packages is 1
@@ -423,9 +425,9 @@ Feature: JobEngineService start job tests with online device
     And A new job target item
     And Search for step definition with the name "Package Download / Install"
     And A regular step creator with the name "TestStep" and the following properties
-      | name                     | type                                                                                             | value                                                                                                                                                                                                                                                               |
-      | packageDownloadRequest   | org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest | <?xml version="1.0" encoding="UTF-8"?><downloadRequest><uri>###http://download.eclipse.org/kura/releases/3.2.0/org.eclipse.kura.example.publisher_1.0.300.dp</uri><name>Example Publisher</name><version>1.0.300</version><install>true</install></downloadRequest> |
-      | timeout                  | java.lang.Long                                                                                   | 30000                                                                                                                                                                                                                                                               |
+      | name                   | type                                                                                             | value                                                                                                                                                                                                                                                               |
+      | packageDownloadRequest | org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest | <?xml version="1.0" encoding="UTF-8"?><downloadRequest><uri>###http://download.eclipse.org/kura/releases/3.2.0/org.eclipse.kura.example.publisher_1.0.300.dp</uri><name>Example Publisher</name><version>1.0.300</version><install>true</install></downloadRequest> |
+      | timeout                | java.lang.Long                                                                                   | 30000                                                                                                                                                                                                                                                               |
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
@@ -530,6 +532,80 @@ Feature: JobEngineService start job tests with online device
     And Device status is "DISCONNECTED"
     And I logout
 
+  Scenario: Starting a job with valid Package Uninstall step
+  Create a new job. Set a connected Kura Mock device as a job target.
+  Add a new valid Package Uninstall step to the created job. Start the job.
+  After the executed job is finished, the step index of executed targets should
+  be 0 and the status PROCESS_OK
+
+    Given I start the Kura Mock
+    When Device "is" connected
+    And I wait 1 second
+    Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And I get the KuraMock device
+    And Packages are requested
+    And Number of received packages is 1
+    Given I create a job with the name "TestJob"
+    And A new job target item
+    And Search for step definition with the name "Package Uninstall"
+    And A regular step creator with the name "TestStep" and the following properties
+      | name                    | type                                                                                               | value                                                                                                                                                                                                     |
+      | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>org.eclipse.kura.example.publisher</name><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
+      | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                     |
+    When I create a new step entity from the existing creator
+    Then No exception was thrown
+    And I start a job
+    And I wait 90 seconds
+    Given I query for the job with the name "TestJob"
+    When I query for the execution items for the current job
+    Then I count 1 or more
+    And I confirm the executed job is finished
+    And I search for the last job target in the database
+    And I confirm the step index is 0 and status is "PROCESS_OK"
+    When Packages are requested
+    Then Number of received packages is 2
+    And KuraMock is disconnected
+    And I logout
+
+  Scenario: Starting a job with invalid Package Uninstall step
+  Create a new job. Set a connected Kura Mock device as a job target.
+  Add a new invalid Package Uninstall step to the created job. Start the job.
+  After the executed job is finished, the step index of executed targets should
+  be 0 and the status PROCESS_OK
+
+    Given I start the Kura Mock
+    When Device "is" connected
+    And I wait 1 second
+    Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And I get the KuraMock device
+    And Packages are requested
+    And Number of received packages is 1
+    Given I create a job with the name "TestJob"
+    And A new job target item
+    And Search for step definition with the name "Package Uninstall"
+    And A regular step creator with the name "TestStep" and the following properties
+      | name                    | type                                                                                               | value                                                                                                                                                                                                                   |
+      | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><packageName>org.eclipse.kura.example.publisher</packageName><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
+      | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                                   |
+    When I create a new step entity from the existing creator
+    Then No exception was thrown
+    And I start a job
+    And I wait 15 seconds
+    Given I query for the job with the name "TestJob"
+    When I query for the execution items for the current job
+    Then I count 1 or more
+    And I confirm the executed job is finished
+    And I search for the last job target in the database
+    And I confirm the step index is 0 and status is "PROCESS_FAILED"
+    When Packages are requested
+    Then Number of received packages is 1
+    And KuraMock is disconnected
+    And I logout
+
     # *****************************************************
     # * Starting a job with one Target and multiple Steps *
     # *****************************************************
@@ -540,12 +616,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the step index of executed targets should
   be 0 and the status PROCESS_OK
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device "is" connected
     And I wait 1 second
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     And Command "pwd" is executed
     And Bundles are requested
@@ -594,12 +670,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the step index of executed targets should
   be 0 and the status PROCESS_FAILED
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device "is" connected
     And I wait 1 second
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     And Command "pwd" is executed
     And Bundles are requested
@@ -648,12 +724,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the executed target's step index should
   be 1 and the status PROCESS_OK
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device is connected
     And I wait 1 second
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
@@ -701,12 +777,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the executed target's step index should
   be 1 and the status PROCESS_FAILED
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device is connected
     And I wait 1 second
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
@@ -754,11 +830,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the executed target's step index should
   be 1 and the status PROCESS_OK
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device is connected
     And I wait 1 second
+    Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     And Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
@@ -807,11 +884,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the executed target's step index should
   be 1 and the status PROCESS_FAILED
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device is connected
     And I wait 1 second
+    Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     And Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
@@ -860,12 +938,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the step index of executed targets should
   be 1 and the status PROCESS_OK
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device "is" connected
     And I wait 1 second
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     Then Configuration is requested
     And A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 5
@@ -909,12 +987,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the step index of executed targets should
   be 0 and the status PROCESS_FAILED
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device "is" connected
     And I wait 1 second
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     Then Configuration is requested
     And A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 5
@@ -958,12 +1036,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the executed target's step index should
   be 1 and the status PROCESS_OK
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device is connected
     And I wait 1 seconds
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
@@ -1007,12 +1085,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the executed target's step index should
   be 1 and the status PROCESS_FAILED
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I start the Kura Mock
+    Given I start the Kura Mock
     And Device is connected
     And I wait 1 seconds
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock device
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
@@ -1160,6 +1238,102 @@ Feature: JobEngineService start job tests with online device
     And Device status is "DISCONNECTED"
     And I logout
 
+  Scenario: Starting a job with valid Package Uninstall and Bundle Start step
+  Create a new job. Set a connected Kura Mock device as a job target.
+  Add a new valid Package Uninstall and Bundle Start steps to the created job. Start the job.
+  After the executed job is finished, the step index of executed targets should
+  be 1 and the status PROCESS_OK
+
+    Given I start the Kura Mock
+    When Device "is" connected
+    And I wait 1 second
+    Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And I get the KuraMock device
+    And Bundles are requested
+    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    And Packages are requested
+    Then Number of received packages is 1
+    Given I create a job with the name "TestJob"
+    And A new job target item
+    And Search for step definition with the name "Package Uninstall"
+    And A regular step creator with the name "TestStep" and the following properties
+      | name                    | type                                                                                               | value                                                                                                                                                                                                     |
+      | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>org.eclipse.kura.example.publisher</name><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
+      | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                     |
+    When I create a new step entity from the existing creator
+    And Search for step definition with the name "Bundle Start"
+    And A regular step creator with the name "TestStep1" and the following properties
+      | name     | type             | value |
+      | bundleId | java.lang.String | 34    |
+      | timeout  | java.lang.Long   | 10000 |
+    And I create a new step entity from the existing creator
+    And I search the database for created job steps and I find 2
+    Then No exception was thrown
+    And I start a job
+    And I wait 90 seconds
+    Given I query for the job with the name "TestJob"
+    When I query for the execution items for the current job
+    Then I count 1 or more
+    And I confirm the executed job is finished
+    And I search for the last job target in the database
+    And I confirm the step index is 1 and status is "PROCESS_OK"
+    When Packages are requested
+    Then Number of received packages is 2
+    And Bundles are requested
+    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
+    And KuraMock is disconnected
+    And I logout
+
+  Scenario: Starting a job with invalid Package Uninstall and Bundle Start step
+  Create a new job. Set a connected Kura Mock device as a job target.
+  Add a new invalid Package Uninstall and Bundle Start steps to the created job. Start the job.
+  After the executed job is finished, the step index of executed targets should
+  be 0 and the status PROCESS_OK
+
+    Given I start the Kura Mock
+    When Device "is" connected
+    And I wait 1 second
+    Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And I get the KuraMock device
+    And Bundles are requested
+    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    And Packages are requested
+    Then Number of received packages is 1
+    Given I create a job with the name "TestJob"
+    And A new job target item
+    And Search for step definition with the name "Package Uninstall"
+    And A regular step creator with the name "TestStep" and the following properties
+      | name                    | type                                                                                               | value                                                                                                                                                                                                                   |
+      | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><packageName>org.eclipse.kura.example.publisher</packageName><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
+      | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                                   |
+    When I create a new step entity from the existing creator
+    And Search for step definition with the name "Bundle Start"
+    And A regular step creator with the name "TestStep1" and the following properties
+      | name     | type             | value |
+      | bundleId | java.lang.String | #34    |
+      | timeout  | java.lang.Long   | 10000 |
+    And I create a new step entity from the existing creator
+    And I search the database for created job steps and I find 2
+    Then No exception was thrown
+    And I start a job
+    And I wait 15 seconds
+    Given I query for the job with the name "TestJob"
+    When I query for the execution items for the current job
+    Then I count 1 or more
+    And I confirm the executed job is finished
+    And I search for the last job target in the database
+    And I confirm the step index is 0 and status is "PROCESS_FAILED"
+    When Packages are requested
+    Then Number of received packages is 1
+    And Bundles are requested
+    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    And KuraMock is disconnected
+    And I logout
+
     # *****************************************************
     # * Starting a job with multiple Targets and one Step *
     # *****************************************************
@@ -1170,12 +1344,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the step index of executed targets should
   be 0 and the status PROCESS_OK
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I add 2 devices to Kura Mock
+    Given I add 2 devices to Kura Mock
     And Devices "are" connected
     And I wait 1 second
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock devices
     And Command "pwd" is executed
     When I search for events from device "device0" in account "kapua-sys"
@@ -1213,12 +1387,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the step index of executed targets should
   be 0 and the status PROCESS_FAILED
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I add 2 devices to Kura Mock
+    Given I add 2 devices to Kura Mock
     And Devices "are" connected
     And I wait 1 second
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock devices
     And Command "pwd" is executed
     When I search for events from device "device0" in account "kapua-sys"
@@ -1256,12 +1430,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the step index of executed targets should
   be 0 and the status PROCESS_OK
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I add 2 devices to Kura Mock
+    Given I add 2 devices to Kura Mock
     And Device "are" connected
     And I wait 1 second
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock devices
     And Bundles are requested
     Then Bundles are received
@@ -1302,12 +1476,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the step index of executed targets should
   be 0 and the status PROCESS_FAILED
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I add 2 devices to Kura Mock
+    Given I add 2 devices to Kura Mock
     And Device "are" connected
     And I wait 1 second
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock devices
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
@@ -1347,11 +1521,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_OK
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I add 2 devices to Kura Mock
+    Given I add 2 devices to Kura Mock
     And Devices "are" connected
     And I wait 1 second
+    Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock devices
     And Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
@@ -1392,11 +1567,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_FAILED
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I add 2 devices to Kura Mock
+    Given I add 2 devices to Kura Mock
     And Devices "are" connected
     And I wait 1 second
+    Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock devices
     And Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
@@ -1437,8 +1613,7 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_OK
 
-    Given I start the Kura Mock
-    Then I add 2 devices to Kura Mock
+    Given I add 2 devices to Kura Mock
     And Devices "are" connected
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -1474,10 +1649,10 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_FAILED
 
-    Given I start the Kura Mock
-    Then I add 2 devices to Kura Mock
+    Given I add 2 devices to Kura Mock
     And I wait 1 seconds
     And Devices "are" connected
+    Then Device status is "CONNECTED"
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
     And I get the KuraMock devices
@@ -1605,6 +1780,83 @@ Feature: JobEngineService start job tests with online device
     # ***********************************************************
     # * Starting a job with multiple Targets and multiple Steps *
     # ***********************************************************
+  Scenario: Starting a job with valid Package Uninstall step and multiple targets
+  Create a new job. Set a connected Kura Mock device as a job target.
+  Add a new valid Package Uninstall step to the created job. Start the job.
+  After the executed job is finished, the step index of executed targets should
+  be 0 and the status PROCESS_OK
+
+    Given I add 2 devices to Kura Mock
+    When Devices "are" connected
+    And I wait 1 second
+    Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And I get the KuraMock devices
+    And Packages are requested
+    And Number of received packages is 1
+    Given I create a job with the name "TestJob"
+    And I add targets to job
+    And Search for step definition with the name "Package Uninstall"
+    And A regular step creator with the name "TestStep" and the following properties
+      | name                    | type                                                                                               | value                                                                                                                                                                                                     |
+      | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>org.eclipse.kura.example.publisher</name><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
+      | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                     |
+    When I create a new step entity from the existing creator
+    Then No exception was thrown
+    And I start a job
+    And I wait 90 seconds
+    Given I query for the job with the name "TestJob"
+    When I query for the execution items for the current job
+    Then I count 1 or more
+    And I confirm the executed job is finished
+    And I search for the last job target in the database
+    And I confirm the step index is 0 and status is "PROCESS_OK"
+    When Packages are requested
+    Then Number of received packages is 2
+    And KuraMock is disconnected
+    And I logout
+
+  Scenario: Starting a job with invalid Package Uninstall step and multiple targets
+  Create a new job. Set a connected Kura Mock device as a job target.
+  Add a new invalid Package Uninstall step to the created job. Start the job.
+  After the executed job is finished, the step index of executed targets should
+  be 0 and the status PROCESS_OK
+
+    Given I add 2 devices to Kura Mock
+    When Devices "are" connected
+    And I wait 1 second
+    Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And I get the KuraMock devices
+    And Packages are requested
+    And Number of received packages is 1
+    Given I create a job with the name "TestJob"
+    And I add targets to job
+    And Search for step definition with the name "Package Uninstall"
+    And A regular step creator with the name "TestStep" and the following properties
+      | name                    | type                                                                                               | value                                                                                                                                                                                                                   |
+      | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><packageName>org.eclipse.kura.example.publisher</packageName><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
+      | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                                   |
+    When I create a new step entity from the existing creator
+    Then No exception was thrown
+    And I start a job
+    And I wait 15 seconds
+    Given I query for the job with the name "TestJob"
+    When I query for the execution items for the current job
+    Then I count 1 or more
+    And I confirm the executed job is finished
+    And I search for the last job target in the database
+    And I confirm the step index is 0 and status is "PROCESS_FAILED"
+    When Packages are requested
+    Then Number of received packages is 1
+    And KuraMock is disconnected
+    And I logout
+
+    # ************************************************************
+    # * Starting a job with multiple Targets and multiple Steps  *
+    # ************************************************************
 
   Scenario: Starting job with valid Command Execution, valid Bundle Start steps and multiple devices
   Create a new job. Set connected Kura Mock devices as a job targets.
@@ -1612,12 +1864,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the step index of executed targets should
   be 0 and the status PROCESS_OK
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I add 2 devices to Kura Mock
+    Given I add 2 devices to Kura Mock
     And Devices "are" connected
     And I wait 1 second
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock devices
     And Command "pwd" is executed
     And Bundles are requested
@@ -1629,9 +1881,9 @@ Feature: JobEngineService start job tests with online device
     And I add targets to job
     And Search for step definition with the name "Command Execution"
     And A regular step creator with the name "TestStep" and the following properties
-      | name         | type                                                                   | value                                                                                                                                                 |
+      | name         | type                                                                   | value                                                                                                                                         |
       | commandInput | org.eclipse.kapua.service.device.management.command.DeviceCommandInput | <?xml version="1.0" encoding="UTF-8"?><commandInput><command>pwd</command><timeout>30000</timeout><runAsynch>false</runAsynch></commandInput> |
-      | timeout      | java.lang.Long                                                         | 10000                                                                                                                                                 |
+      | timeout      | java.lang.Long                                                         | 10000                                                                                                                                         |
     When I create a new step entity from the existing creator
     Then Search for step definition with the name "Bundle Start"
     And A regular step creator with the name "TestStep2" and the following properties
@@ -1666,12 +1918,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the step index of executed targets should
   be 0 and the status PROCESS_FAILED
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I add 2 devices to Kura Mock
+    Given I add 2 devices to Kura Mock
     And Devices "are" connected
     And I wait 1 second
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock devices
     And Command "pwd" is executed
     And Bundles are requested
@@ -1683,9 +1935,9 @@ Feature: JobEngineService start job tests with online device
     And I add targets to job
     And Search for step definition with the name "Command Execution"
     And A regular step creator with the name "TestStep" and the following properties
-      | name         | type                                                                   | value                                                                                                                                                 |
+      | name         | type                                                                   | value                                                                                                                                               |
       | commandInput | org.eclipse.kapua.service.device.management.command.DeviceCommandInput | <?xml version="1.0" encoding="UTF-8"?><commandInput><commandTag>pwd</commandTag><timeout>30000</timeout><runAsynch>false</runAsynch></commandInput> |
-      | timeout      | java.lang.Long                                                         | 10000                                                                                                                                                 |
+      | timeout      | java.lang.Long                                                         | 10000                                                                                                                                               |
     When I create a new step entity from the existing creator
     Then Search for step definition with the name "Bundle Start"
     And A regular step creator with the name "TestStep2" and the following properties
@@ -1720,12 +1972,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the executed target's step index should
   be 1 and the status PROCESS_OK
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I add 2 devices to Kura Mock
+    Given I add 2 devices to Kura Mock
     And Devices "are" connected
     And I wait 1 second
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock devices
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
@@ -1773,12 +2025,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the executed target's step index should
   be 1 and the status PROCESS_FAILED
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When  I add 2 devices to Kura Mock
+    Given I add 2 devices to Kura Mock
     And Devices "are" connected
     And I wait 1 second
     Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock devices
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
@@ -1826,11 +2078,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the executed target's step index should
   be 1 and the status PROCESS_OK
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I add 2 devices to Kura Mock
+    Given I add 2 devices to Kura Mock
     And Devices "are" connected
     And I wait 1 second
+    Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock devices
     And Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
@@ -1879,11 +2132,12 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the executed target's step index should
   be 1 and the status PROCESS_FAILED
 
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    When I add 2 devices to Kura Mock
+    Given I add 2 devices to Kura Mock
     And Devices "are" connected
     And I wait 1 second
+    Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
     And I get the KuraMock devices
     And Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
@@ -1932,9 +2186,10 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the step index of executed targets should
   be 1 and the status PROCESS_OK
 
-    Given I start the Kura Mock
-    Then I add 2 devices to Kura Mock
+    Given I add 2 devices to Kura Mock
     And Devices "are" connected
+    And I wait 1 second
+    Then Device status is "CONNECTED"
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
     And I get the KuraMock devices
@@ -1948,9 +2203,9 @@ Feature: JobEngineService start job tests with online device
     Then I count 2
     And Search for step definition with the name "Configuration Put"
     And A regular step creator with the name "TestStep1" and the following properties
-      | name          | type                                                                           | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-      | configuration | org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration  | <?xml version="1.0" encoding="UTF-8"?><configurations xmlns:ns0="http://www.osgi.org/xmlns/metatype/v1.2.0"><configuration><id>org.eclipse.kura.clock.ClockService></id><properties><property name="clock.ntp.host" array="false" encrypted="false" type="String"><value>0.pool.ntp.org</value></property><property name="clock.provider" array="false" encrypted="false" type="String"><value>java-ntp</value></property><property name="clock.ntp.port" array="false" encrypted="false" type="Integer"><value>123</value></property><property name="clock.ntp.max-retry" array="false" encrypted="false" type="Integer"><value>0</value></property><property name="clock.ntp.refresh-interval" array="false" encrypted="false" type="Integer"><value>3600</value></property><property name="clock.set.hwclock" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="enabled" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="clock.ntp.timeout" array="false" encrypted="false" type="Integer"><value>10000</value></property><property name="clock.ntp.retry.interval" array="false" encrypted="false" type="Integer"><value>10</value></property></properties></configuration></configurations>|
-      | timeout       | java.lang.Long                                                                 | 10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+      | name          | type                                                                          | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+      | configuration | org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration | <?xml version="1.0" encoding="UTF-8"?><configurations xmlns:ns0="http://www.osgi.org/xmlns/metatype/v1.2.0"><configuration><id>org.eclipse.kura.clock.ClockService></id><properties><property name="clock.ntp.host" array="false" encrypted="false" type="String"><value>0.pool.ntp.org</value></property><property name="clock.provider" array="false" encrypted="false" type="String"><value>java-ntp</value></property><property name="clock.ntp.port" array="false" encrypted="false" type="Integer"><value>123</value></property><property name="clock.ntp.max-retry" array="false" encrypted="false" type="Integer"><value>0</value></property><property name="clock.ntp.refresh-interval" array="false" encrypted="false" type="Integer"><value>3600</value></property><property name="clock.set.hwclock" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="enabled" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="clock.ntp.timeout" array="false" encrypted="false" type="Integer"><value>10000</value></property><property name="clock.ntp.retry.interval" array="false" encrypted="false" type="Integer"><value>10</value></property></properties></configuration></configurations> |
+      | timeout       | java.lang.Long                                                                | 10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
     When I create a new step entity from the existing creator
     Then Search for step definition with the name "Bundle Start"
     And A regular step creator with the name "TestStep2" and the following properties
@@ -1980,9 +2235,10 @@ Feature: JobEngineService start job tests with online device
   After the executed job is finished, the step index of executed targets should
   be 0 and the status PROCESS_FAILED
 
-    Given I start the Kura Mock
-    Then I add 2 devices to Kura Mock
+    Given I add 2 devices to Kura Mock
     And Devices "are" connected
+    And I wait 1 second
+    Then Device status is "CONNECTED"
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
     And I get the KuraMock devices
@@ -1996,9 +2252,9 @@ Feature: JobEngineService start job tests with online device
     Then I count 2
     And Search for step definition with the name "Configuration Put"
     And A regular step creator with the name "TestStep1" and the following properties
-      | name          | type                                                                           | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-      | configuration | org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration  | <?xml version="1.0" encoding="UTF-8"?><configurationsInvalidTag xmlns:ns0="http://www.osgi.org/xmlns/metatype/v1.2.0"><configurationInvalidTag><id>org.eclipse.kura.clock.ClockService></id><properties><property name="clock.ntp.host" array="false" encrypted="false" type="String"><value>0.pool.ntp.org</value></property><property name="clock.provider" array="false" encrypted="false" type="String"><value>java-ntp</value></property><property name="clock.ntp.port" array="false" encrypted="false" type="Integer"><value>123</value></property><property name="clock.ntp.max-retry" array="false" encrypted="false" type="Integer"><value>0</value></property><property name="clock.ntp.refresh-interval" array="false" encrypted="false" type="Integer"><value>3600</value></property><property name="clock.set.hwclock" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="enabled" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="clock.ntp.timeout" array="false" encrypted="false" type="Integer"><value>10000</value></property><property name="clock.ntp.retry.interval" array="false" encrypted="false" type="Integer"><value>10</value></property></properties></configurationInvalidTag></configurationsInvalidTag>|
-      | timeout       | java.lang.Long                                                                 | 10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+      | name          | type                                                                          | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+      | configuration | org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration | <?xml version="1.0" encoding="UTF-8"?><configurationsInvalidTag xmlns:ns0="http://www.osgi.org/xmlns/metatype/v1.2.0"><configurationInvalidTag><id>org.eclipse.kura.clock.ClockService></id><properties><property name="clock.ntp.host" array="false" encrypted="false" type="String"><value>0.pool.ntp.org</value></property><property name="clock.provider" array="false" encrypted="false" type="String"><value>java-ntp</value></property><property name="clock.ntp.port" array="false" encrypted="false" type="Integer"><value>123</value></property><property name="clock.ntp.max-retry" array="false" encrypted="false" type="Integer"><value>0</value></property><property name="clock.ntp.refresh-interval" array="false" encrypted="false" type="Integer"><value>3600</value></property><property name="clock.set.hwclock" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="enabled" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="clock.ntp.timeout" array="false" encrypted="false" type="Integer"><value>10000</value></property><property name="clock.ntp.retry.interval" array="false" encrypted="false" type="Integer"><value>10</value></property></properties></configurationInvalidTag></configurationsInvalidTag> |
+      | timeout       | java.lang.Long                                                                | 10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
     When I create a new step entity from the existing creator
     Then Search for step definition with the name "Bundle Start"
     And A regular step creator with the name "TestStep2" and the following properties
@@ -2138,6 +2394,102 @@ Feature: JobEngineService start job tests with online device
     When KuraMock is disconnected
     And I wait 1 second
     And Device status is "DISCONNECTED"
+    And I logout
+
+  Scenario: Starting a job with valid Package Uninstall and Bundle Start step and multiple targets
+  Create a new job. Set a connected Kura Mock devices as a job targets.
+  Add a new valid Package Uninstall and Bundle Start steps to the created job. Start the job.
+  After the executed job is finished, the step index of executed targets should
+  be 1 and the status PROCESS_OK
+
+    Given I add 2 devices to Kura Mock
+    When Devices "are" connected
+    And I wait 1 second
+    Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And I get the KuraMock devices
+    And Bundles are requested
+    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    And Packages are requested
+    Then Number of received packages is 1
+    Given I create a job with the name "TestJob"
+    And I add targets to job
+    And Search for step definition with the name "Package Uninstall"
+    And A regular step creator with the name "TestStep" and the following properties
+      | name                    | type                                                                                               | value                                                                                                                                                                                                     |
+      | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>org.eclipse.kura.example.publisher</name><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
+      | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                     |
+    When I create a new step entity from the existing creator
+    And Search for step definition with the name "Bundle Start"
+    And A regular step creator with the name "TestStep1" and the following properties
+      | name     | type             | value |
+      | bundleId | java.lang.String | 34    |
+      | timeout  | java.lang.Long   | 10000 |
+    And I create a new step entity from the existing creator
+    And I search the database for created job steps and I find 2
+    Then No exception was thrown
+    And I start a job
+    And I wait 90 seconds
+    Given I query for the job with the name "TestJob"
+    When I query for the execution items for the current job
+    Then I count 1 or more
+    And I confirm the executed job is finished
+    And I search for the last job target in the database
+    And I confirm the step index is 1 and status is "PROCESS_OK"
+    When Packages are requested
+    Then Number of received packages is 2
+    And Bundles are requested
+    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
+    And KuraMock is disconnected
+    And I logout
+
+  Scenario: Starting a job with invalid Package Uninstall and Bundle Start step and multiple targets
+  Create a new job. Set a connected Kura Mock devices as a job targets.
+  Add a new invalid Package Uninstall and Bundle Start steps to the created job. Start the job.
+  After the executed job is finished, the step index of executed targets should
+  be 0 and the status PROCESS_OK
+
+    Given I add 2 devices to Kura Mock
+    When Devices "are" connected
+    And I wait 1 second
+    Then Device status is "CONNECTED"
+    And I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And I get the KuraMock devices
+    And Bundles are requested
+    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    And Packages are requested
+    Then Number of received packages is 1
+    Given I create a job with the name "TestJob"
+    And I add targets to job
+    And Search for step definition with the name "Package Uninstall"
+    And A regular step creator with the name "TestStep" and the following properties
+      | name                    | type                                                                                               | value                                                                                                                                                                                                                   |
+      | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><packageName>org.eclipse.kura.example.publisher</packageName><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
+      | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                                   |
+    When I create a new step entity from the existing creator
+    And Search for step definition with the name "Bundle Start"
+    And A regular step creator with the name "TestStep1" and the following properties
+      | name     | type             | value |
+      | bundleId | java.lang.String | #34   |
+      | timeout  | java.lang.Long   | 10000 |
+    And I create a new step entity from the existing creator
+    And I search the database for created job steps and I find 2
+    Then No exception was thrown
+    And I start a job
+    And I wait 15 seconds
+    Given I query for the job with the name "TestJob"
+    When I query for the execution items for the current job
+    Then I count 1 or more
+    And I confirm the executed job is finished
+    And I search for the last job target in the database
+    And I confirm the step index is 0 and status is "PROCESS_FAILED"
+    When Packages are requested
+    Then Number of received packages is 1
+    And Bundles are requested
+    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    And KuraMock is disconnected
     And I logout
 
   Scenario: Stop broker after all scenarios
