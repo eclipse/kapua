@@ -33,7 +33,8 @@ endpoint URL and its external URL, even if this may just be `http://localhost:80
 
 - **`site.home.uri`** : the URL to the web console, e.g. `http://localhost:8080`
 
-The SSO Login will be available in the form of a dedicated button on the Kapua login page.
+The SSO Login will be available in the form of a dedicated button on the Kapua login page 
+(the button is enabled through the configuration option `sso.provider`).
 
 ### Generic provider
 
@@ -65,10 +66,12 @@ Currently there are two methods to do this: using the _SimpleRegistrationProcess
 
 #### Insert the user through the SimpleRegistrationProcessor module
 
-This module allows one to automatically create te user in Kapua at the first log-in attempt using the SSO.
+This module allows one to automatically create the user in Kapua at the first log-in attempt using the SSO.
+If a user with the same name already exists in Kapua, the registration process will fail.
 More precisely, two users are created: one without credentials, representing the SSO user, and one with 
 credentials, representing a gateway user. 
 Note that the credential for the gateway user is hardcoded in the SimpleRegistrationProcessor code.
+
 In order to avoid using this registration processor, remove `kapua-security-registration-simple` from the 
 root pom dependencies. 
 
