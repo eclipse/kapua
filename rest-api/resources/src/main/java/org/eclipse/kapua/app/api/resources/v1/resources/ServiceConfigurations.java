@@ -41,7 +41,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
 
 @Api(value = "Service Configurations", authorizations = {@Authorization(value = "kapuaAccessToken")})
-@Path("{scopeId}/configurations")
+@Path("{scopeId}/serviceConfigurations")
 public class ServiceConfigurations extends AbstractKapuaResource {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
