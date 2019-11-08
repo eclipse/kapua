@@ -474,102 +474,6 @@ Feature: JobEngineService restart job tests with online device - second part
     And Device status is "DISCONNECTED"
     And I logout
 
-  Scenario: Restarting A Job with valid Package Uninstall Step And Step Index=0
-  Create a new job and set a connected KuraMock device as the job target.
-  Add a new valid Package Uninstall step to the created job. Restart the job two times.
-  After the executed job is finished, the executed target's step index should
-  be 0 and the status PROCESS_OK
-
-    Given I start the Kura Mock
-    When Device "is" connected
-    And I wait 1 seconds
-    Then Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    And I get the KuraMock device
-    Then Packages are requested
-    And Number of received packages is 1
-    Given I create a job with the name "TestJob"
-    And A new job target item
-    And Search for step definition with the name "Package Uninstall"
-    And A regular step creator with the name "TestStep" and the following properties
-      | name                    | type                                                                                               | value                                                                                                                                                                                                     |
-      | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>org.eclipse.kura.example.publisher</name><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
-      | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                     |
-    When I create a new step entity from the existing creator
-    And I restart a job
-    And I wait 60 seconds
-    When I query for the job with the name "TestJob"
-    And I query for the execution items for the current job
-    Then I count 1 or more
-    And I confirm the executed job is finished
-    Then I search for the last job target in the database
-    And I confirm the step index is 0 and status is "PROCESS_OK"
-    Then Packages are requested
-    And Number of received packages is 2
-    Then I restart a job
-    And I wait 60 seconds
-    When I query for the job with the name "TestJob"
-    And I query for the execution items for the current job
-    Then I count 1 or more
-    And I confirm the executed job is finished
-    Then I search for the last job target in the database
-    And I confirm the step index is 0 and status is "PROCESS_OK"
-    Then Packages are requested
-    And Number of received packages is 2
-    And KuraMock is disconnected
-    And I wait 1 seconds
-    And Device status is "DISCONNECTED"
-    And I logout
-
-  Scenario: Restarting A Job with invalid Package Uninstall Step And Step Index=0
-  Create a new job and set a connected KuraMock device as the job target.
-  Add a new invalid Package Uninstall step to the created job. Restart the job two times.
-  After the executed job is finished, the executed target's step index should
-  be 0 and the status PROCESS_FAILED
-
-    Given I start the Kura Mock
-    When Device "is" connected
-    And I wait 1 seconds
-    Then Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    And I get the KuraMock device
-    Then Packages are requested
-    And Number of received packages is 1
-    Given I create a job with the name "TestJob"
-    And A new job target item
-    And Search for step definition with the name "Package Uninstall"
-    And A regular step creator with the name "TestStep" and the following properties
-      | name                    | type                                                                                               | value                                                                                                                                                                                                                   |
-      | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><packageName>org.eclipse.kura.example.publisher</packageName><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
-      | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                                   |
-    When I create a new step entity from the existing creator
-    And I restart a job
-    And I wait 15 seconds
-    When I query for the job with the name "TestJob"
-    And I query for the execution items for the current job
-    Then I count 1
-    And I confirm the executed job is finished
-    Then I search for the last job target in the database
-    And I confirm the step index is 0 and status is "PROCESS_FAILED"
-    Then Packages are requested
-    And Number of received packages is 1
-    Then I restart a job
-    And I wait 15 seconds
-    When I query for the job with the name "TestJob"
-    And I query for the execution items for the current job
-    Then I count 2
-    And I confirm the executed job is finished
-    Then I search for the last job target in the database
-    And I confirm the step index is 0 and status is "PROCESS_FAILED"
-    Then Packages are requested
-    And Number of received packages is 1
-    And KuraMock is disconnected
-    And I wait 1 seconds
-    And Device status is "DISCONNECTED"
-    And I logout
-
     # *******************************************************
     # * Restarting a job with one Target and multiple Steps *
     # *******************************************************
@@ -827,7 +731,6 @@ Feature: JobEngineService restart job tests with online device - second part
     And I create a new step entity from the existing creator
     Then I restart a job
     And I wait 45 seconds
-    And I wait 60 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1 or more
@@ -935,7 +838,6 @@ Feature: JobEngineService restart job tests with online device - second part
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
     Then I restart a job
     And I wait 45 seconds
-    And I wait 60 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 2 or more
@@ -1132,128 +1034,6 @@ Feature: JobEngineService restart job tests with online device - second part
     And Device assets are requested
     And Asset with name "asset1" and channel with name "channel1" and value 123 are received
     Then KuraMock is disconnected
-    And I wait 1 second
-    And Device status is "DISCONNECTED"
-    And I logout
-
-  Scenario: Restarting Job With Valid Package Uninstall And Bundle Start Steps And Step Index=0
-  Create a new job. Set a connected Kura Mock device as a job target.
-  Add a new valid Package Uninstall and Bundle Start steps to the created job. Restart the job two times.
-  After the executed job is finished, the step index of executed targets should
-  be 1 and the status PROCESS_OK
-
-    Given I start the Kura Mock
-    And Device "is" connected
-    And I wait 1 second
-    Then Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    And I get the KuraMock device
-    Then Packages are requested
-    And Number of received packages is 1
-    Then Bundles are requested
-    And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
-    Given I create a job with the name "TestJob"
-    And A new job target item
-    And Search for step definition with the name "Package Uninstall"
-    And A regular step creator with the name "TestStep" and the following properties
-      | name                    | type                                                                                               | value                                                                                                                                                                                                     |
-      | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>org.eclipse.kura.example.publisher</name><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
-      | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                     |
-    When I create a new step entity from the existing creator
-    Then Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep2" and the following properties
-      | name     | type             | value |
-      | bundleId | java.lang.String | 34    |
-      | timeout  | java.lang.Long   | 10000 |
-    When I create a new step entity from the existing creator
-    And I search the database for created job steps and I find 2
-    Then I restart a job
-    And I wait 60 seconds
-    Given I query for the job with the name "TestJob"
-    When I query for the execution items for the current job
-    Then I count 1 or more
-    And I confirm the executed job is finished
-    And I search for the last job target in the database
-    And I confirm the step index is 1 and status is "PROCESS_OK"
-    Then Packages are requested
-    And Number of received packages is 2
-    Then Bundles are requested
-    And A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
-    Then I restart a job
-    And I wait 60 seconds
-    Given I query for the job with the name "TestJob"
-    When I query for the execution items for the current job
-    Then I count 1 or more
-    And I confirm the executed job is finished
-    And I search for the last job target in the database
-    And I confirm the step index is 1 and status is "PROCESS_OK"
-    Then Packages are requested
-    And Number of received packages is 2
-    Then Bundles are requested
-    And A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
-    When KuraMock is disconnected
-    And I wait 1 second
-    And Device status is "DISCONNECTED"
-    And I logout
-
-  Scenario: Restarting Job With Invalid Package Uninstall And Bundle Start Steps And Step Index=0
-  Create a new job. Set a connected Kura Mock device as a job target.
-  Add a new invalid Package Uninstall and Bundle Start steps to the created job. Restart the job two times.
-  After the executed job is finished, the step index of executed targets should
-  be 0 and the status PROCESS_FAILED
-
-    Given I start the Kura Mock
-    And Device "is" connected
-    And I wait 1 second
-    Then Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    And I get the KuraMock device
-    Then Packages are requested
-    And Number of received packages is 1
-    Then Bundles are requested
-    And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
-    Given I create a job with the name "TestJob"
-    And A new job target item
-    And Search for step definition with the name "Package Uninstall"
-    And A regular step creator with the name "TestStep" and the following properties
-      | name                    | type                                                                                               | value                                                                                                                                                                                                                   |
-      | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><packageName>org.eclipse.kura.example.publisher</packageName><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
-      | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                                   |
-    When I create a new step entity from the existing creator
-    Then Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep2" and the following properties
-      | name     | type             | value |
-      | bundleId | java.lang.String | #34   |
-      | timeout  | java.lang.Long   | 10000 |
-    When I create a new step entity from the existing creator
-    And I search the database for created job steps and I find 2
-    Then I restart a job
-    And I wait 15 seconds
-    Given I query for the job with the name "TestJob"
-    When I query for the execution items for the current job
-    Then I count 1
-    And I confirm the executed job is finished
-    And I search for the last job target in the database
-    And I confirm the step index is 0 and status is "PROCESS_FAILED"
-    Then Packages are requested
-    And Number of received packages is 1
-    Then Bundles are requested
-    And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
-    Then I restart a job
-    And I wait 15 seconds
-    Given I query for the job with the name "TestJob"
-    When I query for the execution items for the current job
-    Then I count 2
-    And I confirm the executed job is finished
-    And I search for the last job target in the database
-    And I confirm the step index is 0 and status is "PROCESS_FAILED"
-    Then Packages are requested
-    And Number of received packages is 1
-    Then Bundles are requested
-    And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
-    When KuraMock is disconnected
     And I wait 1 second
     And Device status is "DISCONNECTED"
     And I logout
@@ -1698,101 +1478,6 @@ Feature: JobEngineService restart job tests with online device - second part
     And Device status is "DISCONNECTED"
     And I logout
 
-  Scenario: Restarting A Job With Valid Package Uninstall Step, Multiple Devices And Step Index=0
-  Create a new job and set a connected KuraMock devices as the job target.
-  Add a new valid Package Uninstall step to the created job. Restart the job two times.
-  After the executed job is finished, the executed target's step index should
-  be 0 and the status PROCESS_OK
-
-    Given I start the Kura Mock
-    Then I add 2 devices to Kura Mock
-    And Devices "are" connected
-    And I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    And I get the KuraMock devices
-    Then Packages are requested
-    And Number of received packages is 1
-    Given I create a job with the name "TestJob"
-    And I add targets to job
-    When I count the targets in the current scope
-    Then I count 2
-    And Search for step definition with the name "Package Uninstall"
-    And A regular step creator with the name "TestStep" and the following properties
-      | name                    | type                                                                                               | value                                                                                                                                                                                                     |
-      | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>org.eclipse.kura.example.publisher</name><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
-      | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                     |
-    When I create a new step entity from the existing creator
-    Then I restart a job
-    And I wait 90 seconds
-    Given I query for the job with the name "TestJob"
-    When I query for the execution items for the current job
-    Then I count 1 or more
-    And I confirm the executed job is finished
-    And I search for the last job target in the database
-    And I confirm the step index is 0 and status is "PROCESS_OK"
-    Then Packages are requested
-    And Number of received packages is 2
-    Then I restart a job
-    And I wait 90 seconds
-    Given I query for the job with the name "TestJob"
-    When I query for the execution items for the current job
-    Then I count 1 or more
-    And I confirm the executed job is finished
-    And I search for the last job target in the database
-    And I confirm the step index is 0 and status is "PROCESS_OK"
-    Then Packages are requested
-    And Number of received packages is 2
-    And KuraMock is disconnected
-    And I logout
-
-  Scenario: Restarting a job with invalid Package Uninstall, Multiple Devices And Step Index=0
-  Create a new job and set a connected KuraMock devices as the job target.
-  Add a new invalid Package Uninstall step to the created job. Restart the job two times.
-  After the executed job is finished, the executed target's step index should
-  be 0 and the status PROCESS_FAILED
-
-    Given I start the Kura Mock
-    Then I add 2 devices to Kura Mock
-    And I wait 1 seconds
-    And Devices "are" connected
-    And I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    And I get the KuraMock devices
-    Then Packages are requested
-    And Number of received packages is 1
-    Given I create a job with the name "TestJob"
-    And I add targets to job
-    When I count the targets in the current scope
-    Then I count 2
-    And Search for step definition with the name "Package Uninstall"
-    And A regular step creator with the name "TestStep" and the following properties
-      | name                    | type                                                                                               | value                                                                                                                                                                                                                   |
-      | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><packageName>org.eclipse.kura.example.publisher</packageName><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
-      | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                                   |
-    When I create a new step entity from the existing creator
-    Then I restart a job
-    And I wait 15 seconds
-    Given I query for the job with the name "TestJob"
-    When I query for the execution items for the current job
-    Then I count 1
-    And I confirm the executed job is finished
-    And I search for the last job target in the database
-    And I confirm the step index is 0 and status is "PROCESS_FAILED"
-    Then Packages are requested
-    And Number of received packages is 1
-    Then I restart a job
-    And I wait 15 seconds
-    Given I query for the job with the name "TestJob"
-    When I query for the execution items for the current job
-    Then I count 2
-    And I confirm the executed job is finished
-    And I search for the last job target in the database
-    And I confirm the step index is 0 and status is "PROCESS_FAILED"
-    Then Packages are requested
-    And Number of received packages is 1
-    And KuraMock is disconnected
-    And I logout
-
     # *************************************************************
     # * Restarting a job with multiple Targets and multiple Steps *
     # *************************************************************
@@ -1832,7 +1517,6 @@ Feature: JobEngineService restart job tests with online device - second part
     And I search the database for created job steps and I find 2
     Then I restart a job
     And I wait 45 seconds
-    And I wait 60 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -2344,126 +2028,6 @@ Feature: JobEngineService restart job tests with online device - second part
     Then KuraMock is disconnected
     And I wait 1 second
     And Device status is "DISCONNECTED"
-    And I logout
-
-  Scenario: Restarting job with valid Package Uninstall and Bundle Start Steps, Multiple Devices And Step Index=0
-  Create a new job. Set a connected Kura Mock devices as a job target.
-  Add a new valid Package Uninstall and Bundle Start steps to the created job. Restart the job two times.
-  After the executed job is finished, the step index of executed targets should
-  be 1 and the status PROCESS_OK
-
-    Given I start the Kura Mock
-    Then I add 2 devices to Kura Mock
-    And Devices "are" connected
-    And I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    And I get the KuraMock devices
-    Then Packages are requested
-    And Number of received packages is 1
-    Then Bundles are requested
-    And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
-    Given I create a job with the name "TestJob"
-    And I add targets to job
-    When I count the targets in the current scope
-    Then I count 2
-    And Search for step definition with the name "Package Uninstall"
-    And A regular step creator with the name "TestStep" and the following properties
-      | name                    | type                                                                                               | value                                                                                                                                                                                                     |
-      | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>org.eclipse.kura.example.publisher</name><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
-      | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                     |
-    When I create a new step entity from the existing creator
-    Then Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep2" and the following properties
-      | name     | type             | value |
-      | bundleId | java.lang.String | 34    |
-      | timeout  | java.lang.Long   | 10000 |
-    When I create a new step entity from the existing creator
-    And I search the database for created job steps and I find 2
-    Then I restart a job
-    And I wait 90 seconds
-    Given I query for the job with the name "TestJob"
-    When I query for the execution items for the current job
-    Then I count 1 or more
-    And I confirm the executed job is finished
-    And I search for the last job target in the database
-    And I confirm the step index is 1 and status is "PROCESS_OK"
-    Then Packages are requested
-    And Number of received packages is 2
-    Then Bundles are requested
-    And A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
-    Then I restart a job
-    And I wait 90 seconds
-    Given I query for the job with the name "TestJob"
-    When I query for the execution items for the current job
-    Then I count 1 or more
-    And I confirm the executed job is finished
-    And I search for the last job target in the database
-    And I confirm the step index is 1 and status is "PROCESS_OK"
-    Then Packages are requested
-    And Number of received packages is 2
-    Then Bundles are requested
-    And A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
-    When KuraMock is disconnected
-    And I logout
-
-  Scenario: Restarting job with invalid Package Uninstall and Bundle Start Steps, Multiple Devices And Step Index=0
-  Create a new job. Set connected Kura Mock devices as a job target.
-  Add a new invalid Package Uninstall and Bundle Start steps to the created job. Restart the job two times.
-  After the executed job is finished, the step index of executed targets should
-  be 0 and the status PROCESS_FAILED
-
-    Given I start the Kura Mock
-    Then I add 2 devices to Kura Mock
-    And Devices "are" connected
-    And I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    And I get the KuraMock devices
-    Then Packages are requested
-    And Number of received packages is 1
-    Then Bundles are requested
-    And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
-    Given I create a job with the name "TestJob"
-    And I add targets to job
-    When I count the targets in the current scope
-    Then I count 2
-    And Search for step definition with the name "Package Uninstall"
-    And A regular step creator with the name "TestStep" and the following properties
-      | name                    | type                                                                                               | value                                                                                                                                                                                                                   |
-      | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><packageName>org.eclipse.kura.example.publisher</packageName><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
-      | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                                   |
-    When I create a new step entity from the existing creator
-    Then Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep2" and the following properties
-      | name     | type             | value |
-      | bundleId | java.lang.String | #34   |
-      | timeout  | java.lang.Long   | 10000 |
-    When I create a new step entity from the existing creator
-    And I search the database for created job steps and I find 2
-    Then I restart a job
-    And I wait 15 seconds
-    Given I query for the job with the name "TestJob"
-    When I query for the execution items for the current job
-    Then I count 1
-    And I confirm the executed job is finished
-    And I search for the last job target in the database
-    And I confirm the step index is 0 and status is "PROCESS_FAILED"
-    Then Packages are requested
-    And Number of received packages is 1
-    Then Bundles are requested
-    And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
-    Then I restart a job
-    And I wait 15 seconds
-    Given I query for the job with the name "TestJob"
-    When I query for the execution items for the current job
-    Then I count 2
-    And I confirm the executed job is finished
-    And I search for the last job target in the database
-    And I confirm the step index is 0 and status is "PROCESS_FAILED"
-    Then Packages are requested
-    And Number of received packages is 1
-    Then Bundles are requested
-    And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
-    When KuraMock is disconnected
     And I logout
 
   Scenario: Stop broker after all scenarios
