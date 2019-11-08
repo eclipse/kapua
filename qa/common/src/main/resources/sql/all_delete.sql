@@ -57,3 +57,7 @@ DELETE FROM job_job_step_definition_properties WHERE step_definition_id NOT IN (
 DELETE FROM job_job_step_properties;
 
 DELETE FROM job_job_target;
+
+DELETE FROM schdl_trigger;
+
+DELETE FROM schdl_trigger_properties;

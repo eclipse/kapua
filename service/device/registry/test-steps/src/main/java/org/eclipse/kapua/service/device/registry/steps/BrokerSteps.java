@@ -201,6 +201,21 @@ public class BrokerSteps extends TestBase {
         stepData.put("KuraDevices", kuraDevices);
     }
 
+    @When("^I restart the Kura Mock$")
+    public void restartKuraMock() throws Exception {
+        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get("KuraDevices");
+        List<KuraDevice> restartedKuraDevices = new ArrayList<>();
+        if (!kuraDevices.isEmpty()) {
+            for (KuraDevice kuraDevice : kuraDevices) {
+                kuraDevice.mqttClientSetup();
+                kuraDevice.mqttClientConnect();
+                restartedKuraDevices.add(kuraDevice);
+            }
+        }
+        stepData.put("KuraDevices", restartedKuraDevices);
+    }
+
+
     @When("I get the KuraMock device(?:|s)$")
     public void getKuraMockDevice() throws Exception {
         ArrayList<Device> deviceList = new ArrayList<>();
