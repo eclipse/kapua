@@ -24,4 +24,4 @@ USER 0
 
 USER 1000
 
-ENTRYPOINT /run-job-engine
+ENTRYPOINT /run-job-engine.sh

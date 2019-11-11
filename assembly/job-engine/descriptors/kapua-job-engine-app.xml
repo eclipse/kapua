@@ -23,7 +23,7 @@
 
     <files>
         <file>
-            <source>${project.basedir}/entrypoint/run-job-engine</source>
+            <source>${project.basedir}/entrypoint/run-job-engine.sh</source>
             <outputDirectory>/</outputDirectory>
             <fileMode>0755</fileMode>
         </file>

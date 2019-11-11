@@ -20,9 +20,9 @@
 
         <class>org.eclipse.kapua.service.certificate.internal.AbstractCertificateImpl</class>
         <class>org.eclipse.kapua.service.certificate.internal.CertificateImpl</class>
-        <class>org.eclipse.kapua.service.certificate.internal.CertificateInfoImpl</class>
         <class>org.eclipse.kapua.service.certificate.internal.CertificateUsageImpl</class>
         <class>org.eclipse.kapua.service.certificate.internal.KeyUsageSettingImpl</class>
+        <class>org.eclipse.kapua.service.certificate.info.internal.CertificateInfoImpl</class>
 
         <!-- Base classes and External classes -->
         <class>org.eclipse.kapua.commons.model.id.KapuaEid</class>
