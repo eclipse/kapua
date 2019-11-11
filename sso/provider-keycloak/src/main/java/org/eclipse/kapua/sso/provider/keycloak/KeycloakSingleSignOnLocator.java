@@ -23,14 +23,31 @@ import org.eclipse.kapua.sso.provider.keycloak.jwt.KeycloakJwtProcessor;
  */
 public class KeycloakSingleSignOnLocator implements ProviderLocator {
 
+    private static JwtProcessor jwtProcessorInstance;
+    private static SingleSignOnService ssoServiceInstance;
+
     @Override
     public SingleSignOnService getService() {
-        return new KeycloakSingleSignOnService();
+        if (ssoServiceInstance == null) {
+            synchronized (KeycloakSingleSignOnLocator.class) {
+                if (ssoServiceInstance == null) {
+                    ssoServiceInstance = new KeycloakSingleSignOnService();
+                }
+            }
+        }
+        return ssoServiceInstance;
     }
 
     @Override
     public JwtProcessor getProcessor() throws SsoJwtException {
-        return new KeycloakJwtProcessor();
+        if (jwtProcessorInstance == null) {
+            synchronized (KeycloakSingleSignOnLocator.class) {
+                if (jwtProcessorInstance == null) {
+                    jwtProcessorInstance = new KeycloakJwtProcessor();
+                }
+            }
+        }
+        return jwtProcessorInstance;
     }
 
     @Override

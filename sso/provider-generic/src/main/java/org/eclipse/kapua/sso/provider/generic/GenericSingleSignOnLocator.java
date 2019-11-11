@@ -23,14 +23,31 @@ import org.eclipse.kapua.sso.provider.generic.jwt.GenericJwtProcessor;
  */
 public class GenericSingleSignOnLocator implements ProviderLocator {
 
+    private static JwtProcessor jwtProcessorInstance;
+    private static SingleSignOnService ssoServiceInstance;
+
     @Override
     public SingleSignOnService getService() {
-        return new GenericSingleSignOnService();
+        if (ssoServiceInstance == null) {
+            synchronized (GenericSingleSignOnLocator.class) {
+                if (ssoServiceInstance == null) {
+                    ssoServiceInstance = new GenericSingleSignOnService();
+                }
+            }
+        }
+        return ssoServiceInstance;
     }
 
     @Override
     public JwtProcessor getProcessor() throws SsoJwtException {
-        return new GenericJwtProcessor();
+        if (jwtProcessorInstance == null) {
+            synchronized (GenericSingleSignOnLocator.class) {
+                if (jwtProcessorInstance == null) {
+                    jwtProcessorInstance = new GenericJwtProcessor();
+                }
+            }
+        }
+        return jwtProcessorInstance;
     }
 
     @Override
