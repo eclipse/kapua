@@ -45,5 +45,18 @@
             </includes>
 
         </dependencySet>
+        <dependencySet>
+            <outputDirectory>var/opt/jetty/webapps/root/WEB-INF/lib</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <useProjectArtifact>false</useProjectArtifact>
+
+            <includes>
+                <include>com.h2database:h2</include>
+            </includes>
+
+        </dependencySet>
     </dependencySets>
 </assembly>
