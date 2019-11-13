@@ -31,7 +31,6 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -42,6 +41,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolBar;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.device.client.device.packages.dialog.DeviceManagementOperationLog;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.registry.GwtDeviceManagementOperation;
@@ -62,8 +62,6 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
     private static final int PAGE_SIZE = 250;
 
     private boolean initialized;
-
-    private ToolBar toolBar;
 
     private Grid<GwtDeviceManagementOperation> grid;
     private KapuaPagingToolBar pagingToolBar;
@@ -102,7 +100,6 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
         devicesPackageHistoryPanel.setBodyBorder(true);
         devicesPackageHistoryPanel.setHeaderVisible(false);
         devicesPackageHistoryPanel.setLayout(new FitLayout());
-        devicesPackageHistoryPanel.setTopComponent(toolBar);
         devicesPackageHistoryPanel.add(grid);
         devicesPackageHistoryPanel.setBottomComponent(pagingToolBar);
 
@@ -136,6 +133,32 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
 
                         return model.get(property);
                     }
+                });
+        configs.add(column);
+
+        column = new ColumnConfig();
+        column.setId("status");
+        column.setHeader(DEVICES_MSGS.deviceInstallTabHistoryTableStatus());
+        column.setWidth(200);
+        column.setAlignment(HorizontalAlignment.CENTER);
+        column.setRenderer(
+                new GridCellRenderer<GwtDeviceManagementOperation>() {
+
+                    @Override
+                    public Object render(GwtDeviceManagementOperation model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtDeviceManagementOperation> store, Grid<GwtDeviceManagementOperation> grid) {
+                        switch (model.getStatusEnum()) {
+                            case COMPLETED:
+                                return DEVICES_MSGS.deviceInstallTabHistoryTableStatusCompleted();
+                            case RUNNING:
+                                return DEVICES_MSGS.deviceInstallTabHistoryTableStatusRunning();
+                            case STALE:
+                                return DEVICES_MSGS.deviceInstallTabHistoryTableStatusStale();
+                            case FAILED:
+                                return DEVICES_MSGS.deviceInstallTabHistoryTableStatusFailed();
+                        }
+                        return null;
+                    }
+
                 });
         configs.add(column);
 
@@ -198,32 +221,6 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
         column.setWidth(200);
         configs.add(column);
 
-        column = new ColumnConfig();
-        column.setId("status");
-        column.setHeader(DEVICES_MSGS.deviceInstallTabHistoryTableStatus());
-        column.setWidth(200);
-        column.setAlignment(HorizontalAlignment.CENTER);
-        column.setRenderer(
-                new GridCellRenderer<GwtDeviceManagementOperation>() {
-
-                    @Override
-                    public Object render(GwtDeviceManagementOperation model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtDeviceManagementOperation> store, Grid<GwtDeviceManagementOperation> grid) {
-                        switch (model.getStatusEnum()) {
-                            case COMPLETED:
-                                return DEVICES_MSGS.deviceInstallTabHistoryTableStatusCompleted();
-                            case RUNNING:
-                                return DEVICES_MSGS.deviceInstallTabHistoryTableStatusRunning();
-                            case STALE:
-                                return DEVICES_MSGS.deviceInstallTabHistoryTableStatusStale();
-                            case FAILED:
-                                return DEVICES_MSGS.deviceInstallTabHistoryTableStatusFailed();
-                        }
-                        return null;
-                    }
-
-                });
-        configs.add(column);
-
         // loader and store
         RpcProxy<PagingLoadResult<GwtDeviceManagementOperation>> proxy = new RpcProxy<PagingLoadResult<GwtDeviceManagementOperation>>() {
 
@@ -280,13 +277,22 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
     //
     // --------------------------------------------------------------------------------------
 
+    public void showOperationLog() {
+        GwtDeviceManagementOperation deviceManagementOperation = grid.getSelectionModel().getSelectedItem();
+        if (deviceManagementOperation != null) {
+            DeviceManagementOperationLog logDialog = new DeviceManagementOperationLog(deviceManagementOperation);
+            logDialog.show();
+        }
+    }
+
+
     @Override
     public void doRefresh() {
         if (contentDirty && initialized) {
             if (selectedEntity == null) {
                 // clear the table
                 grid.getStore().removeAll();
-            } else if (!loadingInProgress){
+            } else if (!loadingInProgress) {
                 loader.load();
             }
             contentDirty = false;
@@ -297,10 +303,12 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
         loader.load();
     }
 
+    @Override
     public void refresh() {
         doRefresh();
     }
 
+    @Override
     public void setDirty(boolean isDirty) {
         contentDirty = isDirty;
     }

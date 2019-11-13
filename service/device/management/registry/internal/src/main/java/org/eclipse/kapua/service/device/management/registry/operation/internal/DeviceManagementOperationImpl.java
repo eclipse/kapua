@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.registry.operation.internal;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -81,6 +82,10 @@ public class DeviceManagementOperationImpl extends AbstractKapuaUpdatableEntity 
     @ElementCollection
     @CollectionTable(name = "dvcm_device_management_operation_input_property", joinColumns = @JoinColumn(name = "operation_id", referencedColumnName = "id"))
     private List<DeviceManagementOperationPropertyImpl> inputProperties;
+
+    @Basic
+    @Column(name = "log", nullable = true, updatable = true)
+    private String log;
 
     /**
      * Constructor.
@@ -219,5 +224,17 @@ public class DeviceManagementOperationImpl extends AbstractKapuaUpdatableEntity 
                 this.inputProperties.add(DeviceManagementOperationPropertyImpl.parse(sp));
             }
         }
+    }
+
+    @Override
+    public String getLog() {
+        // Setting to empty if null to avoid checking for null and empty when using this value.
+        return Strings.nullToEmpty(log);
+    }
+
+    @Override
+    public void setLog(String log) {
+        // Setting to null to avoid storing empty string in database
+        this.log = Strings.emptyToNull(log);
     }
 }
