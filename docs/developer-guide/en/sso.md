@@ -90,7 +90,8 @@ It is mandatory to provide teh following attributes:
 
 Currently, logging out from Kapua does not imply logging out from the OpenID provider. 
 This means that, if the OpenID session has not expired yet, the user will be able to login again using the "SSO Login" 
-button without submitting again the credentials.
+button without submitting again the credentials. 
+Logging out from the OpenID provider is possible through the provider OpenID logout endpoint.
 
 However, one might require that the user is also logged out from the OpenID provider when he logs out from Kapua.
 This should be implemented in a future improvement, as described by the OpenID Connect specification 
