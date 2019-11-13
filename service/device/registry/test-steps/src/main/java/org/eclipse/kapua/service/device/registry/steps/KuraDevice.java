@@ -187,7 +187,7 @@ public class KuraDevice implements MqttCallback {
     /**
      * Prepare client and server part of mocked mqtt.
      */
-    private void mqttClientSetup() {
+    public void mqttClientSetup() {
         /*
          * mqttClient is meant to simulate Kura device for sending messages,
          * while subscribedClient is meant to receive messages from Kura device side.
