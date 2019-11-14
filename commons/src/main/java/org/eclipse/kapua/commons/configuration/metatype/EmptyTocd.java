@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,12 +9,11 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.certificate.internal;
+package org.eclipse.kapua.commons.configuration.metatype;
 
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
-import org.eclipse.kapua.service.certificate.CertificateService;
 
 import javax.xml.namespace.QName;
 import java.util.Collections;
@@ -23,13 +22,15 @@ import java.util.Map;
 
 public class EmptyTocd implements KapuaTocd {
 
-    private static final EmptyTocd INSTANCE = new EmptyTocd();
+    private String id;
+    private String name;
 
-    public static EmptyTocd getInstance() {
-        return INSTANCE;
+    public EmptyTocd() {
     }
 
-    private EmptyTocd() {
+    public EmptyTocd(String id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     @Override
@@ -38,13 +39,13 @@ public class EmptyTocd implements KapuaTocd {
     }
 
     @Override
-    public void setName(String value) {
-        // No OP implementation
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
-    public void setId(String value) {
-        // No OP implementation
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override
@@ -74,12 +75,12 @@ public class EmptyTocd implements KapuaTocd {
 
     @Override
     public String getName() {
-        return CertificateService.class.getSimpleName();
+        return name;
     }
 
     @Override
     public String getId() {
-        return CertificateService.class.getName();
+        return id;
     }
 
     @Override

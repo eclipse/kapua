@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,12 +7,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *      Eurotech - initial API and implementation
+ *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.configuration.metatype;
-
-import org.eclipse.kapua.commons.configuration.metatype.XmlConfigPropertyAdapted.ConfigPropertyType;
-import org.eclipse.kapua.commons.util.CryptoUtil;
+package org.eclipse.kapua.service.device.management.configuration;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.util.ArrayList;
@@ -20,21 +17,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.kapua.commons.configuration.metatype.Password;
+import org.eclipse.kapua.commons.util.CryptoUtil;
+import org.eclipse.kapua.service.device.management.configuration.DeviceXmlConfigPropertyAdapted.ConfigPropertyType;
+
 /**
  * Xml configuration properties adapter. It marshal and unmarshal configuration properties in a proper way.
  *
  * @since 1.0
  */
-public class XmlConfigPropertiesAdapter extends XmlAdapter<XmlConfigPropertiesAdapted, Map<String, Object>> {
+public class DeviceXmlConfigPropertiesAdapter extends XmlAdapter<DeviceXmlConfigPropertiesAdapted, Map<String, Object>> {
 
     @Override
-    public XmlConfigPropertiesAdapted marshal(Map<String, Object> props) {
-        List<XmlConfigPropertyAdapted> adaptedValues = new ArrayList<>();
+    public DeviceXmlConfigPropertiesAdapted marshal(Map<String, Object> props) {
+        List<DeviceXmlConfigPropertyAdapted> adaptedValues = new ArrayList<>();
 
         if (props != null) {
             props.forEach((name, value) -> {
 
-                XmlConfigPropertyAdapted adaptedValue = new XmlConfigPropertyAdapted();
+                DeviceXmlConfigPropertyAdapted adaptedValue = new DeviceXmlConfigPropertyAdapted();
                 adaptedValue.setName(name);
 
                 if (value instanceof String) {
@@ -188,20 +189,20 @@ public class XmlConfigPropertiesAdapter extends XmlAdapter<XmlConfigPropertiesAd
             });
         }
 
-        XmlConfigPropertiesAdapted result = new XmlConfigPropertiesAdapted();
-        result.setProperties(adaptedValues.toArray(new XmlConfigPropertyAdapted[] {}));
+        DeviceXmlConfigPropertiesAdapted result = new DeviceXmlConfigPropertiesAdapted();
+        result.setProperties(adaptedValues.toArray(new DeviceXmlConfigPropertyAdapted[] {}));
         return result;
     }
 
     @Override
-    public Map<String, Object> unmarshal(XmlConfigPropertiesAdapted adaptedPropsAdapted) {
-        XmlConfigPropertyAdapted[] adaptedProps = adaptedPropsAdapted.getProperties();
+    public Map<String, Object> unmarshal(DeviceXmlConfigPropertiesAdapted adaptedPropsAdapted) {
+        DeviceXmlConfigPropertyAdapted[] adaptedProps = adaptedPropsAdapted.getProperties();
         if (adaptedProps == null) {
             return new HashMap<>();
         }
 
         Map<String, Object> properties = new HashMap<>();
-        for (XmlConfigPropertyAdapted adaptedProp : adaptedProps) {
+        for (DeviceXmlConfigPropertyAdapted adaptedProp : adaptedProps) {
             String propName = adaptedProp.getName();
             ConfigPropertyType type = adaptedProp.getType();
             if (type != null) {

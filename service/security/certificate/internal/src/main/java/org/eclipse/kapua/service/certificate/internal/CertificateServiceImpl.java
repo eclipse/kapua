@@ -14,13 +14,12 @@ package org.eclipse.kapua.service.certificate.internal;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.metatype.EmptyTocd;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.KapuaFileUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
-import org.eclipse.kapua.model.config.metatype.KapuaTad;
-import org.eclipse.kapua.model.config.metatype.KapuaTicon;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -45,7 +44,6 @@ import org.eclipse.kapua.service.certificate.util.CertificateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.namespace.QName;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +64,8 @@ public class CertificateServiceImpl implements CertificateService {
     private String certificate;
     private String privateKey;
 
+    private KapuaTocd emptyTocd;
+
     /**
      * Constructor
      */
@@ -84,6 +84,9 @@ public class CertificateServiceImpl implements CertificateService {
                 privateKey = CertificateUtils.readPrivateKeyAsString(KapuaFileUtils.getAsFile(privateKeyPath));
             }
         });
+
+        emptyTocd = new EmptyTocd(CertificateService.class.getName(), CertificateService.class.getSimpleName());
+
     }
 
     @Override
@@ -163,7 +166,7 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
-        return EmptyTocd.getInstance();
+        return emptyTocd;
     }
 
     @Override
@@ -176,85 +179,4 @@ public class CertificateServiceImpl implements CertificateService {
         throw new UnsupportedOperationException();
     }
 
-    public static class EmptyTocd implements KapuaTocd {
-
-        private static final EmptyTocd INSTANCE = new EmptyTocd();
-
-        public static EmptyTocd getInstance() {
-            return INSTANCE;
-        }
-
-        private EmptyTocd() {
-        }
-
-        @Override
-        public void setOtherAttributes(Map<QName, String> otherAttributes) {
-            // This is a Empty TOCD implementation
-        }
-
-        @Override
-        public void setName(String value) {
-            // This is a Empty TOCD implementation
-        }
-
-        @Override
-        public void setId(String value) {
-            // This is a Empty TOCD implementation
-        }
-
-        @Override
-        public void setIcon(List<? extends KapuaTicon> icon) {
-            // This is a Empty TOCD implementation
-        }
-
-        @Override
-        public void setDescription(String value) {
-            // This is a Empty TOCD implementation
-        }
-
-        @Override
-        public void setAny(List<Object> any) {
-            // This is a Empty TOCD implementation
-        }
-
-        @Override
-        public void setAD(List<? extends KapuaTad> icon) {
-            // This is a Empty TOCD implementation
-        }
-
-        @Override
-        public Map<QName, String> getOtherAttributes() {
-            return Collections.emptyMap();
-        }
-
-        @Override
-        public String getName() {
-            return CertificateService.class.getSimpleName();
-        }
-
-        @Override
-        public String getId() {
-            return CertificateService.class.getName();
-        }
-
-        @Override
-        public List<KapuaTicon> getIcon() {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public String getDescription() {
-            return null;
-        }
-
-        @Override
-        public List<Object> getAny() {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public List<KapuaTad> getAD() {
-            return Collections.emptyList();
-        }
-    }
 }

@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.datastore;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.config.KapuaConfigurableService;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.StorableId;
@@ -27,7 +26,7 @@ import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
  *
  * @since 1.0.0
  */
-public interface MetricInfoRegistryService extends KapuaService, KapuaConfigurableService {
+public interface MetricInfoRegistryService extends KapuaService {
 
     /**
      * Find metric information by identifier
