@@ -15,6 +15,8 @@ BROKER_ASSEMBLY_DIR="/kapua/assembly/broker";
 BROKER_CORE_DEPENDENCY_DIR="/kapua/broker-core/target/dependency";
 BROKER_INSTALLATION_DIR="/usr/local/activemq";
 
+VAGRANT_DEPENDENCY_DIR="/kapua/dev-tools/vagrant/target/dependency";
+
 echo "Cleanup the symbolic links to Kapua jars..."
 for name in $(find lib/extra -type l);
     do
@@ -32,6 +34,14 @@ for name in $(ls  ${BROKER_CORE_DEPENDENCY_DIR} | grep -Ev 'qa|jaxb-|activemq-|k
         ln -s  ${BROKER_CORE_DEPENDENCY_DIR}/${name} ./lib/extra/${name};
     done;
 echo "    Copy dependencies for broker-core... DONE!"
+
+echo "    Copy additional dependencies for broker-core..."
+for name in $(ls  ${VAGRANT_DEPENDENCY_DIR});
+    do
+        echo "        Create symbolic link from ./lib/extra/${name}  ${VAGRANT_DEPENDENCY_DIR}/${name}";
+        ln -s  ${VAGRANT_DEPENDENCY_DIR}/${name} ./lib/extra/${name};
+    done;
+echo "    Copy additional dependencies for broker-core... DONE!"
 
 echo '    Copy Kapua modules...'
 for name in $(find /kapua -name 'kapua-*.jar' | grep target | grep -Ev 'qa|bin|test|console|WEB-INF|dependency|mysql|assembly|dev-tools');
