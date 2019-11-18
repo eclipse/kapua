@@ -75,25 +75,25 @@ public enum PackageAppProperties implements KapuaAppProperties {
      *
      * @since 1.1.0
      */
-    APP_PROPERTY_PACKAGE_DOWNLOAD_USERNAME("kapau.package.download.username"),
+    APP_PROPERTY_PACKAGE_DOWNLOAD_USERNAME("kapua.package.download.username"),
     /**
      * URI password
      *
      * @since 1.1.0
      */
-    APP_PROPERTY_PACKAGE_DOWNLOAD_PASSWORD("kapau.package.download.password"),
+    APP_PROPERTY_PACKAGE_DOWNLOAD_PASSWORD("kapua.package.download.password"),
     /**
      * File hash
      *
      * @since 1.1.0
      */
-    APP_PROPERTY_PACKAGE_DOWNLOAD_FILE_HASH("kapau.package.download.file.hash"),
+    APP_PROPERTY_PACKAGE_DOWNLOAD_FILE_HASH("kapua.package.download.file.hash"),
     /**
      * File type
      *
      * @since 1.1.0
      */
-    APP_PROPERTY_PACKAGE_DOWNLOAD_FILE_TYPE("kapau.package.download.file.type"),
+    APP_PROPERTY_PACKAGE_DOWNLOAD_FILE_TYPE("kapua.package.download.file.type"),
     /**
      * Package install
      *
