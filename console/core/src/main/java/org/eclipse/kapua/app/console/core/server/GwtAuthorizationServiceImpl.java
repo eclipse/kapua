@@ -16,6 +16,7 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.app.console.core.server.util.SsoLocator;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtJwtCredential;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtLoginCredential;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
@@ -108,7 +109,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             authenticationService.login(credentials);
 
             // Get the session infos
-            return establishSession();
+            return establishSession(null);
         } catch (Throwable t) {
             logout();
             KapuaExceptionHandler.handle(t);
@@ -127,19 +128,16 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
         try {
             // Get the user
-
             KapuaLocator locator = KapuaLocator.getInstance();
             AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
             CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
             JwtCredentials credentials = credentialsFactory.newJwtCredentials(gwtAccessTokenCredentials.getAccessToken());
 
             // Login
-
             handleLogin(authenticationService, credentials);
 
             // Get the session infos
-
-            return establishSession();
+            return establishSession(gwtAccessTokenCredentials);
         } catch (Throwable t) {
             logout();
             KapuaExceptionHandler.handle(t);
@@ -210,7 +208,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
                 // get the session
                 if (gwtSession == null) {
-                    gwtSession = establishSession();
+                    gwtSession = establishSession(null);
                 } else {
                     User user = userService.findByName(username);
                     gwtSession.setUserId(user.getId().toCompactId());
@@ -224,7 +222,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         return gwtSession;
     }
 
-    private GwtSession establishSession() throws KapuaException {
+    private GwtSession establishSession(GwtJwtCredential gwtAccessTokenCredentials) throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
 
         //
@@ -269,6 +267,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         gwtSession.setVersion(commonsConfig.getString(SystemSettingKey.VERSION));
         gwtSession.setBuildVersion(commonsConfig.getString(SystemSettingKey.BUILD_VERSION));
         gwtSession.setBuildNumber(commonsConfig.getString(SystemSettingKey.BUILD_NUMBER));
+        gwtSession.setSsoEnabled(SsoLocator.getLocator(this).getService().isEnabled());
 
         // User info
         gwtSession.setUserId(gwtUser.getId());
@@ -283,6 +282,17 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
         gwtSession.setAccountPath(gwtAccount.getParentAccountPath());
         gwtSession.setSelectedAccountPath(gwtAccount.getParentAccountPath());
+
+        // Access token
+        if (gwtAccessTokenCredentials!=null) {
+            gwtSession.setSsoAccessToken(gwtAccessTokenCredentials.getAccessToken());
+        }
+
+        //
+        // Saving session data in session
+        Subject currentUser = SecurityUtils.getSubject();
+        Session session = currentUser.getSession();
+        session.setAttribute(SESSION_CURRENT, gwtSession);
 
         //
         // Load permissions

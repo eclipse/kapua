@@ -45,7 +45,8 @@ public class UserTabDescription extends EntityDescriptionTabItem<GwtUser> {
             @Override
             protected void load(Object loadConfig,
                     AsyncCallback<ListLoadResult<GwtGroupedNVPair>> callback) {
-                GWT_USER_SERVICE.getUserDescription(selectedEntity.getScopeId(), selectedEntity.getId(), callback);
+                GWT_USER_SERVICE.getUserDescription(currentSession.isSsoEnabled(), selectedEntity.getScopeId(),
+                        selectedEntity.getId(), callback);
             }
         };
     }

@@ -17,7 +17,9 @@ import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser.GwtUserStatus;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser.GwtUserType;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUserQuery;
+import org.eclipse.kapua.model.query.FieldSortCriteria;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
@@ -27,6 +29,7 @@ import org.eclipse.kapua.service.user.UserAttributes;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserStatus;
+import org.eclipse.kapua.service.user.UserType;
 
 /**
  * Utility class for convertKapuaId {@link BaseModel}s to {@link KapuaEntity}ies and other Kapua models
@@ -70,6 +73,9 @@ public class GwtKapuaUserModelConverter {
         if (gwtUserQuery.getDisplayName() != null && !gwtUserQuery.getDisplayName().isEmpty()) {
             predicate.and(query.attributePredicate(UserAttributes.DISPLAY_NAME, gwtUserQuery.getDisplayName(), Operator.LIKE));
         }
+        if (gwtUserQuery.getUserType() != null && !gwtUserQuery.getUserType().equals(GwtUserType.ANY.toString())) {
+            predicate.and(query.attributePredicate(UserAttributes.USER_TYPE, convertUserType(gwtUserQuery.getUserType()), Operator.EQUAL));
+        }
         query.setOffset(loadConfig.getOffset());
         query.setLimit(loadConfig.getLimit());
         String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? UserAttributes.NAME : loadConfig.getSortField();
@@ -85,8 +91,12 @@ public class GwtKapuaUserModelConverter {
             sortField = UserAttributes.CREATED_ON;
         } else if (sortField.equals("createdByName")) {
             sortField = UserAttributes.CREATED_BY;
+        } else if (sortField.equals("userType")) {
+            sortField = UserAttributes.USER_TYPE;
         }
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
+        FieldSortCriteria sortCriteria = query.fieldSortCriteria(sortField, sortOrder);
+        query.setSortCriteria(sortCriteria);
         query.setPredicate(predicate);
         query.setAskTotalCount(gwtUserQuery.getAskTotalCount());
         //
@@ -100,6 +110,14 @@ public class GwtKapuaUserModelConverter {
 
     public static UserStatus convertUserStatus(GwtUserStatus gwtUserStatus) {
         return UserStatus.valueOf(gwtUserStatus.toString());
+    }
+
+    private static UserType convertUserType(String userType) {
+        return UserType.valueOf(userType);
+    }
+
+    public static UserType convertUserType(GwtUserType gwtUserType) {
+        return UserType.valueOf(gwtUserType.toString());
     }
 
 }

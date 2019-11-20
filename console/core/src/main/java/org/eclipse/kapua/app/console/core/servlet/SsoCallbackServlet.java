@@ -11,9 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.servlet;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import org.apache.http.client.utils.URIBuilder;
+import org.eclipse.kapua.app.console.core.server.util.SsoHelper;
+import org.eclipse.kapua.app.console.core.server.util.SsoLocator;
+import org.eclipse.kapua.sso.SingleSignOnLocator;
+import org.eclipse.kapua.sso.exception.SsoException;
+import org.eclipse.kapua.sso.exception.uri.SsoIllegalUriException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.json.JsonObject;
 import javax.servlet.ServletConfig;
@@ -21,14 +26,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.eclipse.kapua.app.console.core.server.util.SsoHelper;
-import org.apache.http.client.utils.URIBuilder;
-import org.eclipse.kapua.app.console.core.server.util.SsoLocator;
-import org.eclipse.kapua.sso.SingleSignOnLocator;
-import org.eclipse.kapua.sso.exception.SsoJwtException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class SsoCallbackServlet extends HttpServlet {
 
@@ -51,22 +51,28 @@ public class SsoCallbackServlet extends HttpServlet {
         final URI redirectUri = SsoHelper.getRedirectUri();
         if (authCode != null) {
 
+            final JsonObject jsonObject;
             try {
-                final JsonObject jsonObject = locator.getService().getAccessToken(authCode, redirectUri);
-
-                // Get and clean jwks_uri property
-                final String accessToken = jsonObject.getString("access_token");
-                final String homeUri = SsoHelper.getHomeUri();
-
-                try {
-                    final URIBuilder redirect = new URIBuilder(homeUri);
-                    redirect.addParameter("access_token", accessToken);
-                    resp.sendRedirect(redirect.toString());
-                } catch (final URISyntaxException e) {
-                    throw new ServletException("Failed to parse redirect URL: " + homeUri, e);
-                }
-            } catch (SsoJwtException sje) {
+                jsonObject = locator.getService().getAccessToken(authCode, redirectUri);
+            } catch (SsoException sje) {
                 throw new ServletException("Failed to get access token: " + sje.getMessage(), sje);
+            }
+
+            // Get and clean jwks_uri property
+            final String accessToken = jsonObject.getString("access_token");
+            final String homeUri;
+            try {
+                homeUri = SsoHelper.getHomeUri();
+            } catch (SsoIllegalUriException e) {
+                throw new ServletException("Failed to get Home URI (null or empty).");
+            }
+
+            try {
+                final URIBuilder redirect = new URIBuilder(homeUri);
+                redirect.addParameter("access_token", accessToken);
+                resp.sendRedirect(redirect.toString());
+            } catch (final URISyntaxException e) {
+                throw new ServletException("Failed to parse redirect URL: " + homeUri, e);
             }
         } else {
 
@@ -79,7 +85,12 @@ public class SsoCallbackServlet extends HttpServlet {
             } else {
                 throw new ServletException("Invalid HttpServletRequest");
             }
-            final String homeUri = SsoHelper.getHomeUri();
+            final String homeUri;
+            try {
+                homeUri = SsoHelper.getHomeUri();
+            } catch (SsoIllegalUriException e) {
+                throw new ServletException("Failed to get Home URI (null or empty).");
+            }
             try {
                 final URIBuilder redirect = new URIBuilder(homeUri);
                 redirect.addParameter("error", error);

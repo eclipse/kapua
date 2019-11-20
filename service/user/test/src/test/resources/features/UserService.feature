@@ -224,7 +224,7 @@ Scenario: Update user that doesn't exist
     As user doesn't exist KapuaException should be thrown.
 
     Given I expect the exception "KapuaIllegalNullArgumentException" with the text "*"
-    And User that doesn't exist
+    And User with null UserType
     When I update nonexistent user
     Then An exception was thrown
 

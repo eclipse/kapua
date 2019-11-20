@@ -149,6 +149,47 @@ public class UserGrid extends EntityGrid<GwtUser> {
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
 
+        if (currentSession.isSsoEnabled()) {
+
+            columnConfig = new ColumnConfig("userType", USER_MSGS.gridUserColumnHeaderUserType(), 50);
+            GridCellRenderer<GwtUser> setUserTypeIcon = new GridCellRenderer<GwtUser>() {
+
+                @Override
+                public String render(GwtUser gwtUser, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtUser> deviceList, Grid<GwtUser> grid) {
+
+                    KapuaIcon icon;
+                    if (gwtUser.getUserTypeEnum() != null) {
+                        switch (gwtUser.getUserTypeEnum()) {
+                            case INTERNAL:
+                                icon = new KapuaIcon(IconSet.SQUARE);
+                                icon.setColor(Color.BLUE_KAPUA);
+                                icon.setTitle(MSGS.internal());
+                                break;
+                            case EXTERNAL:
+                                icon = new KapuaIcon(IconSet.EXTERNAL_LINK);
+                                icon.setColor(Color.BLUE_KAPUA);
+                                icon.setTitle(MSGS.external());
+                                break;
+                            default:
+                                icon = new KapuaIcon(IconSet.SQUARE_O);
+                                icon.setColor(Color.GREY);
+                                icon.setTitle(MSGS.unknown());
+                                break;
+                        }
+                    } else {
+                        icon = new KapuaIcon(IconSet.USER);
+                        icon.setColor(Color.GREY);
+                    }
+
+                    return icon.getInlineHTML();
+                }
+            };
+            columnConfig.setRenderer(setUserTypeIcon);
+            columnConfig.setAlignment(HorizontalAlignment.CENTER);
+            columnConfig.setSortable(false);
+            columnConfigs.add(columnConfig);
+        }
+
         columnConfig = new ColumnConfig("id", USER_MSGS.gridUserColumnHeaderId(), 100);
         columnConfig.setHidden(true);
         columnConfig.setSortable(false);

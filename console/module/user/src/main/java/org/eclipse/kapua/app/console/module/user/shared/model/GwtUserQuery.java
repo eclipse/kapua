@@ -25,6 +25,8 @@ public class GwtUserQuery extends GwtQuery {
     private String email;
     private Date expirationDate;
     private String displayName;
+    private String userType;
+    private String externalId;
 
     public String getName() {
         return name;
@@ -72,5 +74,21 @@ public class GwtUserQuery extends GwtQuery {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    public String getExternalId() {
+        return externalId;
+    }
+
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
     }
 }

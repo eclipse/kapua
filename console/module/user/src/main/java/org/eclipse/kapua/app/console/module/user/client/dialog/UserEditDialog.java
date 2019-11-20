@@ -169,26 +169,62 @@ public class UserEditDialog extends UserAddDialog {
         String toolTipText = SplitTooltipStringUtil.splitTooltipString(gwtUser.getUsername(), MAX_LINE_LENGTH);
         toolTipConfig.setText(toolTipText);
 
-            usernameLabel.setValue(gwtUser.getUsername());
-            usernameLabel.setStyleAttribute("white-space", "nowrap");
-            usernameLabel.setStyleAttribute("text-overflow", "ellipsis");
-            usernameLabel.setStyleAttribute("overflow", "hidden");
-            usernameLabel.setToolTip(toolTipConfig);
+        usernameLabel.setValue(gwtUser.getUsername());
+        usernameLabel.setStyleAttribute("white-space", "nowrap");
+        usernameLabel.setStyleAttribute("text-overflow", "ellipsis");
+        usernameLabel.setStyleAttribute("overflow", "hidden");
+        usernameLabel.setToolTip(toolTipConfig);
 
-        if (password != null) {
-            password.setVisible(false);
-            password.setAllowBlank(true);
-            password.setValidator(null);
+        infoFieldSet.remove(externalId);
+        infoFieldSet.remove(userRadioGroup);
+
+        if (currentSession.isSsoEnabled() && gwtUser.getUserTypeEnum() == GwtUser.GwtUserType.EXTERNAL) {
+            externalIdLabel.setVisible(true);
+            externalId.setVisible(false);
+            ToolTipConfig externalIdToolTipConfig = new ToolTipConfig();
+            externalIdToolTipConfig.setMaxWidth(MAX_TOOLTIP_WIDTH);
+            String externalIdToolTipText = SplitTooltipStringUtil.splitTooltipString(gwtUser.getExternalId(), MAX_LINE_LENGTH);
+            externalIdToolTipConfig.setText(externalIdToolTipText);
+
+            externalIdLabel.setValue(gwtUser.getExternalId());
+            externalIdLabel.setStyleAttribute("white-space", "nowrap");
+            externalIdLabel.setStyleAttribute("text-overflow", "ellipsis");
+            externalIdLabel.setStyleAttribute("overflow", "hidden");
+            externalIdLabel.setToolTip(externalIdToolTipConfig);
         }
-        if (confirmPassword != null) {
-            confirmPassword.setVisible(false);
-            confirmPassword.setAllowBlank(true);
-            confirmPassword.setValidator(null);
-        }
-        if (passwordTooltip != null) {
+
+        //userRadioGroup.hide();
+
+        if (gwtUser.getUserTypeEnum() == GwtUser.GwtUserType.INTERNAL) {
+            if (password != null) {
+                password.setVisible(false);
+                password.setAllowBlank(true);
+                password.setValidator(null);
+                password.disable();
+            }
+            if (confirmPassword != null) {
+                confirmPassword.setVisible(false);
+                confirmPassword.setAllowBlank(true);
+                confirmPassword.setValidator(null);
+                confirmPassword.disable();
+            }
+            if (passwordTooltip != null) {
+                passwordTooltip.hide();
+                passwordTooltip.disable();
+            }
+        } else {
+            password.hide();
+            password.disable();
+            confirmPassword.hide();
+            confirmPassword.disable();
             passwordTooltip.hide();
+            passwordTooltip.disable();
         }
+
         username.setValue(gwtUser.getUsername());
+        if (currentSession.isSsoEnabled() && gwtUser.getUserTypeEnum()== GwtUser.GwtUserType.EXTERNAL) {
+            externalId.setValue(gwtUser.getExternalId());
+        }
         displayName.setValue(gwtUser.getUnescapedDisplayName());
         email.setValue(gwtUser.getEmail());
         phoneNumber.setValue(gwtUser.getPhoneNumber());

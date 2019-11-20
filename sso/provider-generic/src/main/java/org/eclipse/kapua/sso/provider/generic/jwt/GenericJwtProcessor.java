@@ -11,14 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso.provider.generic.jwt;
 
-import org.eclipse.kapua.sso.exception.SsoJwtException;
+import org.eclipse.kapua.sso.exception.SsoException;
+import org.eclipse.kapua.sso.exception.SsoIllegalArgumentException;
+import org.eclipse.kapua.sso.provider.jwt.AbstractJwtProcessor;
 import org.eclipse.kapua.sso.provider.generic.setting.GenericSsoSetting;
 import org.eclipse.kapua.sso.provider.generic.setting.GenericSsoSettingKeys;
-import org.eclipse.kapua.sso.provider.jwt.AbstractJwtProcessor;
-import org.eclipse.kapua.sso.provider.setting.SsoSetting;
-import org.eclipse.kapua.sso.provider.setting.SsoSettingKeys;
 
-import java.net.URI;
 import java.util.List;
 
 /**
@@ -26,22 +24,30 @@ import java.util.List;
  */
 public class GenericJwtProcessor extends AbstractJwtProcessor {
 
-    public GenericJwtProcessor() throws SsoJwtException {
+    public GenericJwtProcessor() throws SsoException {
     }
 
     @Override
-    protected String getOpenIdConfPath(final URI issuer) {
-        return issuer.toString() + "/" +
-                SsoSetting.getInstance().getString(SsoSettingKeys.SSO_OPENID_CONF_PATH);
+    protected List<String> getJwtExpectedIssuers() throws SsoIllegalArgumentException {
+        List<String> jwtExpectedIssuers =
+                GenericSsoSetting.getInstance().getList(String.class, GenericSsoSettingKeys.SSO_OPENID_JWT_ISSUER_ALLOWED);
+        if (jwtExpectedIssuers == null || jwtExpectedIssuers.isEmpty()) {
+            throw new SsoIllegalArgumentException(
+                    GenericSsoSettingKeys.SSO_OPENID_JWT_ISSUER_ALLOWED.key(),
+                    (jwtExpectedIssuers == null ? null : ""));
+        }
+        return jwtExpectedIssuers;
     }
 
     @Override
-    protected List<String> getJwtExpectedIssuers() {
-        return GenericSsoSetting.getInstance().getList(String.class, GenericSsoSettingKeys.SSO_OPENID_JWT_ISSUER_ALLOWED);
-    }
-
-    @Override
-    protected List<String> getJwtAudiences() {
-        return GenericSsoSetting.getInstance().getList(String.class, GenericSsoSettingKeys.SSO_OPENID_JWT_AUDIENCE_ALLOWED);
+    protected List<String> getJwtAudiences() throws SsoIllegalArgumentException {
+        List<String> jwtAudiences = GenericSsoSetting.getInstance().getList(String.class,
+                GenericSsoSettingKeys.SSO_OPENID_JWT_AUDIENCE_ALLOWED);
+        if (jwtAudiences == null || jwtAudiences.isEmpty()) {
+            throw new SsoIllegalArgumentException(
+                    GenericSsoSettingKeys.SSO_OPENID_JWT_AUDIENCE_ALLOWED.key(),
+                    (jwtAudiences == null ? null : ""));
+        }
+        return jwtAudiences;
     }
 }

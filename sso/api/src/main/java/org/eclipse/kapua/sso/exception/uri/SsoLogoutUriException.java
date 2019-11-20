@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,26 +9,18 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.user;
+package org.eclipse.kapua.sso.exception.uri;
 
-/**
- * The device user type
- */
-public enum UserType {
-    /**
-     * Device user type
-     * @deprecated no longer used.
-     */
-    @Deprecated
-    DEVICE,
+import org.eclipse.kapua.sso.exception.SsoErrorCodes;
+
+public class SsoLogoutUriException extends SsoUriException {
 
     /**
-     * Internal user type (user credentials from Kapua)
+     * Constructor.
+     *
+     * @param cause The original {@link Throwable}.
      */
-    INTERNAL,
-
-    /**
-     * External user type (user credentials from SSO)
-     */
-    EXTERNAL
+    public SsoLogoutUriException(Throwable cause) {
+        super(SsoErrorCodes.LOGOUT_URI_ERROR, cause);
+    }
 }

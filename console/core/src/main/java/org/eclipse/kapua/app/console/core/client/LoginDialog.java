@@ -30,7 +30,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.core.client.messages.ConsoleCoreMessages;
-import org.eclipse.kapua.app.console.core.client.util.TokenCleaner;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtLoginCredential;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationServiceAsync;
@@ -192,6 +191,7 @@ public class LoginDialog extends Dialog {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
+                username.clearInvalid();
                 doSsoLogin();
             }
 
@@ -207,7 +207,7 @@ public class LoginDialog extends Dialog {
 
             @Override
             public void onFailure(Throwable caught) {
-                ConsoleInfo.display(CORE_MSGS.loginSsoLogin(), caught.getLocalizedMessage());
+                ConsoleInfo.display(CORE_MSGS.loginSsoLoginError(), caught.getLocalizedMessage());
             }
 
             @Override
@@ -249,7 +249,6 @@ public class LoginDialog extends Dialog {
 
             @Override
             public void onFailure(Throwable caught) {
-                TokenCleaner.cleanToken();
                 ConsoleInfo.display(CORE_MSGS.loginError(), caught.getLocalizedMessage());
                 reset();
             }
@@ -257,7 +256,6 @@ public class LoginDialog extends Dialog {
             @Override
             public void onSuccess(GwtSession gwtSession) {
                 currentSession = gwtSession;
-                TokenCleaner.cleanToken();
                 callMainScreen();
                 ConsoleInfo.hideInfo();
             }
@@ -269,13 +267,11 @@ public class LoginDialog extends Dialog {
 
             @Override
             public void onFailure(Throwable caught) {
-                TokenCleaner.cleanToken();
                 FailureHandler.handle(caught);
             }
 
             @Override
             public void onSuccess(Void arg0) {
-                TokenCleaner.cleanToken();
                 ConsoleInfo.display(MSGS.popupInfo(), MSGS.loggedOut());
                 reset();
                 show();

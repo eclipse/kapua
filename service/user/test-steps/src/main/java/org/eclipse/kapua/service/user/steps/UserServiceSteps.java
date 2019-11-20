@@ -421,6 +421,14 @@ public class UserServiceSteps extends TestBase {
         stepData.put("User", user);
     }
 
+    @Given("^User with null UserType$")
+    public void createUserWithNullUserType() {
+        stepData.remove("User");
+        User user = createUserInstance(3234123, 1354133);
+        user.setUserType(null);
+        stepData.put("User", user);
+    }
+
     @When("^I update nonexistent user$")
     public void updateNonexistenUser() throws Exception {
         User user = (User) stepData.get("User");

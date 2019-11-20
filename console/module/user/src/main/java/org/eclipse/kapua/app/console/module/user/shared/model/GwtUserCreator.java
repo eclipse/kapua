@@ -12,6 +12,7 @@
 package org.eclipse.kapua.app.console.module.user.shared.model;
 
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser.GwtUserStatus;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser.GwtUserType;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -29,6 +30,8 @@ public class GwtUserCreator implements Serializable {
     private String permissions;
     private Date expirationDate;
     private GwtUserStatus userStatus;
+    private String externalId;
+    private GwtUserType userType;
 
     private boolean isAdministrator;
 
@@ -117,5 +120,21 @@ public class GwtUserCreator implements Serializable {
 
     public void setUserStatus(String userStatus) {
         setUserStatus(GwtUserStatus.valueOf(userStatus));
+    }
+
+    public String getExternalId() {
+        return externalId;
+    }
+
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
+    }
+
+    public GwtUserType getUserType() {
+        return userType;
+    }
+
+    public void setGwtUserType(GwtUserType userType) {
+        this.userType = userType;
     }
 }

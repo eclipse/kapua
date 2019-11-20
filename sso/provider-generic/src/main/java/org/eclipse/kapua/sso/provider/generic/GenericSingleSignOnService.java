@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso.provider.generic;
 
+import org.eclipse.kapua.sso.exception.uri.SsoIllegalUriException;
 import org.eclipse.kapua.sso.provider.AbstractSingleSignOnService;
 import org.eclipse.kapua.sso.provider.generic.setting.GenericSsoSetting;
 import org.eclipse.kapua.sso.provider.generic.setting.GenericSsoSettingKeys;
@@ -33,12 +34,29 @@ public class GenericSingleSignOnService extends AbstractSingleSignOnService {
     }
 
     @Override
-    protected String getAuthUri() {
-        return genericSettings.getString(GenericSsoSettingKeys.SSO_OPENID_SERVER_ENDPOINT_AUTH);
+    protected String getAuthUri() throws SsoIllegalUriException {
+        String authUri = genericSettings.getString(GenericSsoSettingKeys.SSO_OPENID_SERVER_ENDPOINT_AUTH);
+        if (authUri == null || authUri.isEmpty()) {
+            throw new SsoIllegalUriException(GenericSsoSettingKeys.SSO_OPENID_SERVER_ENDPOINT_AUTH.key(), authUri);
+        }
+        return authUri;
     }
 
     @Override
-    protected String getTokenUri() {
-        return genericSettings.getString(GenericSsoSettingKeys.SSO_OPENID_SERVER_ENDPOINT_TOKEN);
+    protected String getTokenUri() throws SsoIllegalUriException {
+        String tokenUri = genericSettings.getString(GenericSsoSettingKeys.SSO_OPENID_SERVER_ENDPOINT_TOKEN);
+        if (tokenUri == null || tokenUri.isEmpty()) {
+            throw new SsoIllegalUriException(GenericSsoSettingKeys.SSO_OPENID_SERVER_ENDPOINT_TOKEN.key(), tokenUri);
+        }
+        return tokenUri;
+    }
+
+    @Override
+    protected String getLogoutUri() throws SsoIllegalUriException {
+        String logoutUri = genericSettings.getString(GenericSsoSettingKeys.SSO_OPENID_SERVER_ENDPOINT_LOGOUT);
+        if (logoutUri == null || logoutUri.isEmpty()) {
+            throw new SsoIllegalUriException(GenericSsoSettingKeys.SSO_OPENID_SERVER_ENDPOINT_LOGOUT.key(), logoutUri);
+        }
+        return logoutUri;
     }
 }

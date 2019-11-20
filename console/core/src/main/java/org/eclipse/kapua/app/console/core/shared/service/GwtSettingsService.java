@@ -15,6 +15,7 @@ import org.eclipse.kapua.app.console.core.shared.model.GwtProductInformation;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 
 /**
  * This service retrieves a subset of configuration values for front-end usage.
@@ -24,9 +25,11 @@ public interface GwtSettingsService extends RemoteService {
 
     public GwtProductInformation getProductInformation();
 
-    public String getSsoLoginUri();
+    public String getSsoLoginUri() throws GwtKapuaException;
 
-    public String getHomeUri();
+    public String getSsoLogoutUri(String ssoAccessToken) throws GwtKapuaException;
+
+    public String getHomeUri() throws GwtKapuaException;
 
     public boolean getSsoEnabled();
 }

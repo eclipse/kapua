@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,26 +9,18 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.user;
+package org.eclipse.kapua;
 
-/**
- * The device user type
- */
-public enum UserType {
-    /**
-     * Device user type
-     * @deprecated no longer used.
-     */
-    @Deprecated
-    DEVICE,
+public class KapuaDuplicateExternalIdInAnotherAccountError extends KapuaException {
 
     /**
-     * Internal user type (user credentials from Kapua)
+     *
      */
-    INTERNAL,
+    private static final long serialVersionUID = 6086560691695487741L;
 
-    /**
-     * External user type (user credentials from SSO)
-     */
-    EXTERNAL
+    public KapuaDuplicateExternalIdInAnotherAccountError(String duplicateExternalId) {
+        super(KapuaErrorCodes.EXTERNAL_ID_ALREADY_EXIST_IN_ANOTHER_ACCOUNT, duplicateExternalId);
+        // TODO Auto-generated constructor stub
+    }
+
 }

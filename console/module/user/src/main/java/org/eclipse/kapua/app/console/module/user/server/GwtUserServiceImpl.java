@@ -70,6 +70,7 @@ import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
+import org.eclipse.kapua.service.user.UserType;
 
 /**
  * The server side implementation of the RPC service.
@@ -105,11 +106,18 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             KapuaId scopeId = KapuaEid.parseCompactId(gwtUserCreator.getScopeId());
 
             final UserCreator userCreator = USER_FACTORY.newCreator(scopeId, gwtUserCreator.getUsername());
+            userCreator.setUserType(GwtKapuaUserModelConverter.convertUserType(gwtUserCreator.getUserType()));
             userCreator.setDisplayName(gwtUserCreator.getDisplayName());
             userCreator.setEmail(gwtUserCreator.getEmail());
             userCreator.setPhoneNumber(gwtUserCreator.getPhoneNumber());
             userCreator.setExpirationDate(gwtUserCreator.getExpirationDate());
             userCreator.setUserStatus(GwtKapuaUserModelConverter.convertUserStatus(gwtUserCreator.getUserStatus()));
+
+            // add the externalId if the user is EXTERNAL
+            if (GwtKapuaUserModelConverter.convertUserType(gwtUserCreator.getUserType()).equals(UserType.EXTERNAL) &&
+                    gwtUserCreator.getExternalId()!=null) {
+                userCreator.setExternalId(gwtUserCreator.getExternalId());
+            }
 
             //
             // Create the User
@@ -117,7 +125,8 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
             //
             // Create credentials
-            if (gwtUserCreator.getPassword() != null) {
+            if (GwtKapuaUserModelConverter.convertUserType(gwtUserCreator.getUserType()).equals(UserType.INTERNAL) &&
+                    gwtUserCreator.getPassword() != null) {
 
                 CredentialCreator credentialCreator = CREDENTIAL_FACTORY.newCreator(scopeId,
                         user.getId(),
@@ -285,8 +294,8 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     }
 
     @Override
-    public ListLoadResult<GwtGroupedNVPair> getUserDescription(String shortScopeId,
-            String shortUserId) throws GwtKapuaException {
+    public ListLoadResult<GwtGroupedNVPair> getUserDescription(boolean isSsoEnabled, String shortScopeId,
+                                                               String shortUserId) throws GwtKapuaException {
         List<GwtGroupedNVPair> gwtUserDescription = new ArrayList<GwtGroupedNVPair>();
         try {
             final KapuaId scopeId = KapuaEid.parseCompactId(shortScopeId);
@@ -322,6 +331,12 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userEmail", user.getEmail()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userPhoneNumber", user.getPhoneNumber()));
                 gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "expirationDate", user.getExpirationDate()));
+                if (isSsoEnabled) {
+                    gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userType", user.getUserType().toString()));
+                    if (user.getUserType() == UserType.EXTERNAL) {
+                        gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userExternalId", user.getExternalId()));
+                    }
+                }
                 gwtUserDescription.add(new GwtGroupedNVPair("entityInfo", "userCreatedOn", user.getCreatedOn()));
                 gwtUserDescription.add(new GwtGroupedNVPair("entityInfo", "userCreatedBy", user.getCreatedBy() != null ? usernameMap.get(user.getCreatedBy().toCompactId()) : null));
                 gwtUserDescription.add(new GwtGroupedNVPair("entityInfo", "userModifiedOn", user.getModifiedOn()));

@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
 
+import org.eclipse.kapua.KapuaDuplicateExternalIdException;
+import org.eclipse.kapua.KapuaDuplicateExternalIdInAnotherAccountError;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
@@ -82,9 +84,9 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         ArgumentValidator.notNull(userCreator.getUserType(), "userCreator.userType");
         ArgumentValidator.notNull(userCreator.getUserStatus(), "userCreator.userStatus");
 
-        if (userCreator.getUserType() != UserType.INTERNAL) {
+        if (userCreator.getUserType() == UserType.EXTERNAL) {
             ArgumentValidator.notEmptyOrNull(userCreator.getExternalId(), "userCreator.externalId");
-        } else {
+        } else if (userCreator.getUserType() == UserType.INTERNAL) {
             ArgumentValidator.isEmptyOrNull(userCreator.getExternalId(), "userCreator.externalId");
         }
 
@@ -111,6 +113,20 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
             throw new KapuaDuplicateNameInAnotherAccountError(userCreator.getName());
         }
 
+        if (userCreator.getUserType() == UserType.EXTERNAL) {
+            // Check duplicate externalId
+            UserQuery queryExternalId = new UserQueryImpl(userCreator.getScopeId());
+            queryExternalId.setPredicate(query.attributePredicate(UserAttributes.EXTERNAL_ID, userCreator.getExternalId()));
+            if (count(queryExternalId) > 0) {
+                throw new KapuaDuplicateExternalIdException(userCreator.getExternalId());
+            }
+
+            User userByExternalId = KapuaSecurityUtils.doPrivileged(() -> findByExternalId(userCreator.getExternalId()));
+            if (userByExternalId != null) {
+                throw new KapuaDuplicateExternalIdInAnotherAccountError(userCreator.getExternalId());
+            }
+        }
+
         //
         // Do create
         return entityManagerSession.doTransactedAction(EntityManagerContainer.<User>create().onResultHandler(em -> UserDAO.create(em,
@@ -127,10 +143,11 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         ArgumentValidator.notEmptyOrNull(user.getName(), "user.name");
         ArgumentValidator.match(user.getName(), CommonsValidationRegex.NAME_REGEXP, "user.name");
         ArgumentValidator.match(user.getEmail(), CommonsValidationRegex.EMAIL_REGEXP, "user.email");
+        ArgumentValidator.notNull(user.getUserType(), "user.userType");
 
-        if (user.getUserType() != UserType.INTERNAL) {
+        if (user.getUserType() == UserType.EXTERNAL) {
             ArgumentValidator.notEmptyOrNull(user.getExternalId(), "user.externalId");
-        } else {
+        } else if (user.getUserType() == UserType.INTERNAL) {
             ArgumentValidator.isEmptyOrNull(user.getExternalId(), "user.externalId");
         }
 
