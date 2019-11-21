@@ -90,7 +90,7 @@ public class JobEngineApplication extends ApplicationBase<JobEngineApplicationCo
                 registerJacksonModule(new JobEngineModule());
 
                 // Configure Services
-                context.getServiceContext("http", HttpServiceContext.class).addController(config.getJobEngineHttpController());
+                context.getServiceContext("jobEngineService", HttpServiceContext.class).addController(config.getJobEngineHttpController());
                 runExecution.complete();
             } catch (Exception exc) {
                 runExecution.fail(exc);

@@ -123,8 +123,9 @@ public class ApplicationBase<C extends Configuration> implements ApplicationRunn
 
         Future.succeededFuture().compose(map -> {
             try {
-                runInternal(context, configuration);
-                return Future.succeededFuture();
+                Future<Void> runInternalReq = Future.future();
+                runInternal(context, configuration, runInternalReq);
+                return runInternalReq;
             } catch (Exception exc) {
                 return Future.failedFuture(exc);
             }
