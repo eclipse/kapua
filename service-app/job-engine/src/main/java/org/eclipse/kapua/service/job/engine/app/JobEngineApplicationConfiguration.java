@@ -11,17 +11,32 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.engine.app;
 
+import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.service.commons.app.ConfigurationBase;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ExitCodeExceptionMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import com.fasterxml.jackson.databind.Module;
+
 @Configuration
 @ComponentScan("org.eclipse.kapua.service.commons")
 @ComponentScan("org.eclipse.kapua.service.job.engine.app")
 public class JobEngineApplicationConfiguration extends ConfigurationBase {
+
+    @Bean
+    public JAXBContextProvider jaxbContextProvider() {
+        return new JobEngineJaxbContextProvider();
+    }
+
+    @Qualifier("kapuaServiceApp")
+    @Bean
+    public Module module() {
+        return new JobEngineModule();
+    }
 
     @Bean
     public JobEngineServiceAsync jobEngineServiceAsync() {

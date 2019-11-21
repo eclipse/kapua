@@ -113,6 +113,7 @@ public class ApplicationBase<C extends Configuration> implements ApplicationRunn
         ServiceBuilders serviceBuilders = new ServiceBuilders();
         for (String name : configuration.getServiceConfigs().getConfigs().keySet()) {
             ServiceConfig serviceConfig = configuration.getServiceConfigs().getConfigs().get(name);
+            serviceConfig.setName(name);
             serviceBuilders.getBuilders().put(name, serviceBuilderManager.create(vertx, serviceConfig));
         }
 
