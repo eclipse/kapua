@@ -17,6 +17,7 @@ import javax.json.JsonString;
 import javax.json.JsonValue.ValueType;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -51,10 +52,12 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdFactory;
+import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthorizedException;
 
 import com.google.common.base.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -79,12 +82,21 @@ public class JobEngineServiceHttpProxy implements JobEngineService {
 
     @Override
     public void startJob(KapuaId scopeId, KapuaId jobId) throws KapuaException {
-        String accessToken = KapuaSecurityUtils.getSession().getAccessToken().getTokenId();
+        AccessToken accessToken = KapuaSecurityUtils.getSession().getAccessToken();
+        String accessTokenId = null;
+        if (accessToken != null) {
+            accessTokenId = accessToken.getTokenId();
+        }
 
-        Response response = webTarget.path(String.format("/%s/%s/start", scopeId.toCompactId(), jobId.toCompactId()))
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .header("Authorization", "Bearer " + accessToken)
-                .post(null);
+        Invocation.Builder builder = webTarget
+                .path(String.format("/%s/%s/start", scopeId.toCompactId(), jobId.toCompactId()))
+                .request(MediaType.APPLICATION_JSON_TYPE);
+
+        if (StringUtils.isNotEmpty(accessTokenId)) {
+            builder.header("Authorization", "Bearer " + accessTokenId);
+        }
+
+        Response response = builder.post(null);
         if (response.getStatus() != 204) {
             handleErrorResponse(response);
         }

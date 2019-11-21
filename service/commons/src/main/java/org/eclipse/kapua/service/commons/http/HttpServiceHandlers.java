@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.commons.http;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
@@ -31,6 +32,7 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 
 public class HttpServiceHandlers {
 
@@ -64,15 +66,23 @@ public class HttpServiceHandlers {
 
     public static void authenticationHandler(@NotNull RoutingContext ctx) {
         Objects.requireNonNull(ctx, "param: ctx");
-        String accessToken = StringUtils.removeStart(ctx.request().getHeader("Authorization"), "Bearer ");
-        AccessTokenCredentials accessTokenCredentials = CREDENTIALS_FACTORY.newAccessTokenCredentials(accessToken);
-        try {
-            AUTHENTICATION_SERVICE.authenticate(accessTokenCredentials);
-        } catch (KapuaException ex) {
-            ctx.fail(403, ex);
+        KapuaSession session = null;
+        Subject subject = null;
+        if (StringUtils.isNotEmpty(ctx.request().getHeader("Authorization"))) {
+            String accessToken = StringUtils.removeStart(ctx.request().getHeader("Authorization"), "Bearer ");
+            AccessTokenCredentials accessTokenCredentials = CREDENTIALS_FACTORY.newAccessTokenCredentials(accessToken);
+            try {
+                AUTHENTICATION_SERVICE.authenticate(accessTokenCredentials);
+                session = KapuaSecurityUtils.getSession();
+                subject = SecurityUtils.getSubject();
+            } catch (KapuaException ex) {
+                ctx.fail(403, ex);
+            }
+        } else {
+            session = KapuaSecurityUtils.getPriviledgeSession();
         }
-        ctx.put("kapuaSession", KapuaSecurityUtils.getSession());
-        ctx.put("shiroSubject", SecurityUtils.getSubject());
+        ctx.put("kapuaSession", session);
+        ctx.put("shiroSubject", subject);
         ctx.next();
     }
 

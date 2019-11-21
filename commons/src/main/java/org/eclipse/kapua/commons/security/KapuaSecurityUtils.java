@@ -98,8 +98,7 @@ public class KapuaSecurityUtils {
 
         if (previousSession == null) {
             logger.debug("==> create new session");
-            currentSession = new KapuaSession(null, KapuaId.ONE, KapuaId.ONE);
-            currentSession.setTrustedMode(true);
+            currentSession = getPriviledgeSession();
         } else {
             logger.debug("==> clone from previous session");
             currentSession = KapuaSession.createFrom();
@@ -116,6 +115,12 @@ public class KapuaSecurityUtils {
             // restore the original session
             setSession(previousSession);
         }
+    }
+
+    public static KapuaSession getPriviledgeSession() {
+        KapuaSession kapuaSession = new KapuaSession(null, KapuaId.ONE, KapuaId.ONE);
+        kapuaSession.setTrustedMode(true);
+        return kapuaSession;
     }
 
 }
