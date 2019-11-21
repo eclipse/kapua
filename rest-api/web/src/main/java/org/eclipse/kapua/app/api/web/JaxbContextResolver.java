@@ -12,6 +12,7 @@
 package org.eclipse.kapua.app.api.web;
 
 import org.eclipse.kapua.app.api.core.exception.model.EntityNotFoundExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.ExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.IllegalArgumentExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.IllegalNullArgumentExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.SubjectUnauthorizedExceptionInfo;
@@ -131,11 +132,11 @@ import org.eclipse.kapua.service.device.management.command.DeviceCommandXmlRegis
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationXmlRegistry;
-import org.eclipse.kapua.service.device.management.message.request.xml.RequestMessageXmlRegistry;
 import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
+import org.eclipse.kapua.service.device.management.message.request.xml.RequestMessageXmlRegistry;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseChannel;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackage;
@@ -233,6 +234,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
 
                     // REST API exception models
                     ThrowableInfo.class,
+                    ExceptionInfo.class,
 
                     SubjectUnauthorizedExceptionInfo.class,
 

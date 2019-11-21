@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "subjectUnauthorizedExceptionInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class SubjectUnauthorizedExceptionInfo extends KapuaExceptionInfo {
+public class SubjectUnauthorizedExceptionInfo extends ExceptionInfo {
 
     @XmlElement(name = "permission")
     private Permission permission;

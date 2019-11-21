@@ -11,21 +11,26 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
-import javax.ws.rs.core.Response.Status;
-import javax.xml.bind.annotation.XmlElement;
-
 import org.eclipse.kapua.KapuaErrorCode;
 import org.eclipse.kapua.KapuaException;
 
-public class KapuaExceptionInfo extends ThrowableInfo {
+import javax.ws.rs.core.Response.Status;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "exceptionInfo")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class ExceptionInfo extends ThrowableInfo {
 
     @XmlElement(name = "kapuaErrorCode")
     private String kapuaErrorCode;
 
-    public KapuaExceptionInfo() {
+    public ExceptionInfo() {
     }
 
-    public KapuaExceptionInfo(Status httpStatus, KapuaErrorCode kapuaErrorCode, KapuaException exception) {
+    public ExceptionInfo(Status httpStatus, KapuaErrorCode kapuaErrorCode, KapuaException exception) {
         super(httpStatus, exception);
         setKapuaErrorCode(kapuaErrorCode);
     }

@@ -11,6 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
+import io.swagger.annotations.ApiModelProperty;
+import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
+
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -18,14 +23,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import io.swagger.annotations.ApiModelProperty;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdAdapter;
-
 @XmlRootElement(name = "entityNotFoundExceptionInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class EntityNotFoundExceptionInfo extends KapuaExceptionInfo {
+public class EntityNotFoundExceptionInfo extends ExceptionInfo {
 
     @XmlElement(name = "entityType")
     private String entityType;
