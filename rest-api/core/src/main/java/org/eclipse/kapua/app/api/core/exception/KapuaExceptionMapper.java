@@ -12,7 +12,7 @@
 package org.eclipse.kapua.app.api.core.exception;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.exception.model.KapuaExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.ExceptionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ public class KapuaExceptionMapper implements ExceptionMapper<KapuaException> {
         LOG.error("Generic Kapua exception!", kapuaException);
         return Response
                 .serverError()
-                .entity(new KapuaExceptionInfo(Status.INTERNAL_SERVER_ERROR, kapuaException.getCode(), kapuaException))
+                .entity(new ExceptionInfo(Status.INTERNAL_SERVER_ERROR, kapuaException.getCode(), kapuaException))
                 .build();
     }
 
