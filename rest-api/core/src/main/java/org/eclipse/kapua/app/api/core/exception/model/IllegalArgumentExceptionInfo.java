@@ -11,17 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
+import org.eclipse.kapua.KapuaIllegalArgumentException;
+
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.kapua.KapuaIllegalArgumentException;
-
 @XmlRootElement(name = "illegalArgumentExceptionInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class IllegalArgumentExceptionInfo extends KapuaExceptionInfo {
+public class IllegalArgumentExceptionInfo extends ExceptionInfo {
 
     @XmlElement(name = "argumentName")
     private String argumentName;
