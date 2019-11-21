@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources.model.message;
 
+import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.xml.XmlAdaptedMetric;
 import org.eclipse.kapua.model.type.ObjectValueConverter;
@@ -24,8 +25,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
 import java.util.List;
-
-import io.swagger.annotations.ApiModelProperty;
 
 @XmlRootElement(name = "payload")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -44,12 +43,12 @@ public class JsonKapuaPayload {
 
         setBody(payload.getBody());
 
-        payload.getMetrics().forEach((metricName, metricValue) -> {
-            XmlAdaptedMetric jsonMetric = new XmlAdaptedMetric();
+        payload.getMetrics().entrySet().stream().filter((metric) -> metric.getValue() != null).forEach((metric) -> {
 
-            jsonMetric.setName(metricName);
-            jsonMetric.setValueType(metricValue.getClass());
-            jsonMetric.setValue(ObjectValueConverter.toString(metricValue));
+            XmlAdaptedMetric jsonMetric = new XmlAdaptedMetric();
+            jsonMetric.setName(metric.getKey());
+            jsonMetric.setValueType(metric.getValue().getClass());
+            jsonMetric.setValue(ObjectValueConverter.toString(metric.getValue()));
 
             getMetrics().add(jsonMetric);
         });
