@@ -9,20 +9,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.commons.http;
+package org.eclipse.kapua.service.commons;
 
-import org.eclipse.kapua.service.commons.HealthCheckProvider;
-import org.eclipse.kapua.service.commons.Service;
+import java.util.HashMap;
+import java.util.Map;
 
-import io.vertx.core.Vertx;
+public class ServiceBuilders {
 
-public interface HttpService extends HealthCheckProvider, Service {
+    private Map<String, ServiceBuilder<?, ? extends Service>> builders = new HashMap<>();
 
-    static HttpServiceBuilder builder(Vertx vertx) {
-        return new HttpServiceImpl.Builder(vertx);
-    }
-
-    static HttpServiceBuilder builder(Vertx vertx, HttpServiceConfig config) {
-        return new HttpServiceImpl.Builder(vertx, config);
+    public Map<String, ServiceBuilder<?, ? extends Service>> getBuilders() {
+        return builders;
     }
 }

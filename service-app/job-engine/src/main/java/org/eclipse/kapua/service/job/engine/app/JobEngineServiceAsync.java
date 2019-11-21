@@ -24,7 +24,7 @@ import io.vertx.core.Vertx;
 import org.apache.shiro.subject.Subject;
 
 /**
- * Transport-agnostic wrapper for {@link JobEngineService}. {@link JobEngineHttpEndpoint} routes all call methods
+ * Transport-agnostic wrapper for {@link JobEngineService}. {@link JobEngineHttpController} routes all call methods
  * in this class extracting HTTP specific concepts (e.g. {@link io.vertx.ext.web.RoutingContext} so that this class
  * can be reused by clients for other transports (e.g. AMQP)
  */

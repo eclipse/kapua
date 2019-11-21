@@ -24,6 +24,11 @@ import io.vertx.core.Handler;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
+
+import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 
@@ -36,7 +41,8 @@ public class HttpServiceHandlers {
     private HttpServiceHandlers() {
     }
 
-    public static <T> Handler<AsyncResult<T>> httpResponseHandler(RoutingContext ctx) {
+    public static <T> Handler<AsyncResult<T>> httpResponseHandler(@NotNull RoutingContext ctx) {
+        Objects.requireNonNull(ctx, "param: ctx");
         return result -> {
             if (result.succeeded()) {
                 if (result.result() != null) {
@@ -56,7 +62,8 @@ public class HttpServiceHandlers {
         return HttpServiceHandlers::authenticationHandler;
     }
 
-    public static void authenticationHandler(RoutingContext ctx) {
+    public static void authenticationHandler(@NotNull RoutingContext ctx) {
+        Objects.requireNonNull(ctx, "param: ctx");
         String accessToken = StringUtils.removeStart(ctx.request().getHeader("Authorization"), "Bearer ");
         AccessTokenCredentials accessTokenCredentials = CREDENTIALS_FACTORY.newAccessTokenCredentials(accessToken);
         try {
@@ -73,7 +80,8 @@ public class HttpServiceHandlers {
         return HttpServiceHandlers::failureHandler;
     }
 
-    public static void failureHandler(RoutingContext ctx) {
+    public static void failureHandler(@NotNull RoutingContext ctx) {
+        Objects.requireNonNull(ctx, "param: ctx");
         if (!ctx.response().ended()) {
             JsonObject error = new JsonObject();
             Throwable failure = ctx.failure();

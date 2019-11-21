@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons;
 
-import io.vertx.core.Vertx;
-import io.vertx.ext.healthchecks.HealthCheckHandler;
+public interface ServiceBuilderFactoryRegistry {
 
-public interface HealthChecker {
+    public void registerFactory(String aName, ServiceBuilderFactory<?, ? extends Service> aFactory);
 
-    public void registerChecks(Vertx vertx, HealthCheckHandler handler);
+    public ServiceBuilderFactory<?, ? extends Service> deregisterFactory(String aName);
+
 }

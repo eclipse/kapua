@@ -30,7 +30,7 @@ import org.eclipse.kapua.job.engine.exception.JobStoppingException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdFactory;
-import org.eclipse.kapua.service.commons.http.HttpEndpoint;
+import org.eclipse.kapua.service.commons.http.HttpController;
 import org.eclipse.kapua.service.commons.http.HttpServiceHandlers;
 
 import io.vertx.core.json.Json;
@@ -38,7 +38,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
-public class JobEngineHttpEndpoint implements HttpEndpoint {
+public class JobEngineHttpController implements HttpController {
 
     private JobEngineServiceAsync jobEngineServiceAsync;
 
@@ -47,12 +47,12 @@ public class JobEngineHttpEndpoint implements HttpEndpoint {
 
     private final String basePath = "/v1/device-jobs";
 
-    public JobEngineHttpEndpoint(JobEngineServiceAsync jobEngineServiceAsync) {
+    public JobEngineHttpController(JobEngineServiceAsync jobEngineServiceAsync) {
         this.jobEngineServiceAsync = jobEngineServiceAsync;
     }
 
     @Override
-    public String getBasePath() {
+    public String getPath() {
         return basePath;
     }
 

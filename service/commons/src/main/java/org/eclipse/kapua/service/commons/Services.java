@@ -9,11 +9,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.commons.http;
+package org.eclipse.kapua.service.commons;
 
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
-public interface HttpEndpointProvider {
+public class Services {
 
-    public Set<HttpEndpoint> getEndpoints();
+    private Map<String, Service> services = new HashMap<>();
+
+    public Map<String, Service> getServices() {
+        return services;
+    }
 }

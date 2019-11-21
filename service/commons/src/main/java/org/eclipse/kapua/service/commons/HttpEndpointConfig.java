@@ -11,11 +11,30 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons;
 
-import io.vertx.ext.healthchecks.HealthCheckHandler;
+public class HttpEndpointConfig {
 
-public interface HealthCheckProvider {
+    private String bindAddress = "0.0.0.0";
+    private int port = 80;
 
-    public void registerLivenessCheckers(HealthCheckHandler anHandler);
+    public String getBindAddress() {
+        return bindAddress;
+    }
 
-    public void registerReadynessCheckers(HealthCheckHandler anHandler);
+    public void setBindAddress(String aBindAddress) {
+        bindAddress = aBindAddress;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int aPort) {
+        port = aPort;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("\"bindAddress\":\"%s\""
+                + ", \"port\":\"%d\"", bindAddress, port);
+    }
 }

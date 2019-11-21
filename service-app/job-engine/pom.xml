@@ -66,6 +66,10 @@
         <!-- Kapua -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-service-app-commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-locator-guice</artifactId>
         </dependency>
         <dependency>

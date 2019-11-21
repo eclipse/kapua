@@ -25,6 +25,7 @@
     <artifactId>kapua-service-app</artifactId>
 
     <modules>
+        <module>commons</module>
         <module>job-engine</module>
     </modules>
 

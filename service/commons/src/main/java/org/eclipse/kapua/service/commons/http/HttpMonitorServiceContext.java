@@ -11,18 +11,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons.http;
 
+import java.util.Set;
+
 import org.eclipse.kapua.service.commons.HealthCheckProvider;
-import org.eclipse.kapua.service.commons.Service;
 
-import io.vertx.core.Vertx;
+public interface HttpMonitorServiceContext {
 
-public interface HttpService extends HealthCheckProvider, Service {
+    public HttpMonitorServiceBuilder addHealthCheckProviders(Set<HealthCheckProvider> someProviders);
 
-    static HttpServiceBuilder builder(Vertx vertx) {
-        return new HttpServiceImpl.Builder(vertx);
-    }
-
-    static HttpServiceBuilder builder(Vertx vertx, HttpServiceConfig config) {
-        return new HttpServiceImpl.Builder(vertx, config);
-    }
+    public HttpMonitorServiceBuilder addHealthCheckProvider(HealthCheckProvider aProvider);
 }

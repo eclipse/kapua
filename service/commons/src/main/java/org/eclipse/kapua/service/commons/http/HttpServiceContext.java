@@ -11,18 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons.http;
 
-import org.eclipse.kapua.service.commons.HealthCheckProvider;
-import org.eclipse.kapua.service.commons.Service;
+import java.util.Set;
 
-import io.vertx.core.Vertx;
+public interface HttpServiceContext {
 
-public interface HttpService extends HealthCheckProvider, Service {
+    public HttpServiceContext addControllers(Set<HttpController> someControllers);
 
-    static HttpServiceBuilder builder(Vertx vertx) {
-        return new HttpServiceImpl.Builder(vertx);
-    }
-
-    static HttpServiceBuilder builder(Vertx vertx, HttpServiceConfig config) {
-        return new HttpServiceImpl.Builder(vertx, config);
-    }
+    public HttpServiceContext addController(HttpController aController);
 }

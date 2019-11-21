@@ -9,20 +9,20 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.commons.http;
+package org.eclipse.kapua.service.commons.app;
 
-import org.eclipse.kapua.service.commons.HealthCheckProvider;
-import org.eclipse.kapua.service.commons.Service;
+import org.eclipse.kapua.service.commons.ServiceConfigs;
+import org.eclipse.kapua.service.commons.http.HttpMonitorServiceConfig;
 
-import io.vertx.core.Vertx;
+public interface Configuration {
 
-public interface HttpService extends HealthCheckProvider, Service {
+    public String getApplicationName();
 
-    static HttpServiceBuilder builder(Vertx vertx) {
-        return new HttpServiceImpl.Builder(vertx);
-    }
+    public long getStartupTimeout();
 
-    static HttpServiceBuilder builder(Vertx vertx, HttpServiceConfig config) {
-        return new HttpServiceImpl.Builder(vertx, config);
-    }
+    public VertxConfig getVertxConfig();
+
+    public ServiceConfigs getServiceConfigs();
+
+    public HttpMonitorServiceConfig getHttpMonitorServiceConfig();
 }

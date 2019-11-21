@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.engine.app;
+package org.eclipse.kapua.service.commons.app;
 
 public class MetricsConfig {
 
@@ -48,5 +48,13 @@ public class MetricsConfig {
 
     public void setBaseName(String baseName) {
         this.baseName = baseName;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("\"enable\":\"%b\""
+                + ", \"registryName\":\"%s\""
+                + ", \"rootName\":\"%s\""
+                + ", \"baseName\":\"%s\"", enable, registryName, rootName, baseName);
     }
 }

@@ -9,15 +9,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.commons.http;
+package org.eclipse.kapua.service.commons;
 
-import io.vertx.ext.web.Router;
+import io.vertx.core.Future;
 
-public interface HttpEndpoint {
+public interface Service {
 
-    void registerRoutes(Router router);
+    public String getName();
 
-    String getBasePath();
+    public void start(Future<Void> startFuture) throws Exception;
+
+    public void stop(Future<Void> stopFuture) throws Exception;
 
 }
-

@@ -9,17 +9,18 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.commons.http;
+package org.eclipse.kapua.service.commons;
 
-import org.eclipse.kapua.service.commons.HttpEndpointConfig;
+import java.util.HashMap;
+import java.util.Map;
 
-public class HttpServiceConfig {
-
+public class ServiceConfig {
 
     private String name;
-    private String basePath = "";
-    private int instances = 1;
-    private HttpEndpointConfig endpoint = new HttpEndpointConfig();
+    private String type;
+    private int instances;
+
+    private Map<String, String> properties = new HashMap<>();
 
     public String getName() {
         return name;
@@ -29,12 +30,12 @@ public class HttpServiceConfig {
         name = aName;
     }
 
-    public String getBasePath() {
-        return basePath;
+    public String getType() {
+        return type;
     }
 
-    public void setBasePath(String aBasePath) {
-        basePath = aBasePath;
+    public void setType(String aType) {
+        type = aType;
     }
 
     public int getInstances() {
@@ -45,19 +46,19 @@ public class HttpServiceConfig {
         instances = noInstances;
     }
 
-    public HttpEndpointConfig getEndpoint() {
-        return endpoint;
+    public Map<String, String> getProperties() {
+        return properties;
     }
 
-    public void setEndpoint(HttpEndpointConfig aConfig) {
-        endpoint = aConfig;
+    public void setProperties(Map<String, String> someProperties) {
+        properties = someProperties;
     }
 
     @Override
     public String toString() {
         return String.format("\"name\":\"%s\""
-                + ", \"basePath\":\"%s\""
+                + ", \"type\":\"%s\""
                 + ", \"instances\":\"%d\""
-                + ", \"endpoint\":{%s}", name, basePath, instances, endpoint == null ? "null" : endpoint.toString());
+                + ", \"properties\":{%s}", name, type, instances, properties == null ? "null" : properties.toString());
     }
 }

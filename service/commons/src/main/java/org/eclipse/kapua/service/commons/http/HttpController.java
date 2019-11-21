@@ -11,18 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons.http;
 
-import org.eclipse.kapua.service.commons.HealthCheckProvider;
-import org.eclipse.kapua.service.commons.Service;
+import io.vertx.ext.web.Router;
 
-import io.vertx.core.Vertx;
+public interface HttpController {
 
-public interface HttpService extends HealthCheckProvider, Service {
+    void registerRoutes(Router router);
 
-    static HttpServiceBuilder builder(Vertx vertx) {
-        return new HttpServiceImpl.Builder(vertx);
-    }
-
-    static HttpServiceBuilder builder(Vertx vertx, HttpServiceConfig config) {
-        return new HttpServiceImpl.Builder(vertx, config);
-    }
+    String getPath();
 }
+

@@ -11,34 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons.http;
 
-import org.eclipse.kapua.service.commons.HealthCheckProvider;
-import org.eclipse.kapua.service.commons.HealthChecker;
+import org.eclipse.kapua.service.commons.Service;
 
-import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 
-public interface HttpMonitorService extends HealthCheckProvider {
+public interface HttpMonitorService extends Service {
 
-    public static interface Builder {
-
-        public void addLivenessChecker(HealthChecker checker);
-
-        public void addReadinessChecker(HealthChecker checker);
-
-        public void setServerConfig(HttpMonitorServiceConfig config);
-
-        public HttpMonitorService build();
+    public static HttpMonitorServiceBuilder builder(Vertx aVertx) {
+        return new HttpMonitorServiceImpl.Builder(aVertx);
     }
 
-    public void start(Future<Void> startFuture) throws Exception;
-
-    public void stop(Future<Void> stopFuture) throws Exception;
-
-    public static Builder builder(Vertx vertx) {
-        return new HttpMonitorServiceImpl.Builder(vertx);
-    }
-
-    public static Builder builder(Vertx vertx, HttpMonitorServiceConfig config) {
-        return new HttpMonitorServiceImpl.Builder(vertx, config);
+    public static HttpMonitorServiceBuilder builder(Vertx aVertx, HttpMonitorServiceConfig aConfig) {
+        return new HttpMonitorServiceImpl.Builder(aVertx, aConfig);
     }
 }

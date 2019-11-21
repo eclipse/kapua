@@ -11,42 +11,74 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons.http;
 
+import org.eclipse.kapua.service.commons.HttpEndpointConfig;
+
 public class HttpMonitorServiceConfig {
 
+    private String name;
+    private String basePath;
     private boolean enableHealthCheck;
     private boolean enableMetrics;
     private String registryName;
-    private HttpServiceConfig http;
+    private HttpEndpointConfig endpoint;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String aName) {
+        name = aName;
+    }
+
+    public String getBasePath() {
+        return basePath;
+    }
+
+    public void setBasePath(String aBasePath) {
+        basePath = aBasePath;
+    }
 
     public boolean isHealthCheckEnable() {
         return enableHealthCheck;
     }
 
-    public void setHealthCheckEnable(boolean enableHealthCheck) {
-        this.enableHealthCheck = enableHealthCheck;
+    public void setHealthCheckEnable(boolean enable) {
+        enableHealthCheck = enable;
     }
 
     public boolean isMetricsEnable() {
         return enableMetrics;
     }
 
-    public void setMetricsEnable(boolean enableMetrics) {
-        this.enableMetrics = enableMetrics;
+    public void setMetricsEnable(boolean enable) {
+        enableMetrics = enable;
     }
 
     public String getMetricsRegistryName() {
         return registryName;
     }
 
-    public void setMetricsRegistryName(String registryName) {
-        this.registryName = registryName;
+    public void setMetricsRegistryName(String aRegistryName) {
+        registryName = aRegistryName;
     }
 
-    public HttpServiceConfig getHttp() {
-        return http;
+    public HttpEndpointConfig getEndpoint() {
+        return endpoint;
     }
 
-    public void setHttp(HttpServiceConfig http) {
-        this.http = http;
+    public void setEndpoint(HttpEndpointConfig aConfig) {
+        endpoint = aConfig;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("\"name\":\"%s\""
+                + ", \"basePath\":\"%s\""
+                + ", \"enableHealthCheck\":\"%b\""
+                + ", \"enableMetrics\":\"%b\""
+                + ", \"regsitryName\":\"%s\""
+                + ", \"endpoint\":{%s}", 
+                getName(), getBasePath(), isHealthCheckEnable(), isMetricsEnable(), 
+                getMetricsRegistryName(), endpoint == null ? "null" : endpoint.toString());
     }
 }

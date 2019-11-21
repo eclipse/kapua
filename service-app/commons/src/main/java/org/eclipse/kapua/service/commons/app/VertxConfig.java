@@ -9,35 +9,42 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.engine.app;
+package org.eclipse.kapua.service.commons.app;
 
 public class VertxConfig {
 
     private long warningExceptionTime = 10000;
     private long blockedThreadCheckInterval = 10000;
-    private MetricsConfig metricsConfig = new MetricsConfig();
+    private MetricsConfig metrics = new MetricsConfig();
 
     public long getWarningExceptionTime() {
         return warningExceptionTime;
     }
 
-    public void setWarningExceptionTime(long warningExceptionTime) {
-        this.warningExceptionTime = warningExceptionTime;
+    public void setWarningExceptionTime(long aWarningExceptionTime) {
+        warningExceptionTime = aWarningExceptionTime;
     }
 
     public long getBlockedThreadCheckInterval() {
         return blockedThreadCheckInterval;
     }
 
-    public void setBlockedThreadCheckInterval(long blockedThreadCheckInterval) {
-        this.blockedThreadCheckInterval = blockedThreadCheckInterval;
+    public void setBlockedThreadCheckInterval(long aBlockedThreadCheckInterval) {
+        blockedThreadCheckInterval = aBlockedThreadCheckInterval;
     }
 
     public MetricsConfig getMetrics() {
-        return metricsConfig;
+        return metrics;
     }
 
-    public void setMetrics(MetricsConfig metricsConfig) {
-        this.metricsConfig = metricsConfig;
+    public void setMetrics(MetricsConfig aConfig) {
+        metrics = aConfig;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("\"warningExceptionTime\":\"%d\""
+                + ", \"blockedThreadCheckInterval\":\"%d\""
+                + ", \"metrics\":{%s}", warningExceptionTime, blockedThreadCheckInterval, metrics == null ? "null" : metrics.toString());
     }
 }
