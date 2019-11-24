@@ -41,9 +41,9 @@ import com.google.common.base.MoreObjects;
 import io.vertx.core.Future;
 import io.vertx.core.json.Json;
 
-public abstract class KapuaServiceApplication<C extends Configuration> extends ApplicationBase<C> {
+public abstract class AbstractKapuaServiceApplication<C extends Configuration> extends BaseApplication<C> {
 
-    Logger logger = LoggerFactory.getLogger(KapuaServiceApplication.class);
+    Logger logger = LoggerFactory.getLogger(AbstractKapuaServiceApplication.class);
 
     private JAXBContextProvider jaxbContext;
     private Module jacksonModule;
@@ -87,7 +87,7 @@ public abstract class KapuaServiceApplication<C extends Configuration> extends A
                 registerJacksonModule(jacksonModule);
 
                 // Configure Services
-                doContext(context, config);
+                buildContext(context, config);
                 runExecution.complete();
             } catch (Exception exc) {
                 runExecution.fail(exc);
@@ -102,7 +102,7 @@ public abstract class KapuaServiceApplication<C extends Configuration> extends A
         });
     }
 
-    protected abstract void doContext(Context context, C config) throws Exception;
+    protected abstract void buildContext(Context context, C config) throws Exception;
 
     private void registerJacksonModule(Module jacksonModule) {
         Json.mapper.registerModule(jacksonModule);

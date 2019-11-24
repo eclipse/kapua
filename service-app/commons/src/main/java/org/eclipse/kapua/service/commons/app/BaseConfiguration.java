@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
-public class ConfigurationBase implements Configuration {
+public class BaseConfiguration implements Configuration {
 
     @Bean
     @ConfigurationProperties(prefix = "vertx.metrics")

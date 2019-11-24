@@ -40,9 +40,16 @@ public class ServiceBuilderManager implements ServiceBuilderFactoryRegistry {
     public void registerFactory(String aName, ServiceBuilderFactory<?, ? extends Service> aFactory) {
         Objects.requireNonNull(aName, "param: aName");
         Objects.requireNonNull(aFactory, "param: aFactory");
-        registry.put(aName, aFactory);
+        if (!registry.containsKey(aName)) {
+            registry.put(aName, aFactory);
+            return;
+        }
+        throw new IllegalArgumentException(String.format("A factory with name \"%s\" is already registered.", aName));
     }
 
+    /**
+     * Returns the factory to which the name was associated or null if the registry contained no mapping for the name
+     */
     @Override
     public ServiceBuilderFactory<?, ? extends Service> deregisterFactory(String aName) {
         Objects.requireNonNull(aName, "param: aName");

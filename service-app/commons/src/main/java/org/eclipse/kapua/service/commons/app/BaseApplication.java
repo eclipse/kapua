@@ -43,9 +43,9 @@ import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.ext.dropwizard.DropwizardMetricsOptions;
 
-public class ApplicationBase<C extends Configuration> implements ApplicationRunner {
+public class BaseApplication<C extends Configuration> implements ApplicationRunner {
 
-    private static Logger logger = LoggerFactory.getLogger(ApplicationBase.class);
+    private static Logger logger = LoggerFactory.getLogger(BaseApplication.class);
 
     private static final class ContextImpl implements Context {
 
