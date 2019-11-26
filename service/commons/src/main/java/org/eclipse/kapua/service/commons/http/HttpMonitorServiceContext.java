@@ -17,7 +17,7 @@ import org.eclipse.kapua.service.commons.HealthCheckProvider;
 
 public interface HttpMonitorServiceContext {
 
-    public HttpMonitorServiceBuilder addHealthCheckProviders(Set<HealthCheckProvider> someProviders);
+    public HttpMonitorServiceContext addHealthCheckProviders(Set<HealthCheckProvider> someProviders);
 
-    public HttpMonitorServiceBuilder addHealthCheckProvider(HealthCheckProvider aProvider);
+    public HttpMonitorServiceContext addHealthCheckProvider(HealthCheckProvider aProvider);
 }
