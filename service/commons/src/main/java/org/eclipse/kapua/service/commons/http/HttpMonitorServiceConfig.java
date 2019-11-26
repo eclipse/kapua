@@ -15,7 +15,7 @@ import org.eclipse.kapua.service.commons.HttpEndpointConfig;
 
 public class HttpMonitorServiceConfig {
 
-    private String name;
+    private String name = "monitoringService";
     private String basePath;
     private boolean enableHealthCheck;
     private boolean enableMetrics;

@@ -22,7 +22,11 @@ import org.slf4j.LoggerFactory;
 
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.ClientAuth;
 import io.vertx.core.http.HttpServer;
+import io.vertx.core.http.HttpServerOptions;
+import io.vertx.core.net.JksOptions;
+import io.vertx.core.net.PfxOptions;
 import io.vertx.ext.healthchecks.HealthCheckHandler;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
@@ -31,6 +35,9 @@ import io.vertx.ext.web.handler.CorsHandler;
 public class HttpServiceImpl implements HttpService {
 
     private static Logger logger = LoggerFactory.getLogger(HttpServiceImpl.class);
+
+    static final String JKS_STORE = "^.*.(jks|JKS)$";
+    static final String PFX_STORE = "^.*.(pfx|p12|PFX|P12)$";
 
     private Vertx vertx;
     private HttpServer server;
@@ -109,11 +116,47 @@ public class HttpServiceImpl implements HttpService {
         registerRoutes(router);
         // TODO router.route().failureHandler(HttpServiceHandlers.failureHandler());
 
-        server = vertx.createHttpServer()
+        if (config == null || config.getEndpoint() == null) {
+            throw new IllegalStateException("Invalid http service configuration");
+        }
+
+        HttpServerOptions serverOpts = new HttpServerOptions()
+                .setPort(config.getEndpoint().getPort())
+                .setHost(config.getEndpoint().getBindAddress());
+
+        // TLS
+        serverOpts.setSsl(config.getEndpoint().isSsl());
+        if (config.getEndpoint().getKeyStorePath() != null && config.getEndpoint().getKeyStorePath().matches(JKS_STORE)) {
+            serverOpts.setKeyStoreOptions(new JksOptions()
+                    .setPath(config.getEndpoint().getKeyStorePath())
+                    .setPassword(config.getEndpoint().getKeyStorePassword()));
+        } else if (config.getEndpoint().getKeyStorePath() != null && config.getEndpoint().getKeyStorePath().matches(PFX_STORE)) {
+            serverOpts.setPfxKeyCertOptions(new PfxOptions()
+                    .setPath(config.getEndpoint().getKeyStorePath())
+                    .setPassword(config.getEndpoint().getKeyStorePassword()));
+        }
+
+        // Mutual Auth
+        serverOpts.setClientAuth(ClientAuth.valueOf(config.getEndpoint().getClientAuth()));
+        if (config.getEndpoint().getTrustStorePath() != null && config.getEndpoint().getTrustStorePath().matches(JKS_STORE)) {
+            serverOpts.setTrustStoreOptions(new JksOptions()
+                    .setPath(config.getEndpoint().getTrustStorePath())
+                    .setPassword(config.getEndpoint().getTrustStorePassword()));
+        } else if (config.getEndpoint().getTrustStorePath() != null && config.getEndpoint().getTrustStorePath().matches(PFX_STORE)) {
+            serverOpts.setPfxKeyCertOptions(new PfxOptions()
+                    .setPath(config.getEndpoint().getKeyStorePath())
+                    .setPassword(config.getEndpoint().getKeyStorePassword()));
+        }
+
+        server = vertx.createHttpServer(serverOpts)
                 .requestHandler(router)
-                .listen(config.getEndpoint().getPort(), config.getEndpoint().getBindAddress(), listenReq -> {
+                .listen(listenReq -> {
                     if (listenReq.succeeded()) {
-                        logger.debug("HTTP service started {}", config.getName());
+                        logger.info("HTTP service started {}, address {}, port {}, {}", 
+                                config.getName(), 
+                                config.getEndpoint().getBindAddress(),
+                                config.getEndpoint().getPort(),
+                                config.getEndpoint().isSsl() ? "Secure mode" : "Insecure mode");
                         startFuture.complete();
                     } else {
                         logger.debug("Error starting service {}: {}", config.getName(), listenReq.cause().getMessage());

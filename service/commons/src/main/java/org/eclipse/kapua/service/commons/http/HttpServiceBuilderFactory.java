@@ -51,6 +51,10 @@ public class HttpServiceBuilderFactory implements ServiceBuilderFactory<HttpServ
     public HttpServiceBuilder create(Vertx aVertx, @NotNull ServiceConfig aConfig, @NotNull PropertyMapper aMapper) {
         Objects.requireNonNull(aConfig, "param: aConfig");
         Objects.requireNonNull(aMapper, "param: aMapper");
-        return new HttpServiceImpl.Builder(aVertx, aMapper.convert(aConfig.getProperties(), "", HttpServiceConfig.class));
+        HttpServiceConfig config = aMapper.convert(aConfig.getProperties(), "", HttpServiceConfig.class);
+        if (config.getName() == null) {
+            config.setName(aConfig.getName());
+        }
+        return new HttpServiceImpl.Builder(aVertx, config);
     }
 }

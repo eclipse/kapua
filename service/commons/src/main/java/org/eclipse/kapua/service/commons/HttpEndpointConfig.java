@@ -15,6 +15,12 @@ public class HttpEndpointConfig {
 
     private String bindAddress = "0.0.0.0";
     private int port = 80;
+    private boolean ssl;
+    private String keyStorePath;
+    private String keyStorePassword;
+    private String clientAuth = "NONE";
+    private String trustStorePath;
+    private String trustStorePassword;
 
     public String getBindAddress() {
         return bindAddress;
@@ -30,6 +36,54 @@ public class HttpEndpointConfig {
 
     public void setPort(int aPort) {
         port = aPort;
+    }
+
+    public boolean isSsl() {
+        return ssl;
+    }
+
+    public void setSsl(boolean ssl) {
+        this.ssl = ssl;
+    }
+
+    public String getKeyStorePath() {
+        return keyStorePath;
+    }
+
+    public void setKeyStorePath(String keyStorePath) {
+        this.keyStorePath = keyStorePath;
+    }
+
+    public String getKeyStorePassword() {
+        return keyStorePassword;
+    }
+
+    public void setKeyStorePassword(String keyStorePassword) {
+        this.keyStorePassword = keyStorePassword;
+    }
+
+    public String getClientAuth() {
+        return clientAuth;
+    }
+
+    public void setClientAuth(String clientAuth) {
+        this.clientAuth = clientAuth;
+    }
+
+    public String getTrustStorePath() {
+        return trustStorePath;
+    }
+
+    public void setTrustStorePath(String trustStorePath) {
+        this.trustStorePath = trustStorePath;
+    }
+
+    public String getTrustStorePassword() {
+        return trustStorePassword;
+    }
+
+    public void setTrustStorePassword(String trustStorePassword) {
+        this.trustStorePassword = trustStorePassword;
     }
 
     @Override
