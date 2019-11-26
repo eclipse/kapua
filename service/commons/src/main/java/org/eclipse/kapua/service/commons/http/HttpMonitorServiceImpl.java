@@ -108,7 +108,7 @@ public class HttpMonitorServiceImpl implements HttpMonitorService {
 
         try {
             HttpServiceConfig httpServiceConfig = new HttpServiceConfig();
-            httpServiceConfig.setName(config.getName() + "httpService");
+            httpServiceConfig.setName(config.getName());
             httpServiceConfig.setInstances(1);
             httpServiceConfig.setEndpoint(config.getEndpoint());
             HttpServiceBuilder builder = HttpService.builder(vertx, httpServiceConfig);

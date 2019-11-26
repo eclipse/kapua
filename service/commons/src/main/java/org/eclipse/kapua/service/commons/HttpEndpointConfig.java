@@ -89,6 +89,13 @@ public class HttpEndpointConfig {
     @Override
     public String toString() {
         return String.format("\"bindAddress\":\"%s\""
-                + ", \"port\":\"%d\"", bindAddress, port);
+                + ", \"port\":\"%d\""
+                + ", \"ssl\":\"%b\""
+                + ", \"keyStorePath\":\"%s\""
+                + ", \"keyStorePassword\":\"%s\""
+                + ", \"clientAuth\":\"%s\""
+                + ", \"trustStorePath\":\"%s\""
+                + ", \"trustStorePassword\":\"%s\"", 
+                bindAddress, port, ssl, keyStorePath, "xxxxxxxxx", clientAuth, trustStorePath, "xxxxxxxxx");
     }
 }
