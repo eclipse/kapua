@@ -35,12 +35,6 @@ import org.eclipse.kapua.service.config.ServiceComponentConfiguration;
 import org.eclipse.kapua.service.config.ServiceConfiguration;
 import org.eclipse.kapua.service.config.ServiceConfigurationFactory;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
-
-@Api(value = "Service Configurations", authorizations = {@Authorization(value = "kapuaAccessToken")})
 @Path("{scopeId}/serviceConfigurations")
 public class ServiceConfigurations extends AbstractKapuaResource {
 
@@ -50,8 +44,7 @@ public class ServiceConfigurations extends AbstractKapuaResource {
 
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @ApiOperation(nickname = "serviceConfigurationGet", value = "Gets multiple services configurations", notes = "Returns the current configuration of multiple services from an account")
-    public ServiceConfiguration get(@ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId) throws Exception {
+    public ServiceConfiguration get(@PathParam("scopeId") ScopeId scopeId) throws Exception {
         List<KapuaConfigurableService> configurableServices = locator.getServices().stream().filter(service -> service instanceof KapuaConfigurableService).map(kapuaService -> (KapuaConfigurableService)kapuaService).collect(Collectors.toList());
         ServiceConfiguration serviceConfiguration = serviceConfigurationFactory.newConfigurationInstance();
         for (KapuaConfigurableService configurableService : configurableServices) {
@@ -71,10 +64,9 @@ public class ServiceConfigurations extends AbstractKapuaResource {
     @PUT
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @ApiOperation(nickname = "serviceConfigurationUpdate", value = "Updates multiple services configuration", notes = "Updates the configuration of multiple services in an account")
     public Response update(
-            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The values for the configurations", required = true) ServiceConfiguration serviceConfiguration
+            @PathParam("scopeId") ScopeId scopeId,
+            ServiceConfiguration serviceConfiguration
     ) throws Exception {
         for (ServiceComponentConfiguration serviceComponentConfiguration : serviceConfiguration.getComponentConfigurations()) {
             Class<KapuaService> configurableServiceClass = (Class<KapuaService>) Class.forName(serviceComponentConfiguration.getId()).asSubclass(KapuaService.class);
@@ -90,10 +82,9 @@ public class ServiceConfigurations extends AbstractKapuaResource {
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Path("{serviceId}")
-    @ApiOperation(nickname = "serviceConfigurationComponentGet", value = "Gets the configuration of a service on an account", notes = "Returns the configuration of a single service in an account")
     public ServiceComponentConfiguration getComponent(
-            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The full class name of the service.", required = true) @PathParam("serviceId") String serviceId
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("serviceId") String serviceId
     ) throws Exception {
         Class<KapuaService> configurableServiceClass = (Class<KapuaService>) Class.forName(serviceId).asSubclass(KapuaService.class);
         if (KapuaConfigurableService.class.isAssignableFrom(configurableServiceClass)) {
@@ -115,11 +106,10 @@ public class ServiceConfigurations extends AbstractKapuaResource {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     @Path("{serviceId}")
-    @ApiOperation(nickname = "serviceConfigurationComponentUpdate", value = "Updates the configuration of a service on an account", notes = "Updates a service component configuration")
     public Response updateComponent(
-            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The full class name of the service.", required = true) @PathParam("serviceId") String serviceId,
-            @ApiParam(value = "The values for the configurations", required = true) ServiceComponentConfiguration serviceComponentConfiguration
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("serviceId") String serviceId,
+            ServiceComponentConfiguration serviceComponentConfiguration
     ) throws Exception {
         Class<KapuaService> configurableServiceClass = (Class<KapuaService>) Class.forName(serviceId).asSubclass(KapuaService.class);
         if (KapuaConfigurableService.class.isAssignableFrom(configurableServiceClass)) {
