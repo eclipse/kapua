@@ -308,6 +308,9 @@
                 </executions>
                 <configuration>
                     <executable>${project.build.directory}/bin/swagger-cli</executable>
+                    <environmentVariables>
+                        <PATH>$PATH:${project.build.directory}/node</PATH>
+                    </environmentVariables>
                     <arguments>
                         <argument>bundle</argument>
                         <argument>--dereference</argument>
