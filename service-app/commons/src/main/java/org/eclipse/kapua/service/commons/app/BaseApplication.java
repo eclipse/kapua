@@ -27,6 +27,7 @@ import org.eclipse.kapua.service.commons.ServiceVerticle;
 import org.eclipse.kapua.service.commons.Services;
 import org.eclipse.kapua.service.commons.http.HttpMonitorService;
 import org.eclipse.kapua.service.commons.http.HttpMonitorServiceBuilder;
+import org.eclipse.kapua.service.commons.http.HttpMonitorServiceConfig;
 import org.eclipse.kapua.service.commons.http.HttpMonitorServiceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,14 +35,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.SharedMetricRegistries;
-
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
-import io.vertx.ext.dropwizard.DropwizardMetricsOptions;
 
 public class BaseApplication<C extends Configuration> implements ApplicationRunner {
 
@@ -78,7 +74,7 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
 
         public static ContextImpl create(@NotNull Vertx aVertx, @NotNull HttpMonitorServiceBuilder aMonitorServiceBuilder, @NotNull ServiceBuilders someServiceBuilders) {
             Objects.requireNonNull(aVertx, "param: aVertx");
-            Objects.requireNonNull(aMonitorServiceBuilder, "param: aMonitorServiceBuilder");
+            // Objects.requireNonNull(aMonitorServiceBuilder, "param: aMonitorServiceBuilder");
             Objects.requireNonNull(someServiceBuilders, "param: someServiceBuilders");
             return new ContextImpl(aVertx, aMonitorServiceBuilder, someServiceBuilders);
         }
@@ -90,6 +86,12 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
     private ContextImpl context;
     private Services services;
     private HttpMonitorService monitorService;
+
+    @Autowired
+    public void setVertx(Vertx aVertx) {
+        Objects.requireNonNull(aVertx, "param: aVertx");
+        vertx = aVertx;
+    }
 
     @Autowired
     public void setConfig(C aConfig) {
@@ -107,24 +109,26 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
     public final void run(ApplicationArguments args) throws Exception {
 
         logger.info("Starting application {}", configuration);
-
-        vertx = createVertx(configuration.getVertxConfig());
-
-        ServiceBuilders serviceBuilders = new ServiceBuilders();
-        for (String name : configuration.getServiceConfigs().getConfigs().keySet()) {
-            ServiceConfig serviceConfig = configuration.getServiceConfigs().getConfigs().get(name);
-            serviceConfig.setName(name);
-            serviceBuilders.getBuilders().put(name, serviceBuilderManager.create(vertx, serviceConfig));
-        }
-
-        HttpMonitorServiceBuilder httpMonitorBuilder = HttpMonitorService.builder(vertx, configuration.getHttpMonitorServiceConfig());
-        context = ContextImpl.create(vertx, httpMonitorBuilder, serviceBuilders);
         Future<Void> startupFuture = Future.future();
         CountDownLatch startupLatch = new CountDownLatch(1);
 
         Future.succeededFuture().compose(map -> {
             try {
+                ServiceBuilders serviceBuilders = new ServiceBuilders();
+                for (String name : configuration.getServiceConfigs().getConfigs().keySet()) {
+                    ServiceConfig serviceConfig = configuration.getServiceConfigs().getConfigs().get(name);
+                    serviceConfig.setName(name);
+                    serviceBuilders.getBuilders().put(name, serviceBuilderManager.create(vertx, serviceConfig));
+                }
+
+                HttpMonitorServiceBuilder httpMonitorBuilder = null;
+                HttpMonitorServiceConfig monitorConfig = configuration.getHttpMonitorServiceConfig();
+                if (isMonitoringEnabled(monitorConfig)) {
+                    httpMonitorBuilder = HttpMonitorService.builder(vertx, monitorConfig);
+                }
+
                 Future<Void> runInternalReq = Future.future();
+                context = ContextImpl.create(vertx, httpMonitorBuilder, serviceBuilders);
                 runInternal(context, configuration, runInternalReq);
                 return runInternalReq;
             } catch (Exception exc) {
@@ -133,30 +137,35 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
         }).compose(map -> {
 
             // Create http services
+            HttpMonitorServiceBuilder monitorServiceBuilder = context.monitorServiceBuilder;
+            ServiceBuilders serviceBuilders = context.serviceBuilders;
             services = new Services();
-            for (String name : configuration.getServiceConfigs().getConfigs().keySet()) {
-                Service service = serviceBuilders.getBuilders().get(name).build();
-                if (service instanceof HealthCheckProvider) {
-                    httpMonitorBuilder.getContext().addHealthCheckProvider((HealthCheckProvider) service);
+            for (String name : serviceBuilders.getBuilders().keySet()) {
+                Service service = context.serviceBuilders.getBuilders().get(name).build();
+                if (monitorServiceBuilder != null && service instanceof HealthCheckProvider) {
+                    monitorServiceBuilder.getContext().addHealthCheckProvider((HealthCheckProvider) service);
                 }
                 services.getServices().put(name, service);
             }
 
             // Start service monitoring
-            monitorService = httpMonitorBuilder.build();
-
-            Future<String> monitorDeployFuture = Future.future();
-            vertx.deployVerticle(ServiceVerticle.create(monitorService), monitorDeployFuture);
-            return monitorDeployFuture;
+            if (monitorServiceBuilder != null) {
+                monitorService = monitorServiceBuilder.build();
+                Future<String> monitorDeployFuture = Future.future();
+                vertx.deployVerticle(ServiceVerticle.create(monitorService), monitorDeployFuture);
+                return monitorDeployFuture;
+            } else {
+                return Future.succeededFuture();
+            }
         }).compose(map -> {
             // Start services
             @SuppressWarnings("rawtypes")
             List<Future> deployFutures = new ArrayList<>();
             for (String name : configuration.getServiceConfigs().getConfigs().keySet()) {
                 for (int i = 0; i < configuration.getServiceConfigs().getConfigs().get(name).getInstances(); i++) {
-                    Future<String> userServiceDeployFuture = Future.future();
-                    deployFutures.add(userServiceDeployFuture);
-                    vertx.deployVerticle(ServiceVerticle.create(services.getServices().get(name)), userServiceDeployFuture);
+                    Future<String> serviceDeployFuture = Future.future();
+                    deployFutures.add(serviceDeployFuture);
+                    vertx.deployVerticle(ServiceVerticle.create(services.getServices().get(name)), serviceDeployFuture);
                 }
             }
 
@@ -191,20 +200,8 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
     protected void runInternal(Context context, C config, Future<Void> runFuture) throws Exception {
     }
 
-    private Vertx createVertx(VertxConfig config) {
-        Objects.requireNonNull(config, "param: config");
-        VertxConfig vertxConfig = config;
-        MetricRegistry metricRegistry = SharedMetricRegistries.getOrCreate(vertxConfig.getMetrics().getRegistryName());
-        SharedMetricRegistries.setDefault(vertxConfig.getMetrics().getRegistryName(), metricRegistry);
-
-        DropwizardMetricsOptions metrOpts = new DropwizardMetricsOptions();
-        metrOpts.setEnabled(config.getMetrics().isEnable());
-        metrOpts.setRegistryName(vertxConfig.getMetrics().getRegistryName());
-
-        VertxOptions opts = new VertxOptions();
-        opts.setWarningExceptionTime(vertxConfig.getWarningExceptionTime());
-        opts.setBlockedThreadCheckInterval(vertxConfig.getBlockedThreadCheckInterval());
-        opts.setMetricsOptions(metrOpts);
-        return Vertx.vertx(opts);
+    private boolean isMonitoringEnabled(HttpMonitorServiceConfig aMonitorConfig) {
+        Objects.requireNonNull(aMonitorConfig);
+        return aMonitorConfig.isHealthCheckEnable() || aMonitorConfig.isMetricsEnable();
     }
 }

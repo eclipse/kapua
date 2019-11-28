@@ -19,7 +19,6 @@ public class HttpMonitorServiceConfig {
     private String basePath;
     private boolean enableHealthCheck;
     private boolean enableMetrics;
-    private String registryName;
     private HttpEndpointConfig endpoint;
 
     public String getName() {
@@ -54,14 +53,6 @@ public class HttpMonitorServiceConfig {
         enableMetrics = enable;
     }
 
-    public String getMetricsRegistryName() {
-        return registryName;
-    }
-
-    public void setMetricsRegistryName(String aRegistryName) {
-        registryName = aRegistryName;
-    }
-
     public HttpEndpointConfig getEndpoint() {
         return endpoint;
     }
@@ -76,9 +67,8 @@ public class HttpMonitorServiceConfig {
                 + ", \"basePath\":\"%s\""
                 + ", \"enableHealthCheck\":\"%b\""
                 + ", \"enableMetrics\":\"%b\""
-                + ", \"regsitryName\":\"%s\""
                 + ", \"endpoint\":{%s}", 
                 getName(), getBasePath(), isHealthCheckEnable(), isMetricsEnable(), 
-                getMetricsRegistryName(), endpoint == null ? "null" : endpoint.toString());
+                endpoint == null ? "null" : endpoint.toString());
     }
 }

@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons.app;
 
+import java.util.Objects;
+
 import org.eclipse.kapua.service.commons.PropertyMapper;
 import org.eclipse.kapua.service.commons.ServiceConfig;
 import org.eclipse.kapua.service.commons.ServiceConfigs;
@@ -22,6 +24,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+
+import com.codahale.metrics.SharedMetricRegistries;
+
+import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
+import io.vertx.ext.dropwizard.DropwizardMetricsOptions;
 
 public class BaseConfiguration implements Configuration {
 
@@ -69,6 +77,28 @@ public class BaseConfiguration implements Configuration {
     @ConfigurationProperties(prefix = "services")
     public ServiceConfigs serviceConfigs() {
         return new ServiceConfigs();
+    }
+
+    @Autowired
+    @Bean
+    public Vertx vertx(VertxConfig aVertexConfig) {
+        Objects.requireNonNull(aVertexConfig, "param: config");
+        VertxConfig vertxConfig = aVertexConfig;
+
+        DropwizardMetricsOptions metrOpts = new DropwizardMetricsOptions();
+        metrOpts.setEnabled(aVertexConfig.getMetrics().isEnable());
+        metrOpts.setRegistryName(vertxConfig.getMetrics().getRegistryName());
+        if (vertxConfig.getMetrics().getRegistryName() != null) {
+            SharedMetricRegistries.getOrCreate(vertxConfig.getMetrics().getRegistryName());
+            SharedMetricRegistries.setDefault(vertxConfig.getMetrics().getRegistryName());
+        }
+
+        VertxOptions opts = new VertxOptions();
+        opts.setWarningExceptionTime(vertxConfig.getWarningExceptionTime());
+        opts.setBlockedThreadCheckInterval(vertxConfig.getBlockedThreadCheckInterval());
+        opts.setMetricsOptions(metrOpts);
+        Vertx vertx = Vertx.vertx(opts);
+        return vertx;
     }
 
     private String applicationName;

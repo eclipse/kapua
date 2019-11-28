@@ -173,7 +173,7 @@ public class HttpMonitorServiceImpl implements HttpMonitorService {
 
     private static class MetricsController implements HttpController {
 
-        private static final String METRICS_BASENAME_PATH = "/metrics/:base";
+        private static final String METRICS_PATH = "/metrics";
         private static final String METRICS_BASE_NAME_PARAM = "base";
         private static final String BASE_PATH = "/monitoring";
 
@@ -185,8 +185,11 @@ public class HttpMonitorServiceImpl implements HttpMonitorService {
 
         @Override
         public void registerRoutes(@NotNull Router router) {
-            router.get(METRICS_BASENAME_PATH).handler(ctx -> {
-                String baseName = ctx.request().getParam(METRICS_BASE_NAME_PARAM);
+            router.get(METRICS_PATH).handler(ctx -> {
+                String baseName = "";
+                if (ctx.request().params().contains(METRICS_BASE_NAME_PARAM)) {
+                    baseName = ctx.request().getParam(METRICS_BASE_NAME_PARAM);
+                }
                 ctx.response().end(this.service.getMetricsSnapshot(baseName).toBuffer());
             });
         }
