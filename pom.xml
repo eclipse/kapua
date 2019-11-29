@@ -99,7 +99,7 @@
         <qpid-geronimo-jms.version>1.0-alpha-2</qpid-geronimo-jms.version>
         <netty-all.version>4.1.34.Final</netty-all.version>
         <quartz-scheduler.version>2.2.3</quartz-scheduler.version>
-        <jetty.version>9.4.12.v20180830</jetty.version>
+        <jetty.version>9.4.24.v20191120</jetty.version>
 
         <!-- Plugins versions -->
         <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
