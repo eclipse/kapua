@@ -66,7 +66,7 @@ public class SsoCallbackServlet extends HttpServlet {
                     throw new ServletException("Failed to parse redirect URL: " + homeUri, e);
                 }
             } catch (SsoJwtException sje) {
-                throw new ServletException(("Failed to get access token: " + sje));
+                throw new ServletException("Failed to get access token: " + sje.getMessage(), sje);
             }
         } else {
 

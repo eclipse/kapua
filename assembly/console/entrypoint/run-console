@@ -1,6 +1,6 @@
 #!/bin/sh
 ################################################################################
-#    Copyright (c) 2017, 2018 Red Hat Inc and others
+#    Copyright (c) 2017, 2019 Red Hat Inc and others
 #   
 #    All rights reserved. This program and the accompanying materials
 #    are made available under the terms of the Eclipse Public License v1.0
@@ -12,9 +12,9 @@
 #        Eurotech
 ################################################################################
 
-# Check for Keycloak integration
+# Check for Keycloak OpenID Connect integration
 if [ -n "$KEYCLOAK_URL" ] && [ -n "$KAPUA_URL" ]; then
-   echo "Activating Keycloak integration..."
+   echo "Activating OpenID Connect Keycloak integration..."
    echo "  Keycloak: $KEYCLOAK_URL"
    echo "  Kapua:    $KAPUA_URL"
    
@@ -28,10 +28,31 @@ if [ -n "$KEYCLOAK_URL" ] && [ -n "$KAPUA_URL" ]; then
    
    JAVA_OPTS="$JAVA_OPTS -Dsso.keycloak.uri=${KEYCLOAK_URL}"
    JAVA_OPTS="$JAVA_OPTS -Dsso.keycloak.realm=${KEYCLOAK_REALM}"
-   JAVA_OPTS="$JAVA_OPTS -Dauthentication.credential.jwt.issuer.allowed=${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_REALM}"
-   
+
    JAVA_OPTS="$JAVA_OPTS -Dsite.home.uri=${KAPUA_URL}"
    
+   export JAVA_OPTS
+fi
+
+# Check for generic OpenID Connect provider integration
+if [ -n "$KAPUA_URL" ] && [ -n "$OPENID_JWT_ISSUER" ] && [ -n "$OPENID_AUTH_ENDPOINT" ] && [ -n "$OPENID_TOKEN_ENDPOINT" ]; then
+   echo "Activating OpenID Connect Generic integration..."
+   echo "  Kapua:    $KAPUA_URL"
+   echo "  OpenID Issuer: $OPENID_JWT_ISSUER"
+   echo "  Auth Endpoint: $OPENID_AUTH_ENDPOINT"
+   echo "  Token Endpoint: $OPENID_TOKEN_ENDPOINT"
+
+   : OPENID_CLIENT_ID=${OPENID_CLIENT_ID:=console}
+
+   JAVA_OPTS="$JAVA_OPTS -Dsso.provider=generic"
+   JAVA_OPTS="$JAVA_OPTS -Dsso.openid.client.id=${OPENID_CLIENT_ID}"
+   test -n "$KEYCLOAK_CLIENT_SECRET" && JAVA_OPTS="$JAVA_OPTS -Dsso.openid.client.secret=${KEYCLOAK_CLIENT_SECRET}"
+   JAVA_OPTS="$JAVA_OPTS -Dsite.home.uri=${KAPUA_URL}"
+
+   JAVA_OPTS="$JAVA_OPTS -Dauthentication.credential.jwt.issuer.allowed=${OPENID_JWT_ISSUER}"
+   JAVA_OPTS="$JAVA_OPTS -Dsso.generic.openid.server.endpoint.auth=${OPENID_AUTH_ENDPOINT}"
+   JAVA_OPTS="$JAVA_OPTS -Dsso.generic.openid.server.endpoint.token=${OPENID_TOKEN_ENDPOINT}"
+
    export JAVA_OPTS
 fi
 

@@ -43,8 +43,7 @@ documentation to look up the required values:
 
 - **`sso.generic.openid.server.endpoint.auth`** : the endpoint URL to the authentication API.
 - **`sso.generic.openid.server.endpoint.token`** : the endpoint URL to the token API.
-- **`authentication.credential.jwt.issuer.allowed`** : the base URL to the OpenID server provider 
-(by default, it is set to `http://localhost:9090/auth/realms/master` ).
+- **`authentication.credential.jwt.issuer.allowed`** : the base URL to the OpenID server provider.
 
 ### Keycloak provider
 
@@ -108,20 +107,21 @@ The example described here makes use of a Keycloak Serve Docker image
 In order to download and install the image, run `docker pull jboss/keycloak` on a bash terminal. 
 Then, run `docker run -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -p 9090:8080 jboss/keycloak` to start the 
 docker container, setting up the "_admin_" user (with "_admin_" as password).
-The Keycloak Server Admin Console will be available at the following URL: _http://localhost:9090/_.
+The Keycloak Server Admin Console will be available at the following URL: _http://<Keycloak-IP-address>:9090/_.
 
 ### Configuring the Keycloak Server
 
 Open the Keycloak Admin Console on your preferred browser and follow the steps below in order to configure it.
 
-1. Create a new client on Keycloak, call it "_console_" (this name represents the "Client ID").
+1. Create a new realm on Keycloak, call it "_kapua_"
+1. Create a new client for this realm, call it "_console_" (this name represents the "Client ID").
 2. Configure the client "Settings" tab as follows: 
     - Client Protocol : "_openid-connect_"
     - Access : "_public_"
     - Standard Flow Enabled : _ON_
     - Direct Access Grants Enabled : _ON_
-    - Valid Redirect URIs : _http://localhost:8888/*_
-    - Base URL : _http://localhost:8888/_
+    - Valid Redirect URIs : _http://localhost:8080/*_  (user your IP address in place of localhost)
+    - Base URL : _http://localhost:8080/_
 3. Under the "Mappers" tab, create a new mapper called "console" with the following parameters:
     - Name : "_console_"
     - Mapper Type : "_Audience_"
@@ -138,10 +138,21 @@ short)
 The following properties must be passed (as VM options) in order to set up SSO on Kapua using Keycloak:
 
 - `sso.provider=keycloak` : to set Keycloak as sso provider
-- `sso.keycloak.realm=master` : the Keycloak Realm (we are using the "Master" realm)
-- `sso.keycloak.uri=http://localhost:9090` : the Keycloak Server URI
+- `sso.keycloak.realm=kapua` : the Keycloak Realm (we are using the "kapua" realm)
+- `sso.keycloak.uri=http://<Keycloak-IP-address>:9090` : the Keycloak Server URI 
 - `sso.openid.client.id=console` : the OpenID Client ID (the one set on Keycloak)
-- `site.home.uri=http://localhost:8888` : the Kapua web console URI 
+- `site.home.uri=http://localhost:8080` : the Kapua web console URI 
+
+Using docker it is sufficient to provide the following docker environment variables (these ones will automatically set 
+up the configuration properties described above):
+
+- `KEYCLOAK_URL=http://<Keycloak-IP-address>:9090` : the Keycloak Server URI
+- `KAPUA_URL=http://localhost:8080` : the Kapua web console URI
+
+Note that these two variables can be also set up in the `docker-compose.yaml` file.
+Moreover, even if the Keycloak server is running locally on a docker container, it is recommended to use your machine 
+IP address instead of 'localhost', since this one can be misinterpreted by docker as the 'localhost' of the container 
+in which the Kapua component or Keycloak are running. 
 
 ### Setting Up a user on the Keycloak server
 
@@ -173,6 +184,16 @@ and the ID of the user "_admin_" in Keycloak as _externalId_):
 }
 ```
 will create the "_admin_" user without the need of the SimpleRegistrationProcessor.
+
+### Keycloak logout endpoint
+
+Logging out from the Keycloak provider is possible through the Keycloak logout endpoint: 
+
+`{sso.keycloak.uri}/auth/realms/{realm_name}/protocol/openid-connect/logout`
+
+In our example the endpoint is the following: 
+
+`http://<Keycloak-IP-address>:9090/auth/realms/kapua/protocol/openid-connect/logout`
 
 ## Keycloak Example (OpenShift based)
 

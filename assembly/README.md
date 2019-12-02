@@ -24,6 +24,8 @@ the IP address of your docker instance.
 
 **Note:** This is only a setup for testing SSO support.
 
+#### Keycloak Provider
+
 You can also start a Keycloak instance in addition:
 
     docker run -td --name sso -p 8082:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=secret jboss/keycloak
@@ -34,6 +36,15 @@ Starting the `kapua-console` image with the following command line instead:
 
 You will also need to create a new realm named `kapua` in the Keycloak web UI and create a new client called `console`.
 Assigning `http://localhost:8080/sso/callback` as a valid redirect URI.
+
+#### Generic Provider
+
+It is also possible to use a generic OpenID Connect provider, by providing to the console the following environment 
+variables:
+
+- `OPENID_JWT_ISSUER` : the base URL to the OpenID server provider.
+- `OPENID_AUTH_ENDPOINT` :  the endpoint URL to the authentication API.
+- `OPENID_TOKEN_ENDPOINT` : the endpoint URL to the token API.
 
 ### Tomcat images
 
