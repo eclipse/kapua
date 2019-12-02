@@ -25,10 +25,10 @@ import org.eclipse.kapua.app.console.module.device.shared.model.device.managemen
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssets;
 import org.eclipse.kapua.app.console.module.device.shared.model.device.management.registry.GwtDeviceManagementOperationQuery;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.model.query.FieldSortCriteria;
-import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.FieldSortCriteria;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.model.type.ObjectTypeConverter;
@@ -241,16 +241,21 @@ public class GwtKapuaDeviceModelConverter {
 
 
     public static DeviceManagementOperationQuery convertDeviceManagementOperationQuery(PagingLoadConfig loadConfig, GwtDeviceManagementOperationQuery gwtQuery) {
+
         DeviceManagementOperationQuery query = DEVICE_MANAGEMENT_OPERATION_FACTORY.newQuery(KapuaEid.parseCompactId(gwtQuery.getScopeId()));
-        if (loadConfig != null) {
-            query.setLimit(loadConfig.getLimit());
-            query.setOffset(loadConfig.getOffset());
-        }
 
         String deviceId = gwtQuery.getDeviceId();
+        AndPredicate andPredicate = query.andPredicate();
         if (deviceId != null) {
-            query.setPredicate(query.attributePredicate(DeviceManagementOperationAttributes.DEVICE_ID, KapuaEid.parseCompactId(gwtQuery.getDeviceId())));
+            andPredicate.and(query.attributePredicate(DeviceManagementOperationAttributes.DEVICE_ID, KapuaEid.parseCompactId(gwtQuery.getDeviceId())));
         }
+
+        String appId = gwtQuery.getAppId();
+        if (appId != null) {
+            andPredicate.and(query.attributePredicate(DeviceManagementOperationAttributes.APP_ID, appId));
+        }
+
+        query.setPredicate(andPredicate);
 
         if (loadConfig != null && loadConfig.getSortField() != null) {
             String sortField = loadConfig.getSortField();
@@ -265,6 +270,11 @@ public class GwtKapuaDeviceModelConverter {
             query.setSortCriteria(query.fieldSortCriteria(sortField, sortOrder));
         } else {
             query.setSortCriteria(query.fieldSortCriteria(DeviceManagementOperationAttributes.STARTED_ON, SortOrder.DESCENDING));
+        }
+
+        if (loadConfig != null) {
+            query.setLimit(loadConfig.getLimit());
+            query.setOffset(loadConfig.getOffset());
         }
 
         return query;

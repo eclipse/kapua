@@ -18,6 +18,7 @@ public class GwtDeviceManagementOperationQuery extends GwtQuery {
     private static final long serialVersionUID = 7269983474348658584L;
 
     private String deviceId;
+    private String appId;
 
     public GwtDeviceManagementOperationQuery() {
         super();
@@ -35,5 +36,13 @@ public class GwtDeviceManagementOperationQuery extends GwtQuery {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
     }
 }
