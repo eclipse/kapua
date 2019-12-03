@@ -315,6 +315,8 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             }
         });
 
+        // Save AccessToken
+        gwtSession.setTokenId(kapuaSession.getAccessToken().getTokenId());
         return gwtSession;
     }
 

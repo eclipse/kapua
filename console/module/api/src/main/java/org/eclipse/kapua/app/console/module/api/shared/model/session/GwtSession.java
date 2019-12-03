@@ -43,6 +43,8 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private String userName;
     private String userDisplayName;
 
+    private String tokenId;
+
     private List<GwtSessionPermission> sessionPermissions = new ArrayList<GwtSessionPermission>();
     private Map<GwtSessionPermission, Boolean> checkedPermissionsCache = new HashMap<GwtSessionPermission, Boolean>();
 
@@ -156,6 +158,14 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
 
     public void setSelectedAccountName(String selectedAccountName) {
         this.selectedAccountName = selectedAccountName;
+    }
+
+    public String getTokenId() {
+        return tokenId;
+    }
+
+    public void setTokenId(String tokenId) {
+        this.tokenId = tokenId;
     }
 
     public List<GwtSessionPermission> getSessionPermissions() {
@@ -275,4 +285,5 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
 
         return false;
     }
+
 }
