@@ -45,6 +45,7 @@ variables:
 - `OPENID_JWT_ISSUER` : the base URL to the OpenID server provider.
 - `OPENID_AUTH_ENDPOINT` :  the endpoint URL to the authentication API.
 - `OPENID_TOKEN_ENDPOINT` : the endpoint URL to the token API.
+- `KAPUA_URL` : the `kapua-console` URL.
 
 ### Tomcat images
 
