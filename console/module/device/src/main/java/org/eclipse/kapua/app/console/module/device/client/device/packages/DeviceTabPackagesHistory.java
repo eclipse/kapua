@@ -233,6 +233,7 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
                     GwtDeviceManagementOperationQuery query = new GwtDeviceManagementOperationQuery();
                     query.setScopeId(selectedEntity.getScopeId());
                     query.setDeviceId(selectedEntity.getId());
+                    query.setAppId("DEPLOY");
 
                     DEVICE_MANAGEMENT_SERVICE.query(pagingConfig, query, callback);
                 } else {
