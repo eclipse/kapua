@@ -20,6 +20,8 @@ import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecycleCh
  */
 public class KuraNotifyChannel extends KuraAppChannel implements DeviceNotifyChannel {
 
+    private String[] resources;
+
     /**
      * Constructor
      */
@@ -49,4 +51,13 @@ public class KuraNotifyChannel extends KuraAppChannel implements DeviceNotifyCha
         this.clientId = clientId;
     }
 
+    @Override
+    public String[] getResources() {
+        return resources;
+    }
+
+    @Override
+    public void setResources(String[] resources) {
+        this.resources = resources;
+    }
 }

@@ -35,12 +35,16 @@ public interface KapuaNotifyPayload extends KapuaPayload {
     /**
      * @return
      * @since 1.0.0
+     * @deprecated Since 1.2.0. Please make use of {@link KapuaNotifyChannel#getResources()}
      */
+    @Deprecated
     String getResource();
 
     /**
      * @since 1.0.0
+     * @deprecated Since 1.2.0. Please make use of {@link KapuaNotifyChannel#setResources(String[])}
      */
+    @Deprecated
     void setResource(String resource);
 
     /**

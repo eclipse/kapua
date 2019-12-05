@@ -25,6 +25,15 @@ public enum KuraNotifyMetrics implements DeviceRequestMetrics {
      */
     OPERATION_ID("job.id"),
     /**
+     * @since 1.2.0
+     */
+    OPERATION_ID_ALTERNATIVE("operation.id"),
+
+    /**
+     * @since 1.2.0
+     */
+    STATUS("status"),
+    /**
      * @since 1.0.0
      */
     DOWNLOAD_STATUS("dp.download.status"),
@@ -38,6 +47,10 @@ public enum KuraNotifyMetrics implements DeviceRequestMetrics {
     UNINSTALL_STATUS("dp.uninstall.status"),
 
     /**
+     * @since 1.2.0
+     */
+    PROGRESS("progress"),
+    /**
      * @since 1.0.0
      */
     DOWNLOAD_PROGRESS("dp.download.progress"),
@@ -50,6 +63,10 @@ public enum KuraNotifyMetrics implements DeviceRequestMetrics {
      */
     UNINSTALL_PROGRESS("dp.uninstall.progress"),
 
+    /**
+     * @since 1.2.0
+     */
+    MESSAGE("message"),
     /**
      * @since 1.2.0
      */

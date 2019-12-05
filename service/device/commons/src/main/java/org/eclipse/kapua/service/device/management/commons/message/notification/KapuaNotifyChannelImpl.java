@@ -21,4 +21,15 @@ import org.eclipse.kapua.service.device.management.message.notification.KapuaNot
  */
 public class KapuaNotifyChannelImpl extends KapuaAppChannelImpl implements KapuaNotifyChannel {
 
+    private String[] resources;
+
+    @Override
+    public String[] getResources() {
+        return resources;
+    }
+
+    @Override
+    public void setResources(String[] resources) {
+        this.resources = resources;
+    }
 }
