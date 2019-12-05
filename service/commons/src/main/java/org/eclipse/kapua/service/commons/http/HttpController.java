@@ -16,7 +16,5 @@ import io.vertx.ext.web.Router;
 public interface HttpController {
 
     void registerRoutes(Router router);
-
-    String getPath();
 }
 

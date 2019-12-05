@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.engine.app;
+package org.eclipse.kapua.service.commons.app;
 
 import java.io.IOException;
 

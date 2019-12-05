@@ -11,12 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons.http;
 
-import org.eclipse.kapua.service.commons.HttpEndpointConfig;
-
 public class HttpMonitorServiceConfig {
 
     private String name = "monitoringService";
-    private String basePath;
+    private String rootPath = "/monitoring";
     private boolean enableHealthCheck;
     private boolean enableMetrics;
     private HttpEndpointConfig endpoint;
@@ -29,12 +27,12 @@ public class HttpMonitorServiceConfig {
         name = aName;
     }
 
-    public String getBasePath() {
-        return basePath;
+    public String getRootPath() {
+        return rootPath;
     }
 
-    public void setBasePath(String aBasePath) {
-        basePath = aBasePath;
+    public void setRootPath(String aBasePath) {
+        rootPath = aBasePath;
     }
 
     public boolean isHealthCheckEnable() {
@@ -68,7 +66,7 @@ public class HttpMonitorServiceConfig {
                 + ", \"enableHealthCheck\":\"%b\""
                 + ", \"enableMetrics\":\"%b\""
                 + ", \"endpoint\":{%s}", 
-                getName(), getBasePath(), isHealthCheckEnable(), isMetricsEnable(), 
+                getName(), getRootPath(), isHealthCheckEnable(), isMetricsEnable(), 
                 endpoint == null ? "null" : endpoint.toString());
     }
 }

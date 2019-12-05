@@ -11,16 +11,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.engine.app;
 
-import org.eclipse.kapua.job.engine.JobStartOptions;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.commons.app.KapuaIdMixin;
+import org.eclipse.kapua.service.commons.app.BaseConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.fasterxml.jackson.databind.module.SimpleModule;
+public class JobEngineConfiguration extends BaseConfiguration {
 
-public class JobEngineModule extends SimpleModule {
+    private JobEngineHttpController controller;
 
-    public JobEngineModule() {
-        setMixInAnnotation(JobStartOptions.class, JobStartOptionMixin.class);
-        setMixInAnnotation(KapuaId.class, KapuaIdMixin.class);
+    public JobEngineHttpController getController() {
+        return controller;
     }
+
+    @Autowired
+    public void setController(JobEngineHttpController controller) {
+        this.controller = controller;
+    }
+
 }

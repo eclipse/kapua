@@ -14,8 +14,8 @@ package org.eclipse.kapua.service.job.engine.app;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.eclipse.kapua.service.commons.app.Context;
 import org.eclipse.kapua.service.commons.app.AbstractKapuaServiceApplication;
+import org.eclipse.kapua.service.commons.app.Context;
 import org.eclipse.kapua.service.commons.http.HttpServiceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.liquibase.LiquibaseServiceLocatorApplicationListener;
 
 @SpringBootApplication
-public class JobEngineApplication extends AbstractKapuaServiceApplication<JobEngineApplicationConfiguration> {
+public class JobEngineApplication extends AbstractKapuaServiceApplication<JobEngineConfiguration> {
 
     Logger logger = LoggerFactory.getLogger(JobEngineApplication.class);
 
@@ -41,11 +41,11 @@ public class JobEngineApplication extends AbstractKapuaServiceApplication<JobEng
     }
 
     @Override
-    protected void buildContext(Context context, JobEngineApplicationConfiguration config) throws Exception {
+    protected void buildContext(Context context, JobEngineConfiguration config) throws Exception {
         Objects.requireNonNull(context, "param: context");
         Objects.requireNonNull(config, "param: config");
 
         // Configure Services
-        context.getServiceContext("jobEngineService", HttpServiceContext.class).addController(config.getJobEngineHttpController());
+        context.getServiceContext("jobEngine", HttpServiceContext.class).addController(config.getController());
     }
 }

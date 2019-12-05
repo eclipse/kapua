@@ -11,14 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons.http;
 
-import org.eclipse.kapua.service.commons.HttpEndpointConfig;
-
 public class HttpServiceConfig {
 
 
     private String name;
-    private String basePath = "";
     private int instances = 1;
+    private String rootPath = "/";
     private HttpEndpointConfig endpoint = new HttpEndpointConfig();
 
     public String getName() {
@@ -29,20 +27,20 @@ public class HttpServiceConfig {
         name = aName;
     }
 
-    public String getBasePath() {
-        return basePath;
-    }
-
-    public void setBasePath(String aBasePath) {
-        basePath = aBasePath;
-    }
-
     public int getInstances() {
         return instances;
     }
 
     public void setInstances(int noInstances) {
         instances = noInstances;
+    }
+
+    public String getRootPath() {
+        return rootPath;
+    }
+
+    public void setRootPath(String aRootPath) {
+        rootPath = aRootPath;
     }
 
     public HttpEndpointConfig getEndpoint() {
@@ -56,8 +54,8 @@ public class HttpServiceConfig {
     @Override
     public String toString() {
         return String.format("\"name\":\"%s\""
-                + ", \"basePath\":\"%s\""
                 + ", \"instances\":\"%d\""
-                + ", \"endpoint\":{%s}", name, basePath, instances, endpoint == null ? "null" : endpoint.toString());
+                + ", \"rootPath\":\"%s\""
+                + ", \"endpoint\":{%s}", name, instances, rootPath, endpoint == null ? "null" : endpoint.toString());
     }
 }

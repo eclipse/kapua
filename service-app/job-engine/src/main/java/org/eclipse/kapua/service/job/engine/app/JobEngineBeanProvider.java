@@ -12,7 +12,7 @@
 package org.eclipse.kapua.service.job.engine.app;
 
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
-import org.eclipse.kapua.service.commons.app.BaseConfiguration;
+import org.eclipse.kapua.service.commons.app.AbstractBeanProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ExitCodeExceptionMapper;
@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.Module;
 @Configuration
 @ComponentScan("org.eclipse.kapua.service.commons")
 @ComponentScan("org.eclipse.kapua.service.job.engine.app")
-public class JobEngineApplicationConfiguration extends BaseConfiguration {
+public class JobEngineBeanProvider extends AbstractBeanProvider<JobEngineConfiguration> {
 
     @Bean
     public JAXBContextProvider jaxbContextProvider() {
@@ -43,8 +43,8 @@ public class JobEngineApplicationConfiguration extends BaseConfiguration {
         return new JobEngineServiceAsync();
     }
 
-    @Bean
     @Autowired
+    @Bean
     public JobEngineHttpController jobEngineHttpController(JobEngineServiceAsync jobEngineServiceAsync) {
         return new JobEngineHttpController(jobEngineServiceAsync);
     }
@@ -54,19 +54,8 @@ public class JobEngineApplicationConfiguration extends BaseConfiguration {
         return exception -> 1;
     }
 
-    private JobEngineHttpController controller;
-
-    @Autowired
-    public void setJobEngineHttpController(JobEngineHttpController aController) {
-        controller = aController;
-    }
-
-    public JobEngineHttpController getJobEngineHttpController() {
-        return controller;
-    }
-
     @Override
-    public String toString() {
-        return String.format("%s", super.toString());
+    public JobEngineConfiguration configuration() {
+        return new JobEngineConfiguration();
     }
 }

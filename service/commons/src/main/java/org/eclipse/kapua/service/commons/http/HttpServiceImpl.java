@@ -43,6 +43,7 @@ public class HttpServiceImpl implements HttpService {
     private HttpServer server;
     private HttpServiceConfig config;
     private Set<HttpController> controllers;
+    private Router mainRouter;
 
     public static class Builder implements HttpServiceContext, HttpServiceBuilder {
 
@@ -112,9 +113,19 @@ public class HttpServiceImpl implements HttpService {
 
         logger.debug("Starting HTTP service {}", config);
 
-        Router router = Router.router(vertx);
-        registerRoutes(router);
-        // TODO router.route().failureHandler(HttpServiceHandlers.failureHandler());
+        mainRouter = Router.router(vertx);
+        Router rootRouter = mainRouter;
+        if (config.getRootPath() != null) {
+            rootRouter = Router.router(vertx);
+        }
+
+        rootRouter.route().handler(BodyHandler.create());
+        rootRouter.route().handler(CorsHandler.create(""));
+        // TODO Make handler pluggable
+        rootRouter.route().blockingHandler(HttpServiceHandlers::authenticationHandler);
+        registerRoutes(rootRouter);
+        rootRouter.route().failureHandler(HttpServiceHandlers::failureHandler);
+        mainRouter.mountSubRouter(config.getRootPath(), rootRouter);
 
         if (config == null || config.getEndpoint() == null) {
             throw new IllegalStateException("Invalid http service configuration");
@@ -149,11 +160,11 @@ public class HttpServiceImpl implements HttpService {
         }
 
         server = vertx.createHttpServer(serverOpts)
-                .requestHandler(router)
+                .requestHandler(mainRouter)
                 .listen(listenReq -> {
                     if (listenReq.succeeded()) {
-                        logger.info("HTTP service started {}, address {}, port {}, {}", 
-                                config.getName(), 
+                        logger.info("HTTP service started {}, address {}, port {}, {}",
+                                config.getName(),
                                 config.getEndpoint().getBindAddress(),
                                 config.getEndpoint().getPort(),
                                 config.getEndpoint().isSsl() ? "Secure mode" : "Insecure mode");
@@ -187,18 +198,11 @@ public class HttpServiceImpl implements HttpService {
         stopFuture.handle(Future.succeededFuture());
     }
 
-    private void registerRoutes(@NotNull Router router) {
-        Objects.requireNonNull(router, "param: router");
+    private void registerRoutes(@NotNull Router aRouter) {
+        Objects.requireNonNull(aRouter, "param: router");
 
-        for (HttpController endpoint : controllers) {
-            // TODO check duplicate basepath
-            Router subRouter = Router.router(vertx);
-            subRouter.route().handler(BodyHandler.create());
-            subRouter.route().handler(CorsHandler.create(""));
-            // TODO Put Service Event
-            endpoint.registerRoutes(subRouter);
-            subRouter.route().failureHandler(HttpServiceHandlers::failureHandler);
-            router.mountSubRouter(endpoint.getPath(), subRouter);
+        for (HttpController controller : controllers) {
+            controller.registerRoutes(aRouter);
         }
     }
 }

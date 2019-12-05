@@ -110,6 +110,7 @@ public class HttpMonitorServiceImpl implements HttpMonitorService {
             HttpServiceConfig httpServiceConfig = new HttpServiceConfig();
             httpServiceConfig.setName(config.getName());
             httpServiceConfig.setInstances(1);
+            httpServiceConfig.setRootPath(config.getRootPath());
             httpServiceConfig.setEndpoint(config.getEndpoint());
             HttpServiceBuilder builder = HttpService.builder(vertx, httpServiceConfig);
             for (HttpController controller : controllers) {
@@ -145,7 +146,6 @@ public class HttpMonitorServiceImpl implements HttpMonitorService {
 
         private static final String HEALTHCHECK_LIVENESS_PATH = "/alive";
         private static final String HEALTHCHECK_READINESS_PATH = "/ready";
-        private static final String BASE_PATH = "/monitoring";
 
         private HealthCheckHandler livenessHandler;
         private HealthCheckHandler readinessHandler;
@@ -161,11 +161,6 @@ public class HttpMonitorServiceImpl implements HttpMonitorService {
             router.get(HEALTHCHECK_LIVENESS_PATH).handler(livenessHandler);
         }
 
-        @Override
-        public String getPath() {
-            return BASE_PATH;
-        }
-
         public static HealthCheckController create(HealthCheckHandler livenessHandler, HealthCheckHandler readynessHandler) {
             return new HealthCheckController(livenessHandler, readynessHandler);
         }
@@ -175,7 +170,6 @@ public class HttpMonitorServiceImpl implements HttpMonitorService {
 
         private static final String METRICS_PATH = "/metrics";
         private static final String METRICS_BASE_NAME_PARAM = "base";
-        private static final String BASE_PATH = "/monitoring";
 
         private MetricsService service;
 
@@ -192,11 +186,6 @@ public class HttpMonitorServiceImpl implements HttpMonitorService {
                 }
                 ctx.response().end(this.service.getMetricsSnapshot(baseName).toBuffer());
             });
-        }
-
-        @Override
-        public String getPath() {
-            return BASE_PATH;
         }
 
         public static MetricsController create(MetricsService service) {

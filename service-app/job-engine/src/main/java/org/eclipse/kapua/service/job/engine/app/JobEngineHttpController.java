@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.job.engine.app;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -45,46 +46,39 @@ public class JobEngineHttpController implements HttpController {
     private final KapuaLocator kapuaLocator = KapuaLocator.getInstance();
     private final KapuaIdFactory kapuaIdFactory = kapuaLocator.getFactory(KapuaIdFactory.class);
 
-    private final String basePath = "/v1/device-jobs";
+    private static final String BASE_PATH = "/device-jobs";
 
-    public JobEngineHttpController(JobEngineServiceAsync jobEngineServiceAsync) {
-        this.jobEngineServiceAsync = jobEngineServiceAsync;
+    public JobEngineHttpController(JobEngineServiceAsync aJobEngineServiceAsync) {
+        jobEngineServiceAsync = aJobEngineServiceAsync;
     }
 
     @Override
-    public String getPath() {
-        return basePath;
-    }
-
-    @Override
-    public void registerRoutes(Router router) {
-
-        // Login
-        router.route().blockingHandler(HttpServiceHandlers::authenticationHandler);
-//        router.route().blockingHandler(HttpServiceHandlers.authenticationHandler());
+    public void registerRoutes(Router aRouter) {
+        Objects.requireNonNull(aRouter);
 
         // Service Routes - Start Job
-        router.post("/:scopeId/:jobId/start").handler(this::startJob);
+        aRouter.post(BASE_PATH + "/:scopeId/:jobId/start").handler(this::startJob);
         // Service Routes - Start Job
-        router.post("/:scopeId/:jobId/start-with-options").blockingHandler(this::startJobWithOptions);
+        aRouter.post(BASE_PATH + "/:scopeId/:jobId/start-with-options").blockingHandler(this::startJobWithOptions);
         // Service Routes - Is running
-        router.get("/:scopeId/:jobId/is-running").blockingHandler(this::isRunning);
+        aRouter.get(BASE_PATH + "/:scopeId/:jobId/is-running").blockingHandler(this::isRunning);
         // Service Routes - Stop Job
-        router.post("/:scopeId/:jobId/stop").blockingHandler(this::stopJob);
+        aRouter.post(BASE_PATH + "/:scopeId/:jobId/stop").blockingHandler(this::stopJob);
         // Service Routes - Stop Job Execution
-        router.post("/:scopeId/:jobId/executions/:executionId/stop").blockingHandler(this::stopJobExecution);
+        aRouter.post(BASE_PATH + "/:scopeId/:jobId/executions/:executionId/stop").blockingHandler(this::stopJobExecution);
         // Service Routes - Resume Job Execution
-        router.post("/:scopeId/:jobId/executions/:executionId/resume").blockingHandler(this::resumeJobExecution);
+        aRouter.post(BASE_PATH + "/:scopeId/:jobId/executions/:executionId/resume").blockingHandler(this::resumeJobExecution);
         // Service Routes - Clean Job Data
-        router.post("/:scopeId/:jobId/clean-data").blockingHandler(this::cleanJobData);
+        aRouter.post(BASE_PATH + "/:scopeId/:jobId/clean-data").blockingHandler(this::cleanJobData);
 
         // Failure handler
-        router.route().failureHandler(this::failureHandler);
+        aRouter.route(BASE_PATH + "/*").failureHandler(this::failureHandler);
     }
 
     private void startJob(RoutingContext ctx) {
         KapuaId scopeId = kapuaIdFactory.newKapuaId(ctx.pathParam("scopeId"));
         KapuaId jobId = kapuaIdFactory.newKapuaId(ctx.pathParam("jobId"));
+        // TODO Make handler pluggable
         jobEngineServiceAsync.startJob(ctx.vertx(), ctx.get("kapuaSession"), ctx.get("shiroSubject"), scopeId, jobId, HttpServiceHandlers.httpResponseHandler(ctx));
     }
 
@@ -133,58 +127,59 @@ public class JobEngineHttpController implements HttpController {
 
         String errorCode;
         if (failure instanceof KapuaException) {
-            errorCode = ((KapuaException)failure).getCode().name();
+            errorCode = ((KapuaException) failure).getCode().name();
         } else if (failure instanceof KapuaRuntimeException) {
-            errorCode = ((KapuaRuntimeException)failure).getCode().name();
+            errorCode = ((KapuaRuntimeException) failure).getCode().name();
         } else {
             errorCode = "UNKNOWN_ERROR";
         }
 
         int statusCode = -1;
         if (failure instanceof KapuaEntityNotFoundException) {
-            KapuaEntityNotFoundException kapuaEntityNotFoundException = (KapuaEntityNotFoundException)failure;
+            KapuaEntityNotFoundException kapuaEntityNotFoundException = (KapuaEntityNotFoundException) failure;
             statusCode = 404;
             String entityType = kapuaEntityNotFoundException.getEntityType();
             String entity = kapuaEntityNotFoundException.getEntityName() != null ? kapuaEntityNotFoundException.getEntityName() : kapuaEntityNotFoundException.getEntityId().toCompactId();
             error.put("arguments", Arrays.asList(entityType, entity));
         } else if (failure instanceof JobStartingException) {
-            JobStartingException jobStartingException = (JobStartingException)failure;
+            JobStartingException jobStartingException = (JobStartingException) failure;
             statusCode = 500;
             error.put("arguments", Arrays.asList(jobStartingException.getScopeId().toCompactId(), jobStartingException.getJobId().toCompactId()));
         } else if (failure instanceof KapuaIllegalArgumentException) {
-            KapuaIllegalArgumentException kapuaIllegalArgumentException = (KapuaIllegalArgumentException)failure;
+            KapuaIllegalArgumentException kapuaIllegalArgumentException = (KapuaIllegalArgumentException) failure;
             statusCode = 500;
             error.put("arguments", Arrays.asList(kapuaIllegalArgumentException.getArgumentName(), kapuaIllegalArgumentException.getArgumentValue()));
         } else if (failure instanceof JobInvalidTargetException) {
-            JobInvalidTargetException jobInvalidTargetException = (JobInvalidTargetException)failure;
+            JobInvalidTargetException jobInvalidTargetException = (JobInvalidTargetException) failure;
             statusCode = 500;
-            error.put("arguments", Arrays.asList(jobInvalidTargetException.getScopeId().toCompactId(), jobInvalidTargetException.getJobId().toCompactId(), jobInvalidTargetException.getTargetSublist()));
+            error.put("arguments",
+                    Arrays.asList(jobInvalidTargetException.getScopeId().toCompactId(), jobInvalidTargetException.getJobId().toCompactId(), jobInvalidTargetException.getTargetSublist()));
         } else if (failure instanceof JobMissingTargetException) {
-            JobMissingTargetException jobMissingTargetException = (JobMissingTargetException)failure;
+            JobMissingTargetException jobMissingTargetException = (JobMissingTargetException) failure;
             statusCode = 500;
             error.put("arguments", Arrays.asList(jobMissingTargetException.getScopeId().toCompactId(), jobMissingTargetException.getJobId().toCompactId()));
         } else if (failure instanceof JobMissingStepException) {
-            JobMissingStepException jobMissingStepException = (JobMissingStepException)failure;
+            JobMissingStepException jobMissingStepException = (JobMissingStepException) failure;
             statusCode = 500;
             error.put("arguments", Arrays.asList(jobMissingStepException.getScopeId().toCompactId(), jobMissingStepException.getJobId().toCompactId()));
         } else if (failure instanceof JobCheckRunningException) {
-            JobCheckRunningException jobCheckRunningException = (JobCheckRunningException)failure;
+            JobCheckRunningException jobCheckRunningException = (JobCheckRunningException) failure;
             statusCode = 500;
             error.put("arguments", Arrays.asList(jobCheckRunningException.getScopeId().toCompactId(), jobCheckRunningException.getJobId().toCompactId()));
         } else if (failure instanceof JobNotRunningException) {
-            JobNotRunningException jobNotRunningException = (JobNotRunningException)failure;
+            JobNotRunningException jobNotRunningException = (JobNotRunningException) failure;
             statusCode = 500;
             error.put("arguments", Arrays.asList(jobNotRunningException.getScopeId().toCompactId(), jobNotRunningException.getJobId().toCompactId()));
         } else if (failure instanceof JobStoppingException) {
-            JobStoppingException jobStoppingException = (JobStoppingException)failure;
+            JobStoppingException jobStoppingException = (JobStoppingException) failure;
             statusCode = 500;
             error.put("arguments", Arrays.asList(jobStoppingException.getScopeId().toCompactId(), jobStoppingException.getJobId().toCompactId(), jobStoppingException.getExecutionId()));
         } else if (failure instanceof JobResumingException) {
-            JobResumingException jobResumingException = (JobResumingException)failure;
+            JobResumingException jobResumingException = (JobResumingException) failure;
             statusCode = 500;
             error.put("arguments", Arrays.asList(jobResumingException.getScopeId().toCompactId(), jobResumingException.getJobId().toCompactId()));
         } else if (failure instanceof CleanJobDataException) {
-            CleanJobDataException cleanJobDataException = (CleanJobDataException)failure;
+            CleanJobDataException cleanJobDataException = (CleanJobDataException) failure;
             statusCode = 500;
             error.put("arguments", Arrays.asList(cleanJobDataException.getScopeId().toCompactId(), cleanJobDataException.getJobId().toCompactId()));
         }
