@@ -58,6 +58,7 @@
         <url-pattern>/exporter_usage/*</url-pattern>
         <url-pattern>/exporter_device/*</url-pattern>
         <url-pattern>/exporter_device_event/*</url-pattern>
+        <url-pattern>/exporter_job_target/*</url-pattern>
         <url-pattern>/settings/*</url-pattern>
         <url-pattern>/role/*</url-pattern>
         <url-pattern>/accessrole/*</url-pattern>
@@ -369,6 +370,15 @@
     <servlet-mapping>
         <servlet-name>jobTargetServlet</servlet-name>
         <url-pattern>/jobTarget</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>jobTargetExporterServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.module.job.servlet.JobTargetExporterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>jobTargetExporterServlet</servlet-name>
+        <url-pattern>/exporter_job_target/*</url-pattern>
     </servlet-mapping>
 
     <servlet>

@@ -11,11 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.job.client.targets;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
@@ -29,6 +24,14 @@ import org.eclipse.kapua.app.console.module.job.shared.model.permission.JobSessi
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobService;
 import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobServiceAsync;
 
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
 public class JobTabTargetsToolbar extends EntityCRUDToolbar<GwtJobTarget> {
 
     private static final ConsoleJobMessages JOB_MSGS = GWT.create(ConsoleJobMessages.class);
@@ -38,6 +41,7 @@ public class JobTabTargetsToolbar extends EntityCRUDToolbar<GwtJobTarget> {
     private GwtJob gwtSelectedJob;
 
     private Button jobStartTargetButton;
+    private Button exportButton;
 
     public JobTabTargetsToolbar(GwtSession currentSession) {
         super(currentSession, true);
@@ -81,9 +85,31 @@ public class JobTabTargetsToolbar extends EntityCRUDToolbar<GwtJobTarget> {
         jobStartTargetButton.disable();
         addExtraButton(jobStartTargetButton);
 
+        exportButton = new Button(JOB_MSGS.exportToCSV(), new KapuaIcon(IconSet.FILE_TEXT_O),
+                new SelectionListener<ButtonEvent>() {
+
+                    @Override
+                    public void componentSelected(ButtonEvent be) {
+                        export();
+                    }
+                });
+        exportButton.disable();
+        addExtraButton(exportButton);
         super.onRender(target, index);
 
         checkButtons();
+    }
+
+    private void export() {
+        StringBuilder sbUrl = new StringBuilder("exporter_job_target?format=")
+                .append("csv")
+                .append("&scopeId=")
+                .append(URL.encodeQueryString(currentSession.getSelectedAccountId()));
+
+            sbUrl.append("&jobId=")
+                    .append(gwtSelectedJob.getId());
+
+        Window.open(sbUrl.toString(), "_blank", "location=no");
     }
 
     @Override
@@ -96,10 +122,14 @@ public class JobTabTargetsToolbar extends EntityCRUDToolbar<GwtJobTarget> {
                 .setEnabled(selectedEntity != null && currentSession.hasPermission(JobSessionPermission.delete())
                         && currentSession.hasPermission(JobSessionPermission.write()));
         deleteEntityButton.setText(JOB_MSGS.tabTargetsDeleteButton());
+        exportButton.setEnabled(gwtSelectedJob != null);
     }
 
     private void checkButtons() {
         if (gwtSelectedJob != null) {
+            if (exportButton != null) {
+                exportButton.setEnabled(true);
+            }
             JOB_SERVICE.find(currentSession.getSelectedAccountId(), gwtSelectedJob.getId(), new AsyncCallback<GwtJob>() {
 
                 @Override
@@ -136,6 +166,10 @@ public class JobTabTargetsToolbar extends EntityCRUDToolbar<GwtJobTarget> {
             if (jobStartTargetButton != null) {
                 jobStartTargetButton.setEnabled(false);
             }
+            if (exportButton != null) {
+                exportButton.setEnabled(false);
+            }
         }
     }
+
 }
