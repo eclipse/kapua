@@ -13,12 +13,14 @@ package org.eclipse.kapua.service.scheduler.trigger;
 
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Date;
 import java.util.List;
 
@@ -129,6 +131,7 @@ public interface Trigger extends KapuaNamedEntity {
      * @return The {@link org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinition} {@link KapuaId} which this {@link Trigger} refers to.
      * @since 1.1.0
      */
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     KapuaId getTriggerDefinitionId();
 
     /**
