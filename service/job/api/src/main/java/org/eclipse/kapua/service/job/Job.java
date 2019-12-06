@@ -17,6 +17,7 @@ import org.eclipse.kapua.service.job.step.JobStep;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
@@ -37,6 +38,7 @@ public interface Job extends KapuaNamedEntity {
         return TYPE;
     }
 
+    @XmlTransient
     List<JobStep> getJobSteps();
 
     void setJobSteps(List<JobStep> jobSteps);

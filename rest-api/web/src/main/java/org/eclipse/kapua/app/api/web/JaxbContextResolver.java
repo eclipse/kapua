@@ -196,8 +196,11 @@ import org.eclipse.kapua.service.job.execution.JobExecution;
 import org.eclipse.kapua.service.job.execution.JobExecutionListResult;
 import org.eclipse.kapua.service.job.execution.JobExecutionQuery;
 import org.eclipse.kapua.service.job.execution.JobExecutionXmlRegistry;
+import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.JobStepListResult;
+import org.eclipse.kapua.service.job.step.JobStepQuery;
 import org.eclipse.kapua.service.job.step.JobStepXmlRegistry;
+import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetListResult;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
@@ -520,8 +523,11 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     JobQuery.class,
                     JobXmlRegistry.class,
 
+                    JobStep.class,
                     JobStepListResult.class,
+                    JobStepQuery.class,
                     JobStepXmlRegistry.class,
+                    JobStepProperty.class,
 
                     JobExecution.class,
                     JobExecutionListResult.class,
