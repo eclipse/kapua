@@ -16,6 +16,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
 import org.eclipse.kapua.service.device.management.registry.manager.exception.ManagementOperationNotificationProcessingException;
@@ -50,6 +51,7 @@ public interface DeviceManagementRegistryManagerService extends KapuaService {
     ManagementOperationNotificationService MANAGEMENT_OPERATION_NOTIFICATION_REGISTRY_SERVICE = LOCATOR.getService(ManagementOperationNotificationService.class);
     ManagementOperationNotificationFactory MANAGEMENT_OPERATION_NOTIFICATION_FACTORY = LOCATOR.getFactory(ManagementOperationNotificationFactory.class);
 
+    String LOG_MESSAGE_GENERATING = "Generating...";
 
     default void processOperationNotification(KapuaId scopeId, KapuaId operationId, Date updateOn, String resource, OperationStatus status, Integer progress, String message) throws ManagementOperationNotificationProcessingException {
 
@@ -120,7 +122,10 @@ public interface DeviceManagementRegistryManagerService extends KapuaService {
                 deviceManagementOperation = getDeviceManagementOperation(scopeId, operationId);
                 deviceManagementOperation.setEndedOn(updateOn);
                 deviceManagementOperation.setStatus(finalStatus);
-                deviceManagementOperation.setLog("Generating...");
+
+                if (deviceManagementOperation.getLog() == null) {
+                    deviceManagementOperation.setLog(LOG_MESSAGE_GENERATING);
+                }
 
                 deviceManagementOperation = DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.update(deviceManagementOperation);
 
@@ -140,10 +145,16 @@ public interface DeviceManagementRegistryManagerService extends KapuaService {
         {
             ManagementOperationNotificationQuery query = MANAGEMENT_OPERATION_NOTIFICATION_FACTORY.newQuery(scopeId);
             query.setPredicate(query.attributePredicate(ManagementOperationNotificationAttributes.OPERATION_ID, deviceManagementOperation.getId()));
+            query.setSortCriteria(query.fieldSortCriteria(ManagementOperationNotificationAttributes.SENT_ON, SortOrder.ASCENDING));
 
             ManagementOperationNotificationListResult notifications = MANAGEMENT_OPERATION_NOTIFICATION_REGISTRY_SERVICE.query(query);
 
             StringBuilder logSb = new StringBuilder();
+
+            if (!LOG_MESSAGE_GENERATING.equals(deviceManagementOperation.getLog())) {
+                logSb.append(deviceManagementOperation.getLog()).append("\n");
+            }
+
             for (ManagementOperationNotification mon : notifications.getItems()) {
                 if (!Strings.isNullOrEmpty(mon.getMessage())) {
                     logSb.append(mon.getSentOn()).append(" - ").append(mon.getMessage()).append("\n");

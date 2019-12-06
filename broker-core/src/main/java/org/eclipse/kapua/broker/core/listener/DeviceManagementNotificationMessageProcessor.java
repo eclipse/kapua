@@ -21,6 +21,7 @@ import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.job.manager.JobDeviceManagementOperationManagerService;
+import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyChannel;
 import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyMessage;
 import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyPayload;
 import org.eclipse.kapua.service.device.management.registry.manager.DeviceManagementRegistryManagerService;
@@ -67,13 +68,14 @@ public class DeviceManagementNotificationMessageProcessor extends AbstractProces
 
         KapuaNotifyMessage notifyMessage = (KapuaNotifyMessage) message.getMessage();
         KapuaNotifyPayload notifyPayload = notifyMessage.getPayload();
+        KapuaNotifyChannel notifyChannel = notifyMessage.getChannel();
 
         try {
             DEVICE_MANAGEMENT_REGISTRY_MANAGER_SERVICE.processOperationNotification(
                     notifyMessage.getScopeId(),
                     notifyPayload.getOperationId(),
                     MoreObjects.firstNonNull(notifyMessage.getSentOn(), notifyMessage.getReceivedOn()),
-                    notifyPayload.getResource(),
+                    notifyPayload.getResource() != null ? notifyPayload.getResource() : notifyChannel.getResources()[0],
                     notifyPayload.getStatus(),
                     notifyPayload.getProgress(),
                     notifyPayload.getMessage());
@@ -82,7 +84,7 @@ public class DeviceManagementNotificationMessageProcessor extends AbstractProces
                     notifyMessage.getScopeId(),
                     notifyPayload.getOperationId(),
                     MoreObjects.firstNonNull(notifyMessage.getSentOn(), notifyMessage.getReceivedOn()),
-                    notifyPayload.getResource(),
+                    notifyPayload.getResource() != null ? notifyPayload.getResource() : notifyChannel.getResources()[0],
                     notifyPayload.getStatus());
         } catch (Exception e) {
             LOG.error("Error while processing Device Management Operation Notification message!", e);

@@ -116,6 +116,7 @@ public class TranslatorLifeNotifyKuraKapua extends Translator<KuraNotifyMessage,
         KapuaNotifyChannel kapuaNotifyChannel = new KapuaNotifyChannelImpl();
         kapuaNotifyChannel.setAppName(APP_NAME_DICTIONARY.get(kuraAppIdName));
         kapuaNotifyChannel.setVersion(APP_VERSION_DICTIONARY.get(kuraAppIdName));
+        kapuaNotifyChannel.setResources(kuraNotifyChannel.getResources());
 
         return kapuaNotifyChannel;
     }

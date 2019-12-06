@@ -51,8 +51,8 @@ public class EntityLogDialog extends KapuaDialog {
         logArea.setStyleAttribute("background", "transparent");
         logArea.setBorders(false);
         logArea.setValue(getLog());
-        logArea.setHeight(4030);
-        logArea.setWidth(600);
+        logArea.setWidth(585);
+        logArea.setHeight(430);
         logArea.setReadOnly(true);
 
         add(logArea);

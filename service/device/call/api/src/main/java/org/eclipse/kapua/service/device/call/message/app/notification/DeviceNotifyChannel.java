@@ -14,10 +14,26 @@ package org.eclipse.kapua.service.device.call.message.app.notification;
 import org.eclipse.kapua.service.device.call.message.app.DeviceAppChannel;
 
 /**
- * Kapua notify message channel object definition.
+ * {@link DeviceNotifyChannel} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface DeviceNotifyChannel extends DeviceAppChannel {
+
+    /**
+     * Get the request resources
+     *
+     * @return
+     * @since 1.2.0
+     */
+    String[] getResources();
+
+    /**
+     * Set the request resources
+     *
+     * @param resources
+     * @since 1.2.0
+     */
+    void setResources(String[] resources);
 
 }

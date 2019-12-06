@@ -20,4 +20,19 @@ import org.eclipse.kapua.service.device.management.message.KapuaAppChannel;
  */
 public interface KapuaNotifyChannel extends KapuaAppChannel {
 
+    /**
+     * Get the request resources
+     *
+     * @return
+     * @since 1.2.0
+     */
+    String[] getResources();
+
+    /**
+     * Set the request resources
+     *
+     * @param resources
+     * @since 1.2.0
+     */
+    void setResources(String[] resources);
 }
