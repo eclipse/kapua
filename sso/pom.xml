@@ -30,6 +30,8 @@
         <module>provider</module>
         <module>provider-generic</module>
         <module>provider-keycloak</module>
+        <module>test</module>
+        <module>test-steps</module>
     </modules>
 
 </project>
