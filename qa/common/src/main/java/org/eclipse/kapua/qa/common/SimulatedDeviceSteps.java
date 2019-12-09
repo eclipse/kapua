@@ -410,5 +410,4 @@ public class SimulatedDeviceSteps {
             Assert.assertEquals(expectedState, result.getStatus());
         });
     }
-
 }
