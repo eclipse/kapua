@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019, 2020 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,24 +10,18 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.user;
+package org.eclipse.kapua.plugin.sso.openid.exception.uri;
 
-/**
- * The device user type
- */
-public enum UserType {
-    /**
-     * Device user type (no longer used).
-     */
-    DEVICE,
+import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDErrorCodes;
+
+public class OpenIDLogoutUriException extends OpenIDUriException {
 
     /**
-     * Internal user type (user credentials from Kapua)
+     * Constructor.
+     *
+     * @param cause The original {@link Throwable}.
      */
-    INTERNAL,
-
-    /**
-     * External user type (user credentials from an external Single Sign-On provider)
-     */
-    EXTERNAL
+    public OpenIDLogoutUriException(Throwable cause) {
+        super(OpenIDErrorCodes.LOGOUT_URI_ERROR, cause);
+    }
 }

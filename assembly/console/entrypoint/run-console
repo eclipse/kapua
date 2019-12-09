@@ -22,13 +22,13 @@ if [ -n "$KEYCLOAK_URL" ] && [ -n "$KAPUA_CONSOLE_URL" ]; then
    : KEYCLOAK_REALM=${KEYCLOAK_REALM:=kapua}
    : KEYCLOAK_CLIENT_ID=${KEYCLOAK_CLIENT_ID:=console}
 
-   JAVA_OPTS="$JAVA_OPTS -Dsso.provider=keycloak"
+   JAVA_OPTS="$JAVA_OPTS -Dsso.openid.provider=keycloak"
    JAVA_OPTS="$JAVA_OPTS -Dsso.openid.client.id=${KEYCLOAK_CLIENT_ID}"
 
    test -n "$CLIENT_SECRET" && JAVA_OPTS="$JAVA_OPTS -Dsso.openid.client.secret=${CLIENT_SECRET}"
 
-   JAVA_OPTS="$JAVA_OPTS -Dsso.keycloak.uri=${KEYCLOAK_URL}"
-   JAVA_OPTS="$JAVA_OPTS -Dsso.keycloak.realm=${KEYCLOAK_REALM}"
+   JAVA_OPTS="$JAVA_OPTS -Dsso.openid.keycloak.uri=${KEYCLOAK_URL}"
+   JAVA_OPTS="$JAVA_OPTS -Dsso.openid.keycloak.realm=${KEYCLOAK_REALM}"
 
    JAVA_OPTS="$JAVA_OPTS -Dconsole.sso.home.uri=${KAPUA_CONSOLE_URL}"
 
@@ -38,16 +38,16 @@ elif [ -n "${KAPUA_CONSOLE_URL}" ] && [ -n "${OPENID_JWT_ISSUER}" ]; then
   echo "  OpenID Issuer: ${OPENID_JWT_ISSUER}"
   echo "  Console: ${KAPUA_CONSOLE_URL}"
 
-  JAVA_OPTS="${JAVA_OPTS} -Dsso.provider=generic"
+  JAVA_OPTS="${JAVA_OPTS} -Dsso.openid.provider=generic"
   JAVA_OPTS="${JAVA_OPTS} -Dsso.openid.client.id=${OPENID_CLIENT_ID:-console}"
   test -n "${CLIENT_SECRET}" && JAVA_OPTS="${JAVA_OPTS} -Dsso.openid.client.secret=${CLIENT_SECRET}"
   JAVA_OPTS="${JAVA_OPTS} -Dconsole.sso.home.uri=${KAPUA_CONSOLE_URL}"
 
-  JAVA_OPTS="${JAVA_OPTS} -Dsso.generic.openid.jwt.audience.allowed=${JWT_AUDIENCE:-console}"
-  JAVA_OPTS="${JAVA_OPTS} -Dsso.generic.openid.jwt.issuer.allowed=${OPENID_JWT_ISSUER}"
-  test -n "${OPENID_AUTH_ENDPOINT}" && JAVA_OPTS="${JAVA_OPTS} -Dsso.generic.openid.server.endpoint.auth=${OPENID_AUTH_ENDPOINT}"
-  test -n "${OPENID_LOGOUT_ENDPOINT}" && JAVA_OPTS="${JAVA_OPTS} -Dsso.generic.openid.server.endpoint.logout=${OPENID_LOGOUT_ENDPOINT}"
-  test -n "${OPENID_TOKEN_ENDPOINT}" && JAVA_OPTS="${JAVA_OPTS} -Dsso.generic.openid.server.endpoint.token=${OPENID_TOKEN_ENDPOINT}"
+  JAVA_OPTS="${JAVA_OPTS} -Dsso.openid.generic.jwt.audience.allowed=${JWT_AUDIENCE:-console}"
+  JAVA_OPTS="${JAVA_OPTS} -Dsso.openid.generic.jwt.issuer.allowed=${OPENID_JWT_ISSUER}"
+  test -n "${OPENID_AUTH_ENDPOINT}" && JAVA_OPTS="${JAVA_OPTS} -Dsso.openid.generic.server.endpoint.auth=${OPENID_AUTH_ENDPOINT}"
+  test -n "${OPENID_LOGOUT_ENDPOINT}" && JAVA_OPTS="${JAVA_OPTS} -Dsso.openid.generic.server.endpoint.logout=${OPENID_LOGOUT_ENDPOINT}"
+  test -n "${OPENID_TOKEN_ENDPOINT}" && JAVA_OPTS="${JAVA_OPTS} -Dsso.openid.generic.server.endpoint.token=${OPENID_TOKEN_ENDPOINT}"
 fi
 
 # Multi Factor Authentication configurations

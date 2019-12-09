@@ -16,9 +16,9 @@ import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.kapua.app.console.core.server.util.SsoHelper;
 import org.eclipse.kapua.app.console.core.server.util.SsoLocator;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
-import org.eclipse.kapua.plugin.sso.openid.SingleSignOnLocator;
-import org.eclipse.kapua.plugin.sso.openid.exception.SsoAccessTokenException;
-import org.eclipse.kapua.plugin.sso.openid.exception.uri.SsoIllegalUriException;
+import org.eclipse.kapua.plugin.sso.openid.OpenIDLocator;
+import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDAccessTokenException;
+import org.eclipse.kapua.plugin.sso.openid.exception.uri.OpenIDIllegalUriException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ public class SsoCallbackServlet extends HttpServlet {
     private static final String ERROR_DESCRIPTION_PARAM = "error_description";
     private static final String HIDDEN_SECRET = "****";
 
-    private SingleSignOnLocator locator;
+    private OpenIDLocator locator;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -107,9 +107,9 @@ public class SsoCallbackServlet extends HttpServlet {
                     logger.error("Invalid HttpServletRequest, both 'access_token' and 'error' parameters are 'null'");
                 }
             }
-        } catch (SsoIllegalUriException siue) {
+        } catch (OpenIDIllegalUriException siue) {
             throw new ServletException("Failed to get Home URI (null or empty): " + siue.getMessage(), siue);
-        } catch (SsoAccessTokenException sate) {
+        } catch (OpenIDAccessTokenException sate) {
             throw new ServletException("Failed to get access token: " + sate.getMessage(), sate);
         } catch (URISyntaxException use) {
             throw new ServletException("Failed to parse redirect URL " + homeUri + " : " + use.getMessage(), use);

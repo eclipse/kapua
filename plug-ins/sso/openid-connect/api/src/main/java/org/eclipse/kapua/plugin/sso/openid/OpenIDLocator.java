@@ -11,19 +11,27 @@
  *     Red Hat Inc - initial API and implementation
  *     Eurotech
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication.shiro.utils;
+package org.eclipse.kapua.plugin.sso.openid;
 
-import org.eclipse.kapua.plugin.sso.openid.JwtProcessor;
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
-import org.eclipse.kapua.plugin.sso.openid.provider.ProviderOpenIDLocator;
 
-public final class JwtProcessors {
+/**
+ * OpenID Connect single sign-on service locator interface.
+ */
+public interface OpenIDLocator {
 
-    private JwtProcessors() {
-    }
+    /**
+     * Retrieve the OpenID Connect single sign-on service.
+     *
+     * @return a {@link OpenIDService} object.
+     */
+    OpenIDService getService();
 
-    public static JwtProcessor createDefault() throws OpenIDException {
-        ProviderOpenIDLocator singleSignOnLocator = new ProviderOpenIDLocator();
-        return singleSignOnLocator.getProcessor();
-    }
+    /**
+     * Retrieve the JwtProcessor.
+     *
+     * @return a {@link JwtProcessor} object.
+     * @throws OpenIDException if it fails to retrieve the {@link JwtProcessor}.
+     */
+    JwtProcessor getProcessor() throws OpenIDException;
 }

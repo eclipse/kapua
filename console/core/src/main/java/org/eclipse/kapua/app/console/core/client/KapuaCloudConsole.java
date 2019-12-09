@@ -76,7 +76,7 @@ public class KapuaCloudConsole implements EntryPoint {
     private static final ConsoleCoreMessages CORE_MSGS = GWT.create(ConsoleCoreMessages.class);
     private static final Logger logger = Logger.getLogger(KapuaCloudConsole.class.getName());
 
-    // sso parameters
+    // OpenID Connect single sign-on parameters
     public static final String PARAMETER_ACCESS_TOKEN = "access_token";
     public static final String PARAMETER_ID_TOKEN = "id_token";
     public static final String PARAMETER_ERROR = "error";
@@ -359,7 +359,7 @@ public class KapuaCloudConsole implements EntryPoint {
         genericNote.setHtml(productInformation.getInformationSnippet());
         creditLabel.setText(productInformation.getBackgroundCredits());
 
-        // Check if coming from SSO login
+        // Check if coming from OpenID Connect ssingle sign-on login
         String accessToken = Window.Location.getParameter(PARAMETER_ACCESS_TOKEN);
         String idToken = Window.Location.getParameter(PARAMETER_ID_TOKEN);
 

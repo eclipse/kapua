@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.plugin.sso.openid;
 
-import org.eclipse.kapua.plugin.sso.openid.exception.SsoException;
-import org.eclipse.kapua.plugin.sso.openid.exception.jwt.SsoJwtException;
+import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
+import org.eclipse.kapua.plugin.sso.openid.exception.jwt.OpenIDJwtException;
 import org.jose4j.jwt.consumer.JwtContext;
 
 public interface JwtProcessor extends AutoCloseable {
@@ -23,16 +23,16 @@ public interface JwtProcessor extends AutoCloseable {
      *
      * @param jwt the String representing the JWT.
      * @return <tt>true</tt> if the validation succeeds, <tt>false</tt> otherwise.
-     * @throws SsoJwtException if the validation fails.
+     * @throws OpenIDJwtException if the validation fails.
      */
-    boolean validate(final String jwt) throws SsoException;
+    boolean validate(final String jwt) throws OpenIDException;
 
     /**
      * Process the JWT and generate a JwtContext object.
      *
      * @param jwt the String representing the JWT.
      * @return a JwtContext object.
-     * @throws SsoJwtException if JWT processing fails.
+     * @throws OpenIDJwtException if JWT processing fails.
      */
-    JwtContext process(final String jwt) throws SsoException;
+    JwtContext process(final String jwt) throws OpenIDException;
 }

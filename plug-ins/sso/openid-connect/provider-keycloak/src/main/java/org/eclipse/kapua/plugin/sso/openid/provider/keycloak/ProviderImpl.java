@@ -9,12 +9,13 @@
  *
  * Contributors:
  *     Red Hat Inc - initial API and implementation
+ *     Eurotech
  *******************************************************************************/
 package org.eclipse.kapua.plugin.sso.openid.provider.keycloak;
 
-import org.eclipse.kapua.plugin.sso.openid.provider.SingleSignOnProvider;
+import org.eclipse.kapua.plugin.sso.openid.provider.OpenIDProvider;
 
-public class ProviderImpl implements SingleSignOnProvider {
+public class ProviderImpl implements OpenIDProvider {
 
     @Override
     public String getId() {
@@ -23,7 +24,7 @@ public class ProviderImpl implements SingleSignOnProvider {
 
     @Override
     public ProviderLocator createLocator() {
-        return new KeycloakSingleSignOnLocator();
+        return new KeycloakOpenIDLocator();
     }
 
 }

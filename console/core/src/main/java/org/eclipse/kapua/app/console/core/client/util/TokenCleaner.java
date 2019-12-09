@@ -21,7 +21,7 @@ public final class TokenCleaner {
     }
 
     /**
-     * Clear GWT state and remove SSO tokens when set (invalidates URL parameters)
+     * Clear GWT state and remove OpenID tokens when set (invalidates URL parameters)
      */
     public static void cleanToken() {
         final String url = Window.Location.createUrlBuilder()

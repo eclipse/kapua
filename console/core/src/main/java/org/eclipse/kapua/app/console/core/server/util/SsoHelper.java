@@ -16,7 +16,7 @@ import java.net.URI;
 
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
-import org.eclipse.kapua.plugin.sso.openid.exception.uri.SsoIllegalUriException;
+import org.eclipse.kapua.plugin.sso.openid.exception.uri.OpenIDIllegalUriException;
 
 public final class SsoHelper {
 
@@ -29,10 +29,10 @@ public final class SsoHelper {
         return ConsoleSetting.getInstance();
     }
 
-    public static String getHomeUri() throws SsoIllegalUriException {
+    public static String getHomeUri() throws OpenIDIllegalUriException {
         String homeUri = getSettings().getString(ConsoleSettingKeys.SSO_CONSOLE_HOME_URI);
         if (homeUri == null || homeUri.isEmpty()) {
-            throw new SsoIllegalUriException(ConsoleSettingKeys.SSO_CONSOLE_HOME_URI.key(), null);
+            throw new OpenIDIllegalUriException(ConsoleSettingKeys.SSO_CONSOLE_HOME_URI.key(), null);
         }
         return homeUri;
     }
@@ -46,7 +46,7 @@ public final class SsoHelper {
         try {
             result = getHomeUri();
             return URI.create(result + "/sso/callback");
-        } catch (SsoIllegalUriException e) {
+        } catch (OpenIDIllegalUriException e) {
             throw new IllegalStateException(ILLEGAL_STATE_MESSAGE, e);
         } catch (IllegalStateException e) {
             throw new IllegalStateException(ILLEGAL_STATE_MESSAGE, e);

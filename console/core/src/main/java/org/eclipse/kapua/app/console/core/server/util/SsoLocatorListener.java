@@ -16,18 +16,18 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.eclipse.kapua.plugin.sso.openid.SingleSignOnLocator;
-import org.eclipse.kapua.plugin.sso.openid.provider.ProviderSingleSignOnLocator;
+import org.eclipse.kapua.plugin.sso.openid.OpenIDLocator;
+import org.eclipse.kapua.plugin.sso.openid.provider.ProviderOpenIDLocator;
 
 public class SsoLocatorListener implements ServletContextListener {
 
     private static final String SSO_CONTEXT_KEY = "ssoLocatorListener";
 
-    private ProviderSingleSignOnLocator context;
+    private ProviderOpenIDLocator context;
 
     @Override
     public void contextInitialized(final ServletContextEvent event) {
-        this.context = new ProviderSingleSignOnLocator();
+        this.context = new ProviderOpenIDLocator();
         event.getServletContext().setAttribute(SSO_CONTEXT_KEY, this);
     }
 
@@ -41,7 +41,7 @@ public class SsoLocatorListener implements ServletContextListener {
         }
     }
 
-    static SingleSignOnLocator getLocator(final ServletContext context) {
+    static OpenIDLocator getLocator(final ServletContext context) {
         return ((SsoLocatorListener) context.getAttribute(SSO_CONTEXT_KEY)).context;
     }
 

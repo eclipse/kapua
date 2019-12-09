@@ -14,21 +14,21 @@
 package org.eclipse.kapua.plugin.sso.openid.provider.internal;
 
 import org.eclipse.kapua.plugin.sso.openid.JwtProcessor;
-import org.eclipse.kapua.plugin.sso.openid.SingleSignOnService;
-import org.eclipse.kapua.plugin.sso.openid.provider.SingleSignOnProvider.ProviderLocator;
+import org.eclipse.kapua.plugin.sso.openid.OpenIDService;
+import org.eclipse.kapua.plugin.sso.openid.provider.OpenIDProvider.ProviderLocator;
 import org.jose4j.jwt.consumer.JwtContext;
 
 import javax.json.JsonObject;
 import java.net.URI;
 
 /**
- * A dummy locator to return when the providerId (on the ProviderSingleSignOnLocator) is null.
+ * A dummy locator to return when the providerId (on the ProviderOpenIDLocator) is null.
  */
 public class DisabledLocator implements ProviderLocator {
 
     public static final ProviderLocator INSTANCE = new DisabledLocator();
 
-    private static final SingleSignOnService SERVICE = new SingleSignOnService() {
+    private static final OpenIDService SERVICE = new OpenIDService() {
 
         @Override
         public boolean isEnabled() {
@@ -76,7 +76,7 @@ public class DisabledLocator implements ProviderLocator {
     }
 
     @Override
-    public SingleSignOnService getService() {
+    public OpenIDService getService() {
         return SERVICE;
     }
 

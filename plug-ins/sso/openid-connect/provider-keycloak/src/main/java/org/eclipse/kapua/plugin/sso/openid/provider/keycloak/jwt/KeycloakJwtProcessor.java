@@ -13,12 +13,12 @@
 package org.eclipse.kapua.plugin.sso.openid.provider.keycloak.jwt;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.eclipse.kapua.plugin.sso.openid.exception.SsoException;
-import org.eclipse.kapua.plugin.sso.openid.exception.SsoIllegalArgumentException;
+import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
+import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDIllegalArgumentException;
 import org.eclipse.kapua.plugin.sso.openid.provider.jwt.AbstractJwtProcessor;
-import org.eclipse.kapua.plugin.sso.openid.provider.keycloak.KeycloakSingleSignOnUtils;
-import org.eclipse.kapua.plugin.sso.openid.provider.setting.SsoSetting;
-import org.eclipse.kapua.plugin.sso.openid.provider.setting.SsoSettingKeys;
+import org.eclipse.kapua.plugin.sso.openid.provider.keycloak.KeycloakOpenIDUtils;
+import org.eclipse.kapua.plugin.sso.openid.provider.setting.OpenIDSetting;
+import org.eclipse.kapua.plugin.sso.openid.provider.setting.OpenIDSettingKeys;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,23 +28,23 @@ import java.util.List;
  */
 public class KeycloakJwtProcessor extends AbstractJwtProcessor {
 
-    private static final SsoSetting SSO_SETTING = SsoSetting.getInstance();
+    private static final OpenIDSetting OPENID_SETTING = OpenIDSetting.getInstance();
 
-    public KeycloakJwtProcessor() throws SsoException {
+    public KeycloakJwtProcessor() throws OpenIDException {
     }
 
     @Override
-    protected List<String> getJwtExpectedIssuers() throws SsoIllegalArgumentException {
+    protected List<String> getJwtExpectedIssuers() throws OpenIDIllegalArgumentException {
         return Collections.singletonList(
-                KeycloakSingleSignOnUtils.getProviderUri() + KeycloakSingleSignOnUtils.KEYCLOAK_URI_COMMON_PART +
-                        KeycloakSingleSignOnUtils.getRealm());
+                KeycloakOpenIDUtils.getProviderUri() + KeycloakOpenIDUtils.KEYCLOAK_URI_COMMON_PART +
+                        KeycloakOpenIDUtils.getRealm());
     }
 
     @Override
-    protected List<String> getJwtAudiences() throws SsoIllegalArgumentException {
-        List<String> jwtAudiences = SSO_SETTING.getList(String.class, SsoSettingKeys.SSO_OPENID_CLIENT_ID);
+    protected List<String> getJwtAudiences() throws OpenIDIllegalArgumentException {
+        List<String> jwtAudiences = OPENID_SETTING.getList(String.class, OpenIDSettingKeys.SSO_OPENID_CLIENT_ID);
         if (CollectionUtils.isEmpty(jwtAudiences)) {
-            throw new SsoIllegalArgumentException(SsoSettingKeys.SSO_OPENID_CLIENT_ID.key(), (jwtAudiences == null ? null : "") );
+            throw new OpenIDIllegalArgumentException(OpenIDSettingKeys.SSO_OPENID_CLIENT_ID.key(), (jwtAudiences == null ? null : "") );
         }
         return jwtAudiences;
     }

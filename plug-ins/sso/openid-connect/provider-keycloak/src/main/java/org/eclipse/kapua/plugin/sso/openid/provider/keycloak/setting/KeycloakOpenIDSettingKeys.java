@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 Red Hat Inc and others.
+ * Copyright (c) 2017, 2020 Red Hat Inc and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,20 +11,24 @@
  *     Red Hat Inc - initial API and implementation
  *     Eurotech
  *******************************************************************************/
-package org.eclipse.kapua.plugin.sso.openid.provider.generic;
+package org.eclipse.kapua.plugin.sso.openid.provider.keycloak.setting;
 
-import org.eclipse.kapua.plugin.sso.openid.provider.OpenIDProvider;
+import org.eclipse.kapua.commons.setting.SettingKey;
 
-public class ProviderImpl implements OpenIDProvider {
+public enum KeycloakOpenIDSettingKeys implements SettingKey {
 
-    @Override
-    public String getId() {
-        return "generic";
+    KEYCLOAK_URI("sso.openid.keycloak.uri"), //
+    KEYCLOAK_REALM("sso.openid.keycloak.realm"), //
+    ;
+
+    private final String key;
+
+    KeycloakOpenIDSettingKeys(final String key) {
+        this.key = key;
     }
 
     @Override
-    public ProviderLocator createLocator() {
-        return new GenericOpenIDLocator();
+    public String key() {
+        return key;
     }
-
 }

@@ -9,8 +9,8 @@ using Docker and OpenShift.
 
 ## Enabling single sign-on
 
-In order to enable single sign-on you will need to select an SSO provider. You can do this using the
-configuration option `sso.provider`. Currently there are two default providers in Kapua. However additional
+In order to enable single sign-on you will need to select an OpenID provider. You can do this using the
+configuration option `sso.openid.provider`. Currently there are two default providers in Kapua. However additional
 providers can be added to Kapua by using the Java service loader framework. 
 The current default providers are:
 
@@ -21,6 +21,8 @@ Each provider will require additional configuration options. But there is a set 
 options:
 
 - **`sso.openid.client.id`** : the "client id" used when communicating with the OpenID Connect server.
+    This represents also the JWT audience to search for in the OpenID Connect ID Token
+    (for more information see [here](https://openid.net/specs/openid-connect-core-1_0.html#IDToken) )
 - **`sso.openid.client.secret` (optional)** : the "client secret" used when communicating with the OpenID Connect server.
 - **`sso.openid.conf.wellknown.path` (optional)** : to provide a custom OpenID well-known suffix (the default one is `.well-known/openid-configuration` and 
     it's attached as suffix to the issuer).
@@ -31,7 +33,7 @@ It is also necessary to configure the Web Console external endpoint address.
 - **`console.sso.home.uri`** : the URL to the web console, e.g. `http://localhost:8080`
 
 The SSO Login will be available in the form of a dedicated button on the Kapua login page 
-(the button can be enabled through the configuration option `sso.provider`).
+(the button can be enabled through the configuration option `sso.openid.provider`).
 
 ### Generic provider
 
@@ -43,15 +45,15 @@ The required values are specific to your OpenID Connect solution, please use its
 
 - **`sso.generic.openid.jwt.issuer.allowed`** : the base URL to the OpenID server provider.
 - **`sso.generic.openid.jwt.audience.allowed`** : the JWT audience.
-- **`sso.generic.openid.server.endpoint.auth` (optional)** : the endpoint URL to the authentication API.
-- **`sso.generic.openid.server.endpoint.logout`(optional)** : the logout endpoint of the OpenID provider.
-- **`sso.generic.openid.server.endpoint.token` (optional)** : the endpoint URL to the token API.
+- **`sso.openid.generic.server.endpoint.auth` (optional)** : the endpoint URL to the authentication API.
+- **`sso.openid.generic.server.endpoint.logout`(optional)** : the logout endpoint of the OpenID provider.
+- **`sso.openid.generic.server.endpoint.token` (optional)** : the endpoint URL to the token API.
 
 #### Note about 'client id' and 'audience' values
 
-Properties `sso.openid.client.id` and `sso.generic.openid.jwt.audience.allowed` (the second property is used only for the `generic` provider) 
+Properties `sso.openid.client.id` and `sso.openid.generic.jwt.audience.allowed` (the second property is used only for the `generic` provider) 
 basically represent the same value.
-More precisely, `sso.openid.client.id` is used as parameter in the requests to the OpenID Provider, while `sso.generic.openid.jwt.audience.allowed` is used by 
+More precisely, `sso.openid.client.id` is used as parameter in the requests to the OpenID Provider, while `sso.openid.generic.jwt.audience.allowed` is used by 
 the `JwtProcessor` in order to validate the token received from the OpenID Provider. These two should correspond to the same `clientId`.
 
 According to the official OpenID Connect specification (see [here](https://openid.net/specs/openid-connect-core-1_0.html#IDToken) and 
@@ -67,8 +69,8 @@ different values for these properties (also, please note that the `generic-provi
 
 The Keycloak provider can be configured using the following configuration parameters:
 
-- **`sso.keycloak.uri`** : the base URL to the Keycloak server.
-- **`sso.keycloak.realm`** : the name of the realm to use.
+- **`sso.openid.keycloak.uri`** : the base URL to the Keycloak server.
+- **`sso.openid.keycloak.realm`** : the name of the realm to use.
 
 Note that the _auth_ and _token_ endpoints are automatically computed by the Keycloak provider.
 
@@ -76,7 +78,7 @@ For more information see the [Keycloak Documentation](http://www.keycloak.org/do
 
 ### Enabling users to SSO
 
-In order to enable a user to login through an SSO provider, the user must first be created on the OpenID 
+In order to enable a user to login through an OpenID provider, the user must first be created on the OpenID 
 Connect server (e.g. using Keycloak, on the Keycloak Admin Console). 
 Secondly, the user can be added to Kapua. 
 Such user differs from a 'normal' one for its type (which is `EXTERNAL`, while a normal user is `INTERNAL`) and for 
@@ -146,7 +148,7 @@ if you choose to disable the OpenID logout, since this will allow the user to lo
 
 ## Keycloak Example (Docker based)
 
-We detail here the steps to run an SSO Keycloak provider.
+We detail here the steps to run an OpenID Keycloak provider.
 The example described here makes use of a Keycloak Server Docker image 
 (see [here](https://hub.docker.com/r/jboss/keycloak/) for more details). 
 
@@ -208,12 +210,12 @@ short)
 The Kapua console docker image is already configured and deployed in docker without further configuration using the 
 `sso-docker-deploy.sh` script in the subdirectory `sso`.
 
-If you need to configure it manually, the following properties must be passed (as VM options) in order to set up SSO 
+If you need to configure it manually, the following properties must be passed (as VM options) in order to set up the SSO 
 on Kapua using Keycloak (you can login using the default `admin` user with `admin` password):
 
-- `sso.provider=keycloak` : to set Keycloak as sso provider
-- `sso.keycloak.realm=kapua` : the Keycloak Realm (we are using the "kapua" realm)
-- `sso.keycloak.uri=http://<Keycloak-IP-address>:9090` : the Keycloak Server URI 
+- `sso.openid.provider=keycloak` : to set Keycloak as OpenID provider
+- `sso.openid.keycloak.realm=kapua` : the Keycloak Realm (we are using the "kapua" realm)
+- `sso.openid.keycloak.uri=http://<Keycloak-IP-address>:9090` : the Keycloak Server URI 
     (use `https://<Keycloak-IP-address>:9443` in case TLS is enabled - see below for further details)
 - `sso.openid.client.id=console` : the OpenID Client ID (the one set on Keycloak)
 - `console.sso.home.uri=http://localhost:8080` : the Kapua web console URI 
@@ -275,7 +277,7 @@ will create the "_admin_" user without the need of the SimpleRegistrationProcess
 
 Logging out from the Keycloak provider is possible through the Keycloak OpenID Connect logout endpoint: 
 
-`{sso.keycloak.uri}/auth/realms/{realm_name}/protocol/openid-connect/logout`
+`{sso.openid.keycloak.uri}/auth/realms/{realm_name}/protocol/openid-connect/logout`
 
 In our example the endpoint is the following: 
 

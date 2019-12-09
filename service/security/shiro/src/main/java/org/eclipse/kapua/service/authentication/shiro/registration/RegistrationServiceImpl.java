@@ -29,7 +29,7 @@ import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticatio
 import org.eclipse.kapua.service.authentication.shiro.utils.JwtProcessors;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.plugin.sso.openid.JwtProcessor;
-import org.eclipse.kapua.plugin.sso.openid.exception.SsoException;
+import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
 import org.jose4j.jwt.consumer.JwtContext;
 
 @KapuaProvider
@@ -41,7 +41,7 @@ public class RegistrationServiceImpl implements RegistrationService, AutoCloseab
 
     private static final KapuaAuthenticationSetting SETTING = KapuaAuthenticationSetting.getInstance();
 
-    public RegistrationServiceImpl() throws SsoException {
+    public RegistrationServiceImpl() throws OpenIDException {
         jwtProcessor = JwtProcessors.createDefault();
 
         for (RegistrationProcessorProvider provider : ServiceLoader.load(RegistrationProcessorProvider.class)) {
