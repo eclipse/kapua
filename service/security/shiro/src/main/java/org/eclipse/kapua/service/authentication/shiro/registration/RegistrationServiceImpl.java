@@ -28,8 +28,8 @@ import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticatio
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.shiro.utils.JwtProcessors;
 import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.sso.JwtProcessor;
-import org.eclipse.kapua.sso.exception.SsoException;
+import org.eclipse.kapua.plugin.sso.openid.JwtProcessor;
+import org.eclipse.kapua.plugin.sso.openid.exception.SsoException;
 import org.jose4j.jwt.consumer.JwtContext;
 
 @KapuaProvider

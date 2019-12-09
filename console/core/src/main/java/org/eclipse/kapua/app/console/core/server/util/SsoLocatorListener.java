@@ -16,8 +16,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.eclipse.kapua.sso.SingleSignOnLocator;
-import org.eclipse.kapua.sso.provider.ProviderSingleSignOnLocator;
+import org.eclipse.kapua.plugin.sso.openid.SingleSignOnLocator;
+import org.eclipse.kapua.plugin.sso.openid.provider.ProviderSingleSignOnLocator;
 
 public class SsoLocatorListener implements ServletContextListener {
 

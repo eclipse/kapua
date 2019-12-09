@@ -932,22 +932,37 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-sso-api</artifactId>
+                <artifactId>kapua-plug-ins</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-sso-provider</artifactId>
+                <artifactId>kapua-sso</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-sso-provider-generic</artifactId>
+                <artifactId>kapua-openid-connect</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-sso-provider-keycloak</artifactId>
+                <artifactId>kapua-openid-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-openid-provider</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-openid-provider-generic</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-openid-provider-keycloak</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -1829,7 +1844,7 @@
         <module>translator</module>
         <module>qa</module>
 
-        <module>sso</module>
+        <module>plug-ins</module>
 
         <!-- Extras  -->
         <module>extras</module>

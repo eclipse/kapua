@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.utils;
 
-import org.eclipse.kapua.sso.JwtProcessor;
-import org.eclipse.kapua.sso.exception.SsoException;
-import org.eclipse.kapua.sso.provider.ProviderSingleSignOnLocator;
+import org.eclipse.kapua.plugin.sso.openid.JwtProcessor;
+import org.eclipse.kapua.plugin.sso.openid.exception.SsoException;
+import org.eclipse.kapua.plugin.sso.openid.provider.ProviderSingleSignOnLocator;
 
 public final class JwtProcessors {
 

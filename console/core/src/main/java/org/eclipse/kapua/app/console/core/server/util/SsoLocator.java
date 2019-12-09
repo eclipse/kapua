@@ -15,7 +15,7 @@ package org.eclipse.kapua.app.console.core.server.util;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
-import org.eclipse.kapua.sso.SingleSignOnLocator;
+import org.eclipse.kapua.plugin.sso.openid.SingleSignOnLocator;
 
 public final class SsoLocator {
 

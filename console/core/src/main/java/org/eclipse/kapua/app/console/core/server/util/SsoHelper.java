@@ -16,7 +16,7 @@ import java.net.URI;
 
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
-import org.eclipse.kapua.sso.exception.uri.SsoIllegalUriException;
+import org.eclipse.kapua.plugin.sso.openid.exception.uri.SsoIllegalUriException;
 
 public final class SsoHelper {
 

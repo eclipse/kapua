@@ -16,9 +16,9 @@ import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.kapua.app.console.core.server.util.SsoHelper;
 import org.eclipse.kapua.app.console.core.server.util.SsoLocator;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
-import org.eclipse.kapua.sso.SingleSignOnLocator;
-import org.eclipse.kapua.sso.exception.SsoAccessTokenException;
-import org.eclipse.kapua.sso.exception.uri.SsoIllegalUriException;
+import org.eclipse.kapua.plugin.sso.openid.SingleSignOnLocator;
+import org.eclipse.kapua.plugin.sso.openid.exception.SsoAccessTokenException;
+import org.eclipse.kapua.plugin.sso.openid.exception.uri.SsoIllegalUriException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
