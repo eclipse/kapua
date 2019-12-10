@@ -22,7 +22,8 @@ import org.junit.runner.RunWith;
         },
         glue = {
                 "org.eclipse.kapua.qa.common",
-                "org.eclipse.kapua.service.sso.steps"
+                "org.eclipse.kapua.service.sso.steps",
+                "org.eclipse.kapua.qa.integration.steps"
         },
         plugin = {
                 "pretty",

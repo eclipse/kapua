@@ -241,6 +241,19 @@ public class DockerSteps {
         logger.info("Message Broker {} container started: {}", bcData.getName(), containerId);
     }
 
+    @And("^Start Keycloak container with name \"(.*)\"$")
+    public void startKeycloakContainer(String name) throws DockerException, InterruptedException {
+        logger.info("Starting Keycloak container...");
+        ContainerConfig keycloakConfig = getKeycloakContainerConfig();
+        ContainerCreation keycloakContainerCreation = docker.createContainer(keycloakConfig, name);
+        String containerId = keycloakContainerCreation.id();
+
+        docker.startContainer(containerId);
+        docker.connectToNetwork(containerId, networkId);
+        containerMap.put(name, containerId);
+        logger.info("Keycloak container started: {}", containerId);
+    }
+
     @Then("^Stop container with name \"(.*)\"$")
     public void stopContainer(String name) throws DockerException, InterruptedException {
         logger.info("Stopping container {}...", name);
@@ -401,6 +414,28 @@ public class DockerSteps {
                 .hostConfig(hostConfig)
                 .exposedPorts(String.valueOf(brokerPort))
                 .image("kapua/kapua-events-broker:1.2.0-SNAPSHOT")
+                .build();
+    }
+
+    /**
+     * Creation of docker container configuration for Keycloak provider.
+     *
+     * @return Container configuration for Keycloak instance.
+     */
+    private ContainerConfig getKeycloakContainerConfig() {
+        final int keycloakPort = 9090;
+        final Map<String, List<PortBinding>> portBindings = new HashMap<>();
+        addHostPort("0.0.0.0", portBindings, keycloakPort, keycloakPort);
+        final HostConfig hostConfig = HostConfig.builder().portBindings(portBindings).build();
+
+        return ContainerConfig.builder()
+                .hostConfig(hostConfig)
+                .exposedPorts(String.valueOf(keycloakPort))
+                .env(
+                        "KEYCLOAK_USER=admin",
+                        "KEYCLOAK_PASSWORD=admin"
+                )
+                .image("jboss/keycloak")
                 .build();
     }
 
