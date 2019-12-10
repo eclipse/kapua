@@ -20,7 +20,7 @@ Feature: Sso Service
     Given Create network
     And Start Keycloak container with name "keycloak"
     And I wait 10 seconds
-
-#  Scenario: Stop Keycloak
-#    Given Stop container with name "keycloak"
+    Then Stop container with name "keycloak"
+    And Remove container with name "keycloak"
+    Then Remove network
 
