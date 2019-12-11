@@ -30,6 +30,7 @@ public class JobTabExecutionsToolbar extends EntityCRUDToolbar<GwtJobExecution> 
     private String jobId;
 
     private Button stopJobButton;
+    private Button logExecutionButton;
 
     public JobTabExecutionsToolbar(GwtSession currentSession) {
         super(currentSession, true);
@@ -58,6 +59,15 @@ public class JobTabExecutionsToolbar extends EntityCRUDToolbar<GwtJobExecution> 
         stopJobButton.disable();
         addExtraButton(stopJobButton);
 
+        logExecutionButton = new JobExecutionLogButton(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                JobExecutionLogDialog logDialog = new JobExecutionLogDialog(gridSelectionModel.getSelectedItem());
+                logDialog.show();
+            }
+        });
+        addExtraButton(logExecutionButton);
+
         super.onRender(target, index);
 
         checkButtons();
@@ -77,6 +87,10 @@ public class JobTabExecutionsToolbar extends EntityCRUDToolbar<GwtJobExecution> 
 
         if (stopJobButton != null) {
             stopJobButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null && gridSelectionModel.getSelectedItem().getEndedOn() == null);
+        }
+
+        if (logExecutionButton != null) {
+            logExecutionButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null);
         }
     }
 

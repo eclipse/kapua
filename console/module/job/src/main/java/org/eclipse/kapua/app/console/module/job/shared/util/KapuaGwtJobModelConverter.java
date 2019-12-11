@@ -170,6 +170,7 @@ public class KapuaGwtJobModelConverter {
         gwtJobExecution.setJobId(KapuaGwtCommonsModelConverter.convertKapuaId(jobExecution.getJobId()));
         gwtJobExecution.setStartedOn(jobExecution.getStartedOn());
         gwtJobExecution.setEndedOn(jobExecution.getEndedOn());
+        gwtJobExecution.setLog(jobExecution.getLog());
 
         return gwtJobExecution;
     }
