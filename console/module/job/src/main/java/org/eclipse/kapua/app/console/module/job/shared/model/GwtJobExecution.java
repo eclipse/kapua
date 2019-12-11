@@ -60,4 +60,16 @@ public class GwtJobExecution extends GwtUpdatableEntityModel {
     public void setEndedOn(Date endedOn) {
         set("endedOn", endedOn);
     }
+
+    public String getLog() {
+        return get("log");
+    }
+
+    public String getUnescapedLog() {
+        return getUnescaped("log");
+    }
+
+    public void setLog(String log) {
+        set("log", log);
+    }
 }
