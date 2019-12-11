@@ -233,7 +233,13 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         //
         // Do exec
         DeviceCallExecutor<?, ?, ?, PackageResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(packageRequestMessage, packageDownloadOptions.getTimeout());
-        PackageResponseMessage responseMessage = deviceApplicationCall.send();
+        PackageResponseMessage responseMessage;
+        try {
+            responseMessage = deviceApplicationCall.send();
+        } catch (Exception e) {
+            closeManagementOperation(scopeId, deviceId, operationId);
+            throw e;
+        }
 
         //
         // Create event
@@ -410,7 +416,13 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         //
         // Do get
         DeviceCallExecutor<?, ?, ?, PackageResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(packageRequestMessage, packageInstallOptions.getTimeout());
-        PackageResponseMessage responseMessage = deviceApplicationCall.send();
+        PackageResponseMessage responseMessage;
+        try {
+            responseMessage = deviceApplicationCall.send();
+        } catch (Exception e) {
+            closeManagementOperation(scopeId, deviceId, operationId);
+            throw e;
+        }
 
         //
         // Create event
@@ -556,7 +568,13 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         //
         // Do get
         DeviceCallExecutor<?, ?, ?, PackageResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(packageRequestMessage, packageUninstallOptions.getTimeout());
-        PackageResponseMessage responseMessage = deviceApplicationCall.send();
+        PackageResponseMessage responseMessage;
+        try {
+            responseMessage = deviceApplicationCall.send();
+        } catch (Exception e) {
+            closeManagementOperation(scopeId, deviceId, operationId);
+            throw e;
+        }
 
         //
         // Create event
