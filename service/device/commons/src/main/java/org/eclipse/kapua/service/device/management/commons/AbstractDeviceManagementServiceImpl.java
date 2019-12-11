@@ -106,6 +106,10 @@ public abstract class AbstractDeviceManagementServiceImpl {
         return deviceManagementOperation.getId();
     }
 
+    protected void closeManagementOperation(KapuaId scopeId, KapuaId deviceId, KapuaId operationId) throws KapuaException {
+        closeManagementOperation(scopeId, deviceId, operationId, null);
+    }
+
     protected void closeManagementOperation(KapuaId scopeId, KapuaId deviceId, KapuaId operationId, KapuaResponseMessage<?, ?> responseMessageMessage) throws KapuaException {
         DeviceManagementOperationQuery query = DEVICE_MANAGEMENT_OPERATION_FACTORY.newQuery(scopeId);
         query.setPredicate(
@@ -120,8 +124,13 @@ public abstract class AbstractDeviceManagementServiceImpl {
             throw new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, operationId);
         }
 
-        deviceManagementOperation.setStatus(responseMessageMessage.getResponseCode().isAccepted() ? OperationStatus.COMPLETED : OperationStatus.FAILED);
-        deviceManagementOperation.setEndedOn(responseMessageMessage.getReceivedOn());
+        if (responseMessageMessage != null) {
+            deviceManagementOperation.setStatus(responseMessageMessage.getResponseCode().isAccepted() ? OperationStatus.COMPLETED : OperationStatus.FAILED);
+            deviceManagementOperation.setEndedOn(responseMessageMessage.getReceivedOn());
+        } else {
+            deviceManagementOperation.setStatus(OperationStatus.FAILED);
+            deviceManagementOperation.setEndedOn(new Date());
+        }
 
         KapuaSecurityUtils.doPrivileged(() -> DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.update(deviceManagementOperation));
     }
