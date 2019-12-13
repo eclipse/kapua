@@ -13,6 +13,7 @@ package org.eclipse.kapua.app.console;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
+import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;
@@ -68,6 +69,8 @@ public class ConsoleJAXBContextProvider implements JAXBContextProvider {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
                 context = JAXBContextFactory.createContext(new Class<?>[]{
+                        KapuaSession.class,
+
                         KuraDeviceComponentConfiguration.class,
                         KuraDeviceConfiguration.class,
                         KuraDeploymentPackage.class,

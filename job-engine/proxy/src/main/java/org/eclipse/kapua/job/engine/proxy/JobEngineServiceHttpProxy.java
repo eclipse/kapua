@@ -25,6 +25,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
 import java.io.StringReader;
+import java.util.Base64;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -52,12 +53,10 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdFactory;
-import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthorizedException;
 
 import com.google.common.base.Strings;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -68,6 +67,7 @@ public class JobEngineServiceHttpProxy implements JobEngineService {
     private final WebTarget webTarget;
     private static final Logger LOGGER = LoggerFactory.getLogger(JobEngineServiceHttpProxy.class);
     private final KapuaIdFactory kapuaIdFactory = KapuaLocator.getInstance().getFactory(KapuaIdFactory.class);
+    private static final String HEADER_NAME = "X-Kapua-Session";
 
     public JobEngineServiceHttpProxy() {
         String jobEngineBaseAddress = JobEngineHttpProxySetting.getInstance().getString(JobEngineHttpProxySettingKey.MICROSERVICE_JOBENGINE_HTTP_BASEADDRESS);
@@ -82,18 +82,14 @@ public class JobEngineServiceHttpProxy implements JobEngineService {
 
     @Override
     public void startJob(KapuaId scopeId, KapuaId jobId) throws KapuaException {
-        AccessToken accessToken = KapuaSecurityUtils.getSession().getAccessToken();
-        String accessTokenId = null;
-        if (accessToken != null) {
-            accessTokenId = accessToken.getTokenId();
-        }
-
         Invocation.Builder builder = webTarget
                 .path(String.format("/%s/%s/start", scopeId.toCompactId(), jobId.toCompactId()))
                 .request(MediaType.APPLICATION_JSON_TYPE);
 
-        if (StringUtils.isNotEmpty(accessTokenId)) {
-            builder.header("Authorization", "Bearer " + accessTokenId);
+        try {
+            builder.header(HEADER_NAME, new String(Base64.getEncoder().encode(XmlUtil.marshalJson(KapuaSecurityUtils.getSession()).getBytes())));
+        } catch (JAXBException ex) {
+            LOGGER.error("Unable to serialize KapuaSession");
         }
 
         Response response = builder.post(null);
@@ -110,7 +106,7 @@ public class JobEngineServiceHttpProxy implements JobEngineService {
         try {
             Response response = webTarget.path(String.format("/%s/%s/start-with-options", scopeId.toCompactId(), jobId.toCompactId()))
                     .request(MediaType.APPLICATION_JSON_TYPE)
-                    .header("Authorization", "Bearer " + accessToken)
+                    .header(HEADER_NAME, new String(Base64.getEncoder().encode(XmlUtil.marshalJson(KapuaSecurityUtils.getSession()).getBytes())))
                     .post(Entity.json(XmlUtil.marshalJson(jobStartOptions)));
 
             if (response.getStatus() != 204) {
@@ -125,29 +121,38 @@ public class JobEngineServiceHttpProxy implements JobEngineService {
     public boolean isRunning(KapuaId scopeId, KapuaId jobId) throws KapuaException {
         String accessToken = KapuaSecurityUtils.getSession().getAccessToken().getTokenId();
 
-        Response response = webTarget.path(String.format("/%s/%s/is-running", scopeId.toCompactId(), jobId.toCompactId()))
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .header("Authorization", "Bearer " + accessToken)
-                .post(null);
+        try {
+            Response response = webTarget.path(String.format("/%s/%s/is-running", scopeId.toCompactId(), jobId.toCompactId()))
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .header(HEADER_NAME, new String(Base64.getEncoder().encode(XmlUtil.marshalJson(KapuaSecurityUtils.getSession()).getBytes())))
+                    .post(null);
 
-        if (response.getStatus() != 200) {
-            handleErrorResponse(response);
+            if (response.getStatus() != 200) {
+                handleErrorResponse(response);
+            }
+
+            // FIXME Response should be an actual class so that it can be correctly deserialized as a JSON Object
+            return Boolean.parseBoolean(response.readEntity(String.class));
+        } catch (JAXBException e) {
+            throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e);
         }
-        // FIXME Response should be an actual class so that it can be correctly deserialized as a JSON Object
-        return Boolean.parseBoolean(response.readEntity(String.class));
     }
 
     @Override
     public void stopJob(KapuaId scopeId, KapuaId jobId) throws KapuaException {
         String accessToken = KapuaSecurityUtils.getSession().getAccessToken().getTokenId();
 
-        Response response = webTarget.path(String.format("/%s/%s/stop", scopeId.toCompactId(), jobId.toCompactId()))
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .header("Authorization", "Bearer " + accessToken)
-                .post(null);
+        try {
+            Response response = webTarget.path(String.format("/%s/%s/stop", scopeId.toCompactId(), jobId.toCompactId()))
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .header(HEADER_NAME, new String(Base64.getEncoder().encode(XmlUtil.marshalJson(KapuaSecurityUtils.getSession()).getBytes())))
+                    .post(null);
 
-        if (response.getStatus() != 204) {
-            handleErrorResponse(response);
+            if (response.getStatus() != 204) {
+                handleErrorResponse(response);
+            }
+        } catch (JAXBException e) {
+            throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e);
         }
     }
 
@@ -155,13 +160,17 @@ public class JobEngineServiceHttpProxy implements JobEngineService {
     public void stopJobExecution(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) throws KapuaException {
         String accessToken = KapuaSecurityUtils.getSession().getAccessToken().getTokenId();
 
-        Response response = webTarget.path(String.format("/%s/%s/executions/%s/stop", scopeId.toCompactId(), jobId.toCompactId(), jobExecutionId.toCompactId()))
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .header("Authorization", "Bearer " + accessToken)
-                .post(null);
+        try {
+            Response response = webTarget.path(String.format("/%s/%s/executions/%s/stop", scopeId.toCompactId(), jobId.toCompactId(), jobExecutionId.toCompactId()))
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .header(HEADER_NAME, new String(Base64.getEncoder().encode(XmlUtil.marshalJson(KapuaSecurityUtils.getSession()).getBytes())))
+                    .post(null);
 
-        if (response.getStatus() != 204) {
-            handleErrorResponse(response);
+            if (response.getStatus() != 204) {
+                handleErrorResponse(response);
+            }
+        } catch (JAXBException e) {
+            throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e);
         }
     }
 
@@ -169,13 +178,17 @@ public class JobEngineServiceHttpProxy implements JobEngineService {
     public void resumeJobExecution(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) throws KapuaException {
         String accessToken = KapuaSecurityUtils.getSession().getAccessToken().getTokenId();
 
-        Response response = webTarget.path(String.format("/%s/%s/executions/%s/resume", scopeId.toCompactId(), jobId.toCompactId(), jobExecutionId.toCompactId()))
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .header("Authorization", "Bearer " + accessToken)
-                .post(null);
+        try {
+            Response response = webTarget.path(String.format("/%s/%s/executions/%s/resume", scopeId.toCompactId(), jobId.toCompactId(), jobExecutionId.toCompactId()))
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .header(HEADER_NAME, new String(Base64.getEncoder().encode(XmlUtil.marshalJson(KapuaSecurityUtils.getSession()).getBytes())))
+                    .post(null);
 
-        if (response.getStatus() != 204) {
-            handleErrorResponse(response);
+            if (response.getStatus() != 204) {
+                handleErrorResponse(response);
+            }
+        } catch (JAXBException e) {
+            throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e);
         }
     }
 
@@ -183,13 +196,17 @@ public class JobEngineServiceHttpProxy implements JobEngineService {
     public void cleanJobData(KapuaId scopeId, KapuaId jobId) throws KapuaException {
         String accessToken = KapuaSecurityUtils.getSession().getAccessToken().getTokenId();
 
-        Response response = webTarget.path(String.format("/%s/%s/clean-data", scopeId.toCompactId(), jobId.toCompactId()))
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .header("Authorization", "Bearer " + accessToken)
-                .post(null);
+        try {
+            Response response = webTarget.path(String.format("/%s/%s/clean-data", scopeId.toCompactId(), jobId.toCompactId()))
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .header(HEADER_NAME, new String(Base64.getEncoder().encode(XmlUtil.marshalJson(KapuaSecurityUtils.getSession()).getBytes())))
+                    .post(null);
 
-        if (response.getStatus() != 204) {
-            handleErrorResponse(response);
+            if (response.getStatus() != 204) {
+                handleErrorResponse(response);
+            }
+        } catch (JAXBException e) {
+            throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e);
         }
     }
 

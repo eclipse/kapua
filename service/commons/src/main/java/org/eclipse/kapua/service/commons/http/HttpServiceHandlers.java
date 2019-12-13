@@ -11,10 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons.http;
 
+import javax.validation.constraints.NotNull;
+import java.util.Base64;
+import java.util.Objects;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
@@ -25,12 +30,6 @@ import io.vertx.core.Handler;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
-
-import java.util.Objects;
-
-import javax.validation.constraints.NotNull;
-
-import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 
@@ -68,18 +67,20 @@ public class HttpServiceHandlers {
         Objects.requireNonNull(ctx, "param: ctx");
         KapuaSession session = null;
         Subject subject = null;
-        if (StringUtils.isNotEmpty(ctx.request().getHeader("Authorization"))) {
-            String accessToken = StringUtils.removeStart(ctx.request().getHeader("Authorization"), "Bearer ");
-            AccessTokenCredentials accessTokenCredentials = CREDENTIALS_FACTORY.newAccessTokenCredentials(accessToken);
-            try {
+        try {
+            String sessionJson = new String(Base64.getDecoder().decode(ctx.request().getHeader("X-Kapua-Session")));
+            JsonObject sessionJsonObject = (JsonObject)Json.decodeValue(sessionJson);
+            sessionJsonObject.getJsonObject("accessToken").put("type", "accessToken");
+            session = XmlUtil.unmarshalJson(sessionJsonObject.encode(), KapuaSession.class, null);
+            if (!session.isTrustedMode()) {
+                AccessTokenCredentials accessTokenCredentials = CREDENTIALS_FACTORY.newAccessTokenCredentials(session.getAccessToken().getTokenId());
                 AUTHENTICATION_SERVICE.authenticate(accessTokenCredentials);
-                session = KapuaSecurityUtils.getSession();
                 subject = SecurityUtils.getSubject();
-            } catch (KapuaException ex) {
-                ctx.fail(403, ex);
             }
-        } else {
-            session = KapuaSecurityUtils.getPriviledgeSession();
+            KapuaSecurityUtils.setSession(session);
+
+        } catch (Exception e) {
+            ctx.fail(500, e);
         }
         ctx.put("kapuaSession", session);
         ctx.put("shiroSubject", subject);

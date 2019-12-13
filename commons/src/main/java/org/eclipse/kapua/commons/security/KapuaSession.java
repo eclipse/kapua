@@ -11,7 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.security;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.service.authentication.KapuaPrincipal;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 
@@ -25,6 +33,15 @@ import java.util.List;
  *
  * @since 1.0
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = {
+        "userId",
+        "scopeId",
+        "userId",
+        "trustedMode",
+        "accessToken"
+})
 public class KapuaSession implements Serializable {
 
     private static final long serialVersionUID = -3831904230950408142L;
@@ -44,22 +61,28 @@ public class KapuaSession implements Serializable {
     /**
      * Access token that identify the logged in session.
      */
+    @XmlElement
     private AccessToken accessToken;
 
     /**
      * User scope identifier
      */
+    @XmlElement
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     private KapuaId scopeId;
 
     /**
      * User identifier
      */
+    @XmlElement
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     private KapuaId userId;
 
     /**
      * Trusted mode.<br>
      * If true every rights check will be skipped, in other word <b>the user is trusted so he is allowed to execute every operation</b> defined in the system.
      */
+    @XmlElement
     private boolean trustedMode;
 
     /**

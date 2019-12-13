@@ -204,7 +204,10 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-message-internal</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
