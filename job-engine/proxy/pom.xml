@@ -24,11 +24,6 @@
     <artifactId>kapua-job-engine-proxy</artifactId>
     <dependencies>
         <dependency>
-            <groupId>org.glassfish.jersey.core</groupId>
-            <artifactId>jersey-client</artifactId>
-            <version>2.25.1</version>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-commons</artifactId>
         </dependency>
@@ -39,6 +34,10 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-shiro</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
         </dependency>
     </dependencies>
 

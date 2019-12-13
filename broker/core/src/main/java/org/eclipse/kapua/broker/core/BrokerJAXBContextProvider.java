@@ -14,18 +14,23 @@ package org.eclipse.kapua.broker.core;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.router.EndChainEndPoint;
 import org.eclipse.kapua.broker.core.router.EndPointContainer;
 import org.eclipse.kapua.broker.core.router.ParentEndPoint;
 import org.eclipse.kapua.broker.core.router.SimpleEndPoint;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
+import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreXmlRegistry;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.event.ServiceEvent;
+import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTdesignate;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
@@ -34,7 +39,10 @@ import org.eclipse.kapua.model.config.metatype.KapuaTobject;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.config.metatype.KapuaToption;
 import org.eclipse.kapua.model.config.metatype.MetatypeXmlRegistry;
+import org.eclipse.kapua.service.authentication.token.AccessToken;
+
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
+import org.eclipse.persistence.jaxb.JAXBContextProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,8 +54,14 @@ public class BrokerJAXBContextProvider implements JAXBContextProvider {
 
     @Override
     public JAXBContext getJAXBContext() throws KapuaException {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put(JAXBContextProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
+
         if (context == null) {
             Class<?>[] classes = new Class<?>[] {
+                    KapuaSession.class,
+                    AccessToken.class,
+
                     KapuaTmetadata.class,
                     KapuaTocd.class,
                     KapuaTad.class,
@@ -67,11 +81,12 @@ public class BrokerJAXBContextProvider implements JAXBContextProvider {
                     EventStoreRecordCreator.class,
                     EventStoreRecordListResult.class,
                     EventStoreRecordQuery.class,
-                    EventStoreXmlRegistry.class
+                    EventStoreXmlRegistry.class,
 
+                    JobStartOptions.class
             };
             try {
-                context = JAXBContextFactory.createContext(classes, null);
+                context = JAXBContextFactory.createContext(classes, properties);
                 logger.debug("Broker JAXB context initialized!");
             } catch (JAXBException jaxbException) {
                 throw KapuaException.internalError(jaxbException, "Error creating JAXBContext!");
