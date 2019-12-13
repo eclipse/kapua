@@ -117,7 +117,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-job-engine-remote</artifactId>
+            <artifactId>kapua-job-engine-proxy</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>

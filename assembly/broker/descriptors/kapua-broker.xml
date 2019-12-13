@@ -263,7 +263,7 @@
                 <include>${pom.groupId}:kapua-job-api</include>
                 <include>${pom.groupId}:kapua-job-internal</include>
                 <include>${pom.groupId}:kapua-job-engine-api</include>
-                <include>${pom.groupId}:kapua-job-engine-remote</include>
+                <include>${pom.groupId}:kapua-job-engine-proxy</include>
                 <include>${pom.groupId}:kapua-message-api</include>
                 <include>${pom.groupId}:kapua-message-internal</include>
                 <include>${pom.groupId}:kapua-scheduler-api</include>

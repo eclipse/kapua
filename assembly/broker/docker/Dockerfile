@@ -22,6 +22,8 @@ ENV DATASTORE_CLIENT org.eclipse.kapua.service.datastore.client.rest.RestDatasto
 ENV SQL_DB_ADDR db
 ENV SQL_DB_PORT 3306
 
+ENV JOB_ENGINE_ADDR http://job-engine:8080
+
 ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5672)?jms.sendTimeout=1000
 
 USER 0
@@ -37,6 +39,7 @@ ENV ACTIVEMQ_OPTS "-Dcommons.db.schema.update=true \
                    -Ddatastore.elasticsearch.port=\${DATASTORE_PORT} \
                    -Ddatastore.client.class=\${DATASTORE_CLIENT} \
                    -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR} \
+                   -Dmicroservice.jobengine.http.baseaddress=\${JOB_ENGINE_ADDR}/v1/device-jobs \
                    -Dbroker.ip=broker"
 
 EXPOSE 1883 8883 61614 61615 8161
