@@ -37,6 +37,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -254,6 +256,12 @@ public class DockerSteps {
         logger.info("Keycloak container started: {}", containerId);
     }
 
+    @And("^Set KEYCLOAK_URL system property$")
+    public void setKaycloakUrl() throws UnknownHostException {
+        InetAddress address = InetAddress.getLocalHost();
+        System.setProperty("KEYCLOAK_URL", address.getHostAddress() + ":9090");
+    }
+
     @Then("^Stop container with name \"(.*)\"$")
     public void stopContainer(String name) throws DockerException, InterruptedException {
         logger.info("Stopping container {}...", name);
@@ -436,6 +444,12 @@ public class DockerSteps {
                         "KEYCLOAK_PASSWORD=admin"
                 )
                 .image("jboss/keycloak")
+                .cmd(
+                        "-Dkeycloak.migration.action=import",
+                        "-Dkeycloak.migration.provider=singleFile",
+                        "-Dkeycloak.migration.file=<FILE TO IMPORT>",
+                        "-Dkeycloak.migration.strategy=OVERWRITE_EXISTING"
+                )
                 .build();
     }
 

@@ -13,7 +13,8 @@
 @sso
 Feature: Sso Service
   Scenario: Set environment variables
-    Given System property "KEYCLOAK_URL" with value "localhost:9090"
+#    Given System property "KEYCLOAK_URL" with value "localhost:9090"
+    Given Set KEYCLOAK_URL system property
     And System property "KAPUA_URL" with value "localhost:8080"
 
   Scenario: Start Keycloak
