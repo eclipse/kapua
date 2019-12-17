@@ -133,7 +133,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         // Argument validation
         ArgumentValidator.notNull(triggerCreator, "triggerCreator");
         ArgumentValidator.notNull(triggerCreator.getScopeId(), "triggerCreator.scopeId");
-        ArgumentValidator.notEmptyOrNull(triggerCreator.getName(), "triggerCreator.name");
+        ArgumentValidator.validateEntityName(triggerCreator.getName(), "triggerCreator.name");
         ArgumentValidator.notNull(triggerCreator.getStartsOn(), "triggerCreator.startsOn");
 
         //
@@ -209,7 +209,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         // Argument validation
         ArgumentValidator.notNull(trigger.getScopeId(), "trigger.scopeId");
         ArgumentValidator.notNull(trigger.getId(), "trigger.id");
-        ArgumentValidator.notEmptyOrNull(trigger.getName(), "trigger.name");
+        ArgumentValidator.validateEntityName(trigger.getName(), "trigger.name");
 
         //
         // Check Access
