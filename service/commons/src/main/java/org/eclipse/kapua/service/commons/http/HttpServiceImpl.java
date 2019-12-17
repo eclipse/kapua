@@ -17,6 +17,7 @@ import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
+import org.eclipse.kapua.service.commons.BuilderRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,6 +78,12 @@ public class HttpServiceImpl implements HttpService {
             Objects.requireNonNull(vertx, "member: vertx");
             Objects.requireNonNull(config, "member: config");
             return new HttpServiceImpl(this);
+        }
+
+        @Override
+        public void register(BuilderRegistry aRegistry) {
+            Objects.requireNonNull(aRegistry, "aRegistry");
+            aRegistry.register(config.getName(), this);
         }
     }
 

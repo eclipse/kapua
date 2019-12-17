@@ -14,10 +14,7 @@ package org.eclipse.kapua.service.commons.app;
 import java.util.Objects;
 
 import org.eclipse.kapua.service.commons.PropertyMapper;
-import org.eclipse.kapua.service.commons.ServiceConfig;
-import org.eclipse.kapua.service.commons.ServiceConfigs;
 import org.eclipse.kapua.service.commons.http.HttpMonitorServiceConfig;
-import org.eclipse.kapua.service.commons.http.HttpServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,30 +49,8 @@ public abstract class AbstractBeanProvider<C extends Configuration> {
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "service")
-    public HttpServiceConfig httpServiceConfig() {
-        return new HttpServiceConfig();
-    }
-
-    @Bean
     public PropertyMapper propertyMapper() {
         return new SpringPropertyMapper();
-    }
-
-    @Bean
-    public ServiceBuilderManager serviceBuilderManager() {
-        return new ServiceBuilderManager();
-    }
-
-    @Bean
-    public ServiceConfig serviceConfig() {
-        return new ServiceConfig();
-    }
-
-    @Bean
-    @ConfigurationProperties(prefix = "services")
-    public ServiceConfigs serviceConfigs() {
-        return new ServiceConfigs();
     }
 
     @Autowired

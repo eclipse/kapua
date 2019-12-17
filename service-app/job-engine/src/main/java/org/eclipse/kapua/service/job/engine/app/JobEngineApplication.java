@@ -46,6 +46,6 @@ public class JobEngineApplication extends AbstractKapuaServiceApplication<JobEng
         Objects.requireNonNull(config, "param: config");
 
         // Configure Services
-        context.getServiceContext("jobEngine", HttpServiceContext.class).addController(config.getController());
+        context.getServiceContext("jobEngineHttpService", HttpServiceContext.class).addController(config.getController());
     }
 }

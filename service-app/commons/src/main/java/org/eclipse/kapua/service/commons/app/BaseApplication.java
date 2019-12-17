@@ -12,17 +12,20 @@
 package org.eclipse.kapua.service.commons.app;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import javax.validation.constraints.NotNull;
 
+import org.eclipse.kapua.service.commons.DefaultBuilderRegistry;
 import org.eclipse.kapua.service.commons.HealthCheckProvider;
 import org.eclipse.kapua.service.commons.Service;
+import org.eclipse.kapua.service.commons.ServiceBuilder;
 import org.eclipse.kapua.service.commons.ServiceBuilders;
-import org.eclipse.kapua.service.commons.ServiceConfig;
 import org.eclipse.kapua.service.commons.ServiceVerticle;
 import org.eclipse.kapua.service.commons.Services;
 import org.eclipse.kapua.service.commons.http.HttpMonitorService;
@@ -31,11 +34,13 @@ import org.eclipse.kapua.service.commons.http.HttpMonitorServiceConfig;
 import org.eclipse.kapua.service.commons.http.HttpMonitorServiceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 
 import io.vertx.core.CompositeFuture;
+import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 
@@ -82,10 +87,11 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
 
     private Vertx vertx;
     private C configuration;
-    private ServiceBuilderManager serviceBuilderManager;
     private ContextImpl context;
     private Services services;
     private HttpMonitorService monitorService;
+    private Set<ObjectFactory<ServiceBuilder<?, ?>>> serviceBuilderFactories = new HashSet<>();
+    private DefaultBuilderRegistry serviceBuilderRegistry = new DefaultBuilderRegistry();
 
     @Autowired
     public void setVertx(Vertx aVertx) {
@@ -100,9 +106,9 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
     }
 
     @Autowired
-    public void setServiceBuilderManager(ServiceBuilderManager aManager) {
-        Objects.requireNonNull(aManager, "param: aManager");
-        serviceBuilderManager = aManager;
+    public void setServiceBuilderFactories(Set<ObjectFactory<ServiceBuilder<?, ?>>> aServiceBuilderFactories) {
+        Objects.requireNonNull(serviceBuilderFactories, "param: serviceBuilderFactories");
+        serviceBuilderFactories.addAll(aServiceBuilderFactories);
     }
 
     @Override
@@ -115,10 +121,12 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
         Future.succeededFuture().compose(map -> {
             try {
                 ServiceBuilders serviceBuilders = new ServiceBuilders();
-                for (String name : configuration.getServiceConfigs().getConfigs().keySet()) {
-                    ServiceConfig serviceConfig = configuration.getServiceConfigs().getConfigs().get(name);
-                    serviceConfig.setName(name);
-                    serviceBuilders.getBuilders().put(name, serviceBuilderManager.create(vertx, serviceConfig));
+                for (ObjectFactory<ServiceBuilder<?, ?>> factory : serviceBuilderFactories) {
+                    factory.getObject().register(serviceBuilderRegistry);
+                }
+
+                for (String name : serviceBuilderRegistry.getNames()) {
+                    serviceBuilders.getBuilders().put(name, serviceBuilderRegistry.get(name));
                 }
 
                 HttpMonitorServiceBuilder httpMonitorBuilder = null;
@@ -136,7 +144,7 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
             }
         }).compose(map -> {
 
-            // Create http services
+            // Create services
             HttpMonitorServiceBuilder monitorServiceBuilder = context.monitorServiceBuilder;
             ServiceBuilders serviceBuilders = context.serviceBuilders;
             services = new Services();
@@ -161,12 +169,10 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
             // Start services
             @SuppressWarnings("rawtypes")
             List<Future> deployFutures = new ArrayList<>();
-            for (String name : configuration.getServiceConfigs().getConfigs().keySet()) {
-                for (int i = 0; i < configuration.getServiceConfigs().getConfigs().get(name).getInstances(); i++) {
-                    Future<String> serviceDeployFuture = Future.future();
-                    deployFutures.add(serviceDeployFuture);
-                    vertx.deployVerticle(ServiceVerticle.create(services.getServices().get(name)), serviceDeployFuture);
-                }
+            for (String name : serviceBuilderRegistry.getNames()) {
+                Future<String> serviceDeployFuture = Future.future();
+                deployFutures.add(serviceDeployFuture);
+                vertx.deployVerticle(ServiceVerticle.create(services.getServices().get(name)), new DeploymentOptions().setInstances(1), serviceDeployFuture);
             }
 
             // All services must be started before proceeding

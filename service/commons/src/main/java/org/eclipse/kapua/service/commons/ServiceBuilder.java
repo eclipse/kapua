@@ -11,8 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons;
 
-
 public interface ServiceBuilder<C, S extends Service> {
+
+    public void register(BuilderRegistry aRegistry);
 
     public C getContext();
 

@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons.app;
 
-import org.eclipse.kapua.service.commons.ServiceConfigs;
 import org.eclipse.kapua.service.commons.http.HttpMonitorServiceConfig;
 
 public interface Configuration {
@@ -21,8 +20,6 @@ public interface Configuration {
     public long getStartupTimeout();
 
     public VertxConfig getVertxConfig();
-
-    public ServiceConfigs getServiceConfigs();
 
     public HttpMonitorServiceConfig getHttpMonitorServiceConfig();
 }

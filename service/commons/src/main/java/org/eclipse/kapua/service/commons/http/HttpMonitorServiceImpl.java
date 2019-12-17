@@ -17,6 +17,7 @@ import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
+import org.eclipse.kapua.service.commons.BuilderRegistry;
 import org.eclipse.kapua.service.commons.HealthCheckProvider;
 
 import io.vertx.core.Future;
@@ -69,6 +70,12 @@ public class HttpMonitorServiceImpl implements HttpMonitorService {
             Objects.requireNonNull(vertx, "member: vertx");
             Objects.requireNonNull(config, "member: config");
             return new HttpMonitorServiceImpl(this);
+        }
+
+        @Override
+        public void register(BuilderRegistry aRegistry) {
+            Objects.requireNonNull(aRegistry, "aRegistry");
+            aRegistry.register(config.getName(), this);
         }
     }
 

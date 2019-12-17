@@ -11,18 +11,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
-public class ServiceConfigs {
+public class DefaultBuilderRegistry implements BuilderRegistry {
 
-    private Map<String, ServiceConfig> configs = new HashMap<>();
+    private Map<String, ServiceBuilder<?, ?>> builders = new HashMap<>();
 
-    public void setConfigs(Map<String, ServiceConfig> someConfigs) {
-        configs = someConfigs;
+    public void register(String aName, ServiceBuilder<?, ?> aBuilder) {
+        builders.put(aName, aBuilder);
     }
 
-    public Map<String, ServiceConfig> getConfigs() {
-        return configs;
+    public Set<String> getNames() {
+        return Collections.unmodifiableSet(builders.keySet());
+    }
+
+    public ServiceBuilder<?, ?> get(String aName) {
+        return builders.get(aName);
     }
 }

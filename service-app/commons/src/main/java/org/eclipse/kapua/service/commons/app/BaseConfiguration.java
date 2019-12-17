@@ -11,21 +11,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons.app;
 
-import org.eclipse.kapua.service.commons.ServiceConfigs;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.eclipse.kapua.service.commons.ServiceBuilder;
 import org.eclipse.kapua.service.commons.http.HttpMonitorServiceConfig;
-import org.eclipse.kapua.service.commons.http.HttpServiceBuilderFactory;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 public class BaseConfiguration implements Configuration {
 
     private String applicationName;
     private long startupTimeout;
     private VertxConfig vertxConfig;
-    private ServiceConfigs serviceConfigs;
     private HttpMonitorServiceConfig monitorServiceConfig;
 
-    private ServiceBuilderManager serviceBuilderManager;
-    private HttpServiceBuilderFactory httpServiceBuilderFactory;
+    private Set<ObjectFactory<? extends ServiceBuilder<?, ?>>> serviceBuilderFactories = new HashSet<>();
 
     @Override
     public String getApplicationName() {
@@ -58,16 +60,6 @@ public class BaseConfiguration implements Configuration {
     }
 
     @Override
-    public ServiceConfigs getServiceConfigs() {
-        return serviceConfigs;
-    }
-
-    @Autowired
-    public void setServiceConfigs(ServiceConfigs someConfigs) {
-        serviceConfigs = someConfigs;
-    }
-
-    @Override
     public HttpMonitorServiceConfig getHttpMonitorServiceConfig() {
         return monitorServiceConfig;
     }
@@ -77,11 +69,9 @@ public class BaseConfiguration implements Configuration {
         monitorServiceConfig = aConfig;
     }
 
+    @Qualifier("services")
     @Autowired
-    public void setServiceBuilderManager(ServiceBuilderManager aServiceBuilderManager) {
-        serviceBuilderManager = aServiceBuilderManager;
-        if (httpServiceBuilderFactory == null) {
-            HttpServiceBuilderFactory.create(serviceBuilderManager);
-        }
+    public void setServiceBuilderFactories(Set<ObjectFactory<? extends ServiceBuilder<?, ?>>> someServiceBuilderFactories) {
+        this.serviceBuilderFactories.addAll(someServiceBuilderFactories);
     }
 }

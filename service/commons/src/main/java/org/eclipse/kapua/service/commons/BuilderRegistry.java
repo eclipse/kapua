@@ -11,10 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons;
 
-public interface ServiceBuilderFactoryRegistry {
+public interface BuilderRegistry {
 
-    public void registerFactory(String aName, ServiceBuilderFactory<?, ? extends Service> aFactory);
-
-    public ServiceBuilderFactory<?, ? extends Service> deregisterFactory(String aName);
-
+    public void register(String aName, ServiceBuilder<?, ?> aBuilder);
 }
