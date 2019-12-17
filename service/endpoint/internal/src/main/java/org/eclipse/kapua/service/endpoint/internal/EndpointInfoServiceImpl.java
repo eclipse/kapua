@@ -75,11 +75,11 @@ public class EndpointInfoServiceImpl
 
         ArgumentValidator.notEmptyOrNull(endpointInfoCreator.getSchema(), "endpointInfoCreator.schema");
         ArgumentValidator.match(endpointInfoCreator.getSchema(), CommonsValidationRegex.URI_SCHEME, "endpointInfoCreator.schema");
-        ArgumentValidator.lengthRange(endpointInfoCreator.getSchema(), 1L, 64L, "endpointInfoCreator.schema");
+        ArgumentValidator.lengthRange(endpointInfoCreator.getSchema(), 1, 64, "endpointInfoCreator.schema");
 
         ArgumentValidator.notEmptyOrNull(endpointInfoCreator.getDns(), "endpointInfoCreator.dns");
         ArgumentValidator.match(endpointInfoCreator.getDns(), CommonsValidationRegex.URI_DNS, "endpointInfoCreator.dns");
-        ArgumentValidator.lengthRange(endpointInfoCreator.getDns(), 1L, 1024L, "endpointInfoCreator.dns");
+        ArgumentValidator.lengthRange(endpointInfoCreator.getDns(), 1, 1024, "endpointInfoCreator.dns");
 
         ArgumentValidator.notNegative(endpointInfoCreator.getPort(), "endpointInfoCreator.port");
         ArgumentValidator.numRange(endpointInfoCreator.getPort(), 1, 65535, "endpointInfoCreator.port");
@@ -109,11 +109,11 @@ public class EndpointInfoServiceImpl
 
         ArgumentValidator.notEmptyOrNull(endpointInfo.getSchema(), "endpointInfo.schema");
         ArgumentValidator.match(endpointInfo.getSchema(), CommonsValidationRegex.URI_SCHEME, "endpointInfo.schema");
-        ArgumentValidator.lengthRange(endpointInfo.getSchema(), 1L, 64L, "endpointInfo.schema");
+        ArgumentValidator.lengthRange(endpointInfo.getSchema(), 1, 64, "endpointInfo.schema");
 
         ArgumentValidator.notEmptyOrNull(endpointInfo.getDns(), "endpointInfo.dns");
         ArgumentValidator.match(endpointInfo.getDns(), CommonsValidationRegex.URI_DNS, "endpointInfo.dns");
-        ArgumentValidator.lengthRange(endpointInfo.getDns(), 1L, 1024L, "endpointInfo.dns");
+        ArgumentValidator.lengthRange(endpointInfo.getDns(), 1, 1024, "endpointInfo.dns");
 
         ArgumentValidator.notNegative(endpointInfo.getPort(), "endpointInfo.port");
         ArgumentValidator.numRange(endpointInfo.getPort(), 1, 65535, "endpointInfo.port");
