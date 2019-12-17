@@ -63,7 +63,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         // Argument validation
         ArgumentValidator.notNull(groupCreator, "groupCreator");
         ArgumentValidator.notNull(groupCreator.getScopeId(), "roleCreator.scopeId");
-        ArgumentValidator.notEmptyOrNull(groupCreator.getName(), "groupCreator.name");
+        ArgumentValidator.validateEntityName(groupCreator.getName(), "groupCreator.name");
 
         //
         // Check Access
@@ -94,9 +94,9 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         //
         // Argument validator
         ArgumentValidator.notNull(group, "group");
-        ArgumentValidator.notNull(group.getScopeId(), "group.scopeId");
         ArgumentValidator.notNull(group.getId(), "group.id");
-        ArgumentValidator.notEmptyOrNull(group.getName(), "group.name");
+        ArgumentValidator.notNull(group.getScopeId(), "group.scopeId");
+        ArgumentValidator.validateEntityName(group.getName(), "group.name");
 
         //
         // Check Access
