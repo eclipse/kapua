@@ -54,7 +54,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
         ArgumentValidator.notNull(creator, "stepDefinitionCreator");
         ArgumentValidator.notNull(creator.getScopeId(), "stepDefinitionCreator.scopeId");
         ArgumentValidator.notNull(creator.getTriggerType(), "stepDefinitionCreator.stepType");
-        ArgumentValidator.notEmptyOrNull(creator.getName(), "stepDefinitionCreator.name");
+        ArgumentValidator.validateEntityName(creator.getName(), "stepDefinitionCreator.name");
         ArgumentValidator.notEmptyOrNull(creator.getProcessorName(), "stepDefinitionCreator.processorName");
 
         //
@@ -73,7 +73,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
         ArgumentValidator.notNull(triggerDefinition, "stepDefinition");
         ArgumentValidator.notNull(triggerDefinition.getScopeId(), "stepDefinition.scopeId");
         ArgumentValidator.notNull(triggerDefinition.getTriggerType(), "triggerDefinition.stepType");
-        ArgumentValidator.notEmptyOrNull(triggerDefinition.getName(), "triggerDefinition.name");
+        ArgumentValidator.validateEntityName(triggerDefinition.getName(), "triggerDefinition.name");
         ArgumentValidator.notEmptyOrNull(triggerDefinition.getProcessorName(), "triggerDefinition.processorName");
 
         //
