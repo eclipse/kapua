@@ -61,7 +61,7 @@ public class JobStepDefinitionServiceImpl
         ArgumentValidator.notNull(creator, "stepDefinitionCreator");
         ArgumentValidator.notNull(creator.getScopeId(), "stepDefinitionCreator.scopeId");
         ArgumentValidator.notNull(creator.getStepType(), "stepDefinitionCreator.stepType");
-        ArgumentValidator.notEmptyOrNull(creator.getName(), "stepDefinitionCreator.name");
+        ArgumentValidator.validateEntityName(creator.getName(), "stepDefinitionCreator.name");
         ArgumentValidator.notEmptyOrNull(creator.getProcessorName(), "stepDefinitionCreator.processorName");
 
         //
@@ -80,7 +80,7 @@ public class JobStepDefinitionServiceImpl
         ArgumentValidator.notNull(jobStepDefinition, "stepDefinition");
         ArgumentValidator.notNull(jobStepDefinition.getScopeId(), "stepDefinition.scopeId");
         ArgumentValidator.notNull(jobStepDefinition.getStepType(), "jobStepDefinition.stepType");
-        ArgumentValidator.notEmptyOrNull(jobStepDefinition.getName(), "jobStepDefinition.name");
+        ArgumentValidator.validateEntityName(jobStepDefinition.getName(), "jobStepDefinition.name");
         ArgumentValidator.notEmptyOrNull(jobStepDefinition.getProcessorName(), "jobStepDefinition.processorName");
 
         //
