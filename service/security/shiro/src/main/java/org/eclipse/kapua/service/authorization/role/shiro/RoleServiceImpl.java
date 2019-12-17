@@ -69,7 +69,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         // Argument validation
         ArgumentValidator.notNull(roleCreator, "roleCreator");
         ArgumentValidator.notNull(roleCreator.getScopeId(), "roleCreator.scopeId");
-        ArgumentValidator.notEmptyOrNull(roleCreator.getName(), "roleCreator.name");
+        ArgumentValidator.validateEntityName(roleCreator.getName(), "roleCreator.name");
         ArgumentValidator.notNull(roleCreator.getPermissions(), "roleCreator.permissions");
         //
         // Check Access
@@ -130,9 +130,9 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         //
         // Argument validation
         ArgumentValidator.notNull(role, "role");
-        ArgumentValidator.notNull(role.getScopeId(), "role.scopeId");
         ArgumentValidator.notNull(role.getId(), "role.id");
-        ArgumentValidator.notEmptyOrNull(role.getName(), "role.name");
+        ArgumentValidator.notNull(role.getScopeId(), "role.scopeId");
+        ArgumentValidator.validateEntityName(role.getName(), "role.name");
 
         //
         // Check Access
@@ -179,7 +179,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         if (find(scopeId, roleId) == null) {
             throw new KapuaEntityNotFoundException(Role.TYPE, roleId);
         }
-        if(roleId.equals(KapuaId.ONE)) {
+        if (roleId.equals(KapuaId.ONE)) {
             throw new KapuaException(KapuaErrorCodes.ADMIN_ROLE_DELETED_ERROR);
         }
 
