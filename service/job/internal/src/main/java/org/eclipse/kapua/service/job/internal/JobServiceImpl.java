@@ -75,7 +75,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         // Argument validation
         ArgumentValidator.notNull(creator, "jobCreator");
         ArgumentValidator.notNull(creator.getScopeId(), "jobCreator.scopeId");
-        ArgumentValidator.notNull(creator.getName(), "jobCreator.name");
+        ArgumentValidator.validateEntityName(creator.getName(), "jobCreator.name");
 
         //
         // Check access
@@ -106,7 +106,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         // Argument Validation
         ArgumentValidator.notNull(job, "job");
         ArgumentValidator.notNull(job.getScopeId(), "job.scopeId");
-        ArgumentValidator.notNull(job.getName(), "job.name");
+        ArgumentValidator.validateEntityName(job.getName(), "job.name");
 
         //
         // Check access
@@ -195,7 +195,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
     //
     // Private methods
-        //
+    //
 
     /**
      * Deletes the {@link Job} like {@link #delete(KapuaId, KapuaId)}.
@@ -249,7 +249,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         //
         // Do delete
         try {
-        KapuaSecurityUtils.doPrivileged(() -> jobEngineService.cleanJobData(scopeId, jobId));
+            KapuaSecurityUtils.doPrivileged(() -> jobEngineService.cleanJobData(scopeId, jobId));
         } catch (Exception e) {
             if (forced) {
                 LOG.warn("Error while cleaning Job data. Ignoring exception since delete is forced! Error: {}", e.getMessage());
