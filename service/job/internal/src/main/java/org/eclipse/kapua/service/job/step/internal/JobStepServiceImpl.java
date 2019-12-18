@@ -16,13 +16,13 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
-import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -71,8 +71,7 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
         // Argument validation
         ArgumentValidator.notNull(jobStepCreator, "jobStepCreator");
         ArgumentValidator.notNull(jobStepCreator.getScopeId(), "jobStepCreator.scopeId");
-        ArgumentValidator.notEmptyOrNull(jobStepCreator.getName(), "jobStepCreator.name");
-        ArgumentValidator.numRange(jobStepCreator.getName().length(), 1, 255, "jobStepCreator.name");
+        ArgumentValidator.validateEntityName(jobStepCreator.getName(), "jobStepCreator.name");
         ArgumentValidator.notNull(jobStepCreator.getJobStepDefinitionId(), "jobStepCreator.stepDefinitionId");
 
         if (jobStepCreator.getDescription() != null) {
@@ -152,7 +151,7 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
         // Argument validation
         ArgumentValidator.notNull(jobStep, "jobStep");
         ArgumentValidator.notNull(jobStep.getScopeId(), "jobStep.scopeId");
-        ArgumentValidator.notNull(jobStep.getName(), "jobStep.name");
+        ArgumentValidator.validateEntityName(jobStep.getName(), "jobStep.name");
         ArgumentValidator.notNull(jobStep.getJobStepDefinitionId(), "jobStep.stepDefinitionId");
         if (jobStep.getDescription() != null) {
             ArgumentValidator.numRange(jobStep.getDescription().length(), 0, 8192, "jobStep.description");

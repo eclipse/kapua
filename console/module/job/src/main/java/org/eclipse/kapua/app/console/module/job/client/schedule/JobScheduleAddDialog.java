@@ -44,6 +44,7 @@ import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.AfterDateValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.BeforeDateValidator;
+import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
 import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTrigger;
@@ -138,7 +139,9 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         };
 
         triggerName.setAllowBlank(false);
+        triggerName.setMinLength(3);
         triggerName.setMaxLength(255);
+        triggerName.setValidator(new TextFieldValidator(triggerName, TextFieldValidator.FieldType.NAME_SPACE));
         triggerName.setFieldLabel("* " + JOB_MSGS.dialogAddScheduleScheduleNameLabel());
         triggerName.setToolTip(JOB_MSGS.dialogAddScheduleNameTooltip());
         mainPanel.add(triggerName);

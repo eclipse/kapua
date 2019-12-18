@@ -45,6 +45,7 @@ import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
 import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobStep;
@@ -98,7 +99,10 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         this.jobId = jobId;
 
         jobStepName = new KapuaTextField<String>();
+        jobStepName.setMinLength(3);
         jobStepName.setMaxLength(255);
+        jobStepName.setValidator(new TextFieldValidator(jobStepName, TextFieldValidator.FieldType.NAME_SPACE));
+
         jobStepDescription = new KapuaTextField<String>();
         jobStepDefinitionCombo = new ComboBox<GwtJobStepDefinition>();
         jobStepPropertiesFieldSet = new FieldSet();

@@ -97,14 +97,14 @@ Feature: Trigger service tests
 
   Scenario: Adding "Device Connect" Schedule With Min Length Name
     Login as kapua-sys user and create a job with name job0.
-    Add a new schedule with one character long name.
+    Add a new schedule with three character long name.
     As this is the defined limit for the min number of characters
     for the schedule name, no errors should be thrown.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
     When I found trigger properties with name "Device Connect"
-    And A regular trigger creator with the name "w"
+    And A regular trigger creator with the name "www"
     And The trigger is set to start today at 10:00.
     And I create a new trigger from the existing creator with previously defined date properties
     And I logout

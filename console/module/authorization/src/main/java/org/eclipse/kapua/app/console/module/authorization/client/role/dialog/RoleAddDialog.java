@@ -50,7 +50,7 @@ public class RoleAddDialog extends EntityAddEditDialog {
     public void validateRoles() {
         if (roleNameField.getValue() == null) {
             ConsoleInfo.display("Error", CONSOLE_MSGS.allFieldsRequired());
-        } 
+        }
     }
 
     @Override
@@ -117,9 +117,10 @@ public class RoleAddDialog extends EntityAddEditDialog {
         // Name
         roleNameField = new KapuaTextField<String>();
         roleNameField.setAllowBlank(false);
+        roleNameField.setMinLength(3);
         roleNameField.setMaxLength(255);
         roleNameField.setFieldLabel("* " + MSGS.dialogAddFieldName());
-        roleNameField.setValidator(new TextFieldValidator(roleNameField, FieldType.NAME));
+        roleNameField.setValidator(new TextFieldValidator(roleNameField, FieldType.NAME_SPACE));
         roleNameField.setToolTip(MSGS.dialogAddFieldNameTooltip());
         roleFormPanel.add(roleNameField);
 

@@ -52,9 +52,10 @@ public class GroupAddDialog extends EntityAddEditDialog {
         FormPanel groupFormPanel = new FormPanel(FORM_LABEL_WIDTH);
         groupNameField = new KapuaTextField<String>();
         groupNameField.setAllowBlank(false);
+        groupNameField.setMinLength(3);
         groupNameField.setMaxLength(255);
         groupNameField.setFieldLabel("* " + MSGS.dialogAddFieldName());
-        groupNameField.setValidator(new TextFieldValidator(groupNameField, FieldType.NAME));
+        groupNameField.setValidator(new TextFieldValidator(groupNameField, FieldType.NAME_SPACE));
         groupNameField.setToolTip(MSGS.dialogAddFieldNameTooltip());
         groupFormPanel.add(groupNameField);
 
@@ -71,7 +72,7 @@ public class GroupAddDialog extends EntityAddEditDialog {
     public void validateGroups() {
         if (groupNameField.getValue() == null) {
             ConsoleInfo.display("Error", CONSOLE_MSGS.allFieldsRequired());
-        } 
+        }
     }
 
     @Override

@@ -53,10 +53,11 @@ public class JobAddDialog extends EntityAddEditDialog {
 
         name = new KapuaTextField<String>();
         name.setAllowBlank(false);
+        name.setMinLength(3);
         name.setMaxLength(255);
         name.setName("name");
         name.setFieldLabel("* " + JOB_MSGS.dialogAddFieldName());
-        name.setValidator(new TextFieldValidator(name, FieldType.NAME));
+        name.setValidator(new TextFieldValidator(name, FieldType.NAME_SPACE));
         name.setToolTip(JOB_MSGS.dialogAddFieldNameTooltip());
         jobFormPanel.add(name);
 
@@ -74,7 +75,7 @@ public class JobAddDialog extends EntityAddEditDialog {
     public void validateJob() {
         if (name.getValue() == null) {
             ConsoleInfo.display("Error", CONSOLE_MSGS.allFieldsRequired());
-        } 
+        }
     }
 
     @Override
