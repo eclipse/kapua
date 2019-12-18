@@ -66,10 +66,9 @@ Feature: Job service CRUD tests
       | boolean | infiniteChildEntities      | true  |
       | integer | maxNumberChildEntities     | 5     |
     Given A job creator with an empty name
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "name"
     When I create a new job entity from the existing creator
-    Then No exception was thrown
-    When I search for the job in the database
-    Then The job entity matches the creator
+    Then An exception was thrown
     Then I logout
 
   Scenario: Job with a duplicate name
