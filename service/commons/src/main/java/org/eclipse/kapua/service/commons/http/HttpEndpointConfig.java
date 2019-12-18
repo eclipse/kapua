@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons.http;
 
+import io.vertx.core.http.ClientAuth;
+
 public class HttpEndpointConfig {
 
     private String bindAddress = "0.0.0.0";
@@ -18,7 +20,7 @@ public class HttpEndpointConfig {
     private boolean ssl;
     private String keyStorePath;
     private String keyStorePassword;
-    private String clientAuth = "NONE";
+    private ClientAuth clientAuth = ClientAuth.NONE;
     private String trustStorePath;
     private String trustStorePassword;
 
@@ -62,11 +64,11 @@ public class HttpEndpointConfig {
         this.keyStorePassword = keyStorePassword;
     }
 
-    public String getClientAuth() {
+    public ClientAuth getClientAuth() {
         return clientAuth;
     }
 
-    public void setClientAuth(String clientAuth) {
+    public void setClientAuth(ClientAuth clientAuth) {
         this.clientAuth = clientAuth;
     }
 
@@ -95,7 +97,7 @@ public class HttpEndpointConfig {
                 + ", \"keyStorePassword\":\"%s\""
                 + ", \"clientAuth\":\"%s\""
                 + ", \"trustStorePath\":\"%s\""
-                + ", \"trustStorePassword\":\"%s\"", 
+                + ", \"trustStorePassword\":\"%s\"",
                 bindAddress, port, ssl, keyStorePath, "xxxxxxxxx", clientAuth, trustStorePath, "xxxxxxxxx");
     }
 }

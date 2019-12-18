@@ -18,7 +18,32 @@ public enum JobEngineHttpProxySettingKey implements SettingKey {
     /**
      * HTTP base address for the Job Engine Microservice
      */
-    MICROSERVICE_JOBENGINE_HTTP_BASEADDRESS("microservice.jobengine.http.baseaddress");
+    MICROSERVICE_JOBENGINE_HTTP_BASEADDRESS("microservice.jobengine.http.baseaddress"),
+
+    /**
+     * Path of the TrustStore to be used to connect to the endpoint
+     */
+    MICROSERVICE_JOBENGINE_TRUSTSTORE_PATH("microservice.jobengine.truststore.path"),
+
+    /**
+     * Password of the TrustStore to be used to connect to the endpoint
+     */
+    MICROSERVICE_JOBENGINE_TRUSTSTORE_PASSWORD("microservice.jobengine.truststore.password"),
+
+    /**
+     * Path of the KeyStore to be used to connect to the endpoint
+     */
+    MICROSERVICE_JOBENGINE_KEYSTORE_PATH("microservice.jobengine.keystore.path"),
+
+    /**
+     * Password of the KeyStore to be used to connect to the endpoint
+     */
+    MICROSERVICE_JOBENGINE_KEYSTORE_PASSWORD("microservice.jobengine.keystore.password"),
+
+    /**
+     * Verify Job Engine HTTP Hostname
+     */
+    MICROSERVICE_JOBENGINE_VERIFY_HOSTNAME("microservice.jobengine.verify_hostname");
 
     private String key;
 

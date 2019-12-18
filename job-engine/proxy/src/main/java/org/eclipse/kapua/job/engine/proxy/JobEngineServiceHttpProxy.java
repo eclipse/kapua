@@ -15,11 +15,19 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue.ValueType;
+import javax.net.ssl.SSLContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.Base64;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -53,14 +61,19 @@ import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthoriz
 
 import com.google.common.base.Strings;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,14 +84,15 @@ public class JobEngineServiceHttpProxy implements JobEngineService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobEngineServiceHttpProxy.class);
     private final KapuaIdFactory kapuaIdFactory = KapuaLocator.getInstance().getFactory(KapuaIdFactory.class);
-    private static final String HEADER_CONTENT_TYPE = "Content-Type";
     private static final String HEADER_ACCEPT = "Accept";
     private static final String HEADER_KAPUA_SESSION = "X-Kapua-Session";
     private final String jobEngineBaseAddress;
-    private final CloseableHttpClient client = HttpClients.createDefault();
+    private final CloseableHttpClient client;
+    private final char[] emptyCharArray = "".toCharArray();
 
-    public JobEngineServiceHttpProxy() {
-        String jobEngineBaseAddress = StringUtils.stripEnd(JobEngineHttpProxySetting.getInstance().getString(JobEngineHttpProxySettingKey.MICROSERVICE_JOBENGINE_HTTP_BASEADDRESS), "/");
+    public JobEngineServiceHttpProxy() throws CertificateException, IOException, KeyManagementException, KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException {
+        JobEngineHttpProxySetting jobEngineHttpProxySetting = JobEngineHttpProxySetting.getInstance();
+        String jobEngineBaseAddress = StringUtils.stripEnd(jobEngineHttpProxySetting.getString(JobEngineHttpProxySettingKey.MICROSERVICE_JOBENGINE_HTTP_BASEADDRESS), "/");
         if (Strings.isNullOrEmpty(jobEngineBaseAddress)) {
             String errorCause = "No HTTP base address set for Job Engine Service";
             LOGGER.error(errorCause);
@@ -86,6 +100,45 @@ public class JobEngineServiceHttpProxy implements JobEngineService {
         }
         LOGGER.debug("Job Engine Service HTTP base address: {}", jobEngineBaseAddress);
         this.jobEngineBaseAddress = jobEngineBaseAddress;
+
+        String trustStorePath = jobEngineHttpProxySetting.getString(JobEngineHttpProxySettingKey.MICROSERVICE_JOBENGINE_TRUSTSTORE_PATH);
+        String trustStorePassword = jobEngineHttpProxySetting.getString(JobEngineHttpProxySettingKey.MICROSERVICE_JOBENGINE_TRUSTSTORE_PASSWORD);
+        String keyStorePath = jobEngineHttpProxySetting.getString(JobEngineHttpProxySettingKey.MICROSERVICE_JOBENGINE_KEYSTORE_PATH);
+        String keyStorePassword = jobEngineHttpProxySetting.getString(JobEngineHttpProxySettingKey.MICROSERVICE_JOBENGINE_KEYSTORE_PASSWORD);
+        boolean verifyHostname = jobEngineHttpProxySetting.getBoolean(JobEngineHttpProxySettingKey.MICROSERVICE_JOBENGINE_VERIFY_HOSTNAME, true);
+
+        HttpClientBuilder httpClientBuilder = HttpClients.custom();
+        SSLContextBuilder sslContextBuilder = SSLContexts.custom();
+
+        if (StringUtils.isNotBlank(trustStorePath)) {
+            KeyStore trustStore = KeyStore.getInstance("pkcs12");
+            trustStore.load(new FileInputStream(trustStorePath), StringUtils.isNotEmpty(trustStorePassword) ? trustStorePassword.toCharArray() : null);
+            sslContextBuilder.loadTrustMaterial(
+                    trustStore,
+                    null
+            );
+        }
+
+        if (StringUtils.isNotBlank(keyStorePath)) {
+            KeyStore keyStore = KeyStore.getInstance("pkcs12");
+            keyStore.load(new FileInputStream(keyStorePath), StringUtils.isNotEmpty(keyStorePassword) ? keyStorePassword.toCharArray() : null);
+            sslContextBuilder
+                    .loadKeyMaterial(
+                    keyStore,
+                    StringUtils.isNotEmpty(keyStorePassword) ? keyStorePassword.toCharArray() : null
+            );
+        }
+
+        SSLContext sslContext = sslContextBuilder.build();
+        SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(
+                sslContext,
+                new String[]{ "TLSv1.2" },
+                null,
+                verifyHostname ? SSLConnectionSocketFactory.getDefaultHostnameVerifier() : new NoopHostnameVerifier());
+
+        client = httpClientBuilder
+                .setSSLSocketFactory(sslConnectionSocketFactory)
+                .build();
     }
 
     @Override

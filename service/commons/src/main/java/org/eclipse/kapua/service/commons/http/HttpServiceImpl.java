@@ -22,10 +22,8 @@ import org.slf4j.LoggerFactory;
 
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.ClientAuth;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
-import io.vertx.core.net.JksOptions;
 import io.vertx.core.net.PfxOptions;
 import io.vertx.ext.healthchecks.HealthCheckHandler;
 import io.vertx.ext.web.Router;
@@ -35,9 +33,6 @@ import io.vertx.ext.web.handler.CorsHandler;
 public class HttpServiceImpl implements HttpService {
 
     private static Logger logger = LoggerFactory.getLogger(HttpServiceImpl.class);
-
-    static final String JKS_STORE = "^.*.(jks|JKS)$";
-    static final String PFX_STORE = "^.*.(pfx|p12|PFX|P12)$";
 
     private Vertx vertx;
     private HttpServer server;
@@ -137,26 +132,25 @@ public class HttpServiceImpl implements HttpService {
 
         // TLS
         serverOpts.setSsl(config.getEndpoint().isSsl());
-        if (config.getEndpoint().getKeyStorePath() != null && config.getEndpoint().getKeyStorePath().matches(JKS_STORE)) {
-            serverOpts.setKeyStoreOptions(new JksOptions()
-                    .setPath(config.getEndpoint().getKeyStorePath())
-                    .setPassword(config.getEndpoint().getKeyStorePassword()));
-        } else if (config.getEndpoint().getKeyStorePath() != null && config.getEndpoint().getKeyStorePath().matches(PFX_STORE)) {
+        serverOpts
+                .removeEnabledSecureTransportProtocol("SSLv2Hello")
+                .removeEnabledSecureTransportProtocol("TLSv1")
+                .removeEnabledSecureTransportProtocol("TLSv1.1");
+
+        if (config.getEndpoint().getKeyStorePath() != null) {
             serverOpts.setPfxKeyCertOptions(new PfxOptions()
                     .setPath(config.getEndpoint().getKeyStorePath())
                     .setPassword(config.getEndpoint().getKeyStorePassword()));
+            logger.info("PFX KeyStore loaded: {}", config.getEndpoint().getKeyStorePath());
         }
 
         // Mutual Auth
-        serverOpts.setClientAuth(ClientAuth.valueOf(config.getEndpoint().getClientAuth()));
-        if (config.getEndpoint().getTrustStorePath() != null && config.getEndpoint().getTrustStorePath().matches(JKS_STORE)) {
-            serverOpts.setTrustStoreOptions(new JksOptions()
+        serverOpts.setClientAuth(config.getEndpoint().getClientAuth());
+        if (config.getEndpoint().getTrustStorePath() != null) {
+            serverOpts.setPfxTrustOptions(new PfxOptions()
                     .setPath(config.getEndpoint().getTrustStorePath())
                     .setPassword(config.getEndpoint().getTrustStorePassword()));
-        } else if (config.getEndpoint().getTrustStorePath() != null && config.getEndpoint().getTrustStorePath().matches(PFX_STORE)) {
-            serverOpts.setPfxKeyCertOptions(new PfxOptions()
-                    .setPath(config.getEndpoint().getKeyStorePath())
-                    .setPassword(config.getEndpoint().getKeyStorePassword()));
+            logger.info("PFX TrustStore loaded: {}", config.getEndpoint().getTrustStorePath());
         }
 
         server = vertx.createHttpServer(serverOpts)
