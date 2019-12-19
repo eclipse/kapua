@@ -158,6 +158,7 @@ class HttpServiceVerticleImpl extends AbstractServiceVerticle implements HttpSer
             deployFuts.add(deployFut);
             vertx.deployVerticle(new Builder(singleInstanceConfig)
                     .addControllers(builder.getControllers())
+                    .setAuthHandler(builder.getAuthHandler())
                     .build(), deployReq -> {
                         if (deployReq.succeeded()) {
                             deployFut.complete();

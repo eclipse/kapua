@@ -113,6 +113,7 @@ public class HttpEndpointConfig {
         copyConfig.setKeyStorePassword(aConfig.getKeyStorePassword());
         copyConfig.setKeyStorePath(aConfig.getKeyStorePath());
         copyConfig.setPort(aConfig.getPort());
+        copyConfig.setSsl(aConfig.isSsl());
         copyConfig.setTrustStorePassword(aConfig.getTrustStorePassword());
         copyConfig.setTrustStorePath(aConfig.getTrustStorePath());
         return copyConfig;
