@@ -45,7 +45,7 @@ import io.vertx.core.Vertx;
 public class BaseApplication<C extends Configuration> implements ApplicationRunner {
 
     private static Logger logger = LoggerFactory.getLogger(BaseApplication.class);
-    
+
     private static final class ContextImpl implements Context {
 
         private Vertx vertx;
