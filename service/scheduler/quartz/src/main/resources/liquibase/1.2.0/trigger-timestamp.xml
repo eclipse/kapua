@@ -15,13 +15,13 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
-        logicalFilePath="KapuaDB/changelog-device_management_registry-1.2.0.xml">
+        logicalFilePath="KapuaDB/changelog-scheduler-1.2.0.xml">
 
-    <include relativeToChangelogFile="true" file="./device_management_operation_notification-add_message.xml"/>
-    <include relativeToChangelogFile="true" file="./device_management_operation-add_log.xml"/>
-
-    <include relativeToChangelogFile="true" file="./device_management_operation-timestamp.xml"/>
-    <include relativeToChangelogFile="true" file="./device_management_operation_notification-timestamp.xml"/>
-
+    <changeSet id="changelog-trigger-1.2.0_timestamp" author="eurotech" dbms="mysql, mariadb">
+        <modifyDataType tableName="schdl_trigger" columnName="created_on" newDataType="timestamp(3) DEFAULT ${now}"/>
+        <modifyDataType tableName="schdl_trigger" columnName="modified_on" newDataType="timestamp(3) DEFAULT ${now}"/>
+        <modifyDataType tableName="schdl_trigger" columnName="starts_on" newDataType="timestamp(3) DEFAULT ${now}"/>
+        <modifyDataType tableName="schdl_trigger" columnName="ends_on" newDataType="timestamp(3) NULL"/>
+    </changeSet>
 
 </databaseChangeLog>
