@@ -9,11 +9,17 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.commons;
+package org.eclipse.kapua.service.commons.http;
 
-import java.util.Map;
+import org.eclipse.kapua.service.commons.ServiceVerticle;
 
-public interface PropertyMapper {
+public interface HttpMonitorServiceVerticle extends ServiceVerticle {
 
-    public <T> T convert(Map<String, String> aSource, String aPrefix, Class<T> claz);
+    public static HttpMonitorServiceVerticleBuilder builder() {
+        return new HttpMonitorServiceVerticleImpl.Builder();
+    }
+
+    public static HttpMonitorServiceVerticleBuilder builder(HttpMonitorServiceConfig aConfig) {
+        return new HttpMonitorServiceVerticleImpl.Builder(aConfig);
+    }
 }

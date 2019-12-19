@@ -17,7 +17,6 @@ import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
-import org.eclipse.kapua.service.commons.BuilderRegistry;
 import org.eclipse.kapua.service.commons.HealthCheckProvider;
 
 import io.vertx.core.Future;
@@ -26,72 +25,34 @@ import io.vertx.ext.dropwizard.MetricsService;
 import io.vertx.ext.healthchecks.HealthCheckHandler;
 import io.vertx.ext.web.Router;
 
-public class HttpMonitorServiceImpl implements HttpMonitorService {
+class HttpMonitorServiceImpl implements HttpMonitorService {
 
     private Vertx vertx;
     private HttpService service;
     private HttpMonitorServiceConfig config;
     private Set<HealthCheckProvider> providers = new HashSet<>();
 
-    public static class Builder implements HttpMonitorServiceContext, HttpMonitorServiceBuilder {
-
-        private Vertx vertx;
-        private HttpMonitorServiceConfig config;
-        private Set<HealthCheckProvider> providers = new HashSet<>();
-
-        public Builder(Vertx vertx) {
-            this(vertx, new HttpMonitorServiceConfig());
-        }
-
-        public Builder(Vertx vertx, HttpMonitorServiceConfig config) {
-            this.vertx = vertx;
-            this.config = config;
-        }
-
-        @Override
-        public Builder addHealthCheckProviders(Set<HealthCheckProvider> someProviders) {
-            providers.addAll(someProviders);
-            return this;
-        }
-
-        @Override
-        public Builder addHealthCheckProvider(HealthCheckProvider aProvider) {
-            providers.add(aProvider);
-            return this;
-        }
-
-        @Override
-        public HttpMonitorServiceContext getContext() {
-            return this;
-        }
-
-        @Override
-        public HttpMonitorService build() {
-            Objects.requireNonNull(vertx, "member: vertx");
-            Objects.requireNonNull(config, "member: config");
-            return new HttpMonitorServiceImpl(this);
-        }
-
-        @Override
-        public void register(BuilderRegistry aRegistry) {
-            Objects.requireNonNull(aRegistry, "aRegistry");
-            aRegistry.register(config.getName(), this);
-        }
+    public HttpMonitorServiceImpl(Vertx aVertx) {
+        this(aVertx, new HttpMonitorServiceConfig());
     }
 
-    private HttpMonitorServiceImpl(Builder builder) {
-        Objects.requireNonNull(builder, "param: builder");
-        vertx = builder.vertx;
-        config = builder.config;
-        providers = builder.providers;
+    public HttpMonitorServiceImpl(Vertx aVertx, HttpMonitorServiceConfig aConfig) {
+        vertx = aVertx;
+        config = aConfig;
     }
 
     @Override
-    public String getName() {
-        return config.getName();
+    public HttpMonitorService addHealthCheckProviders(Set<HealthCheckProvider> someProviders) {
+        providers.addAll(someProviders);
+        return this;
     }
 
     @Override
+    public HttpMonitorService addHealthCheckProvider(HealthCheckProvider aProvider) {
+        providers.add(aProvider);
+        return this;
+    }
+
     public void start(Future<Void> startFuture) throws Exception {
         Objects.requireNonNull(startFuture, "param: startFuture");
 
@@ -119,18 +80,16 @@ public class HttpMonitorServiceImpl implements HttpMonitorService {
             httpServiceConfig.setInstances(1);
             httpServiceConfig.setRootPath(config.getRootPath());
             httpServiceConfig.setEndpoint(config.getEndpoint());
-            HttpServiceBuilder builder = HttpService.builder(vertx, httpServiceConfig);
+            service = HttpService.create(vertx, httpServiceConfig);
             for (HttpController controller : controllers) {
-                builder.getContext().addController(controller);
+                service.addController(controller);
             }
-            service = builder.build();
             service.start(startFuture);
         } catch (Exception e) {
             startFuture.fail(e);
         }
     }
 
-    @Override
     public void stop(@NotNull Future<Void> stopFuture) throws Exception {
         Objects.requireNonNull(stopFuture, "param: stopFuture");
 

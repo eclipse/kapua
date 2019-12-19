@@ -15,9 +15,9 @@ import java.util.Objects;
 
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.service.commons.app.AbstractBeanProvider;
-import org.eclipse.kapua.service.commons.http.HttpService;
-import org.eclipse.kapua.service.commons.http.HttpServiceBuilder;
 import org.eclipse.kapua.service.commons.http.HttpServiceConfig;
+import org.eclipse.kapua.service.commons.http.HttpServiceVerticle;
+import org.eclipse.kapua.service.commons.http.HttpServiceVerticleBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ObjectFactoryCreatingFactoryBean;
@@ -29,7 +29,9 @@ import org.springframework.context.annotation.Configuration;
 
 import com.fasterxml.jackson.databind.Module;
 
+import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.ext.web.RoutingContext;
 
 @Configuration
 @ComponentScan("org.eclipse.kapua.service.commons")
@@ -63,12 +65,14 @@ public class JobEngineBeanProvider extends AbstractBeanProvider<JobEngineConfigu
 
     @Autowired
     @Bean(JOB_ENGINE_HTTP_SERVICE_BUILDER_BEAN)
-    public HttpServiceBuilder httpServiceBuilder(Vertx aVertx, HttpServiceConfig aConfig) {
+    public HttpServiceVerticleBuilder httpServiceBuilder(Vertx aVertx, HttpServiceConfig aConfig, Handler<RoutingContext> authHandler) {
         Objects.requireNonNull(aConfig, "param: aConfig");
         if (aConfig.getName() == null) {
             aConfig.setName(JOB_ENGINE_HTTP_SERVICE_NAME);
         }
-        return HttpService.builder(aVertx, aConfig);
+        HttpServiceVerticleBuilder builder = HttpServiceVerticle.builder(aConfig);
+        builder.getContext().setAuthHandler(authHandler);
+        return builder;
     }
 
     @Qualifier("services")

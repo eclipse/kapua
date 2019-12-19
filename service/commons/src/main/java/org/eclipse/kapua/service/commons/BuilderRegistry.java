@@ -13,5 +13,5 @@ package org.eclipse.kapua.service.commons;
 
 public interface BuilderRegistry {
 
-    public void register(String aName, ServiceBuilder<?, ?> aBuilder);
+    public void register(String aName, ServiceVerticleBuilder<?, ?> aBuilder);
 }

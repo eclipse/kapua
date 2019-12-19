@@ -13,10 +13,7 @@ package org.eclipse.kapua.service.commons;
 
 import io.vertx.core.Verticle;
 
-
 public interface ServiceVerticle extends Verticle {
 
-    public static ServiceVerticle create(Service aService) {
-        return ServiceVerticleImpl.create(aService);
-    }
+    public String getName();
 }

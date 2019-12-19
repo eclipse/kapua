@@ -17,17 +17,18 @@ import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
-import org.eclipse.kapua.service.commons.BuilderRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.vertx.core.Future;
+import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.net.PfxOptions;
 import io.vertx.ext.healthchecks.HealthCheckHandler;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CorsHandler;
 
@@ -36,67 +37,37 @@ public class HttpServiceImpl implements HttpService {
     private static Logger logger = LoggerFactory.getLogger(HttpServiceImpl.class);
 
     private Vertx vertx;
-    private HttpServer server;
     private HttpServiceConfig config;
-    private Set<HttpController> controllers;
+    private HttpServer server;
+    private Set<HttpController> controllers = new HashSet<>();
+    private Handler<RoutingContext> authHandler;
     private Router mainRouter;
 
-    public static class Builder implements HttpServiceContext, HttpServiceBuilder {
-
-        private Vertx vertx;
-        private Set<HttpController> controllers = new HashSet<>();
-        private HttpServiceConfig config;
-
-        public Builder(Vertx vertx) {
-            this(vertx, new HttpServiceConfig());
-        }
-
-        public Builder(Vertx vertx, HttpServiceConfig config) {
-            this.vertx = vertx;
-            this.config = config;
-        }
-
-        @Override
-        public Builder addControllers(Set<HttpController> someControllers) {
-            controllers.addAll(someControllers);
-            return this;
-        }
-
-        @Override
-        public Builder addController(HttpController aController) {
-            controllers.add(aController);
-            return this;
-        }
-
-        @Override
-        public HttpServiceContext getContext() {
-            return this;
-        }
-
-        @Override
-        public HttpService build() {
-            Objects.requireNonNull(vertx, "member: vertx");
-            Objects.requireNonNull(config, "member: config");
-            return new HttpServiceImpl(this);
-        }
-
-        @Override
-        public void register(BuilderRegistry aRegistry) {
-            Objects.requireNonNull(aRegistry, "aRegistry");
-            aRegistry.register(config.getName(), this);
-        }
+    public HttpServiceImpl(Vertx aVertx) {
+        this(aVertx, new HttpServiceConfig());
     }
 
-    private HttpServiceImpl(@NotNull Builder builder) {
-        Objects.requireNonNull(builder, "param: builder");
-        this.vertx = builder.vertx;
-        this.controllers = new HashSet<>(builder.controllers);
-        this.config = builder.config;
+    public HttpServiceImpl(Vertx aVertx, HttpServiceConfig aConfig) {
+        this.vertx = aVertx;
+        this.config = aConfig;
     }
 
     @Override
-    public String getName() {
-        return config.getName();
+    public HttpServiceImpl addControllers(Set<HttpController> someControllers) {
+        controllers.addAll(someControllers);
+        return this;
+    }
+
+    @Override
+    public HttpServiceImpl addController(HttpController aController) {
+        controllers.add(aController);
+        return this;
+    }
+
+    @Override
+    public HttpServiceImpl setAuthHandler(Handler<RoutingContext> anHandler) {
+        authHandler = anHandler;
+        return this;
     }
 
     @Override
@@ -123,8 +94,9 @@ public class HttpServiceImpl implements HttpService {
 
         rootRouter.route().handler(BodyHandler.create());
         rootRouter.route().handler(CorsHandler.create(""));
-        // TODO Make handler pluggable
-        rootRouter.route().blockingHandler(HttpServiceHandlers::authenticationHandler);
+        if(authHandler != null) {
+            rootRouter.route().blockingHandler(authHandler);
+        }
         registerRoutes(rootRouter);
         rootRouter.route().failureHandler(HttpServiceHandlers::failureHandler);
         mainRouter.mountSubRouter(config.getRootPath(), rootRouter);
@@ -164,14 +136,8 @@ public class HttpServiceImpl implements HttpService {
                 .requestHandler(mainRouter)
                 .listen(listenReq -> {
                     if (listenReq.succeeded()) {
-                        logger.info("HTTP service started {}, address {}, port {}, {}",
-                                config.getName(),
-                                config.getEndpoint().getBindAddress(),
-                                config.getEndpoint().getPort(),
-                                config.getEndpoint().isSsl() ? "Secure mode" : "Insecure mode");
                         startFuture.complete();
                     } else {
-                        logger.debug("Error starting service {}: {}", config.getName(), listenReq.cause().getMessage());
                         startFuture.fail((listenReq.cause()));
                     }
                 });

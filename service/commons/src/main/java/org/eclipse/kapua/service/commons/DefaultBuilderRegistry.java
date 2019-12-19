@@ -18,9 +18,9 @@ import java.util.Set;
 
 public class DefaultBuilderRegistry implements BuilderRegistry {
 
-    private Map<String, ServiceBuilder<?, ?>> builders = new HashMap<>();
+    private Map<String, ServiceVerticleBuilder<?, ?>> builders = new HashMap<>();
 
-    public void register(String aName, ServiceBuilder<?, ?> aBuilder) {
+    public void register(String aName, ServiceVerticleBuilder<?, ?> aBuilder) {
         builders.put(aName, aBuilder);
     }
 
@@ -28,7 +28,7 @@ public class DefaultBuilderRegistry implements BuilderRegistry {
         return Collections.unmodifiableSet(builders.keySet());
     }
 
-    public ServiceBuilder<?, ?> get(String aName) {
+    public ServiceVerticleBuilder<?, ?> get(String aName) {
         return builders.get(aName);
     }
 }

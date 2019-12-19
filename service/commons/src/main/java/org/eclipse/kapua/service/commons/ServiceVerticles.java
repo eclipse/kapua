@@ -9,13 +9,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.commons.http;
+package org.eclipse.kapua.service.commons;
 
-import org.eclipse.kapua.service.commons.ServiceBuilder;
+import java.util.HashMap;
+import java.util.Map;
 
-public interface HttpServiceBuilder extends ServiceBuilder<HttpServiceContext, HttpService> {
+public class ServiceVerticles {
 
-    public HttpServiceContext getContext();
+    private Map<String, ServiceVerticle> verticles = new HashMap<>();
 
-    public HttpService build();
+    public Map<String, ServiceVerticle> getVerticles() {
+        return verticles;
+    }
 }

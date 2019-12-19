@@ -23,15 +23,14 @@ import javax.validation.constraints.NotNull;
 
 import org.eclipse.kapua.service.commons.DefaultBuilderRegistry;
 import org.eclipse.kapua.service.commons.HealthCheckProvider;
-import org.eclipse.kapua.service.commons.Service;
-import org.eclipse.kapua.service.commons.ServiceBuilder;
-import org.eclipse.kapua.service.commons.ServiceBuilders;
 import org.eclipse.kapua.service.commons.ServiceVerticle;
-import org.eclipse.kapua.service.commons.Services;
-import org.eclipse.kapua.service.commons.http.HttpMonitorService;
-import org.eclipse.kapua.service.commons.http.HttpMonitorServiceBuilder;
+import org.eclipse.kapua.service.commons.ServiceVerticleBuilder;
+import org.eclipse.kapua.service.commons.ServiceVerticleBuilders;
+import org.eclipse.kapua.service.commons.ServiceVerticles;
 import org.eclipse.kapua.service.commons.http.HttpMonitorServiceConfig;
 import org.eclipse.kapua.service.commons.http.HttpMonitorServiceContext;
+import org.eclipse.kapua.service.commons.http.HttpMonitorServiceVerticle;
+import org.eclipse.kapua.service.commons.http.HttpMonitorServiceVerticleBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectFactory;
@@ -40,23 +39,22 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 
 import io.vertx.core.CompositeFuture;
-import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 
 public class BaseApplication<C extends Configuration> implements ApplicationRunner {
 
     private static Logger logger = LoggerFactory.getLogger(BaseApplication.class);
-
+    
     private static final class ContextImpl implements Context {
 
         private Vertx vertx;
 
-        private HttpMonitorServiceBuilder monitorServiceBuilder;
+        private HttpMonitorServiceVerticleBuilder monitorServiceBuilder;
 
-        private ServiceBuilders serviceBuilders;
+        private ServiceVerticleBuilders serviceBuilders;
 
-        private ContextImpl(@NotNull Vertx aVertx, @NotNull HttpMonitorServiceBuilder aMonitorServiceBuilder, @NotNull ServiceBuilders someServiceBuilders) {
+        private ContextImpl(@NotNull Vertx aVertx, @NotNull HttpMonitorServiceVerticleBuilder aMonitorServiceBuilder, @NotNull ServiceVerticleBuilders someServiceBuilders) {
             vertx = aVertx;
             monitorServiceBuilder = aMonitorServiceBuilder;
             serviceBuilders = someServiceBuilders;
@@ -77,7 +75,7 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
             return clazz.cast(serviceBuilders.getBuilders().get(name).getContext());
         }
 
-        public static ContextImpl create(@NotNull Vertx aVertx, @NotNull HttpMonitorServiceBuilder aMonitorServiceBuilder, @NotNull ServiceBuilders someServiceBuilders) {
+        public static ContextImpl create(@NotNull Vertx aVertx, @NotNull HttpMonitorServiceVerticleBuilder aMonitorServiceBuilder, @NotNull ServiceVerticleBuilders someServiceBuilders) {
             Objects.requireNonNull(aVertx, "param: aVertx");
             // Objects.requireNonNull(aMonitorServiceBuilder, "param: aMonitorServiceBuilder");
             Objects.requireNonNull(someServiceBuilders, "param: someServiceBuilders");
@@ -88,9 +86,9 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
     private Vertx vertx;
     private C configuration;
     private ContextImpl context;
-    private Services services;
-    private HttpMonitorService monitorService;
-    private Set<ObjectFactory<ServiceBuilder<?, ?>>> serviceBuilderFactories = new HashSet<>();
+    private ServiceVerticles services;
+    private HttpMonitorServiceVerticle monitorServiceVerticle;
+    private Set<ObjectFactory<ServiceVerticleBuilder<?, ?>>> serviceBuilderFactories = new HashSet<>();
     private DefaultBuilderRegistry serviceBuilderRegistry = new DefaultBuilderRegistry();
 
     @Autowired
@@ -106,7 +104,7 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
     }
 
     @Autowired
-    public void setServiceBuilderFactories(Set<ObjectFactory<ServiceBuilder<?, ?>>> aServiceBuilderFactories) {
+    public void setServiceBuilderFactories(Set<ObjectFactory<ServiceVerticleBuilder<?, ?>>> aServiceBuilderFactories) {
         Objects.requireNonNull(serviceBuilderFactories, "param: serviceBuilderFactories");
         serviceBuilderFactories.addAll(aServiceBuilderFactories);
     }
@@ -120,8 +118,8 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
 
         Future.succeededFuture().compose(map -> {
             try {
-                ServiceBuilders serviceBuilders = new ServiceBuilders();
-                for (ObjectFactory<ServiceBuilder<?, ?>> factory : serviceBuilderFactories) {
+                ServiceVerticleBuilders serviceBuilders = new ServiceVerticleBuilders();
+                for (ObjectFactory<ServiceVerticleBuilder<?, ?>> factory : serviceBuilderFactories) {
                     factory.getObject().register(serviceBuilderRegistry);
                 }
 
@@ -129,10 +127,10 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
                     serviceBuilders.getBuilders().put(name, serviceBuilderRegistry.get(name));
                 }
 
-                HttpMonitorServiceBuilder httpMonitorBuilder = null;
+                HttpMonitorServiceVerticleBuilder httpMonitorBuilder = null;
                 HttpMonitorServiceConfig monitorConfig = configuration.getHttpMonitorServiceConfig();
                 if (isMonitoringEnabled(monitorConfig)) {
-                    httpMonitorBuilder = HttpMonitorService.builder(vertx, monitorConfig);
+                    httpMonitorBuilder = HttpMonitorServiceVerticle.builder(monitorConfig);
                 }
 
                 Future<Void> runInternalReq = Future.future();
@@ -145,22 +143,22 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
         }).compose(map -> {
 
             // Create services
-            HttpMonitorServiceBuilder monitorServiceBuilder = context.monitorServiceBuilder;
-            ServiceBuilders serviceBuilders = context.serviceBuilders;
-            services = new Services();
+            HttpMonitorServiceVerticleBuilder monitorServiceBuilder = context.monitorServiceBuilder;
+            ServiceVerticleBuilders serviceBuilders = context.serviceBuilders;
+            services = new ServiceVerticles();
             for (String name : serviceBuilders.getBuilders().keySet()) {
-                Service service = context.serviceBuilders.getBuilders().get(name).build();
+                ServiceVerticle service = context.serviceBuilders.getBuilders().get(name).build();
                 if (monitorServiceBuilder != null && service instanceof HealthCheckProvider) {
                     monitorServiceBuilder.getContext().addHealthCheckProvider((HealthCheckProvider) service);
                 }
-                services.getServices().put(name, service);
+                services.getVerticles().put(name, service);
             }
 
             // Start service monitoring
             if (monitorServiceBuilder != null) {
-                monitorService = monitorServiceBuilder.build();
+                monitorServiceVerticle = monitorServiceBuilder.build();
                 Future<String> monitorDeployFuture = Future.future();
-                vertx.deployVerticle(ServiceVerticle.create(monitorService), monitorDeployFuture);
+                vertx.deployVerticle(monitorServiceVerticle, monitorDeployFuture);
                 return monitorDeployFuture;
             } else {
                 return Future.succeededFuture();
@@ -172,7 +170,7 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
             for (String name : serviceBuilderRegistry.getNames()) {
                 Future<String> serviceDeployFuture = Future.future();
                 deployFutures.add(serviceDeployFuture);
-                vertx.deployVerticle(ServiceVerticle.create(services.getServices().get(name)), new DeploymentOptions().setInstances(1), serviceDeployFuture);
+                vertx.deployVerticle(services.getVerticles().get(name), serviceDeployFuture);
             }
 
             // All services must be started before proceeding

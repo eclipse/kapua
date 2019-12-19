@@ -11,17 +11,30 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons.http;
 
-import org.eclipse.kapua.service.commons.Service;
+import java.util.Set;
 
+import javax.validation.constraints.NotNull;
+
+import org.eclipse.kapua.service.commons.HealthCheckProvider;
+
+import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 
-public interface HttpMonitorService extends Service {
+public interface HttpMonitorService {
 
-    public static HttpMonitorServiceBuilder builder(Vertx aVertx) {
-        return new HttpMonitorServiceImpl.Builder(aVertx);
+    public HttpMonitorService addHealthCheckProviders(Set<HealthCheckProvider> someProviders);
+
+    public HttpMonitorService addHealthCheckProvider(HealthCheckProvider aProvider);
+
+    public void start(Future<Void> startFuture) throws Exception;
+
+    public void stop(@NotNull Future<Void> stopFuture) throws Exception;
+
+    public static HttpMonitorService create(Vertx aVertx) {
+        return new HttpMonitorServiceImpl(aVertx);
     }
 
-    public static HttpMonitorServiceBuilder builder(Vertx aVertx, HttpMonitorServiceConfig aConfig) {
-        return new HttpMonitorServiceImpl.Builder(aVertx, aConfig);
+    public static HttpMonitorService create(Vertx aVertx, HttpMonitorServiceConfig aConfig) {
+        return new HttpMonitorServiceImpl(aVertx, aConfig);
     }
 }

@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.commons.http;
 
 public class HttpServiceConfig {
 
-
     private String name;
     private int instances = 1;
     private String rootPath = "/";
@@ -57,5 +56,18 @@ public class HttpServiceConfig {
                 + ", \"instances\":\"%d\""
                 + ", \"rootPath\":\"%s\""
                 + ", \"endpoint\":{%s}", name, instances, rootPath, endpoint == null ? "null" : endpoint.toString());
+    }
+
+    public static HttpServiceConfig from(HttpServiceConfig aConfig) {
+        if (aConfig == null) {
+            return null;
+        }
+
+        HttpServiceConfig copyConfig = new HttpServiceConfig();
+        copyConfig.setInstances(aConfig.getInstances());
+        copyConfig.setName(aConfig.getName());
+        copyConfig.setRootPath(aConfig.getRootPath());
+        copyConfig.setEndpoint(HttpEndpointConfig.from(aConfig.getEndpoint()));
+        return copyConfig;
     }
 }

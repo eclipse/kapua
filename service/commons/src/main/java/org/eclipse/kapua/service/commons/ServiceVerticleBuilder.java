@@ -9,13 +9,13 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.commons.http;
+package org.eclipse.kapua.service.commons;
 
-import org.eclipse.kapua.service.commons.ServiceBuilder;
+public interface ServiceVerticleBuilder<C, S extends ServiceVerticle> {
 
-public interface HttpMonitorServiceBuilder extends ServiceBuilder<HttpMonitorServiceContext, HttpMonitorService> {
+    public void register(BuilderRegistry aRegistry);
 
-    public HttpMonitorServiceContext getContext();
+    public C getContext();
 
-    public HttpMonitorService build();
+    public S build();
 }

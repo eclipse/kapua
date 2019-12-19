@@ -13,8 +13,8 @@ package org.eclipse.kapua.service.commons.app;
 
 import java.util.Objects;
 
-import org.eclipse.kapua.service.commons.PropertyMapper;
 import org.eclipse.kapua.service.commons.http.HttpMonitorServiceConfig;
+import org.eclipse.kapua.service.commons.http.HttpServiceHandlers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,11 +23,15 @@ import org.springframework.context.annotation.Bean;
 
 import com.codahale.metrics.SharedMetricRegistries;
 
+import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.ext.dropwizard.DropwizardMetricsOptions;
+import io.vertx.ext.web.RoutingContext;
 
 public abstract class AbstractBeanProvider<C extends Configuration> {
+
+    private static final String DEFAULT_AUTH_HANDLER = "defaultAuthHandler";
 
     @Bean
     @ConfigurationProperties(prefix = "vertx.metrics")
@@ -48,9 +52,9 @@ public abstract class AbstractBeanProvider<C extends Configuration> {
         return new HttpMonitorServiceConfig();
     }
 
-    @Bean
-    public PropertyMapper propertyMapper() {
-        return new SpringPropertyMapper();
+    @Bean(DEFAULT_AUTH_HANDLER)
+    public Handler<RoutingContext> defaultAuthHandler() {
+        return HttpServiceHandlers.authenticationHandler();
     }
 
     @Autowired

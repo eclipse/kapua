@@ -13,9 +13,14 @@ package org.eclipse.kapua.service.commons.http;
 
 import java.util.Set;
 
+import io.vertx.core.Handler;
+import io.vertx.ext.web.RoutingContext;
+
 public interface HttpServiceContext {
 
     public HttpServiceContext addControllers(Set<HttpController> someControllers);
 
     public HttpServiceContext addController(HttpController aController);
+
+    public HttpServiceContext setAuthHandler(Handler<RoutingContext> anHandler);
 }

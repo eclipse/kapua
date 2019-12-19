@@ -100,4 +100,21 @@ public class HttpEndpointConfig {
                 + ", \"trustStorePassword\":\"%s\"",
                 bindAddress, port, ssl, keyStorePath, "xxxxxxxxx", clientAuth, trustStorePath, "xxxxxxxxx");
     }
+
+    public static HttpEndpointConfig from(HttpEndpointConfig aConfig) {
+
+        if (aConfig == null) {
+            return null;
+        }
+
+        HttpEndpointConfig copyConfig = new HttpEndpointConfig();
+        copyConfig.setBindAddress(aConfig.getBindAddress());
+        copyConfig.setClientAuth(aConfig.getClientAuth());
+        copyConfig.setKeyStorePassword(aConfig.getKeyStorePassword());
+        copyConfig.setKeyStorePath(aConfig.getKeyStorePath());
+        copyConfig.setPort(aConfig.getPort());
+        copyConfig.setTrustStorePassword(aConfig.getTrustStorePassword());
+        copyConfig.setTrustStorePath(aConfig.getTrustStorePath());
+        return copyConfig;
+    }
 }

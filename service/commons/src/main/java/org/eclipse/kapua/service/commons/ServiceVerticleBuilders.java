@@ -11,14 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons;
 
-import io.vertx.core.Future;
+import java.util.HashMap;
+import java.util.Map;
 
-public interface Service {
+public class ServiceVerticleBuilders {
 
-    public String getName();
+    private Map<String, ServiceVerticleBuilder<?, ? extends ServiceVerticle>> builders = new HashMap<>();
 
-    public void start(Future<Void> startFuture) throws Exception;
-
-    public void stop(Future<Void> stopFuture) throws Exception;
-
+    public Map<String, ServiceVerticleBuilder<?, ? extends ServiceVerticle>> getBuilders() {
+        return builders;
+    }
 }

@@ -17,7 +17,7 @@ public class HttpMonitorServiceConfig {
     private String rootPath = "/monitoring";
     private boolean enableHealthCheck;
     private boolean enableMetrics;
-    private HttpEndpointConfig endpoint;
+    private HttpEndpointConfig endpoint = new HttpEndpointConfig();
 
     public String getName() {
         return name;

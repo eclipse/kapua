@@ -9,13 +9,13 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.commons;
+package org.eclipse.kapua.service.commons.http;
 
-public interface ServiceBuilder<C, S extends Service> {
+import org.eclipse.kapua.service.commons.ServiceVerticleBuilder;
 
-    public void register(BuilderRegistry aRegistry);
+public interface HttpServiceVerticleBuilder extends ServiceVerticleBuilder<HttpServiceContext, HttpServiceVerticle> {
 
-    public C getContext();
+    public HttpServiceContext getContext();
 
-    public S build();
+    public HttpServiceVerticle build();
 }
