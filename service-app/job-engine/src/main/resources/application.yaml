@@ -1,0 +1,29 @@
+#
+applicationName: kapua-job-engine
+startupTimeout: 900000
+#
+vertx:
+  warningExceptionTime: 10000
+  blockedThreadCheckInterval=: 10000
+  metrics:
+    enable: true
+    registryName: registryName
+#
+monitoring:
+  healthCheckEnable: true
+  metricsEnable: true
+
+# Services
+services:
+  job-engine:
+    http:
+      instances: 3
+      rootPath: /v1
+      endpoint:
+        bindAddress: 0.0.0.0
+        port: 8080
+        ssl: false
+#
+spring:
+  liquibase:
+    enabled: false
