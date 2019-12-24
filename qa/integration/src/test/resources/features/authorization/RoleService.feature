@@ -102,7 +102,7 @@ Scenario: Find role by ID
     Given I create the following role
     | scopeId | name      | actions              |
     | 1       | test_role | write, read, connect |
-    When I search for the last created role
+    When I search for the role with name "test_role"
     Then The correct role entry was found
 
 Scenario: Search the role database for a random ID
@@ -137,10 +137,10 @@ Scenario: Delete an existing role
     Given I create the following role
     | scopeId | name      | actions              |
     | 1       | test_role | write, read, connect |
-    And I search for the last created role
+    And I search for the role with name "test_role"
     Then The role was found
-    When I delete the last created role
-    And I search for the last created role
+    When I delete the role with name "test_role"
+    And I search for the role with name "test_role"
     Then I find no roles
 
 Scenario: Delete a non existing role entry
@@ -158,11 +158,11 @@ Scenario: Delete a non existing role entry
     Given I create the following role
     | scopeId | name      | actions              |
     | 1       | test_role | write, read, connect |
-    When I delete the last created role
-    And I search for the last created role
+    When I delete the role with name "test_role"
+    And I search for the role with name "test_role"
     Then I find no roles
     Given I expect the exception "KapuaEntityNotFoundException" with the text "The entity of type role"
-    When I delete the last created role
+    When I delete the role with name "test_role"
     Then An exception was thrown
 
 Scenario: Update existing role name
@@ -179,9 +179,9 @@ Scenario: Update existing role name
     Given I create the following role
     | scopeId | name      | actions              |
     | 1       | test_role | write, read, connect |
-    When I update the last created role name to "test_role_changed"
-    And I search for the last created role
-    Then The role was successfully updated
+    When I update the role name to "test_role_changed"
+    And I search for the role with name "test_role_changed"
+    Then I find a role with name "test_role_changed"
 
 Scenario: Modify a role that was deleted
     If an update operation is tried on a role that was previously deleted,
@@ -198,7 +198,7 @@ Scenario: Modify a role that was deleted
     Given I create the following role
     | scopeId | name      | actions              |
     | 1       | test_role | write, read, connect |
-    And I delete the last created role
+    And I delete the role with name "test_role"
     Given I expect the exception "KapuaEntityNotFoundException" with the text "The entity of type role"
     When I update the last created role name to "test_role_changed"
     Then An exception was thrown
@@ -321,7 +321,7 @@ Scenario: Delete role permissions
     Given I create the following role
     | scopeId | name      |
     | 1       | test_role |
-    And I create the following role permission
+    And I create the following role permissions
     | scopeId | actionName |
     | 1       | read       |
     Then No exception was thrown
@@ -344,7 +344,7 @@ Scenario: Delete nonexisting role permission
     Given I create the following role
     | scopeId | name      |
     | 1       | test_role |
-    And  I create the following role permission
+    And  I create the following role permissions
     | scopeId | actionName |
     | 1       | read       |
     Then No exception was thrown

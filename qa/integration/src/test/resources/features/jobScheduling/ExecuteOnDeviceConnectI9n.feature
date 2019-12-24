@@ -52,7 +52,7 @@ Feature: JobEngineService execute job on device connect
       | timeout      | java.lang.Long                                                          | 10000                                                                                                                                         |
     When I create a new step entity from the existing creator
     Then No exception was thrown
-    And I find trigger properties with name "Device Connect"
+    And I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "TestSchedule1" is created
     And The trigger is set to start today at 00:00.
     Then I create a new trigger from the existing creator with previously defined date properties
@@ -102,7 +102,7 @@ Feature: JobEngineService execute job on device connect
       | timeout      | java.lang.Long                                                          | 10000                                                                                                                                         |
     When I create a new step entity from the existing creator
     Then No exception was thrown
-    And I find trigger properties with name "Device Connect"
+    And I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "TestSchedule2" is created
     And The trigger is set to start tomorrow at 06:00.
     Then I create a new trigger from the existing creator with previously defined date properties
@@ -151,7 +151,7 @@ Feature: JobEngineService execute job on device connect
       | timeout      | java.lang.Long                                                          | 10000                                                                                                                                         |
     When I create a new step entity from the existing creator
     Then No exception was thrown
-    And I find trigger properties with name "Device Connect"
+    And I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "TestSchedule3" is created
     And The trigger is set to start today at 00:00.
     And The trigger is set to end tomorrow at 20:00.
@@ -202,7 +202,7 @@ Feature: JobEngineService execute job on device connect
         | timeout      | java.lang.Long                                                          | 10000                                                                                                                                         |
       When I create a new step entity from the existing creator
       Then No exception was thrown
-      And I find trigger properties with name "Device Connect"
+      And I find scheduler properties with name "Device Connect"
       And A regular trigger creator with the name "TestSchedule4" is created
       And The trigger is set to start on 10-10-2018 at 6:00.
       And The trigger is set to end on 15-10-2018 at 6:00.
@@ -253,7 +253,7 @@ Feature: JobEngineService execute job on device connect
       | timeout      | java.lang.Long                                                          | 10000                                                                                                                                         |
     When I create a new step entity from the existing creator
     Then No exception was thrown
-    And I find trigger properties with name "Device Connect"
+    And I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "TestSchedule1" is created
     And The trigger is set to start today at 00:00.
     Then I create a new trigger from the existing creator with previously defined date properties
@@ -303,7 +303,7 @@ Feature: JobEngineService execute job on device connect
     And The type of the last event is "DEATH"
     Given I create a job with the name "TestJob"
     And A new job target item
-    Then I find trigger properties with name "Device Connect"
+    Then I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "TestSchedule1" is created
     And The trigger is set to start today at 00:00.
     Then I create a new trigger from the existing creator with previously defined date properties

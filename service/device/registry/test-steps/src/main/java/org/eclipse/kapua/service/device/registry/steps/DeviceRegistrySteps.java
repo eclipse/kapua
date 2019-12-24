@@ -780,14 +780,17 @@ public class DeviceRegistrySteps extends TestBase {
         }
     }
 
-    @When("^I delete the device with the client id \"(.+)\"$")
+    @When("^I delete the device with the clientId \"(.+)\"$")
     public void deleteDeviceWithClientId(String clientId)
             throws Exception {
 
-        primeException();
+        Device device = (Device) stepData.get("Device");
+
         try {
-            Device tmpDev = deviceRegistryService.findByClientId(getCurrentScopeId(), clientId);
-            deviceRegistryService.delete(getCurrentScopeId(), tmpDev.getId());
+            primeException();
+            if (device.getClientId().equals(clientId)) {
+                deviceRegistryService.delete(getCurrentScopeId(), device.getId());
+            }
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -2553,7 +2556,7 @@ public class DeviceRegistrySteps extends TestBase {
       }
     }
 
-    @Then("^I find device with client id \"([^\"]*)\"$")
+    @Then("^I find device with clientId \"([^\"]*)\"$")
     public void iFindDeviceWithClientId(String deviceName) {
         Device device = (Device) stepData.get("Device");
 

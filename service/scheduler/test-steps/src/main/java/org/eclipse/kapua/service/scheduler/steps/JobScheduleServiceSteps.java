@@ -162,7 +162,7 @@ public class JobScheduleServiceSteps extends TestBase {
         }
     }
 
-    @And("^I find trigger properties with name \"([^\"]*)\"$")
+    @And("^I find scheduler properties with name \"([^\"]*)\"$")
     public void iFindTriggerPropertiesWithName(String triggerDefinitionName) throws Exception {
         primeException();
 

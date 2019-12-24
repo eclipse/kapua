@@ -46,7 +46,7 @@ Feature: Tenant service with Service Events
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Add permissions to the last created user

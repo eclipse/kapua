@@ -48,7 +48,7 @@ Feature: User and Credential expiration abd lockout features
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
@@ -83,7 +83,7 @@ Feature: User and Credential expiration abd lockout features
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | false   |
     And I logout
@@ -120,7 +120,7 @@ Feature: User and Credential expiration abd lockout features
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled | expirationDate |
       | kapua-a | ToManySecrets123# | true    | yesterday      |
     And I logout
@@ -155,7 +155,7 @@ Feature: User and Credential expiration abd lockout features
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled | expirationDate |
       | kapua-a | ToManySecrets123# | true    | today          |
     And I logout
@@ -190,7 +190,7 @@ Feature: User and Credential expiration abd lockout features
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled | expirationDate |
       | kapua-a | ToManySecrets123# | true    | tomorrow       |
     And I logout
@@ -221,7 +221,7 @@ Feature: User and Credential expiration abd lockout features
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType | expirationDate |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL | yesterday      |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
@@ -253,7 +253,7 @@ Feature: User and Credential expiration abd lockout features
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType | expirationDate |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL | today          |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
@@ -285,7 +285,7 @@ Feature: User and Credential expiration abd lockout features
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType | expirationDate |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL | tomorrow       |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
@@ -319,7 +319,7 @@ Feature: User and Credential expiration abd lockout features
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType | expirationDate |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL | tomorrow       |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
@@ -355,7 +355,7 @@ Feature: User and Credential expiration abd lockout features
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType | expirationDate |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL | tomorrow       |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
@@ -398,7 +398,7 @@ Feature: User and Credential expiration abd lockout features
       | integer | lockoutPolicy.maxFailures  | 1     |
       | integer | lockoutPolicy.resetAfter   | 300   |
       | integer | lockoutPolicy.lockDuration | 1     |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
@@ -441,7 +441,7 @@ Feature: User and Credential expiration abd lockout features
       | integer | lockoutPolicy.maxFailures  | 1     |
       | integer | lockoutPolicy.resetAfter   | 300   |
       | integer | lockoutPolicy.lockDuration | 5   |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
@@ -484,7 +484,7 @@ Feature: User and Credential expiration abd lockout features
       | integer | lockoutPolicy.maxFailures  | 2     |
       | integer | lockoutPolicy.resetAfter   | 1     |
       | integer | lockoutPolicy.lockDuration | 300   |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout

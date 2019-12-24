@@ -495,7 +495,7 @@ public class UserServiceSteps extends TestBase {
         assertNotNull("Metadata should be retrieved.", metadata);
     }
 
-    @Given("^Credentials$")
+    @Given("^I add credentials$")
     public void givenCredentials(List<CucCredentials> credentialsList) throws Exception {
         CucCredentials cucCredentials = credentialsList.get(0);
         createCredentials(cucCredentials);
@@ -1008,6 +1008,24 @@ public class UserServiceSteps extends TestBase {
             stepData.remove("User");
             User newUser = userService.update(user);
             stepData.put("User", newUser);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @And("^I create user with name \"([^\"]*)\" in account \"([^\"]*)\"$")
+    public void iCreateUserWithNameInSubaccount(String name, String accountName) throws Exception {
+        Account account = (Account) stepData.get("LastAccount");
+        assertEquals(accountName, account.getName());
+
+        UserCreator userCreator = userFactory.newCreator(account.getId());
+        userCreator.setName(name);
+        primeException();
+        try {
+            stepData.remove("UserCreator");
+            User childAccountUser = userService.create(userCreator);
+            stepData.put("UserCreator", userCreator);
+            stepData.put("ChildAccountUser", childAccountUser);
         } catch (KapuaException ex) {
             verifyException(ex);
         }

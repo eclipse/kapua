@@ -84,7 +84,7 @@ Feature: REST API tests for User
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
     And Move step data "LastUser" to "UserA"
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -107,7 +107,7 @@ Feature: REST API tests for User
     And User B
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-b | Kapua User B | kapua_b@kapua.com | +386 31 323 555 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-b | ToManySecrets123# | true    |
     And Add permissions to the last created user
