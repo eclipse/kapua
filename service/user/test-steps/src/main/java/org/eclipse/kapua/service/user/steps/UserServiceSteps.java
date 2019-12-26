@@ -227,7 +227,7 @@ public class UserServiceSteps extends TestBase {
 
     @When("^I change name to \"(.*)\"$")
     public void changeUserName(String userName) throws Exception {
-        User user = (User)stepData.get("User");
+        User user = (User) stepData.get("User");
         user.setName(userName);
         user = userService.update(user);
         stepData.put("User", user);
@@ -399,7 +399,7 @@ public class UserServiceSteps extends TestBase {
 
     @Then("^I count (\\d+) (?:user|users) as query result list$")
     public void countUserQuery(long cnt) {
-        Set<ComparableUser> userLst = (Set<ComparableUser>)stepData.get("UserList");
+        Set<ComparableUser> userLst = (Set<ComparableUser>) stepData.get("UserList");
         assertEquals(cnt, userLst.size());
     }
 
@@ -407,7 +407,7 @@ public class UserServiceSteps extends TestBase {
     public void createSameUser() throws Exception {
         try {
             primeException();
-            userService.create((UserCreator)stepData.get("UserCreator"));
+            userService.create((UserCreator) stepData.get("UserCreator"));
         } catch (KapuaException ke) {
             verifyException(ke);
         }
@@ -762,6 +762,7 @@ public class UserServiceSteps extends TestBase {
     // *******************
     // * Private Helpers *
     // *******************
+
     /**
      * Extract list of users form step parameter table and create those users in
      * kapua.
@@ -803,10 +804,8 @@ public class UserServiceSteps extends TestBase {
      * Create User object with user data filed with quasi random data for user name,
      * email, display name. Scope id and user id is set to test wide id.
      *
-     * @param userId
-     *            unique user id
-     * @param scopeId
-     *            user scope id
+     * @param userId  unique user id
+     * @param scopeId user scope id
      * @return User instance
      */
     private User createUserInstance(int userId, int scopeId) {

@@ -666,7 +666,7 @@ Feature: User role service integration tests
     And I add access role to user
     And I logout
     Then I login as user with name "user1" and password "User@10031995"
-    And I found trigger properties with name "Interval Job"
+    And I find trigger properties with name "Interval Job"
     And A regular trigger creator with the name "TestSchedule" and following properties
       | name     | type              | value |
       | interval | java.lang.Integer | 1     |
