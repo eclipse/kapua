@@ -59,7 +59,7 @@ public class TextFieldValidator implements Validator {
     public enum FieldType {
 
         SIMPLE_NAME("simple_name", "^[a-zA-Z0-9\\-]{3,}$"),
-        DEVICE_CLIENT_ID("device_client_id", "^[a-zA-Z0-9\\:\\_\\-]{1,}$"),
+        DEVICE_CLIENT_ID("device_client_id", "^((?!#|\\+|\\*|&|,|\\?|>|\\/|\\:\\:).)*$"),
         SNAPSHOT_FILE("snapshot_file", "^([a-zA-Z0-9\\:\\_\\-\\\\]){1,255}(\\.xml)"),
         NAME("name", "^[a-zA-Z0-9\\_\\-]{3,}$"),
         NAME_SPACE("name_space", "^[a-zA-Z0-9\\ \\_\\-]{3,}$"),
