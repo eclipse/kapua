@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection.internal;
 
+import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
@@ -24,6 +25,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.DeviceDomains;
+import org.eclipse.kapua.service.device.registry.common.DeviceValidationRegex;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionAttributes;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
@@ -54,7 +56,6 @@ public class DeviceConnectionServiceImpl extends
     }
 
     public DeviceConnectionServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
-        //        super(DeviceConnectionService.class.getName(), DEVICE_CONNECTION_DOMAIN, deviceEntityManagerFactory, DeviceConnectionService.class, DeviceConnectionFactory.class);
         super(DeviceConnectionService.class.getName(), DeviceDomains.DEVICE_CONNECTION_DOMAIN, deviceEntityManagerFactory);
     }
 
@@ -65,8 +66,10 @@ public class DeviceConnectionServiceImpl extends
         // Argument Validation
         ArgumentValidator.notNull(deviceConnectionCreator, "deviceConnectionCreator");
         ArgumentValidator.notNull(deviceConnectionCreator.getScopeId(), "deviceConnectionCreator.scopeId");
-        ArgumentValidator.notEmptyOrNull(deviceConnectionCreator.getClientId(), "deviceConnectionCreator.clientId");
         ArgumentValidator.notNull(deviceConnectionCreator.getUserId(), "deviceConnectionCreator.userId");
+        ArgumentValidator.notEmptyOrNull(deviceConnectionCreator.getClientId(), "deviceConnectionCreator.clientId");
+        ArgumentValidator.lengthRange(deviceConnectionCreator.getClientId(), 1, 255, "deviceCreator.clientId");
+        ArgumentValidator.match(deviceConnectionCreator.getClientId(), DeviceValidationRegex.CLIENT_ID, "deviceCreator.clientId");
 
         //
         // Check Access
@@ -75,6 +78,17 @@ public class DeviceConnectionServiceImpl extends
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, null));
 
+        //
+        // Check duplicate clientId
+        DeviceConnectionQuery query = new DeviceConnectionQueryImpl(deviceConnectionCreator.getScopeId());
+        query.setPredicate(query.attributePredicate(DeviceConnectionAttributes.CLIENT_ID, deviceConnectionCreator.getClientId()));
+
+        if (count(query) > 0) {
+            throw new KapuaDuplicateNameException(deviceConnectionCreator.getClientId());
+        }
+
+        //
+        // Do create
         return entityManagerSession.onTransactedInsert(em -> DeviceConnectionDAO.create(em, deviceConnectionCreator));
     }
 
