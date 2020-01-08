@@ -18,7 +18,8 @@ Feature: Sso Service
     And System property "KAPUA_URL" with value "localhost:8080"
 
   Scenario: Start Keycloak
-    Given Create network
+    Given Pull image "jboss/keycloak:latest"
+    And Create network
     And Start Keycloak container with name "keycloak"
     And I wait 10 seconds
     Then Stop container with name "keycloak"

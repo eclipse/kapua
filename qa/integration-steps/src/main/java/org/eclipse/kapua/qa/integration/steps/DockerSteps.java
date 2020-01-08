@@ -37,8 +37,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -244,12 +247,13 @@ public class DockerSteps {
     }
 
     @And("^Start Keycloak container with name \"(.*)\"$")
-    public void startKeycloakContainer(String name) throws DockerException, InterruptedException {
+    public void startKeycloakContainer(String name) throws DockerException, InterruptedException, IOException, URISyntaxException {
         logger.info("Starting Keycloak container...");
         ContainerConfig keycloakConfig = getKeycloakContainerConfig();
         ContainerCreation keycloakContainerCreation = docker.createContainer(keycloakConfig, name);
         String containerId = keycloakContainerCreation.id();
 
+        docker.copyToContainer(Paths.get(getClass().getResource("/keycloak").toURI()), "keycloak", "/imports");
         docker.startContainer(containerId);
         docker.connectToNetwork(containerId, networkId);
         containerMap.put(name, containerId);
@@ -431,24 +435,24 @@ public class DockerSteps {
      * @return Container configuration for Keycloak instance.
      */
     private ContainerConfig getKeycloakContainerConfig() {
-        final int keycloakPort = 9090;
+        final int keycloakPort = 8080;
+        final int hostPort = 9090;
         final Map<String, List<PortBinding>> portBindings = new HashMap<>();
-        addHostPort("0.0.0.0", portBindings, keycloakPort, keycloakPort);
+        addHostPort("0.0.0.0", portBindings, keycloakPort, hostPort);
         final HostConfig hostConfig = HostConfig.builder().portBindings(portBindings).build();
 
         return ContainerConfig.builder()
                 .hostConfig(hostConfig)
                 .exposedPorts(String.valueOf(keycloakPort))
+                .addVolume("imports")
                 .env(
                         "KEYCLOAK_USER=admin",
-                        "KEYCLOAK_PASSWORD=admin"
+                        "KEYCLOAK_PASSWORD=admin",
+                        "KEYCLOAK_IMPORT=/imports/kapua-realm.json"
                 )
                 .image("jboss/keycloak")
                 .cmd(
-                        "-Dkeycloak.migration.action=import",
-                        "-Dkeycloak.migration.provider=singleFile",
-                        "-Dkeycloak.migration.file=<FILE TO IMPORT>",
-                        "-Dkeycloak.migration.strategy=OVERWRITE_EXISTING"
+                        "-b 0.0.0.0 -Dkeycloak.import=/imports/kapua-realm.json"
                 )
                 .build();
     }
