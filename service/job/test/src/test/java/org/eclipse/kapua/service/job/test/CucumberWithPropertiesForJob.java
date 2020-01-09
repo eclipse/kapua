@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -78,6 +78,7 @@ public class CucumberWithPropertiesForJob extends CucumberWithProperties {
                 } catch (KapuaException e) {
                     // skip
                 }
+
                 bind(AuthorizationService.class).toInstance(mockedAuthorization);
                 // Inject mocked Permission Factory
                 bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));

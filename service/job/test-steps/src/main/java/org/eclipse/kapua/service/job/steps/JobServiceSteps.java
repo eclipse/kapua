@@ -1931,6 +1931,133 @@ public class JobServiceSteps extends TestBase {
             }
         }
     }
+
+    @Given("^I prepare a job with name \"([^\"]*)\" and description \"([^\"]*)\"$")
+    public void iPrepareAJobWithNameAndDescription(String name, String description) {
+        JobCreator jobCreator = jobFactory.newCreator(SYS_SCOPE_ID);
+        jobCreator.setName(name);
+        jobCreator.setDescription(description);
+
+        stepData.put("JobCreator", jobCreator);
+    }
+
+    @When("^I try to create job with permitted symbols \"([^\"]*)\" in name$")
+    public void iTryToCreateJobWithPermittedSymbolsInName(String validCharacters) throws Throwable {
+        JobCreator jobCreator = jobFactory.newCreator(getCurrentScopeId());
+        for (int i = 0; i < validCharacters.length(); i++){
+            String jobName = "jobName" + validCharacters.charAt(i);
+            jobCreator.setName(jobName);
+            try {
+                primeException();
+                Job job = jobService.create(jobCreator);
+                stepData.put("Job", job);
+                stepData.put("CurrentJobId", job.getId());
+            } catch (KapuaException ex){
+                verifyException(ex);
+            }
+        }
+    }
+
+    @When("^I try to create job with invalid symbols \"([^\"]*)\" in name$")
+    public void iTryToCreateJobWithInvalidSymbolsInName(String invalidCharacters) throws Throwable {
+       JobCreator jobCreator = jobFactory.newCreator(getCurrentScopeId());
+        for (int i = 0; i < invalidCharacters.length(); i++) {
+            String jobName = "jobName" + invalidCharacters.charAt(i);
+            jobCreator.setName(jobName);
+            try {
+                primeException();
+                Job job = jobService.create(jobCreator);
+                stepData.put("Job", job);
+                stepData.put("CurrentJobId", job.getId());
+            } catch (KapuaException ex) {
+                verifyException(ex);
+            }
+        }
+    }
+
+    @Then("^I find a job with description \"([^\"]*)\"$")
+    public void iFindAJobWithDescription(String jobDescription) throws Throwable {
+        Job job = (Job) stepData.get("Job");
+        assertEquals(job.getDescription(), jobDescription);
+    }
+
+    @Then("^I try to update job name with permitted symbols \"([^\"]*)\" in name$")
+    public void iTryToUpdateJobNameWithPermittedSymbolsInName(String validCharacters) throws Throwable {
+        JobCreator jobCreator = jobFactory.newCreator(getCurrentScopeId());
+        for (int i = 0; i < validCharacters.length(); i++){
+            String jobName = "jobName" + validCharacters.charAt(i);
+            jobCreator.setName("jobName" + i);
+
+            try {
+                primeException();
+                stepData.remove("Job");
+                Job job = jobService.create(jobCreator);
+                job.setName(jobName);
+                jobService.update(job);
+                stepData.put("CurrentJobId", job.getId());
+                stepData.put("Job", job);
+            } catch (KapuaException ex){
+                verifyException(ex);
+            }
+        }
+    }
+
+    @When("^I try to update job name with invalid symbols \"([^\"]*)\" in name$")
+    public void iTryToUpdateJobNameWithInvalidSymbolsInName(String invalidCharacters) throws Throwable {
+        JobCreator jobCreator = jobFactory.newCreator(getCurrentScopeId());
+        for (int i = 0; i < invalidCharacters.length(); i++){
+            String jobName = "jobName" + invalidCharacters.charAt(i);
+            jobCreator.setName("jobName" + i);
+
+            try {
+                primeException();
+                stepData.remove("Job");
+                Job job = jobService.create(jobCreator);
+                job.setName(jobName);
+                jobService.update(job);
+                stepData.put("CurrentJobId", job.getId());
+                stepData.put("Job", job);
+            } catch (KapuaException ex){
+                verifyException(ex);
+            }
+        }
+    }
+
+    @Then("^I change name of job from \"([^\"]*)\" to \"([^\"]*)\"$")
+    public void iChangeNameOfJobFromTo(String oldName, String newName) throws Throwable {
+       try {
+           JobQuery query = jobFactory.newQuery(getCurrentScopeId());
+           query.setPredicate(query.attributePredicate(JobAttributes.NAME, oldName, Operator.EQUAL));
+           JobListResult queryResult = jobService.query(query);
+           Job job = queryResult.getFirstItem();
+           job.setName(newName);
+           jobService.update(job);
+           stepData.put("Job", job);
+       } catch (Exception e){
+           verifyException(e);
+       }
+    }
+
+    @And("^There is no job with name \"([^\"]*)\" in database$")
+    public void thereIsNoJobWithNameInDatabase(String jobName) throws Throwable {
+        Job job = (Job) stepData.get("Job");
+        assertNotEquals(job.getName(), jobName);
+    }
+
+    @When("^I change the job description from \"([^\"]*)\" to \"([^\"]*)\"$")
+    public void iChangeTheJobDescriptionFromTo(String oldDescription, String newDescription) throws Throwable {
+        try {
+            JobQuery query = jobFactory.newQuery(getCurrentScopeId());
+            query.setPredicate(query.attributePredicate(JobAttributes.DESCRIPTION, oldDescription, Operator.EQUAL));
+            JobListResult queryResult = jobService.query(query);
+            Job job = queryResult.getFirstItem();
+            job.setDescription(newDescription);
+            jobService.update(job);
+            stepData.put("Job", job);
+        } catch (Exception e){
+            verifyException(e);
+        }
+    }
 }
 
 
