@@ -1,0 +1,73 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Domains
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    domainId:
+      name: domainId
+      in: path
+      description: The ID of the Domain on which to perform the operation
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+  schemas:
+    domain:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaEntity'
+        - type: object
+          properties:
+            groupable:
+              type: boolean
+            actions:
+              type: array
+              items:
+                type: string
+            name:
+              type: string
+          example:
+            type: domain
+            id: AQ
+            createdOn: 2019-09-10T15:08:47.851Z
+            createdBy: AQ
+            name: account
+            actions:
+              - delete
+              - write
+              - read
+            groupable: false
+    domainListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/domain'
+          example:
+            type: domainListResult
+            limitExceeded: false
+            size: 1
+            items:
+              - type: domain
+                id: AQ
+                createdOn: 2019-09-10T15:08:47.851Z
+                createdBy: AQ
+                name: account
+                actions:
+                  - delete
+                  - write
+                  - read
+                groupable: false

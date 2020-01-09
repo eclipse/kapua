@@ -11,10 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
@@ -28,7 +24,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Api(value = "Streams", authorizations = { @Authorization(value = "kapuaAccessToken") })
 @Path("{scopeId}/streams")
 public class Streams extends AbstractKapuaResource {
 
@@ -85,11 +80,10 @@ public class Streams extends AbstractKapuaResource {
     @POST
     @Path("messages")
     @Consumes({ MediaType.APPLICATION_XML })
-    @ApiOperation(nickname = "streamPublish", value = "Publishes a fire-and-forget message", notes = "Publishes a fire-and-forget message to a topic composed of [account-name] / [client-id] / [semtantic-parts]")
     public Response publish(
-            @ApiParam(value = "The ScopeId of the device", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The timeout of the request execution") @QueryParam("timeout") Long timeout,
-            @ApiParam(value = "The input request", required = true) KapuaDataMessage requestMessage) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,
+            @QueryParam("timeout") Long timeout,
+            KapuaDataMessage requestMessage) throws Exception {
         requestMessage.setScopeId(scopeId);
         streamService.publish(requestMessage, timeout);
         return Response.ok().build();

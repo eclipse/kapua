@@ -1,0 +1,82 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Data Client
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    clientInfoId:
+      name: clientInfoId
+      in: path
+      description: The ID of the ClientInfo on which to perform the operation
+      schema:
+        type: string
+      required: true
+  schemas:
+    clientInfo:
+      type: object
+      properties:
+        id:
+          type: string
+        scopeId:
+          allOf:
+            - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            - readOnly: true
+        clientId:
+          type: string
+        firstMessageId:
+          type: string
+          format: uuid
+        firstMessageOn:
+          type: string
+          format: 'date-time'
+        lastMessageId:
+          type: string
+          format: uuid
+        lastMessageOn:
+          type: string
+          format: 'date-time'
+      example:
+        type: clientInfo
+        id: JOyqK0XfNrKYD5qcAe6MJyl3TMd6AjwzKnqQofb8USg=
+        scopeId: AQ
+        clientId: Client-Id-1
+        firstMessageId: a2320c45-6791-4525-a552-adb163928303
+        firstMessageOn: 2019-09-12T08:14:13.228Z
+        lastMessageId: bb07d7fc-dc62-492f-b8da-7e28df69e112
+        lastMessageOn: 2019-09-12T09:25:05.096Z
+    clientInfoListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/clientInfo'
+            totalCount:
+              type: integer
+          example:
+              type: clientInfoListResult
+              limitExceeded: false
+              size: 1
+              items:
+                type: clientInfo
+                id: JOyqK0XfNrKYD5qcAe6MJyl3TMd6AjwzKnqQofb8USg=
+                scopeId: AQ
+                clientId: Client-Id-1
+                firstMessageId: a2320c45-6791-4525-a552-adb163928303
+                firstMessageOn: 2019-09-12T08:14:13.228Z
+                lastMessageId: bb07d7fc-dc62-492f-b8da-7e28df69e112
+                lastMessageOn: 2019-09-12T09:25:05.096Z
+              totalCount: 1

@@ -1,0 +1,108 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Authentication
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  schemas:
+    accessToken:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaUpdatableEntity'
+        - type: object
+          properties:
+            userId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            tokenId:
+              allOf:
+                - $ref: '#/components/schemas/jwt'
+            expiresOn:
+              type: string
+              format: 'date-time'
+            invalidatedOn:
+              type: string
+              format: 'date-time'
+            refreshToken:
+              type: string
+              format: uuid
+            refreshExpiresOn:
+              type: string
+              format: 'date-time'
+    loginInfo:
+      type: object
+      properties:
+        accessPermission:
+          type: array
+          items:
+            $ref: '../accessInfo/accessInfo.yaml#/components/schemas/accessPermission'
+        accessToken:
+          $ref: '#/components/schemas/accessToken'
+        rolePermissions:
+          type: array
+          items:
+            $ref: '../role/role.yaml#/components/schemas/rolePermission'
+      example:
+        type: loginInfo
+        accessPermission:
+          - id: Jfzafs5eUuw
+            scopeId: AQ
+            createdOn: '2019-11-15T14:43:11.451Z'
+            createdBy: AQ
+            accessInfoId: IKfvOdNER6M
+            permission:
+              domain: datastore
+              action: read
+              targetScopeId: AQ
+              forwardable: false
+        accessToken:
+          id: RSP1npB7wZ4
+          scopeId: AQ
+          createdOn: '2019-11-15T14:43:27.547Z'
+          createdBy: UlM9TGpJJ-g
+          modifiedOn: '2019-11-15T14:43:27.547Z'
+          modifiedBy: UlM9TGpJJ-g
+          optlock: 1
+          tokenId: eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL3d3dy5lY2xpcHNlLm9yZy9rYXB1YSIsImlhdCI6MTU3MzgyOTAwNywiZXhwIjoxNTczODMwODA3LCJzdWIiOiJVbE05VEdwSkotZyIsInNJZCI6IkFRIn0.LgVFKAl1Ftd3g81MhtUglee5JjCqd-gGjilj1UAkDbKs4Xwgo1j9V-CBVPF4aop3r0x80U9YaVthYoPEikG2v4QaRHl7UGeikWOHk4g0lpeFCZvS_Kcag6VgbfYKKXd2C2ivtQE3enjZIUEz2UTEXz3KrcizuvgO4SP_PEz5hGkjqfbV2l1IM--_E8LQRBQoD7ixpGajaUlcrNlLsJcNgy8hRgyNp_Bqbyosd4oBttC4oDIyVA9Wmgq8aXUwFl7SZ42Kd4RIUUlMg-aAIAzWXVMQ2kCY1jYy7eNUmLszWdmPjMZsKbFcB5asXXYiHvZ_zy0x9AHFRnFte721ESjG3NLlvx8UKOWLFBkmlbvgPLd5fhlzTzim57ddpTjJpRsTM123VSwKL6Ul3ZZKiADrBVi4By-C4BhIkS9hVfa-HzfWlQKUOJvpa7PuUuRT1XzxxSTwIjgE4XuNdxHRqJpJPg0XtAuN67KXhmXjeQUaDi05GvpV3VyhtO6_GjjoLRd934N2hBdgS6FLIYkxBVMNSyqzjg9QO_A6Yzul5JK8T6H-f7ZhlYsx3trkWw0I9jetQguPveChFY0xbeTHSW0PwyNpyXKBzIUQhwCH2zoI9LxUy7TV7yn5wN3IW5MocnOXtKG49BTIbslT4eccoTWhtFQafGu8OF0TN-QyMf0eGTQ
+          userId: UlM9TGpJJ-g
+          expiresOn: '2019-11-15T15:13:27.506Z'
+          refreshToken: e8a53e18-0c6b-4f3c-9929-409069a9c66e
+          refreshExpiresOn: '2019-11-15T19:43:27.506Z'
+        rolePermission:
+          - id: a716DxmV9TI
+            scopeId: AQ
+            createdOn: '2019-11-15T14:42:28.859Z'
+            createdBy: AQ
+            roleId: OgkB8tR0kF4
+            permission:
+              domain: device
+              action: read
+              targetScopeId: AQ
+              forwardable: false
+          - id: O0X0yIQo6NU
+            scopeId: AQ
+            createdOn: '2019-11-15T14:42:04.153Z'
+            createdBy: AQ
+            roleId: EUkieLf-Y8M
+            permission:
+              domain: user
+              targetScopeId: AQ
+              forwardable: false
+    username:
+      type: string
+      pattern: '^[a-zA-Z0-9\_\-]{3,}$'
+    password:
+      type: string
+      pattern: '^.*(?=.{12,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!\"\#$%&''()*+,\-./:;<=>?@\[\]\\^_`{|}~]).*$'
+    jwt:
+      type: string
+      pattern: '^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$'

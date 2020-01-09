@@ -1,0 +1,42 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Domains
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/domains:
+    get:
+      tags:
+        - Domain
+      summary: Get all the Domains
+      operationId: domainList
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - name: name
+          in: query
+          description: The domain name to filter results
+          schema:
+            type: string
+        - $ref: '../openapi.yaml#/components/parameters/limit'
+        - $ref: '../openapi.yaml#/components/parameters/offset'
+      responses:
+        200:
+          description: The list of the Domains available in the Scope
+          content:
+            application/json:
+              schema:
+                $ref: './domain.yaml#/components/schemas/domainListResult'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

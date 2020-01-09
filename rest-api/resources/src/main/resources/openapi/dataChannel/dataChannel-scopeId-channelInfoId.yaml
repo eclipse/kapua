@@ -1,0 +1,36 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Data Channel
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/data/channels/{channelInfoId}:
+    get:
+      tags:
+        - Data Channel
+      summary: Get a single ChannelInfo
+      operationId: channelInfoGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './dataChannel.yaml#/components/parameters/channelInfoId'
+      responses:
+        200:
+          description: The desired ChannelInfo
+          content:
+            application/json:
+              schema:
+                $ref: './dataChannel.yaml#/components/schemas/channelInfo'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

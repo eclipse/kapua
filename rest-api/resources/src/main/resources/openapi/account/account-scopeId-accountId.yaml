@@ -1,0 +1,108 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Accounts
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/accounts/{accountId}:
+    get:
+      tags:
+        - Account
+      summary: Get a single Account
+      operationId: accountGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './account.yaml#/components/parameters/accountId'
+      responses:
+        200:
+          description: The details of the desired Account
+          content:
+            application/json:
+              schema:
+                $ref: './account.yaml#/components/schemas/account'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+      description: Get the details of a given Account, according to the `accountId` path parameter.
+    put:
+      tags:
+        - Account
+      summary: Update a single Account
+      operationId: accountUpdate
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './account.yaml#/components/parameters/accountId'
+      requestBody:
+        description: An object containing the new properties for the Account to update
+        content:
+          application/json:
+            schema:
+              $ref: './account.yaml#/components/schemas/account'
+            example:
+              type: account
+              optlock: 2
+              name: acme-inc
+              expirationDate: '2019-31-12T00:00:00.000Z'
+              organization:
+                addressLine1: 123 Looney Tunes Drive
+                addressLine2: Block 1
+                addressLine3: Apartment 25
+                city: Somewhere City
+                country: United States
+                email: wile.coyote@acme.inc
+                name: ACME Inc.
+                personName: Wile Ethelbert Coyote
+                phoneNumber: +1 (555) 123 4567
+                stateProvinceCounty: Green County GC
+                zipPostCode: '00100'
+              parentAccountPath: /1/3315290947379772881
+        required: true
+      responses:
+        200:
+          description: The details of the updated Account
+          content:
+            application/json:
+              schema:
+                $ref: './account.yaml#/components/schemas/account'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+      description: Update the details of a given Account, according to the `accountId` path parameter. Please note that some fields may be readonly for integrity purposes.
+    delete:
+      tags:
+        - Account
+      summary: Delete a single Account
+      operationId: accountDelete
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './account.yaml#/components/parameters/accountId'
+      responses:
+        200:
+          description: The Account has been deleted
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+      description: Delete the given account, according to the `accountId` path parameter.

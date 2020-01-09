@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.model;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.entity.EntityPropertiesReadException;
 import org.eclipse.kapua.entity.EntityPropertiesWriteException;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -55,7 +54,6 @@ public interface KapuaUpdatableEntity extends KapuaEntity {
      */
     @XmlElement(name = "modifiedBy")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getModifiedBy();
 
     /**

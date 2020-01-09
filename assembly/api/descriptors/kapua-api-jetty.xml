@@ -64,4 +64,10 @@
             </excludes>
         </fileSet>
     </fileSets>
+    <files>
+        <file>
+            <source>${project.build.directory}/tmp/openapi.yaml</source>
+            <outputDirectory>var/opt/jetty/webapps/root/doc</outputDirectory>
+        </file>
+    </files>
 </assembly>

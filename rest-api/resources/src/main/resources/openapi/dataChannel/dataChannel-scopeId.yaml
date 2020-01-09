@@ -1,0 +1,47 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Data Channel
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/data/channels:
+    get:
+      tags:
+        - Data Channel
+      summary: Query the Data Channels
+      operationId: dataChannelQuery
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - name: clientId
+          in: query
+          schema:
+            type: string
+          description: The ClientID to filter results
+        - name: name
+          in: query
+          schema:
+            type: string
+          description: The channel name to filter results. It allows '#' wildcard in last channel level
+        - $ref: '../openapi.yaml#/components/parameters/limit'
+        - $ref: '../openapi.yaml#/components/parameters/offset'
+      responses:
+        200:
+          description: The result of the query
+          content:
+            application/json:
+              schema:
+                $ref: './dataChannel.yaml#/components/schemas/channelInfoListResult'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

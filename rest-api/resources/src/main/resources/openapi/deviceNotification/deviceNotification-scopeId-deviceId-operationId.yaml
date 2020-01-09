@@ -1,0 +1,44 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Device Management - Notifications
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/devices/{deviceId}/operations/{operationId}/notifications:
+    get:
+      tags:
+        - Device Management - Notification
+      summary: Get all the Device Registry Notifications
+      operationId: deviceRegistryNotificationList
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: '../deviceOperation/deviceOperation.yaml#/components/parameters/operationId'
+        - name: resource
+          in: query
+          description: The resource of the DeviceEvent in which to search results
+          schema:
+            type: string
+        - $ref: '../openapi.yaml#/components/parameters/limit'
+        - $ref: '../openapi.yaml#/components/parameters/offset'
+      responses:
+        200:
+          description: The list of the Device Management Registty Notifications available in the Scope
+          content:
+            application/json:
+              schema:
+                $ref: './deviceNotification.yaml#/components/schemas/deviceNotificationListResult'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

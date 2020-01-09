@@ -1,0 +1,69 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Device Management - Configuration
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/devices/{deviceId}/configurations:
+    get:
+      tags:
+        - Device Management - Configuration
+      summary: Read multiple Configurations
+      operationId: deviceConfigurationsRead
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: '../device/device.yaml#/components/parameters/timeout'
+      responses:
+        200:
+          description: The list of the Configurations on a single Device
+          content:
+            application/json:
+              schema:
+                $ref: './deviceConfiguration.yaml#/components/schemas/componentConfigurations'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    put:
+      tags:
+        - Device Management - Configuration
+      summary: Update multiple Configurations
+      operationId: deviceConfigurationsWrite
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: '../device/device.yaml#/components/parameters/timeout'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './deviceConfiguration.yaml#/components/schemas/componentConfigurationsInput'
+        required: true
+      responses:
+        200:
+          description: The updated list of Configurations on a single Device
+          content:
+            application/json:
+              schema:
+                $ref: './deviceConfiguration.yaml#/components/schemas/componentConfiguration'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

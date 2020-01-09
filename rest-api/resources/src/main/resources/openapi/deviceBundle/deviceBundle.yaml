@@ -1,0 +1,59 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Device Management - Bundle
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    bundleId:
+      name: bundleId
+      in: path
+      description: The ID of the Bundle on which to perform the operation
+      schema:
+        type: string
+      required: true
+  schemas:
+    deviceBundle:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        state:
+          type: string
+        version:
+          type: string
+      example:
+        id: 0
+        name: org.eclipse.osgi
+        state: ACTIVE
+        version: 3.12.50.v20170928-1321
+    deviceBundles:
+      type: object
+      properties:
+        bundle:
+          type: array
+          items:
+            $ref: '#/components/schemas/deviceBundle'
+      example:
+        type: deviceBundles
+        bundle:
+          - id: 0
+            name: org.eclipse.osgi
+            state: ACTIVE
+            version: 3.12.50.v20170928-1321
+          - id: 1
+            name: org.eclipse.equinox.cm
+            state: ACTIVE
+            version: 1.2.0.v20170105-1446

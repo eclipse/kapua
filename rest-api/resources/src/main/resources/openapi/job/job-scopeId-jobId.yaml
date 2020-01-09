@@ -1,0 +1,38 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Jobs
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/jobs/{jobId}:
+    get:
+      tags:
+        - Job
+      summary: Get a single Job
+      operationId: jobGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './job.yaml#/components/parameters/jobId'
+      responses:
+        200:
+          description: The details of the desired Job
+          content:
+            application/json:
+              schema:
+                $ref: './job.yaml#/components/schemas/job'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

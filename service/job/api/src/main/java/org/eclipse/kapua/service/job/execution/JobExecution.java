@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.execution;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
@@ -84,7 +83,6 @@ public interface JobExecution extends KapuaUpdatableEntity {
      */
     @XmlElement(name = "targetIds")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     <I extends KapuaId> Set<I> getTargetIds();
 
     /**

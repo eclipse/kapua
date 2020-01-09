@@ -1,0 +1,104 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Data Metric
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    metricInfoId:
+      name: metricInfoId
+      in: path
+      description: The ID of the MetricInfo on which to perform the operation
+      schema:
+        type: string
+      required: true
+  schemas:
+    metricInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: base64
+        scopeId:
+          allOf:
+            - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            - readOnly: true
+        clientId:
+          type: string
+        channel:
+          type: string
+        name:
+          type: string
+        metricType:
+          type: string
+        firstMessageId:
+          type: string
+          format: uuid
+        firstMessageOn:
+          type: string
+          format: 'date-time'
+        lastMessageId:
+          type: string
+          format: uuid
+        lastMessageOn:
+          type: string
+          format: 'date-time'
+      example:
+        type: metricInfo
+        id: oLVtE7wK67wO5Lxx4nZGsTEwbVjeo0xcFcnTvmhCxLU=
+        scopeId: AQ
+        clientId: Client-Id-1
+        channel: ALERT
+        name: alert_category
+        metricType: string
+        firstMessageId: c623d131-6f47-49af-9ba0-1474a90dd9ed
+        firstMessageOn: '2019-09-12T08:04:13.918Z'
+        lastMessageId: 653b4aee-e0d5-4af6-b120-ffc7c26057b9
+        lastMessageOn: '2019-09-12T09:24:48.352Z'
+    metricInfoListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/metricInfo'
+          example:
+            type: metricInfoListResult
+            limitExceeded: false
+            size: 2
+            items:
+              - type: metricInfo
+                id: oLVtE7wK67wO5Lxx4nZGsTEwbVjeo0xcFcnTvmhCxLU=
+                scopeId: AQ
+                clientId: Client-Id-1
+                channel: ALERT
+                name: alert_category
+                metricType: string
+                firstMessageId: c623d131-6f47-49af-9ba0-1474a90dd9ed
+                firstMessageOn: '2019-09-12T08:04:13.918Z'
+                lastMessageId: 653b4aee-e0d5-4af6-b120-ffc7c26057b9
+                lastMessageOn: '2019-09-12T09:24:48.352Z'
+              - type: metricInfo
+                id: q2vErAArLQ2rs/4m3eGZf5p6gqrCT+qZKxbeNPQrc+Q=
+                scopeId: AQ
+                clientId: Client-Id-1
+                channel: ALERT
+                name: alert_code
+                metricType: string
+                firstMessageId: c623d131-6f47-49af-9ba0-1474a90dd9ed
+                firstMessageOn: '2019-09-12T08:04:13.918Z'
+                lastMessageId: 653b4aee-e0d5-4af6-b120-ffc7c26057b9
+                lastMessageOn: '2019-09-12T09:24:48.352Z'
+            totalCount: 35

@@ -12,10 +12,6 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Authorization;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
@@ -44,7 +40,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Api(value = "Roles", authorizations = {@Authorization(value = "kapuaAccessToken")})
 @Path("{scopeId}/roles")
 public class Roles extends AbstractKapuaResource {
 
@@ -63,14 +58,13 @@ public class Roles extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "roleSimpleQuery", value = "Gets the Role list in the scope", notes = "Returns the list of all the roles associated to the current selected scope.", response = RoleListResult.class)
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public RoleListResult simpleQuery(
-            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The role name to filter results.") @QueryParam("name") String name,
-            @ApiParam(value = "The result set offset.", defaultValue = "0") @QueryParam("offset") @DefaultValue("0") int offset,
-            @ApiParam(value = "The result set limit.", defaultValue = "50") @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,
+            @QueryParam("name") String name,
+            @QueryParam("offset") @DefaultValue("0") int offset,
+            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
         RoleQuery query = roleFactory.newQuery(scopeId);
 
         AndPredicate andPredicate = query.andPredicate();
@@ -94,14 +88,13 @@ public class Roles extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "roleQuery", value = "Queries the Roles", notes = "Queries the Roles with the given RoleQuery parameter returning all matching Roles", response = RoleListResult.class)
     @POST
     @Path("_query")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public RoleListResult query(
-            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The RoleQuery to use to filter results.", required = true) RoleQuery query) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,
+            RoleQuery query) throws Exception {
         query.setScopeId(scopeId);
 
         return roleService.query(query);
@@ -116,14 +109,13 @@ public class Roles extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "roleCount", value = "Counts the Roles", notes = "Counts the Roles with the given RoleQuery parameter returning the number of matching Roles", response = CountResult.class)
     @POST
     @Path("_count")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public CountResult count(
-            @ApiParam(value = "The ScopeId in which to count results", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The RoleQuery to use to filter count results", required = true) RoleQuery query) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,
+            RoleQuery query) throws Exception {
         query.setScopeId(scopeId);
 
         return new CountResult(roleService.count(query));
@@ -139,13 +131,12 @@ public class Roles extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "roleCreate", value = "Create a Role", notes = "Creates a new Role based on the information provided in RoleCreator parameter.", response = Role.class)
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Role create(
-            @ApiParam(value = "The ScopeId in which to create the Account", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "Provides the information for the new Role to be created", required = true) RoleCreator roleCreator) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,
+            RoleCreator roleCreator) throws Exception {
         roleCreator.setScopeId(scopeId);
 
         return roleService.create(roleCreator);
@@ -160,13 +151,12 @@ public class Roles extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "roleFind", value = "Get a Role", notes = "Returns the Role specified by the \"roleId\" path parameter.", response = Role.class)
     @GET
     @Path("{roleId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Role find(
-            @ApiParam(value = "The ScopeId of the requested Account.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The id of the requested Role", required = true) @PathParam("roleId") EntityId roleId) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("roleId") EntityId roleId) throws Exception {
         Role role = roleService.find(scopeId, roleId);
 
         if (role == null) {
@@ -186,15 +176,14 @@ public class Roles extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "roleUpdate", value = "Update an Role", notes = "Updates a new Role based on the information provided in the Role parameter.", response = Role.class)
     @PUT
     @Path("{roleId}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Role update(
-            @ApiParam(value = "The ScopeId of the requested Account.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The id of the requested Role", required = true) @PathParam("roleId") EntityId roleId,
-            @ApiParam(value = "The modified Role whose attributed need to be updated", required = true) Role role) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("roleId") EntityId roleId,
+            Role role) throws Exception {
         role.setScopeId(scopeId);
         role.setId(roleId);
 
@@ -210,12 +199,11 @@ public class Roles extends AbstractKapuaResource {
      * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(nickname = "roleDelete", value = "Delete a Role", notes = "Deletes the Role specified by the \"roleId\" path parameter.")
     @DELETE
     @Path("{roleId}")
     public Response deleteRole(
-            @ApiParam(value = "The ScopeId of the Account to delete.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The id of the Role to be deleted", required = true) @PathParam("roleId") EntityId roleId) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("roleId") EntityId roleId) throws Exception {
         roleService.delete(scopeId, roleId);
 
         return returnOk();

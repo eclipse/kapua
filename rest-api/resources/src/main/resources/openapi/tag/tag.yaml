@@ -1,0 +1,71 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Tags
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    tagId:
+      name: tagId
+      in: path
+      description: The ID of the Tag on which to perform the operation
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+  schemas:
+    tag:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaNamedEntity'
+        - type: object
+          example:
+            type: tag
+            id: FJ6-FLuIcok
+            scopeId: AQ
+            createdOn: '2019-09-16T08:52:32.562Z'
+            createdBy: AQ
+            modifiedOn: '2019-09-16T08:52:32.562Z'
+            modifiedBy: AQ
+            optlock: 1
+            name: tag-1
+            description: A new Tag
+    tagCreator:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaNamedEntityCreator'
+        - type: object
+          example:
+            name: tag-1
+            description: A new Tag
+    tagListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/tag'
+          example:
+            type: tagListResult
+            limitExceeded: false
+            size: 1
+            items:
+              - type: tag
+                id: FJ6-FLuIcok
+                scopeId: AQ
+                createdOn: '2019-09-16T08:52:32.562Z'
+                createdBy: AQ
+                modifiedOn: '2019-09-16T08:52:32.562Z'
+                modifiedBy: AQ
+                optlock: 1
+                name: tag-1
+                description: A new Tag

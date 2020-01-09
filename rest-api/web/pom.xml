@@ -149,13 +149,6 @@
             <version>${jersey.version}</version>
         </dependency>
 
-        <!-- Swagger for apidoc -->
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-jersey2-jaxrs</artifactId>
-            <version>${swagger.version}</version>
-        </dependency>
-
         <!-- Moxy for object marshalling unmarshalling -->
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>

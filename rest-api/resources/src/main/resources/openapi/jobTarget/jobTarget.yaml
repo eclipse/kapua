@@ -1,0 +1,68 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Jobs Targets
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    targetId:
+      name: targetId
+      in: path
+      description: The ID of the Job Target on which to perform the operation
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+  schemas:
+    jobTarget:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaUpdatableEntity'
+        - type: object
+          example:
+            type: jobTarget
+            id: Y-vYl9TKaf8
+            scopeId: AQ
+            createdOn: '2019-12-06T11:00:02.000Z'
+            createdBy: AQ
+            modifiedOn: '2019-12-06T11:01:00.000Z'
+            modifiedBy: AQ
+            optlock: 2
+            jobId: auSoU2ph1bY
+            jobTargetId: VBk_ZDZSOV0
+            status: PROCESS_OK
+            stepIndex: 0
+    jobTargetListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/jobTarget'
+          example:
+            type: jobTargetListResult
+            limitExceeded: false
+            size: 1
+            items:
+              - type: jobTarget
+                id: Y-vYl9TKaf8
+                scopeId: AQ
+                createdOn: '2019-12-06T11:00:02.000Z'
+                createdBy: AQ
+                modifiedOn: '2019-12-06T11:01:00.000Z'
+                modifiedBy: AQ
+                optlock: 2
+                jobId: auSoU2ph1bY
+                jobTargetId: VBk_ZDZSOV0
+                status: PROCESS_OK
+                stepIndex: 0

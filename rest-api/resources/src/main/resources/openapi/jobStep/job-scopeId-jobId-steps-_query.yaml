@@ -1,0 +1,38 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Jobs Steps
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/jobs/{jobId}/steps/_query:
+    post:
+      tags:
+        - Job - Step
+      summary: Query the Jobs Steps
+      operationId: jobStepQuery
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../job/job.yaml#/components/parameters/jobId'
+      requestBody:
+        $ref: '../openapi.yaml#/components/requestBodies/kapuaQuery'
+      responses:
+        200:
+          description: The result of the query
+          content:
+            application/json:
+              schema:
+                $ref: './jobStep.yaml#/components/schemas/jobStepListResult'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

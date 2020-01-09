@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
@@ -94,7 +93,6 @@ public interface Device extends KapuaUpdatableEntity {
     @XmlElementWrapper(name = "tagIds")
     @XmlElement(name = "tagId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     Set<KapuaId> getTagIds();
 
     /**
@@ -104,7 +102,6 @@ public interface Device extends KapuaUpdatableEntity {
      */
     @XmlElement(name = "groupId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getGroupId();
 
     /**
@@ -136,7 +133,6 @@ public interface Device extends KapuaUpdatableEntity {
      */
     @XmlElement(name = "connectionId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getConnectionId();
 
     /**
@@ -191,7 +187,6 @@ public interface Device extends KapuaUpdatableEntity {
      */
     @XmlElement(name = "lastEventId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    @ApiModelProperty(dataType = "string")
     KapuaId getLastEventId();
 
     /**

@@ -1,0 +1,219 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Data Metric
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    datastoreMessageId:
+      name: datastoreMessageId
+      in: path
+      description: The ID of the MetricInfo on which to perform the operation
+      schema:
+        type: string
+      required: true
+  schemas:
+    dataMessage:
+      type: object
+      properties:
+        datastoreId:
+          type: string
+          format: uuid
+          readOnly: true
+        scopeId:
+          allOf:
+            - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            - readOnly: true
+        timestamp:
+          type: string
+          format: 'date-time'
+        deviceId:
+          allOf:
+            - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+        clientId:
+          type: string
+        receivedOn:
+          type: string
+          format: 'date-time'
+        sentOn:
+          type: string
+          format: 'date-time'
+        capturedOn:
+          type: string
+          format: 'date-time'
+        position:
+          $ref: '#/components/schemas/position'
+        channel:
+          type: object
+          properties:
+            semanticParts:
+              type: array
+              items:
+                type: string
+        payload:
+          type: object
+          properties:
+            metrics:
+              type: array
+              items:
+                type: object
+                properties:
+                  valueType:
+                    type: string
+                  value:
+                    type: string
+                  name:
+                    type: string
+            body:
+              type: string
+              format: base64
+      required:
+        - clientId
+        - deviceId
+      example:
+        type: jsonDatastoreMessage
+        capturedOn: '2019-09-12T09:25:05.096Z'
+        channel:
+          type: kapuaDataChannel
+          semanticParts:
+            - heater
+            - data
+        clientId: Client-Id-1
+        deviceId: WyczTs_GuDM
+        payload:
+          metrics:
+            - valueType: string
+              value: 5.0
+              name: temperatureExternal
+            - valueType: string
+              value: 20.0
+              name: temperatureInternal
+            - valueType: string
+              value: 30.0
+              name: temperatureExhaust
+            - valueType: string
+              value: 0
+              name: errorCode
+        receivedOn: '2019-09-12T09:25:05.102Z'
+        scopeId: AQ
+        sentOn: '2019-09-12T09:25:05.096Z'
+        datastoreId: bb07d7fc-dc62-492f-b8da-7e28df69e112
+        timestamp: '2019-09-12T09:25:05.096Z'
+    dataMessageInsertResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+    dataMessageListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/dataMessage'
+          example:
+            type: storableListResult
+            limitExceeded: true
+            size: 2
+            items:
+              - type: jsonDatastoreMessage
+                capturedOn: '2019-09-12T09:35:04.383Z'
+                channel:
+                  type: kapuaDataChannel
+                  semanticParts:
+                    - heater
+                    - data
+                clientId: Client-Id-1
+                deviceId: WyczTs_GuDM
+                payload:
+                  metrics:
+                    - valueType: string
+                      value: 5.0
+                      name: temperatureExternal
+                    - valueType: string
+                      value: 20.25
+                      name: temperatureInternal
+                    - valueType: string
+                      value: 30.0
+                      name: temperatureExhaust
+                    - valueType: string
+                      value: -441478528
+                      name: errorCode
+                receivedOn: '2019-09-12T09:35:04.389Z'
+                scopeId: AQ
+                sentOn: '2019-09-12T09:35:04.383Z'
+                datastoreId: 6349cec8-396b-4aac-bc2f-8fca9fe0c67c
+                timestamp: '2019-09-12T09:35:04.383Z'
+              - type: jsonDatastoreMessage
+                capturedOn: '2019-09-12T09:25:05.096Z'
+                channel:
+                  type: kapuaDataChannel
+                  semanticParts:
+                    - heater
+                    - data
+                clientId: Client-Id-1
+                deviceId: WyczTs_GuDM
+                payload:
+                  metrics:
+                    - valueType: string
+                      value: 5.0
+                      name: temperatureExternal
+                    - valueType: string
+                      value: 20.0
+                      name: temperatureInternal
+                    - valueType: string
+                      value: 30.0
+                      name: temperatureExhaust
+                    - valueType: string
+                      value: 0
+                      name: errorCode
+                receivedOn: '2019-09-12T09:25:05.102Z'
+                scopeId: AQ
+                sentOn: '2019-09-12T09:25:05.096Z'
+                datastoreId: bb07d7fc-dc62-492f-b8da-7e28df69e112
+                timestamp: '2019-09-12T09:25:05.096Z'
+            totalCount: 61
+    position:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        altitude:
+          type: number
+          format: double
+        precision:
+          type: number
+          format: double
+        heading:
+          type: number
+          format: double
+        speed:
+          type: number
+          format: double
+        timestamp:
+          type: string
+          format: 'date-time'
+        satellites:
+          type: integer
+          format: int32
+        status:
+          type: integer
+          format: int32

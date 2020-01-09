@@ -1,0 +1,71 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Groups
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/groups:
+    get:
+      tags:
+        - Group
+      summary: Get all the Groups
+      operationId: groupList
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - name: name
+          in: query
+          description: The group name to filter results
+          schema:
+            type: string
+        - $ref: '../openapi.yaml#/components/parameters/limit'
+        - $ref: '../openapi.yaml#/components/parameters/offset'
+      responses:
+        200:
+          description: The list of the Groups available in the Scope
+          content:
+            application/json:
+              schema:
+                $ref: './group.yaml#/components/schemas/groupListResult'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    post:
+      tags:
+        - Group
+      summary: Create a new Group
+      operationId: groupCreate
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+      requestBody:
+        description: An object containing the properties for the new Group to be created
+        content:
+          application/json:
+            schema:
+              $ref: './group.yaml#/components/schemas/groupCreator'
+        required: true
+      responses:
+        200:
+          description: The Group that has just been created
+          content:
+            application/json:
+              schema:
+                $ref: './group.yaml#/components/schemas/group'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

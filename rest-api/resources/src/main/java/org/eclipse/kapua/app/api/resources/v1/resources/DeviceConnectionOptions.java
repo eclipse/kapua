@@ -27,11 +27,6 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOption;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionService;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
-@Api("Device Connections")
 @Path("{scopeId}/deviceconnections/{connectionId}/options")
 public class DeviceConnectionOptions extends AbstractKapuaResource {
 
@@ -51,12 +46,11 @@ public class DeviceConnectionOptions extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Gets the DeviceConnection list in the scope", notes = "Returns the list of all the deviceConnections associated to the current selected scope.", response = DeviceConnection.class, responseContainer = "DeviceConnectionListResult")
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public DeviceConnectionOption find(
-            @ApiParam(value = "The ScopeId in which to search results.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The connection id of the requested options.") @PathParam("connectionId") EntityId connectionId) throws Exception {
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("connectionId") EntityId connectionId) throws Exception {
         DeviceConnectionOption deviceConnectionOptions = deviceConnectionOptionsService.find(scopeId, connectionId);
 
         if (deviceConnectionOptions != null) {
@@ -79,13 +73,12 @@ public class DeviceConnectionOptions extends AbstractKapuaResource {
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-    @ApiOperation(value = "Get an DeviceConnectionOption", notes = "Returns the DeviceConnectionOption specified by the given parameters", response = DeviceConnectionOption.class)
     @PUT
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public DeviceConnectionOption update(
-            @ApiParam(value = "The ScopeId of the requested DeviceConnectionOptions.", required = true, defaultValue = DEFAULT_SCOPE_ID) @PathParam("scopeId") ScopeId scopeId,
-            @ApiParam(value = "The id of the requested DeviceConnectionOptions", required = true) @PathParam("connectionId") EntityId deviceConnectionId,
-            @ApiParam(value = "The modified Device connection options whose attributed need to be updated", required = true) DeviceConnectionOption deviceConnectionOptions)
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("connectionId") EntityId deviceConnectionId,
+            DeviceConnectionOption deviceConnectionOptions)
             throws Exception {
 
         deviceConnectionOptions.setScopeId(scopeId);

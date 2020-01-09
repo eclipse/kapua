@@ -1,0 +1,72 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Jobs Executions
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    executionId:
+      name: executionId
+      in: path
+      description: The ID of the Job Execution on which to perform the operation
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+  schemas:
+    jobExecution:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaUpdatableEntity'
+        - type: object
+          example:
+            type: jobExecution
+            id: GTh9xBWezHY
+            scopeId: AQ
+            createdOn: '2019-12-06T11:00:58.000Z'
+            createdBy: AQ
+            modifiedOn: '2019-12-06T11:01:00.000Z'
+            modifiedBy: AQ
+            optlock: 2
+            endedOn: '2019-12-06T12:01:00+01:00'
+            jobId: {}
+            log: "[INFO] 12/6/19 11:00 AM - Running before job...\n[INFO] 12/6/19 11:00 AM - Run configuration:\n[INFO] 12/6/19 11:00 AM - \tTarget count:           all\n[INFO] 12/6/19 11:00 AM - \tReset step index:       false\n[INFO] 12/6/19 11:00 AM - \tFrom step index:        0\n[INFO] 12/6/19 11:00 AM - \tResuming job execution: none\n[INFO] 12/6/19 11:00 AM - \tEnqueue:                false\n[INFO] 12/6/19 11:00 AM - Creating job execution...\n[INFO] 12/6/19 11:00 AM - Creating job execution... DONE!\n[INFO] 12/6/19 11:00 AM - Running before job... DONE!\n[INFO] 12/6/19 11:00 AM - Opening cursor...\n[INFO] 12/6/19 11:00 AM - Opening cursor... DONE!\n[INFO] 12/6/19 11:00 AM - Reading item...\n[INFO] 12/6/19 11:00 AM - Reading item... DONE!\n[INFO] 12/6/19 11:00 AM - Processing item: 7200086575903566335\n[INFO] 12/6/19 11:01 AM - Processing item: 7200086575903566335 - DONE!\n[INFO] 12/6/19 11:01 AM - Reading item...\n[INFO] 12/6/19 11:01 AM - Reading item... DONE!\n[INFO] 12/6/19 11:01 AM - Writing items...\n[INFO] 12/6/19 11:01 AM - Writing items... DONE!\n[INFO] 12/6/19 11:01 AM - Running after job...\n"
+            startedOn: '2019-12-06T12:00:58+01:00'
+            targetIds:
+              - Y-vYl9TKaf8
+    jobExecutionListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/jobExecution'
+          example:
+            type: jobExecutionListResult
+            limitExceeded: true
+            size: 50
+            items:
+              - type: jobExecution
+                id: GTh9xBWezHY
+                scopeId: AQ
+                createdOn: '2019-12-06T11:00:58.000Z'
+                createdBy: AQ
+                modifiedOn: '2019-12-06T11:01:00.000Z'
+                modifiedBy: AQ
+                optlock: 2
+                endedOn: '2019-12-06T12:01:00+01:00'
+                jobId: {}
+                log: "[INFO] 12/6/19 11:00 AM - Running before job...\n[INFO] 12/6/19 11:00 AM - Run configuration:\n[INFO] 12/6/19 11:00 AM - \tTarget count:           all\n[INFO] 12/6/19 11:00 AM - \tReset step index:       false\n[INFO] 12/6/19 11:00 AM - \tFrom step index:        0\n[INFO] 12/6/19 11:00 AM - \tResuming job execution: none\n[INFO] 12/6/19 11:00 AM - \tEnqueue:                false\n[INFO] 12/6/19 11:00 AM - Creating job execution...\n[INFO] 12/6/19 11:00 AM - Creating job execution... DONE!\n[INFO] 12/6/19 11:00 AM - Running before job... DONE!\n[INFO] 12/6/19 11:00 AM - Opening cursor...\n[INFO] 12/6/19 11:00 AM - Opening cursor... DONE!\n[INFO] 12/6/19 11:00 AM - Reading item...\n[INFO] 12/6/19 11:00 AM - Reading item... DONE!\n[INFO] 12/6/19 11:00 AM - Processing item: 7200086575903566335\n[INFO] 12/6/19 11:01 AM - Processing item: 7200086575903566335 - DONE!\n[INFO] 12/6/19 11:01 AM - Reading item...\n[INFO] 12/6/19 11:01 AM - Reading item... DONE!\n[INFO] 12/6/19 11:01 AM - Writing items...\n[INFO] 12/6/19 11:01 AM - Writing items... DONE!\n[INFO] 12/6/19 11:01 AM - Running after job...\n"
+                startedOn: '2019-12-06T12:00:58+01:00'
+                targetIds:
+                  - Y-vYl9TKaf8

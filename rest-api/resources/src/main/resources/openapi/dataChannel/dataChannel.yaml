@@ -1,0 +1,106 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Data Channel
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    channelInfoId:
+      name: channelInfoId
+      in: path
+      description: The ID of the ChannelInfo on which to perform the operation
+      schema:
+        type: string
+        format: base64
+      required: true
+  schemas:
+    channelInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: base64
+        scopeId:
+          allOf:
+            - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            - readOnly: true
+        clientId:
+          type: string
+        name:
+          type: string
+        firstMessageId:
+          type: string
+          format: uuid
+        firstMessageOn:
+          type: string
+          format: 'date-time'
+        lastMessageId:
+          type: string
+          format: uuid
+        lastMessageOn:
+          type: string
+          format: 'date-time'
+      example:
+        type: channelInfo
+        id: xny9A7OkTUcSYxJIGf3oMZHyZIvi4AcsFqJJbY1N2yg=
+        scopeId: AQ
+        clientId: Client-Id-1
+        name: ALERT
+        firstMessageId: 18739b9f-6d8b-42c2-a536-507b37dd5f2a
+        firstMessageOn: '2019-09-12T08:04:13.920Z'
+        lastMessageId: a3e69394-1c20-4446-b596-6fcc4a2028fe
+        lastMessageOn: '2019-09-12T08:14:13.230Z'
+    channelInfoListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/channelInfo'
+            totalCount:
+              type: integer
+          example:
+              type: channelInfoListResult
+              limitExceeded: false
+              size: 3
+              totalCount: 3
+              items:
+                - type: channelInfo
+                  id: xny9A7OkTUcSYxJIGf3oMZHyZIvi4AcsFqJJbY1N2yg=
+                  scopeId: AQ
+                  clientId: Client-Id-1
+                  name: ALERT
+                  firstMessageId: 18739b9f-6d8b-42c2-a536-507b37dd5f2a
+                  firstMessageOn: '2019-09-12T08:04:13.920Z'
+                  lastMessageId: a3e69394-1c20-4446-b596-6fcc4a2028fe
+                  lastMessageOn: '2019-09-12T08:14:13.230Z'
+                - type: channelInfo
+                  id: vkyqKinEY2/UhxHHz2XRsmz02NtRK5KCsA7Fa1ot6CI=
+                  scopeId: AQ
+                  clientId: Client-Id-1
+                  name: DIAG
+                  firstMessageId: 308b0c38-76fa-4530-bb68-8c4c285c1f17
+                  firstMessageOn: '2019-09-12T08:04:13.887Z'
+                  lastMessageId: 8c59cd10-f23e-435e-a523-0aa8e952da1e
+                  lastMessageOn: '2019-09-12T09:04:49.710Z'
+                - type: channelInfo
+                  id: X0BcZAV6FfD+Wi9n4x5VOdHmSV/E6UpOTetaqpXAb+w=
+                  scopeId: AQ
+                  clientId: Client-Id-1
+                  name: heater/data
+                  firstMessageId: 3cec54f7-9633-4a68-ad5b-48f57ea7f0f3
+                  firstMessageOn: '2019-09-12T09:03:20.959Z'
+                  lastMessageId: a8597968-d785-42dd-9e04-1f15d42df774
+                  lastMessageOn: '2019-09-12T09:05:06.527Z'

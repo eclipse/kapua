@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources.model.message;
 
-import io.swagger.annotations.ApiModelProperty;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.xml.XmlAdaptedMetric;
 import org.eclipse.kapua.model.type.ObjectValueConverter;
@@ -70,7 +69,6 @@ public class JsonKapuaPayload {
 
     @XmlElement(name = "body")
     @XmlJavaTypeAdapter(BinaryXmlAdapter.class)
-    @ApiModelProperty(dataType = "string")
     public byte[] getBody() {
         return body;
     }

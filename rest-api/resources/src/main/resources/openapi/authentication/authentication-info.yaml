@@ -1,0 +1,32 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Authentication
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /authentication/info:
+    get:
+      description: Returns all the Authentication and Authorization informations about the current session
+      tags:
+        - Authentication
+      summary: Login Info
+      operationId: authenticationLoginInfo
+      responses:
+        200:
+          description: An object conatining all the Authentication and Authorization informations about the current session
+          content:
+            application/json:
+              schema:
+                $ref: './authentication.yaml#/components/schemas/loginInfo'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

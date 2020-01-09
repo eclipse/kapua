@@ -11,7 +11,7 @@
         Eurotech - initial API and implementation
  -->
 
-<!-- This web.xml file is not required when using Servlet 3.0 container, 
+<!-- This web.xml file is not required when using Servlet 3.0 container,
     see implementation details http://jersey.java.net/nonav/documentation/latest/jax-rs.html -->
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://java.sun.com/xml/ns/javaee"
@@ -62,7 +62,6 @@
         <init-param>
             <param-name>jersey.config.server.provider.packages</param-name>
             <param-value>
-                io.swagger.jaxrs.listing,
                 org.eclipse.kapua.app.api
             </param-value>
         </init-param>

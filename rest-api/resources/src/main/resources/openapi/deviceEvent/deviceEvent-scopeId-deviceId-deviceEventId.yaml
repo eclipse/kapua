@@ -1,0 +1,59 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Device Event
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/devices/{deviceId}/events/{deviceEventId}:
+    get:
+      tags:
+        - Device Event
+      summary: Get a single DeviceEvent
+      operationId: deviceEventGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: './deviceEvent.yaml#/components/parameters/deviceEventId'
+      responses:
+        200:
+          description: The details of the desired Device Event
+          content:
+            application/json:
+              schema:
+                $ref: './deviceEvent.yaml#/components/schemas/deviceEvent'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    delete:
+      tags:
+        - Device Event
+      summary: Delete a single DeviceEvent
+      operationId: deviceEventDelete
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: './deviceEvent.yaml#/components/parameters/deviceEventId'
+      responses:
+        200:
+          description: The Device Event has been deleted
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
