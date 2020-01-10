@@ -726,3 +726,804 @@ Feature: Device Registry Integration
       | d        |
     Then I find 1 device
     And I logout
+
+  Scenario: Search By Client ID And Get Multiple Matches
+  Login as kapua-sys, go to devices, create a device.
+  Try to find it by Client ID.
+  More than one devices should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | dev111   | displayName1 | ReliaGate 10-30 | 12541234ABD  | DISABLED |
+      | test123  | displm22     | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | test333  | displame1    | ReliaGate 10-30 | 12541234ABD  | DISABLED |
+    And I filter devices by
+      | clientId |
+      | dev      |
+    Then I find 2 devices
+    And I filter devices by
+      | clientId |
+      | dev      |
+    Then I find 2 devices
+    And I create a device with name "device-123"
+    And I filter devices by
+      | clientId |
+      | dev      |
+    Then I find 3 devices
+    And I logout
+
+  Scenario: Search By Client ID And Get No Matches
+  Login as kapua-sys, go to devices, create a device.
+  Try to find it with non-existing Client ID.
+  No devices should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | dev111   | displayName1 | ReliaGate 10-30 | 12541234ABD  | DISABLED |
+    And I filter devices by
+      | clientId |
+      | a        |
+    Then I find 0 devices
+    And I filter devices by
+      | clientId  |
+      | device-1  |
+    Then I find 0 devices
+    And I logout
+
+  Scenario: Search By Full Client ID And Get One Match
+  Login as kapua-sys, go to devices, create several devices.
+  Try to find one of the devices by its full Client ID.
+  One device should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | dev111   | displayName1 | ReliaGate 10-30 | 12541234ABD  | DISABLED |
+    And I filter devices by
+      | clientId |
+      | dev-123  |
+    Then I find 1 devices
+    And I filter devices by
+      | clientId  |
+      | dev111    |
+    Then I find 1 devices
+    And I logout
+
+  Scenario: Search By Client ID And Get Multiple Matches
+  Login as kapua-sys, go to devices, create several devices.
+  Try to find several devices with one letter of their Client ID.
+  Devices should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | dev111   | displayName1 | ReliaGate 10-30 | 12541234ABD  | DISABLED |
+    And I filter devices by
+      | clientId |
+      | d        |
+    Then I find 2 devices
+    And I filter devices by
+      | clientId  |
+      | e         |
+    Then I find 2 devices
+    And I filter devices by
+      | clientId  |
+      | 1         |
+    Then I find 2 devices
+    And I filter devices by
+      | clientId  |
+      | 2         |
+    Then I find 1 device
+    And I filter devices by
+      | clientId  |
+      | b         |
+    Then I find 0 devices
+    And I logout
+
+  Scenario: Search By Device's Display Name And Get One Match
+  Login as kapua-sys, go to devices, create a device.
+  Try to find it by Display Name.
+  One device should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | test123  | test12323333 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+    And I filter devices by
+      | displayName |
+      | dis         |
+    Then I find 1 device
+    And I logout
+
+  Scenario: Search By Client ID And Get Multiple Matches
+  Login as kapua-sys, go to devices, create several devices.
+  Try to find them by Display Name.
+  Devices should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | test123  | displayNam21 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+    And I filter devices by
+      | displayName |
+      | d           |
+    Then I find 2 devices
+    And I logout
+
+  Scenario: Search By Non-existing Client ID And Get No Matches
+  Login as kapua-sys, go to devices, create a device.
+  Try to find it by Display Name.
+  Devices should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | test123  | displayNam21 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+    And I filter devices by
+      | displayName |
+      | DEVICE      |
+    Then I find 0 devices
+    And I logout
+
+  Scenario: Search By One Letter Of Display Name
+  Login as kapua-sys, go to devices, create several devices.
+  Try to find it by one letter of Display Name.
+  All the devices that contain this character should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    When I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | test123  | displayNam21 | ReliaGate 10-20 | 12541234ABG  | DISABLED |
+      | test124  | displayNam23 | ReliaGate 10-20 | 12541234ABF  | DISABLED |
+      | test125  | displayNam24 | ReliaGate 10-20 | 12541234ABD  | DISABLED |
+      | test126  | isplayName22 | ReliaGate 10-20 | 12541234ABD  | DISABLED |
+      | test127  | testsplayN23 | ReliaGate 10-20 | 12541234ABD  | DISABLED |
+    And I filter devices by
+      | displayName  |
+      | d            |
+    Then I find 4 devices
+    And I logout
+
+  Scenario: Search By Serial Number And Get One Match
+  Login as kapua-sys, go to devices, create several devices.
+  Try to find some of them by Serial Number.
+  One device should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    When I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | test123  | test12323333 | SerialNum123    | 12341234ABC  | DISABLED |
+    And I filter devices by
+      | serialNumber |
+      | 125         |
+    Then I find 1 device
+    And I filter devices by
+      | displayName |
+      | 123         |
+    And I filter devices by
+      | serialNumber |
+      | 5            |
+    Then I find 1 device
+    And I logout
+
+  Scenario: Search By Serial Number And Get Multiple Matches
+  Login as kapua-sys, go to devices, create several devices
+  Try to find them by specific Serial number
+  Multiple devices should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    When I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | test123  | test12323333 | SerialNum123    | 12541234ABC  | DISABLED |
+      | test124  | test12323333 | SerialNum123    | RANDOMSRLN2  | DISABLED |
+    And I filter devices by
+      | serialNumber |
+      | 12           |
+    Then I find 2 devices
+    And I filter devices by
+      | serialNumber |
+      | 123          |
+    Then I find 2 devices
+    And I filter devices by
+      | serialNumber  |
+      | ABC           |
+    Then I find 2 devices
+    And I filter devices by
+      | serialNumber  |
+      | A             |
+    Then I find 3 devices
+    And I logout
+
+  Scenario: Search By Serial Number And Get No Matches
+  Login as kapua-sys, go to devices, create several devices.
+  Try to filter them with a non-existing Serial Number.
+  No devices should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    When I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | test123  | test12323333 | SerialNum123    | 12541234ABC  | DISABLED |
+    And I filter devices by
+      | serialNumber |
+      | asdf         |
+    Then I find 0 devices
+    And I filter devices by
+      | serialNumber |
+      | 123345       |
+    Then I find 0 devices
+    And I logout
+
+  Scenario: Search By Specific Serial Number
+  Login as kapua-sys, go to devices, create several devices.
+  Try to find one of them by specific Serial Number.
+  1 device should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    When I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABD  | DISABLED |
+      | test123  | test12323333 | SerialNum123    | 12541234ABC  | DISABLED |
+    And I filter devices by
+      | serialNumber |
+      | 12541234ABD  |
+    Then I find 1 device
+    And I filter devices by
+      | serialNumber |
+      | 12541234ABC  |
+    Then I find 1 device
+    And I logout
+
+  Scenario: Search By One Letter Of Serial Number
+  Login as kapua-sys, go to devices, create several devices.
+  Try to find it by one letter Serial Number.
+  Devices should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    When I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABG  | DISABLED |
+      | test123  | test12323444 | SerialNum123    | 12541234ABA  | DISABLED |
+      | test124  | test12323333 | SerialNum123    | 12541234ABC  | DISABLED |
+      | test125  | test12323555 | SerialNum123    | 12541234ABD  | DISABLED |
+      | test126  | test12323558 | SerialNum123    | RNDMSRLNMBR  | DISABLED |
+    And I filter devices by
+      | serialNumber |
+      | 1            |
+    Then I find 4 devices
+    And I filter devices by
+      | serialNumber |
+      | 2            |
+    Then I find 4 devices
+    And I filter devices by
+      | serialNumber |
+      | C            |
+    Then I find 1 device
+    And I logout
+
+  Scenario: Search by Device Status And Get One Match
+  Login as kapua-sys, go to devices, create several devices.
+  Try to find it by its Status.
+  One device should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    When I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | test123  | test12323333 | SerialNum123    | 12341234ABC  | ENABLED  |
+    And I filter devices by
+      | kStatus |
+      | ENABLED |
+    Then I find 1 device
+    And I filter devices by
+      | kStatus   |
+      | DISABLED |
+    Then I find 1 device
+    And I logout
+
+  Scenario: Search By Status And Get Multiple Matches
+  Login as kapua-sys, go to devices, create several devices.
+  Try to find them by their Status.
+  Devices with specific status should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    When I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | test123  | test12323333 | SerialNum123    | 12341234ABG  | ENABLED  |
+      | test124  | test12323335 | SerialNum126    | 12341234ABF  | ENABLED  |
+      | test125  | test12323336 | SerialNum125    | 12341234ABE  | ENABLED  |
+      | test126  | test12323337 | SerialNum124    | 12341234ABD  | DISABLED |
+    And I filter devices by
+      | kStatus  |
+      | ENABLED |
+    Then I find 3 devices
+    And I filter devices by
+      | kStatus  |
+      | DISABLED |
+    Then I find 2 devices
+    And I logout
+
+
+  Scenario: Search By Device Status And Get No Matches
+  Login as kapua-sys, go to devices, create several devices.
+  Try to find it by Status.
+  No devices should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    When I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status  |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | ENABLED |
+      | test123  | test12323333 | SerialNum123    | 12341234ABG  | ENABLED |
+      | test124  | test12323335 | SerialNum126    | 12341234ABF  | ENABLED |
+      | test125  | test12323336 | SerialNum125    | 12341234ABE  | ENABLED |
+      | test126  | test12323337 | SerialNum124    | 12341234ABD  | ENABLED |
+    And I filter devices by
+      | kStatus  |
+      | DISABLED |
+    Then I find 0 devices
+    And I logout
+
+  Scenario: Search By Client ID and Display Name
+  Login as kapua-sys, go to devices, create several devices.
+  Try to find specific devices by their Client ID and Display Name.
+  Devices should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    When I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | test123  | test12323333 | SerialNum123    | 12341234ABG  | ENABLED  |
+      | test124  | test12323335 | SerialNum126    | 12341234ABF  | ENABLED  |
+      | test125  | test12323336 | SerialNum125    | 12341234ABE  | ENABLED  |
+      | test126  | test12323337 | SerialNum124    | 12341234ABD  | DISABLED |
+    And I filter devices by
+      | clientId | displayName |
+      | dev      | display     |
+    Then I find 1 device
+    And I filter devices by
+      | clientId | displayName |
+      | test     | test        |
+    Then I find 4 devices
+    And I filter devices by
+      | clientId | displayName |
+      | test     | display     |
+    Then I find 0 devices
+    And I logout
+
+  Scenario: Search By Client ID and Serial Number
+  Login as kapua-sys, go to devices, create several devices.
+  Try to find devices by their Client IDs and Serial Number.
+  Devices should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    When I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | test123  | test12323333 | SerialNum123    | 12341234ABG  | ENABLED  |
+      | test124  | test12323335 | SerialNum126    | 12341234ABF  | ENABLED  |
+      | test125  | test12323336 | SerialNum125    | 12341234ABE  | ENABLED  |
+      | test126  | test12323337 | SerialNum124    | 12341234ABD  | DISABLED |
+    And I filter devices by
+      | clientId | serialNumber |
+      | e        | 125          |
+    Then I find 1 device
+    And I filter devices by
+      | clientId | serialNumber |
+      | test     | 1234         |
+    Then I find 4 devices
+    And I filter devices by
+      | clientId | serialNumber |
+      | test     | 1254123      |
+    Then I find 0 devices
+    And I logout
+
+  Scenario: Search By Client ID and Status
+  Login as kapua-sys, go to devices, create several devices.
+  Try to find devices by their Client IDs and Status.
+  Devices should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    When I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | test123  | test12323333 | SerialNum123    | 12341234ABG  | ENABLED  |
+      | test124  | test12323335 | SerialNum126    | 12341234ABF  | ENABLED  |
+      | test125  | test12323336 | SerialNum125    | 12341234ABE  | ENABLED  |
+      | test126  | test12323337 | SerialNum124    | 12341234ABD  | DISABLED |
+    And I filter devices by
+      | clientId | kStatus  |
+      | dev      | DISABLED |
+    Then I find 1 device
+    And I filter devices by
+      | clientId | kStatus |
+      | test     | ENABLED |
+    Then I find 3 devices
+    And I filter devices by
+      | clientId | kStatus |
+      | test126  | ENABLED |
+    Then I find 0 devices
+    And I logout
+
+  Scenario: Search By Display Name and Serial Number
+  Login as kapua-sys, go to devices, create several devices.
+  Try to find them by their Display Name and Serial Number.
+  Devices should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    When I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | test123  | test12323333 | SerialNum123    | 12341234ABG  | ENABLED  |
+      | test124  | test12323335 | SerialNum126    | 12341234ABF  | ENABLED  |
+      | test125  | test12323336 | SerialNum125    | 12341234ABE  | ENABLED  |
+      | test126  | test12323337 | SerialNum124    | 12341234ABD  | DISABLED |
+    And I filter devices by
+      | displayName | serialNumber |
+      | dis         | 12           |
+    Then I find 1 device
+    And I filter devices by
+      | displayName | serialNumber |
+      | test        | 123          |
+    Then I find 4 devices
+    And I filter devices by
+      | displayName | serialNumber |
+      | display     | 1234123      |
+    Then I find 0 devices
+    And I logout
+
+  Scenario: Search By Display Name and Status
+  Login as kapua-sys, go to devices, create several devices.
+  Try to find it by Display Name and Status.
+  Devices should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    When I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | test123  | test12323333 | SerialNum123    | 12341234ABG  | ENABLED  |
+      | test124  | test12323335 | SerialNum126    | 12341234ABF  | ENABLED  |
+      | test125  | test12323336 | SerialNum125    | 12341234ABE  | ENABLED  |
+      | test126  | test12323337 | SerialNum124    | 12341234ABD  | DISABLED |
+    And I filter devices by
+      | displayName | kStatus  |
+      | dis         | DISABLED |
+    Then I find 1 device
+    And I filter devices by
+      | displayName | kStatus |
+      | test        | ENABLED |
+    Then I find 3 devices
+    And I filter devices by
+      | displayName | kStatus |
+      | displayName | ENABLED |
+    Then I find 0 devices
+    And I logout
+
+  Scenario: Search By Serial Number and Status
+  Login as kapua-sys, go to devices, create several devices
+  Try to find it by Serial Number and Status.
+  Devices should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    When I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | test123  | test12323333 | SerialNum123    | 12341234ABG  | ENABLED  |
+      | test124  | test12323335 | SerialNum126    | 12341234ABF  | ENABLED  |
+      | test125  | test12323336 | SerialNum125    | 12341234ABE  | ENABLED  |
+      | test126  | test12323337 | SerialNum124    | 12341234ABD  | DISABLED |
+    And I filter devices by
+      | serialNumber | kStatus  |
+      | 125          | DISABLED |
+    Then I find 1 device
+    And I filter devices by
+      | serialNumber | kStatus |
+      | 123          | ENABLED |
+    Then I find 3 devices
+    And I filter devices by
+      | serialNumber | kStatus  |
+      | ABF          | DISABLED |
+    Then I find 0 devices
+    And I logout
+
+  Scenario: Search By Client ID, Display Name and Serial Number
+  Login as kapua-sys, go to devices, create several devices.
+  Try to find it by Client ID, Display Name and Serial Number.
+  Devices should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    When I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | test123  | test12323333 | SerialNum123    | 12341234ABG  | ENABLED  |
+      | test124  | test12323335 | SerialNum126    | 12341234ABF  | ENABLED  |
+      | test125  | test12323336 | SerialNum125    | 12341234ABE  | ENABLED  |
+      | test126  | test12323337 | SerialNum124    | 12341234ABD  | DISABLED |
+    And I filter devices by
+      | clientId | displayName | serialNumber |
+      | dev      | dis         | ABC          |
+    Then I find 1 device
+    And I filter devices by
+      | clientId | displayName | serialNumber |
+      | test     | test        | 1234         |
+    Then I find 4 devices
+    And I filter devices by
+      | clientId | displayName | serialNumber |
+      | dev-123  | Serial      | 123          |
+    Then I find 0 devices
+    And I logout
+
+  Scenario: Search By Client ID, Display Name and Status
+  Login as kapua-sys, go to devices, create several devices
+  Try to find devices by their Client ID, Display Name and Status.
+  Devices should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    When I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | test123  | test12323333 | SerialNum123    | 12341234ABG  | ENABLED  |
+      | test124  | test12323335 | SerialNum126    | 12341234ABF  | ENABLED  |
+      | test125  | test12323336 | SerialNum125    | 12341234ABE  | ENABLED  |
+      | test126  | test12323337 | SerialNum124    | 12341234ABD  | DISABLED |
+    And I filter devices by
+      | clientId | displayName | kStatus  |
+      | dev      | dis         | DISABLED |
+    Then I find 1 device
+    And I filter devices by
+      | clientId | displayName | kStatus |
+      | test     | test        | ENABLED |
+    Then I find 3 devices
+    And I filter devices by
+      | clientId | displayName | kStatus |
+      | dev-123  | test        | ENABLED |
+    Then I find 0 devices
+    And I logout
+
+  Scenario: Search By Serial Number, Display Name and Status
+  Login as kapua-sys, go to devices, create several devices
+  Try to find devices by their Serial Number, Display Name and Status.
+  Devices should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    When I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | test123  | test12323333 | SerialNum123    | 12341234ABG  | ENABLED  |
+      | test124  | test12323335 | SerialNum126    | 12341234ABF  | ENABLED  |
+      | test125  | test12323336 | SerialNum125    | 12341234ABE  | ENABLED  |
+      | test126  | test12323337 | SerialNum124    | 12341234ABD  | DISABLED |
+    And I filter devices by
+      | serialNumber | displayName | kStatus  |
+      | 125          | dis         | DISABLED |
+    Then I find 1 device
+    And I filter devices by
+      | serialNumber | displayName | kStatus |
+      | 123          | test        | ENABLED |
+    Then I find 3 devices
+    And I filter devices by
+      | serialNumber | displayName | kStatus  |
+      | ABE          | test        | DISABLED |
+    Then I find 0 devices
+    And I logout
+
+  Scenario: Search By Client ID, Display Name, Serial Number and Status
+  Login as kapua-sys, go to devices, create several devices
+  Try to find devices by their Serial Number, Display Name and Status.
+  Devices should be found.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    When I create devices with parameters
+      | clientId | displayName  | modelId         | serialNumber | status   |
+      | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+      | test123  | test12323333 | SerialNum123    | 12341234ABG  | ENABLED  |
+      | test124  | test12323335 | SerialNum126    | 12341234ABF  | ENABLED  |
+      | test125  | test12323336 | SerialNum125    | 12341234ABE  | ENABLED  |
+      | test126  | test12323337 | SerialNum124    | 12341234ABD  | DISABLED |
+    And I filter devices by
+      | serialNumber | displayName | kStatus  | clientId |
+      | 125          | dis         | DISABLED | dev      |
+    Then I find 1 device
+    And I filter devices by
+      | serialNumber | displayName | kStatus | clientId |
+      | 123          | test        | ENABLED | test     |
+    Then I find 3 devices
+    And I filter devices by
+      | serialNumber | displayName | kStatus | clientId |
+      | 126          | test        | ENABLED | dev      |
+    Then I find 0 devices
+    And I logout
