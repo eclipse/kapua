@@ -768,7 +768,7 @@ Feature: User Permission tests
     And I logout
     Then I login as user with name "user1" and password "ToManySecrets123#"
     Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
-    And I found trigger properties with name "Interval Job"
+    And I find trigger properties with name "Interval Job"
     And A regular trigger creator with the name "TestSchedule" and following properties
       | name     | type              | value |
       | interval | java.lang.Integer | 1     |
@@ -801,7 +801,7 @@ Feature: User Permission tests
       | job    | delete |
     And I logout
     Then I login as user with name "user1" and password "ToManySecrets123#"
-    And I found trigger properties with name "Interval Job"
+    And I find trigger properties with name "Interval Job"
     And A regular trigger creator with the name "TestSchedule" and following properties
       | name     | type              | value |
       | interval | java.lang.Integer | 1     |
@@ -823,7 +823,7 @@ Feature: User Permission tests
       | scheduler | delete |
     And I logout
     Then I login as user with name "user1" and password "ToManySecrets123#"
-    And I found trigger properties with name "Interval Job"
+    And I find trigger properties with name "Interval Job"
     And A regular trigger creator with the name "TestSchedule" and following properties
       | name     | type              | value |
       | interval | java.lang.Integer | 1     |

@@ -15,6 +15,7 @@ import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
+import cucumber.api.java.en.Then;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
@@ -30,9 +31,12 @@ import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.qa.common.cucumber.CucTriggerProperty;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionQuery;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinition;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
@@ -158,8 +162,8 @@ public class JobScheduleServiceSteps extends TestBase {
         }
     }
 
-    @And("^I found trigger properties with name \"([^\"]*)\"$")
-    public void iFoundTriggerPropertiesWithName(String triggerDefinitionName) throws Exception {
+    @And("^I find trigger properties with name \"([^\"]*)\"$")
+    public void iFindTriggerPropertiesWithName(String triggerDefinitionName) throws Exception {
         primeException();
 
         try {
@@ -174,7 +178,7 @@ public class JobScheduleServiceSteps extends TestBase {
         }
     }
 
-    @And("^A regular trigger creator with the name \"([^\"]*)\"$")
+    @And("^A regular trigger creator with the name \"([^\"]*)\" is created$")
     public void aRegularTriggerCreatorWithTheName(String triggerName) {
         TriggerCreator triggerCreator = triggerFactory.newCreator(getCurrentScopeId());
         KapuaId currentTriggerDefId = (KapuaId) stepData.get("TriggerDefinitionId");
@@ -286,7 +290,7 @@ public class JobScheduleServiceSteps extends TestBase {
             Date startDate = setDateAndTimeValue(startDateStr, startTimeStr);
             stepData.put("TriggerStartDate", startDate);
         } catch (ParseException ex) {
-           verifyException(ex);
+            verifyException(ex);
         }
     }
 
@@ -368,5 +372,85 @@ public class JobScheduleServiceSteps extends TestBase {
         date.setMinutes(minutes);
         return date;
     }
-}
+
+    @And("^I set retry interval to (\\d+)$")
+    public void iSetRetryIntervalTo(long retryInterval) {
+        TriggerCreator triggerCreator = (TriggerCreator) stepData.get("TriggerCreator");
+        triggerCreator.setRetryInterval(retryInterval);
+        stepData.remove("TriggerCreator");
+        stepData.put("TriggerCreator", triggerCreator);
+    }
+
+    @Then("^I set retry interval to null$")
+    public void iSetRetryIntervalToNull() {
+        TriggerCreator triggerCreator = (TriggerCreator) stepData.get("TriggerCreator");
+        triggerCreator.setRetryInterval(null);
+        stepData.remove("TriggerCreator");
+        stepData.put("TriggerCreator", triggerCreator);
+    }
+
+    @Then("^I set cron expression to \"([^\"]*)\"$")
+    public void iSetCronExpressionTo(String cron) throws Throwable {
+        TriggerCreator triggerCreator = (TriggerCreator) stepData.get("TriggerCreator");
+        triggerCreator.setCronScheduling(cron);
+        stepData.remove("TriggerCreator");
+        stepData.put("TriggerCreator", triggerCreator);
+    }
+
+    @Then("^I delete the previously created trigger$")
+    public void iDeleteThePreviouslyCreatedTrigger() throws Exception {
+        Trigger trigger = (Trigger) stepData.get("Trigger");
+        primeException();
+        try {
+            triggerService.delete(trigger.getScopeId(), trigger.getId());
+        } catch (KapuaException ex){
+            verifyException(ex);
+        }
+    }
+
+    @And("^I search for the trigger in the database$")
+    public void iSearchForTheTriggerInTheDatabase() throws Exception {
+        KapuaId currentTriggerID = (KapuaId) stepData.get("CurrentTriggerId");
+        primeException();
+        try {
+            stepData.remove("Trigger");
+            Trigger trigger = triggerService.find(getCurrentScopeId(), currentTriggerID);
+            stepData.put("Trigger", trigger);
+        } catch (Exception ex){
+            verifyException(ex);
+        }
+    }
+
+    @Then("^I delete trigger with name \"([^\"]*)\"$")
+    public void iDeleteTriggerWithName(String arg0) throws Throwable {
+        Trigger trigger = (Trigger) stepData.get("Trigger");
+        primeException();
+        try {
+            triggerService.delete(trigger.getScopeId(), trigger.getId());
+        } catch (KapuaException ex){
+            verifyException(ex);
+        }
+    }
+
+    @And("^I search for the trigger with name \"([^\"]*)\" in the database$")
+    public void iSearchForTheTriggerWithNameInTheDatabase(String triggerName) throws Throwable {
+        TriggerQuery triggerQuery = triggerFactory.newQuery(getCurrentScopeId());
+        triggerQuery.setPredicate(triggerQuery.attributePredicate(TriggerAttributes.NAME, triggerName, AttributePredicate.Operator.EQUAL));
+        primeException();
+        try {
+            stepData.remove("Trigger");
+            TriggerListResult triggerListResult = triggerService.query(triggerQuery);
+            Trigger trigger = triggerListResult.getFirstItem();
+            stepData.put("Trigger", trigger);
+        } catch (Exception ex) {
+            verifyException(ex);
+        }
+    }
+
+    @And("^There is no trigger with the name \"([^\"]*)\" in the database$")
+    public void thereIsNoTriggerWithTheNameInTheDatabase(String triggerName) throws Throwable {
+            assertNull(stepData.get("Trigger"));
+        }
+    }
+
 
