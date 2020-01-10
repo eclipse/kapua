@@ -24,6 +24,8 @@ import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
+import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -33,6 +35,7 @@ public class DeviceManagementSnapshots extends AbstractKapuaResource {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final DeviceSnapshotManagementService snapshotService = locator.getService(DeviceSnapshotManagementService.class);
+    private final DeviceConfigurationManagementService configurationService = locator.getService(DeviceConfigurationManagementService.class);
 
     /**
      * Returns the list of all the Snapshots available on the device.
@@ -85,4 +88,32 @@ public class DeviceManagementSnapshots extends AbstractKapuaResource {
 
         return returnOk();
     }
+
+    /**
+     * Gets the configuration of a device given the snapshot ID.
+     *
+     * @param scopeId
+     *            The {@link ScopeId} of the {@link Device}.
+     * @param deviceId
+     *            The {@link Device} ID.
+     * @param snapshotId
+     *            the ID of the snapshot to rollback to.
+     * @param timeout
+     *            The timeout of the operation
+     * @return HTTP 200 if operation has completed successfully.
+     * @throws Exception
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.0.0
+     */
+    @GET
+    @Path("{snapshotId}")
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    public DeviceConfiguration download(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("deviceId") EntityId deviceId,
+            @PathParam("snapshotId") String snapshotId,
+            @QueryParam("timeout") Long timeout) throws Exception {
+        return configurationService.get(scopeId, deviceId, snapshotId, null, timeout);
+    }
+
 }
