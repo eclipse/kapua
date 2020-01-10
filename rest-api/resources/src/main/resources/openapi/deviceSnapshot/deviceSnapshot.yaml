@@ -14,6 +14,14 @@ info:
 paths: {}
 
 components:
+  parameters:
+    snapshotId:
+      name: snapshotId
+      description: The ID of the Snapshot on which to perform the operation
+      in: path
+      required: true
+      schema:
+        type: string
   schemas:
     snapshot:
       type: object

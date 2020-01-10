@@ -195,8 +195,10 @@ paths:
   ### Device Snapshot ###
   /{scopeId}/devices/{deviceId}/snapshots:
     $ref: './deviceSnapshot/deviceSnapshot-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1snapshots'
+  /{scopeId}/devices/{deviceId}/snapshots/{snapshotId}:
+    $ref: './deviceSnapshot/deviceSnapshot-scopeId-deviceId-snapshotId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1snapshots~1{snapshotId}'
   /{scopeId}/devices/{deviceId}/snapshots/{snapshotId}/_rollback:
-    $ref: './deviceSnapshot/deviceSnapshotRollback-scopeId-deviceId-snapshotId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1snapshots~1{snapshotId}~1_rollback'
+    $ref: './deviceSnapshot/deviceSnapshot-scopeId-deviceId-snapshotId-_rollback.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1snapshots~1{snapshotId}~1_rollback'
   ### Device Connection ###
   /{scopeId}/deviceconnections:
     $ref: './deviceConnection/deviceConnection-scopeId.yaml#/paths/~1{scopeId}~1deviceconnections'

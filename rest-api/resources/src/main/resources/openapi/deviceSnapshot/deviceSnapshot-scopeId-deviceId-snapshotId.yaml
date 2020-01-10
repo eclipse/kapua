@@ -12,24 +12,24 @@ info:
     url: https://www.eclipse.org/legal/epl-2.0
 
 paths:
-  /{scopeId}/devices/{deviceId}/snapshots/{snapshotId}/_rollback:
-    post:
+  /{scopeId}/devices/{deviceId}/snapshots/{snapshotId}:
+    get:
       tags:
         - Device Management - Snapshot
-      summary: Rollback to Snapshot
-      operationId: deviceSnapshotRollback
+      summary: Get a single Snapshot
+      operationId: deviceSnapshotGet
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: '../device/device.yaml#/components/parameters/deviceId'
-        - name: snapshotId
-          in: path
-          required: true
-          schema:
-            type: string
+        - $ref: './deviceSnapshot.yaml#/components/parameters/snapshotId'
         - $ref: '../device/device.yaml#/components/parameters/timeout'
       responses:
         200:
-          description: The Snapshot has been applied
+          description: The list of the Configurations related to the given Snapshot on a single Device
+          content:
+            application/json:
+              schema:
+                $ref: '../deviceConfiguration/deviceConfiguration.yaml#/components/schemas/componentConfigurations'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
