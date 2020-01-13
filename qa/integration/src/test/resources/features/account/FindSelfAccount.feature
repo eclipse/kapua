@@ -32,7 +32,7 @@ Feature: Self account find feature
     And A generic user
       | name      | displayName | email             | phoneNumber     | status  | userType |
       | test-user | Test User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name      | password          | enabled |
       | test-user | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -58,7 +58,7 @@ Feature: Self account find feature
     And A generic user
       | name      | displayName | email             | phoneNumber     | status  | userType |
       | test-user | Test User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name      | password          | enabled |
       | test-user | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -84,7 +84,7 @@ Feature: Self account find feature
     And A generic user
       | name      | displayName | email             | phoneNumber     | status  | userType |
       | test-user | Test User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name      | password          | enabled |
       | test-user | ToManySecrets123# | true    |
     And Add permissions to the last created user

@@ -1780,7 +1780,7 @@ public class JobServiceSteps extends TestBase {
     assertEquals(job.getName(), jobName);
     }
 
-    @Then("^I delete the job with name \"([^\"]*)\"$")
+    @Then("^I try to delete the job with name \"([^\"]*)\"$")
     public void iDeleteTheJobWithName(String jobName) throws Exception {
         Job job = (Job) stepData.get("Job");
 

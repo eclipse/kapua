@@ -33,11 +33,12 @@ import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.TestDomain;
 import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
-import org.eclipse.kapua.qa.common.cucumber.CucConfig;
+import org.eclipse.kapua.qa.common.cucumber.CucUser;
+import org.eclipse.kapua.qa.common.cucumber.CucRolePermission;
 import org.eclipse.kapua.qa.common.cucumber.CucDomain;
 import org.eclipse.kapua.qa.common.cucumber.CucGroup;
 import org.eclipse.kapua.qa.common.cucumber.CucRole;
-import org.eclipse.kapua.qa.common.cucumber.CucRolePermission;
+import org.eclipse.kapua.qa.common.cucumber.CucConfig;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authorization.access.AccessRoleAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
@@ -76,19 +77,22 @@ import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
-import org.eclipse.kapua.service.authorization.role.RoleAttributes;
-import org.eclipse.kapua.service.authorization.role.RoleCreator;
-import org.eclipse.kapua.service.authorization.role.RoleFactory;
-import org.eclipse.kapua.service.authorization.role.RoleListResult;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
-import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
-import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
-import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
+import org.eclipse.kapua.service.authorization.role.RoleListResult;
+import org.eclipse.kapua.service.authorization.role.RoleAttributes;
+import org.eclipse.kapua.service.authorization.role.RolePermissionAttributes;
 import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
-import org.eclipse.kapua.service.authorization.role.RolePermissionService;
+import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
+import org.eclipse.kapua.service.authorization.role.RoleCreator;
+import org.eclipse.kapua.service.authorization.role.RolePermissionService;
+import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
+import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleService;
+import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserFactory;
+import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,6 +129,8 @@ public class AuthorizationServiceSteps extends TestBase {
     private RoleFactory roleFactory;
     private RolePermissionService rolePermissionService;
     private RolePermissionFactory rolePermissionFactory;
+    private UserService userService;
+    private UserFactory userFactory;
 
     @Inject
     public AuthorizationServiceSteps(StepData stepData, DBHelper dbHelper) {
@@ -157,6 +163,8 @@ public class AuthorizationServiceSteps extends TestBase {
         rolePermissionService = locator.getService(RolePermissionService.class);
         rolePermissionFactory = locator.getFactory(RolePermissionFactory.class);
         permissionFactory = locator.getFactory(PermissionFactory.class);
+        userFactory = locator.getFactory(UserFactory.class);
+        userService = locator.getService(UserService.class);
 
         if (isUnitTest()) {
             // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
@@ -349,11 +357,12 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I search for the last created role$")
-    public void findLastCreatedRole()
+    @When("^I search for the role with name \"(.*)\"$")
+    public void findRoleWithName(String roleName)
             throws Exception {
 
         Role role = (Role) stepData.get("Role");
+        assertEquals(roleName, role.getName());
 
         stepData.remove("RoleFound");
 
@@ -396,14 +405,15 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I delete the last created role$")
-    public void deleteLastCreatedRole()
+    @When("^I delete the role with name \"([^\"]*)\"$")
+    public void deleteRoleWithName(String roleName)
             throws Exception {
 
         Role role = (Role) stepData.get("Role");
 
         primeException();
         try {
+            assertEquals(roleName, role.getName());
             KapuaId roleId = role.getId();
             roleService.delete(role.getScopeId(), roleId);
         } catch (KapuaException ex) {
@@ -1053,14 +1063,15 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I delete the last created group$")
-    public void deleteLastCreatedGroup()
+    @When("^I delete the group with name \"([^\"]*)\"$")
+    public void deleteGroupWithName(String groupName)
             throws Exception {
 
         Group group = (Group) stepData.get("Group");
 
         primeException();
         try {
+            assertEquals(groupName, group.getName());
             groupService.delete(group.getScopeId(), group.getId());
         } catch (KapuaException ex) {
             verifyException(ex);
@@ -1079,11 +1090,12 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I search for the last created group$")
-    public void findGroupByRememberedId()
+    @When("^I search for the group with name \"([^\"]*)\"$")
+    public void findGroupByRememberedId(String groupName)
             throws Exception {
 
         Group group = (Group) stepData.get("Group");
+        assertEquals(groupName, group.getName());
 
         primeException();
         try {
@@ -2056,10 +2068,12 @@ public class AuthorizationServiceSteps extends TestBase {
         stepData.put("RolePermissionList", rolePermissionList);
     }
 
-    @And("^I add access roles to user$")
-    public void iAddAccessRolesToUser() throws Exception{
+    @And("^I add access roles to user \"([^\"]*)\"$")
+    public void iAddAccessRolesToUser(String userName) throws Exception{
         AccessInfo accessInfo = (AccessInfo) stepData.get("AccessInfo");
         List<Role> roleList = (List<Role>) stepData.get("RoleList");
+        User user = (User) stepData.get("User");
+        assertEquals(userName, user.getName());
         AccessRoleCreator accessRoleCreator = accessRoleFactory.newCreator(getCurrentScopeId());
 
         for(Role role : roleList) {
@@ -2090,25 +2104,32 @@ public class AuthorizationServiceSteps extends TestBase {
       }
     }
 
-    @And("^I find last created group$")
-    public void iFindLastCreatedGroup() throws Exception {
+    @And("^I find the group with name \"([^\"]*)\"$")
+    public void iFindLastCreatedGroup(String groupName) throws Exception {
         Group group = (Group) stepData.get("Group");
 
         try {
             primeException();
+            assertEquals(groupName, group.getName());
             assertNotNull(groupService.find(getCurrentScopeId(), group.getId()));
         } catch (KapuaException ex) {
             verifyException(ex);
         }
     }
 
-    @And("^I find role with name \"([^\"]*)\"$")
+    @And("^I find a role with name \"([^\"]*)\"$")
     public void iFindRoleWithName(String roleName) throws Exception {
         try {
             primeException();
             RoleQuery roleQuery = roleFactory.newQuery(getCurrentScopeId());
             roleQuery.setPredicate(roleQuery.attributePredicate(RoleAttributes.NAME, roleName, AttributePredicate.Operator.EQUAL));
+
+        stepData.remove("RoleListResult");
+        stepData.remove("Role");
             RoleListResult roleListResult = roleService.query(roleQuery);
+        stepData.put("RoleListResult", roleListResult);
+        stepData.put("Role", roleListResult.getFirstItem());
+
             assertTrue(roleListResult.getSize() > 0);
         } catch (KapuaException ke) {
             verifyException(ke);
@@ -2140,6 +2161,337 @@ public class AuthorizationServiceSteps extends TestBase {
             for(RolePermission rolePermission : rolePermissions) {
                 rolePermissionService.delete(rolePermission.getScopeId(), rolePermission.getId());
             }
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @And("^I search for the permissions of role \"([^\"]*)\"$")
+    public void iSearchForThePermissionsOfTheRole(String roleName) throws Exception {
+        Role role = (Role) stepData.get("Role");
+        ArrayList<RolePermission> rolePermissionList = new ArrayList<>();
+        assertEquals(roleName, role.getName());
+
+        RolePermissionQuery rolePermissionQuery = rolePermissionFactory.newQuery(getCurrentScopeId());
+        rolePermissionQuery.setPredicate(rolePermissionQuery.attributePredicate(RolePermissionAttributes.ROLE_ID, role.getId(), AttributePredicate.Operator.EQUAL));
+
+        RolePermissionListResult rolePermissions = rolePermissionService.query(rolePermissionQuery);
+        stepData.remove("RolePermissions");
+        for (int i = 0; i < rolePermissions.getSize(); i++) {
+            stepData.remove("RolePermission");
+            RolePermission rolePermission = rolePermissions.getItem(i);
+            stepData.put("RolePermission", rolePermission);
+            rolePermissionList.add(rolePermission);
+        }
+        stepData.put("RolePermissions", rolePermissionList);
+
+        long rolePermissionListSize = rolePermissionList.size();
+        stepData.put("Count", rolePermissionListSize);
+    }
+
+    @And("^I delete the default admin role permission$")
+    public void iDeleteTheDefaultRolePermission() throws Exception {
+        ArrayList<RolePermission> rolePermissions = (ArrayList<RolePermission>) stepData.get("RolePermissions");
+
+        primeException();
+        try {
+            for (RolePermission rolePermission : rolePermissions) {
+                if (rolePermission.getId().equals(KapuaId.ONE)) {
+                    rolePermissionService.delete(getCurrentScopeId(), rolePermission.getId());
+                }
+            }
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @And("^I delete all admin role permissions except default permission$")
+    public void iDeleteTheLastCreatedAdminRolePermissions() throws Exception {
+        ArrayList<RolePermission> rolePermissions = (ArrayList<RolePermission>) stepData.get("RolePermissions");
+
+        try {
+            primeException();
+            for(RolePermission rolePermission : rolePermissions) {
+                if (!rolePermission.getId().equals(KapuaId.ONE)) {
+                    rolePermissionService.delete(rolePermission.getScopeId(), rolePermission.getId());
+                }
+            }
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @And("^I count the access roles from user \"([^\"]*)\"$")
+    public void iCountTheAccessRolesFromUser(String userName) throws Exception {
+
+        User lastUser = (User) stepData.get("User");
+        AccessInfo accessInfo = (AccessInfo) stepData.get("AccessInfo");
+        AccessRoleQuery tmpQuery = accessRoleFactory.newQuery(getCurrentScopeId());
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfo.getId(), AttributePredicate.Operator.EQUAL));
+
+        assertEquals(userName, lastUser.getName());
+
+        try {
+            primeException();
+            stepData.remove("Count");
+            Long count = accessRoleService.count(tmpQuery);
+            stepData.put("Count", count);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I search for granted user$")
+    public void iSearchGrantedUserToRole() throws Exception {
+
+        ArrayList<User> grantedUserList = new ArrayList<>();
+        long grantedUsersCount = 0;
+        try {
+            primeException();
+            AccessRoleQuery accessRoleQuery = accessRoleFactory.newQuery(getCurrentScopeId());
+            AccessRoleListResult accessRoleList = accessRoleService.query(accessRoleQuery);
+
+            for (AccessRole a : accessRoleList.getItems()) {
+                AccessInfo accessInfo = accessInfoService.find(getCurrentScopeId(), a.getAccessInfoId());
+                User grantedUser = userService.find(getCurrentScopeId(), accessInfo.getUserId());
+                stepData.put("GrantedUser", grantedUser);
+
+                if (!grantedUser.getId().equals(KapuaId.ONE)) {
+                    grantedUserList.add(grantedUser);
+                    grantedUsersCount = grantedUserList.size();
+                }
+            }
+            stepData.put("GrantedUserList", grantedUserList);
+            stepData.put("Count", grantedUsersCount);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @Then("^I find granted user(?:|s) with name$")
+    public void iFindGrantedUsersWithName(List<CucUser> grantedUsers) throws Exception {
+        ArrayList<String> grantedUserNames = new ArrayList<>();
+        ArrayList<User> grantedUsersList = (ArrayList<User>) stepData.get("GrantedUserList");
+
+        for (User grantedUser : grantedUsersList) {
+            grantedUserNames.add(grantedUser.getName());
+        }
+
+        for (CucUser user : grantedUsers) {
+            assertTrue(grantedUserNames.contains(user.getName()));
+        }
+    }
+
+    @And("^I try to find role with name \"([^\"]*)\" in account \"([^\"]*)\"$")
+    public void iFindSpecificRoleInChildAccount(String roleName, String accountName) throws Exception {
+        Account account = (Account) stepData.get("LastAccount");
+        assertEquals(accountName, account.getName());
+
+        RoleQuery roleQuery = roleFactory.newQuery(account.getId());
+
+        roleQuery.setPredicate(roleQuery.attributePredicate(RoleAttributes.NAME, roleName, AttributePredicate.Operator.EQUAL));
+
+        RoleListResult childRolesList = roleService.query(roleQuery);
+        stepData.put("ChildRolesList", childRolesList);
+    }
+
+    @And("^I create role \"([^\"]*)\" in account \"([^\"]*)\"$")
+    public void iCreateRoleInSubaccount(String roleName, String accountName) throws Exception {
+        Account account = (Account) stepData.get("LastAccount");
+        assertEquals(accountName, account.getName());
+        RoleCreator roleCreator = null;
+
+        roleCreator = roleFactory.newCreator(account.getId());
+        roleCreator.setName(roleName);
+        try {
+            Role role = roleService.create(roleCreator);
+            stepData.put("RoleCreator", roleCreator);
+            stepData.put("Role", role);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @And("^I create the following role permission(?:|s) in account \"([^\"]*)\"$")
+    public void iCreateTheFollowingRolePermissionInSubaccount(String accountName, List<CucRolePermission> perms) throws Exception {
+
+        Role role = (Role) stepData.get("Role");
+        Account account = (Account) stepData.get("LastAccount");
+        assertEquals(accountName, account.getName());
+        Domain domain = (Domain) stepData.get("Domain");
+        RolePermission rolePermission = null;
+        ArrayList<RolePermission> rolePermissions = new ArrayList<>();
+
+        stepData.remove("ChildAccountRolePermission");
+
+        primeException();
+        for (CucRolePermission tmpCPerm : perms) {
+            tmpCPerm.doParse();
+            assertNotNull(tmpCPerm.getScopeId());
+            assertNotNull(tmpCPerm.getAction());
+
+            domain.setScopeId(tmpCPerm.getScopeId());
+
+            RolePermissionCreator rolePermissionCreator = rolePermissionFactory.newCreator(account.getId());
+            rolePermissionCreator.setRoleId(role.getId());
+            rolePermissionCreator.setPermission(permissionFactory.newPermission(domain.getDomain(), tmpCPerm.getAction(), tmpCPerm.getTargetScopeId()));
+
+            try {
+                stepData.remove("ChildAccountRolePermissions");
+                rolePermission = rolePermissionService.create(rolePermissionCreator);
+                rolePermissions.add(rolePermission);
+                stepData.put("ChildAccountRolePermissions", rolePermissions);
+            } catch (KapuaException ex) {
+                verifyException(ex);
+            }
+        }
+    }
+
+    @And("^I search for the permissions of found role \"([^\"]*)\" in account \"([^\"]*)\"$")
+    public void iSearchForThePermissionsOfFoundedRoleInSubaccount(String roleName, String accountName) throws Exception {
+        Role role = (Role) stepData.get("Role");
+        assertEquals(roleName, role.getName());
+        Account account = (Account) stepData.get("LastAccount");
+        assertEquals(accountName, account.getName());
+        ArrayList<RolePermission> rolePermissionList = new ArrayList<>();
+
+        RolePermissionQuery rolePermissionQuery = rolePermissionFactory.newQuery(account.getId());
+        rolePermissionQuery.setPredicate(rolePermissionQuery.attributePredicate(RolePermissionAttributes.ROLE_ID, role.getId(), AttributePredicate.Operator.EQUAL));
+
+        RolePermissionListResult rolePermissions = rolePermissionService.query(rolePermissionQuery);
+        stepData.remove("ChildAccountRolePermission");
+        for (int i = 0; i < rolePermissions.getSize(); i++) {
+            stepData.remove("ChildAccountRolePermission");
+            RolePermission rolePermission = rolePermissions.getItem(i);
+            stepData.put("ChildAccountRolePermission", rolePermission);
+            rolePermissionList.add(rolePermission);
+        }
+        stepData.put("ChildAccountRolePermission", rolePermissionList);
+
+        long rolePermissionListSize = rolePermissionList.size();
+        stepData.put("Count", rolePermissionListSize);
+    }
+
+    @Then("^Role with name \"([^\"]*)\" in account \"([^\"]*)\" is found$")
+    public void roleInChildAccountIsFound(String roleName, String accountName) {
+        RoleListResult childRolesList = (RoleListResult) stepData.get("ChildRolesList");
+        Role role = (Role) stepData.get("Role");
+        Account account = (Account) stepData.get("LastAccount");
+        assertEquals(roleName, role.getName());
+        assertEquals(accountName, account.getName());
+
+        assertTrue(childRolesList.getSize() > 0);
+    }
+
+    @And("^I add access role \"([^\"]*)\" to user \"([^\"]*)\" in account \"([^\"]*)\"$")
+    public void iAddAccessRoleToUserInChildAccount(String roleName, String childUserName, String accountName) throws Exception {
+        AccessInfo accessInfo = (AccessInfo) stepData.get("ChildAccountAccessInfo");
+        Account account = (Account) stepData.get("LastAccount");
+        User childUser = (User) stepData.get("ChildAccountUser");
+        Role role = (Role) stepData.get("Role");
+        AccessRoleCreator accessRoleCreator = accessRoleFactory.newCreator(account.getId());
+        accessRoleCreator.setAccessInfoId(accessInfo.getId());
+        accessRoleCreator.setRoleId(role.getId());
+        stepData.put("ChildAccountAccessRoleCreator", accessRoleCreator);
+
+        assertEquals(roleName, role.getName());
+        assertEquals(accountName, account.getName());
+        assertEquals(childUserName, childUser.getName());
+
+        try {
+            primeException();
+            stepData.remove("ChildAccountAccessRole");
+            AccessRole accessRole = accessRoleService.create(accessRoleCreator);
+            stepData.put("ChildAccountAccessRole", accessRole);
+            stepData.put("ChildAccountAccessRoleId", accessRole.getId());
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @And("^I create the access info entity in account \"([^\"]*)\"$")
+    public void iCreateTheAccessInfoEntityInChildAccount(String accountName) throws Exception {
+        Account account = (Account) stepData.get("LastAccount");
+        User tmpUser = (User) stepData.get("ChildAccountUser");
+        AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(account.getId());
+        accessInfoCreator.setUserId(tmpUser.getId());
+
+        assertEquals(accountName, account.getName());
+
+        Set<Permission> permissions = (Set<Permission>) stepData.get("Permissions");
+        Set<KapuaId> roleIds = (Set<KapuaId>) stepData.get("RoleIds");
+
+        if (permissions != null && !permissions.isEmpty()) {
+            accessInfoCreator.setPermissions(permissions);
+        } else {
+            accessInfoCreator.setPermissions(null);
+        }
+
+        if (roleIds != null && !roleIds.isEmpty()) {
+            accessInfoCreator.setRoleIds(roleIds);
+        } else {
+            accessInfoCreator.setRoleIds(null);
+        }
+
+        try {
+            primeException();
+            stepData.put("ChildAccountAccessInfoCreator", accessInfoCreator);
+            stepData.remove("ChildAccountAccessInfo");
+            AccessInfo accessInfo = accessInfoService.create(accessInfoCreator);
+            stepData.put("ChildAccountAccessInfo", accessInfo);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @And("^I search for access roles in user \"([^\"]*)\"$")
+    public void iSearchForAccessRolesFromTheLastUser(String userName) throws Exception {
+        AccessInfo accessInfo = (AccessInfo) stepData.get("AccessInfo");
+        User user = (User) stepData.get("User");
+
+        assertEquals(userName, user.getName());
+
+        AccessRoleQuery accessRoleQuery = accessRoleFactory.newQuery(getCurrentScopeId());
+        accessRoleQuery.setPredicate(accessRoleQuery.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfo.getId(), AttributePredicate.Operator.EQUAL));
+
+        try {
+            primeException();
+            AccessRoleListResult accessRoleListResult = accessRoleService.query(accessRoleQuery);
+            stepData.put("Count", (long) accessRoleListResult.getSize());
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @And("^I count the access roles from user in account \"([^\"]*)\"$")
+    public void iCountTheAccessRolesFromUserInChildAccount(String accountName) throws Exception {
+        Account account = (Account) stepData.get("LastAccount");
+        AccessInfo accessInfo = (AccessInfo) stepData.get("ChildAccountAccessInfo");
+        assertEquals(accountName, account.getName());
+
+        AccessRoleQuery tmpQuery = accessRoleFactory.newQuery(account.getId());
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfo.getId(), AttributePredicate.Operator.EQUAL));
+
+        try {
+            primeException();
+            stepData.remove("Count");
+            Long count = accessRoleService.count(tmpQuery);
+            stepData.put("Count", count);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I update the role name to \"([^\"]*)\"$")
+    public void iUpdateTheRoleName(String newRoleName) throws Exception {
+        Role role = (Role) stepData.get("Role");
+        role.setName(newRoleName);
+
+        try {
+            primeException();
+            stepData.remove("Role");
+            Role newRole = roleService.update(role);
+            stepData.put("Role", newRole);
         } catch (KapuaException ex) {
             verifyException(ex);
         }

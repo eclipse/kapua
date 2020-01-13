@@ -25,7 +25,7 @@ Scenario: Find all child accounts
     Create a number of subaccounts. Check that the account has the correct number of subaccounts.
 
     When I create 15 childs for account with Id 1
-    Then The account with Id 1 has 15 subaccounts
+    Then The account with name "kapua-sys" has 15 subaccounts
 
 Scenario: Handle duplicate account names
     Accounts with duplicate names must not be created. When a duplicate account name is

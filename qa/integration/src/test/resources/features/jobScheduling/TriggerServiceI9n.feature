@@ -22,7 +22,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Device Connect"
+    When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start today at 10:00.
     And I create a new trigger from the existing creator with previously defined date properties
@@ -40,7 +40,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Device Connect"
+    When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "" is created
     And The trigger is set to start today at 10:00.
     When I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
@@ -55,7 +55,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Device Connect"
+    When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "schedule0" is created
     When I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     And I create a new trigger from the existing creator with previously defined date properties
@@ -70,7 +70,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Device Connect"
+    When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "schedule1" is created
     And The trigger is set to start today at 10:00.
     And I create a new trigger from the existing creator with previously defined date properties
@@ -89,7 +89,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Device Connect"
+    When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" is created
     And The trigger is set to start today at 10:00.
     And I create a new trigger from the existing creator with previously defined date properties
@@ -103,7 +103,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Device Connect"
+    When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "www" is created
     And The trigger is set to start today at 10:00.
     And I create a new trigger from the existing creator with previously defined date properties
@@ -120,7 +120,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Device Connect"
+    When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "schedule0" is created
     Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I create a new trigger from the existing creator with previously defined date properties
@@ -135,7 +135,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Device Connect"
+    When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start on 12-12-2020 at 10:10.
     And I create a new trigger from the existing creator with previously defined date properties
@@ -152,7 +152,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Device Connect"
+    When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "" is created
     And The trigger is set to start on 12-12-2020 at 10:10.
     Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
@@ -172,7 +172,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Device Connect"
+    When I find scheduler properties with name "Device Connect"
     Then A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start on 12-01-2020 at 10:10.
     And The trigger is set to end on 15-12-2020 at 10:10.
@@ -190,7 +190,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Device Connect"
+    When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "" is created
     And The trigger is set to end on 12-12-2020 at 10:10.
     Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
@@ -209,7 +209,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Device Connect"
+    When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start on 12-12-2020 at 10:00.
     And The trigger is set to end on 10-12-2020 at 10:00.
@@ -225,7 +225,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Device Connect"
+    When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start on 12-12-2020 at 10:00.
     And The trigger is set to end on 12-12-2020 at 10:00.
@@ -245,7 +245,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Interval Job"
+    When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start today at 10:00.
     And I set retry interval to 1
@@ -265,7 +265,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Interval Job"
+    When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "" is created
     And The trigger is set to start today at 10:00.
     And I set retry interval to 1
@@ -281,7 +281,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Interval Job"
+    When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule0" is created
     And I set retry interval to 1
     When I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
@@ -297,7 +297,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Interval Job"
+    When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule1" is created
     And The trigger is set to start today at 10:00.
     And I set retry interval to 1
@@ -317,7 +317,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Interval Job"
+    When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" is created
     And The trigger is set to start today at 10:00.
     And I set retry interval to 1
@@ -332,7 +332,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Interval Job"
+    When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" is created
     And The trigger is set to start today at 10:00.
     And I set retry interval to 1
@@ -348,7 +348,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Interval Job"
+    When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "www" is created
     And The trigger is set to start today at 10:00.
     And I set retry interval to 1
@@ -367,7 +367,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Interval Job"
+    When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule0" is created
     Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I create a new trigger from the existing creator with previously defined date properties
@@ -382,12 +382,12 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Interval Job"
+    When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start on 12-12-2020 at 10:10.
     And I set retry interval to 1
     And I create a new trigger from the existing creator with previously defined date properties
-    When I find trigger properties with name "Interval Job"
+    When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule1" is created
     And The trigger is set to start on 12-12-2020 at 10:10.
     And I set retry interval to 1
@@ -402,7 +402,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Interval Job"
+    When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "" is created
     And The trigger is set to start on 12-12-2020 at 10:10.
     And I set retry interval to 1
@@ -423,7 +423,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Interval Job"
+    When I find scheduler properties with name "Interval Job"
     Then A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start on 12-01-2020 at 10:10.
     And The trigger is set to end on 15-12-2020 at 10:10.
@@ -444,7 +444,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Interval Job"
+    When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "" is created
     And The trigger is set to end on 12-12-2020 at 10:10.
     Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
@@ -463,7 +463,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Interval Job"
+    When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start on 12-12-2020 at 10:00.
     And The trigger is set to end on 10-12-2020 at 10:00.
@@ -480,7 +480,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Interval Job"
+    When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start on 12-12-2020 at 10:00.
     And The trigger is set to end on 12-12-2020 at 10:00.
@@ -501,7 +501,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Interval Job"
+    When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start on 12-12-2020 at 10:00.
     And The trigger is set to end on 15-12-2020 at 10:00.
@@ -518,7 +518,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Interval Job"
+    When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start on 12-12-2020 at 10:00.
     And The trigger is set to end on 15-12-2020 at 10:00.
@@ -538,7 +538,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Cron Job"
+    When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start today at 10:00.
     Then I set cron expression to "0 15 10 * * ?"
@@ -553,7 +553,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Cron Job"
+    When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start today at 10:00.
     Then I set cron expression to "1"
@@ -569,7 +569,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Cron Job"
+    When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start today at 10:00.
     And I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided for the argument cronExpression"
@@ -588,7 +588,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Cron Job"
+    When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "schedule0" is created
     Then I set cron expression to "0 15 10 * * ?"
     Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
@@ -604,12 +604,12 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Cron Job"
+    When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start on 12-12-2020 at 10:10.
     Then I set cron expression to "0 15 10 * * ?"
     And I create a new trigger from the existing creator with previously defined date properties
-    When I find trigger properties with name "Cron Job"
+    When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "schedule1" is created
     And The trigger is set to start on 12-12-2020 at 10:10.
     Then I set cron expression to "0 15 15 * * ?"
@@ -624,7 +624,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Cron Job"
+    When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "" is created
     And The trigger is set to start on 12-12-2020 at 10:10.
     Then I set cron expression to "0 15 15 * * ?"
@@ -645,7 +645,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Cron Job"
+    When I find scheduler properties with name "Cron Job"
     Then A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start on 12-01-2020 at 10:10.
     And The trigger is set to end on 15-12-2020 at 10:10.
@@ -666,7 +666,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Cron Job"
+    When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "" is created
     And The trigger is set to end on 12-12-2020 at 10:10.
     Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
@@ -686,7 +686,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Cron Job"
+    When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start on 12-12-2020 at 10:00.
     And The trigger is set to end on 10-12-2020 at 10:00.
@@ -703,7 +703,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Interval Job"
+    When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start on 12-12-2020 at 10:00.
     And The trigger is set to end on 12-12-2020 at 10:00.
@@ -724,7 +724,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Interval Job"
+    When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start on 12-12-2020 at 10:00.
     And The trigger is set to end on 12-05-2021 at 10:00.
@@ -746,7 +746,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Cron Job"
+    When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start on 12-12-2020 at 10:00.
     And The trigger is set to end on 12-05-2021 at 10:00.
@@ -768,7 +768,7 @@ Feature: Trigger service tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create a job with the name "job0"
-    When I find trigger properties with name "Device Connect"
+    When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start today at 10:00.
     And I create a new trigger from the existing creator with previously defined date properties

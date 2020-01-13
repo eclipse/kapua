@@ -144,7 +144,7 @@ Feature: Group Service tests
       | 0     | test_name_5 |
     Then A group was created
     And The group matches the creator
-    When I search for the last created group
+    When I search for the group with name "test_name_5"
     Then The group was correctly found
     And I logout
 
@@ -161,10 +161,10 @@ Feature: Group Service tests
       | scope | name        |
       | 0     | test_name_6 |
       | 0     | test_name_7 |
-    And I search for the last created group
+    And I search for the group with name "test_name_7"
     Then The group was found
-    When I delete the last created group
-    And I search for the last created group
+    When I delete the group with name "test_name_7"
+    And I search for the group with name "test_name_7"
     Then No group was found
     And I logout
 

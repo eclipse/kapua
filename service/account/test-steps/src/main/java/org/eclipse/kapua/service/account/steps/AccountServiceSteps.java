@@ -655,13 +655,15 @@ public class AccountServiceSteps extends TestBase {
         assertEquals(account.getOrganization().getCity(), tmpAcc.getOrganization().getCity());
     }
 
-    @Then("^The account with Id (\\d+) has (\\d+) subaccounts$")
-    public void checkNumberOfAccounts(int parentId, int num)
+    @Then("^The account with name \"([^\"]*)\" has (\\d+) subaccount(?:|s)$")
+    public void checkNumberOfAccounts(String accountName, int num)
             throws KapuaException {
 
-        KapuaQuery<Account> query = accountFactory.newQuery(new KapuaEid(BigInteger.valueOf(parentId)));
-        long accountCnt = accountService.count(query);
+        KapuaQuery<Account> query = accountFactory.newQuery(getCurrentScopeId());
+        Account account = accountService.find(getCurrentScopeId());
+        assertEquals(accountName, account.getName());
 
+        long accountCnt = accountService.count(query);
         assertEquals(num, accountCnt);
     }
 
@@ -874,7 +876,7 @@ public class AccountServiceSteps extends TestBase {
 
     @And("^I try to edit description to \"([^\"]*)\"$")
     public void iTryToEditAccountWithName(String description) throws Exception {
-        Account account = (Account) stepData.get("Account");
+        Account account = (Account) stepData.get("LastAccount");
         account.setDescription(description);
 
         try {
@@ -885,7 +887,7 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @And("^I create a account with name \"([^\"]*)\", organization name \"([^\"]*)\" and email adress \"([^\"]*)\"$")
+    @And("^I create an account with name \"([^\"]*)\", organization name \"([^\"]*)\" and email adress \"([^\"]*)\"$")
     public void iCreateAAccountWithNameOrganizationNameAndEmailAdress(String accountName, String organizationName, String email) throws Exception {
         AccountCreator accountCreator = accountFactory.newCreator(getCurrentScopeId());
         accountCreator.setName(accountName);
@@ -894,9 +896,9 @@ public class AccountServiceSteps extends TestBase {
 
         try {
             primeException();
-            stepData.remove("Account");
+            stepData.remove("LastAccount");
             Account account = accountService.create(accountCreator);
-            stepData.put("Account", account);
+            stepData.put("LastAccount", account);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -926,6 +928,25 @@ public class AccountServiceSteps extends TestBase {
     @Then("^I am able to read my account info")
     public void verifySelfAccount() throws Exception {
         assertNotNull(stepData.get("LastAccount"));
+    }
+
+    @And("^I create an account with name \"([^\"]*)\", organization name \"([^\"]*)\" and email adress \"([^\"]*)\" and child account$")
+    public void iCreateAccountWithNameOrganizationNameAndEmailAdressAndChildAccount(String accountName, String organizationName, String email) throws Exception {
+        Account lastAccount = (Account) stepData.get("LastAccount");
+
+        AccountCreator accountCreator = accountFactory.newCreator(lastAccount.getId());
+        accountCreator.setName(accountName);
+        accountCreator.setOrganizationName(organizationName);
+        accountCreator.setOrganizationEmail(email);
+
+        try {
+            primeException();
+            stepData.remove("LastAccount");
+            Account account = accountService.create(accountCreator);
+            stepData.put("LastAccount", account);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
     }
 
     // *****************

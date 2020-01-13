@@ -40,18 +40,18 @@ Feature: Tag Service
     Create a tag entry, with specified name. Name is only tag specific attribute.
     Once created search for it and is should been created.
 
-    Given Tag with name "tagName"
+    Given I create a tag with name "tagName"
     When Tag with name "tagName" is searched
-    Then Tag with name "tagName" is found
+    Then I find a tag with name "tagName"
       And I logout
       
   Scenario: Deleting tag
     Create a tag entry, with specified name. Name is only tag specific attribute.
     Once created search and find it, then delete it.
 
-    Given Tag with name "tagName2"
+    Given I create a tag with name "tagName2"
     When Tag with name "tagName2" is searched
-    Then Tag with name "tagName2" is found and deleted
+    Then I find and delete tag with name "tagName2"
       And I logout
 
   Scenario: Stop broker after all scenarios

@@ -34,6 +34,7 @@ import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.role.Role;
+import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
@@ -101,14 +102,18 @@ public class UserRoleServiceSteps extends TestBase {
         }
     }
 
-    @And("^I add access role to user$")
-    public void addRoleToUser() throws Exception {
+    @And("^I add access role \"([^\"]*)\" to user \"([^\"]*)\"$")
+    public void addRoleToUser(String roleName, String userName) throws Exception {
         AccessInfo accessInfo = (AccessInfo) stepData.get("AccessInfo");
         Role role = (Role) stepData.get("Role");
+        User user = (User) stepData.get("User");
         AccessRoleCreator accessRoleCreator = accessRoleFactory.newCreator(getCurrentScopeId());
             accessRoleCreator.setAccessInfoId(accessInfo.getId());
             accessRoleCreator.setRoleId(role.getId());
             stepData.put("AccessRoleCreator", accessRoleCreator);
+
+            assertEquals(roleName, role.getName());
+            assertEquals(userName, user.getName());
 
             try {
                 primeException();

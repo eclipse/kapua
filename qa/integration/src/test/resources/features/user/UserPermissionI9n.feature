@@ -33,7 +33,7 @@ Feature: User Permission tests
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -56,7 +56,7 @@ Feature: User Permission tests
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -96,7 +96,7 @@ Feature: User Permission tests
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -133,7 +133,7 @@ Feature: User Permission tests
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -179,7 +179,7 @@ Feature: User Permission tests
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -192,7 +192,7 @@ Feature: User Permission tests
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-b | Kapua User b | kapua_b@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-b | ToManySecrets123# | true    |
     Then I logout
@@ -223,7 +223,7 @@ Feature: User Permission tests
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -247,7 +247,7 @@ Feature: User Permission tests
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-b | Kapua User b | kapua_b@kapua.com | +386 31 323 555 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-b | ToManySecrets123# | true    |
     And I logout
@@ -273,7 +273,7 @@ Feature: User Permission tests
       And A generic user
         | name    | displayName  | email             | phoneNumber     | status  | userType |
         | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-      And Credentials
+      And I add credentials
         | name    | password          | enabled |
         | kapua-a | ToManySecrets123# | true    |
       And Add permissions to the last created user
@@ -312,7 +312,7 @@ Feature: User Permission tests
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -342,7 +342,7 @@ Feature: User Permission tests
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -355,12 +355,12 @@ Feature: User Permission tests
     Given I create the group
       | scope | name         |
       | 1     | test_group_1 |
-    Then I search for the last created group
+    Then I search for the group with name "test_group_1"
     And The group was found
     Then I update the group name to "updated_test_group_1"
     Then The group was correctly updated
-    When I delete the last created group
-    Then I search for the last created group
+    When I delete the group with name "updated_test_group_1"
+    Then I search for the group with name "updated_test_group_1"
     And No group was found
     And I logout
 
@@ -374,7 +374,7 @@ Feature: User Permission tests
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -384,10 +384,10 @@ Feature: User Permission tests
       | tag     | delete |
     Then I logout
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
-    Given Tag with name "tag_a"
+    Given I create a tag with name "tag_a"
     When Tag with name "tag_a" is searched
-    Then Tag with name "tag_a" is found
-    Then Tag with name "tag_a" is found and deleted
+    Then I find a tag with name "tag_a"
+    Then I find and delete tag with name "tag_a"
     And Tag with name "tag_a" is searched
     And No tag was found
     And I logout
@@ -402,7 +402,7 @@ Feature: User Permission tests
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -435,7 +435,7 @@ Feature: User Permission tests
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -446,7 +446,7 @@ Feature: User Permission tests
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-b | Kapua User b | kapua_b@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-b | ToManySecrets123# | true    |
     And I logout
@@ -482,7 +482,7 @@ Feature: User Permission tests
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -495,13 +495,12 @@ Feature: User Permission tests
     Given I create the following role
       | scopeId | name      |
       | 1       | test_role |
-    Then I search for the last created role
+    Then I search for the role with name "test_role"
     And The correct role entry was found
-    When I update the last created role name to "updated_test_role"
-    And I search for the last created role
-    Then The role was successfully updated
-    When I delete the last created role
-    And I search for the last created role
+    When I update the role name to "updated_test_role"
+    And I search for the role with name "updated_test_role"
+    When I delete the role with name "updated_test_role"
+    And I search for the role with name "updated_test_role"
     Then I find no roles
     And I logout
 
@@ -516,7 +515,7 @@ Feature: User Permission tests
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -574,7 +573,7 @@ Feature: User Permission tests
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -623,7 +622,7 @@ Feature: User Permission tests
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -639,7 +638,7 @@ Feature: User Permission tests
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     When I search for last created user's credentials
     Then I find 0 credentials
-    And Credentials
+    And I add credentials
       | name    | password           | enabled |
       | kapua-b | ToManySecrets123#2 | true    |
     Then I search for last created user's credentials
@@ -661,7 +660,7 @@ Feature: User Permission tests
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -714,7 +713,7 @@ Feature: User Permission tests
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -757,7 +756,7 @@ Feature: User Permission tests
     And A generic user
       | name  | displayName  | email           | phoneNumber     | status  | userType |
       | user1 | Kapua User 1 | user1@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name    | password          | enabled |
       | user1   | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -768,7 +767,7 @@ Feature: User Permission tests
     And I logout
     Then I login as user with name "user1" and password "ToManySecrets123#"
     Given I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
-    And I find trigger properties with name "Interval Job"
+    And I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "TestSchedule" and following properties
       | name     | type              | value |
       | interval | java.lang.Integer | 1     |
@@ -791,7 +790,7 @@ Feature: User Permission tests
     And A generic user
       | name  | displayName  | email           | phoneNumber     | status  | userType |
       | user1 | Kapua User 1 | user1@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name  | password          | enabled |
       | user1 | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -801,7 +800,7 @@ Feature: User Permission tests
       | job    | delete |
     And I logout
     Then I login as user with name "user1" and password "ToManySecrets123#"
-    And I find trigger properties with name "Interval Job"
+    And I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "TestSchedule" and following properties
       | name     | type              | value |
       | interval | java.lang.Integer | 1     |
@@ -823,7 +822,7 @@ Feature: User Permission tests
       | scheduler | delete |
     And I logout
     Then I login as user with name "user1" and password "ToManySecrets123#"
-    And I find trigger properties with name "Interval Job"
+    And I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "TestSchedule" and following properties
       | name     | type              | value |
       | interval | java.lang.Integer | 1     |
@@ -842,10 +841,10 @@ Feature: User Permission tests
     And A generic user
       | name  | displayName  | email           | phoneNumber     | status  | userType |
       | user1 | Kapua User 1 | user1@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name  | password          | enabled |
       | user1 | ToManySecrets123# | true    |
-    And I create endpoint with schema "endpoint1", dns "com" and port 20000
+    And I create endpoint with schema "endpoint1", domain "com" and port 20000
     And I logout
     Then I login as user with name "user1" and password "ToManySecrets123#"
     Given I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: endpoint_info:read:"
@@ -861,13 +860,12 @@ Feature: User Permission tests
     Then I logout
     And I login as user with name "user1" and password "ToManySecrets123#"
     When I try to find endpoint with schema "endpoint1"
-    Then I found endpoint with schema "endpoint1"
     Then No exception was thrown
     Given I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: endpoint_info:write:*:*"
-    When I create endpoint with schema "end2", dns "com" and port 20000
+    When I create endpoint with schema "end2", domain "com" and port 20000
     Then An exception was thrown
     When I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: endpoint_info:delete:*:*"
-    And I delete the last created endpoint
+    And I delete endpoint with schema "endpoint1"
     Then An exception was thrown
     Then I logout
     And I login as user with name "kapua-sys" and password "kapua-password"
@@ -886,7 +884,7 @@ Feature: User Permission tests
     And A generic user
       | name  | displayName  | email           | phoneNumber     | status  | userType |
       | user0 | Kapua User 0 | user0@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name  | password          | enabled |
       | user0 | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -923,7 +921,7 @@ Feature: User Permission tests
       And A generic user
         | name  | displayName  | email           | phoneNumber     | status  | userType |
         | user0 | Kapua User 0 | user0@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-      And Credentials
+      And I add credentials
         | name  | password          | enabled |
         | user0 | ToManySecrets123# | true    |
       And Add permissions to the last created user
@@ -962,7 +960,7 @@ Feature: User Permission tests
     And A generic user
       | name  | displayName  | email           | phoneNumber     | status  | userType |
       | user0 | Kapua User 0 | user0@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name  | password          | enabled |
       | user0 | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -1001,7 +999,7 @@ Feature: User Permission tests
     And A generic user
       | name  | displayName  | email           | phoneNumber     | status  | userType |
       | user0 | Kapua User 0 | user0@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name  | password          | enabled |
       | user0 | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -1035,7 +1033,7 @@ Feature: User Permission tests
     And A generic user
       | name  | displayName  | email           | phoneNumber     | status  | userType |
       | user0 | Kapua User 0 | user0@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name  | password          | enabled |
       | user0 | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -1071,7 +1069,7 @@ Feature: User Permission tests
     And A generic user
       | name  | displayName  | email           | phoneNumber     | status  | userType |
       | user0 | Kapua User 0 | user0@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name  | password          | enabled |
       | user0 | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -1109,7 +1107,7 @@ Feature: User Permission tests
     And A generic user
       | name  | displayName  | email           | phoneNumber     | status  | userType |
       | user0 | Kapua User 0 | user0@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name  | password          | enabled |
       | user0 | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -1156,7 +1154,7 @@ Feature: User Permission tests
     And A generic user
       | name  | displayName  | email           | phoneNumber     | status  | userType |
       | user1 | Kapua User 1 | user1@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name  | password          | enabled |
       | user1 | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -1209,7 +1207,7 @@ Feature: User Permission tests
     And A generic user
       | name  | displayName  | email           | phoneNumber     | status  | userType |
       | user1 | Kapua User 1 | user1@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name  | password          | enabled |
       | user1 | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -1264,7 +1262,7 @@ Feature: User Permission tests
     And A generic user
       | name  | displayName  | email           | phoneNumber     | status  | userType |
       | user1 | Kapua User 1 | user1@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name  | password          | enabled |
       | user1 | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -1318,7 +1316,7 @@ Feature: User Permission tests
     And A generic user
       | name  | displayName  | email           | phoneNumber     | status  | userType |
       | user1 | Kapua User 1 | user1@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name  | password          | enabled |
       | user1 | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -1376,7 +1374,7 @@ Feature: User Permission tests
     And A generic user
       | name  | displayName  | email           | phoneNumber     | status  | userType |
       | user1 | Kapua User 1 | user1@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name  | password          | enabled |
       | user1 | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -1433,7 +1431,7 @@ Feature: User Permission tests
     And A generic user
       | name  | displayName  | email           | phoneNumber     | status  | userType |
       | user1 | Kapua User 1 | user1@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And Credentials
+    And I add credentials
       | name  | password          | enabled |
       | user1 | ToManySecrets123# | true    |
     And Add permissions to the last created user
@@ -1443,7 +1441,7 @@ Feature: User Permission tests
       | account | delete |
     And A device named "test_device"
     And I create a job with the name "test_job"
-    And Tag with name "test_tag"
+    And I create a tag with name "test_tag"
     And I create the group with name "test_group"
     And I create the following role
       | scopeId | name      |
@@ -1463,10 +1461,10 @@ Feature: User Permission tests
     And Tag with name "test_tag" is searched
     And An exception was thrown
     Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
-    And I search for the last created group
+    And I search for the group with name "test_group"
     And An exception was thrown
     Then I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission"
-    And I find role with name "test_role"
+    And I find a role with name "test_role"
     And An exception was thrown
     And I logout
 
