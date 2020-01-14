@@ -2496,4 +2496,42 @@ public class AuthorizationServiceSteps extends TestBase {
             verifyException(ex);
         }
     }
+
+    @And("^I create the access info entities$")
+    public void iCreateTheAccessInfoEntities() throws Exception {
+        KapuaId currScope = (KapuaId) stepData.get("LastAccountId");
+        ArrayList<User> userArray = (ArrayList<User>) stepData.get("UserList");
+        AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(currScope);
+        ArrayList<AccessInfo> accessInfoList = new ArrayList<>();
+
+        Set<Permission> permissions = (Set<Permission>) stepData.get("Permissions");
+        Set<KapuaId> roleIds = (Set<KapuaId>) stepData.get("RoleIds");
+
+        if (permissions != null && !permissions.isEmpty()) {
+            accessInfoCreator.setPermissions(permissions);
+        } else {
+            accessInfoCreator.setPermissions(null);
+        }
+
+        if (roleIds != null && !roleIds.isEmpty()) {
+            accessInfoCreator.setRoleIds(roleIds);
+        } else {
+            accessInfoCreator.setRoleIds(null);
+        }
+
+        for (User user : userArray) {
+            accessInfoCreator.setUserId(user.getId());
+            try {
+                primeException();
+                stepData.put("AccessInfoCreator", accessInfoCreator);
+                stepData.remove("AccessInfo");
+                AccessInfo accessInfo = accessInfoService.create(accessInfoCreator);
+                stepData.put("AccessInfo", accessInfo);
+                accessInfoList.add(accessInfo);
+            } catch (KapuaException ex) {
+                verifyException(ex);
+            }
+        }
+        stepData.put("AccessInfoList", accessInfoList);
+    }
 }
