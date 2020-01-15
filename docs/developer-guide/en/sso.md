@@ -225,7 +225,8 @@ In our example the endpoint is the following:
 ## Keycloak Example (OpenShift based)
 
 This project provides a template to bootstrap single sign-on based on [Keycloak](http://keycloak.org).
-The scripts for this are located in the directory `kapua/deployment/openshift/sso`.
+The scripts for this are located in the directory `kapua/deployment/openshift/sso` 
+(please refer to `kapua/deployment/minishift/sso` if you are using Minishift).
 
 Assuming you have already installed Kapua into OpenShift, it is possible to run the script `deploy`, which
 will create a new build and deployment configuration in OpenShift. This is based on the official Keycloak Docker
@@ -235,6 +236,22 @@ image `jboss/keycloak`, adding a few steps for initial provisioning.
 The default setup uses an ephemeral storage. So re-starting the Keycloak pod will delete the configuration unless
 you re-configure the setup with a persistent volume.
 {% endhint %} 
+
+After the build and deployment configuration has been created, the script will also re-configure the Kapua OpenShift 
+project to use the newly created Keycloak instance. This is done by calling the script `activate`. 
+The `activate` script can be called at a later time to re-configure Kapua (e.g. when re-installing Kapua).
+
+Both scripts (`deploy` and `activate`) require both Kapua and Keycloak URLs. 
+Keycloak requires the Kapua web console URL in order to allow request from this source, 
+while Kapua requires the Keycloak URL in order to forward requests to Keyloak.
+The URLs are being constructed from OpenShift routes, which are configured for both Kapua and Keycloak. 
+However this requires that Kapua is set up before Keycloak and that the `activate` script can only be called after 
+the `deploy` script has been successfully run.
+
+Please refer to the [Keycloak Example (Docker based)](#keycloak-example-docker-based) section for the user creation, 
+or follow the next section in order to perfrom email-based user registration.
+
+### Email-server based user registration
 
 For this configuration to work, you will need some existing SMTP server which is capable of sending e-mails.
 This is required so that Keycloak can send user verification and password recovery e-mails. If you don't have
@@ -248,38 +265,11 @@ are using `bash` as shell, this can be done like this:
 
 The following environment variables are being used:
 
-<dl>
-
-<dt>SMTP_HOST (required)</dt>
-<dd>The host name or IP address of the SMTP server</dd>
-
-<dt>SMTP_PORT (optional)</dt>
-<dd>The port number of the SMTP service</dd>
-
-<dt>SMTP_FROM (required)</dt>
-<dd>The sender e-mail used in the e-mail</dd>
-
-<dt>SMTP_USER (required)</dt>
-<dd>The user name used to authenticate with the SMTP server</dd>
-
-<dt>SMTP_PASSWORD (required)</dt>
-<dd>The password used to authenticate with the SMTP server</dd>
-
-<dt>SMTP_ENABLE_SSL (optional)</dt>
-<dd>If SSL should be used instead of STARTTLS</dd>
-
-<dt>KEYCLOAK_ADMIN_PASSWORD (optional)</dt>
-<dd>The password which will be assigned to the Keycloak admin user. The default is to generate a password.</dd>
-
-</dl>
-
-After the build and deployment configuration was creates the script will also re-configure the Kapua OpenShift project
-to use the newly created Keycloak instance. This is done by calling the script `activate`. The `activate` script
-can be called at a later time to re-configure Kapua (e.g. when re-installing Kapua).
-
-Both scripts (`deploy` and `activate`) require both Kapua and Keycloak URLs. Keycloak requires the Kapua web console
-URL in order to allow request from this source, while Kapua requires the Keycloak URL in order to forward requests to Keyloak.
-
-The URLs are being constructed from OpenShift routes, which are configured for both Kapua and Keycloak. However this requires
-that Kapua is set up before Keycloak and that the `activate` script can only be called after the `deploy` script
-has been successfully run.
+- **`SMTP_HOST` (required)** : The host name or IP address of the SMTP server.
+- **`SMTP_PORT` (optional)** : The port number of the SMTP service.
+- **`SMTP_FROM` (required)** : The sender e-mail used in the e-mail.
+- **`SMTP_USER` (required)** : The user name used to authenticate with the SMTP server.
+- **`SMTP_PASSWORD` (required)** : The password used to authenticate with the SMTP server.
+- **`SMTP_ENABLE_SSL` (optional)** : If SSL should be used instead of STARTTLS.
+- **`KEYCLOAK_ADMIN_PASSWORD` (optional)** : The password which will be assigned to the Keycloak admin user. 
+The default is to generate a password.

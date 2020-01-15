@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 
 ###############################################################################
-# Copyright (c) 2017 Red Hat Inc and others
+# Copyright (c) 2017, 2020 Red Hat Inc and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-v10.html
 #
+# Contributors:
+#     Red Hat Inc - initial API and implementation
+#     Eurotech
 ###############################################################################
 
 #
@@ -16,19 +19,39 @@
 
 set -e
 
-# Check for mail server configuration
-
-test -n "$SMTP_HOST" || die "'SMTP_HOST' not set"
-test -n "$SMTP_USER" || die "'SMTP_USER' not set"
-test -n "$SMTP_PASSWORD" || die "'SMTP_PASSWORD' not set"
-test -n "$SMTP_FROM" || die "'SMTP_FROM' not set"
-
 # Commons
 
 . "${BASH_SOURCE%/*}/env"
 . "${BASH_SOURCE%/*}/functions"
 
-# Create
+# Check for mail server configuration
+# (note: not required, but if used, all the following parameters must be set)
+
+if test -n "$SMTP_HOST" || test -n "$SMTP_USER" || test -n "$SMTP_PASSWORD" || test -n "$SMTP_FROM" ; then
+  test -n "$SMTP_HOST" || die "'SMTP_HOST' not set"
+  test -n "$SMTP_USER" || die "'SMTP_USER' not set"
+  test -n "$SMTP_PASSWORD" || die "'SMTP_PASSWORD' not set"
+  test -n "$SMTP_FROM" || die "'SMTP_FROM' not set"
+fi
+
+# Create the Keycloak project
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+. "${SCRIPT_DIR}/openshift-common.sh"
+
+${OC} login --username=${OPENSHIFT_USER} --password=${OPENSHIFT_PASS} ${OPENSHIFT_LOGIN_OPTS} &>/dev/null
+if  ${OC} describe "project/${KEYCLOAK_PROJECT_NAME}" &>/dev/null ; then
+  ${OC} delete project "${KEYCLOAK_PROJECT_NAME}" &>/dev/null
+fi
+if ! ${OC} new-project "${KEYCLOAK_PROJECT_NAME}" --display-name="Keycloak" ; then
+  echo "Old \"${KEYCLOAK_PROJECT_NAME}\" project scheduled for deletion, waiting... "
+  while ! ${OC} new-project "${KEYCLOAK_PROJECT_NAME}" --display-name="Keycloak"  &>/dev/null  ; do
+    sleep 5
+  done
+  echo "New \"${KEYCLOAK_PROJECT_NAME}\" project created."
+fi
+
+# Create Keycloak
 
 $OC process -n "$KEYCLOAK_PROJECT_NAME" -f "${BASH_SOURCE%/*}/keycloak-template.yml" \
     "GIT_REPO=${GIT_REPO:-https://github.com/eclipse/kapua}" \

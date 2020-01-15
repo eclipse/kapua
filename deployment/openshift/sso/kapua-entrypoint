@@ -17,7 +17,9 @@ if [ ! -f /opt/jboss/keycloak/standalone/data/first-run ]; then
 
   KC=/opt/jboss/keycloak/bin/kcadm.sh
   $KC config credentials --server http://localhost:8080/auth --realm master --user "$KEYCLOAK_USER" --password "$KEYCLOAK_PASSWORD"
-  
+
+  if test -n "$SMTP_HOST" && test -n "$SMTP_USER" && test -n "$SMTP_PASSWORD" && test -n "$SMTP_FROM"; then
+
   $KC create realms -s realm=kapua \
     -s enabled=true \
     -s "smtpServer.host=${SMTP_HOST}" \
@@ -41,8 +43,22 @@ if [ ! -f /opt/jboss/keycloak/standalone/data/first-run ]; then
      }
 EOF
 
+  else
+  $KC create realms -s realm=kapua \
+    -s enabled=true \
+    -f - << EOF
+    {
+        "displayName": "Eclipse Kapua",
+        "smtpServer": {
+           "auth": true,
+           "starttls": true
+        }
+     }
+EOF
+  fi
+
   $KC create clients -r kapua \
-    -s "redirectUris=[\"${KAPUA_CONSOLE_URL}/sso/callback\"]" \
+    -s "redirectUris=[\"${KAPUA_CONSOLE_URL}/*\"]" \
     -f - << EOF
     {
         "clientId": "console",

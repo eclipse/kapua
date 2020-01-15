@@ -3,7 +3,7 @@
 This directory contains a setup for enabling single-sign-on (SSO) with Kapua
 using [Keycloak](http://www.keycloak.org/).
 
-In a nutshell you will need to install Kapua into OpenShift and then run the `deploy`script.
+In a nutshell you will need to install Kapua into Minishift and then run the `deploy`script.
 A set of environment variables can be used to provide SMTP settings in order to add new Keycloak users by 
 sending out registration e-mails.
 
@@ -15,6 +15,6 @@ After deployment and startup of containers, the Keycloak container can be access
 
 | Application/Service | Endpoint                           | User  | Password                       | 
 |---------------------|------------------------------------|-------|--------------------------------|
-| Keycloak Console    | web-sso.<openshift-default-domain> | admin | <user-provided> (or generated) | 
+| Keycloak Console    | web-sso.<minishift-default-domain> | admin | <user-provided> (or generated) | 
 
 To provide a custom password, please define the `KEYCLOAK_ADMIN_PASSWORD` variable before running the `deploy` script.

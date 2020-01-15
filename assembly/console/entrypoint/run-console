@@ -35,11 +35,12 @@ if [ -n "$KEYCLOAK_URL" ] && [ -n "$KAPUA_URL" ]; then
 fi
 
 # Check for generic OpenID Connect provider integration
-if [ -n "$KAPUA_URL" ] && [ -n "$OPENID_JWT_ISSUER" ] && [ -n "$OPENID_AUTH_ENDPOINT" ] && [ -n "$OPENID_TOKEN_ENDPOINT" ]; then
+if [ -n "$KAPUA_URL" ] && [ -n "$OPENID_JWT_ISSUER" ] && [ -n "$OPENID_AUTH_ENDPOINT" ] && [ -n "$OPENID_LOGOUT_ENDPOINT" ] && [ -n "$OPENID_TOKEN_ENDPOINT" ]; then
    echo "Activating OpenID Connect Generic integration..."
    echo "  Kapua:    $KAPUA_URL"
    echo "  OpenID Issuer: $OPENID_JWT_ISSUER"
    echo "  Auth Endpoint: $OPENID_AUTH_ENDPOINT"
+   echo "  Logout Endpoint: $OPENID_LOGOUT_ENDPOINT"
    echo "  Token Endpoint: $OPENID_TOKEN_ENDPOINT"
 
    : OPENID_CLIENT_ID=${OPENID_CLIENT_ID:=console}
@@ -53,6 +54,7 @@ if [ -n "$KAPUA_URL" ] && [ -n "$OPENID_JWT_ISSUER" ] && [ -n "$OPENID_AUTH_ENDP
    JAVA_OPTS="$JAVA_OPTS -Dsso.generic.openid.jwt.audience.allowed=${JWT_AUDIENCE}"
    JAVA_OPTS="$JAVA_OPTS -Dsso.generic.openid.jwt.issuer.allowed=${OPENID_JWT_ISSUER}"
    JAVA_OPTS="$JAVA_OPTS -Dsso.generic.openid.server.endpoint.auth=${OPENID_AUTH_ENDPOINT}"
+   JAVA_OPTS="$JAVA_OPTS -Dsso.generic.openid.server.endpoint.logout=${OPENID_LOGOUT_ENDPOINT}"
    JAVA_OPTS="$JAVA_OPTS -Dsso.generic.openid.server.endpoint.token=${OPENID_TOKEN_ENDPOINT}"
 
    export JAVA_OPTS
