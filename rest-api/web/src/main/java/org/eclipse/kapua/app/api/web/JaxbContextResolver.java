@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -38,6 +38,12 @@ import org.eclipse.kapua.model.config.metatype.KapuaTicon;
 import org.eclipse.kapua.model.config.metatype.KapuaTmetadata;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.config.metatype.KapuaToption;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.model.query.predicate.OrPredicate;
+import org.eclipse.kapua.model.query.predicate.PredicateValueXmlAdapter;
+import org.eclipse.kapua.model.query.predicate.PredicateXmlRegistry;
+import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountListResult;
@@ -268,6 +274,14 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     KapuaTicon.class,
                     KapuaTmetadata.class,
                     KapuaToption.class,
+
+                    // Predicates
+                    QueryPredicate.class,
+                    AndPredicate.class,
+                    OrPredicate.class,
+                    AttributePredicate.class,
+                    PredicateValueXmlAdapter.class,
+                    PredicateXmlRegistry.class,
 
                     // Account
                     Account.class,

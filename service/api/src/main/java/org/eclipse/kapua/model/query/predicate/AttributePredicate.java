@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,12 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.query.predicate;
 
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 /**
  * {@link AttributePredicate} definition.
  *
  * @param <T> Attribute value type.
  * @since 1.0.0
  */
+@XmlRootElement(name = "attributePredicate")
+@XmlType(factoryClass = PredicateXmlRegistry.class, factoryMethod = "newAttributePredicate")
 public interface AttributePredicate<T> extends QueryPredicate {
 
     /**
@@ -129,13 +136,19 @@ public interface AttributePredicate<T> extends QueryPredicate {
      */
     String getAttributeName();
 
+    void setAttributeName(String attributeName);
+
     /**
      * Gets the value to compare the results.
      *
      * @return The value to compare the results.
      * @since 1.0.0
      */
+    @XmlAnyElement
+    @XmlJavaTypeAdapter(PredicateValueXmlAdapter.class)
     T getAttributeValue();
+
+    void setAttributeValue(T value);
 
     /**
      * Get the {@link Operator} used to compare results.
@@ -144,4 +157,6 @@ public interface AttributePredicate<T> extends QueryPredicate {
      * @since 1.0.0
      */
     Operator getOperator();
+
+    void setOperator(Operator operator);
 }

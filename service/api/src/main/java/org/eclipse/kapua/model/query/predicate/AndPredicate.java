@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,11 @@
 package org.eclipse.kapua.model.query.predicate;
 
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
 /**
@@ -21,6 +26,8 @@ import java.util.List;
  *
  * @since 1.0.0
  */
+@XmlRootElement(name = "andPredicate")
+@XmlType(factoryClass = PredicateXmlRegistry.class, factoryMethod = "newAndPredicate")
 public interface AndPredicate extends QueryPredicate {
 
     /**
@@ -31,6 +38,7 @@ public interface AndPredicate extends QueryPredicate {
      * @throws NullPointerException if the given parameter is {@code null}.
      * @since 1.0.0
      */
+    @XmlTransient
     AndPredicate and(@NotNull QueryPredicate predicate);
 
     /**
@@ -39,6 +47,8 @@ public interface AndPredicate extends QueryPredicate {
      * @return The {@link List} of {@link QueryPredicate}s
      * @since 1.0.0
      */
+    @XmlElementWrapper(name = "predicates")
+    @XmlElement(name = "predicate")
     List<QueryPredicate> getPredicates();
 
     /**

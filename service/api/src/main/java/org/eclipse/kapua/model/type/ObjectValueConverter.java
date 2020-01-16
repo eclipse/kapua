@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,12 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.type;
 
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdFactory;
+
 /**
  * Utilities to convert the value of objects to serialize them.
  *
  * @since 1.0.0
  */
 public class ObjectValueConverter {
+
+    private static final KapuaIdFactory KAPUA_ID_FACTORY = KapuaLocator.getInstance().getFactory(KapuaIdFactory.class);
 
     private ObjectValueConverter() {
     }
@@ -80,6 +86,8 @@ public class ObjectValueConverter {
                 value = Boolean.parseBoolean(stringValue);
             } else if (type == byte[].class || type == Byte[].class) {
                 value = ByteArrayConverter.fromString(stringValue);
+            } else if (type == KapuaId.class) {
+                value = KAPUA_ID_FACTORY.newKapuaId(stringValue);
             } else {
                 value = stringValue;
             }
@@ -87,4 +95,5 @@ public class ObjectValueConverter {
 
         return value;
     }
+
 }
