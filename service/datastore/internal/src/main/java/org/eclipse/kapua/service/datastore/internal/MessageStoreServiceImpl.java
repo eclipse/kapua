@@ -56,7 +56,8 @@ import java.util.UUID;
 @KapuaProvider
 public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService implements MessageStoreService {
 
-    protected static final String METRIC_COMPONENT_NAME = "datastore";
+    public static final String METRIC_MODULE_NAME = "datastore";
+    public static final String METRIC_COMPONENT_NAME = "driver";
 
     protected static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     // metrics
@@ -91,17 +92,17 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         DatastoreMediator.getInstance().setMessageStoreFacade(messageStoreFacade);
         // data message
         MetricsService metricService = MetricServiceFactory.getInstance();
-        metricMessageCount = metricService.getCounter(METRIC_COMPONENT_NAME, "datastore", "store", "messages", "count");
-        metricCommunicationErrorCount = metricService.getCounter(METRIC_COMPONENT_NAME, "datastore", "store", "messages", "communication", "error", "count");
-        metricConfigurationErrorCount = metricService.getCounter(METRIC_COMPONENT_NAME, "datastore", "store", "messages", "configuration", "error", "count");
-        metricGenericErrorCount = metricService.getCounter(METRIC_COMPONENT_NAME, "datastore", "store", "messages", "generic", "error", "count");
-        metricValidationErrorCount = metricService.getCounter(METRIC_COMPONENT_NAME, "datastore", "store", "messages", "validation", "error", "count");
+        metricMessageCount = metricService.getCounter(METRIC_MODULE_NAME, METRIC_COMPONENT_NAME, "store", "messages", "count");
+        metricCommunicationErrorCount = metricService.getCounter(METRIC_MODULE_NAME, METRIC_COMPONENT_NAME, "store", "messages", "communication", "error", "count");
+        metricConfigurationErrorCount = metricService.getCounter(METRIC_MODULE_NAME, METRIC_COMPONENT_NAME, "store", "messages", "configuration", "error", "count");
+        metricGenericErrorCount = metricService.getCounter(METRIC_MODULE_NAME, METRIC_COMPONENT_NAME, "store", "messages", "generic", "error", "count");
+        metricValidationErrorCount = metricService.getCounter(METRIC_MODULE_NAME, METRIC_COMPONENT_NAME, "store", "messages", "validation", "error", "count");
         // error messages queues size
-        metricQueueCommunicationErrorCount = metricService.getCounter(METRIC_COMPONENT_NAME, "datastore", "store", "queue", "communication", "error", "count");
-        metricQueueConfigurationErrorCount = metricService.getCounter(METRIC_COMPONENT_NAME, "datastore", "store", "queue", "configuration", "error", "count");
-        metricQueueGenericErrorCount = metricService.getCounter(METRIC_COMPONENT_NAME, "datastore", "store", "queue", "generic", "error", "count");
+        metricQueueCommunicationErrorCount = metricService.getCounter(METRIC_MODULE_NAME, METRIC_COMPONENT_NAME, "store", "queue", "communication", "error", "count");
+        metricQueueConfigurationErrorCount = metricService.getCounter(METRIC_MODULE_NAME, METRIC_COMPONENT_NAME, "store", "queue", "configuration", "error", "count");
+        metricQueueGenericErrorCount = metricService.getCounter(METRIC_MODULE_NAME, METRIC_COMPONENT_NAME, "store", "queue", "generic", "error", "count");
         // store timers
-        metricDataSaveTime = metricService.getTimer(METRIC_COMPONENT_NAME, "datastore", "store", "messages", "time", "s");
+        metricDataSaveTime = metricService.getTimer(METRIC_MODULE_NAME, METRIC_COMPONENT_NAME, "store", "messages", "time", "s");
     }
 
     @Override

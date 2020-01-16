@@ -54,18 +54,18 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
     private static final Logger LOG = LoggerFactory.getLogger(RaiseServiceEventInterceptor.class);
 
     private static final String MODULE = "commons";
-    private static final String COMPONENT = "serviceEvent";
+    private static final String COMPONENT = "service_event";
     private static final String ACTION = "event_data_filler";
     private static final String COUNT = "count";
 
 
     private static final MetricsService METRIC_SERVICE = MetricServiceFactory.getInstance();
 
-    private Counter wrongIds;
+    private Counter wrongId;
     private Counter wrongEntity;
 
     public RaiseServiceEventInterceptor() {
-        wrongIds = METRIC_SERVICE.getCounter(MODULE, COMPONENT, ACTION, "wrong_ids", COUNT);
+        wrongId = METRIC_SERVICE.getCounter(MODULE, COMPONENT, ACTION, "wrong_id", COUNT);
         wrongEntity = METRIC_SERVICE.getCounter(MODULE, COMPONENT, ACTION, "wrong_entity", COUNT);
     }
 
@@ -183,7 +183,7 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
     private void useKapuaIdsToFillEvent(ServiceEvent serviceEvent, List<KapuaId> ids, Class<?>[] implementedClass) {
         if (ids.size()>2) {
             LOG.warn("Found more than two KapuaId in the parameters! Assuming to use the first two!");
-            wrongIds.inc();
+            wrongId.inc();
         }
         if (ids.size() >= 2) {
             serviceEvent.setEntityScopeId(ids.get(0));

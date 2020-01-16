@@ -48,7 +48,8 @@ public abstract class AbstractKapuaConverter {
     public static final Logger logger = LoggerFactory.getLogger(AbstractKapuaConverter.class);
 
     // metrics
-    protected static final String METRIC_COMPONENT_NAME = "converter";
+    protected static final String METRIC_MODULE_NAME = "converter";
+    protected static final String METRIC_COMPONENT_NAME = "kapua";
     protected static final MetricsService METRICS_SERVICE = MetricServiceFactory.getInstance();
 
     private final Counter metricConverterJmsMessage;
@@ -59,9 +60,9 @@ public abstract class AbstractKapuaConverter {
      * Constructor
      */
     protected AbstractKapuaConverter() {
-        metricConverterJmsMessage = METRICS_SERVICE.getCounter(METRIC_COMPONENT_NAME, "kapua", "jms", "messages", "count");
-        metricConverterJmsErrorMessage = METRICS_SERVICE.getCounter(METRIC_COMPONENT_NAME, "kapua", "jms", "messages", "error", "count");
-        metricConverterErrorMessage = METRICS_SERVICE.getCounter(METRIC_COMPONENT_NAME, "kapua", "kapua_message", "messages", "error", "count");
+        metricConverterJmsMessage = METRICS_SERVICE.getCounter(METRIC_MODULE_NAME, METRIC_COMPONENT_NAME, "jms", "message", "count");
+        metricConverterJmsErrorMessage = METRICS_SERVICE.getCounter(METRIC_MODULE_NAME, METRIC_COMPONENT_NAME, "jms", "message", "error", "count");
+        metricConverterErrorMessage = METRICS_SERVICE.getCounter(METRIC_MODULE_NAME, METRIC_COMPONENT_NAME, "kapua_message", "message", "error", "count");
     }
 
     /**
