@@ -73,8 +73,9 @@ Vagrant.configure("2") do |config|
   config.vm.network "private_network", ip: network_address
 
   config.vm.provider "virtualbox" do |vb|
+    vb.cpus = 2
     vb.gui = false
-    vb.memory = "4096"
+    vb.memory = "6144"
   end
 
   config.vm.provision "shell", env: env_vars, inline: <<-SHELL
