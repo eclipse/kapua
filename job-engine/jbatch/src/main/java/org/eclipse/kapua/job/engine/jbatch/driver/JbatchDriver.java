@@ -192,7 +192,7 @@ public class JbatchDriver {
 
         //
         // Retrieve job XML definition file. Delete it if exist
-        File jobXmlDefinitionFile = new File(jobTempDirectory, jobId.toCompactId().concat("-").concat(String.valueOf(System.currentTimeMillis())).concat(".xml"));
+        File jobXmlDefinitionFile = new File(jobTempDirectory, jobId.toCompactId().concat("-").concat(String.valueOf(System.nanoTime())).concat(".xml"));
         if (jobXmlDefinitionFile.exists() && !jobXmlDefinitionFile.delete()) {
             throw new CannotCleanJobDefFileDriverException(jobName, jobXmlDefinitionFile.getAbsolutePath());
         }
