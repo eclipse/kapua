@@ -7,25 +7,32 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Eurotech - initial API and implementation
+ *     Red Hat
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
 import org.eclipse.kapua.KapuaException;
 
 /**
- * Entity manager factory definition
+ * Entity manager callback insert result service definition.
  *
+ * @param <T> Insert execution result return type
  * @since 1.0
  */
-public interface EntityManagerFactory {
+public interface EntityManagerCallback<T> {
 
     /**
-     * Creates an instance of {@link EntityManager}
+     * Return the insert execution result invoked using the provided entity manager.<br>
+     * <br>
+     * WARNING!<br>
+     * The transactionality (if needed by the code) must be managed internally to this method.<br>
+     * The caller method performs only a rollback (if the transaction is active and an error occurred)!<br>
+     * @see EntityManagerSession#onInsert(EntityManagerInsertCallback)
      *
+     * @param entityManager
      * @return
      * @throws KapuaException
      */
-    public EntityManager createEntityManager() throws KapuaException;
+    T onAction(EntityManager entityManager) throws KapuaException;
 
 }

@@ -149,6 +149,15 @@ public class EntityManager {
     }
 
     /**
+     * Detach the entity
+     *
+     * @param entity
+     */
+    public <E extends KapuaEntity> void detach(E entity) {
+        javaxPersitenceEntityManager.detach(entity);
+    }
+
+    /**
      * Find the entity by the given id and type
      *
      * @param clazz
