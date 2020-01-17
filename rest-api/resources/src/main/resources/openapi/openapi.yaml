@@ -438,9 +438,91 @@ components:
           description: An Offset on the result size. Used to skip the first `n` items of a result set, with `n` equal to the value of `offset`
           type: integer
           default: 0
+        predicate:
+          $ref: '#/components/schemas/predicate'
       example:
         offset: 0
         limit: 50
+    ### Predicates ###
+    andPredicate:
+      description: A Predicate that puts in logical AND condition other Predicates
+      properties:
+        predicates:
+          type: array
+          items:
+            - $ref: '#/components/schemas/predicate'
+    orPredicate:
+      description: A Predicate that puts in logical OR condition other Predicates
+      properties:
+        predicates:
+          type: array
+          items:
+            - $ref: '#/components/schemas/predicate'
+    attributePredicate:
+      description: A Predicate that filters entities according to an Attribute and its value
+      properties:
+        attributeName:
+          description: The Name of the Attribute to use as a filter
+          type: string
+        attributeValue:
+          description: The Value of the Attribute to use as a filter
+          type: object
+          properties:
+            valueType:
+              description: The type of `value` if present, or the type of the items inside `arrayValue` otherwise
+              type: string
+            value:
+              description: the value that must match the `attributeName` for the Predicate to be true. Mutually exclusive with `arrayValue`
+              type: string
+            arrayValue:
+              description: |
+                an array of strings if `operator` is EQUAL (or not present, since EQUAL is the default value in that case).
+                EQUAL operator will act as an `IN` SQL clause. Mutually exclusive with `value`
+              type: array
+              items:
+                type: string
+        operator:
+          description: The Operator to use as a filter
+          type: string
+          enum:
+            - EQUAL
+            - NOT_EQUAL
+            - IS_NULL
+            - NOT_NULL
+            - STARTS_WITH
+            - LIKE
+            - GREATER_THAN
+            - GREATER_THAN_OR_EQUAL
+            - LESS_THAN
+            - LESS_THAN_OR_EQUAL
+          default: EQUAL
+    predicate:
+      description: |
+        A Predicate object containing the predicate to be used in the query. It can be one of `andPredicate`, `orPredicate` or `attributePredicate`
+        `andPredicate`s and `orPredicates` can contain additional Predicates (of every type) to implement complex logical operations.
+        An `attributePredicate` will contain an `attributeName`, an `attributeValue` and an optional `operator`.
+      type: object
+      # TODO this oneOf is commented because SwaggerUI reports dozens of errors if file is built with --dereference, and
+      # building without --dereference is not possible because of the circular reference between predicate, andPredicate
+      # and orPredicate. Once SwaggerUI fixes this, or circular references are better handled in swagger-cli, this oneOf
+      # can be brought in again.
+#      oneOf:
+#          - $ref: '#/components/schemas/andPredicate'
+#          - $ref: '#/components/schemas/orPredicate'
+#          - $ref: '#/components/schemas/attributePredicate'
+      properties:
+        type:
+          type: string
+          enum:
+            - andPredicate
+            - orPredicate
+            - attributePredicate
+      discriminator:
+        propertyName: type
+        mapping:
+          andPredicate: '#/components/schemas/andPredicate'
+          orPredicate: '#/components/schemas/orPredicate'
+          attributePredicate: '#/components/schemas/attributePredicate'
     ### Creators ###
     kapuaEntityCreator:
       description: An object that contains the informations needed to create an Entity
@@ -496,6 +578,43 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/kapuaQuery'
+          examples:
+            simple_query:
+              summary: Simple query
+              description: |
+                A simple query with no filtering predicates. Only `offset` and `limit` are present, to limit the result
+                set
+              value:
+                offset: 0
+                limit: 50
+            complex_query:
+              summary: Complex query with Predicates
+              description: |
+                A complex query for a `kapuaNamedEntity` (an entity with a `name` field). The main Predicate is an
+                `andPredicate`, with two sub-predicates: an `attributePredicate` to match on a set of `id`s (AQ or Ag),
+                and another one to match all entities with a `displayName` that contains the "Broker" string. So, in
+                pseudo-SQL code, this clause would translate as `WHERE id IN ['AQ', 'Ag'] AND name LIKE '%broker%'`.
+
+                **The `value` and `arrayValue` properties are mutually exclusive within the same predicate**.
+              value:
+                offset: 0
+                limit: 50
+                predicate:
+                  type: andPredicate
+                  predicates:
+                    - type: attributePredicate
+                      attributeName: id
+                      attributeValue:
+                        arrayValue:
+                          - AQ
+                          - Ag
+                        valueType: org.eclipse.kapua.model.id.KapuaId
+                    - type: attributePredicate
+                      attributeName: name
+                      attributeValue:
+                        value: broker
+                        valueType: string
+                      operator: LIKE
       required: true
   responses:
     countResult:
