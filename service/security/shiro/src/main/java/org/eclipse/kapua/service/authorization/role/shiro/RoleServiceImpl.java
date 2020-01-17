@@ -111,7 +111,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> {
+        return entityManagerSession.doTransactedAction(em -> {
             Role role = RoleDAO.create(em, roleCreator);
 
             if (!roleCreator.getPermissions().isEmpty()) {
@@ -165,7 +165,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Do update
-        return entityManagerSession.onTransactedResult(em -> RoleDAO.update(em, role));
+        return entityManagerSession.doTransactedAction(em -> RoleDAO.update(em, role));
     }
 
     @Override
@@ -190,7 +190,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> RoleDAO.delete(em, scopeId, roleId));
+        entityManagerSession.doTransactedAction(em -> RoleDAO.delete(em, scopeId, roleId));
     }
 
     @Override
@@ -206,7 +206,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> RoleDAO.find(em, scopeId, roleId));
+        return entityManagerSession.doAction(em -> RoleDAO.find(em, scopeId, roleId));
     }
 
     @Override
@@ -221,7 +221,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> RoleDAO.query(em, query));
+        return entityManagerSession.doAction(em -> RoleDAO.query(em, query));
     }
 
     @Override
@@ -236,7 +236,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Do count
-        return entityManagerSession.onResult(em -> RoleDAO.count(em, query));
+        return entityManagerSession.doAction(em -> RoleDAO.count(em, query));
     }
 
     //@ListenServiceEvent(fromAddress="account")

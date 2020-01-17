@@ -83,7 +83,6 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
     }
 
     // Entity manager factory methods
-
     /**
      * Returns an EntityManager instance.
      *

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,11 +14,13 @@ package org.eclipse.kapua.commons.event;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.eclipse.kapua.commons.core.InterceptorBind;
+import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecord;
 import org.eclipse.kapua.commons.service.event.store.api.ServiceEventUtil;
 import org.eclipse.kapua.commons.service.event.store.internal.EventStoreDAO;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
@@ -259,9 +261,10 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
         if (invocation.getThis() instanceof AbstractKapuaService) {
             try {
                 serviceEventBus.setStatus(newServiceEventStatus);
-                ((AbstractKapuaService) invocation.getThis()).getEntityManagerSession().onTransactedAction(
-                        em -> EventStoreDAO.update(em,
-                                ServiceEventUtil.mergeToEntity(EventStoreDAO.find(em, serviceEventBus.getScopeId(), KapuaEid.parseCompactId(serviceEventBus.getId())), serviceEventBus)));
+                ((AbstractKapuaService) invocation.getThis()).getEntityManagerSession().doAction(EntityManagerContainer.<EventStoreRecord>create().onResultHandler(em -> {
+                    return EventStoreDAO.update(em,
+                            ServiceEventUtil.mergeToEntity(EventStoreDAO.find(em, serviceEventBus.getScopeId(), KapuaEid.parseCompactId(serviceEventBus.getId())), serviceEventBus));
+                }));
             } catch (Throwable t) {
                 // this may be a valid condition if the HouseKeeper is doing the update concurrently with this task
                 LOG.warn("Error updating event status: {}", t.getMessage(), t);

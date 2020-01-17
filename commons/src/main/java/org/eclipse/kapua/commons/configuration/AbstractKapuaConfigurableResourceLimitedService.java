@@ -40,6 +40,10 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
     private final Class<S> serviceClass;
     private final Class<F> factoryClass;
 
+    /**
+     * @deprecated this constructor will be removed in a next release (may be)
+     */
+    @Deprecated
     protected AbstractKapuaConfigurableResourceLimitedService(
             String pid,
             Domain domain,

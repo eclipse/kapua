@@ -88,7 +88,7 @@ public class DeviceConnectionOptionServiceImpl extends AbstractKapuaService impl
             }
         }
 
-        return entityManagerSession.onTransactedResult(em -> {
+        return entityManagerSession.doTransactedAction(em -> {
             if (DeviceConnectionOptionDAO.find(em, deviceConnectionOptions.getScopeId(), deviceConnectionOptions.getId()) == null) {
                 throw new KapuaEntityNotFoundException(DeviceConnectionOption.TYPE, deviceConnectionOptions.getId());
             }
@@ -112,7 +112,7 @@ public class DeviceConnectionOptionServiceImpl extends AbstractKapuaService impl
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, scopeId));
 
-        return entityManagerSession.onResult(em -> DeviceConnectionOptionDAO.find(em, scopeId, entityId));
+        return entityManagerSession.doAction(em -> DeviceConnectionOptionDAO.find(em, scopeId, entityId));
     }
 
     @Override
@@ -129,7 +129,7 @@ public class DeviceConnectionOptionServiceImpl extends AbstractKapuaService impl
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onResult(em -> DeviceConnectionOptionDAO.query(em, query));
+        return entityManagerSession.doAction(em -> DeviceConnectionOptionDAO.query(em, query));
     }
 
     @Override
@@ -146,7 +146,7 @@ public class DeviceConnectionOptionServiceImpl extends AbstractKapuaService impl
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onResult(em -> DeviceConnectionOptionDAO.count(em, query));
+        return entityManagerSession.doAction(em -> DeviceConnectionOptionDAO.count(em, query));
     }
 
     @Override
