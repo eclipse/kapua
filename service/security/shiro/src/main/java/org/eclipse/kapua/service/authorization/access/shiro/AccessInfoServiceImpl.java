@@ -103,7 +103,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
             }
         }
 
-        return entityManagerSession.onTransactedInsert(em -> {
+        return entityManagerSession.doTransactedAction(em -> {
             AccessInfo accessInfo = AccessInfoDAO.create(em, accessInfoCreator);
 
             if (!accessInfoCreator.getPermissions().isEmpty()) {
@@ -147,7 +147,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
 
-        return entityManagerSession.onResult(em -> AccessInfoDAO.find(em, scopeId, accessInfoId));
+        return entityManagerSession.doAction(em -> AccessInfoDAO.find(em, scopeId, accessInfoId));
     }
 
     @Override
@@ -164,7 +164,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
         AccessInfoQuery query = accessInfoFactory.newQuery(scopeId);
         query.setPredicate(query.attributePredicate(AccessInfoAttributes.USER_ID, userId));
-        AccessInfoListResult result = entityManagerSession.onResult(em -> AccessInfoDAO.query(em, query));
+        AccessInfoListResult result = entityManagerSession.doAction(em -> AccessInfoDAO.query(em, query));
         if (!result.isEmpty()) {
             return result.getFirstItem();
         } else {
@@ -184,7 +184,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onResult(em -> AccessInfoDAO.query(em, query));
+        return entityManagerSession.doAction(em -> AccessInfoDAO.query(em, query));
     }
 
     @Override
@@ -199,7 +199,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onResult(em -> AccessInfoDAO.count(em, query));
+        return entityManagerSession.doAction(em -> AccessInfoDAO.count(em, query));
     }
 
     @Override
@@ -210,12 +210,12 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.delete, scopeId));
 
-        entityManagerSession.onTransactedAction(em -> {
+        entityManagerSession.doTransactedAction(em -> {
             if (AccessInfoDAO.find(em, scopeId, accessInfoId) == null) {
                 throw new KapuaEntityNotFoundException(AccessInfo.TYPE, accessInfoId);
             }
 
-            AccessInfoDAO.delete(em, scopeId, accessInfoId);
+            return AccessInfoDAO.delete(em, scopeId, accessInfoId);
         });
     }
 

@@ -122,11 +122,12 @@ public class TagDAO extends ServiceDAO {
      * @param scopeId
      * @param tagId
      *            The {@link Tag} id to delete.
+     * @return deleted entity
      * @throws KapuaEntityNotFoundException
      *             If {@link Tag} is not found.
      * @since 1.0.0
      */
-    public static void delete(EntityManager em, KapuaId scopeId, KapuaId tagId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, TagImpl.class, scopeId, tagId);
+    public static Tag delete(EntityManager em, KapuaId scopeId, KapuaId tagId) throws KapuaEntityNotFoundException {
+        return ServiceDAO.delete(em, TagImpl.class, scopeId, tagId);
     }
 }

@@ -91,11 +91,12 @@ public class AccessInfoDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param accessInfoId
+     * @return deleted entity
      * @throws KapuaEntityNotFoundException If {@link AccessInfo} is nott found.
      * @since 1.0.0
      */
-    public static void delete(EntityManager em, KapuaId scopeId, KapuaId accessInfoId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, AccessInfoImpl.class, scopeId, accessInfoId);
+    public static AccessInfo delete(EntityManager em, KapuaId scopeId, KapuaId accessInfoId) throws KapuaEntityNotFoundException {
+        return ServiceDAO.delete(em, AccessInfoImpl.class, scopeId, accessInfoId);
     }
 
 }

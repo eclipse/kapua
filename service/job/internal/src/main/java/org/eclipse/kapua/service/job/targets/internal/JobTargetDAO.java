@@ -128,11 +128,12 @@ public class JobTargetDAO {
      * @param em
      * @param scopeId
      * @param jobTargetId
+     * @return deleted entity
      * @throws KapuaEntityNotFoundException
      *             If the {@link JobTarget} is not found
      */
-    public static void delete(EntityManager em, KapuaId scopeId, KapuaId jobTargetId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, JobTargetImpl.class, scopeId, jobTargetId);
+    public static JobTarget delete(EntityManager em, KapuaId scopeId, KapuaId jobTargetId) throws KapuaEntityNotFoundException {
+        return ServiceDAO.delete(em, JobTargetImpl.class, scopeId, jobTargetId);
     }
 
 }

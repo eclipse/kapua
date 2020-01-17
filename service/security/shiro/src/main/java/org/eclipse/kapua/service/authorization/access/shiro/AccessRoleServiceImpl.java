@@ -66,7 +66,7 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
 
         //
         // If role is not in the scope of the access info or does not exists throw an exception.
-        return entityManagerSession.onTransactedInsert(em -> {
+        return entityManagerSession.doTransactedAction(em -> {
 
             //
             // Check that accessInfo exists
@@ -116,12 +116,12 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.delete, scopeId));
 
-        entityManagerSession.onTransactedAction(em -> {
+        entityManagerSession.doTransactedAction(em -> {
             if (AccessRoleDAO.find(em, scopeId, accessRoleId) == null) {
                 throw new KapuaEntityNotFoundException(AccessRole.TYPE, accessRoleId);
             }
 
-            AccessRoleDAO.delete(em, scopeId, accessRoleId);
+            return AccessRoleDAO.delete(em, scopeId, accessRoleId);
         });
     }
 
@@ -138,7 +138,7 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, scopeId));
 
-        return entityManagerSession.onResult(em -> AccessRoleDAO.find(em, scopeId, accessRoleId));
+        return entityManagerSession.doAction(em -> AccessRoleDAO.find(em, scopeId, accessRoleId));
     }
 
     @Override
@@ -167,7 +167,7 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onResult(em -> AccessRoleDAO.query(em, query));
+        return entityManagerSession.doAction(em -> AccessRoleDAO.query(em, query));
     }
 
     @Override
@@ -182,6 +182,6 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ACCESS_INFO_DOMAIN, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onResult(em -> AccessRoleDAO.count(em, query));
+        return entityManagerSession.doAction(em -> AccessRoleDAO.count(em, query));
     }
 }

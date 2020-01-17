@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -54,12 +54,9 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     private String pid;
 
     /**
-     * Constructor
-     *
-     * @param pid
-     * @param domain
-     * @param entityManagerFactory
+     * @deprecated this constructor will be removed in a next release (may be)
      */
+    @Deprecated
     protected AbstractKapuaConfigurableService(String pid, Domain domain, EntityManagerFactory entityManagerFactory) {
         super(entityManagerFactory);
         this.pid = pid;
@@ -200,7 +197,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     private ServiceConfig createConfig(ServiceConfig serviceConfig)
             throws KapuaException {
 
-        return entityManagerSession.onTransactedInsert(em -> ServiceDAO.create(em, serviceConfig));
+        return entityManagerSession.doAction(em -> ServiceDAO.create(em, serviceConfig));
     }
 
     /**
@@ -212,7 +209,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      */
     private ServiceConfig updateConfig(ServiceConfig serviceConfig)
             throws KapuaException {
-        return entityManagerSession.onTransactedResult(em -> {
+        return entityManagerSession.doAction(em -> {
             ServiceConfig oldServiceConfig = ServiceConfigDAO.find(em, serviceConfig.getScopeId(), serviceConfig.getId());
             if (oldServiceConfig == null) {
                 throw new KapuaEntityNotFoundException(ServiceConfig.TYPE, serviceConfig.getId());
@@ -271,7 +268,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
         query.setPredicate(predicate);
 
-        ServiceConfigListResult result = entityManagerSession.onResult(em -> ServiceDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query));
+        ServiceConfigListResult result = entityManagerSession.doAction(em -> ServiceDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query));
 
         Properties properties = null;
         if (result != null && !result.isEmpty()) {
@@ -301,7 +298,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
                 )
         );
 
-        ServiceConfigListResult result = entityManagerSession.onResult(em -> ServiceDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query));
+        ServiceConfigListResult result = entityManagerSession.doAction(em -> ServiceDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query));
 
         Properties props = toProperties(values);
         if (result == null || result.isEmpty()) {

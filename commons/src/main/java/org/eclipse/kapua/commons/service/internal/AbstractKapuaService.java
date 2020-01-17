@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,10 +31,11 @@ public class AbstractKapuaService {
     protected EntityManagerSession entityManagerSession;
 
     /**
-     * Constructor
-     * 
+     * @deprecated this constructor will be removed in a next release (may be)
+     *
      * @param entityManagerFactory
      */
+    @Deprecated
     protected AbstractKapuaService(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
         this.entityManagerSession = new EntityManagerSession(entityManagerFactory);

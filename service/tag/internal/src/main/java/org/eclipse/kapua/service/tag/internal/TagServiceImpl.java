@@ -84,7 +84,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> TagDAO.create(em, tagCreator));
+        return entityManagerSession.doTransactedAction(em -> TagDAO.create(em, tagCreator));
     }
 
     @Override
@@ -122,7 +122,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Do Update
-        return entityManagerSession.onTransactedResult(em -> TagDAO.update(em, tag));
+        return entityManagerSession.doTransactedAction(em -> TagDAO.update(em, tag));
     }
 
     @Override
@@ -144,7 +144,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         //
-        entityManagerSession.onTransactedAction(em -> TagDAO.delete(em, scopeId, tagId));
+        entityManagerSession.doTransactedAction(em -> TagDAO.delete(em, scopeId, tagId));
     }
 
     @Override
@@ -160,7 +160,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> TagDAO.find(em, scopeId, tagId));
+        return entityManagerSession.doAction(em -> TagDAO.find(em, scopeId, tagId));
     }
 
     @Override
@@ -175,7 +175,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> TagDAO.query(em, query));
+        return entityManagerSession.doAction(em -> TagDAO.query(em, query));
     }
 
     @Override
@@ -190,6 +190,6 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Do count
-        return entityManagerSession.onResult(em -> TagDAO.count(em, query));
+        return entityManagerSession.doAction(em -> TagDAO.count(em, query));
     }
 }
