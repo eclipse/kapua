@@ -123,9 +123,10 @@ public class AccessTokenDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param accessTokenId
+     * @return deleted entity
      * @throws KapuaEntityNotFoundException If {@link AccessToken} is not found.
      */
-    public static void delete(EntityManager em, KapuaId scopeId, KapuaId accessTokenId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, AccessTokenImpl.class, scopeId, accessTokenId);
+    public static AccessToken delete(EntityManager em, KapuaId scopeId, KapuaId accessTokenId) throws KapuaEntityNotFoundException {
+        return ServiceDAO.delete(em, AccessTokenImpl.class, scopeId, accessTokenId);
     }
 }

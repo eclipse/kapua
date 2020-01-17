@@ -63,7 +63,7 @@ public class QueuedJobExecutionServiceImpl
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> QueuedJobExecutionDAO.create(em, creator));
+        return entityManagerSession.doTransactedAction(em -> QueuedJobExecutionDAO.create(em, creator));
     }
 
     @Override
@@ -77,7 +77,7 @@ public class QueuedJobExecutionServiceImpl
         // Check access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
-        return entityManagerSession.onTransactedResult(em -> QueuedJobExecutionDAO.update(em, queuedJobExecution));
+        return entityManagerSession.doTransactedAction(em -> QueuedJobExecutionDAO.update(em, queuedJobExecution));
     }
 
     @Override
@@ -93,7 +93,7 @@ public class QueuedJobExecutionServiceImpl
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> QueuedJobExecutionDAO.find(em, scopeId, queuedJobExecutionId));
+        return entityManagerSession.doAction(em -> QueuedJobExecutionDAO.find(em, scopeId, queuedJobExecutionId));
     }
 
     @Override
@@ -108,7 +108,7 @@ public class QueuedJobExecutionServiceImpl
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> QueuedJobExecutionDAO.query(em, query));
+        return entityManagerSession.doAction(em -> QueuedJobExecutionDAO.query(em, query));
     }
 
     @Override
@@ -123,7 +123,7 @@ public class QueuedJobExecutionServiceImpl
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> QueuedJobExecutionDAO.count(em, query));
+        return entityManagerSession.doAction(em -> QueuedJobExecutionDAO.count(em, query));
     }
 
     @Override
@@ -139,12 +139,12 @@ public class QueuedJobExecutionServiceImpl
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> {
+        entityManagerSession.doTransactedAction(em -> {
             if (QueuedJobExecutionDAO.find(em, scopeId, queuedJobExecutionId) == null) {
                 throw new KapuaEntityNotFoundException(JobExecution.TYPE, queuedJobExecutionId);
             }
 
-            QueuedJobExecutionDAO.delete(em, scopeId, queuedJobExecutionId);
+            return QueuedJobExecutionDAO.delete(em, scopeId, queuedJobExecutionId);
         });
 
     }

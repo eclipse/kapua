@@ -14,22 +14,25 @@ package org.eclipse.kapua.commons.jpa;
 import org.eclipse.kapua.KapuaException;
 
 /**
- * Entity manager callback action service definition.
+ * Entity manager callback insert result service definition.
  *
+ * @param <T> Insert execution result return type
  * @since 1.0
  */
-public interface EntityManagerActionCallback {
+public interface EntityManagerCallback<T> {
 
     /**
-     * Execute the action using the provided entity manager.<br>
+     * Return the insert execution result invoked using the provided entity manager.<br>
+     * <br>
      * WARNING!<br>
      * The transactionality (if needed by the code) must be managed internally to this method.<br>
      * The caller method performs only a rollback (if the transaction is active and an error occurred)!<br>
-     * @see EntityManagerSession#onAction(EntityManagerActionCallback)
+     * @see EntityManagerSession#onInsert(EntityManagerInsertCallback)
      *
      * @param entityManager
+     * @return
      * @throws KapuaException
      */
-    void onAction(EntityManager entityManager) throws KapuaException;
+    T onAction(EntityManager entityManager) throws KapuaException;
 
 }

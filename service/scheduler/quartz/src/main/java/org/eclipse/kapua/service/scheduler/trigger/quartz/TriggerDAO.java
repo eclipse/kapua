@@ -109,10 +109,11 @@ public class TriggerDAO {
      * @param em
      * @param scopeId
      * @param triggerId
+     * @return deleted entity
      * @throws KapuaEntityNotFoundException If the {@link Trigger} is not found
      */
-    public static void delete(EntityManager em, KapuaId scopeId, KapuaId triggerId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, TriggerImpl.class, scopeId, triggerId);
+    public static Trigger delete(EntityManager em, KapuaId scopeId, KapuaId triggerId) throws KapuaEntityNotFoundException {
+        return ServiceDAO.delete(em, TriggerImpl.class, scopeId, triggerId);
     }
 
 }

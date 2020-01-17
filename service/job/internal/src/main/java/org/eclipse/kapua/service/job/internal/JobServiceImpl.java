@@ -104,7 +104,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> JobDAO.create(em, creator));
+        return entityManagerSession.doTransactedAction(em -> JobDAO.create(em, creator));
     }
 
     @Override
@@ -141,7 +141,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Do update
-        return entityManagerSession.onTransactedResult(em -> JobDAO.update(em, job));
+        return entityManagerSession.doTransactedAction(em -> JobDAO.update(em, job));
     }
 
     @Override
@@ -157,7 +157,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> JobDAO.find(em, scopeId, jobId));
+        return entityManagerSession.doAction(em -> JobDAO.find(em, scopeId, jobId));
     }
 
     @Override
@@ -172,7 +172,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> JobDAO.query(em, query));
+        return entityManagerSession.doAction(em -> JobDAO.query(em, query));
     }
 
     @Override
@@ -187,7 +187,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> JobDAO.count(em, query));
+        return entityManagerSession.doAction(em -> JobDAO.count(em, query));
     }
 
     @Override
@@ -266,6 +266,6 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
             }
         }
 
-        entityManagerSession.onTransactedAction(em -> JobDAO.delete(em, scopeId, jobId));
+        entityManagerSession.doTransactedAction(em -> JobDAO.delete(em, scopeId, jobId));
     }
 }

@@ -63,7 +63,7 @@ public class DomainRegistryServiceImpl extends AbstractKapuaService implements D
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.write, null));
 
-        return entityManagerSession.onTransactedInsert(em -> DomainDAO.create(em, domainCreator));
+        return entityManagerSession.doTransactedAction(em -> DomainDAO.create(em, domainCreator));
     }
 
     @Override
@@ -74,12 +74,12 @@ public class DomainRegistryServiceImpl extends AbstractKapuaService implements D
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.delete, null));
 
-        entityManagerSession.onTransactedAction(em -> {
+        entityManagerSession.doTransactedAction(em -> {
             if (DomainDAO.find(em, scopeId, domainId) == null) {
                 throw new KapuaEntityNotFoundException(Domain.TYPE, domainId);
             }
 
-            DomainDAO.delete(em, scopeId, domainId);
+            return DomainDAO.delete(em, scopeId, domainId);
         });
     }
 
@@ -92,7 +92,7 @@ public class DomainRegistryServiceImpl extends AbstractKapuaService implements D
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
 
-        return entityManagerSession.onResult(em -> DomainDAO.find(em, scopeId, domainId));
+        return entityManagerSession.doAction(em -> DomainDAO.find(em, scopeId, domainId));
     }
 
     @Override
@@ -123,7 +123,7 @@ public class DomainRegistryServiceImpl extends AbstractKapuaService implements D
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
 
-        return entityManagerSession.onResult(em -> DomainDAO.query(em, query));
+        return entityManagerSession.doAction(em -> DomainDAO.query(em, query));
     }
 
     @Override
@@ -135,7 +135,7 @@ public class DomainRegistryServiceImpl extends AbstractKapuaService implements D
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.DOMAIN_DOMAIN, Actions.read, KapuaId.ANY));
 
-        return entityManagerSession.onResult(em -> DomainDAO.count(em, query));
+        return entityManagerSession.doAction(em -> DomainDAO.count(em, query));
     }
 
     //@ListenServiceEvent(fromAddress="account")

@@ -91,10 +91,11 @@ public class AccessPermissionDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param accessPermissionId
+     * @return deleted entity
      * @throws KapuaEntityNotFoundException
      *             If {@link AccessPermission} is not found.
      */
-    public static void delete(EntityManager em, KapuaId scopeId, KapuaId accessPermissionId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, AccessPermissionImpl.class, scopeId, accessPermissionId);
+    public static AccessPermission delete(EntityManager em, KapuaId scopeId, KapuaId accessPermissionId) throws KapuaEntityNotFoundException {
+        return ServiceDAO.delete(em, AccessPermissionImpl.class, scopeId, accessPermissionId);
     }
 }
