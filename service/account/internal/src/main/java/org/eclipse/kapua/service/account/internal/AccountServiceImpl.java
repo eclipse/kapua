@@ -22,6 +22,7 @@ import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
@@ -45,6 +46,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 
 import javax.inject.Inject;
 import javax.persistence.TypedQuery;
+
 import java.util.Map;
 import java.util.Objects;
 
@@ -69,7 +71,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
      * @since 1.0.0
      */
     public AccountServiceImpl() {
-        super(AccountService.class.getName(), AccountDomains.ACCOUNT_DOMAIN, AccountEntityManagerFactory.getInstance(), AccountService.class, AccountFactory.class);
+        super(AccountService.class.getName(), AccountDomains.ACCOUNT_DOMAIN, AccountEntityManagerFactory.getInstance(), AccountCacheConfigurationFactory.getInstance(), AccountService.class, AccountFactory.class);
     }
 
     @Override
@@ -132,7 +134,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             }
         }
 
-        return entityManagerSession.onTransactedInsert(em -> {
+        return entityManagerSession.onTransactedInsert(EntityManagerContainer.<Account>create().onResultHandler(em -> {
             Account account = AccountDAO.create(em, accountCreator);
             em.persist(account);
 
@@ -140,7 +142,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             String parentAccountPath = AccountDAO.find(em, null, accountCreator.getScopeId()).getParentAccountPath() + "/" + account.getId();
             account.setParentAccountPath(parentAccountPath);
             return AccountDAO.update(em, account);
-        });
+        }));
     }
 
     @Override
@@ -203,7 +205,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Do update
-        return entityManagerSession.onTransactedResult(em -> {
+        return entityManagerSession.onTransactedResult(EntityManagerContainer.<Account>create().onResultHandler(em -> {
 
             //
             // Verify unchanged parent account ID and parent account path
@@ -219,7 +221,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
             // Update
             return AccountDAO.update(em, account);
-        });
+        }));
     }
 
     @Override
@@ -305,17 +307,16 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> {
-            Account account = AccountDAO.findByName(em, name);
-
-            //
-            // Check Access
-            if (account != null) {
-                checkAccountPermission(account.getScopeId(), account.getId(), AccountDomains.ACCOUNT_DOMAIN, Actions.read);
+        //TODO fix it, example using new container
+        return entityManagerSession.onResult(EntityManagerContainer.<Account>create().onResultHandler(em -> {
+                Account account = AccountDAO.findByName(em, name);
+                if (account != null) {
+                    checkAccountPermission(account.getScopeId(), account.getId(), AccountDomains.ACCOUNT_DOMAIN, Actions.read);
+                }
+                return account;
             }
-
-            return account;
-        });
+         ).onBeforeResult(() -> (Account)cache.get(name))
+         .onAfterResult((entity) -> (Account)cache.put(name, entity)));
     }
 
     @Override
@@ -334,7 +335,6 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Check Access
         checkAccountPermission(account.getScopeId(), account.getId(), AccountDomains.ACCOUNT_DOMAIN, Actions.read);
-
         return entityManagerSession.onResult(em -> {
             AccountListResult result = null;
             TypedQuery<Account> q;
