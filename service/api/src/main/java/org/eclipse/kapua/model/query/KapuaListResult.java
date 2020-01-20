@@ -33,7 +33,7 @@ import java.util.List;
  */
 @XmlRootElement(name = "result")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {"limitExceeded", "size", "items"})
+@XmlType(propOrder = {"limitExceeded", "size", "items", "totalCount"})
 public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializable {
 
     /**
@@ -142,4 +142,19 @@ public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializabl
      * @since 1.0.0
      */
     void sort(@NotNull Comparator<E> comparator);
+
+    /**
+     * Gets the total count of entries that match the predicate regardless of {@code limit} and {@code offset}
+     *
+     * @since 1.2.0
+     * @return The total count
+     */
+    Long getTotalCount();
+
+    /**
+     * Sets the total count of entries that match the predicate regardless of {@code limit} and {@code offset}
+     *
+     * @since 1.2.0
+     */
+    void setTotalCount(Long totalCount);
 }

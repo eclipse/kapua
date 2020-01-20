@@ -47,6 +47,7 @@ public abstract class AbstractKapuaQuery<E extends KapuaEntity> implements Kapua
 
     private Integer offset;
     private Integer limit;
+    private Boolean askTotalCount;
 
     /**
      * Constructor.
@@ -191,4 +192,14 @@ public abstract class AbstractKapuaQuery<E extends KapuaEntity> implements Kapua
     public FieldSortCriteria fieldSortCriteria(String attributeName, SortOrder sortOrder) {
         return new FieldSortCriteriaImpl(attributeName, sortOrder);
     }
+
+    @Override
+    public Boolean getAskTotalCount() {
+        return askTotalCount;
+    }
+
+    public void setAskTotalCount(Boolean askTotalCount) {
+        this.askTotalCount = askTotalCount;
+    }
+
 }
