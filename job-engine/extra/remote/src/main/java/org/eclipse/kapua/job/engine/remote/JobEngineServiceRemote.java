@@ -81,6 +81,7 @@ public class JobEngineServiceRemote implements JobEngineService {
             // Create the trigger
             QuartzTriggerDriver.createQuartzTrigger(scopeId, jobId, KAPUA_ID_FACTORY.newKapuaId(IdGenerator.generate()), jobDataMap);
         } catch (Exception e) {
+            LOG.error("Error while remotely starting the job!", e);
             throw KapuaException.internalError(e, "Error!");
         }
     }

@@ -71,10 +71,11 @@ public class QueuedJobExecutionCheckTask extends TimerTask {
 
             QueuedJobExecutionListResult queuedJobExecutions = KapuaSecurityUtils.doPrivileged(() -> QUEUED_JOB_EXECUTION_SERVICE.query(query));
 
+            int i = 1;
             for (QueuedJobExecution qje : queuedJobExecutions.getItems()) {
                 Thread.sleep(JOB_ENGINE_SETTING.getInt(JobEngineSettingKeys.JOB_ENGINE_QUEUE_PROCESSING_RUN_DELAY));
 
-                LOG.info("Resuming Job Execution: {}...", qje.getJobExecutionId());
+                LOG.info("Resuming Job Execution ({}/{}): {}...", i, queuedJobExecutions.getSize(), qje.getJobExecutionId());
 
                 try {
                     KapuaSecurityUtils.doPrivileged(() -> JOB_ENGINE_SERVICE.resumeJobExecution(qje.getScopeId(), qje.getJobId(), qje.getJobExecutionId()));
@@ -82,10 +83,10 @@ public class QueuedJobExecutionCheckTask extends TimerTask {
                     qje.setStatus(QueuedJobExecutionStatus.PROCESSED);
                     KapuaSecurityUtils.doPrivileged(() -> QUEUED_JOB_EXECUTION_SERVICE.update(qje));
                 } catch (Exception e) {
-                    LOG.error("Resuming Job Execution: {}... ERROR!", qje.getJobExecutionId(), e);
+                    LOG.error("Resuming Job Execution ({}/{}): {}... ERROR!", i, queuedJobExecutions.getSize(), qje.getJobExecutionId(), e);
                 }
 
-                LOG.info("Resuming Job Execution: {}... DONE!", qje.getJobExecutionId());
+                LOG.info("Resuming Job Execution ({}/{}): {}... DONE!", i++, queuedJobExecutions.getSize(), qje.getJobExecutionId());
             }
 
         } catch (Exception e) {

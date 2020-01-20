@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.jbatch.driver;
 
-import com.google.common.collect.Lists;
 import com.ibm.jbatch.container.jsl.ExecutionElement;
 import com.ibm.jbatch.container.jsl.ModelSerializerFactory;
 import com.ibm.jbatch.container.servicesmanager.ServicesManagerImpl;
@@ -326,28 +325,64 @@ public class JbatchDriver {
     // Private methods
     //
     private static List<JobExecution> getRunningJobExecutions(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) {
-        return getJobExecutions(scopeId, jobId).stream().filter(je -> JbatchJobRunningStatuses.getStatuses().contains(je.getBatchStatus())).collect(Collectors.toList());
+        int attempt = 0;
+        int maxAttempt = 3;
+        do {
+            try {
+                return getJobExecutions(scopeId, jobId).stream().filter(je -> JbatchJobRunningStatuses.getStatuses().contains(je.getBatchStatus())).collect(Collectors.toList());
+            } catch (Exception e) {
+                if (attempt++ < maxAttempt) {
+                    LOG.error("Error while getting running executions... ({}/{}). Error: {}", attempt, maxAttempt, e.getMessage());
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                    }
+                } else {
+                    LOG.error("Error while getting running executions... ({}/{}). Throwing error!", attempt, maxAttempt, e);
+                    throw e;
+                }
+            }
+        } while (true);
     }
 
     private static List<JobExecution> getJobExecutions(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) {
-        List<JobExecution> jobExecutions = Lists.newArrayList();
-
         String jobName = getJbatchJobName(scopeId, jobId);
-        try {
-            int jobInstanceCount = JOB_OPERATOR.getJobInstanceCount(jobName);
-            List<JobInstance> jobInstances = JOB_OPERATOR.getJobInstances(jobName, 0, jobInstanceCount);
-            jobInstances.forEach(ji -> jobExecutions.addAll(getJbatchJobExecutions(ji)));
-        } catch (NoSuchJobException e) {
-            LOG.debug("Error while getting Job: " + jobName, e);
-            // This exception is thrown when there is no job, this means that the job never run before
-            // So we can ignore it and return `null`
-        } catch (NoSuchJobExecutionException e) {
-            LOG.debug("Error while getting execution status for Job: " + jobName, e);
-            // This exception is thrown when there is no execution is running.
-            // So we can ignore it and return `null`
-        }
 
-        return jobExecutions;
+        int attempt = 0;
+        int maxAttempt = 3;
+        do {
+            try {
+                int jobInstanceCount = JOB_OPERATOR.getJobInstanceCount(jobName);
+                List<JobInstance> jobInstances = JOB_OPERATOR.getJobInstances(jobName, 0, jobInstanceCount);
+
+                List<JobExecution> jobExecutions = new ArrayList<>();
+                jobInstances.forEach(ji -> jobExecutions.addAll(getJbatchJobExecutions(ji)));
+
+                return jobExecutions;
+            } catch (NoSuchJobException e) {
+                LOG.debug("Error while getting Job: " + jobName, e);
+                // This exception is thrown when there is no job, this means that the job never run before
+                // So we can ignore it and return `null`
+            } catch (NoSuchJobExecutionException e) {
+                LOG.debug("Error while getting execution status for Job: " + jobName, e);
+                // This exception is thrown when there is no execution is running.
+                // So we can ignore it and return `null`
+            } catch (Exception e) {
+                if (attempt++ < maxAttempt) {
+                    LOG.error("Error while getting executions... ({}/{}). Error: {}", attempt, maxAttempt, e.getMessage());
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                    }
+                } else {
+                    LOG.error("Error while getting executions... ({}/{}). Throwing error!", attempt, maxAttempt, e);
+                    throw e;
+                }
+            }
+        } while (true);
+
     }
 
     private static List<JobExecution> getJbatchJobExecutions(@NotNull JobInstance jobInstance) {
