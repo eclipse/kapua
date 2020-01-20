@@ -155,7 +155,7 @@ Vagrant.configure(2) do |config|
     #############################
     sudo mkdir -p /usr/local/h2-${H2DB_VERSION}
     cd /usr/local/h2-${H2DB_VERSION}
-    sudo curl -O http://repo2.maven.org/maven2/com/h2database/h2/${H2DB_VERSION}/h2-${H2DB_VERSION}.jar
+    sudo curl -O https://repo1.maven.org/maven2/com/h2database/h2/${H2DB_VERSION}/h2-${H2DB_VERSION}.jar
     cd ../
     ln -s h2-${H2DB_VERSION} h2
 
