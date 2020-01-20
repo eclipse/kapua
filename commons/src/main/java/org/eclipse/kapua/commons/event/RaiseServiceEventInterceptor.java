@@ -261,7 +261,7 @@ public class RaiseServiceEventInterceptor implements MethodInterceptor {
         if (invocation.getThis() instanceof AbstractKapuaService) {
             try {
                 serviceEventBus.setStatus(newServiceEventStatus);
-                ((AbstractKapuaService) invocation.getThis()).getEntityManagerSession().doAction(EntityManagerContainer.<EventStoreRecord>create().onResultHandler(em -> {
+                ((AbstractKapuaService) invocation.getThis()).getEntityManagerSession().doTransactedAction(EntityManagerContainer.<EventStoreRecord>create().onResultHandler(em -> {
                     return EventStoreDAO.update(em,
                             ServiceEventUtil.mergeToEntity(EventStoreDAO.find(em, serviceEventBus.getScopeId(), KapuaEid.parseCompactId(serviceEventBus.getId())), serviceEventBus));
                 }));

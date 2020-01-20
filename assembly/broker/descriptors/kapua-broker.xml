@@ -219,6 +219,7 @@
                 <include>org.slf4j:slf4j-api</include>
                 <include>org.springframework.security:spring-security-core</include>
                 <include>org.yaml:snakeyaml</include>
+                <include>javax.cache:cache-api</include>
 
                 <include>${pom.groupId}:kapua-account-api</include>
                 <include>${pom.groupId}:kapua-account-internal</include>

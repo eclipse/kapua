@@ -79,10 +79,11 @@ public class DeviceManagementOperationDAO {
      * @param em
      * @param scopeId
      * @param entityId
+     * @return
      * @throws KapuaEntityNotFoundException If the {@link DeviceManagementOperation} is not found
      */
-    public static void delete(EntityManager em, KapuaId scopeId, KapuaId entityId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, DeviceManagementOperationImpl.class, scopeId, entityId);
+    public static DeviceManagementOperation delete(EntityManager em, KapuaId scopeId, KapuaId entityId) throws KapuaEntityNotFoundException {
+        return ServiceDAO.delete(em, DeviceManagementOperationImpl.class, scopeId, entityId);
     }
 
     /**

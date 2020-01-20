@@ -91,10 +91,11 @@ public class RolePermissionDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param rolePermissionId
+     * @return
      * @throws KapuaEntityNotFoundException
      *             If {@link RolePermission} is not found.
      */
-    public static void delete(EntityManager em, KapuaId scopeId, KapuaId rolePermissionId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, RolePermissionImpl.class, scopeId, rolePermissionId);
+    public static RolePermission delete(EntityManager em, KapuaId scopeId, KapuaId rolePermissionId) throws KapuaEntityNotFoundException {
+        return ServiceDAO.delete(em, RolePermissionImpl.class, scopeId, rolePermissionId);
     }
 }

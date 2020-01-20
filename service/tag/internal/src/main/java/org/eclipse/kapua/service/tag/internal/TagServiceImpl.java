@@ -16,6 +16,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
@@ -84,7 +85,8 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> TagDAO.create(em, tagCreator));
+        return entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<Tag>create().onResultHandler(em -> TagDAO.create(em, tagCreator)));
     }
 
     @Override
@@ -122,7 +124,8 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Do Update
-        return entityManagerSession.onTransactedResult(em -> TagDAO.update(em, tag));
+        return entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<Tag>create().onResultHandler(em -> TagDAO.update(em, tag)));
     }
 
     @Override
@@ -136,6 +139,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.delete, scopeId));
 
+        // TODO: check if it is correct to remove this statement (already thrown by the delete method)
         //
         // Check existence
         if (find(scopeId, tagId) == null) {
@@ -144,7 +148,8 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         //
-        entityManagerSession.onTransactedAction(em -> TagDAO.delete(em, scopeId, tagId));
+        entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<Tag>create().onResultHandler(em -> TagDAO.delete(em, scopeId, tagId)));
     }
 
     @Override
@@ -160,7 +165,8 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> TagDAO.find(em, scopeId, tagId));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<Tag>create().onResultHandler(em -> TagDAO.find(em, scopeId, tagId)));
     }
 
     @Override
@@ -175,7 +181,8 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> TagDAO.query(em, query));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<TagListResult>create().onResultHandler(em -> TagDAO.query(em, query)));
     }
 
     @Override
@@ -190,6 +197,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Do count
-        return entityManagerSession.onResult(em -> TagDAO.count(em, query));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<Long>create().onResultHandler(em -> TagDAO.count(em, query)));
     }
 }

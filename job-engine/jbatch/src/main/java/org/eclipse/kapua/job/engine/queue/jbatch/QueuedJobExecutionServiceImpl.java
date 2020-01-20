@@ -14,6 +14,7 @@ package org.eclipse.kapua.job.engine.queue.jbatch;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.job.engine.jbatch.JobEngineEntityManagerFactory;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecution;
@@ -63,7 +64,9 @@ public class QueuedJobExecutionServiceImpl
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> QueuedJobExecutionDAO.create(em, creator));
+        return entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<QueuedJobExecution>create().onResultHandler(em -> QueuedJobExecutionDAO.create(em,
+                        creator)));
     }
 
     @Override
@@ -77,7 +80,9 @@ public class QueuedJobExecutionServiceImpl
         // Check access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
-        return entityManagerSession.onTransactedResult(em -> QueuedJobExecutionDAO.update(em, queuedJobExecution));
+        return entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<QueuedJobExecution>create().onResultHandler(em -> QueuedJobExecutionDAO.update(em,
+                        queuedJobExecution)));
     }
 
     @Override
@@ -93,7 +98,8 @@ public class QueuedJobExecutionServiceImpl
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> QueuedJobExecutionDAO.find(em, scopeId, queuedJobExecutionId));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<QueuedJobExecution>create().onResultHandler(em -> QueuedJobExecutionDAO.find(em, scopeId, queuedJobExecutionId)));
     }
 
     @Override
@@ -108,7 +114,8 @@ public class QueuedJobExecutionServiceImpl
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> QueuedJobExecutionDAO.query(em, query));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<QueuedJobExecutionListResult>create().onResultHandler(em -> QueuedJobExecutionDAO.query(em, query)));
     }
 
     @Override
@@ -123,7 +130,8 @@ public class QueuedJobExecutionServiceImpl
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> QueuedJobExecutionDAO.count(em, query));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<Long>create().onResultHandler(em -> QueuedJobExecutionDAO.count(em, query)));
     }
 
     @Override
@@ -139,13 +147,16 @@ public class QueuedJobExecutionServiceImpl
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> {
-            if (QueuedJobExecutionDAO.find(em, scopeId, queuedJobExecutionId) == null) {
-                throw new KapuaEntityNotFoundException(JobExecution.TYPE, queuedJobExecutionId);
-            }
+        entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<QueuedJobExecution>create().onResultHandler(em -> {
+                    // QueuedJobExecutionDAO.delete(em, scopeId, queuedJobExecutionId)
+                    // TODO: check if it is correct to remove this statement (already thrown by the update method)
+                    if (QueuedJobExecutionDAO.find(em, scopeId, queuedJobExecutionId) == null) {
+                        throw new KapuaEntityNotFoundException(JobExecution.TYPE, queuedJobExecutionId);
+                    }
 
-            QueuedJobExecutionDAO.delete(em, scopeId, queuedJobExecutionId);
-        });
+                    return QueuedJobExecutionDAO.delete(em, scopeId, queuedJobExecutionId);
+                }));
 
     }
 }

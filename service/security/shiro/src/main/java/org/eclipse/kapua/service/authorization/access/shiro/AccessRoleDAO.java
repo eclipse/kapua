@@ -90,10 +90,11 @@ public class AccessRoleDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param accessRoleId
+     * @return
      * @throws KapuaEntityNotFoundException
      *             If {@link AccessRole} is not found.
      */
-    public static void delete(EntityManager em, KapuaId scopeId, KapuaId accessRoleId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, AccessRoleImpl.class, scopeId, accessRoleId);
+    public static AccessRole delete(EntityManager em, KapuaId scopeId, KapuaId accessRoleId) throws KapuaEntityNotFoundException {
+        return ServiceDAO.delete(em, AccessRoleImpl.class, scopeId, accessRoleId);
     }
 }

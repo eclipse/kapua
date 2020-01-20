@@ -9,17 +9,18 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.service.internal;
+package org.eclipse.kapua.commons.jpa;
 
-public class CacheType {
+import org.eclipse.kapua.KapuaException;
 
-    private String key;
+/**
+ * Entity manager callback result service definition.
+ *
+ * @param <T> Execution result return type
+ * @since 1.0
+ */
+public interface OnBefore<T> {
 
-    public CacheType(Class keyClass, Class entityClass) {
-        key = keyClass.getSimpleName() + "|" + entityClass.getSimpleName();
-    }
+    T onBefore() throws KapuaException;
 
-    public String getKey() {
-        return key;
-    }
 }

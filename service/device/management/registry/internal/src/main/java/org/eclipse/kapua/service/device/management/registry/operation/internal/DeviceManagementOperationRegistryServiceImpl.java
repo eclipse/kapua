@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.device.management.registry.operation.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -70,7 +71,9 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> DeviceManagementOperationDAO.create(em, creator));
+        return entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<DeviceManagementOperation>create().onResultHandler(em -> DeviceManagementOperationDAO.create(em
+                        , creator)));
     }
 
     @Override
@@ -97,6 +100,7 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
             throw new KapuaEntityNotFoundException(Device.TYPE, entity.getDeviceId());
         }
 
+        // TODO: check if it is correct to remove this statement (already thrown by the update method)
         //
         // Check existence
         if (find(entity.getScopeId(), entity.getId()) == null) {
@@ -105,7 +109,8 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Do update
-        return entityManagerSession.onTransactedResult(em -> DeviceManagementOperationDAO.update(em, entity));
+        return entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<DeviceManagementOperation>create().onResultHandler(em -> DeviceManagementOperationDAO.update(em, entity)));
     }
 
     @Override
@@ -121,7 +126,8 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> DeviceManagementOperationDAO.find(em, scopeId, entityId));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<DeviceManagementOperation>create().onResultHandler(em -> DeviceManagementOperationDAO.find(em, scopeId, entityId)));
     }
 
     @Override
@@ -136,7 +142,8 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> DeviceManagementOperationDAO.query(em, query));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<DeviceManagementOperationListResult>create().onResultHandler(em -> DeviceManagementOperationDAO.query(em, query)));
     }
 
     @Override
@@ -151,7 +158,9 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Do count
-        return entityManagerSession.onResult(em -> DeviceManagementOperationDAO.count(em, query));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<Long>create().onResultHandler(em -> DeviceManagementOperationDAO.count(em,
+                        query)));
     }
 
     @Override
@@ -165,6 +174,7 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
         // Check Access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.delete, scopeId));
 
+        // TODO: check if it is correct to remove this statement (already thrown by the delete method)
         //
         // Check existence
         if (find(scopeId, entityId) == null) {
@@ -173,6 +183,7 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> DeviceManagementOperationDAO.delete(em, scopeId, entityId));
+        entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<DeviceManagementOperation>create().onResultHandler(em -> DeviceManagementOperationDAO.delete(em, scopeId, entityId)));
     }
 }

@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.scheduler.trigger.definition.quartz;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -63,7 +64,8 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> TriggerDefinitionDAO.create(em, creator));
+        return entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<TriggerDefinition>create().onResultHandler(em -> TriggerDefinitionDAO.create(em, creator)));
     }
 
     @Override
@@ -80,7 +82,8 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
         // Check access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
-        return entityManagerSession.onTransactedResult(em -> TriggerDefinitionDAO.update(em, triggerDefinition));
+        return entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<TriggerDefinition>create().onResultHandler(em -> TriggerDefinitionDAO.update(em, triggerDefinition)));
     }
 
     @Override
@@ -95,7 +98,9 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> TriggerDefinitionDAO.find(em, stepDefinitionId));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<TriggerDefinition>create().onResultHandler(em -> TriggerDefinitionDAO.find(em
+                        , stepDefinitionId)));
     }
 
     @Override
@@ -110,7 +115,9 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> TriggerDefinitionDAO.find(em, scopeId, stepDefinitionId));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<TriggerDefinition>create().onResultHandler(em -> TriggerDefinitionDAO.find(em
+                        , scopeId, stepDefinitionId)));
     }
 
     @Override
@@ -125,7 +132,8 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> TriggerDefinitionDAO.query(em, query));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<TriggerDefinitionListResult>create().onResultHandler(em -> TriggerDefinitionDAO.query(em, query)));
     }
 
     @Override
@@ -140,7 +148,8 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> TriggerDefinitionDAO.count(em, query));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<Long>create().onResultHandler(em -> TriggerDefinitionDAO.count(em, query)));
     }
 
     @Override
@@ -156,13 +165,16 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> {
-            if (TriggerDefinitionDAO.find(em, scopeId, stepDefinitionId) == null) {
-                throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, stepDefinitionId);
-            }
+        entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<TriggerDefinition>create().onResultHandler(em -> {
+                    // TriggerDefinitionDAO.delete(em, scopeId, stepDefinitionId)
+                    // TODO: check if it is correct to remove this statement (already thrown by the delete method)
+                    if (TriggerDefinitionDAO.find(em, scopeId, stepDefinitionId) == null) {
+                        throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, stepDefinitionId);
+                    }
 
-            TriggerDefinitionDAO.delete(em, scopeId, stepDefinitionId);
-        });
+                    return TriggerDefinitionDAO.delete(em, scopeId, stepDefinitionId);
+                }));
 
     }
 }

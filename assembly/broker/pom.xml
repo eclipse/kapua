@@ -395,6 +395,11 @@
             <artifactId>percolator-client</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>javax.cache</groupId>
+            <artifactId>cache-api</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

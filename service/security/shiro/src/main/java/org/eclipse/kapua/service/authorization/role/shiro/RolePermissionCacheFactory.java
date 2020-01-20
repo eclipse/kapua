@@ -9,17 +9,17 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.account.internal;
+package org.eclipse.kapua.service.authorization.role.shiro;
 
-import org.eclipse.kapua.commons.jpa.CacheConfigurationFactory;
+import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
 
-public class AccountCacheConfigurationFactory extends CacheConfigurationFactory {
+public class RolePermissionCacheFactory extends AbstractEntityCacheFactory {
 
-    private AccountCacheConfigurationFactory() {
-        super("Account");
+    private RolePermissionCacheFactory() {
+        super("RolePermissionId");
     }
 
-    public static AccountCacheConfigurationFactory getInstance() {
-        return new AccountCacheConfigurationFactory();
+    protected static RolePermissionCacheFactory getInstance() {
+        return new RolePermissionCacheFactory();
     }
 }

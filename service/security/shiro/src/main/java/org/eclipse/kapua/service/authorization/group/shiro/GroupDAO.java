@@ -119,11 +119,12 @@ public class GroupDAO extends ServiceDAO {
      * @param scopeId
      * @param groupId
      *            The {@link Group} id to delete.
+     * @return
      * @throws KapuaEntityNotFoundException
      *             If {@link Group} is not found.
      * @since 1.0.0
      */
-    public static void delete(EntityManager em, KapuaId scopeId, KapuaId groupId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, GroupImpl.class, scopeId, groupId);
+    public static Group delete(EntityManager em, KapuaId scopeId, KapuaId groupId) throws KapuaEntityNotFoundException {
+        return ServiceDAO.delete(em, GroupImpl.class, scopeId, groupId);
     }
 }

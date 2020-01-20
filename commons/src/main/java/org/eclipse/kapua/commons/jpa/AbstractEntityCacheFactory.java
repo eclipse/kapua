@@ -11,13 +11,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
-/**
- * Entity manager callback result service definition.
- *
- * @param <T> Execution result return type
- * @since 1.0
- */
-public interface OnAfterResult<T> {
+import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
 
-    T onAfter(T result);
+public abstract class AbstractEntityCacheFactory implements CacheFactory {
+
+    private String idCacheName;
+
+    public AbstractEntityCacheFactory(String idCacheName) {
+        this.idCacheName = idCacheName;
+    }
+
+    public String getEntityIdCacheName() {
+        return idCacheName;
+    }
+
+    @Override
+    public EntityCache createCache() {
+        return new EntityCache(getEntityIdCacheName());
+    }
 }

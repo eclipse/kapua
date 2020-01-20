@@ -98,9 +98,10 @@ public class EventStoreDAO {
      * @param em
      * @param scopeId
      * @param eventId
+     * @return
      * @throws KapuaEntityNotFoundException
      */
-    public static void delete(EntityManager em, KapuaId scopeId, KapuaId eventId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, EventStoreRecordImpl.class, scopeId, eventId);
+    public static EventStoreRecord delete(EntityManager em, KapuaId scopeId, KapuaId eventId) throws KapuaEntityNotFoundException {
+        return ServiceDAO.delete(em, EventStoreRecordImpl.class, scopeId, eventId);
     }
 }

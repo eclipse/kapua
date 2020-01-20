@@ -11,10 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.internal;
 
-import org.eclipse.kapua.commons.jpa.CacheConfigurationFactory;
+import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
 import org.eclipse.kapua.commons.event.ServiceEventBusManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.event.ServiceEventBusListener;
 import org.eclipse.kapua.service.KapuaService;
@@ -30,32 +31,29 @@ public class AbstractKapuaService {
 
     protected EntityManagerFactory entityManagerFactory;
     protected EntityManagerSession entityManagerSession;
-    protected Cache cache;
+    protected EntityCache entityCache;
 
-    //============================================================================
-    //
-    // old constructor
-    //
-    //============================================================================
+    /**
+     * Constructor
+     *
+     * @param entityManagerFactory
+     */
     protected AbstractKapuaService(EntityManagerFactory entityManagerFactory) {
-        this.entityManagerFactory = entityManagerFactory;
-        this.entityManagerSession = new EntityManagerSession(entityManagerFactory);
+        this(entityManagerFactory, null);
     }
 
-    //============================================================================
-    //
-    // new constructor
-    //
-    //============================================================================
     /**
      * Constructor
      * 
      * @param entityManagerFactory
+     * @param abstractCacheFactory
      */
-    protected AbstractKapuaService(EntityManagerFactory entityManagerFactory, CacheConfigurationFactory cacheConfigurationFactory) {
+    protected AbstractKapuaService(EntityManagerFactory entityManagerFactory, AbstractEntityCacheFactory abstractCacheFactory) {
         this.entityManagerFactory = entityManagerFactory;
         this.entityManagerSession = new EntityManagerSession(entityManagerFactory);
-        cache = CacheManager.getCache(cacheConfigurationFactory.getCacheName());
+        if (abstractCacheFactory != null) {
+            this.entityCache = abstractCacheFactory.createCache();
+        }
     }
 
     public EntityManagerSession getEntityManagerSession() {

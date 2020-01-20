@@ -15,6 +15,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -88,13 +89,14 @@ public class DeviceConnectionOptionServiceImpl extends AbstractKapuaService impl
             }
         }
 
-        return entityManagerSession.onTransactedResult(em -> {
-            if (DeviceConnectionOptionDAO.find(em, deviceConnectionOptions.getScopeId(), deviceConnectionOptions.getId()) == null) {
-                throw new KapuaEntityNotFoundException(DeviceConnectionOption.TYPE, deviceConnectionOptions.getId());
-            }
-
-            return DeviceConnectionOptionDAO.update(em, deviceConnectionOptions);
-        });
+        return entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<DeviceConnectionOption>create().onResultHandler(em -> {
+                    // TODO: check if it is correct to remove this statement (already thrown by the update method)
+                    if (DeviceConnectionOptionDAO.find(em, deviceConnectionOptions.getScopeId(), deviceConnectionOptions.getId()) == null) {
+                        throw new KapuaEntityNotFoundException(DeviceConnectionOption.TYPE, deviceConnectionOptions.getId());
+                    }
+                    return DeviceConnectionOptionDAO.update(em, deviceConnectionOptions);
+                }));
     }
 
     @Override
@@ -112,7 +114,8 @@ public class DeviceConnectionOptionServiceImpl extends AbstractKapuaService impl
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, scopeId));
 
-        return entityManagerSession.onResult(em -> DeviceConnectionOptionDAO.find(em, scopeId, entityId));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<DeviceConnectionOption>create().onResultHandler(em -> DeviceConnectionOptionDAO.find(em, scopeId, entityId)));
     }
 
     @Override
@@ -129,7 +132,8 @@ public class DeviceConnectionOptionServiceImpl extends AbstractKapuaService impl
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onResult(em -> DeviceConnectionOptionDAO.query(em, query));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<DeviceConnectionOptionListResult>create().onResultHandler(em -> DeviceConnectionOptionDAO.query(em, query)));
     }
 
     @Override
@@ -146,7 +150,9 @@ public class DeviceConnectionOptionServiceImpl extends AbstractKapuaService impl
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onResult(em -> DeviceConnectionOptionDAO.count(em, query));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<Long>create().onResultHandler(em -> DeviceConnectionOptionDAO.count(em,
+                        query)));
     }
 
     @Override

@@ -17,6 +17,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.jpa.EntityManager;
+import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
@@ -187,7 +188,8 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, credential.getScopeId()));
 
-        return entityManagerSession.onTransactedResult(em -> {
+        return entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<Credential>create().onResultHandler(em -> {
             Credential currentCredential = CredentialDAO.find(em, credential.getScopeId(), credential.getId());
 
             if (currentCredential == null) {
@@ -200,7 +202,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
 
             // Passing attributes??
             return CredentialDAO.update(em, credential);
-        });
+        }));
     }
 
     @Override
@@ -217,7 +219,9 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
 
-        return entityManagerSession.onResult(em -> CredentialDAO.find(em, scopeId, credentialId));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<Credential>create().onResultHandler(em -> CredentialDAO.find(em, scopeId,
+                        credentialId)));
     }
 
     @Override
@@ -234,7 +238,8 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onResult(em -> CredentialDAO.query(em, query));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<CredentialListResult>create().onResultHandler(em -> CredentialDAO.query(em, query)));
     }
 
     @Override
@@ -251,7 +256,8 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onResult(em -> CredentialDAO.count(em, query));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<Long>create().onResultHandler(em -> CredentialDAO.count(em, query)));
     }
 
     @Override
@@ -269,12 +275,13 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.delete, scopeId));
 
-        entityManagerSession.onTransactedAction(em -> {
+        entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<Credential>create().onResultHandler(em -> {
             if (CredentialDAO.find(em, scopeId, credentialId) == null) {
                 throw new KapuaEntityNotFoundException(Credential.TYPE, credentialId);
             }
-            CredentialDAO.delete(em, scopeId, credentialId);
-        });
+            return CredentialDAO.delete(em, scopeId, credentialId);
+        }));
     }
 
     @Override

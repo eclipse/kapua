@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,10 +12,9 @@
 package org.eclipse.kapua.commons.configuration;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.CacheConfigurationFactory;
+import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.service.internal.Cache;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
@@ -41,37 +40,24 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
 
     private final Class<S> serviceClass;
     private final Class<F> factoryClass;
-    protected Cache cache;
 
-    //============================================================================
-    //
-    // old constructor
-    //
-    //============================================================================
     protected AbstractKapuaConfigurableResourceLimitedService(
             String pid,
             Domain domain,
             EntityManagerFactory entityManagerFactory,
             Class<S> serviceClass,
             Class<F> factoryClass) {
-        super(pid, domain, entityManagerFactory);
-        this.serviceClass = serviceClass;
-        this.factoryClass = factoryClass;
+        this(pid, domain, entityManagerFactory, null, serviceClass, factoryClass);
     }
 
-    //============================================================================
-    //
-    // new constructor
-    //
-    //============================================================================
     protected AbstractKapuaConfigurableResourceLimitedService(
             String pid,
             Domain domain,
             EntityManagerFactory entityManagerFactory,
-            CacheConfigurationFactory cacheConfigurationFactory,
+            AbstractEntityCacheFactory abstractCacheFactory,
             Class<S> serviceClass,
             Class<F> factoryClass) {
-        super(pid, domain, entityManagerFactory, cacheConfigurationFactory);
+        super(pid, domain, entityManagerFactory, abstractCacheFactory);
         this.serviceClass = serviceClass;
         this.factoryClass = factoryClass;
     }
@@ -162,5 +148,4 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
     protected Map<String, Object> getConfigValues(Account account) throws KapuaException {
         return getConfigValues(account.getId());
     }
-
 }

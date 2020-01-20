@@ -101,10 +101,11 @@ public class DomainDAO extends ServiceDAO {
      * @param em       The {@link EntityManager} that holds the transaction.
      * @param scopeId
      * @param domainId The {@link Domain} id to delete.
+     * @return
      * @throws KapuaEntityNotFoundException If {@link Domain} is not found.
      * @since 1.0.0
      */
-    public static void delete(EntityManager em, KapuaId scopeId, KapuaId domainId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, DomainImpl.class, scopeId, domainId);
+    public static Domain delete(EntityManager em, KapuaId scopeId, KapuaId domainId) throws KapuaEntityNotFoundException {
+        return ServiceDAO.delete(em, DomainImpl.class, scopeId, domainId);
     }
 }

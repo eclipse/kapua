@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.job.step.definition.internal;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
@@ -70,7 +71,9 @@ public class JobStepDefinitionServiceImpl
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> JobStepDefinitionDAO.create(em, creator));
+        return entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<JobStepDefinition>create().onResultHandler(em -> JobStepDefinitionDAO.create(em,
+                        creator)));
     }
 
     @Override
@@ -87,7 +90,9 @@ public class JobStepDefinitionServiceImpl
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
-        return entityManagerSession.onTransactedResult(em -> JobStepDefinitionDAO.update(em, jobStepDefinition));
+        return entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<JobStepDefinition>create().onResultHandler(em -> JobStepDefinitionDAO.update(em,
+                        jobStepDefinition)));
     }
 
     @Override
@@ -102,7 +107,8 @@ public class JobStepDefinitionServiceImpl
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> JobStepDefinitionDAO.find(em, scopeId, stepDefinitionId));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<JobStepDefinition>create().onResultHandler(em -> JobStepDefinitionDAO.find(em, scopeId, stepDefinitionId)));
     }
 
     @Override
@@ -117,7 +123,8 @@ public class JobStepDefinitionServiceImpl
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> JobStepDefinitionDAO.query(em, query));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<JobStepDefinitionListResult>create().onResultHandler(em -> JobStepDefinitionDAO.query(em, query)));
     }
 
     @Override
@@ -132,7 +139,8 @@ public class JobStepDefinitionServiceImpl
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> JobStepDefinitionDAO.count(em, query));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<Long>create().onResultHandler(em -> JobStepDefinitionDAO.count(em, query)));
     }
 
     @Override
@@ -148,13 +156,16 @@ public class JobStepDefinitionServiceImpl
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> {
-            if (JobStepDefinitionDAO.find(em, scopeId, stepDefinitionId) == null) {
-                throw new KapuaEntityNotFoundException(JobStepDefinition.TYPE, stepDefinitionId);
-            }
+        entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<JobStepDefinition>create().onResultHandler(em -> {
+                    //JobStepDefinitionDAO.delete(em, scopeId, stepDefinitionId)
+                    // TODO: check if it is correct to remove this statement (already thrown by the delete method)
+                    if (JobStepDefinitionDAO.find(em, scopeId, stepDefinitionId) == null) {
+                        throw new KapuaEntityNotFoundException(JobStepDefinition.TYPE, stepDefinitionId);
+                    }
 
-            JobStepDefinitionDAO.delete(em, scopeId, stepDefinitionId);
-        });
+                    return JobStepDefinitionDAO.delete(em, scopeId, stepDefinitionId);
+                }));
 
     }
 }

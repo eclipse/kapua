@@ -9,16 +9,18 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.jpa;
+package org.eclipse.kapua.service.user.internal;
 
-/**
- * Entity manager callback result service definition.
- *
- * @param <T> Execution result return type
- * @since 1.0
- */
-public interface OnBeforeResult<T> {
+import org.eclipse.kapua.commons.jpa.AbstractNamedEntityCacheFactory;
 
-    T onBefore();
+public class UserCacheFactory extends AbstractNamedEntityCacheFactory {
+
+    private UserCacheFactory() {
+        super("UserId", "UserName");
+    }
+
+    protected static UserCacheFactory getInstance() {
+        return new UserCacheFactory();
+    }
 
 }

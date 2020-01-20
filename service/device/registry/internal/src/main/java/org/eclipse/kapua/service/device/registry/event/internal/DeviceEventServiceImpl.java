@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.registry.event.internal;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaOptimisticLockingException;
+import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -87,7 +88,9 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
         }
 
         // Create the event
-        DeviceEvent deviceEvent = entityManagerSession.onTransactedInsert(entityManager -> DeviceEventDAO.create(entityManager, deviceEventCreator));
+        DeviceEvent deviceEvent = entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<DeviceEvent>create().onResultHandler(em -> DeviceEventDAO.create(em,
+                        deviceEventCreator)));
 
         updateLastEventOnDevice(deviceEvent);
 
@@ -106,7 +109,9 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.read, scopeId));
 
-        return entityManagerSession.onResult(em -> DeviceEventDAO.find(em, scopeId, entityId));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<DeviceEvent>create().onResultHandler(em -> DeviceEventDAO.find(em, scopeId,
+                        entityId)));
     }
 
     @Override
@@ -120,7 +125,8 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onResult(em -> DeviceEventDAO.query(em, query));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<DeviceEventListResult>create().onResultHandler(em -> DeviceEventDAO.query(em, query)));
     }
 
     @Override
@@ -134,7 +140,8 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onResult(em -> DeviceEventDAO.count(em, query));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<Long>create().onResultHandler(em -> DeviceEventDAO.count(em, query)));
     }
 
     @Override
@@ -148,13 +155,16 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_EVENT_DOMAIN, Actions.delete, scopeId));
 
-        entityManagerSession.onTransactedAction(em -> {
-            if (DeviceEventDAO.find(em, scopeId, deviceEventId) == null) {
-                throw new KapuaEntityNotFoundException(DeviceEvent.TYPE, deviceEventId);
-            }
+        entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<DeviceEvent>create().onResultHandler(em -> {
 
-            DeviceEventDAO.delete(em, scopeId, deviceEventId);
-        });
+                    // TODO: check if it is correct to remove this statement (already thrown by the delete method)
+                    if (DeviceEventDAO.find(em, scopeId, deviceEventId) == null) {
+                        throw new KapuaEntityNotFoundException(DeviceEvent.TYPE, deviceEventId);
+                    }
+
+                    return DeviceEventDAO.delete(em, scopeId, deviceEventId);
+                }));
     }
 
 

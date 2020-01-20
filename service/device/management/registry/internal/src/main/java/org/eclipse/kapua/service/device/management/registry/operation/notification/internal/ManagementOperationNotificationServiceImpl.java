@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.device.management.registry.operation.notificat
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -70,7 +71,8 @@ public class ManagementOperationNotificationServiceImpl extends AbstractKapuaSer
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> ManagementOperationNotificationDAO.create(em, creator));
+        return entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<ManagementOperationNotification>create().onResultHandler(em -> ManagementOperationNotificationDAO.create(em, creator)));
     }
 
     @Override
@@ -86,7 +88,8 @@ public class ManagementOperationNotificationServiceImpl extends AbstractKapuaSer
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> ManagementOperationNotificationDAO.find(em, scopeId, entityId));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<ManagementOperationNotification>create().onResultHandler(em -> ManagementOperationNotificationDAO.find(em, scopeId, entityId)));
     }
 
     @Override
@@ -101,7 +104,8 @@ public class ManagementOperationNotificationServiceImpl extends AbstractKapuaSer
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> ManagementOperationNotificationDAO.query(em, query));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<ManagementOperationNotificationListResult>create().onResultHandler(em -> ManagementOperationNotificationDAO.query(em, query)));
     }
 
     @Override
@@ -116,7 +120,9 @@ public class ManagementOperationNotificationServiceImpl extends AbstractKapuaSer
 
         //
         // Do count
-        return entityManagerSession.onResult(em -> ManagementOperationNotificationDAO.count(em, query));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<Long>create().onResultHandler(em -> ManagementOperationNotificationDAO.count(em,
+                        query)));
     }
 
     @Override
@@ -132,6 +138,7 @@ public class ManagementOperationNotificationServiceImpl extends AbstractKapuaSer
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> ManagementOperationNotificationDAO.delete(em, scopeId, entityId));
+        entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<ManagementOperationNotification>create().onResultHandler(em -> ManagementOperationNotificationDAO.delete(em, scopeId, entityId)));
     }
 }

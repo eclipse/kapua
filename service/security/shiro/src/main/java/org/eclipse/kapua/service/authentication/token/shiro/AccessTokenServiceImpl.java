@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.authentication.token.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
@@ -73,7 +74,9 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> AccessTokenDAO.create(em, accessTokenCreator));
+        return entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<AccessToken>create().onResultHandler(em -> AccessTokenDAO.create(em,
+                        accessTokenCreator)));
     }
 
     @Override
@@ -98,7 +101,9 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Do update
-        return entityManagerSession.onTransactedResult(em -> AccessTokenDAO.update(em, accessToken));
+        return entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<AccessToken>create().onResultHandler(em -> AccessTokenDAO.update(em,
+                        accessToken)));
     }
 
     @Override
@@ -114,7 +119,9 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> AccessTokenDAO.find(em, scopeId, accessTokenId));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<AccessToken>create().onResultHandler(em -> AccessTokenDAO.find(em, scopeId,
+                        accessTokenId)));
     }
 
     @Override
@@ -129,7 +136,9 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> AccessTokenDAO.query(em, query));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<AccessTokenListResult>create().onResultHandler(em -> AccessTokenDAO.query(em,
+                        query)));
     }
 
     @Override
@@ -144,7 +153,8 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Do count
-        return entityManagerSession.onResult(em -> AccessTokenDAO.count(em, query));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<Long>create().onResultHandler(em -> AccessTokenDAO.count(em, query)));
     }
 
     @Override
@@ -166,7 +176,9 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> AccessTokenDAO.delete(em, scopeId, accessTokenId));
+        entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<AccessToken>create().onResultHandler(em -> AccessTokenDAO.delete(em, scopeId,
+                        accessTokenId)));
     }
 
     @Override
@@ -198,7 +210,9 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Do find
-        AccessToken accessToken = entityManagerSession.onResult(em -> AccessTokenDAO.findByTokenId(em, tokenId));
+        AccessToken accessToken = entityManagerSession.doAction(
+                EntityManagerContainer.<AccessToken>create().onResultHandler(em -> AccessTokenDAO.findByTokenId(em,
+                        tokenId)));
 
         //
         // Check Access
@@ -222,7 +236,8 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Do find
-        entityManagerSession.onTransactedResult(em -> {
+        entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<AccessToken>create().onResultHandler(em -> {
             AccessToken accessToken = AccessTokenDAO.find(em, scopeId, accessTokenId);
             if (accessToken != null) {
                 accessToken.setInvalidatedOn(new Date());
@@ -231,7 +246,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
             } else {
                 throw new KapuaEntityNotFoundException(AccessToken.TYPE, scopeId);
             }
-        });
+        }));
     }
 
     //@ListenServiceEvent(fromAddress="account")

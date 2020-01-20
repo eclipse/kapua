@@ -9,22 +9,17 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.jpa;
+package org.eclipse.kapua.service.authorization.access.shiro;
 
-public class CacheConfigurationFactory {
+import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
 
-    private String cacheName;
+public class AccessPermissionCacheFactory extends AbstractEntityCacheFactory {
 
-    public CacheConfigurationFactory(String cacheName) {
-        this.cacheName = cacheName;
+    private AccessPermissionCacheFactory() {
+        super("AccessPermissionId");
     }
 
-    public String getCacheName() {
-        return cacheName;
+    protected static AccessPermissionCacheFactory getInstance() {
+        return new AccessPermissionCacheFactory();
     }
-
-    public void setCacheName(String cacheName) {
-        this.cacheName = cacheName;
-    }
-
 }

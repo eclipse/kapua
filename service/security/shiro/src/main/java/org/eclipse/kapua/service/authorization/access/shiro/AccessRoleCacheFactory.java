@@ -9,23 +9,17 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.service.internal;
+package org.eclipse.kapua.service.authorization.access.shiro;
 
-public class DummyCache implements Cache {
+import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
 
-    @Override
-    public Object get(Object key) {
-        return null;
+public class AccessRoleCacheFactory extends AbstractEntityCacheFactory {
+
+    private AccessRoleCacheFactory() {
+        super("AccessRoleId");
     }
 
-    @Override
-    public Object put(Object key, Object value) {
-        return null;
+    protected static AccessRoleCacheFactory getInstance() {
+        return new AccessRoleCacheFactory();
     }
-
-    @Override
-    public Object invalidate(Object key) {
-        return null;
-    }
-
 }

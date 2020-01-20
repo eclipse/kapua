@@ -9,13 +9,17 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.service.internal;
+package org.eclipse.kapua.commons.jpa;
 
-public interface Cache {
+import org.eclipse.kapua.KapuaException;
 
-    Object get(Object key);
+/**
+ * Entity manager callback result service definition.
+ *
+ * @param <T> Execution result return type
+ * @since 1.0
+ */
+public interface OnAfter<T> {
 
-    Object put(Object key, Object value);
-
-    Object invalidate(Object key);
+    void onAfter(T result) throws KapuaException;
 }

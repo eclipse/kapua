@@ -111,10 +111,11 @@ public class QueuedJobExecutionDAO {
      * @param em
      * @param scopeId
      * @param queuedJobExecutionId
+     * @return
      * @throws KapuaEntityNotFoundException If the {@link JobExecution} is not found
      */
-    public static void delete(EntityManager em, KapuaId scopeId, KapuaId queuedJobExecutionId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, QueuedJobExecutionImpl.class, scopeId, queuedJobExecutionId);
+    public static QueuedJobExecution delete(EntityManager em, KapuaId scopeId, KapuaId queuedJobExecutionId) throws KapuaEntityNotFoundException {
+        return ServiceDAO.delete(em, QueuedJobExecutionImpl.class, scopeId, queuedJobExecutionId);
     }
 
 }

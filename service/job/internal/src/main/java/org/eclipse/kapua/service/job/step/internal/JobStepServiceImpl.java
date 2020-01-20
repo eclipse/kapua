@@ -16,6 +16,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -142,7 +143,8 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> JobStepDAO.create(em, jobStepCreator));
+        return entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<JobStep>create().onResultHandler(em -> JobStepDAO.create(em, jobStepCreator)));
     }
 
     @Override
@@ -193,7 +195,8 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
             throw new KapuaDuplicateNameException(jobStep.getName());
         }
 
-        return entityManagerSession.onTransactedResult(em -> JobStepDAO.update(em, jobStep));
+        return entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<JobStep>create().onResultHandler(em -> JobStepDAO.update(em, jobStep)));
     }
 
     @Override
@@ -209,7 +212,9 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> JobStepDAO.find(em, scopeId, jobStepId));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<JobStep>create().onResultHandler(em -> JobStepDAO.find(em, scopeId,
+                        jobStepId)));
     }
 
     @Override
@@ -224,7 +229,8 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> JobStepDAO.query(em, query));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<JobStepListResult>create().onResultHandler(em -> JobStepDAO.query(em, query)));
     }
 
     @Override
@@ -239,7 +245,8 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> JobStepDAO.count(em, query));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<Long>create().onResultHandler(em -> JobStepDAO.count(em, query)));
     }
 
     @Override
@@ -261,10 +268,11 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> {
+        entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<JobStep>create().onResultHandler(em -> {
             JobStep deletedJobStep = JobStepDAO.find(em, scopeId, jobStepId);
 
-            JobStepDAO.delete(em, scopeId, jobStepId);
+            JobStep jobStep = JobStepDAO.delete(em, scopeId, jobStepId);
 
             //
             // Shift following steps of one position in the step index
@@ -284,6 +292,7 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
                 JobStepDAO.update(em, js);
             }
-        });
+            return jobStep;
+        }));
     }
 }

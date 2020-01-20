@@ -110,10 +110,11 @@ public class EndpointInfoDAO extends ServiceDAO {
      * @param em             The {@link EntityManager} that holds the transaction.
      * @param scopeId
      * @param endpointInfoId The {@link EndpointInfo} id to delete.
+     * @return
      * @throws KapuaEntityNotFoundException If {@link EndpointInfo} is not found.
      * @since 1.0.0
      */
-    public static void delete(EntityManager em, KapuaId scopeId, KapuaId endpointInfoId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, EndpointInfoImpl.class, scopeId, endpointInfoId);
+    public static EndpointInfo delete(EntityManager em, KapuaId scopeId, KapuaId endpointInfoId) throws KapuaEntityNotFoundException {
+        return ServiceDAO.delete(em, EndpointInfoImpl.class, scopeId, endpointInfoId);
     }
 }

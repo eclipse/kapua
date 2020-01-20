@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,7 +12,6 @@
 package org.eclipse.kapua.commons.jpa;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.service.internal.Cache;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.slf4j.Logger;
@@ -35,7 +34,6 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
 
     private static final Map<String, String> UNIQUE_CONTRAINTS = new HashMap<>();
     private EntityManagerFactory entityManagerFactory;
-    private Cache cache;
 
     /**
      * Protected constructor
@@ -82,10 +80,6 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
         for (Entry<String, String> uc : uniqueConstraints.entrySet()) {
             UNIQUE_CONTRAINTS.put(uc.getKey(), uc.getValue());
         }
-    }
-
-    public Cache getCache() {
-        return cache;
     }
 
     // Entity manager factory methods

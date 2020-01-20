@@ -16,6 +16,7 @@ import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.jpa.EntityManager;
+import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
@@ -99,7 +100,9 @@ public class EndpointInfoServiceImpl
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> EndpointInfoDAO.create(em, endpointInfoCreator));
+        return entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<EndpointInfo>create().onResultHandler(em -> EndpointInfoDAO.create(em,
+                        endpointInfoCreator)));
     }
 
     @Override
@@ -133,7 +136,9 @@ public class EndpointInfoServiceImpl
 
         //
         // Do update
-        return entityManagerSession.onTransactedResult(em -> EndpointInfoDAO.update(em, endpointInfo));
+        return entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<EndpointInfo>create().onResultHandler(em -> EndpointInfoDAO.update(em,
+                        endpointInfo)));
     }
 
     @Override
@@ -147,7 +152,9 @@ public class EndpointInfoServiceImpl
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> EndpointInfoDAO.delete(em, scopeId, endpointInfoId));
+        entityManagerSession.doTransactedAction(
+                EntityManagerContainer.<EndpointInfo>create().onResultHandler(em -> EndpointInfoDAO.delete(em,
+                        scopeId, endpointInfoId)));
     }
 
     @Override
@@ -162,7 +169,9 @@ public class EndpointInfoServiceImpl
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> EndpointInfoDAO.find(em, scopeId, endpointInfoId));
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<EndpointInfo>create().onResultHandler(em -> EndpointInfoDAO.find(em, scopeId,
+                        endpointInfoId)));
     }
 
     @Override
@@ -176,7 +185,8 @@ public class EndpointInfoServiceImpl
 
         //
         // Do Query
-        return entityManagerSession.onResult(em -> {
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<EndpointInfoListResult>create().onResultHandler(em -> {
             EndpointInfoListResult endpointInfoListResult = EndpointInfoDAO.query(em, query);
 
             if (endpointInfoListResult.isEmpty() && query.getScopeId() != null) {
@@ -205,7 +215,7 @@ public class EndpointInfoServiceImpl
             }
 
             return endpointInfoListResult;
-        });
+        }));
     }
 
     @Override
@@ -219,7 +229,8 @@ public class EndpointInfoServiceImpl
 
         //
         // Do count
-        return entityManagerSession.onResult(em -> {
+        return entityManagerSession.doAction(
+                EntityManagerContainer.<Long>create().onResultHandler(em -> {
             long endpointInfoCount = EndpointInfoDAO.count(em, query);
 
             if (endpointInfoCount == 0 && query.getScopeId() != null) {
@@ -248,7 +259,7 @@ public class EndpointInfoServiceImpl
             }
 
             return endpointInfoCount;
-        });
+        }));
     }
 
     //
