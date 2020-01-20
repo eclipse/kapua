@@ -1031,6 +1031,19 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
+    @And("^I create users with following names$")
+    public void iCreateUsersWithFollowingNames(List<CucUser> tmpUsers) throws Exception {
+        UserCreator userCreator = userFactory.newCreator(getCurrentScopeId());
+        ArrayList<User> userList = new ArrayList<>();
+
+        for (CucUser tmpUser : tmpUsers) {
+            userCreator.setName(tmpUser.getName());
+            User user = userService.create(userCreator);
+            userList.add(user);
+        }
+        stepData.put("UserList", userList);
+    }
+
     // *****************
     // * Inner Classes *
     // *****************
