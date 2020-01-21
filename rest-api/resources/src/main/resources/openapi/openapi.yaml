@@ -440,6 +440,10 @@ components:
           description: An Offset on the result size. Used to skip the first `n` items of a result set, with `n` equal to the value of `offset`
           type: integer
           default: 0
+        askTotalCount:
+          description: A flag to ask the total results count in the response, in addition to the data set as requested with the `offset` and `limit` parameters
+          type: boolean
+          default: false
       example:
         offset: 0
         limit: 50
@@ -485,6 +489,12 @@ components:
         size:
           description: The size of the list containing the items
           type: integer
+        totalCount:
+          description: The total count of the elements that matched the query. Present only if `askTotalCount` was `true` in the query object.
+          type: integer
+      required:
+        - limitedExceeded
+        - size
     kapuaCountResult:
       type: object
       properties:
