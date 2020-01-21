@@ -82,7 +82,7 @@ public class GwtKapuaEndpointModelConverter {
         query.setSortCriteria(sortCriteria);
         query.setOffset(loadConfig.getOffset());
         query.setLimit(loadConfig.getLimit());
-
+        query.setAskTotalCount(gwtEndpointQuery.getAskTotalCount());
         return query;
     }
 }

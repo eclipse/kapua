@@ -76,7 +76,7 @@ public class GwtDeviceConnectionServiceImpl extends KapuaRemoteServiceServlet im
             DeviceConnectionQuery query = GwtKapuaDeviceModelConverter.convertConnectionQuery(loadConfig, gwtDeviceConnectionQuery);
 
             KapuaListResult<DeviceConnection> deviceConnections = DEVICE_CONNECTION_SERVICE.query(query);
-            totalLength = (int) DEVICE_CONNECTION_SERVICE.count(query);
+            totalLength = deviceConnections.getTotalCount().intValue();
 
             if (!deviceConnections.isEmpty()) {
                 Map<String, String> users = new HashMap<String, String>();

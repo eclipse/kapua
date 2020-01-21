@@ -88,6 +88,7 @@ public class GwtKapuaUserModelConverter {
         }
         SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
         query.setPredicate(predicate);
+        query.setAskTotalCount(gwtUserQuery.getAskTotalCount());
         //
         // Return converted
         return query;

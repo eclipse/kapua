@@ -83,6 +83,7 @@ public class GwtKapuaAuthenticationModelConverter {
         query.setPredicate(andPredicate);
         query.setOffset(loadConfig.getOffset());
         query.setLimit(loadConfig.getLimit());
+        query.setAskTotalCount(gwtCredentialQuery.getAskTotalCount());
 
         //
         // Return converted

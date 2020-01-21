@@ -84,7 +84,7 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
             // query
             CredentialListResult credentials = CREDENTIAL_SERVICE.query(credentialQuery);
             credentials.sort(credentialComparator);
-            totalLength = (int) CREDENTIAL_SERVICE.count(credentialQuery);
+            totalLength = credentials.getTotalCount().intValue();
 
             // If there are results
             if (!credentials.isEmpty()) {

@@ -18,6 +18,7 @@ public class GwtQuery implements Serializable {
     private static final long serialVersionUID = 3080860571269787362L;
 
     private String scopeId;
+    private boolean askTotalCount = true;
 
     public GwtQuery() {
         super();
@@ -30,4 +31,13 @@ public class GwtQuery implements Serializable {
     public void setScopeId(String scopeId) {
         this.scopeId = scopeId;
     }
+
+    public boolean getAskTotalCount() {
+        return askTotalCount;
+    }
+
+    public void setAskTotalCount(boolean askTotalCount) {
+        this.askTotalCount = askTotalCount;
+    }
+
 }

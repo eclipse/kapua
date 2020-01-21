@@ -134,7 +134,7 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
             EndpointInfoQuery endpointQuery = GwtKapuaEndpointModelConverter.convertEndpointQuery(loadConfig, gwtEndpointQuery);
 
             EndpointInfoListResult endpoints = ENDPOINT_INFO_SERVICE.query(endpointQuery);
-            totalLength = (int) ENDPOINT_INFO_SERVICE.count(endpointQuery);
+            totalLength = endpoints.getTotalCount().intValue();
 
             if (!endpoints.isEmpty()) {
                 UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {

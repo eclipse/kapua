@@ -15,7 +15,6 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.common.base.Strings;
-import com.google.common.primitives.Ints;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
@@ -61,7 +60,7 @@ public class GwtDeviceManagementOperationServiceImpl extends KapuaRemoteServiceS
             DeviceManagementOperationQuery query = GwtKapuaDeviceModelConverter.convertDeviceManagementOperationQuery(loadConfig, gwtQuery);
 
             DeviceManagementOperationListResult managementOperations = DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.query(query);
-            totalLength = Ints.checkedCast(DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.count(query));
+            totalLength = managementOperations.getTotalCount().intValue();
 
             for (DeviceManagementOperation dmo : managementOperations.getItems()) {
                 GwtDeviceManagementOperation gwtDmo = KapuaGwtDeviceModelConverter.convertManagementOperation(dmo);

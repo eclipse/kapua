@@ -112,7 +112,7 @@ public class GwtKapuaDeviceModelConverter {
         query.setOffset(loadConfig.getOffset());
         query.setLimit(loadConfig.getLimit());
         query.setPredicate(predicate);
-
+        query.setAskTotalCount(gwtDeviceConnectionQuery.getAskTotalCount());
         return query;
     }
 
@@ -235,7 +235,7 @@ public class GwtKapuaDeviceModelConverter {
         }
 
         query.setPredicate(andPred);
-
+        query.setAskTotalCount(gwtDeviceQuery.getAskTotalCount());
         return query;
     }
 
@@ -276,7 +276,7 @@ public class GwtKapuaDeviceModelConverter {
             query.setLimit(loadConfig.getLimit());
             query.setOffset(loadConfig.getOffset());
         }
-
+        query.setAskTotalCount(gwtQuery.getAskTotalCount());
         return query;
     }
 }

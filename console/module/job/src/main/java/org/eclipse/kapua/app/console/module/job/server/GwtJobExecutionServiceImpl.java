@@ -47,7 +47,7 @@ public class GwtJobExecutionServiceImpl extends KapuaRemoteServiceServlet implem
 
             JobExecutionQuery executionQuery = GwtKapuaJobModelConverter.convertJobExecutionQuery(loadConfig, gwtJobExecutionQuery);
             JobExecutionListResult jobExecutionList = EXECUTION_SERVICE.query(executionQuery);
-            totalLength = (int) EXECUTION_SERVICE.count(executionQuery);
+            totalLength = jobExecutionList.getTotalCount().intValue();
 
             // Converto to GWT entity
             for (JobExecution jobExecution : jobExecutionList.getItems()) {

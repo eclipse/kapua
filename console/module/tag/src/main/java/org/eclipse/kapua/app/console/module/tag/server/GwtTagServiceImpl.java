@@ -130,7 +130,7 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
             TagQuery tagQuery = GwtKapuaTagModelConverter.convertTagQuery(loadConfig, gwtTagQuery);
 
             TagListResult tags = tagService.query(tagQuery);
-            totalLength = (int) tagService.count(tagQuery);
+            totalLength = tags.getTotalCount().intValue();
 
             if (!tags.isEmpty()) {
                 UserListResult userListResult = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {
