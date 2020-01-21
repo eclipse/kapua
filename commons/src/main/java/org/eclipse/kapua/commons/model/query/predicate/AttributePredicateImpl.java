@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -57,13 +57,28 @@ public class AttributePredicateImpl<T> implements AttributePredicate<T> {
     }
 
     @Override
+    public void setAttributeName(String attributeName) {
+        this.attributeName = attributeName;
+    }
+
+    @Override
     public T getAttributeValue() {
         return attributeValue;
     }
 
     @Override
+    public void setAttributeValue(T attributeValue) {
+        this.attributeValue = attributeValue;
+    }
+
+    @Override
     public Operator getOperator() {
         return operator;
+    }
+
+    @Override
+    public void setOperator(Operator operator) {
+        this.operator = operator;
     }
 
 }
