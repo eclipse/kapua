@@ -35,7 +35,7 @@
       be 0 and the status PROCESS_FAILED.
 
       Given I start the Kura Mock
-      When Device "is" connected
+      When Device is connected
       And I wait 1 second
       Then Device status is "CONNECTED"
       When KuraMock is disconnected
@@ -55,9 +55,8 @@
       Then No exception was thrown
       And I start a job
       And I wait 2 seconds
-      Given I query for the job with the name "TestJob"
-      When I query for the execution items for the current job
-      Then I count 1
+      Given I query for the job with the name "TestJob" and I find it
+      When I query for the execution items for the current job and I count 1
       And I confirm the executed job is finished
       And I search for the last job target in the database
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
@@ -70,7 +69,7 @@
       be 0 and the status PROCESS_FAILED.
 
       Given I start the Kura Mock
-      When Device "is" connected
+      When Device is connected
       And I wait 1 second
       Then Device status is "CONNECTED"
       When KuraMock is disconnected
@@ -90,9 +89,8 @@
       Then No exception was thrown
       And I start a job
       And I wait 2 seconds
-      Given I query for the job with the name "TestJob"
-      When I query for the execution items for the current job
-      Then I count 1
+      Given I query for the job with the name "TestJob" and I find it
+      When I query for the execution items for the current job and I count 1
       And I confirm the executed job is finished
       And I search for the last job target in the database
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
@@ -104,12 +102,12 @@
       After the executed job is finished, the executed target's step index should
       be 0 and the status PROCESS_FAILED
 
-      Given I login as user with name "kapua-sys" and password "kapua-password"
-      And I select account "kapua-sys"
-      When I start the Kura Mock
-      And Device "is" connected
+      Given I start the Kura Mock
+      And Device is connected
       And I wait 1 second
       Then Device status is "CONNECTED"
+      And I login as user with name "kapua-sys" and password "kapua-password"
+      And I select account "kapua-sys"
       And I get the KuraMock device
       And Bundles are requested
       Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
@@ -127,14 +125,13 @@
       Then No exception was thrown
       And I start a job
       And I wait 2 seconds
-      Given I query for the job with the name "TestJob"
-      When I query for the execution items for the current job
-      Then I count 1
+      Given I query for the job with the name "TestJob" and I find it
+      When I query for the execution items for the current job and I count 1
       And I confirm the executed job is finished
       And I search for the last job target in the database
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
       When I start the Kura Mock
-      And Device "is" connected
+      And Device is connected
       And Bundles are requested
       Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
       When KuraMock is disconnected
@@ -148,11 +145,12 @@
       After the executed job is finished, the executed target's step index should
       be 0 and the status PROCESS_FAILED
 
-      Given I login as user with name "kapua-sys" and password "kapua-password"
-      And I select account "kapua-sys"
-      When I start the Kura Mock
-      And Device "is" connected
+      Given I start the Kura Mock
+      And Device is connected
       And I wait 1 second
+      Then Device status is "CONNECTED"
+      And I login as user with name "kapua-sys" and password "kapua-password"
+      And I select account "kapua-sys"
       And I get the KuraMock device
       And Bundles are requested
       And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
@@ -171,14 +169,13 @@
       Then No exception was thrown
       And I start a job
       And I wait 2 seconds
-      Given I query for the job with the name "TestJob"
-      When I query for the execution items for the current job
-      Then I count 1
+      Given I query for the job with the name "TestJob" and I find it
+      When I query for the execution items for the current job and I count 1
       And I confirm the executed job is finished
       And I search for the last job target in the database
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
       When I start the Kura Mock
-      And Device "is" connected
+      And Device is connected
       And Bundles are requested
       And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
       When KuraMock is disconnected
@@ -193,7 +190,7 @@
       be 0 and the status PROCESS_FAILED
 
       Given I start the Kura Mock
-      When Device "is" connected
+      When Device is connected
       And I wait 1 seconds
       Then Device status is "CONNECTED"
       When KuraMock is disconnected
@@ -213,9 +210,8 @@
       Then No exception was thrown
       And I start a job
       And I wait 2 seconds
-      Given I query for the job with the name "TestJob"
-      When I query for the execution items for the current job
-      Then I count 1
+      Given I query for the job with the name "TestJob" and I find it
+      When I query for the execution items for the current job and I count 1
       And I confirm the executed job is finished
       And I search for the last job target in the database
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
@@ -227,15 +223,14 @@
       After the executed job is finished, the executed target's step index should
       be 0 and the status PROCESS_FAILED
 
-      Given I login as user with name "kapua-sys" and password "kapua-password"
-      And I select account "kapua-sys"
-      When I start the Kura Mock
-      And Device "is" connected
+      Given I start the Kura Mock
+      And Device is connected
       And I wait 1 second
       Then Device status is "CONNECTED"
+      And I login as user with name "kapua-sys" and password "kapua-password"
+      And I select account "kapua-sys"
       And I get the KuraMock device
-      And Packages are requested
-      And Number of received packages is 1
+      And Packages are requested and 1 package is received
       When KuraMock is disconnected
       And I wait 1 second
       Then Device status is "DISCONNECTED"
@@ -250,16 +245,14 @@
       Then No exception was thrown
       And I start a job
       And I wait 2 seconds
-      Given I query for the job with the name "TestJob"
-      When I query for the execution items for the current job
-      Then I count 1
+      Given I query for the job with the name "TestJob" and I find it
+      When I query for the execution items for the current job and I count 1
       And I confirm the executed job is finished
       And I search for the last job target in the database
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
       When I start the Kura Mock
-      And Device "is" connected
-      And Packages are requested
-      Then Number of received packages is 1
+      And Device is connected
+      And Packages are requested and 1 package is received
       When KuraMock is disconnected
       And I wait 1 second
       And Device status is "DISCONNECTED"
@@ -271,15 +264,14 @@
       After the executed job is finished, the executed target's step index should
       be 0 and the status PROCESS_FAILED
 
-      Given I login as user with name "kapua-sys" and password "kapua-password"
-      And I select account "kapua-sys"
-      Then I start the Kura Mock
-      When Device "is" connected
+      Given I start the Kura Mock
+      When Device is connected
       And I wait 1 second
       Then Device status is "CONNECTED"
+      And I login as user with name "kapua-sys" and password "kapua-password"
+      And I select account "kapua-sys"
       And I get the KuraMock device
-      And Packages are requested
-      And Number of received packages is 1
+      And Packages are requested and 1 package is received
       And Package named org.eclipse.kura.example.beacon with version 1.0.300 is received
       When KuraMock is disconnected
       And I wait 1 second
@@ -295,16 +287,14 @@
       Then No exception was thrown
       And I start a job
       And I wait 2 seconds
-      Given I query for the job with the name "TestJob"
-      When I query for the execution items for the current job
-      Then I count 1
+      Given I query for the job with the name "TestJob" and I find it
+      When I query for the execution items for the current job and I count 1
       And I confirm the executed job is finished
       And I search for the last job target in the database
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
       When I start the Kura Mock
-      And Device "is" connected
-      And Packages are requested
-      Then Number of received packages is 1
+      And Device is connected
+      And Packages are requested and 1 package is received
       When KuraMock is disconnected
       And I wait 1 second
       And Device status is "DISCONNECTED"
@@ -320,12 +310,12 @@
     After the executed job is finished, the executed target's step index should
     be 0 and the status PROCESS_FAILED.
 
-      Given I login as user with name "kapua-sys" and password "kapua-password"
-      And I select account "kapua-sys"
-      When I start the Kura Mock
+      Given I start the Kura Mock
       And Device is connected
       And I wait 1 second
       Then Device status is "CONNECTED"
+      And I login as user with name "kapua-sys" and password "kapua-password"
+      And I select account "kapua-sys"
       And I get the KuraMock device
       And Bundles are requested
       Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
@@ -349,9 +339,8 @@
       And I search the database for created job steps and I find 2
       And I start a job
       And I wait 2 seconds
-      Given I query for the job with the name "TestJob"
-      When I query for the execution items for the current job
-      Then I count 1
+      Given I query for the job with the name "TestJob" and I find it
+      When I query for the execution items for the current job and I count 1
       And I confirm the executed job is finished
       And I search for the last job target in the database
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
@@ -370,12 +359,12 @@
     After the executed job is finished, the executed target's step index should
     be 0 and the status PROCESS_FAILED.
 
-      Given I login as user with name "kapua-sys" and password "kapua-password"
-      And I select account "kapua-sys"
-      When I start the Kura Mock
+      Given I start the Kura Mock
       And Device is connected
       And I wait 1 second
       Then Device status is "CONNECTED"
+      And I login as user with name "kapua-sys" and password "kapua-password"
+      And I select account "kapua-sys"
       And I get the KuraMock device
       And Bundles are requested
       Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
@@ -399,9 +388,8 @@
       And I search the database for created job steps and I find 2
       And I start a job
       And I wait 2 seconds
-      Given I query for the job with the name "TestJob"
-      When I query for the execution items for the current job
-      Then I count 1
+      Given I query for the job with the name "TestJob" and I find it
+      When I query for the execution items for the current job and I count 1
       And I confirm the executed job is finished
       And I search for the last job target in the database
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
@@ -419,12 +407,12 @@
     After the executed job is finished, the executed target's step index should
     be 0 and the status PROCESS_FAILED
 
-      Given I login as user with name "kapua-sys" and password "kapua-password"
-      And I select account "kapua-sys"
-      When I start the Kura Mock
-      And Device "is" connected
+      Given I start the Kura Mock
+      And Device is connected
       And I wait 1 second
       Then Device status is "CONNECTED"
+      And I login as user with name "kapua-sys" and password "kapua-password"
+      And I select account "kapua-sys"
       And I get the KuraMock device
       And Bundles are requested
       Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
@@ -449,14 +437,13 @@
       And I search the database for created job steps and I find 2
       And I start a job
       And I wait 2 seconds
-      Given I query for the job with the name "TestJob"
-      When I query for the execution items for the current job
-      Then I count 1
+      Given I query for the job with the name "TestJob" and I find it
+      When I query for the execution items for the current job and I count 1
       And I confirm the executed job is finished
       And I search for the last job target in the database
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
       When I start the Kura Mock
-      And Device "is" connected
+      And Device is connected
       And Bundles are requested
       Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
       And A bundle named com.google.guava with id 95 and version 19.0.0 is present and RESOLVED
@@ -471,11 +458,12 @@
     After the executed job is finished, the executed target's step index should
     be 0 and the status PROCESS_FAILED
 
-      Given I login as user with name "kapua-sys" and password "kapua-password"
-      And I select account "kapua-sys"
-      When I start the Kura Mock
-      And Device "is" connected
+      Given I start the Kura Mock
+      And Device is connected
       And I wait 1 second
+      Then Device status is "CONNECTED"
+      And I login as user with name "kapua-sys" and password "kapua-password"
+      And I select account "kapua-sys"
       And I get the KuraMock device
       And Bundles are requested
       And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
@@ -500,14 +488,13 @@
       And I search the database for created job steps and I find 2
       And I start a job
       And I wait 2 seconds
-      Given I query for the job with the name "TestJob"
-      When I query for the execution items for the current job
-      Then I count 1
+      Given I query for the job with the name "TestJob" and I find it
+      When I query for the execution items for the current job and I count 1
       And I confirm the executed job is finished
       And I search for the last job target in the database
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
       When I start the Kura Mock
-      And Device "is" connected
+      And Device is connected
       And Bundles are requested
       And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
       And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
@@ -522,11 +509,12 @@
     After the executed job is finished, the executed target's step index should
     be 0 and the status PROCESS_FAILED
 
-      Given I login as user with name "kapua-sys" and password "kapua-password"
-      And I select account "kapua-sys"
-      When I start the Kura Mock
+      Given I start the Kura Mock
       And Device is connected
       And I wait 1 second
+      Then Device status is "CONNECTED"
+      And I login as user with name "kapua-sys" and password "kapua-password"
+      And I select account "kapua-sys"
       And I get the KuraMock device
       And Bundles are requested
       And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
@@ -550,9 +538,8 @@
       And I search the database for created job steps and I find 2
       And I start a job
       And I wait 2 seconds
-      Given I query for the job with the name "TestJob"
-      When I query for the execution items for the current job
-      Then I count 1
+      Given I query for the job with the name "TestJob" and I find it
+      When I query for the execution items for the current job and I count 1
       And I confirm the executed job is finished
       And I search for the last job target in the database
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
@@ -571,15 +558,14 @@
     After the executed job is finished, the executed target's step index should
     be 0 and the status PROCESS_FAILED
 
-      Given I login as user with name "kapua-sys" and password "kapua-password"
-      And I select account "kapua-sys"
-      When I start the Kura Mock
-      And Device "is" connected
+      Given I start the Kura Mock
+      And Device is connected
       And I wait 1 second
       Then Device status is "CONNECTED"
+      And I login as user with name "kapua-sys" and password "kapua-password"
+      And I select account "kapua-sys"
       And I get the KuraMock device
-      And Packages are requested
-      And Number of received packages is 1
+      And Packages are requested and 1 package is received
       And Bundles are requested
       And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
       When KuraMock is disconnected
@@ -602,16 +588,14 @@
       And I search the database for created job steps and I find 2
       And I start a job
       And I wait 2 seconds
-      Given I query for the job with the name "TestJob"
-      When I query for the execution items for the current job
-      Then I count 1
+      Given I query for the job with the name "TestJob" and I find it
+      When I query for the execution items for the current job and I count 1
       And I confirm the executed job is finished
       And I search for the last job target in the database
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
       When I start the Kura Mock
-      And Device "is" connected
-      And Packages are requested
-      Then Number of received packages is 1
+      And Device is connected
+      And Packages are requested and 1 package is received
       And Bundles are requested
       And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
       When KuraMock is disconnected
@@ -625,15 +609,14 @@
     After the executed job is finished, the executed target's step index should
     be 0 and the status PROCESS_FAILED
 
-      Given I login as user with name "kapua-sys" and password "kapua-password"
-      And I select account "kapua-sys"
-      Then I start the Kura Mock
-      When Device "is" connected
+      Given I start the Kura Mock
+      When Device is connected
       And I wait 1 second
       Then Device status is "CONNECTED"
+      And I login as user with name "kapua-sys" and password "kapua-password"
+      And I select account "kapua-sys"
       And I get the KuraMock device
-      And Packages are requested
-      And Number of received packages is 1
+      And Packages are requested and 1 package is received
       And Package named org.eclipse.kura.example.beacon with version 1.0.300 is received
       And Bundles are requested
       And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
@@ -657,16 +640,14 @@
       And I search the database for created job steps and I find 2
       And I start a job
       And I wait 2 seconds
-      Given I query for the job with the name "TestJob"
-      When I query for the execution items for the current job
-      Then I count 1
+      Given I query for the job with the name "TestJob" and I find it
+      When I query for the execution items for the current job and I count 1
       And I confirm the executed job is finished
       And I search for the last job target in the database
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
       When I start the Kura Mock
-      And Device "is" connected
-      And Packages are requested
-      Then Number of received packages is 1
+      And Device is connected
+      And Packages are requested and 1 package is received
       And KuraMock is disconnected
       And I logout
 
@@ -681,7 +662,7 @@
     be 0 and the status PROCESS_FAILED
 
       Given I add 2 devices to Kura Mock
-      When Devices "are" connected
+      When Devices are connected
       And I wait 1 second
       Then Device status is "CONNECTED"
       When KuraMock is disconnected
@@ -718,7 +699,7 @@
     be 0 and the status PROCESS_FAILED
 
       Given I add 2 devices to Kura Mock
-      When Devices "are" connected
+      When Devices are connected
       And I wait 1 second
       Then Device status is "CONNECTED"
       When KuraMock is disconnected
@@ -754,15 +735,14 @@
     After the executed job is finished, the step index of executed targets should
     be 0 and the status PROCESS_FAILED
 
-      Given I login as user with name "kapua-sys" and password "kapua-password"
-      And I select account "kapua-sys"
-      And I add 2 devices to Kura Mock
-      When Devices "are" connected
+      Given I add 2 devices to Kura Mock
+      When Devices are connected
       And I wait 1 second
       Then Device status is "CONNECTED"
+      And I login as user with name "kapua-sys" and password "kapua-password"
+      And I select account "kapua-sys"
       And I get the KuraMock devices
-      And Packages are requested
-      And Number of received packages is 1
+      And Packages are requested and 1 package is received
       When KuraMock is disconnected
       And I wait 1 second
       Then Device status is "DISCONNECTED"
@@ -786,7 +766,7 @@
       And I search for the last job target in the database
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
       And I add 2 devices to Kura Mock
-      And Devices "are" connected
+      And Devices are connected
       And Packages are requested
       Then Number of received packages is 1
       And KuraMock is disconnected
@@ -799,7 +779,7 @@
     be 0 and the status PROCESS_FAILED
 
       Given I add 2 devices to Kura Mock
-      When Devices "are" connected
+      When Devices are connected
       And I wait 1 second
       Then Device status is "CONNECTED"
       When KuraMock is disconnected
@@ -835,7 +815,7 @@
     be 0 and the status PROCESS_FAILED
 
       Given I add 2 devices to Kura Mock
-      When Devices "are" connected
+      When Devices are connected
       And I wait 1 second
       Then Device status is "CONNECTED"
       When KuraMock is disconnected
@@ -872,7 +852,7 @@
     be 0 and the status PROCESS_FAILED
 
       Given I add 2 devices to Kura Mock
-      When Devices "are" connected
+      When Devices are connected
       And I wait 1 second
       Then Device status is "CONNECTED"
       When KuraMock is disconnected
@@ -909,7 +889,7 @@
     be 0 and the status PROCESS_FAILED
 
       Given I add 2 devices to Kura Mock
-      When Devices "are" connected
+      When Devices are connected
       And I wait 1 second
       Then Device status is "CONNECTED"
       When KuraMock is disconnected
@@ -950,7 +930,7 @@
     be 0 and the status PROCESS_FAILED
 
       Given I add 2 devices to Kura Mock
-      When Devices "are" connected
+      When Devices are connected
       And I wait 1 second
       Then Device status is "CONNECTED"
       When KuraMock is disconnected
@@ -994,7 +974,7 @@
     be 0 and the status PROCESS_FAILED
 
       Given I add 2 devices to Kura Mock
-      When Devices "are" connected
+      When Devices are connected
       And I wait 1 second
       Then Device status is "CONNECTED"
       And I wait 1 second
@@ -1037,15 +1017,14 @@
     After the executed job is finished, the step index of executed targets should
     be 0 and the status PROCESS_FAILED
 
-      Given I login as user with name "kapua-sys" and password "kapua-password"
-      And I select account "kapua-sys"
-      And I add 2 devices to Kura Mock
-      When Devices "are" connected
+      Given I add 2 devices to Kura Mock
+      When Devices are connected
       And I wait 1 second
       Then Device status is "CONNECTED"
+      And I login as user with name "kapua-sys" and password "kapua-password"
+      And I select account "kapua-sys"
       And I get the KuraMock devices
-      And Packages are requested
-      And Number of received packages is 1
+      And Packages are requested and 1 package is received
       When KuraMock is disconnected
       And I wait 1 second
       Then Device status is "DISCONNECTED"
@@ -1076,7 +1055,7 @@
       And I search for the last job target in the database
       And I confirm the step index is 0 and status is "PROCESS_FAILED"
       And I add 2 devices to Kura Mock
-      And Device "are" connected
+      And Device are connected
       And Packages are requested
       Then Number of received packages is 1
       And Bundles are requested
@@ -1089,7 +1068,7 @@
     be 0 and the status PROCESS_FAILED
 
       Given I add 2 devices to Kura Mock
-      When Devices "are" connected
+      When Devices are connected
       And I wait 1 second
       Then Device status is "CONNECTED"
       When KuraMock is disconnected
@@ -1133,7 +1112,7 @@
     be 0 and the status PROCESS_FAILED
 
       Given I add 2 devices to Kura Mock
-      When Devices "are" connected
+      When Devices are connected
       And I wait 1 second
       Then Device status is "CONNECTED"
       When KuraMock is disconnected
@@ -1177,7 +1156,7 @@
     be 0 and the status PROCESS_FAILED
 
       Given I add 2 devices to Kura Mock
-      When Devices "are" connected
+      When Devices are connected
       And I wait 1 second
       Then Device status is "CONNECTED"
       When KuraMock is disconnected
@@ -1221,7 +1200,7 @@
     be 0 and the status PROCESS_FAILED
 
       Given I add 2 devices to Kura Mock
-      When Devices "are" connected
+      When Devices are connected
       And I wait 1 second
       Then Device status is "CONNECTED"
       When KuraMock is disconnected

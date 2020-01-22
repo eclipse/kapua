@@ -115,6 +115,7 @@ public class KuraDevice implements MqttCallback {
     public boolean bundleStateChanged;
     public boolean configurationChanged;
     public boolean packageListChanged;
+    public boolean packageListChangedAfterUninstall;
     public boolean assetStateChanged;
 
     public KuraDevice() {
@@ -324,7 +325,7 @@ public class KuraDevice implements MqttCallback {
             callbackParam = extractCallback(payload);
 
             responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/REPLY/" + callbackParam.getRequestId();
-            responsePayload = Files.readAllBytes(Paths.get(getClass().getResource(packageListChanged == true ? "/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_packages_updated_list.mqtt" : "/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_packages_initial_list.mqtt").toURI()));
+            responsePayload = Files.readAllBytes(Paths.get(getClass().getResource(packageListChanged == true ? "/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_packages_updated_list.mqtt" : (packageListChangedAfterUninstall == true ? "/mqtt/KapuaPoolClient-id_DEPLOY_V2_REPLY_package_list_after_uninstall.mqtt" : "/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_packages_initial_list.mqtt")).toURI()));
 
             mqttClient.publish(responseTopic, responsePayload, 0, false);
         } else if (topic.equals(deployV2ExecDownloadPackage)) {
@@ -390,21 +391,21 @@ public class KuraDevice implements MqttCallback {
             customKuraPayload.getMetrics().put("response.code", 200);
             responsePayload = customKuraPayload.toByteArray();
             mqttClient.publish(responseTopic, responsePayload, 0, false);
-            Thread.sleep(15000);
+            Thread.sleep(5000);
 
             responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/NOTIFY/" + clientId + "/uninstall";
             KuraPayload customKuraPayload2 = new KuraPayload();
 
             customKuraPayload2.setTimestamp(new Date());
             customKuraPayload2.getMetrics().put("job.id", kuraPayloadInitial.getMetrics().get("job.id"));
-            customKuraPayload2.getMetrics().put("dp.name", "org.eclipse.kura.example.publisher");
+            customKuraPayload2.getMetrics().put("dp.name", "org.eclipse.kura.example.beacon");
             customKuraPayload2.getMetrics().put("dp.uninstall.progress", 100);
             customKuraPayload2.getMetrics().put("dp.uninstall.status", "COMPLETED");
             customKuraPayload2.getMetrics().put("client.id", clientId);
             responsePayload = customKuraPayload2.toByteArray();
             mqttClient.publish(responseTopic, responsePayload , 0, false);
 
-            packageListChanged = true;
+            packageListChangedAfterUninstall = true;
         } else if (topic.equals(deployBundles)) {
             callbackParam = extractCallback(payload);
 
