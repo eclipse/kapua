@@ -17,12 +17,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.http.HttpEntity;
 import org.apache.http.ParseException;
 import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.message.BasicHeader;
-import org.apache.http.nio.entity.NStringEntity;
 import org.apache.http.util.EntityUtils;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
@@ -234,12 +232,12 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         } catch (IOException e) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR, e);
         }
-        HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
         Response insertResponse = restCallTimeoutHandler(() -> esClientProvider.getClient().performRequest(
                 POST_ACTION,
                 getInsertTypePath(insertRequest),
                 Collections.emptyMap(),
-                entity), insertRequest.getTypeDescriptor().getIndex(), "INSERT");
+                EntityBuilder.create().setText(json).setContentType(ContentType.APPLICATION_JSON).build(),
+                new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString())), insertRequest.getTypeDescriptor().getIndex(), "INSERT");
 
         if (isRequestSuccessful(insertResponse)) {
             JsonNode responseNode;
@@ -272,12 +270,12 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
         } catch (IOException e) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR, e);
         }
-        HttpEntity entity = new NStringEntity(json, ContentType.APPLICATION_JSON);
         Response updateResponse = restCallTimeoutHandler(() -> esClientProvider.getClient().performRequest(
                 POST_ACTION,
                 getUpsertPath(updateRequest.getTypeDescriptor(), updateRequest.getId()),
                 Collections.emptyMap(),
-                entity), updateRequest.getTypeDescriptor().getIndex(), "UPSERT");
+                EntityBuilder.create().setText(json).setContentType(ContentType.APPLICATION_JSON).build(),
+                new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString())), updateRequest.getTypeDescriptor().getIndex(), "UPSERT");
         if (isRequestSuccessful(updateResponse)) {
             JsonNode responseNode;
             try {
@@ -322,7 +320,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                 POST_ACTION,
                 getBulkPath(),
                 Collections.emptyMap(),
-                EntityBuilder.create().setText(bulkOperation.toString()).build(),
+                EntityBuilder.create().setText(bulkOperation.toString()).setContentType(ContentType.APPLICATION_JSON).build(),
                 new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString())), "multi-index", "UPSERT BULK");
         if (isRequestSuccessful(updateResponse)) {
             BulkUpdateResponse bulkResponse = new BulkUpdateResponse();
@@ -390,7 +388,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                 GET_ACTION,
                 getSearchPath(typeDescriptor),
                 Collections.emptyMap(),
-                EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).build(),
+                EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).setContentType(ContentType.APPLICATION_JSON).build(),
                 new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "QUERY");
         if (isRequestSuccessful(queryResponse)) {
             JsonNode responseNode;
@@ -435,7 +433,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                 GET_ACTION,
                 getSearchPath(typeDescriptor),
                 Collections.emptyMap(),
-                EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).build(),
+                EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).setContentType(ContentType.APPLICATION_JSON).build(),
                 new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "COUNT");
         if (isRequestSuccessful(queryResponse)) {
             JsonNode responseNode;
@@ -479,7 +477,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                 POST_ACTION,
                 getDeleteByQueryPath(typeDescriptor),
                 Collections.emptyMap(),
-                EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).build(),
+                EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).setContentType(ContentType.APPLICATION_JSON).build(),
                 new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "DELETE BY QUERY");
         if (deleteResponse != null && !isRequestSuccessful(deleteResponse)) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR,
@@ -537,7 +535,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                     PUT_ACTION,
                     getIndexPath(indexName),
                     Collections.emptyMap(),
-                    EntityBuilder.create().setText(MAPPER.writeValueAsString(indexSettings)).build(),
+                    EntityBuilder.create().setText(MAPPER.writeValueAsString(indexSettings)).setContentType(ContentType.APPLICATION_JSON).build(),
                     new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
             return response;
         }, indexName, "CREATE INDEX");
@@ -574,7 +572,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
                 PUT_ACTION,
                 getMappingPath(typeDescriptor),
                 Collections.emptyMap(),
-                EntityBuilder.create().setText(MAPPER.writeValueAsString(mapping)).build(),
+                EntityBuilder.create().setText(MAPPER.writeValueAsString(mapping)).setContentType(ContentType.APPLICATION_JSON).build(),
                 new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "PUT MAPPING");
         if (!isRequestSuccessful(createMappingResponse)) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR,
