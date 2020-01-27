@@ -34,8 +34,8 @@ public class LoginMetric {
     private Timer normalUserTime;
     private Timer shiroLoginTime;
     private Timer checkAccessTime;
-    private Timer findClientIdTime;
-    private Timer findDevTime;
+    private Timer findDeviceConnectionTime;
+    private Timer updateDeviceConnectionTime;
     private Timer shiroLogoutTime;
     private Timer sendLoginUpdateMsgTime;
     private Timer removeConnectionTime;
@@ -62,8 +62,8 @@ public class LoginMetric {
         normalUserTime = metricsService.getTimer("security", "login", "user", "time", "s");
         shiroLoginTime = metricsService.getTimer("security", "login", "shiro", "login", "time", "s");
         checkAccessTime = metricsService.getTimer("security", "login", "check_access", "time", "s");
-        findClientIdTime = metricsService.getTimer("security", "login", "find_client_id", "time", "s");
-        findDevTime = metricsService.getTimer("security", "login", "find_device", "time", "s");
+        findDeviceConnectionTime = metricsService.getTimer("security", "login", "find_device_connection", "time", "s");
+        updateDeviceConnectionTime = metricsService.getTimer("security", "login", "update_device_connection", "time", "s");
         shiroLogoutTime = metricsService.getTimer("security", "login", "shiro", "logout", "time", "s");
         sendLoginUpdateMsgTime = metricsService.getTimer("security", "login", "send_login_update", "time", "s");
         removeConnectionTime = metricsService.getTimer("security", "login", "remove_connection", "time", "s");
@@ -129,12 +129,12 @@ public class LoginMetric {
         return checkAccessTime;
     }
 
-    public Timer getFindClientIdTime() {
-        return findClientIdTime;
+    public Timer getFindDeviceConnectionTime() {
+        return findDeviceConnectionTime;
     }
 
-    public Timer getFindDevTime() {
-        return findDevTime;
+    public Timer getUpdateDeviceConnectionTime() {
+        return updateDeviceConnectionTime;
     }
 
     public Timer getShiroLogoutTime() {

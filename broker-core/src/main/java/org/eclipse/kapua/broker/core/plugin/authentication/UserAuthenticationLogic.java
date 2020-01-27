@@ -77,19 +77,19 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
 
         kcc.updatePermissions(hasPermissions);
 
-        Context loginFindClientIdTimeContext = loginMetric.getFindClientIdTime().time();
+        Context loginFindDeviceConnectionTimeContext = loginMetric.getFindDeviceConnectionTime().time();
         DeviceConnection deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(kcc.getScopeId(), kcc.getClientId()));
-        loginFindClientIdTimeContext.stop();
+        loginFindDeviceConnectionTimeContext.stop();
 
         // enforce the user-device bound
         enforceDeviceConnectionUserBound(KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.getConfigValues(kcc.getScopeId())), deviceConnection, kcc.getScopeId(), kcc.getUserId());
 
-        Context loginFindDevTimeContext = loginMetric.getFindDevTime().time();
+        Context loginUpdateDeviceConnectionTimeContext = loginMetric.getUpdateDeviceConnectionTime().time();
         {
             deviceConnection = upsertDeviceConnection(kcc, deviceConnection);
             kcc.updateKapuaConnectionId(deviceConnection);
         }
-        loginFindDevTimeContext.stop();
+        loginUpdateDeviceConnectionTimeContext.stop();
 
         List<AuthorizationEntry> authorizationEntries = buildAuthorizationMap(kcc);
         loginNormalUserTimeContext.stop();

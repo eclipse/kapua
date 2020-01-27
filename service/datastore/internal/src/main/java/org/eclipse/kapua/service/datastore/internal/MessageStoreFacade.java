@@ -87,8 +87,6 @@ public final class MessageStoreFacade {
 
     private final Counter metricMessagesAlreadyInTheDatastoreCount;
 
-    private static final String METRIC_COMPONENT_NAME = "datastore";
-
     private final MessageStoreMediator mediator;
     private final ConfigurationProvider configProvider;
     private DatastoreClient client;
@@ -106,7 +104,7 @@ public final class MessageStoreFacade {
         this.mediator = mediator;
         client = DatastoreClientFactory.getInstance();
         MetricsService metricService = MetricServiceFactory.getInstance();
-        metricMessagesAlreadyInTheDatastoreCount = metricService.getCounter(METRIC_COMPONENT_NAME, "datastore", "store", "messages", "already_in_the_datastore", "count");
+        metricMessagesAlreadyInTheDatastoreCount = metricService.getCounter(MessageStoreServiceImpl.METRIC_MODULE_NAME, MessageStoreServiceImpl.METRIC_COMPONENT_NAME, "store", "messages", "already_in_the_datastore", "count");
     }
 
     /**
