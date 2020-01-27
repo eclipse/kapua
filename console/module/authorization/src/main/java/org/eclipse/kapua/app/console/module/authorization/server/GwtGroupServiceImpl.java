@@ -126,7 +126,7 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
         try {
             GroupQuery groupQuery = GwtKapuaAuthorizationModelConverter.convertGroupQuery(loadConfig, gwtGroupQuery);
             GroupListResult groups = GROUP_SERVICE.query(groupQuery);
-            totalLength = (int) GROUP_SERVICE.count(groupQuery);
+            totalLength = groups.getTotalCount().intValue();
 
             if (!groups.isEmpty()) {
                 UserListResult usernames = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {

@@ -148,7 +148,7 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
                     query.setSortCriteria(sortCriteria);
 
                     AccessPermissionListResult accessPermissionList = ACCESS_PERMISSION_SERVICE.query(query);
-                    totalLength = (int) ACCESS_PERMISSION_SERVICE.count(query);
+                    totalLength = accessPermissionList.getTotalCount().intValue();
 
                     if (!accessPermissionList.isEmpty()) {
                         for (final AccessPermission accessPermission : accessPermissionList.getItems()) {

@@ -107,6 +107,7 @@ public class GwtKapuaAuthorizationModelConverter {
         query.setOffset(loadConfig.getOffset());
         query.setLimit(loadConfig.getLimit());
         query.setPredicate(predicate);
+        query.setAskTotalCount(true);
 
         return query;
     }
@@ -147,7 +148,7 @@ public class GwtKapuaAuthorizationModelConverter {
         query.setOffset(loadConfig.getOffset());
         query.setLimit(loadConfig.getLimit());
         query.setPredicate(predicate);
-
+        query.setAskTotalCount(gwtRoleQuery.getAskTotalCount());
         //
         // Return converted
         return query;
@@ -163,7 +164,7 @@ public class GwtKapuaAuthorizationModelConverter {
         query.setPredicate(query.attributePredicate(AccessRoleAttributes.ROLE_ID, KapuaEid.parseCompactId(gwtRoleQuery.getRoleId())));
         query.setOffset(pagingLoadConfig.getOffset());
         query.setLimit(pagingLoadConfig.getLimit());
-
+        query.setAskTotalCount(gwtRoleQuery.getAskTotalCount());
         return query;
 
     }

@@ -680,7 +680,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             AccountQuery query = GwtKapuaAccountModelConverter.convertAccountQuery(loadConfig, gwtAccountQuery);
 
             KapuaListResult<Account> accounts = ACCOUNT_SERVICE.query(query);
-            totalLength = (int) ACCOUNT_SERVICE.count(query);
+            totalLength = accounts.getTotalCount().intValue();
 
             if (!accounts.isEmpty()) {
                 UserListResult usernames = KapuaSecurityUtils.doPrivileged(new Callable<UserListResult>() {

@@ -78,7 +78,7 @@ public class GwtKapuaTagModelConverter {
         query.setSortCriteria(sortCriteria);
         query.setOffset(loadConfig.getOffset());
         query.setLimit(loadConfig.getLimit());
-
+        query.setAskTotalCount(gwtTagQuery.getAskTotalCount());
         return query;
     }
 }

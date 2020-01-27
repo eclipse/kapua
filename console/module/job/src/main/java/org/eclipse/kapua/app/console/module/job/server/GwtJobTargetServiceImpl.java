@@ -72,7 +72,7 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
 
             // query
             JobTargetListResult jobTargetList = JOB_TARGET_SERVICE.query(jobTargetQuery);
-            totalLength = (int) JOB_TARGET_SERVICE.count(jobTargetQuery);
+            totalLength = jobTargetList.getTotalCount().intValue();
 
             List<KapuaId> deviceIds = new ArrayList<KapuaId>();
             // Convert to GWT entity

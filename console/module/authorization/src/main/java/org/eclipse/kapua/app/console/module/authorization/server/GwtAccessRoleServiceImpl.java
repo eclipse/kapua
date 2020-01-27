@@ -144,7 +144,7 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
                     query.setSortCriteria(sortCriteria);
                     AccessRoleListResult accessRoleList = accessRoleService.query(query);
 
-                    totalLegnth = (int) accessRoleService.count(query);
+                    totalLegnth = accessRoleList.getTotalCount().intValue();
                     if (!accessRoleList.isEmpty()) {
                         for (final AccessRole accessRole : accessRoleList.getItems()) {
                             User createdByUser = KapuaSecurityUtils.doPrivileged(new Callable<User>() {

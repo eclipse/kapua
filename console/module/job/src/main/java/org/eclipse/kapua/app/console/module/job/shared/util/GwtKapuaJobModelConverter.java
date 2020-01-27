@@ -150,7 +150,7 @@ public class GwtKapuaJobModelConverter {
         FieldSortCriteria sortCriteria = query.fieldSortCriteria(sortField, sortOrder);
         query.setSortCriteria(sortCriteria);
         query.setPredicate(predicate);
-
+        query.setAskTotalCount(gwtJobQuery.getAskTotalCount());
         return query;
     }
 
@@ -173,7 +173,7 @@ public class GwtKapuaJobModelConverter {
             FieldSortCriteria sortCriteria = query.fieldSortCriteria(sortField, sortOrder);
             query.setSortCriteria(sortCriteria);
         }
-
+        query.setAskTotalCount(gwtJobTargetQuery.getAskTotalCount());
         return query;
     }
 
@@ -192,7 +192,7 @@ public class GwtKapuaJobModelConverter {
 
         query.setLimit(loadConfig.getLimit());
         query.setOffset(loadConfig.getOffset());
-
+        query.setAskTotalCount(gwtJobStepQuery.getAskTotalCount());
         return query;
     }
 
@@ -283,7 +283,7 @@ public class GwtKapuaJobModelConverter {
         query.setPredicate(andPredicate);
         query.setLimit(loadConfig.getLimit());
         query.setOffset(loadConfig.getOffset());
-
+        query.setAskTotalCount(gwtTriggerQuery.getAskTotalCount());
         return query;
     }
 
@@ -310,7 +310,7 @@ public class GwtKapuaJobModelConverter {
         query.setSortCriteria(query.fieldSortCriteria(sortField, sortOrder));
         query.setLimit(pagingLoadConfig.getLimit());
         query.setOffset(pagingLoadConfig.getOffset());
-
+        query.setAskTotalCount(gwtJobExecutionQuery.getAskTotalCount());
         return query;
     }
 

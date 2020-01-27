@@ -416,6 +416,10 @@ public class ServiceDAO {
             resultContainer.setLimitExceeded(true);
         }
 
+        if (Boolean.TRUE.equals(kapuaQuery.getAskTotalCount())) {
+            resultContainer.setTotalCount(count(em, interfaceClass, implementingClass, kapuaQuery));
+        }
+
         // Set results
         resultContainer.addItems(result);
         return resultContainer;

@@ -98,7 +98,7 @@ public class GwtKapuaAccountModelConverter {
         query.setOffset(loadConfig.getOffset());
         query.setLimit(loadConfig.getLimit());
         query.setPredicate(predicate);
-
+        query.setAskTotalCount(gwtAccountQuery.getAskTotalCount());
         return query;
     }
 }

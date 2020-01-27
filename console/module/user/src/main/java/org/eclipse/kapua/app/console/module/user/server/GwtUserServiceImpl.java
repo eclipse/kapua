@@ -251,7 +251,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
             // query
             UserListResult users = USER_SERVICE.query(userQuery);
-            totalLength = (int) USER_SERVICE.count(userQuery);
+            totalLength = users.getTotalCount().intValue();
 
             // If there are results
             if (!users.isEmpty()) {
@@ -344,7 +344,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         try {
             AccessRoleQuery accessRoleQuery = GwtKapuaAuthorizationModelConverter.convertAccessRoleQuery(pagingLoadConfig, query);
             AccessRoleListResult accessRoleList = ACCESS_ROLE_SERVICE.query(accessRoleQuery);
-            totalLength = (int) ACCESS_ROLE_SERVICE.count(accessRoleQuery);
+            totalLength = accessRoleList.getTotalCount().intValue();
 
             for (AccessRole a : accessRoleList.getItems()) {
                 AccessInfo accessInfo = ACCESS_INFO_SERVICE.find(KapuaEid.parseCompactId(query.getScopeId()), a.getAccessInfoId());
@@ -370,7 +370,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         try {
             UserQuery userQuery = GwtKapuaUserModelConverter.convertUserQuery(loadConfig, gwtUserQuery);
             UserListResult users = USER_SERVICE.query(userQuery);
-            totalLength = (int) USER_SERVICE.count(userQuery);
+            totalLength = users.getTotalCount().intValue();
 
             if (!users.isEmpty()) {
                 final UserQuery allUsersQuery = USER_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(accountId));
@@ -398,7 +398,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             KapuaExceptionHandler.handle(t);
         }
 
-        return new BasePagingLoadResult<GwtUser>(gwtUsers, loadConfig.getOffset(), totalLength);   
+        return new BasePagingLoadResult<GwtUser>(gwtUsers, loadConfig.getOffset(), totalLength);
     }
 
     /**

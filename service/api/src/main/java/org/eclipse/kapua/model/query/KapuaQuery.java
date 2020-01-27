@@ -153,6 +153,24 @@ public interface KapuaQuery<E extends KapuaEntity> {
      */
     void setLimit(Integer limit);
 
+    /**
+     * Get the {@code askTotalCount} flag. If {@literal true}, the returning {@link KapuaListResult} will also return a value in
+     * the {@code totalCount} field, indicating how many entries matched the query regardless of {@code limit} and
+     * {@code offset}. If {@literal false}, {@code totalCount} will be {@literal null}.
+     *
+     * @since 1.2.0
+     * @return The value of {@code askTotalCount}
+     */
+    Boolean getAskTotalCount();
+
+    /**
+     * Set the {@code askTotalCount} flag.
+     *
+     * @param askTotalCount
+     * @since 1.2.0
+     */
+    void setAskTotalCount(Boolean askTotalCount);
+
     //
     // Predicates factory
 
@@ -208,4 +226,5 @@ public interface KapuaQuery<E extends KapuaEntity> {
      * @return
      */
     FieldSortCriteria fieldSortCriteria(String attributeName, SortOrder sortOrder);
+
 }

@@ -59,7 +59,7 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
 
             // query
             JobStepListResult jobStepList = JOB_STEP_SERVICE.query(jobStepQuery);
-            totalLength = (int) JOB_STEP_SERVICE.count(jobStepQuery);
+            totalLength = jobStepList.getTotalCount().intValue();
 
             // Converto to GWT entity
             for (JobStep js : jobStepList.getItems()) {

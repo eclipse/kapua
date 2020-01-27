@@ -119,7 +119,7 @@ public class GwtTriggerServiceImpl extends KapuaRemoteServiceServlet implements 
 
             // query
             TriggerListResult triggerListResult = TRIGGER_SERVICE.query(triggerQuery);
-            totalLength = (int) TRIGGER_SERVICE.count(triggerQuery);
+            totalLength = triggerListResult.getTotalCount().intValue();
 
             // Converto to GWT entity
             for (Trigger t : triggerListResult.getItems()) {

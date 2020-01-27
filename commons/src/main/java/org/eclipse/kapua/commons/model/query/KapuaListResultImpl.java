@@ -31,6 +31,7 @@ public class KapuaListResultImpl<E extends KapuaEntity> implements KapuaListResu
 
     private ArrayList<E> items;
     private boolean limitExceeded;
+    private Long totalCount;
 
     /**
      * Constructor.
@@ -99,4 +100,15 @@ public class KapuaListResultImpl<E extends KapuaEntity> implements KapuaListResu
     public void sort(Comparator<E> comparator) {
         getItems().sort(comparator);
     }
+
+    @Override
+    public Long getTotalCount() {
+        return totalCount;
+    }
+
+    @Override
+    public void setTotalCount(Long totalCount) {
+        this.totalCount = totalCount;
+    }
+
 }
