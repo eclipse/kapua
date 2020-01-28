@@ -25,10 +25,12 @@ import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.client.model.InsertResponse;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
+import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
+import org.eclipse.kapua.service.datastore.model.query.ExistsPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricPredicate;
 import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
@@ -112,11 +114,24 @@ public class DataMessages extends AbstractKapuaResource {
         }
 
         if (!Strings.isNullOrEmpty(metricName)) {
-            V minValue = (V) ObjectValueConverter.fromString(metricMinValue, metricType.getType());
-            V maxValue = (V) ObjectValueConverter.fromString(metricMaxValue, metricType.getType());
+            if (metricMinValue == null && metricMaxValue == null) {
+                String term;
+                if (metricType != null) {
+                    String shortType = DatastoreUtils.getClientMetricFromAcronym(metricType.getType().getSimpleName().toLowerCase());
+                    term = String.format("metrics.%s.%s", metricName, shortType);
+                }
+                else {
+                    term = String.format("metrics.%s", metricName);
+                }
+                ExistsPredicate existsPredicate = STORABLE_PREDICATE_FACTORY.newExistsPredicate(term);
+                andPredicate.getPredicates().add(existsPredicate);
+            } else {
+                V minValue = (V) ObjectValueConverter.fromString(metricMinValue, metricType.getType());
+                V maxValue = (V) ObjectValueConverter.fromString(metricMaxValue, metricType.getType());
 
-            MetricPredicate metricPredicate = STORABLE_PREDICATE_FACTORY.newMetricPredicate(metricName, metricType.getType(), minValue, maxValue);
-            andPredicate.getPredicates().add(metricPredicate);
+                MetricPredicate metricPredicate = STORABLE_PREDICATE_FACTORY.newMetricPredicate(metricName, metricType.getType(), minValue, maxValue);
+                andPredicate.getPredicates().add(metricPredicate);
+            }
         }
 
         MessageQuery query = DATASTORE_OBJECT_FACTORY.newDatastoreMessageQuery(scopeId);
