@@ -100,7 +100,7 @@
       Create a new job and set a disconnected KuraMock device as the job target.
       Add a new Bundle Start step to the created job. Start the job.
       After the executed job is finished, the executed target's step index should
-      be 0 and the status PROCESS_FAILED
+      be 0 and the status PROCESS_FAILED.
 
       Given I start the Kura Mock
       And Device is connected
@@ -143,7 +143,7 @@
       Create a new job and set a disconnected KuraMock device as the job target.
       Add a new Bundle Stop step to the created job. Start the job.
       After the executed job is finished, the executed target's step index should
-      be 0 and the status PROCESS_FAILED
+      be 0 and the status PROCESS_FAILED.
 
       Given I start the Kura Mock
       And Device is connected
@@ -187,7 +187,7 @@
       Create a new job and set a disconnected KuraMock device as the job target.
       Add a new Configuration Put step to the created job. Start the job.
       After the executed job is finished, the executed target's step index should
-      be 0 and the status PROCESS_FAILED
+      be 0 and the status PROCESS_FAILED.
 
       Given I start the Kura Mock
       When Device is connected
@@ -221,7 +221,7 @@
       Create a new job and set a disconnected KuraMock device as the job target.
       Add a new Package Install step to the created job. Start the job.
       After the executed job is finished, the executed target's step index should
-      be 0 and the status PROCESS_FAILED
+      be 0 and the status PROCESS_FAILED.
 
       Given I start the Kura Mock
       And Device is connected
@@ -262,7 +262,7 @@
       Create a new job and set a disconnected KuraMock device as the job target.
       Add a new Package Uninstall step to the created job. Start the job.
       After the executed job is finished, the executed target's step index should
-      be 0 and the status PROCESS_FAILED
+      be 0 and the status PROCESS_FAILED.
 
       Given I start the Kura Mock
       When Device is connected
@@ -405,7 +405,7 @@
     Create a new job and set a disconnected KuraMock device as the job target.
     Add two new Bundle Start steps to the created job. Start the job.
     After the executed job is finished, the executed target's step index should
-    be 0 and the status PROCESS_FAILED
+    be 0 and the status PROCESS_FAILED.
 
       Given I start the Kura Mock
       And Device is connected
@@ -456,7 +456,7 @@
     Create a new job and set a disconnected KuraMock device as the job target.
     Add a new Bundle Stop and Bundle Start steps to the created job. Start the job.
     After the executed job is finished, the executed target's step index should
-    be 0 and the status PROCESS_FAILED
+    be 0 and the status PROCESS_FAILED.
 
       Given I start the Kura Mock
       And Device is connected
@@ -507,7 +507,7 @@
     Create a new job and set a disconnected KuraMock device as the job target.
     Add a new Configuration Put and Bundle Start steps to the created job. Start the job.
     After the executed job is finished, the executed target's step index should
-    be 0 and the status PROCESS_FAILED
+    be 0 and the status PROCESS_FAILED.
 
       Given I start the Kura Mock
       And Device is connected
@@ -556,7 +556,7 @@
     Create a new job and set a disconnected KuraMock device as the job target.
     Add a new Package Install and Bundle Start steps to the created job. Start the job.
     After the executed job is finished, the executed target's step index should
-    be 0 and the status PROCESS_FAILED
+    be 0 and the status PROCESS_FAILED.
 
       Given I start the Kura Mock
       And Device is connected
@@ -607,7 +607,7 @@
     Create a new job and set a disconnected KuraMock device as the job target.
     Add a new Package Uninstall and Bundle Start steps to the created job. Start the job.
     After the executed job is finished, the executed target's step index should
-    be 0 and the status PROCESS_FAILED
+    be 0 and the status PROCESS_FAILED.
 
       Given I start the Kura Mock
       When Device is connected
