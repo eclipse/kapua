@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,7 +15,6 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -29,6 +28,8 @@ import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionC
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionListResult;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService;
 
+import javax.inject.Inject;
+
 /**
  * {@link TriggerDefinitionService} exposes APIs to manage {@link TriggerDefinition} objects.<br>
  * It includes APIs to create, update, find, list and delete {@link TriggerDefinition}s.<br>
@@ -38,10 +39,11 @@ import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionS
 @KapuaProvider
 public class TriggerDefinitionServiceImpl extends AbstractKapuaService implements TriggerDefinitionService {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    @Inject
+    private AuthorizationService authorizationService;
 
-    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
-    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
+    @Inject
+    private PermissionFactory permissionFactory;
 
     public TriggerDefinitionServiceImpl() {
         super(SchedulerEntityManagerFactory.getInstance());
@@ -59,7 +61,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Check access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
         //
         // Do create
@@ -78,7 +80,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Check access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
         return entityManagerSession.onTransactedResult(em -> TriggerDefinitionDAO.update(em, triggerDefinition));
     }
@@ -91,7 +93,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
 
         //
         // Do find
@@ -106,7 +108,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
 
         //
         // Do find
@@ -121,7 +123,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
 
         //
         // Do query
@@ -136,7 +138,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
 
         //
         // Do query
@@ -152,7 +154,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, null));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, null));
 
         //
         // Do delete

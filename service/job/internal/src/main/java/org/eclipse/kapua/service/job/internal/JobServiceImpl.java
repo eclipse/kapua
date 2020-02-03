@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -66,8 +66,11 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
     private final JobEngineService jobEngineService = LOCATOR.getService(JobEngineService.class);
 
-    private final TriggerService triggerService = LOCATOR.getService(TriggerService.class);
-    private final TriggerFactory triggerFactory = LOCATOR.getFactory(TriggerFactory.class);
+    @Inject
+    private TriggerService triggerService;
+
+    @Inject
+    private TriggerFactory triggerFactory;
 
     public JobServiceImpl() {
         super(JobService.class.getName(), JobDomains.JOB_DOMAIN, JobEntityManagerFactory.getInstance(), JobService.class, JobFactory.class);

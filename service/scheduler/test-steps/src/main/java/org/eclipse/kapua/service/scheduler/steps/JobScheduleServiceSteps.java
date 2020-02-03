@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -244,8 +244,8 @@ public class JobScheduleServiceSteps extends TestBase {
             Trigger trigger = (Trigger) stepData.get("Trigger");
             trigger.setName(newTriggerName);
             primeException();
-            Trigger newTrigger = triggerService.update(trigger);
-            stepData.put("Trigger", newTrigger);
+            Trigger updatedTrigger = triggerService.update(trigger);
+            stepData.put("UpdatedTrigger", updatedTrigger);
         } catch (Exception ex) {
             verifyException(ex);
         }
@@ -451,6 +451,55 @@ public class JobScheduleServiceSteps extends TestBase {
     public void thereIsNoTriggerWithTheNameInTheDatabase(String triggerName) throws Throwable {
             assertNull(stepData.get("Trigger"));
         }
+
+    @And("^I try to edit trigger definition to \"([^\"]*)\"$")
+    public void iTryToEditSchedulerPropertyTo(String trigerDefinition) throws Exception {
+    Trigger trigger = (Trigger) stepData.get("Trigger");
+
+        primeException();
+
+        try {
+            TriggerDefinitionQuery triggerDefinitionQuery = triggerDefinitionFactory.newQuery(getCurrentScopeId());
+            triggerDefinitionQuery.setPredicate(triggerDefinitionQuery.attributePredicate(TriggerDefinitionAttributes.NAME, trigerDefinition, AttributePredicate.Operator.EQUAL));
+            TriggerDefinition triggerDefinition = triggerDefinitionService.query(triggerDefinitionQuery).getFirstItem();
+
+            trigger.setTriggerDefinitionId(triggerDefinition.getId());
+            Trigger updateTrigger = triggerService.update(trigger);
+            stepData.put("UpdatedTrigger", updateTrigger);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
     }
+
+    @And("^I try to edit start date to (.*) at (.*)$")
+    public void iTryToEditStartDateTo(String startDate, String startTime) throws Exception{
+
+        Trigger trigger = (Trigger) stepData.get("Trigger");
+        Date newTriggerStartOnDate = setDateAndTimeValue(startDate, startTime);
+        trigger.setStartsOn(newTriggerStartOnDate);
+        try {
+            primeException();
+            Trigger updatedTrigger = triggerService.update(trigger);
+            stepData.put("UpdatedTrigger", updatedTrigger);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @And("^I try to edit end date to (.*) at (.*)$")
+    public void iTryToEditEndDateTo(String endDate, String endTime) throws Exception{
+
+        Trigger trigger = (Trigger) stepData.get("Trigger");
+        Date newTriggerEndsOnDate = setDateAndTimeValue(endDate, endTime);
+        trigger.setEndsOn(newTriggerEndsOnDate);
+        try {
+            primeException();
+            Trigger updatedTrigger = triggerService.update(trigger);
+            stepData.put("UpdatedTrigger", updatedTrigger);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+}
 
 
