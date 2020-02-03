@@ -266,7 +266,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         }
 
         //
-        // Stop the JobExecution
+        // Resume the JobExecution
         try {
             JbatchDriver.resumeJob(scopeId, jobId, jobExecutionId);
         } catch (Exception e) {
