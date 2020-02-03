@@ -33,4 +33,23 @@
             <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.slf4j.SLF4JLogger"/>
         </properties>
     </persistence-unit>
+
+    <persistence-unit name="jbatch" transaction-type="RESOURCE_LOCAL">
+
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+
+        <class>org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaCheckpointData</class>
+        <class>org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaExecutionInstanceData</class>
+        <class>org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaJobInstanceData</class>
+        <class>org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaJobStatus</class>
+        <class>org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaStepExecutionInstanceData</class>
+        <class>org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaStepStatus</class>
+
+        <properties>
+            <property name="javax.persistence.lock.timeout" value="1000"/>
+            <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.slf4j.SLF4JLogger"/>
+        </properties>
+    </persistence-unit>
+
+
 </persistence>
