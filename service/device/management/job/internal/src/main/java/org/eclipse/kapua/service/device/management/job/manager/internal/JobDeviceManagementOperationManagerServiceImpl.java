@@ -13,8 +13,6 @@ package org.eclipse.kapua.service.device.management.job.manager.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
-import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.job.engine.JobEngineFactory;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
@@ -94,26 +92,26 @@ public class JobDeviceManagementOperationManagerServiceImpl implements JobDevice
             return;
         }
 
+        JobTargetQuery jobTargetQuery = JOB_TARGET_FACTORY.newQuery(scopeId);
+        jobTargetQuery.setPredicate(
+                jobTargetQuery.andPredicate(
+                        jobTargetQuery.attributePredicate(JobTargetAttributes.JOB_ID, jobDeviceManagementOperation.getJobId()),
+                        jobTargetQuery.attributePredicate(JobTargetAttributes.JOB_TARGET_ID, deviceManagementOperation.getDeviceId())
+                )
+        );
+
         short attempts = 0;
         short limit = 3;
-        boolean failed = false;
+        boolean failed;
         JobTarget jobTarget = null;
         do {
             try {
-                JobTargetQuery jobTargetQuery = JOB_TARGET_FACTORY.newQuery(scopeId);
-                jobTargetQuery.setPredicate(
-                        new AndPredicateImpl(
-                                new AttributePredicateImpl<>(JobTargetAttributes.JOB_ID, jobDeviceManagementOperation.getJobId()),
-                                new AttributePredicateImpl<>(JobTargetAttributes.JOB_TARGET_ID, deviceManagementOperation.getDeviceId())
-                        )
-                );
-
                 JobTargetListResult jobTargets = JOB_TARGET_SERVICE.query(jobTargetQuery);
-
                 jobTarget = jobTargets.getFirstItem();
 
                 if (jobTarget == null) {
-                    throw new IllegalStateException();
+                    LOG.warn("JobTarget with targetId {} for Job {} not found! This is something strange that happened and needs some checking! Reference JobDeviceManagementOperation: {}", deviceManagementOperation.getDeviceId(), jobDeviceManagementOperation.getJobId(), jobDeviceManagementOperation.getId());
+                    return;
                 }
 
                 switch (status) {
@@ -129,14 +127,20 @@ public class JobDeviceManagementOperationManagerServiceImpl implements JobDevice
                 }
 
                 JOB_TARGET_SERVICE.update(jobTarget);
+                failed = false;
             } catch (Exception e) {
                 failed = true;
                 attempts++;
 
-                if (attempts >= limit || jobTarget == null) {
+                if (jobTarget == null) {
+                    throw e;
+                }
+
+                if (attempts >= limit) {
+                    LOG.warn("Update JobTarget {} with status {}...  FAILED! ({}/{}) Throwing error: {}...", jobTarget.getId(), jobTarget.getStatus(), attempts, limit, e.getMessage());
                     throw e;
                 } else {
-                    LOG.warn("Update JobTarget {} with status {}...  FAILED! Retrying...", jobTarget.getId(), jobTarget.getStatus());
+                    LOG.warn("Update JobTarget {} with status {}...  FAILED! ({}/{}) Retrying...", jobTarget.getId(), jobTarget.getStatus(), attempts, limit);
                 }
             }
         } while (failed);
