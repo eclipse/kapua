@@ -174,6 +174,11 @@ They will provide more advanced deployment scenarios.
 
 If you're interested to get involved in IoT and Eclipse Kapua&trade; project, join the community and give your contribution to the project, please read [how to contribute to Eclipse Kapua&trade;](https://github.com/eclipse/kapua/blob/develop/CONTRIBUTING.md).
 
+### Community
+
+- [Eclipse Kapua Gitter Room](https://gitter.im/eclipse/kapua)
+- [Eclipse Kapua Forum](https://www.eclipse.org/forums/index.php?t=thread&frm_id=340)
+
 ### Acknowledgments
 
 ![](https://www.yourkit.com/images/yklogo.png)
