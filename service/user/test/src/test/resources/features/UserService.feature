@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+# Copyright (c) 2020 Eurotech and/or its affiliates and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -15,7 +15,7 @@ Feature: User Service
     User Service is responsible for CRUD operations on User objects in Kapua
     database.
 
-Scenario: Creating user 
+Scenario: Creating user
     Create user with all User entity fields set and persist it in database. Then try to
     find it by name and check all the fields.
 
@@ -309,3 +309,107 @@ Scenario: Get metadata
 
     When I retrieve metadata in scope 1
     Then I have metadata
+
+Scenario: Finding user by expiration date in the future
+    Create user with expiration date in the future (e.g "tomorrow") and try to find it.
+    No exception should be raised.
+
+    When I configure the user service for the account with the id 42
+        | type    | name                       | value |
+        | boolean | infiniteChildEntities      | true  |
+        | integer | maxNumberChildEntities     | 5     |
+        | boolean | lockoutPolicy.enabled      | false |
+        | integer | lockoutPolicy.maxFailures  | 3     |
+        | integer | lockoutPolicy.resetAfter   | 300   |
+        | integer | lockoutPolicy.lockDuration | 3     |
+    Given I have the following user
+        | name     | displayName        | email              | phoneNumber     | status  | expirationDate |
+        | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 111 | ENABLED | tomorrow       |
+    And I find user with expiration date in the future
+        | name     | displayName        | email              | phoneNumber     | status  | expirationDate |
+        | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 111 | ENABLED | tomorrow       |
+    And No exception was thrown
+
+Scenario: Finding user by expiration date in the present
+    Create a user with expiration date in the present (e.g. "today") and after that try to find it.
+    No exception should be raised.
+
+    When I configure the user service for the account with the id 42
+            | type    | name                       | value |
+            | boolean | infiniteChildEntities      | true  |
+            | integer | maxNumberChildEntities     | 5     |
+            | boolean | lockoutPolicy.enabled      | false |
+            | integer | lockoutPolicy.maxFailures  | 3     |
+            | integer | lockoutPolicy.resetAfter   | 300   |
+            | integer | lockoutPolicy.lockDuration | 3     |
+    Given I have the following user
+            | name     | displayName        | email              | phoneNumber     | status  | expirationDate |
+            | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 111 | ENABLED | today          |
+    Then I search for the user with expiration date in the present
+    And I find user with expiration date in the present
+            | name     | displayName        | email              | phoneNumber     | status  | expirationDate |
+            | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 111 | ENABLED | today          |
+    And No exception was thrown
+
+Scenario: Finding user by expiration date in the past
+    Create a user with expiration date in the past (e.g. "yesterday") and after that try to find it.
+    No exception should be raised.
+
+    When I configure the user service for the account with the id 42
+        | type    | name                       | value |
+        | boolean | infiniteChildEntities      | true  |
+        | integer | maxNumberChildEntities     | 5     |
+        | boolean | lockoutPolicy.enabled      | false |
+        | integer | lockoutPolicy.maxFailures  | 3     |
+        | integer | lockoutPolicy.resetAfter   | 300   |
+        | integer | lockoutPolicy.lockDuration | 3     |
+    Given I have the following user
+        | name     | displayName        | email              | phoneNumber     | status  | expirationDate |
+        | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 111 | ENABLED | yesterday      |
+    Then I search for the user with expiration date in the past
+    And I find user with expiration date in the past
+        | name     | displayName        | email              | phoneNumber     | status  | expirationDate |
+        | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 111 | ENABLED | yesterday      |
+    And No exception was thrown
+
+Scenario: Find user by its phone number
+    Create user with all valid parameters and find them by phone number.
+    No any exception should be thrown.
+
+    When I configure the user service for the account with the id 42
+        | type    | name                       | value |
+        | boolean | infiniteChildEntities      | true  |
+        | integer | maxNumberChildEntities     | 5     |
+        | boolean | lockoutPolicy.enabled      | false |
+        | integer | lockoutPolicy.maxFailures  | 3     |
+        | integer | lockoutPolicy.resetAfter   | 300   |
+        | integer | lockoutPolicy.lockDuration | 3     |
+    Given I have the following user
+        | name     | displayName       | email              | phoneNumber     | status  |
+        | kapua-u1 | Nemanja User 1    | kapua_u1@kapua.com | +386 31 323 111 | ENABLED |
+        | kapua-u2 | Nemanja User 2    | kapua_u2@kapua.com | +386 31 323 222 | ENABLED |
+        | kapua-u3 | Nemanja User 3    | kapua_u3@kapua.com | +386 31 323 111 | ENABLED |
+    And I search users with phone number "+386 31 323 111"
+    Then I find users with phone number "+386 31 323 111"
+    And No exception was thrown
+
+Scenario: Find user by its email
+    Create a user with all valid parameters and find it by its email.
+    No exceptions should be thrown.
+
+    When I configure the user service for the account with the id 42
+        | type    | name                       | value |
+        | boolean | infiniteChildEntities      | true  |
+        | integer | maxNumberChildEntities     | 5     |
+        | boolean | lockoutPolicy.enabled      | false |
+        | integer | lockoutPolicy.maxFailures  | 3     |
+        | integer | lockoutPolicy.resetAfter   | 300   |
+        | integer | lockoutPolicy.lockDuration | 3     |
+    Given I have the following users
+        | name     | displayName          | email              | phoneNumber      | status  |
+        | kapua-u1 |    Nemanja User 1    | nemanja1@kapua.com  | +386 31 323 111 | ENABLED |
+        | kapua-u2 |    Nemanja User 2    | nemanja2@kapua.com  | +386 31 323 222 | ENABLED |
+        | kapua-u3 |    Nemanja User 3    | nemanja2@kapua.com  | +386 31 323 333 | ENABLED |
+    And I search users with email "nemanja2@kapua.com"
+    Then I find users with email "nemanja2@kapua.com"
+    And No exception was thrown
