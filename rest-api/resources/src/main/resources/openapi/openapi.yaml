@@ -312,6 +312,8 @@ paths:
     $ref: './role/rolePermission-scopeId-roleId-_count.yaml#/paths/~1{scopeId}~1roles~1{roleId}~1permissions~1_count'
   /{scopeId}/roles/{roleId}/permissions/_query:
     $ref: './role/rolePermission-scopeId-roleId-_query.yaml#/paths/~1{scopeId}~1roles~1{roleId}~1permissions~1_query'
+  /{scopeId}/roles/{roleId}/users:
+    $ref: './role/role-scopeId-roleId-users.yaml#/paths/~1{scopeId}~1roles~1{roleId}~1users'
   ### Service Configuration ###
   /{scopeId}/serviceConfigurations:
     $ref: './serviceConfiguration/serviceConfiguration-scopeId.yaml#/paths/~1{scopeId}~1serviceConfigurations'

@@ -11,22 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
-import com.google.common.base.Strings;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
-import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.authorization.role.Role;
-import org.eclipse.kapua.service.authorization.role.RoleAttributes;
-import org.eclipse.kapua.service.authorization.role.RoleCreator;
-import org.eclipse.kapua.service.authorization.role.RoleFactory;
-import org.eclipse.kapua.service.authorization.role.RoleListResult;
-import org.eclipse.kapua.service.authorization.role.RoleQuery;
-import org.eclipse.kapua.service.authorization.role.RoleService;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -40,12 +24,54 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
+import org.eclipse.kapua.service.authorization.access.AccessInfoAttributes;
+import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
+import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
+import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
+import org.eclipse.kapua.service.authorization.access.AccessInfoService;
+import org.eclipse.kapua.service.authorization.access.AccessRole;
+import org.eclipse.kapua.service.authorization.access.AccessRoleAttributes;
+import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
+import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
+import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
+import org.eclipse.kapua.service.authorization.access.AccessRoleService;
+import org.eclipse.kapua.service.authorization.role.Role;
+import org.eclipse.kapua.service.authorization.role.RoleAttributes;
+import org.eclipse.kapua.service.authorization.role.RoleCreator;
+import org.eclipse.kapua.service.authorization.role.RoleFactory;
+import org.eclipse.kapua.service.authorization.role.RoleListResult;
+import org.eclipse.kapua.service.authorization.role.RoleQuery;
+import org.eclipse.kapua.service.authorization.role.RoleService;
+import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserAttributes;
+import org.eclipse.kapua.service.user.UserFactory;
+import org.eclipse.kapua.service.user.UserListResult;
+import org.eclipse.kapua.service.user.UserQuery;
+import org.eclipse.kapua.service.user.UserService;
+
+import com.google.common.base.Strings;
+
 @Path("{scopeId}/roles")
 public class Roles extends AbstractKapuaResource {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final RoleService roleService = locator.getService(RoleService.class);
     private final RoleFactory roleFactory = locator.getFactory(RoleFactory.class);
+    private final AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
+    private final AccessRoleFactory accessRoleFactory = locator.getFactory(AccessRoleFactory.class);
+    private final AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
+    private final AccessInfoFactory accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
+    private final UserService userService = locator.getService(UserService.class);
+    private final UserFactory userFactory = locator.getFactory(UserFactory.class);
 
     /**
      * Gets the {@link Role} list in the scope.
@@ -59,7 +85,7 @@ public class Roles extends AbstractKapuaResource {
      * @since 1.0.0
      */
     @GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public RoleListResult simpleQuery(
             @PathParam("scopeId") ScopeId scopeId,
             @QueryParam("name") String name,
@@ -90,8 +116,8 @@ public class Roles extends AbstractKapuaResource {
      */
     @POST
     @Path("_query")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public RoleListResult query(
             @PathParam("scopeId") ScopeId scopeId,
             RoleQuery query) throws Exception {
@@ -111,8 +137,8 @@ public class Roles extends AbstractKapuaResource {
      */
     @POST
     @Path("_count")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public CountResult count(
             @PathParam("scopeId") ScopeId scopeId,
             RoleQuery query) throws Exception {
@@ -132,8 +158,8 @@ public class Roles extends AbstractKapuaResource {
      * @since 1.0.0
      */
     @POST
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Role create(
             @PathParam("scopeId") ScopeId scopeId,
             RoleCreator roleCreator) throws Exception {
@@ -153,7 +179,7 @@ public class Roles extends AbstractKapuaResource {
      */
     @GET
     @Path("{roleId}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public Role find(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("roleId") EntityId roleId) throws Exception {
@@ -178,8 +204,8 @@ public class Roles extends AbstractKapuaResource {
      */
     @PUT
     @Path("{roleId}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Role update(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("roleId") EntityId roleId,
@@ -208,4 +234,42 @@ public class Roles extends AbstractKapuaResource {
 
         return returnOk();
     }
+
+    /**
+     * Gets all the {@link User}s for a given {@link Role}
+     *
+     * @param scopeId The ScopeId of the requested {@link Role}.
+     * @param roleId The id of the Role to be deleted.
+     * @param offset  The result set offset.
+     * @param limit   The result set limit.
+     * @return An {@link UserListResult} containing the {@link User}s for the given {@link Role}
+     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.2.0
+     */
+    @GET
+    @Path("{roleId}/users")
+    public UserListResult usersForRole(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("roleId") EntityId roleId,
+            @QueryParam("offset") @DefaultValue("0") int offset,
+            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+        AccessRoleQuery accessRoleQuery = accessRoleFactory.newQuery(scopeId);
+        accessRoleQuery.setPredicate(accessRoleQuery.attributePredicate(AccessRoleAttributes.ROLE_ID, roleId));
+        accessRoleQuery.setLimit(limit);
+        accessRoleQuery.setOffset(offset);
+        AccessRoleListResult accessRoleListResult = accessRoleService.query(accessRoleQuery);
+
+        AccessInfoQuery accessInfoQuery = accessInfoFactory.newQuery(scopeId);
+        accessInfoQuery.setPredicate(accessInfoQuery.attributePredicate(AccessInfoAttributes.ENTITY_ID, accessRoleListResult.getItems().stream().map(AccessRole::getAccessInfoId).toArray(KapuaId[]::new)));
+        accessRoleQuery.setLimit(limit);
+        accessRoleQuery.setOffset(offset);
+        AccessInfoListResult accessInfoListResult = accessInfoService.query(accessInfoQuery);
+
+        UserQuery userQuery = userFactory.newQuery(scopeId);
+        userQuery.setPredicate(userQuery.attributePredicate(UserAttributes.ENTITY_ID, accessInfoListResult.getItems().stream().map(AccessInfo::getUserId).toArray(KapuaId[]::new)));
+        userQuery.setLimit(limit);
+        userQuery.setOffset(offset);
+        return userService.query(userQuery);
+    }
+
 }
