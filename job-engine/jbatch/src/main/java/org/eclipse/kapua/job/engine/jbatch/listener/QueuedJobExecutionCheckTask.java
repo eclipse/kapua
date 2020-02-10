@@ -86,6 +86,9 @@ public class QueuedJobExecutionCheckTask extends TimerTask {
                 } catch (Exception e) {
                     LOG.error("Resuming Job Execution ({}/{}): {}... ERROR!", i, queuedJobExecutions.getSize(), qje.getJobExecutionId(), e);
                     failedToResumeExecution++;
+
+                    qje.setStatus(QueuedJobExecutionStatus.FAILED_TO_RESUME);
+                    KapuaSecurityUtils.doPrivileged(() -> QUEUED_JOB_EXECUTION_SERVICE.update(qje));
                     continue;
                 }
 
