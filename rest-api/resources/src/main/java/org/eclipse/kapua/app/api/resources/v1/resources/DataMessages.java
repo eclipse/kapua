@@ -34,6 +34,7 @@ import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
+import org.eclipse.kapua.service.datastore.model.query.ExistsPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricPredicate;
 import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
@@ -121,11 +122,17 @@ public class DataMessages extends AbstractKapuaResource {
         }
 
         if (!Strings.isNullOrEmpty(metricName)) {
-            V minValue = (V) ObjectValueConverter.fromString(metricMinValue, metricType.getType());
-            V maxValue = (V) ObjectValueConverter.fromString(metricMaxValue, metricType.getType());
+            if (metricMinValue == null && metricMaxValue == null) {
+                Class<V> type = metricType != null ? metricType.getType() : null;
+                ExistsPredicate existsPredicate = STORABLE_PREDICATE_FACTORY.newMetricExistsPredicate(metricName, type);
+                andPredicate.getPredicates().add(existsPredicate);
+            } else {
+                V minValue = (V) ObjectValueConverter.fromString(metricMinValue, metricType.getType());
+                V maxValue = (V) ObjectValueConverter.fromString(metricMaxValue, metricType.getType());
 
-            MetricPredicate metricPredicate = STORABLE_PREDICATE_FACTORY.newMetricPredicate(metricName, metricType.getType(), minValue, maxValue);
-            andPredicate.getPredicates().add(metricPredicate);
+                MetricPredicate metricPredicate = STORABLE_PREDICATE_FACTORY.newMetricPredicate(metricName, metricType.getType(), minValue, maxValue);
+                andPredicate.getPredicates().add(metricPredicate);
+            }
         }
 
         MessageQuery query = DATASTORE_OBJECT_FACTORY.newDatastoreMessageQuery(scopeId);

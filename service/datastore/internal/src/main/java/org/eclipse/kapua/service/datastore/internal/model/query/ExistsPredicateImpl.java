@@ -20,17 +20,17 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Implementation of query predicate for checking if a field exists
- * 
+ *
  * @since 1.0
  *
  */
 public class ExistsPredicateImpl implements ExistsPredicate {
 
-    private String name;
+    protected String name;
 
     /**
      * Creates an exists predicate for the given field name
-     * 
+     *
      * @param name
      */
     public ExistsPredicateImpl(String name) {
@@ -39,7 +39,7 @@ public class ExistsPredicateImpl implements ExistsPredicate {
 
     /**
      * Creates an exists predicate concatenating the given fields name with a dot (useful for composite fileds)
-     * 
+     *
      * @param paths
      */
     public ExistsPredicateImpl(String... paths) {
@@ -68,7 +68,7 @@ public class ExistsPredicateImpl implements ExistsPredicate {
      */
     public ObjectNode toSerializedMap() throws DatamodelMappingException {
         ObjectNode rootNode = SchemaUtil.getObjectNode();
-        ObjectNode termNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(PredicateConstants.FIELD_KEY, (String) name) });
+        ObjectNode termNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(PredicateConstants.FIELD_KEY, name) });
         rootNode.set(PredicateConstants.EXISTS_KEY, termNode);
         return rootNode;
     }
