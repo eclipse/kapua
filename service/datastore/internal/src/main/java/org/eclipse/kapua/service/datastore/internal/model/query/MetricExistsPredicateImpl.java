@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,23 +13,24 @@ package org.eclipse.kapua.service.datastore.internal.model.query;
 
 import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
+import org.eclipse.kapua.service.datastore.internal.schema.KeyValueEntry;
 import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
-import org.eclipse.kapua.service.datastore.model.query.MetricPredicate;
+import org.eclipse.kapua.service.datastore.model.query.MetricExistsPredicate;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * Implementation of query predicate for matching range values
+ * Implementation of query predicate for checking if a field exists
  *
- * @since 1.0
+ * @since 1.2.0
  *
  */
-public class MetricPredicateImpl extends RangePredicateImpl implements MetricPredicate {
+public class MetricExistsPredicateImpl extends ExistsPredicateImpl implements MetricExistsPredicate {
 
     private Class<?> type;
 
-    public <V extends Comparable<V>> MetricPredicateImpl(String fieldName, Class<V> type, V minValue, V maxValue) {
-        super(fieldName, minValue, maxValue);
+    public <V extends Comparable<V>> MetricExistsPredicateImpl(String fieldName, Class<V> type) {
+        super(fieldName);
 
         this.type = type;
     }
@@ -44,34 +45,26 @@ public class MetricPredicateImpl extends RangePredicateImpl implements MetricPre
         this.type = type;
     }
 
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
     /**
      * <pre>
      *  {
      *      "query": {
-     *          "range" : {
-     *              "metrics.temperature.int" : {
-     *                  "gte" : 10,
-     *                  "lte" : 20,
-     *              }
-     *          }
+     *          "exists" : { "field" : "metrics.metric.typ" }
      *      }
-     *  }
+     *   }
      * </pre>
-     *
-     * @throws DatamodelMappingException
      */
     public ObjectNode toSerializedMap() throws DatamodelMappingException {
         ObjectNode rootNode = SchemaUtil.getObjectNode();
-        ObjectNode valuesNode = SchemaUtil.getObjectNode();
-        if (maxValue != null) {
-            SchemaUtil.appendField(valuesNode, PredicateConstants.LTE_KEY, maxValue);
-        }
-        if (minValue != null) {
-            SchemaUtil.appendField(valuesNode, PredicateConstants.GTE_KEY, minValue);
-        }
-        ObjectNode termNode = SchemaUtil.getObjectNode();
-        termNode.set(String.format("metrics.%s.%s", field, DatastoreUtils.getClientMetricFromAcronym(type.getSimpleName().toLowerCase())), valuesNode);
-        rootNode.set(PredicateConstants.RANGE_KEY, termNode);
+        String fieldName = type == null ? String.format("metrics.%s", name) : String.format("metrics.%s.%s", name, DatastoreUtils.getClientMetricFromAcronym(type.getSimpleName().toLowerCase()));
+        ObjectNode termNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(PredicateConstants.FIELD_KEY, fieldName) });
+        rootNode.set(PredicateConstants.EXISTS_KEY, termNode);
         return rootNode;
     }
 

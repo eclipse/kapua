@@ -25,7 +25,6 @@ import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.client.model.InsertResponse;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
-import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
@@ -115,15 +114,8 @@ public class DataMessages extends AbstractKapuaResource {
 
         if (!Strings.isNullOrEmpty(metricName)) {
             if (metricMinValue == null && metricMaxValue == null) {
-                String term;
-                if (metricType != null) {
-                    String shortType = DatastoreUtils.getClientMetricFromAcronym(metricType.getType().getSimpleName().toLowerCase());
-                    term = String.format("metrics.%s.%s", metricName, shortType);
-                }
-                else {
-                    term = String.format("metrics.%s", metricName);
-                }
-                ExistsPredicate existsPredicate = STORABLE_PREDICATE_FACTORY.newExistsPredicate(term);
+                Class<V> type = metricType != null ? metricType.getType() : null;
+                ExistsPredicate existsPredicate = STORABLE_PREDICATE_FACTORY.newMetricExistsPredicate(metricName, type);
                 andPredicate.getPredicates().add(existsPredicate);
             } else {
                 V minValue = (V) ObjectValueConverter.fromString(metricMinValue, metricType.getType());
