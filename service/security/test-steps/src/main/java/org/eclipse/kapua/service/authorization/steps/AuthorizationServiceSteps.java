@@ -123,8 +123,8 @@ public class AuthorizationServiceSteps extends TestBase {
     private AccessRoleFactory accessRoleFactory;
     private DomainRegistryService domainRegistryService;
     private DomainFactory domainFactory;
-    private GroupService groupService ;
-    private GroupFactory groupFactory ;
+    private GroupService groupService;
+    private GroupFactory groupFactory;
     private RoleService roleService;
     private RoleFactory roleFactory;
     private RolePermissionService rolePermissionService;
@@ -2010,7 +2010,7 @@ public class AuthorizationServiceSteps extends TestBase {
     public void accessRoleWithNameIsFinded(String roleName) throws Exception {
 
         try {
-            primeException();;
+            primeException();
             RoleQuery roleQuery = roleFactory.newQuery(getCurrentScopeId());
             roleQuery.setPredicate(roleQuery.attributePredicate(RoleAttributes.NAME, roleName));
             RoleListResult roleList = roleService.query(roleQuery);
@@ -2069,14 +2069,14 @@ public class AuthorizationServiceSteps extends TestBase {
     }
 
     @And("^I add access roles to user \"([^\"]*)\"$")
-    public void iAddAccessRolesToUser(String userName) throws Exception{
+    public void iAddAccessRolesToUser(String userName) throws Exception {
         AccessInfo accessInfo = (AccessInfo) stepData.get("AccessInfo");
         List<Role> roleList = (List<Role>) stepData.get("RoleList");
         User user = (User) stepData.get("User");
         assertEquals(userName, user.getName());
         AccessRoleCreator accessRoleCreator = accessRoleFactory.newCreator(getCurrentScopeId());
 
-        for(Role role : roleList) {
+        for (Role role : roleList) {
             accessRoleCreator.setAccessInfoId(accessInfo.getId());
             accessRoleCreator.setRoleId(role.getId());
             stepData.put("AccessRoleCreator", accessRoleCreator);
@@ -2095,13 +2095,13 @@ public class AuthorizationServiceSteps extends TestBase {
 
     @And("^I delete role permissions$")
     public void iDeleteAccessRolePermissions() throws Exception {
-      RolePermission rolePermission = (RolePermission) stepData.get("RolePermission");
+        RolePermission rolePermission = (RolePermission) stepData.get("RolePermission");
 
-      try {
+        try {
             rolePermissionService.delete(rolePermission.getScopeId(), rolePermission.getId());
-      } catch (KapuaException ex) {
-          verifyException(ex);
-      }
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
     }
 
     @And("^I find the group with name \"([^\"]*)\"$")
@@ -2124,11 +2124,11 @@ public class AuthorizationServiceSteps extends TestBase {
             RoleQuery roleQuery = roleFactory.newQuery(getCurrentScopeId());
             roleQuery.setPredicate(roleQuery.attributePredicate(RoleAttributes.NAME, roleName, AttributePredicate.Operator.EQUAL));
 
-        stepData.remove("RoleListResult");
-        stepData.remove("Role");
+            stepData.remove("RoleListResult");
+            stepData.remove("Role");
             RoleListResult roleListResult = roleService.query(roleQuery);
-        stepData.put("RoleListResult", roleListResult);
-        stepData.put("Role", roleListResult.getFirstItem());
+            stepData.put("RoleListResult", roleListResult);
+            stepData.put("Role", roleListResult.getFirstItem());
 
             assertTrue(roleListResult.getSize() > 0);
         } catch (KapuaException ke) {
@@ -2158,7 +2158,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
         try {
             primeException();
-            for(RolePermission rolePermission : rolePermissions) {
+            for (RolePermission rolePermission : rolePermissions) {
                 rolePermissionService.delete(rolePermission.getScopeId(), rolePermission.getId());
             }
         } catch (KapuaException ex) {
@@ -2211,7 +2211,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
         try {
             primeException();
-            for(RolePermission rolePermission : rolePermissions) {
+            for (RolePermission rolePermission : rolePermissions) {
                 if (!rolePermission.getId().equals(KapuaId.ONE)) {
                     rolePermissionService.delete(rolePermission.getScopeId(), rolePermission.getId());
                 }
@@ -2533,5 +2533,161 @@ public class AuthorizationServiceSteps extends TestBase {
             }
         }
         stepData.put("AccessInfoList", accessInfoList);
+    }
+
+    @Given("^I prepare a role creator with name \"([^\"]*)\" and description \"([^\"]*)\"$")
+    public void iPrepareARoleCreatorWithNameAndDescription(String name, String description) {
+        RoleCreator roleCreator = roleFactory.newCreator(SYS_SCOPE_ID);
+        roleCreator.setName(name);
+        roleCreator.setDescription(description);
+
+        stepData.put("RoleCreator", roleCreator);
+    }
+
+    @When("^I create a new role entity from the existing creator$")
+    public void iCreateANewRoleEntityFromTheExistingCreator() throws Exception {
+        RoleCreator roleCreator = (RoleCreator) stepData.get("RoleCreator");
+        primeException();
+        try {
+            stepData.remove("Role");
+            stepData.remove("CurrentRoleId");
+            Role role = roleService.create(roleCreator);
+            stepData.put("Role", role);
+            stepData.put("CurrentRoleId", role.getId());
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @Given("^I create (\\d+) roles$")
+    public void iCreateRoles(int num) throws Exception {
+        primeException();
+        try {
+            for (int i = 0; i < num; i++) {
+                RoleCreator tmpCreator = roleFactory.newCreator(getCurrentScopeId());
+                tmpCreator.setName(String.format("TestRoleNum%d", i));
+                roleService.create(tmpCreator);
+            }
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I count the roles in the database$")
+    public void iCountTheRolesInTheDatabase() throws Exception {
+        RoleQuery tmpQuery = roleFactory.newQuery(getCurrentScopeId());
+
+        primeException();
+        try {
+            stepData.remove("Count");
+            Long count = roleService.count(tmpQuery);
+            stepData.put("Count", count - 1);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @And("^I update the role description to \"([^\"]*)\"$")
+    public void iUpdateTheRoleDescriptionTo(String newRoleDesc) throws Exception {
+        Role role = (Role) stepData.get("Role");
+        role.setDescription(newRoleDesc);
+
+        try {
+            primeException();
+            stepData.remove("Role");
+            Role newRole = roleService.update(role);
+            stepData.put("Role", newRole);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @Then("^I delete the role with name \"([^\"]*)\" and description \"([^\"]*)\"$")
+    public void iDeleteTheRoleWithNameAndDescription(String roleName, String roleDescription) throws Throwable {
+        Role role = (Role) stepData.get("Role");
+
+        primeException();
+        try {
+            assertEquals(roleName, role.getName());
+            assertEquals(roleDescription, role.getDescription());
+            KapuaId roleId = role.getId();
+            roleService.delete(role.getScopeId(), roleId);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @Then("^I search for a role with description \"([^\"]*)\"$")
+    public void iFindARoleWithDescription(String roleDesc) throws Throwable {
+        try {
+            primeException();
+            RoleQuery roleQuery = roleFactory.newQuery(getCurrentScopeId());
+            roleQuery.setPredicate(roleQuery.attributePredicate(RoleAttributes.DESCRIPTION, roleDesc, AttributePredicate.Operator.EQUAL));
+
+            stepData.remove("RoleListResult");
+            stepData.remove("RoleFound");
+            RoleListResult roleListResult = roleService.query(roleQuery);
+            stepData.put("RoleListResult", roleListResult);
+            stepData.put("RoleFound", roleListResult.getFirstItem());
+        } catch (KapuaException ke) {
+            verifyException(ke);
+        }
+    }
+
+    @Given("^I try to create roles with invalid characters \"([^\"]*)\" in name$")
+    public void iTryToCreateRolesWithInvalidCharactersInName(String invalidCharacters) throws Exception {
+        RoleCreator roleCreator = roleFactory.newCreator(SYS_SCOPE_ID);
+        for (int i = 0; i < invalidCharacters.length(); i++) {
+            String roleName = "roleName" + invalidCharacters.charAt(i);
+            roleCreator.setName(roleName);
+
+            try {
+                primeException();
+                stepData.remove("Role");
+                Role role = roleService.create(roleCreator);
+                stepData.put("Role", role);
+            } catch (KapuaException ex) {
+                verifyException(ex);
+            }
+        }
+    }
+
+    @Given("^I try to create roles with invalid characters \"([^\"]*)\" in description$")
+    public void iTryToCreateRolesWithInvalidCharactersInDescription(String invalidCharacters ) throws Exception {
+        RoleCreator roleCreator = roleFactory.newCreator(SYS_SCOPE_ID);
+        for (int i = 0; i < invalidCharacters.length(); i++) {
+            String roleDescription = "roleDescription" + invalidCharacters.charAt(i);
+            roleCreator.setDescription(roleDescription);
+            roleCreator.setName("roleName"+i);
+
+            try {
+                primeException();
+                stepData.remove("Role");
+                Role role = roleService.create(roleCreator);
+                stepData.put("Role", role);
+            } catch (KapuaException ex) {
+                verifyException(ex);
+            }
+        }
+    }
+
+    @Then("^I update the role name with special characters \"([^\"]*)\"$")
+    public void iUpdateTheRoleNameWithSpecialCharacters(String invalidSymbols) throws Throwable {
+        RoleCreator roleCreator = roleFactory.newCreator(SYS_SCOPE_ID);
+        for (int i = 0; i < invalidSymbols.length(); i++) {
+            String roleName = "roleName" + invalidSymbols.charAt(i);
+            roleCreator.setName("roleName" + i);
+
+            try {
+                primeException();
+                stepData.remove("Role");
+                Role role = roleService.create(roleCreator);
+                role.setName("roleName" + invalidSymbols.charAt(i));
+                roleService.update(role);
+                stepData.put("Role", role);
+            } catch (KapuaException ex) {
+                verifyException(ex);
+            }
+        }
     }
 }
