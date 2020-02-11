@@ -32,7 +32,7 @@ import java.util.Date;
 import java.util.Properties;
 
 @Entity(name = "ExecutionInstanceData")
-@Table(name = "EXECUTIONINSTANCEDATA")
+@Table(name = "jbtc_execution_instance_data")
 @NamedQueries({
         @NamedQuery(name = "ExecutionInstanceData.getByJobInstance",
                 query = "SELECT eid FROM ExecutionInstanceData eid WHERE eid.jobInstanceId = :jobInstanceId ORDER BY eid.createTime DESC"),

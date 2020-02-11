@@ -20,7 +20,7 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 
 @Entity(name = "JobStatus")
-@Table(name = "JOBSTATUS")
+@Table(name = "jbtc_job_status")
 public class JpaJobStatus extends AbstractJpaJbatchEntity {
 
     @Id

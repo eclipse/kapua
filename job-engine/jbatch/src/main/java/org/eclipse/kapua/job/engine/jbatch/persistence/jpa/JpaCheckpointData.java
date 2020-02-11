@@ -20,8 +20,11 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 
 @Entity(name = "CheckpointData")
-@Table(name = "CHECKPOINTDATA")
+@Table(name = "jbtc_checkpoint_data")
 public class JpaCheckpointData extends AbstractJpaJbatchEntity {
+
+    @Column(name = "jobinstanceid")
+    private long jobInstanceId;
 
     @Id
     @Column(name = "id", updatable = false, nullable = false)
@@ -32,6 +35,14 @@ public class JpaCheckpointData extends AbstractJpaJbatchEntity {
     private byte[] obj;
 
     public JpaCheckpointData() {
+    }
+
+    public long getJobInstanceId() {
+        return jobInstanceId;
+    }
+
+    public void setJobInstanceId(long jobInstanceId) {
+        this.jobInstanceId = jobInstanceId;
     }
 
     public String getId() {

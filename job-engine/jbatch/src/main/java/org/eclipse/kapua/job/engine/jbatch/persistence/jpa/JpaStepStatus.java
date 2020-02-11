@@ -22,7 +22,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity(name = "StepStatus")
-@Table(name = "STEPSTATUS")
+@Table(name = "jbtc_step_status")
 @NamedQueries({
         @NamedQuery(name = "StepStatus.findByJobInstanceIdStepName",
                 query = "SELECT ss " +

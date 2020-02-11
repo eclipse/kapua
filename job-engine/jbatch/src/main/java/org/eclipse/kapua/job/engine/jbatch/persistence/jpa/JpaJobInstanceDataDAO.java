@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.jbatch.persistence.jpa;
 
-import com.ibm.jbatch.container.exception.PersistenceException;
 import com.ibm.jbatch.container.impl.PartitionedStepBuilder;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 
@@ -26,20 +25,17 @@ public class JpaJobInstanceDataDAO {
     }
 
     public static JpaJobInstanceData create(EntityManager em, String name, String appTag, String jobXml) {
-        try {
-            JpaJobInstanceData jpaJobInstanceData = new JpaJobInstanceData();
-            jpaJobInstanceData.setName(name);
-            jpaJobInstanceData.setAppTag(appTag);
-            jpaJobInstanceData.setJobXml(jobXml);
 
-            em.persist(jpaJobInstanceData);
-            em.flush();
-            em.refresh(jpaJobInstanceData);
+        JpaJobInstanceData jpaJobInstanceData = new JpaJobInstanceData();
+        jpaJobInstanceData.setName(name);
+        jpaJobInstanceData.setAppTag(appTag);
+        jpaJobInstanceData.setJobXml(jobXml);
 
-            return jpaJobInstanceData;
-        } catch (Exception e) {
-            throw new PersistenceException(e);
-        }
+        em.persist(jpaJobInstanceData);
+        em.flush();
+        em.refresh(jpaJobInstanceData);
+
+        return jpaJobInstanceData;
     }
 
     public static JpaJobInstanceData find(EntityManager em, long id) {
