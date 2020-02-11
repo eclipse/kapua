@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,6 +31,11 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Properties;
 
+/**
+ * JPA counterpart of the {@link JobOperatorJobExecution} object.
+ *
+ * @since 1.2.0
+ */
 @Entity(name = "ExecutionInstanceData")
 @Table(name = "jbtc_execution_instance_data")
 @NamedQueries({
@@ -77,6 +82,7 @@ public class JpaExecutionInstanceData extends AbstractJpaJbatchEntity {
     private String exitStatus;
 
     public JpaExecutionInstanceData() {
+        // Required by JPA
     }
 
     public long getId() {

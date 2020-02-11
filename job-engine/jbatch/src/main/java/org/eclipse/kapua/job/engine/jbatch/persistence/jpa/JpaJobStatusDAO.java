@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,6 +14,11 @@ package org.eclipse.kapua.job.engine.jbatch.persistence.jpa;
 import com.ibm.jbatch.container.status.JobStatus;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 
+/**
+ * Service DAO for {@link JpaJobStatus}
+ *
+ * @since 1.2.0
+ */
 public class JpaJobStatusDAO {
 
     private JpaJobStatusDAO() {

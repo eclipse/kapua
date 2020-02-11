@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,6 +15,11 @@ import com.ibm.jbatch.container.persistence.CheckpointData;
 import com.ibm.jbatch.container.persistence.CheckpointDataKey;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 
+/**
+ * Service DAO for {@link JpaCheckpointData}
+ *
+ * @since 1.2.0
+ */
 public class JpaCheckpointDataDAO {
 
     private JpaCheckpointDataDAO() {

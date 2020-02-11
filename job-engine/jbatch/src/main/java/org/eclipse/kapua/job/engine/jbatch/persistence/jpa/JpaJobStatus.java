@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,6 +19,11 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
+/**
+ * JPA counterpart for {@link JobStatus} object.
+ *
+ * @sicne 1.2.0
+ */
 @Entity(name = "JobStatus")
 @Table(name = "jbtc_job_status")
 public class JpaJobStatus extends AbstractJpaJbatchEntity {
@@ -32,6 +37,7 @@ public class JpaJobStatus extends AbstractJpaJbatchEntity {
     private byte[] obj;
 
     public JpaJobStatus() {
+        // Required by JPA
     }
 
     public long getJobInstanceId() {
