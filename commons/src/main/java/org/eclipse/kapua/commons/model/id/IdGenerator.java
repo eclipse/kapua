@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,18 +13,19 @@ package org.eclipse.kapua.commons.model.id;
 
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.kapua.commons.util.RandomUtils;
 
 import java.math.BigInteger;
-import java.security.SecureRandom;
+import java.util.Random;
 
 /**
  * Generates random identifier
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class IdGenerator {
 
-    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+    private static final Random RANDOM = RandomUtils.getInstance();
     private static final int ID_SIZE = SystemSetting.getInstance().getInt(SystemSettingKey.KAPUA_KEY_SIZE);
 
     private IdGenerator() {
@@ -37,7 +38,7 @@ public class IdGenerator {
      * @return
      */
     public static BigInteger generate() {
-        return new BigInteger(ID_SIZE, SECURE_RANDOM);
+        return new BigInteger(ID_SIZE, RANDOM);
     }
 
 }

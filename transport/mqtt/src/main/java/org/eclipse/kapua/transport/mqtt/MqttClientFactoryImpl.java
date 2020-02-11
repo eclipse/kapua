@@ -24,16 +24,14 @@ import java.util.Map;
 
 /**
  * Implementation of {@link TransportClientFactory} API for MQTT transport facade
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 @KapuaProvider
 public class MqttClientFactoryImpl implements TransportClientFactory<MqttTopic, MqttPayload, MqttMessage, MqttMessage, MqttFacade, MqttClientConnectionOptions> {
 
     @Override
-    public MqttFacade getFacade(Map<String, Object> configParameters)
-            throws KapuaException {
+    public MqttFacade getFacade(Map<String, Object> configParameters) throws KapuaException {
         return new MqttFacade(formatNodeUri(configParameters.get("serverAddress").toString()));
     }
 

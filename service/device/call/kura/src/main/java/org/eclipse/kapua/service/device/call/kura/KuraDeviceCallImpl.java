@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.call.kura;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.util.RandomUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.Message;
 import org.eclipse.kapua.service.account.Account;
@@ -49,6 +50,8 @@ import java.util.Random;
  * @since 1.0.0
  */
 public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraResponseMessage> {
+
+    private static final Random RANDOM = RandomUtils.getInstance();
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
@@ -139,9 +142,7 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
             KuraRequestChannel requestChannel = requestMessage.getChannel();
             KuraRequestPayload requestPayload = requestMessage.getPayload();
             if (timeout != null) {
-                // FIXME: create an utilty class to use the same synchronized random instance to avoid duplicates
-                Random r = new Random();
-                String requestId = String.valueOf(r.nextLong());
+                String requestId = String.valueOf(RANDOM.nextLong());
 
                 requestChannel.setRequestId(requestId);
                 requestChannel.setRequesterClientId(transportFacade.getClientId());
