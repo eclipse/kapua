@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -40,6 +40,9 @@ import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaStepExecutionInsta
 import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaStepExecutionInstanceDataDAO;
 import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaStepStatus;
 import org.eclipse.kapua.job.engine.jbatch.persistence.jpa.JpaStepStatusDAO;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.batch.operations.NoSuchJobExecutionException;
 import javax.batch.runtime.BatchStatus;
@@ -53,7 +56,12 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * @since 1.2.0
+ */
 public class JPAPersistenceManagerImpl extends AbstractKapuaService implements IPersistenceManagerService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JPAPersistenceManagerImpl.class);
 
     public JPAPersistenceManagerImpl() {
         super(JbatchEntityManagerFactory.getInstance());
@@ -61,12 +69,12 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
 
     @Override
     public void init(IBatchConfig batchConfig) {
-
+        LOG.info("jBatch persistence implementation initialized with no actions...");
     }
 
     @Override
     public void shutdown() {
-
+        LOG.info("jBatch persistence implementation tear down with no actions...");
     }
 
     //
@@ -167,6 +175,24 @@ public class JPAPersistenceManagerImpl extends AbstractKapuaService implements I
         //        }
 
         return "NOTSET";
+    }
+
+    /**
+     * Deletes {@link JobInstance}s by name.
+     * <p>
+     * This relies on the foreign keys with {@code DELETE CASCADE} on jBatch tables to delete all data from all the other tables.
+     * Relationship between those table are summarized in the {@link JPAPersistenceManagerImpl} javadoc.
+     *
+     * @param jobName The jBatch job name. See {@link org.eclipse.kapua.job.engine.jbatch.driver.JbatchDriver#getJbatchJobName(KapuaId, KapuaId)}
+     * @return The number of records delete on the DB.
+     * @since 1.2.0
+     */
+    public int purgeByName(String jobName) {
+        try {
+            return entityManagerSession.onTransactedResult(em -> JpaJobInstanceDataDAO.deleteByName(em, jobName));
+        } catch (Exception e) {
+            throw new PersistenceException(e);
+        }
     }
 
     //
