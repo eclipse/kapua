@@ -34,7 +34,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity(name = "StepExecutionInstanceData")
-@Table(name = "STEPEXECUTIONINSTANCEDATA")
+@Table(name = "jbtc_step_execution_instance_data")
 @NamedQueries({
         @NamedQuery(name = "StepExecutionInstanceData.selectByJobExecId",
                 query = "SELECT seid FROM StepExecutionInstanceData seid WHERE seid.jobExecutionId = :jobExecutionId"),

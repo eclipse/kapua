@@ -23,6 +23,7 @@ public class JpaCheckpointDataDAO {
     public static JpaCheckpointData create(EntityManager em, CheckpointDataKey checkpointDataKey, CheckpointData checkpointData) {
 
         JpaCheckpointData jpaCheckpointData = new JpaCheckpointData();
+        jpaCheckpointData.setJobInstanceId(checkpointDataKey.getJobInstanceId());
         jpaCheckpointData.setId(checkpointDataKey.getCommaSeparatedKey());
         jpaCheckpointData.setObj(checkpointData);
 

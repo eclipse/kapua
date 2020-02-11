@@ -26,7 +26,7 @@ import javax.persistence.Transient;
 import java.io.Serializable;
 
 @Entity(name = "JobInstanceData")
-@Table(name = "JOBINSTANCEDATA")
+@Table(name = "jbtc_job_instance_data")
 @NamedQueries({
         @NamedQuery(name = "JobInstanceData.selectByName",
                 query = "SELECT DISTINCT(jid) FROM JobInstanceData jid WHERE jid.name NOT LIKE :name"),
