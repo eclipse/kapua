@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,33 +13,98 @@ package org.eclipse.kapua.service.device.management.message;
 
 /**
  * Kapua request/reply method definition.<br>
- * This object defines the command types that should be supported by a Kapua device.
+ * This object defines the request types that can be sent to a Device.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public enum KapuaMethod {
     /**
-     * Read
+     * Read request.
+     *
+     * @since 1.0.0
      */
     READ,
     /**
-     * Create
+     * Same as {@link #READ} but with a name that matches Kura naming.
+     *
+     * @since 1.2.0
+     */
+    GET,
+    /**
+     * Create request.
+     *
+     * @since 1.0.0
      */
     CREATE,
     /**
-     * Write
+     * Same as {@link #CREATE} but with a name that matches Kura naming.
+     *
+     * @since 1.2.0
+     */
+    POST,
+    /**
+     * Write request.
+     *
+     * @since 1.0.0
      */
     WRITE,
     /**
-     * Delete
+     * Same as {@link #WRITE} but with a name that matches Kura naming.
+     *
+     * @since 1.2.0
+     */
+    PUT,
+    /**
+     * Delete request.
+     *
+     * @since 1.0.0
      */
     DELETE,
     /**
-     * Options
+     * Same as {@link #DELETE} but with a name that matches Kura naming.
+     *
+     * @since 1.2.0
      */
-    OPTIONS,
+    DEL,
     /**
-     * Execute
+     * Execute request.
+     *
+     * @since 1.0.0
      */
-    EXECUTE
+    EXECUTE,
+    /**
+     * Same as {@link #EXECUTE} but with a name that matches Kura naming.
+     *
+     * @since 1.2.0
+     */
+    EXEC,
+    /**
+     * Options request.
+     *
+     * @since 1.0.0
+     */
+    OPTIONS;
+
+    /**
+     * Converts the value
+     *
+     * @return
+     */
+    public KapuaMethod normalizeAction() {
+
+        switch (this) {
+            case POST:
+                return KapuaMethod.CREATE;
+            case GET:
+                return KapuaMethod.READ;
+            case DEL:
+                return KapuaMethod.DELETE;
+            case EXEC:
+                return KapuaMethod.EXECUTE;
+            case PUT:
+                return KapuaMethod.WRITE;
+            default:
+                return this;
+        }
+    }
 }

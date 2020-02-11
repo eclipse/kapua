@@ -15,7 +15,7 @@ package org.eclipse.kapua.translator.kura.kapua;
 import org.eclipse.kapua.service.device.call.kura.KuraMethod;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 /**
@@ -32,7 +32,7 @@ public class MethodDictionaryKuraKapua {
     private static final Map<KuraMethod, KapuaMethod> DICTIONARY;
 
     static {
-        DICTIONARY = new HashMap<>(5);
+        DICTIONARY = new EnumMap<>(KuraMethod.class);
 
         DICTIONARY.put(KuraMethod.GET, KapuaMethod.READ);
         DICTIONARY.put(KuraMethod.POST, KapuaMethod.CREATE);

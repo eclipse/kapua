@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,12 +22,14 @@ import javax.validation.constraints.NotNull;
 
 /**
  * {@link DeviceCall} definition.
+ * <p>
+ * It can send {@link DeviceRequestMessage}s and (optionally) wait for a {@link DeviceResponseMessage}.
  *
- * @param <RQ> device request message type
- * @param <RS> device response message type
+ * @param <RQ> {@link DeviceRequestMessage} type
+ * @param <RS> {@link DeviceResponseMessage} type
  * @since 1.0.0
  */
-public interface DeviceCall<RQ extends DeviceRequestMessage, RS extends DeviceResponseMessage> {
+public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends DeviceResponseMessage<?, ?>> {
 
     /**
      * Executes a 'read' request.
@@ -101,11 +103,12 @@ public interface DeviceCall<RQ extends DeviceRequestMessage, RS extends DeviceRe
      */
     RS options(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
 
+
     /**
      * Get the {@link DeviceMessage} type.
      *
      * @return The {@link DeviceMessage} {@code class}
      * @since 1.0.0
      */
-    <M extends DeviceMessage> Class<M> getBaseMessageClass();
+    <M extends DeviceMessage<?, ?>> Class<M> getBaseMessageClass();
 }
