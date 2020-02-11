@@ -22,6 +22,7 @@ import com.ibm.jbatch.container.persistence.CheckpointData;
 import com.ibm.jbatch.container.persistence.CheckpointDataKey;
 import com.ibm.jbatch.container.services.IJobExecution;
 import com.ibm.jbatch.container.services.IPersistenceManagerService;
+import com.ibm.jbatch.container.services.impl.JDBCPersistenceManagerImpl;
 import com.ibm.jbatch.container.status.JobStatus;
 import com.ibm.jbatch.container.status.StepStatus;
 import com.ibm.jbatch.spi.services.IBatchConfig;
@@ -57,6 +58,27 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
+ * This is a custom implementation of the {@link IPersistenceManagerService} for jBatch which replace the default {@link JDBCPersistenceManagerImpl}.
+ * <p>
+ * This implementation is much more performant for many reasons, starting from using a DB connection pool and query that are precompiled by JPA using the {@link javax.persistence.NamedQueries}.
+ * Entity have been optimized and code now skips some checks that {@link  JDBCPersistenceManagerImpl} performs since those checks are not required by our usage of jBatch.
+ * This makes this implementation not compatible with the regular behaviour of the {@link JDBCPersistenceManagerImpl} but makes it fit our needing.
+ * <p>
+ * As a general overview if the jBatch tables they follow the schema below
+ *
+ * <pre>
+ *     JobInstanceData (aka: JobInstace)
+ *     |
+ *     |-- as one --- JobStatus
+ *     |-- as many -- ExecutionInstanceData (aka: JobExecution)
+ *                    |
+ *                    |-- as many -- StepExecutionInstanceData (aka: JobStepExecution)
+ *                    |              |
+ *                    |              |-- as one --- StepStatus
+ *                    |
+ *                    |-- as many -- CheckpointData
+ * </pre>
+ *
  * @since 1.2.0
  */
 public class JPAPersistenceManagerImpl extends AbstractKapuaService implements IPersistenceManagerService {

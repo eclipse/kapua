@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,6 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Service DAO for {@link JpaStepExecutionInstanceData}
+ *
+ * @since 1.2.0
+ */
 public class JpaStepExecutionInstanceDataDAO {
 
     private JpaStepExecutionInstanceDataDAO() {

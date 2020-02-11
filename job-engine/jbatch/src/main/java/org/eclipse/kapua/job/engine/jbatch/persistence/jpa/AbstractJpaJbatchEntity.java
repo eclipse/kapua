@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,6 +19,14 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
+ * Base class for JPA counterpart of jBatch entities.
+ * <p>
+ * It offers {@link #readObject(byte[])} and {@link #writeObject(Serializable)} as utility method since most of the jBatch entities on the default {@link com.ibm.jbatch.container.services.impl.JDBCPersistenceManagerImpl}
+ * contains binary objects. This is odd but current deployment have that format and, for backward compatibility we need to keep this format.
+ * <p>
+ * Further improvement could be use the Apache Lang 3 {@link org.apache.commons.lang3.SerializationUtils#serialize(Serializable)} and {@link org.apache.commons.lang3.SerializationUtils#deserialize(byte[])},
+ * but compatibility needs to be checked.
+ *
  * @since 1.2.0
  */
 public abstract class AbstractJpaJbatchEntity implements Serializable {
