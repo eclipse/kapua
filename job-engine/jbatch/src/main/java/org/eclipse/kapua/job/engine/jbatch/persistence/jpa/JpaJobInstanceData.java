@@ -37,7 +37,9 @@ import java.io.Serializable;
         @NamedQuery(name = "JobInstanceData.countByName",
                 query = "SELECT COUNT(jid) FROM JobInstanceData jid WHERE jid.name = :name"),
         @NamedQuery(name = "JobInstanceData.countByNameTagApp",
-                query = "SELECT COUNT(jid) FROM JobInstanceData jid WHERE jid.name = :name AND jid.appTag = :appTag")
+                query = "SELECT COUNT(jid) FROM JobInstanceData jid WHERE jid.name = :name AND jid.appTag = :appTag"),
+        @NamedQuery(name = "JobInstanceData.deleteByName",
+                query = "DELETE FROM JobInstanceData jid WHERE jid.name = :name")
 })
 public class JpaJobInstanceData implements Serializable {
 

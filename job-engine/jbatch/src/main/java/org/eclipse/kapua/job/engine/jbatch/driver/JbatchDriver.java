@@ -33,7 +33,7 @@ import org.eclipse.kapua.job.engine.jbatch.driver.exception.JbatchDriverExceptio
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.JobExecutionIsRunningDriverException;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.JobStartingDriverException;
 import org.eclipse.kapua.job.engine.jbatch.driver.utils.JobDefinitionBuildUtils;
-import org.eclipse.kapua.job.engine.jbatch.persistence.KapuaJDBCPersistenceManagerImpl;
+import org.eclipse.kapua.job.engine.jbatch.persistence.JPAPersistenceManagerImpl;
 import org.eclipse.kapua.job.engine.jbatch.setting.JobEngineSettingKeys;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -312,10 +312,20 @@ public class JbatchDriver {
         return !getRunningJobExecutions(scopeId, jobId).isEmpty();
     }
 
+    /**
+     * Deletes jBatch internal data for the given {@link Job} id.
+     * <p>
+     * The cleanup is required when deleting a {@link Job} to avoid stale data to be left in the jBatch tables.
+     *
+     * @param scopeId The {@link Job#getScopeId()}
+     * @param jobId   The {@link Job#getId()}
+     * @throws CleanJobDataDriverException if the cleanup produces an error
+     * @since 1.0.0
+     */
     public static void cleanJobData(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) throws CleanJobDataDriverException {
         String jobName = getJbatchJobName(scopeId, jobId);
         try {
-            ((KapuaJDBCPersistenceManagerImpl) ServicesManagerImpl.getInstance().getPersistenceManagerService()).purgeByName(jobName);
+            ((JPAPersistenceManagerImpl) ServicesManagerImpl.getInstance().getPersistenceManagerService()).purgeByName(jobName);
         } catch (Exception ex) {
             throw new CleanJobDataDriverException(ex, jobName);
         }
