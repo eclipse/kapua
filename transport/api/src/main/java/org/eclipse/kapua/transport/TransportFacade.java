@@ -22,15 +22,18 @@ import javax.validation.constraints.NotNull;
 
 /**
  * API to use the Transport layer for the device communication.
+ * <p>
+ * It extends {@link AutoCloseable} {@code interface} so the user MUST invoke the {@link #close()} method after usage.
  *
  * @param <C>  The {@link TransportChannel} implementation class for the request.
  * @param <P>  The {@link TransportPayload} implementation class for the request.
  * @param <MQ> The {@link TransportMessage} implementation class for the request.
  * @param <MS> The {@link TransportMessage} implementation class for the response.
  * @author alberto.codutti
+ * @see #close()
  * @since 1.0.0
  */
-public interface TransportFacade<C extends TransportChannel, P extends TransportPayload, MQ extends TransportMessage<C, P>, MS extends TransportMessage<C, P>> {
+public interface TransportFacade<C extends TransportChannel, P extends TransportPayload, MQ extends TransportMessage<C, P>, MS extends TransportMessage<C, P>> extends AutoCloseable {
 
     //
     // Message management
@@ -78,8 +81,22 @@ public interface TransportFacade<C extends TransportChannel, P extends Transport
      * This method must be called by the device layer after being used.
      *
      * @since 1.0.0
+     * @deprecated since 1.2.0 this {@code interface} extends {@link AutoCloseable}. Please make use of {@link #close()}
      */
+    @Deprecated
     void clean();
+
+    /**
+     * Executes close operations for this {@link TransportFacade}
+     * <p>
+     * This method MUST be invoked by the user of the {@link TransportFacade}.
+     * Fail to do so will result in resource leak and other bad things!
+     * It is recommended to use Java's try-with-resource.
+     *
+     * @since 1.2.0
+     */
+    @Override
+    void close();
 
     /**
      * Returns the {@code class} of the type of {@link TransportMessage} implementation used by this implementation of the {@link TransportFacade}.

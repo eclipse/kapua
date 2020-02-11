@@ -129,13 +129,17 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
 
     @Override
     public void clean() {
+        close();
+    }
+
+    @Override
+    public void close() {
         try {
             MqttClientPool.getInstance(nodeUri).returnObject(borrowedClient);
         } finally {
             borrowedClient = null;
         }
     }
-
 
     //
     // Private methods
@@ -198,5 +202,4 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
             responseTimeoutTimer.cancel();
         }
     }
-
 }
