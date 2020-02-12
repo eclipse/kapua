@@ -207,7 +207,7 @@ public class BasicSteps extends TestBase {
         assertFalse("An unexpected assert error was raised!", assertErrorCaught);
     }
 
-    @And("^I wait for (\\d+) millisecond(?:|s) to settle down$")
+    @And("^I wait for (\\d+) millisecond(?:|s) for processes to settle down$")
     public void waitingMilliseconds(int milliseconds) throws InterruptedException {
         Thread.sleep(milliseconds);
     }

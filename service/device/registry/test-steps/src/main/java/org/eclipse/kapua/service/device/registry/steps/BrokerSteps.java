@@ -251,10 +251,13 @@ public class BrokerSteps extends TestBase {
 
     }
 
-    @When("^Device is connected$")
+    @When("^^Device(?:|s) (?:is|are) connected$$")
     public void deviceConnected() throws Exception {
-
-        deviceBirthMessage();
+        try {
+            deviceBirthMessage();
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
     }
 
     @When("^Device death message is sent$")
@@ -574,15 +577,6 @@ public class BrokerSteps extends TestBase {
         stepData.put("KuraDevices", kuraDevices);
     }
 
-    @When("^Device(?:|s) \"([^\"]*)\" connected$")
-    public void deviceConnected(String arg0) throws Exception {
-        try {
-            deviceBirthMessage();
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
     @And("^Device assets are requested$")
     public void deviceAssetsAreRequested() throws Exception{
         ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get("KuraDevices");
@@ -604,6 +598,21 @@ public class BrokerSteps extends TestBase {
         for (DeviceAssetChannel deviceAssetChannel : asset.getChannels()) {
             assertEquals(channelName, deviceAssetChannel.getName());
             assertEquals(channelValue, deviceAssetChannel.getValue());
+        }
+    }
+
+    @And("^Packages are requested and (\\d+) package(?:|s) (?:is|are) received$")
+    public void packagesAreRequestedAndPackageIsReceived(int numberOfPackages) throws Exception {
+        for(KuraDevice kuraDevice : kuraDevices) {
+            Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
+            if (device != null) {
+                DevicePackages deploymentPackages = devicePackageManagementService.getInstalled(device.getScopeId(),
+                        device.getId(), null);
+                List<DevicePackage> packages = deploymentPackages.getPackages();
+                stepData.put("packages", packages);
+
+                assertEquals(numberOfPackages, packages.size());
+            }
         }
     }
 }

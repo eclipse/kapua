@@ -219,7 +219,7 @@ Scenario: Update a non existing device
     Then An exception was thrown
 
 Scenario: Delete an existing device from the registry
-    It must be possible to delete a device from theregistry. To this
+    It must be possible to delete a device from the registry. To this
     end a test device is created and subsequently deleted.
     A search for this device should yield a null but no exception.
 
@@ -229,7 +229,7 @@ Scenario: Delete an existing device from the registry
         | boolean | infiniteChildEntities  | true  |
         | integer | maxNumberChildEntities |  10   |
     Given A device named "TestDevice"
-    When I delete the device with the cleint id "TestDevice"
+    When I delete the device with the clientId "TestDevice"
     Then There is no device with the client ID "TestDevice"
 
 Scenario: Try to delete a non existing device from the registry
