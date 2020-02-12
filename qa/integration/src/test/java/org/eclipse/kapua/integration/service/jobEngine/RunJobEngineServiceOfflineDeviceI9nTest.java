@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,8 +28,8 @@ import org.junit.runner.RunWith;
                 "org.eclipse.kapua.service.device.registry.steps",
         },
         plugin = { "pretty",
-                "html:target/cucumber",
-                "json:target/cucumber.json" },
+                "html:target/cucumber/JobEngineServiceOfflineDeviceI9n",
+                "json:target/JobEngineServiceOfflineDeviceI9n_cucumber.json" },
         strict = true,
         monochrome = true)
 public class RunJobEngineServiceOfflineDeviceI9nTest {
