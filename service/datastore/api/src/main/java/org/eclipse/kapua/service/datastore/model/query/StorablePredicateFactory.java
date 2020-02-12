@@ -78,6 +78,8 @@ public interface StorablePredicateFactory extends KapuaObjectFactory {
      */
     ExistsPredicate newExistsPredicate(String fieldName);
 
+    <V extends Comparable<V>> MetricExistsPredicate newMetricExistsPredicate(String fieldName, Class<V> type);
+
     OrPredicate newOrPredicate();
 
 }

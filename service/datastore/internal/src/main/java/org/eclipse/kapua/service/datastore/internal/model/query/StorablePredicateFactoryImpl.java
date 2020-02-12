@@ -15,6 +15,7 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ExistsPredicate;
+import org.eclipse.kapua.service.datastore.model.query.MetricExistsPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MetricPredicate;
 import org.eclipse.kapua.service.datastore.model.query.OrPredicate;
 import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
@@ -53,6 +54,11 @@ public class StorablePredicateFactoryImpl implements StorablePredicateFactory {
     @Override
     public ExistsPredicate newExistsPredicate(String fieldName) {
         return new ExistsPredicateImpl(fieldName);
+    }
+
+    @Override
+    public <V extends Comparable<V>> MetricExistsPredicate newMetricExistsPredicate(String fieldName, Class<V> type) {
+        return new MetricExistsPredicateImpl(fieldName, type);
     }
 
     @Override
