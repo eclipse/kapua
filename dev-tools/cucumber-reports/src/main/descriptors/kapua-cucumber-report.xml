@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+    Copyright (c) 2011, 2020 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -55,6 +55,11 @@
         </fileSet>
 
         <fileSet>
+            <outputDirectory>authorization-service</outputDirectory>
+            <directory>../../qa/integration/target/cucumber/AuthorizationServiceI9n</directory>
+        </fileSet>
+
+        <fileSet>
             <outputDirectory>user-service-i9n</outputDirectory>
             <directory>../../qa/integration/target/cucumber/UserServiceI9n</directory>
         </fileSet>
@@ -85,12 +90,27 @@
         </fileSet>
 
         <fileSet>
+            <outputDirectory>device-broker-ipConfigFile-i9n</outputDirectory>
+            <directory>../../qa/integration/target/cucumber/DeviceBrokerIpConfigFileI9n</directory>
+        </fileSet>
+
+        <fileSet>
+            <outputDirectory>device-broker-ipSysEnv-i9n</outputDirectory>
+            <directory>../../qa/integration/target/cucumber/DeviceBrokerIpSysEnvI9n</directory>
+        </fileSet>
+
+        <fileSet>
+            <outputDirectory>device-broker-ipUndefined-i9n</outputDirectory>
+            <directory>../../qa/integration/target/cucumber/DeviceBrokerIpUndefinedI9n</directory>
+        </fileSet>
+
+        <fileSet>
             <outputDirectory>device-data-i9n</outputDirectory>
             <directory>../../qa/integration/target/cucumber/DeviceDataI9n</directory>
         </fileSet>
 
         <fileSet>
-            <outputDirectory>broker-ACL-i9n</outputDirectory>
+            <outputDirectory>device-broker-ACL-i9n</outputDirectory>
             <directory>../../qa/integration/target/cucumber/BrokerACLI9n</directory>
         </fileSet>
 
@@ -110,8 +130,13 @@
         </fileSet>
 
         <fileSet>
-            <outputDirectory>tag-service-i9n</outputDirectory>
-            <directory>../../qa/integration/target/cucumber/TagService</directory>
+            <outputDirectory>job-engine-online-device</outputDirectory>
+            <directory>../../qa/integration/target/cucumber/JobEngineOnlineDeviceI9n</directory>
+        </fileSet>
+
+        <fileSet>
+            <outputDirectory>job-engine-offline-device</outputDirectory>
+            <directory>../../qa/integration/target/cucumber/JobEngineOfflineDeviceI9n</directory>
         </fileSet>
         </fileSets>
 
