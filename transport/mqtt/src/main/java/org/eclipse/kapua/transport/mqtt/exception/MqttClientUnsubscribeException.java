@@ -1,0 +1,50 @@
+/*******************************************************************************
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.kapua.transport.mqtt.exception;
+
+import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
+import org.eclipse.kapua.transport.mqtt.MqttClient;
+
+/**
+ * {@link Exception} to {@code throw} when the {@link MqttClient} cannot unsubscribe from the {@link MqttTopic}
+ *
+ * @since 1.2.0
+ */
+public class MqttClientUnsubscribeException extends MqttClientException {
+
+    final MqttTopic topic;
+
+    /**
+     * Constructor.
+     *
+     * @param cause    The root {@link Throwable} that caused the error.
+     * @param clientId The clientId of the {@link org.eclipse.kapua.transport.mqtt.MqttClient} that produced this {@link MqttClientSubscribeException}.
+     * @param topic    The {@link org.eclipse.kapua.transport.message.mqtt.MqttTopic} where the {@link MqttClient} tired to unsubscribe from.
+     * @since 1.2.0
+     */
+    public MqttClientUnsubscribeException(Throwable cause, String clientId, MqttTopic topic) {
+        super(MqttClientErrorCodes.UNSUBSCRIBE_ERROR, cause, clientId, topic.getTopic());
+
+        this.topic = topic;
+    }
+
+    /**
+     * Gets the {@link org.eclipse.kapua.transport.message.mqtt.MqttTopic} where the {@link MqttClient} tired to unsubscribe from.
+     *
+     * @return The {@link org.eclipse.kapua.transport.message.mqtt.MqttTopic} where the {@link MqttClient} tired to unsubscribe from.
+     * @since 1.2.0
+     */
+    public MqttTopic getTopic() {
+        return topic;
+    }
+
+}

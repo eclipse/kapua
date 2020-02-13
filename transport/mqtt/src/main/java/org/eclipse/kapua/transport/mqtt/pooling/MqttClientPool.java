@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,8 +13,9 @@ package org.eclipse.kapua.transport.mqtt.pooling;
 
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.transport.mqtt.MqttClient;
+import org.eclipse.kapua.transport.mqtt.exception.MqttClientCleanException;
+import org.eclipse.kapua.transport.mqtt.exception.MqttClientTerminateException;
 import org.eclipse.kapua.transport.mqtt.pooling.setting.MqttClientPoolSetting;
 import org.eclipse.kapua.transport.mqtt.pooling.setting.MqttClientPoolSettingKeys;
 import org.slf4j.Logger;
@@ -37,9 +38,11 @@ public class MqttClientPool extends GenericObjectPool<MqttClient> {
     private static final Logger LOG = LoggerFactory.getLogger(MqttClientPool.class);
 
     /**
-     * Singleton instance of {@link MqttClientPool}
+     * Singleton instances of {@link MqttClientPool} by their host.
+     *
+     * @since 1.0.0
      */
-    private static Map<String, MqttClientPool> mqttClientPoolInstances = new HashMap<>();
+    private static final Map<String, MqttClientPool> MQTT_CLIENT_POOL_BY_HOST = new HashMap<>();
 
     /**
      * Initialize a {@link MqttClientPool} with the according configuration sourced from {@link MqttClientPoolSetting}.
@@ -71,11 +74,12 @@ public class MqttClientPool extends GenericObjectPool<MqttClient> {
     /**
      * Gets the singleton instance of {@link MqttClientPool}.
      *
+     * @param serverURI The {@link java.net.URI} in {@link String} form for which get the {@link MqttClientPool}.
      * @return The singleton instance of {@link MqttClientPool}.
-     * @since 1.0.0
+     * @since 1.1.0
      */
-    public static MqttClientPool getInstance(String nodeUri) {
-        return mqttClientPoolInstances.computeIfAbsent(nodeUri, k -> new MqttClientPool(new PooledMqttClientFactory(nodeUri)));
+    public static MqttClientPool getInstance(String serverURI) {
+        return MQTT_CLIENT_POOL_BY_HOST.computeIfAbsent(serverURI, k -> new MqttClientPool(new PooledMqttClientFactory(serverURI)));
     }
 
     /**
@@ -94,13 +98,13 @@ public class MqttClientPool extends GenericObjectPool<MqttClient> {
 
             // Return object to pool
             super.returnObject(kapuaClient);
-        } catch (KapuaException e) {
+        } catch (MqttClientCleanException mcce) {
             LOG.error("Error while returning MqttClient ({}) to the pool. Terminating...", kapuaClient.getClientId());
             try {
                 kapuaClient.terminateClient();
-                LOG.error("Error while returning MqttClient ({}) to the pool. Terminating... DONE! Error was: {}", kapuaClient.getClientId(), e.getMessage());
-            } catch (KapuaException e1) {
-                LOG.error("Error while returning MqttClient ({}) to the pool. Terminating... ERROR! Error was: {}", kapuaClient.getClientId(), e.getMessage(), e1);
+                LOG.error("Error while returning MqttClient ({}) to the pool. Terminating... DONE! Error was: {}", kapuaClient.getClientId(), mcce.getMessage());
+            } catch (MqttClientTerminateException mcte) {
+                LOG.error("Error while returning MqttClient ({}) to the pool. Terminating... ERROR! Error was: {}", kapuaClient.getClientId(), mcce.getMessage(), mcte);
             }
         }
     }
