@@ -228,7 +228,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
         //
         // Create device management operation
-        KapuaId deviceManagementOperationId = createManagementOperation(scopeId, deviceId, operationId, packageDownloadRequest.getInstall() ? 2 : 1, packageRequestMessage);
+        KapuaId deviceManagementOperationId = createManagementOperation(scopeId, deviceId, operationId, packageRequestMessage);
 
         //
         // Do exec
@@ -411,7 +411,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
         //
         // Create device management operation
-        KapuaId deviceManagementOperationId = createManagementOperation(scopeId, deviceId, operationId, 1, packageRequestMessage);
+        KapuaId deviceManagementOperationId = createManagementOperation(scopeId, deviceId, operationId, packageRequestMessage);
 
         //
         // Do get
@@ -563,7 +563,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
         //
         // Create device management operation
-        KapuaId deviceManagementOperationId = createManagementOperation(scopeId, deviceId, operationId, 1, packageRequestMessage);
+        KapuaId deviceManagementOperationId = createManagementOperation(scopeId, deviceId, operationId, packageRequestMessage);
 
         //
         // Do get

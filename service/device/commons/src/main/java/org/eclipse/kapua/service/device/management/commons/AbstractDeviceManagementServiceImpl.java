@@ -89,7 +89,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
         KapuaSecurityUtils.doPrivileged(() -> DEVICE_EVENT_SERVICE.create(deviceEventCreator));
     }
 
-    protected KapuaId createManagementOperation(KapuaId scopeId, KapuaId deviceId, KapuaId operationId, int totalCheckpoints, KapuaRequestMessage<?, ?> requestMessage) throws KapuaException {
+    protected KapuaId createManagementOperation(KapuaId scopeId, KapuaId deviceId, KapuaId operationId, KapuaRequestMessage<?, ?> requestMessage) throws KapuaException {
 
         DeviceManagementOperationCreator deviceManagementOperationCreator = DEVICE_MANAGEMENT_OPERATION_FACTORY.newCreator(scopeId);
         deviceManagementOperationCreator.setDeviceId(deviceId);
