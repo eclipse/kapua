@@ -23,6 +23,7 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
@@ -38,6 +39,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
@@ -46,10 +48,12 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.FileUploadDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaMessageBox;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaMenuItem;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
@@ -93,8 +97,14 @@ public class DeviceConfigSnapshots extends LayoutContainer {
     private boolean refreshProcess;
 
     private Button downloadButton;
+    private KapuaMenuItem standardDownloadMenuItem;
+    private KapuaMenuItem nativeDownloadMenuItem;
+    private Menu downloadMenu;
     private Button rollbackButton;
     private Button uploadButton;
+    private KapuaMenuItem standardUploadMenuItem;
+    private KapuaMenuItem nativeUploadMenuItem;
+    private Menu uploadMenu;
 
     private ListStore<GwtSnapshot> store;
     private Grid<GwtSnapshot> grid;
@@ -172,37 +182,83 @@ public class DeviceConfigSnapshots extends LayoutContainer {
         toolBar.add(refreshButton);
         toolBar.add(new SeparatorToolItem());
 
-        downloadButton = new SnapshotDownloadButton(new SelectionListener<ButtonEvent>() {
+        downloadMenu = new Menu();
 
+        standardDownloadMenuItem = new StandardSnapshotDownloadMenuItem(new SelectionListener<MenuEvent>() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void componentSelected(MenuEvent ce) {
                 if (!downloadProcess) {
                     downloadProcess = true;
                     downloadButton.setEnabled(false);
 
-                    downloadSnapshot();
+                    downloadSnapshot(false);
 
                     downloadButton.setEnabled(true);
                     downloadProcess = false;
                 }
             }
         });
-        downloadButton.setEnabled(false);
 
-        uploadButton = new SnapshotUploadButton(new SelectionListener<ButtonEvent>() {
+        nativeDownloadMenuItem = new NativeSnapshotDownloadMenuItem(new SelectionListener<MenuEvent>() {
 
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void componentSelected(MenuEvent ce) {
+                if (!downloadProcess) {
+                    downloadProcess = true;
+                    downloadButton.setEnabled(false);
+
+                    downloadSnapshot(true);
+
+                    downloadButton.setEnabled(true);
+                    downloadProcess = false;
+                }
+            }
+        });
+
+        downloadMenu.add(standardDownloadMenuItem);
+        downloadMenu.add(nativeDownloadMenuItem);
+
+        downloadButton = new SnapshotDownloadButton();
+        downloadButton.setMenu(downloadMenu);
+
+        standardUploadMenuItem = new StandardSnapshotUploadMenuItem(new SelectionListener<MenuEvent>() {
+
+            @Override
+            public void componentSelected(MenuEvent ce) {
                 if (!uploadProcess) {
                     uploadProcess = true;
                     uploadButton.setEnabled(false);
 
-                    uploadSnapshot();
+                    uploadSnapshot(false);
 
                     uploadProcess = false;
                 }
             }
         });
+
+        nativeUploadMenuItem = new NativeSnapshotUploadMenuItem(new SelectionListener<MenuEvent>() {
+
+            @Override
+            public void componentSelected(MenuEvent ce) {
+                if (!uploadProcess) {
+                    uploadProcess = true;
+                    uploadButton.setEnabled(false);
+
+                    uploadSnapshot(true);
+
+                    uploadProcess = false;
+                }
+            }
+        });
+
+        uploadMenu = new Menu();
+
+        uploadMenu.add(standardUploadMenuItem);
+        uploadMenu.add(nativeUploadMenuItem);
+
+        uploadButton = new SnapshotUploadButton();
+        uploadButton.setMenu(uploadMenu);
+
         uploadButton.setEnabled(false);
 
         rollbackButton = new SnapshotRollbackButton(new SelectionListener<ButtonEvent>() {
@@ -387,7 +443,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
         loader.load();
     }
 
-    private void downloadSnapshot() {
+    private void downloadSnapshot(boolean isNative) {
         GwtSnapshot snapshot = grid.getSelectionModel().getSelectedItem();
         if (selectedDevice != null && snapshot != null) {
 
@@ -398,12 +454,14 @@ public class DeviceConfigSnapshots extends LayoutContainer {
                     .append("&deviceId=")
                     .append(URL.encodeQueryString(selectedDevice.getId()))
                     .append("&snapshotId=")
-                    .append(snapshot.getSnapshotId());
+                    .append(snapshot.getSnapshotId())
+                    .append("&native=")
+                    .append(isNative);
             Window.open(sbUrl.toString(), "_blank", "location=no");
         }
     }
 
-    private void uploadSnapshot() {
+    private void uploadSnapshot(boolean isNative) {
         if (selectedDevice != null) {
             HiddenField<String> accountField = new HiddenField<String>();
             accountField.setName("scopeIdString");
@@ -413,9 +471,14 @@ public class DeviceConfigSnapshots extends LayoutContainer {
             clientIdField.setName("deviceIdString");
             clientIdField.setValue(selectedDevice.getId());
 
+            HiddenField<Boolean> nativeField = new HiddenField<Boolean>();
+            nativeField.setName("native");
+            nativeField.setValue(isNative);
+
             List<HiddenField<?>> hiddenFields = new ArrayList<HiddenField<?>>();
             hiddenFields.add(accountField);
             hiddenFields.add(clientIdField);
+            hiddenFields.add(nativeField);
 
             fileUpload = new FileUploadDialog(SERVLET_URL, hiddenFields);
             fileUpload.addListener(Events.Hide, new Listener<BaseEvent>() {

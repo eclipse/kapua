@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfigurationUtils;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService;
 import org.slf4j.Logger;
@@ -40,7 +41,7 @@ public class DeviceSnapshotsServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         PrintWriter writer = response.getWriter();
         try {
-
+            boolean isNative = Boolean.parseBoolean(request.getParameter("native"));
             // parameter extraction
             String account = request.getParameter("scopeId");
             String clientId = request.getParameter("deviceId");
@@ -56,7 +57,12 @@ public class DeviceSnapshotsServlet extends HttpServlet {
                     null,
                     null);
 
-            String contentDispositionFormat = "attachment; filename*=UTF-8''snapshot_%s_%s_%s.xml; ";
+            String contentDispositionFormat;
+            if (isNative) {
+                contentDispositionFormat = "attachment; filename*=UTF-8''snapshot_native_%s_%s_%s.xml; ";
+            } else {
+                contentDispositionFormat = "attachment; filename*=UTF-8''snapshot_%s_%s_%s.xml; ";
+            }
 
             response.setContentType("application/xml; charset=UTF-8");
             response.setHeader("Cache-Control", "no-transform, max-age=0");
@@ -65,7 +71,12 @@ public class DeviceSnapshotsServlet extends HttpServlet {
                     URLEncoder.encode(clientId, "UTF-8"),
                     snapshotId));
 
-            XmlUtil.marshal(conf, writer);
+            if (isNative) {
+                XmlUtil.marshal(KuraDeviceConfigurationUtils.toKuraConfiguration(conf), writer);
+            } else {
+                XmlUtil.marshal(conf, writer);
+            }
+
         } catch (Exception e) {
             logger.error("Error creating Excel export", e);
             throw new ServletException(e);

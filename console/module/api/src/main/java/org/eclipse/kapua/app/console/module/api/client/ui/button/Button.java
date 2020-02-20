@@ -20,19 +20,25 @@ public class Button extends com.extjs.gxt.ui.client.widget.button.Button {
     private String originalText;
     private KapuaIcon icon;
 
+    public Button(String text, KapuaIcon icon) {
+        this(text, icon, null);
+    }
+
     public Button(String text, KapuaIcon icon, SelectionListener<ButtonEvent> listener) {
         super();
         setText(text);
         setIcon(icon);
         addSelectionListener(listener);
-        addSelectionListener(new SelectionListener<ButtonEvent>() {
+        if (listener != null) {
+            addSelectionListener(new SelectionListener<ButtonEvent>() {
 
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                ce.getButton().removeStyleName(ce.getButton().getBaseStyle() + "-focus");
-            }
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    ce.getButton().removeStyleName(ce.getButton().getBaseStyle() + "-focus");
+                }
 
-        });
+            });
+        }
     }
 
     @Override
