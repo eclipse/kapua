@@ -75,48 +75,8 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
     private static final TriggerDefinitionService TRIGGER_DEFINITION_SERVICE = LOCATOR.getService(TriggerDefinitionService.class);
     private static final TriggerDefinitionFactory TRIGGER_DEFINITION_FACTORY = LOCATOR.getFactory(TriggerDefinitionFactory.class);
 
-    private static final TriggerDefinition INTERVAL_JOB__TRIGGER;
-    private static final TriggerDefinition CRON_JOB__TRIGGER;
-
-    static {
-        TriggerDefinition intervalJobTrigger = null;
-        try {
-            TriggerDefinitionQuery query = TRIGGER_DEFINITION_FACTORY.newQuery(null);
-
-            query.setPredicate(query.attributePredicate(TriggerDefinitionAttributes.NAME, "Interval Job"));
-
-            TriggerDefinitionListResult triggerDefinitions = KapuaSecurityUtils.doPrivileged(() -> TRIGGER_DEFINITION_SERVICE.query(query));
-
-            if (triggerDefinitions.isEmpty()) {
-                throw KapuaException.internalError("Error while searching 'Interval Job'");
-            }
-
-            intervalJobTrigger = triggerDefinitions.getFirstItem();
-        } catch (Exception e) {
-            LOG.error("Error while initializing class", e);
-        }
-
-        TriggerDefinition cronJobTrigger = null;
-        try {
-            TriggerDefinitionQuery query = TRIGGER_DEFINITION_FACTORY.newQuery(null);
-
-            query.setPredicate(query.attributePredicate(TriggerDefinitionAttributes.NAME, "Cron Job"));
-
-            TriggerDefinitionListResult triggerDefinitions = KapuaSecurityUtils.doPrivileged(() -> TRIGGER_DEFINITION_SERVICE.query(query));
-
-            if (triggerDefinitions.isEmpty()) {
-                throw KapuaException.internalError("Error while searching 'Cron Job'");
-            }
-
-            cronJobTrigger = triggerDefinitions.getFirstItem();
-        } catch (Exception e) {
-            LOG.error("Error while initializing class", e);
-        }
-
-        INTERVAL_JOB__TRIGGER = intervalJobTrigger;
-        CRON_JOB__TRIGGER = cronJobTrigger;
-    }
-
+    private static TriggerDefinition intervalJobTriggerDefinition;
+    private static TriggerDefinition cronJobTriggerDefinition;
 
     /**
      * Constructor.
@@ -190,9 +150,9 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
                 Trigger trigger = TriggerDAO.create(em, triggerCreator);
 
                 // Quartz Job definition and creation
-                if (INTERVAL_JOB__TRIGGER.getId().equals(triggerCreator.getTriggerDefinitionId())) {
+                if (getIntervalJobTriggerDefinition().getId().equals(triggerCreator.getTriggerDefinitionId())) {
                     QuartzTriggerDriver.createIntervalJobTrigger(trigger);
-                } else if (CRON_JOB__TRIGGER.getId().equals(triggerCreator.getTriggerDefinitionId())) {
+                } else if (getCronJobTriggerDefinition().getId().equals(triggerCreator.getTriggerDefinitionId())) {
                     QuartzTriggerDriver.createCronJobTrigger(trigger);
                 }
 
@@ -310,7 +270,9 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         // Do query
         TriggerListResult triggers = entityManagerSession.onResult(em -> TriggerDAO.query(em, query));
 
-        triggers.getItems().forEach(this::adaptTrigger);
+        for (Trigger trigger : triggers.getItems()) {
+            adaptTrigger(trigger);
+        }
 
         return triggers;
     }
@@ -330,20 +292,54 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         return entityManagerSession.onResult(em -> TriggerDAO.count(em, query));
     }
 
-    private void adaptTriggerCreator(TriggerCreator triggerCreator) {
+    //
+    // Private methods
+    //
+    private static TriggerDefinition getIntervalJobTriggerDefinition() throws KapuaException {
+        if (intervalJobTriggerDefinition == null) {
+            intervalJobTriggerDefinition = getTriggerDefinition("Interval Job");
+        }
+
+        return intervalJobTriggerDefinition;
+    }
+
+    private static TriggerDefinition getCronJobTriggerDefinition() throws KapuaException {
+        if (cronJobTriggerDefinition == null) {
+            cronJobTriggerDefinition = getTriggerDefinition("Cron Job");
+
+        }
+
+        return cronJobTriggerDefinition;
+    }
+
+    private static synchronized TriggerDefinition getTriggerDefinition(String triggerDefinitionName) throws KapuaException {
+        TriggerDefinitionQuery query = TRIGGER_DEFINITION_FACTORY.newQuery(null);
+
+        query.setPredicate(query.attributePredicate(TriggerDefinitionAttributes.NAME, triggerDefinitionName));
+
+        TriggerDefinitionListResult triggerDefinitions = KapuaSecurityUtils.doPrivileged(() -> TRIGGER_DEFINITION_SERVICE.query(query));
+
+        if (triggerDefinitions.isEmpty()) {
+            throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, triggerDefinitionName);
+        }
+
+        return triggerDefinitions.getFirstItem();
+    }
+
+    private void adaptTriggerCreator(TriggerCreator triggerCreator) throws KapuaException {
         if (triggerCreator.getRetryInterval() != null) {
-            triggerCreator.setTriggerDefinitionId(INTERVAL_JOB__TRIGGER.getId());
+            triggerCreator.setTriggerDefinitionId(getIntervalJobTriggerDefinition().getId());
             triggerCreator.getTriggerProperties().add(TRIGGER_DEFINITION_FACTORY.newTriggerProperty("interval", Integer.class.getName(), triggerCreator.getRetryInterval().toString()));
         } else if (triggerCreator.getCronScheduling() != null) {
-            triggerCreator.setTriggerDefinitionId(CRON_JOB__TRIGGER.getId());
+            triggerCreator.setTriggerDefinitionId(getCronJobTriggerDefinition().getId());
             triggerCreator.getTriggerProperties().add(TRIGGER_DEFINITION_FACTORY.newTriggerProperty("cronExpression", String.class.getName(), triggerCreator.getCronScheduling()));
         }
     }
 
-    private void adaptTrigger(Trigger trigger) {
+    private void adaptTrigger(Trigger trigger) throws KapuaException {
         boolean converted = false;
         if (trigger.getRetryInterval() != null) {
-            trigger.setTriggerDefinitionId(INTERVAL_JOB__TRIGGER.getId());
+            trigger.setTriggerDefinitionId(getIntervalJobTriggerDefinition().getId());
 
             List<TriggerProperty> triggerProperties = new ArrayList<>(trigger.getTriggerProperties());
             triggerProperties.add(TRIGGER_DEFINITION_FACTORY.newTriggerProperty("interval", Integer.class.getName(), trigger.getRetryInterval().toString()));
@@ -354,7 +350,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
             converted = true;
 
         } else if (trigger.getCronScheduling() != null) {
-            trigger.setTriggerDefinitionId(CRON_JOB__TRIGGER.getId());
+            trigger.setTriggerDefinitionId(getCronJobTriggerDefinition().getId());
 
             List<TriggerProperty> triggerProperties = new ArrayList<>(trigger.getTriggerProperties());
             triggerProperties.add(TRIGGER_DEFINITION_FACTORY.newTriggerProperty("cronExpression", String.class.getName(), trigger.getCronScheduling()));
