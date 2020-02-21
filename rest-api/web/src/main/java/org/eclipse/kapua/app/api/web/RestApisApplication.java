@@ -16,7 +16,6 @@ import java.util.HashMap;
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBException;
 
-import org.eclipse.kapua.app.api.core.CORSResponseFilter;
 import org.eclipse.kapua.app.api.core.KapuaSerializableBodyWriter;
 import org.eclipse.kapua.app.api.core.ListBodyWriter;
 import org.eclipse.kapua.app.api.core.MoxyJsonConfigContextResolver;
@@ -46,7 +45,6 @@ public class RestApisApplication extends ResourceConfig {
         register(RestApiJAXBContextProvider.class);
         register(KapuaSerializableBodyWriter.class);
         register(ListBodyWriter.class);
-        register(CORSResponseFilter.class);
         register(MoxyJsonConfigContextResolver.class);
 
         register(new ContainerLifecycleListener() {

@@ -13,18 +13,24 @@ package org.eclipse.kapua.app.api.core;
 
 import java.io.IOException;
 
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.core.MultivaluedMap;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 
-public class CORSResponseFilter implements ContainerResponseFilter {
+import org.apache.shiro.web.servlet.OncePerRequestFilter;
+import org.apache.shiro.web.util.WebUtils;
+
+public class CORSResponseFilter extends OncePerRequestFilter {
 
     @Override
-    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
-        MultivaluedMap<String, Object> headers = responseContext.getHeaders();
-        headers.add("Access-Control-Allow-Origin", "*");
-        headers.add("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
-        headers.add("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Authorization");
+    protected void doFilterInternal(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
+        HttpServletResponse httpResponse = WebUtils.toHttp(response);
+        httpResponse.addHeader("Access-Control-Allow-Origin", "*");
+        httpResponse.addHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
+        httpResponse.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Authorization");
+        chain.doFilter(request, response);
     }
+
 }
