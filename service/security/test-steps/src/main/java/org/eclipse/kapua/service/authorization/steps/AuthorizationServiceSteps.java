@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.steps;
 
+import cucumber.api.PendingException;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -2137,7 +2138,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
     }
 
-    @And("^I create the group with name \"([^\"]*)\"$")
+    @Given("^I create the group with name \"([^\"]*)\"$")
     public void iCreateTheGroupWithName(String groupName) throws Exception {
         GroupCreator groupCreator = groupFactory.newCreator(getCurrentScopeId());
         groupCreator.setName(groupName);
@@ -2653,12 +2654,12 @@ public class AuthorizationServiceSteps extends TestBase {
     }
 
     @Given("^I try to create roles with invalid characters \"([^\"]*)\" in description$")
-    public void iTryToCreateRolesWithInvalidCharactersInDescription(String invalidCharacters ) throws Exception {
+    public void iTryToCreateRolesWithInvalidCharactersInDescription(String invalidCharacters) throws Exception {
         RoleCreator roleCreator = roleFactory.newCreator(SYS_SCOPE_ID);
         for (int i = 0; i < invalidCharacters.length(); i++) {
             String roleDescription = "roleDescription" + invalidCharacters.charAt(i);
             roleCreator.setDescription(roleDescription);
-            roleCreator.setName("roleName"+i);
+            roleCreator.setName("roleName" + i);
 
             try {
                 primeException();
@@ -2690,4 +2691,7 @@ public class AuthorizationServiceSteps extends TestBase {
             }
         }
     }
+
+
+
 }
