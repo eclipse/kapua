@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.steps;
 
+import cucumber.api.PendingException;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -2137,7 +2138,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
     }
 
-    @And("^I create the group with name \"([^\"]*)\"$")
+    @Given("^I create the group with name \"([^\"]*)\"$")
     public void iCreateTheGroupWithName(String groupName) throws Exception {
         GroupCreator groupCreator = groupFactory.newCreator(getCurrentScopeId());
         groupCreator.setName(groupName);
@@ -2653,12 +2654,12 @@ public class AuthorizationServiceSteps extends TestBase {
     }
 
     @Given("^I try to create roles with invalid characters \"([^\"]*)\" in description$")
-    public void iTryToCreateRolesWithInvalidCharactersInDescription(String invalidCharacters ) throws Exception {
+    public void iTryToCreateRolesWithInvalidCharactersInDescription(String invalidCharacters) throws Exception {
         RoleCreator roleCreator = roleFactory.newCreator(SYS_SCOPE_ID);
         for (int i = 0; i < invalidCharacters.length(); i++) {
             String roleDescription = "roleDescription" + invalidCharacters.charAt(i);
             roleCreator.setDescription(roleDescription);
-            roleCreator.setName("roleName"+i);
+            roleCreator.setName("roleName" + i);
 
             try {
                 primeException();
@@ -2690,4 +2691,67 @@ public class AuthorizationServiceSteps extends TestBase {
             }
         }
     }
-}
+
+
+    @Given("^I create the group with name \"([^\"]*)\" and description \"([^\"]*)\"$")
+    public void iCreateTheGroupWithNameAndDescription(String name, String description) throws Exception {
+        GroupCreator groupCreator = groupFactory.newCreator(getCurrentScopeId());
+        groupCreator.setName(name);
+        groupCreator.setDescription(description);
+
+        try {
+            primeException();
+            stepData.remove("Group");
+            Group group = groupService.create(groupCreator);
+            stepData.put("Group", group);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }}
+
+
+    @When("^I update the group description to \"([^\"]*)\"$")
+    public void iUpdateTheGroupDescriptionTo(String description) throws Exception {
+        Group group = (Group) stepData.get("Group");
+        group.setDescription(description);
+        // Sleep for a bit to make sure the time stamps are really different!
+        Thread.sleep(50);
+
+        try {
+            Group groupSecond = groupService.update(group);
+            stepData.put("GroupSecond", groupSecond);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I search for the group with description \"([^\"]*)\"$")
+    public void iSearchForTheGroupWithDescription(String description) throws Exception {
+
+        Group group = (Group) stepData.get("Group");
+        assertEquals(description, group.getDescription());
+
+        primeException();
+        try {
+            Group groupSecond = groupService.find(group.getScopeId(), group.getId());
+            stepData.put("GroupSecond", groupSecond);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @Then("^I find the group with description \"([^\"]*)\"$")
+    public void iFindTheGroupWithDescription(String description) throws Exception {
+        Group group = (Group) stepData.get("Group");
+
+        try {
+            primeException();
+            assertEquals(description, group.getDescription());
+            assertNotNull(groupService.find(getCurrentScopeId(), group.getId()));
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+    }
+
+
+
