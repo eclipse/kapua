@@ -38,6 +38,8 @@ import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerF
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+
 /**
  * {@link GroupService} implementation.
  *
@@ -49,9 +51,10 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
     private static final Logger LOG = LoggerFactory.getLogger(GroupServiceImpl.class);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
-    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
+    @Inject
+    private AuthorizationService AUTHORIZATION_SERVICE;
+    @Inject
+    private PermissionFactory PERMISSION_FACTORY;
 
     public GroupServiceImpl() {
         super(GroupService.class.getName(), AuthorizationDomains.GROUP_DOMAIN, AuthorizationEntityManagerFactory.getInstance(), GroupService.class, GroupFactory.class);
