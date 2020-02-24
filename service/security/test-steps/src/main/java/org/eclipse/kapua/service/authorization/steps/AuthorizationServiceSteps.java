@@ -2137,7 +2137,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
     }
 
-    @And("^I create the group with name \"([^\"]*)\"$")
+    @Given("^I create the group with name \"([^\"]*)\"$")
     public void iCreateTheGroupWithName(String groupName) throws Exception {
         GroupCreator groupCreator = groupFactory.newCreator(getCurrentScopeId());
         groupCreator.setName(groupName);
@@ -2653,12 +2653,12 @@ public class AuthorizationServiceSteps extends TestBase {
     }
 
     @Given("^I try to create roles with invalid characters \"([^\"]*)\" in description$")
-    public void iTryToCreateRolesWithInvalidCharactersInDescription(String invalidCharacters ) throws Exception {
+    public void iTryToCreateRolesWithInvalidCharactersInDescription(String invalidCharacters) throws Exception {
         RoleCreator roleCreator = roleFactory.newCreator(SYS_SCOPE_ID);
         for (int i = 0; i < invalidCharacters.length(); i++) {
             String roleDescription = "roleDescription" + invalidCharacters.charAt(i);
             roleCreator.setDescription(roleDescription);
-            roleCreator.setName("roleName"+i);
+            roleCreator.setName("roleName" + i);
 
             try {
                 primeException();
@@ -2685,6 +2685,160 @@ public class AuthorizationServiceSteps extends TestBase {
                 role.setName("roleName" + invalidSymbols.charAt(i));
                 roleService.update(role);
                 stepData.put("Role", role);
+            } catch (KapuaException ex) {
+                verifyException(ex);
+            }
+        }
+    }
+
+
+    @Given("^I create the group with name \"([^\"]*)\" and description \"([^\"]*)\"$")
+    public void iCreateTheGroupWithNameAndDescription(String name, String description) throws Exception {
+        GroupCreator groupCreator = groupFactory.newCreator(getCurrentScopeId());
+        groupCreator.setName(name);
+        groupCreator.setDescription(description);
+
+        try {
+            primeException();
+            stepData.remove("Group");
+            Group group = groupService.create(groupCreator);
+            stepData.put("Group", group);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I search for the group with description \"([^\"]*)\"$")
+    public void iSearchForTheGroupWithDescription(String description) throws Exception {
+
+        Group group = (Group) stepData.get("Group");
+        assertEquals(description, group.getDescription());
+
+        primeException();
+        try {
+            Group groupSecond = groupService.find(group.getScopeId(), group.getId());
+            stepData.put("GroupSecond", groupSecond);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @Then("^I find the group with description \"([^\"]*)\"$")
+    public void iFindTheGroupWithDescription(String description) throws Exception {
+        Group group = (Group) stepData.get("Group");
+
+        try {
+            primeException();
+            assertEquals(description, group.getDescription());
+            assertNotNull(groupService.find(getCurrentScopeId(), group.getId()));
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I update the group name from \"([^\"]*)\" to \"([^\"]*)\"$")
+    public void iUpdateTheGroupNameFromTo(String name1, String name2) throws Exception {
+        Group group = (Group) stepData.get("Group");
+        assertEquals(name1, group.getName());
+        group.setName(name2);
+
+        try {
+            Group secondGroup = groupService.update(group);
+            stepData.put("GroupSecond", secondGroup);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I update the group description from \"([^\"]*)\" to \"([^\"]*)\"$")
+    public void iUpdateTheGroupDescriptionFromTo(String description1, String description2) throws Exception {
+        Group group = (Group) stepData.get("Group");
+        assertEquals(description1, group.getDescription());
+        group.setDescription(description2);
+
+        try {
+            Group groupSecond = groupService.update(group);
+            stepData.put("GroupSecond", groupSecond);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+
+    @And("^I try to create the group with invalid characters \"([^\"]*)\" in name and description \"([^\"]*)\"$")
+    public void iTryToCreateTheGroupWithInvalidCharactersInNameAndDescription(String invalidSymbols, String description) throws Exception {
+        GroupCreator groupCreator = groupFactory.newCreator(getCurrentScopeId());
+        for (int i = 0; i < invalidSymbols.length(); i++) {
+            String groupName = "groupName" + invalidSymbols.charAt(i);
+            groupCreator.setName(groupName);
+            groupCreator.setDescription(description);
+
+            try {
+                primeException();
+                stepData.remove("Group");
+                Group group = groupService.create(groupCreator);
+                stepData.put("Group", group);
+            } catch (KapuaException ex) {
+                verifyException(ex);
+            }
+        }
+    }
+
+    @When("^I update the group name from \"([^\"]*)\" to name with special characters \"([^\"]*)\"$")
+    public void iUpdateTheGroupNameFromToNameWithSpecialCharacters(String name, String invalidSymbols) throws Exception {
+        Group group = (Group) stepData.get("Group");
+        assertEquals(name, group.getName());
+        for (int i = 0; i < invalidSymbols.length(); i++) {
+            String groupName = name + invalidSymbols.charAt(i);
+            group.setName(groupName);
+
+            try {
+                primeException();
+                stepData.remove("Group");
+                Group secondGroup = groupService.update(group);
+                stepData.put("GroupSecond", secondGroup);
+            } catch (KapuaException ex) {
+                verifyException(ex);
+            }
+        }
+    }
+
+    @Given("^I try to create the group with special characters \"([^\"]*)\" in description$")
+    public void iTryToCreateTheGroupWithSpecialCharactersInDescription(String invalidSymbols) throws Exception {
+        GroupCreator groupCreator = groupFactory.newCreator(SYS_SCOPE_ID);
+        for (int i = 0; i < invalidSymbols.length(); i++) {
+            String groupDescription = "description" + invalidSymbols.charAt(i);
+            groupCreator.setDescription(groupDescription);
+            groupCreator.setName("groupName" + i);
+
+            try {
+                primeException();
+                stepData.remove("Group");
+                Group group = groupService.create(groupCreator);
+                stepData.put("Group", group);
+            } catch (KapuaException ex) {
+                verifyException(ex);
+            }
+        }
+    }
+
+
+    @When("^I update the group description to description with special characters \"([^\"]*)\"$")
+    public void iUpdateTheGroupDescriptionFromToDescriptionWithSpecialCharacters(String invalidSymbols) throws Exception {
+        GroupCreator groupCreator = groupFactory.newCreator(SYS_SCOPE_ID);
+        for (int i = 0; i < invalidSymbols.length(); i++) {
+
+            String groupDescription = "description" + invalidSymbols.charAt(i);
+            groupCreator.setDescription(groupDescription);
+            groupCreator.setName("groupName" + i);
+
+            try {
+                primeException();
+                stepData.remove("Group");
+                Group group = groupService.create(groupCreator);
+                group.setDescription("description" + invalidSymbols.charAt(i));
+                groupService.update(group);
+                stepData.put("Group", group);
             } catch (KapuaException ex) {
                 verifyException(ex);
             }
