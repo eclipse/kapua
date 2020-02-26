@@ -19,7 +19,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -53,6 +52,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,13 +67,15 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
     private static final Logger LOG = LoggerFactory.getLogger(TriggerServiceImpl.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    @Inject
+    private AuthorizationService authorizationService;
+    @Inject
+    private PermissionFactory permissionFactory;
 
-    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
-    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
-
-    private static final TriggerDefinitionService TRIGGER_DEFINITION_SERVICE = LOCATOR.getService(TriggerDefinitionService.class);
-    private static final TriggerDefinitionFactory TRIGGER_DEFINITION_FACTORY = LOCATOR.getFactory(TriggerDefinitionFactory.class);
+    @Inject
+    private TriggerDefinitionService triggerDefinitionService;
+    @Inject
+    private TriggerDefinitionFactory triggerDefinitionFactory;
 
     private static TriggerDefinition intervalJobTriggerDefinition;
     private static TriggerDefinition cronJobTriggerDefinition;
@@ -98,7 +100,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.write, triggerCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.write, triggerCreator.getScopeId()));
 
         //
         // Convert creator to new model.
@@ -107,7 +109,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check trigger definition
-        TriggerDefinition triggerDefinition = TRIGGER_DEFINITION_SERVICE.find(triggerCreator.getTriggerDefinitionId());
+        TriggerDefinition triggerDefinition = triggerDefinitionService.find(triggerCreator.getTriggerDefinitionId());
         if (triggerDefinition == null) {
             throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, triggerCreator.getTriggerDefinitionId());
         }
@@ -173,7 +175,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.write, trigger.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.write, trigger.getScopeId()));
 
         //
         // Check existence
@@ -211,7 +213,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.delete, scopeId));
 
         //
         // Check existence
@@ -247,7 +249,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
@@ -264,7 +266,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -285,7 +287,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(SchedulerDomains.SCHEDULER_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count
@@ -295,7 +297,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
     //
     // Private methods
     //
-    private static TriggerDefinition getIntervalJobTriggerDefinition() throws KapuaException {
+    private TriggerDefinition getIntervalJobTriggerDefinition() throws KapuaException {
         if (intervalJobTriggerDefinition == null) {
             intervalJobTriggerDefinition = getTriggerDefinition("Interval Job");
         }
@@ -303,7 +305,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         return intervalJobTriggerDefinition;
     }
 
-    private static TriggerDefinition getCronJobTriggerDefinition() throws KapuaException {
+    private TriggerDefinition getCronJobTriggerDefinition() throws KapuaException {
         if (cronJobTriggerDefinition == null) {
             cronJobTriggerDefinition = getTriggerDefinition("Cron Job");
 
@@ -312,12 +314,11 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         return cronJobTriggerDefinition;
     }
 
-    private static synchronized TriggerDefinition getTriggerDefinition(String triggerDefinitionName) throws KapuaException {
-        TriggerDefinitionQuery query = TRIGGER_DEFINITION_FACTORY.newQuery(null);
-
+    private synchronized TriggerDefinition getTriggerDefinition(String triggerDefinitionName) throws KapuaException {
+        TriggerDefinitionQuery query = triggerDefinitionFactory.newQuery(null);
         query.setPredicate(query.attributePredicate(TriggerDefinitionAttributes.NAME, triggerDefinitionName));
 
-        TriggerDefinitionListResult triggerDefinitions = KapuaSecurityUtils.doPrivileged(() -> TRIGGER_DEFINITION_SERVICE.query(query));
+        TriggerDefinitionListResult triggerDefinitions = KapuaSecurityUtils.doPrivileged(() -> triggerDefinitionService.query(query));
 
         if (triggerDefinitions.isEmpty()) {
             throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, triggerDefinitionName);
@@ -329,10 +330,10 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
     private void adaptTriggerCreator(TriggerCreator triggerCreator) throws KapuaException {
         if (triggerCreator.getRetryInterval() != null) {
             triggerCreator.setTriggerDefinitionId(getIntervalJobTriggerDefinition().getId());
-            triggerCreator.getTriggerProperties().add(TRIGGER_DEFINITION_FACTORY.newTriggerProperty("interval", Integer.class.getName(), triggerCreator.getRetryInterval().toString()));
+            triggerCreator.getTriggerProperties().add(triggerDefinitionFactory.newTriggerProperty("interval", Integer.class.getName(), triggerCreator.getRetryInterval().toString()));
         } else if (triggerCreator.getCronScheduling() != null) {
             triggerCreator.setTriggerDefinitionId(getCronJobTriggerDefinition().getId());
-            triggerCreator.getTriggerProperties().add(TRIGGER_DEFINITION_FACTORY.newTriggerProperty("cronExpression", String.class.getName(), triggerCreator.getCronScheduling()));
+            triggerCreator.getTriggerProperties().add(triggerDefinitionFactory.newTriggerProperty("cronExpression", String.class.getName(), triggerCreator.getCronScheduling()));
         }
     }
 
@@ -342,7 +343,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
             trigger.setTriggerDefinitionId(getIntervalJobTriggerDefinition().getId());
 
             List<TriggerProperty> triggerProperties = new ArrayList<>(trigger.getTriggerProperties());
-            triggerProperties.add(TRIGGER_DEFINITION_FACTORY.newTriggerProperty("interval", Integer.class.getName(), trigger.getRetryInterval().toString()));
+            triggerProperties.add(triggerDefinitionFactory.newTriggerProperty("interval", Integer.class.getName(), trigger.getRetryInterval().toString()));
             trigger.setTriggerProperties(triggerProperties);
 
             trigger.setRetryInterval(null);
@@ -353,7 +354,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
             trigger.setTriggerDefinitionId(getCronJobTriggerDefinition().getId());
 
             List<TriggerProperty> triggerProperties = new ArrayList<>(trigger.getTriggerProperties());
-            triggerProperties.add(TRIGGER_DEFINITION_FACTORY.newTriggerProperty("cronExpression", String.class.getName(), trigger.getCronScheduling()));
+            triggerProperties.add(triggerDefinitionFactory.newTriggerProperty("cronExpression", String.class.getName(), trigger.getCronScheduling()));
             trigger.setTriggerProperties(triggerProperties);
 
             trigger.setCronScheduling(null);
