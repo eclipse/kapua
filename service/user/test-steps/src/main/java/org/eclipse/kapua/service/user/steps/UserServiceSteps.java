@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -31,6 +31,7 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
@@ -76,6 +77,7 @@ import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
+import org.eclipse.kapua.service.user.UserAttributes;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,6 +85,8 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import java.math.BigInteger;
 import java.text.MessageFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -467,10 +471,13 @@ public class UserServiceSteps extends TestBase {
                 String displayName = userItem.getDisplayName();
                 String email = userItem.getEmail();
                 String phone = userItem.getPhoneNumber();
-                @SuppressWarnings("unused")
-                UserStatus status = userItem.getStatus();
-
-                UserCreator userCreator = userCreatorCreator(name, displayName, email, phone, currentAccount);
+                Date expirationDate = userItem.getExpirationDate();
+                UserCreator userCreator;
+                if (expirationDate == null) {
+                    userCreator = userCreatorCreator(name, displayName, email, phone, currentAccount);
+                } else {
+                    userCreator = userCreatorCreator(name, displayName, email, phone, currentAccount, expirationDate);
+                }
                 User user = userService.create(userCreator);
                 iHaveUsers.add(new ComparableUser(user));
                 lastUser = user;
@@ -1042,6 +1049,252 @@ public class UserServiceSteps extends TestBase {
             userList.add(user);
         }
         stepData.put("UserList", userList);
+    }
+
+    @Given("^I have the following user with expiration date in the future$")
+    public void iHaveTheFollowingUserWithExpirationDateInTheFuture(List<CucUser> userList) throws Exception {
+        Account account = (Account) stepData.get("LastAccount");
+        KapuaId accountId = (KapuaId) stepData.get("LastAccountId");
+        KapuaId currentAccount;
+        Set<ComparableUser> iHaveUsers = new HashSet<>();
+        User lastUser = null;
+        stepData.remove("UserList");
+
+        if (account != null) {
+            currentAccount = account.getId();
+        } else if (accountId != null) {
+            currentAccount = accountId;
+        } else {
+            currentAccount = DEFAULT_ID;
+        }
+
+        primeException();
+        try {
+            for (CucUser userItem : userList) {
+                String name = userItem.getName();
+                String displayName = userItem.getDisplayName();
+                String email = userItem.getEmail();
+                String phone = userItem.getPhoneNumber();
+                Date expirationDate = userItem.getExpirationDate();
+                UserCreator userCreator = userCreatorCreator(name, displayName, email, phone, currentAccount, expirationDate);
+                User user = userService.create(userCreator);
+                iHaveUsers.add(new ComparableUser(user));
+                lastUser = user;
+            }
+        } catch (KapuaException ke) {
+            verifyException(ke);
+        }
+        stepData.put("UserList", iHaveUsers);
+        stepData.put("User", lastUser);
+    }
+
+    @And("^I find user with expiration date in the future$")
+    public void iFindUserWithExpirationDateInTheFuture(List<CucUser> userList) {
+        Set<ComparableUser> iFoundUsers = (Set<ComparableUser>) stepData.get("UserList");
+        boolean userChecks;
+
+        for (CucUser userItem : userList) {
+            userChecks = false;
+            for (ComparableUser foundUserItem : iFoundUsers) {
+                Date t1 = foundUserItem.getUser().getExpirationDate();
+                Date t2 = userItem.getExpirationDate();
+
+                LocalDate localDate1 = t1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                LocalDate localDate2 = t2.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+                if (localDate1.getYear() == localDate2.getYear() && localDate1.getMonthValue() == localDate2.getMonthValue()
+                    && localDate1.getDayOfMonth() == localDate2.getDayOfMonth()) {
+                    matchUserData(foundUserItem.getUser(), userItem);
+                    userChecks = true;
+                    break;
+                }
+            }
+            if (!userChecks) {
+                fail(String.format("User %1s was not found!", userItem.getExpirationDate()));
+            }
+        }
+    }
+
+    @Then("^I search for the user with expiration date in the present$")
+    public void iSearchForTheUserWithExpirationDateInThePresent() throws KapuaException {
+        KapuaId scpId = DEFAULT_ID;
+        Set<ComparableUser> iFoundUsers;
+
+        stepData.remove("UserList");
+        KapuaQuery<User> query = userFactory.newQuery(scpId);
+
+        UserListResult queryResult = userService.query(query);
+        iFoundUsers = new HashSet<>();
+        List<User> users = queryResult.getItems();
+        for (User userItems : users){
+            iFoundUsers.add(new ComparableUser(userItems));
+        }
+        stepData.put("UserList", iFoundUsers);
+
+    }
+
+    @And("^I find user with expiration date in the present$")
+    public void iFindUserWithExpirationDateInThePresent(List<CucUser> userList) {
+        Set<ComparableUser> iFoundUsers = (Set<ComparableUser>) stepData.get("UserList");
+        boolean userChecks;
+
+        for (CucUser userItem : userList) {
+            userChecks = false;
+            for (ComparableUser foundUserItem : iFoundUsers) {
+                Date t1 = foundUserItem.getUser().getExpirationDate();
+                Date t2 = userItem.getExpirationDate();
+
+                LocalDate localDate1 = t1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                LocalDate localDate2 = t2.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                if (localDate1.getYear() == localDate2.getYear() && localDate1.getMonthValue() == localDate2.getMonthValue()
+                        && localDate1.getDayOfMonth() == localDate2.getDayOfMonth()) {
+                    matchUserData(foundUserItem.getUser(), userItem);
+                    userChecks = true;
+                    break;
+                }
+            }
+            if (!userChecks) {
+                fail(String.format("User %1s was not found!", userItem.getExpirationDate()));
+            }
+        }
+    }
+
+    @Then("^I search for the user with expiration date in the past$")
+    public void iSearchForTheUserWithExpirationDateInThePast() throws KapuaException {
+        KapuaId scpId = DEFAULT_ID;
+        Set<ComparableUser> iFoundUsers;
+
+        stepData.remove("UserList");
+        KapuaQuery<User> query = userFactory.newQuery(scpId);
+        UserListResult queryResult = userService.query(query);
+        iFoundUsers = new HashSet<>();
+        List<User> users = queryResult.getItems();
+        for (User userItems : users){
+            iFoundUsers.add(new ComparableUser(userItems));
+        }
+        stepData.put("UserList", iFoundUsers);
+    }
+
+    @And("^I find user with expiration date in the past$")
+    public void iFindUserWithExpirationDateInThePast(List<CucUser> userList) {
+        Set<ComparableUser> iFoundUsers = (Set<ComparableUser>) stepData.get("UserList");
+        boolean userChecks;
+
+        for (CucUser userItem : userList) {
+            userChecks = false;
+            for (ComparableUser foundUserItem : iFoundUsers) {
+                Date t1 = foundUserItem.getUser().getExpirationDate();
+                Date t2 = userItem.getExpirationDate();
+
+                LocalDate localDate1 = t1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                LocalDate localDate2 = t2.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                if (localDate1.getYear() == localDate2.getYear() && localDate1.getMonthValue() == localDate2.getMonthValue()
+                        && localDate1.getDayOfMonth() == localDate2.getDayOfMonth()) {
+                    matchUserData(foundUserItem.getUser(), userItem);
+                    userChecks = true;
+                    break;
+                }
+            }
+            if (!userChecks) {
+                fail(String.format("User %1s was not found!", userItem.getExpirationDate()));
+            }
+        }
+    }
+
+    @And("^I find users with phone number \"([^\"]*)\"$")
+    public void iFindUsersWithPhoneNumber(String phoneNumber) {
+
+            UserListResult users = (UserListResult) stepData.get("FoundUsers");
+            for (User user : users.getItems()){
+               assertEquals(user.getPhoneNumber(),(phoneNumber));
+            }
+            stepData.put("UserList", users);
+
+    }
+
+    @Then("^I find users with emails$")
+    public void iFindUsersWithEmails(List<CucUser> userList) {
+        Set<ComparableUser> iFoundUsers = (Set<ComparableUser>) stepData.get("UserList");
+        boolean userChecks;
+
+        for (CucUser userItem : userList) {
+            userChecks = false;
+            for (ComparableUser foundUserItem : iFoundUsers) {
+                if (foundUserItem.getUser().getEmail().equals(userItem.getEmail())) {
+                    matchUserData(foundUserItem.getUser(), userItem);
+                    userChecks = true;
+                    break;
+                }
+            }
+            if (!userChecks) {
+                fail(String.format("User %1s was not found!", userItem.getEmail()));
+            }
+        }
+    }
+
+    @Then("^I find users with email$")
+    public void iFindUsersWithTheSameEmailAddress(List<CucUser> userList) {
+        Set<ComparableUser> iFoundUsers = (Set<ComparableUser>) stepData.get("UserList");
+        boolean userChecks;
+
+        for (CucUser userItem : userList) {
+            userChecks = false;
+            for (ComparableUser foundUserItem : iFoundUsers) {
+                if (foundUserItem.getUser().getEmail().equals(userItem.getEmail())) {
+                    matchUserData(foundUserItem.getUser(), userItem);
+                    userChecks = true;
+                    break;
+                }
+            }
+            if (!userChecks) {
+                fail(String.format("User %1s was not found!", userItem.getName()));
+            }
+        }
+    }
+
+    @Then("^I find users with phone number$")
+    public void iFindUsersWithPhoneNumber(List<CucUser> userList) {
+        Set<ComparableUser> iFoundUsers = (Set<ComparableUser>) stepData.get("UserList");
+        boolean userChecks;
+
+        for (CucUser userItem : userList) {
+            userChecks = false;
+            for (ComparableUser foundUserItem : iFoundUsers) {
+                if (foundUserItem.getUser().getPhoneNumber().equals(userItem.getPhoneNumber())) {
+                    matchUserData(foundUserItem.getUser(), userItem);
+                    userChecks = true;
+                    break;
+                }
+            }
+            if (!userChecks) {
+                fail(String.format("User %1s was not found!", userItem.getName()));
+            }
+        }
+    }
+
+    @And("^I search users with phone number \"([^\"]*)\"$")
+    public void iSearchUsersWithPhoneNumber(String phoneNum) throws Throwable {
+        UserQuery userQuery = userFactory.newQuery(DEFAULT_ID);
+        userQuery.setPredicate(userQuery.attributePredicate(UserAttributes.PHONE_NUMBER, phoneNum, AttributePredicate.Operator.EQUAL));
+        UserListResult userListResult = userService.query(userQuery);
+        stepData.put("FoundUsers", userListResult);
+    }
+
+    @And("^I search users with email \"([^\"]*)\"$")
+    public void iSearchForUsersWithEmail(String email) throws Throwable {
+       UserQuery userQuery = userFactory.newQuery(DEFAULT_ID);
+       userQuery.setPredicate(userQuery.attributePredicate(UserAttributes.EMAIL, email, AttributePredicate.Operator.EQUAL));
+       UserListResult userListResult = userService.query(userQuery);
+       stepData.put("FoundUsers", userListResult);
+    }
+
+    @Then("^I find users with email \"([^\"]*)\"$")
+    public void iFindUsersWithEmail(String email) {
+       UserListResult users = (UserListResult) stepData.get("FoundUsers");
+       for (User user : users.getItems()){
+           assertEquals(user.getEmail(), (email));
+       }
+       stepData.put("UserList", users);
     }
 
     // *****************
