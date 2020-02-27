@@ -158,14 +158,6 @@ Feature: Access Groups
   Scenario: Creating unique Access Group with short description
   Create unique Access Group with short description, description that contains 3 characters.
   Kapua should not return any error.
-    Given I create the group with name "NewAccessGroup" and description "abc"
-    When I search for the group with description "abc"
-    Then I find the group with description "abc"
-    And No exception was thrown
-
-  Scenario: Creating unique Access Group with too short description
-  Create unique Access Group with too short description, description that contains 3 characters.
-  Kapua should not return any error.
     Given I create the group with name "NewAccessGroup" and description "a"
     When I search for the group with description "a"
     Then I find the group with description "a"
@@ -332,14 +324,6 @@ Feature: Access Groups
 
   Scenario: Editing Access Group description to short description
   Create unique Access Group with description. Edit the group description to short description, description that contains 3 characters.
-  Kapua should not return any errors.
-    Given I create the group with name "NewAccessGroup" and description "description"
-    When I update the group description to "abc"
-    Then The group was correctly updated
-    And No exception was thrown
-
-  Scenario: Editing Access Group description to too short description
-  Create unique Access Group with description. Edit the group description to too short description, description that contains less 3 characters.
   Kapua should not return any errors.
     Given I create the group with name "NewAccessGroup" and description "description"
     When I update the group description to "a"
