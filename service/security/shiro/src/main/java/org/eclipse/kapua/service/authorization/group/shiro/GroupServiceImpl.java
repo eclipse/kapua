@@ -54,7 +54,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
     @Inject
     private AuthorizationService AUTHORIZATION_SERVICE;
     @Inject
-    private  PermissionFactory PERMISSION_FACTORY;
+    private PermissionFactory PERMISSION_FACTORY;
 
     public GroupServiceImpl() {
         super(GroupService.class.getName(), AuthorizationDomains.GROUP_DOMAIN, AuthorizationEntityManagerFactory.getInstance(), GroupService.class, GroupFactory.class);
