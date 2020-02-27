@@ -37,30 +37,30 @@ Feature: Access Groups
     And I create the group with name "NewAccessGroup" and description ""
     Then An exception was thrown
 
-  Scenario: Creating a Access Group with short name
-  Create an Access Group with short but still valid name, name that contains 3 characters.
+  Scenario: Creating an Access Group with short name
+  Create an Access Group with short but still valid name, name that contains 3 characters. Once created, search for it - it should have been created.
   Kapua should not return any error.
     Given I create the group with name "abc" and description ""
     When I search for the group with name "abc"
     Then I find the group with name "abc"
     And No exception was thrown
 
-  Scenario: Creating a Access Group with too short name
+  Scenario: Creating an Access Group with too short name
   Create an Access Group with too short name, name that contains less than 3 characters.
   Kapua should return an error.
     Given I expect the exception "KapuaIllegalArgumentException" with the text "*"
     And I create the group with name "ag" and description ""
     Then An exception was thrown
 
-  Scenario: Creating a Access Group with long name
-  Create an Access Group with long but still valid name, name that contains 255 characters.
+  Scenario: Creating an Access Group with long name
+  Create an Access Group with long but still valid name, name that contains 255 characters. Once created, search for it - it should have been created.
   Kapua should not return any error.
     Given I create the group with name "NewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNA" and description ""
     When I search for the group with name "NewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNA"
     Then I find the group with name "NewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNA"
     And No exception was thrown
 
-  Scenario: Creating a Access Group with too long name
+  Scenario: Creating an Access Group with too long name
   Create an Access Group with too long name, name that contains more than 255 characters.
   Kapua should return an error.
     Given I expect the exception "KapuaIllegalArgumentException" with the text "*"
@@ -84,7 +84,7 @@ Feature: Access Groups
     Then An exception was thrown
 
   Scenario: Creating a valid Access Group with numbers in name
-  Create an Access Group with name that contain numbers. Once created, search for it - it should have been created.
+  Create an Access Group with numbers in name. Once created, search for it - it should have been created.
   Kapua should not return any errors.
     Given I create the group with name "Group123" and description ""
     When I search for the group with name "Group123"
@@ -92,7 +92,7 @@ Feature: Access Groups
     And No exception was thrown
 
   Scenario: Creating a valid Access Group with only numbers in name
-  Create an Access Group with name that contain only numbers. Once created, search for it - it should have been created.
+  Create an Access Group with only numbers in name. Once created, search for it - it should have been created.
   Kapua should not return any errors.
     Given I create the group with name "1234" and description ""
     When I search for the group with name "1234"
@@ -103,8 +103,8 @@ Feature: Access Groups
   Create an Access Group with unique name and with unique description. Once created, search for it - it should have been created.
   Kapua should not return any errors.
     Given I create the group with name "NewAccessGroup" and description "description"
-    When I search for the group with name "NewAccessGroup"
-    Then I find the group with name "NewAccessGroup"
+    When I search for the group with description "description"
+    Then I find the group with description "description"
     And No exception was thrown
 
   Scenario: Creating unique Access Group with non-unique description
@@ -128,24 +128,24 @@ Feature: Access Groups
   Create an Access Group with unique name and with numbers in description. Once created, search for it - it should have been created.
   Kapua should not return any errors.
     Given I create the group with name "NewAccessGroup" and description "description123"
-    When I search for the group with name "NewAccessGroup"
-    Then I find the group with name "NewAccessGroup"
+    When I search for the group with description "description123"
+    Then I find the group with description "description123"
     And No exception was thrown
 
   Scenario: Creating unique Access Group with only numbers in description
   Create an Access Group with unique name and with only numbers in description. Once created, search for it - it should have been created.
   Kapua should not return any errors.
     Given I create the group with name "NewAccessGroup" and description "12345"
-    When I search for the group with name "NewAccessGroup"
-    Then I find the group with name "NewAccessGroup"
+    When I search for the group with description "12345"
+    Then I find the group with description "12345"
     And No exception was thrown
 
   Scenario: Creating unique Access Group with special symbols in description
   Create an Access Group with unique name and with special symbols in description. Once created, search for it - it should have been created.
   Kapua should not return any errors.
-    Given I create the group with name "NewAccessGroup" and description "!description1@%"
-    When I search for the group with name "NewAccessGroup"
-    Then I find the group with name "NewAccessGroup"
+    Given I create the group with name "NewAccessGroup" and description "!description@%"
+    When I search for the group with description "!description@%"
+    Then I find the group with description "!description@%"
     And No exception was thrown
 
   Scenario: Creating an Access Group without name and with description
@@ -159,38 +159,38 @@ Feature: Access Groups
   Create unique Access Group with short description, description that contains 3 characters.
   Kapua should not return any error.
     Given I create the group with name "NewAccessGroup" and description "abc"
-    When I search for the group with name "NewAccessGroup"
-    Then I find the group with name "NewAccessGroup"
+    When I search for the group with description "abc"
+    Then I find the group with description "abc"
     And No exception was thrown
 
   Scenario: Creating unique Access Group with too short description
   Create unique Access Group with too short description, description that contains 3 characters.
   Kapua should not return any error.
     Given I create the group with name "NewAccessGroup" and description "a"
-    When I search for the group with name "NewAccessGroup"
-    Then I find the group with name "NewAccessGroup"
+    When I search for the group with description "a"
+    Then I find the group with description "a"
     And No exception was thrown
 
   Scenario: Creating unique Access Group with long description
   Create unique Access Group with long description, description that contains 255 characters.
   Kapua should not return any error.
     Given I create the group with name "NewAccessGroup" and description "NewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNA"
-    When I search for the group with name "NewAccessGroup"
-    Then I find the group with name "NewAccessGroup"
+    When I search for the group with description "NewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNA"
+    Then I find the group with description "NewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNA"
     And No exception was thrown
 
   Scenario: Creating unique Access Group with too long description
   Create unique Access Group with too long description, description that contains more than 255 characters.
   Kapua should not return any error.
     Given I create the group with name "NewAccessGroup" and description "NewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroup"
-    When I search for the group with name "NewAccessGroup"
-    Then I find the group with name "NewAccessGroup"
+    When I search for the group with description "NewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroup"
+    Then I find the group with description "NewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroup"
     And No exception was thrown
 
   Scenario: Editing Access Group name to valid one
-  Crete an Access Group with valid name. Edit the group description to different one, and try to search for it - it should have been changed.
+  Create an Access Group with valid name. Edit the group name to different one, and try to search for it - it should have been changed.
   Kapua should not return any errors.
-    Given I create the group with name "NewAccessGroup" and description " "
+    Given I create the group with name "NewAccessGroup" and description ""
     When I update the group name to "NewGroup"
     And I search for the group with name "NewGroup"
     Then I find the group with name "NewGroup"
@@ -198,7 +198,7 @@ Feature: Access Groups
     And No exception was thrown
 
   Scenario: Editing Access Group name to non-unique one
-  Crete two Access Groups with different valid names. Edit one name of one group to the same name of the second group.
+  Create two Access Groups with different valid names. Edit one name of one group to the same name of the second group.
   Kapua should return an error.
     Given I create the group with name "NewAccessGroup" and description ""
     And I create the group with name "AccessGroup"
@@ -207,7 +207,7 @@ Feature: Access Groups
     Then An exception was thrown
 
   Scenario: Editing Access Group name to short one
-  Crete an Access Group with valid name. Edit the group name to short one, that contains 3 characters, and try to search for it - it should have been changed.
+  Create an Access Group with valid name. Edit the group name to short one, name that contains 3 characters, and try to search for it - it should have been changed.
   Kapua should not return any errors.
     Given I create the group with name "NewAccessGroup" and description ""
     When I update the group name to "New"
@@ -217,7 +217,7 @@ Feature: Access Groups
     And No exception was thrown
 
   Scenario: Editing Access Group name to too short one
-  Crete an Access Group with valid name. Edit the group name to a too short one, name that contains less than 3 characters.
+  Create an Access Group with valid name. Edit the group name to too short one, name that contains less than 3 characters.
   Kapua should return an error.
     Given I create the group with name "NewAccessGroup" and description ""
     Given I expect the exception "KapuaIllegalArgumentException" with the text "*"
@@ -225,7 +225,7 @@ Feature: Access Groups
     Then An exception was thrown
 
   Scenario: Editing Access Group name to a long one
-  Crete an Access Group with valid name. Edit the group name to long one, that contains 255 characters, and try to search for it - it should have been changed.
+  Create an Access Group with valid name. Edit the group name to long one, name that contains 255 characters, and try to search for it - it should have been changed.
   Kapua should not return any errors.
     Given I create the group with name "NewAccessGroup" and description ""
     When I update the group name to "NewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNA"
@@ -235,7 +235,7 @@ Feature: Access Groups
     And No exception was thrown
 
   Scenario: Editing Access Group name to a too long one
-  Crete an Access Group with valid name. Edit the group name to too long one, name that contains more than 255 characters.
+  Create an Access Group with valid name. Edit the group name to too long one, name that contains more than 255 characters.
   Kapua should return an error.
     Given I create the group with name "NewAccessGroup" and description ""
     Given I expect the exception "KapuaIllegalArgumentException" with the text "*"
@@ -243,7 +243,7 @@ Feature: Access Groups
     Then An exception was thrown
 
   Scenario: Editing Access Group name to name with valid special symbols
-  Crete an Access Group with valid name. Edit the group name to contain valid special symbols: "_", "-" and " ". Try to search for it - it should have been changed.
+  Create an Access Group with valid name. Edit the group name to contain valid special symbols: "_", "-" and " ". Try to search for it - it should have been changed.
   Kapua should not return any errors.
     Given I create the group with name "NewAccessGroup" and description ""
     When I update the group name to "New Access_Group-ag"
@@ -253,7 +253,7 @@ Feature: Access Groups
     And No exception was thrown
 
   Scenario: Editing Access Group name to name with invalid special symbols in name
-  Crete an Access Group with valid name. Edit the group name to name with with invalid special symbols in name, all except "_", "-" and " ". Use one symbol every time.
+  Create an Access Group with valid name. Edit the group name to name with invalid special symbols in name, all except "_", "-" and " ". Use one symbol every time.
   Kapua should return an error.
     Given I create the group with name "NewAccessGroup" and description ""
     Given I expect the exception "KapuaIllegalArgumentException" with the text "*"
@@ -261,7 +261,7 @@ Feature: Access Groups
     Then An exception was thrown
 
   Scenario: Editing Access Group name to empty name
-  Crete an Access Group with valid name. Edit the group name to empty name.
+  Create an Access Group with valid name. Edit the group name to empty name.
   Kapua should return an error.
     Given I create the group with name "NewAccessGroup" and description ""
     Given I expect the exception "KapuaIllegalNullArgumentException" with the text "*"
@@ -269,7 +269,7 @@ Feature: Access Groups
     Then An exception was thrown
 
   Scenario: Editing Access Group name to name that contains numbers
-  Crete an Access Group with valid name. Edit the group name to contain numbers. Try to search for it - it should have been changed.
+  Create an Access Group with valid name. Edit the group name to contain numbers. Try to search for it - it should have been changed.
   Kapua should not return any errors.
     Given I create the group with name "NewAccessGroup" and description ""
     When I update the group name to "Group123"
@@ -279,7 +279,7 @@ Feature: Access Groups
     And No exception was thrown
 
   Scenario: Editing Access Group name to name that contains only numbers
-  Crete an Access Group with valid name. Edit the group name to contain only numbers. Try to search for it - it should have been changed.
+  Create an Access Group with valid name. Edit the group name to contain only numbers. Try to search for it - it should have been changed.
   Kapua should not return any errors.
     Given I create the group with name "NewAccessGroup" and description ""
     When I update the group name to "1234"
@@ -299,7 +299,7 @@ Feature: Access Groups
     And No exception was thrown
 
   Scenario: Editing Access Group description to non-unique one
-  Crete two Access Groups with different valid names and different description. Edit description of one group to the same name of the second group.
+  Create two Access Groups with different valid names and different description. Edit description of one group to the same description of the second group.
   Kapua should not return any errors.
     Given I create the group with name "AccessGroup" and description "description"
     And I create the group with name "NewAccessGroup" and description "description2"
@@ -307,7 +307,7 @@ Feature: Access Groups
     Then No exception was thrown
 
   Scenario: Editing Access Group description to description with special symbols
-  Crete unique Access Group with description. Edit the group description to contain valid special symbols, enter all possible characters.
+  Create unique Access Group with description. Edit the group description to contain valid special symbols, enter all possible characters.
   Kapua should not return any errors.
     Given I create the group with name "NewAccessGroup" and description "description"
     When I update the group description to "!description@#$%%"
@@ -315,7 +315,7 @@ Feature: Access Groups
     And No exception was thrown
 
   Scenario: Editing Access Group description to description with numbers
-  Crete unique Access Group with description. Edit the group description to contain numbers.
+  Create unique Access Group with description. Edit the group description to contain numbers.
   Kapua should not return any errors.
     Given I create the group with name "NewAccessGroup" and description "description"
     When I update the group description to "description123"
@@ -323,7 +323,7 @@ Feature: Access Groups
     And No exception was thrown
 
   Scenario: Editing Access Group description to description with only numbers
-  Crete unique Access Group with description. Edit the group description to contain only numbers.
+  Create unique Access Group with description. Edit the group description to contain only numbers.
   Kapua should not return any errors.
     Given I create the group with name "NewAccessGroup" and description "description"
     When I update the group description to "12345"
@@ -331,7 +331,7 @@ Feature: Access Groups
     And No exception was thrown
 
   Scenario: Editing Access Group description to short description
-  Crete unique Access Group with description. Edit the group description to short description, description that contains 3 characters.
+  Create unique Access Group with description. Edit the group description to short description, description that contains 3 characters.
   Kapua should not return any errors.
     Given I create the group with name "NewAccessGroup" and description "description"
     When I update the group description to "abc"
@@ -339,7 +339,7 @@ Feature: Access Groups
     And No exception was thrown
 
   Scenario: Editing Access Group description to too short description
-  Crete unique Access Group with description. Edit the group description to too short description, description that contains less 3 characters.
+  Create unique Access Group with description. Edit the group description to too short description, description that contains less 3 characters.
   Kapua should not return any errors.
     Given I create the group with name "NewAccessGroup" and description "description"
     When I update the group description to "a"
@@ -347,7 +347,7 @@ Feature: Access Groups
     And No exception was thrown
 
   Scenario: Editing Access Group description to long description
-  Crete unique Access Group with description. Edit the group description to long description, description that contains 255 characters.
+  Create unique Access Group with description. Edit the group description to long description, description that contains 255 characters.
   Kapua should not return any errors.
     Given I create the group with name "NewAccessGroup" and description "description"
     When I update the group description to "NewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNA"
@@ -355,7 +355,7 @@ Feature: Access Groups
     And No exception was thrown
 
   Scenario: Editing Access Group description to too long description
-  Crete unique Access Group with description. Edit the group description to too long description, description that contains more than 255 characters.
+  Create unique Access Group with description. Edit the group description to too long description, description that contains more than 255 characters.
   Kapua should not return any errors.
     Given I create the group with name "NewAccessGroup" and description "description"
     When I update the group description to "NewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroup"
@@ -363,9 +363,9 @@ Feature: Access Groups
     And No exception was thrown
 
   Scenario: Deleting an existing Access Group
-  Crete an Access Group with valid name. Then delete it and try to find that Access Group.
+  Create an Access Group with valid name. Then delete it and try to find that Access Group.
   Group with that name should not be find.
-    Given I create the group with name "NewAccessGroup" and description ""
+    Given I create the group with name "NewAccessGroup" and description "description"
     When I delete the group with name "NewAccessGroup"
     And I search for the group with name "NewAccessGroup"
     Then No group was found
@@ -373,18 +373,18 @@ Feature: Access Groups
   Scenario: Deleting a non-existing Access Group
   Create an Access Group with valid name, then try to delete that Access Group twice.
   Kapua should return an error on the second try.
-    Given I create the group with name "NewAccessGroup" and description ""
+    Given I create the group with name "NewAccessGroup" and description "description"
     And I delete the group with name "NewAccessGroup"
     Given I expect the exception "KapuaEntityNotFoundException" with the text "*"
     Then I delete the group with name "NewAccessGroup"
     And An exception was thrown
 
   Scenario: Deleting an existing Access Group and creating it again with the same name
-  Crete an Access Group with valid name. Then delete it and create new Access Group with the same name.
+  Create an Access Group with valid name. Then delete it and create new Access Group with the same name.
   Kapua should not return any error
-    Given I create the group with name "NewAccessGroup" and description ""
+    Given I create the group with name "NewAccessGroup" and description "description"
     When I delete the group with name "NewAccessGroup"
-    Given I create the group with name "NewAccessGroup" and description ""
+    Given I create the group with name "NewAccessGroup" and description "description"
     When I search for the group with name "NewAccessGroup"
     Then I find the group with name "NewAccessGroup"
     And No exception was thrown
