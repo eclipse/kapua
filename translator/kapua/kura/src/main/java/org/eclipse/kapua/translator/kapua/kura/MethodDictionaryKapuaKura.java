@@ -19,15 +19,16 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * Dictionary class to define actions translations between Kapua domain to Kura domain.<br>
- * For detail about action please refer to {@link KapuaMethod} and {@link KuraMethod}
+ * Dictionary class to define actions translations between Kapua domain to {@link org.eclipse.kapua.service.device.call.kura.Kura} domain.<br>
  *
+ * @see KapuaMethod
+ * @see KuraMethod
  * @since 1.0.0
  */
 public class MethodDictionaryKapuaKura {
 
     /**
-     * Translations dictionary map
+     * Translations dictionary map.
      */
     private static final Map<KapuaMethod, KuraMethod> DICTIONARY;
 
@@ -50,12 +51,26 @@ public class MethodDictionaryKapuaKura {
     }
 
     /**
-     * Returns the action translation from Kapua domain to Kura domain
+     * Gets the given {@link KapuaMethod} in the matching {@link KuraMethod}
      *
-     * @param kapuaMethod
-     * @return
+     * @param kapuaMethod The {@link KapuaMethod} to match.
+     * @return The matching {@link KuraMethod}
+     * @since 1.0.0
+     * @deprecated Since 1.2.0. Renamed to {@link #translate(KapuaMethod)}
      */
+    @Deprecated
     public static KuraMethod get(KapuaMethod kapuaMethod) {
+        return translate(kapuaMethod);
+    }
+
+    /**
+     * Translates the given {@link KapuaMethod} in the matching {@link KuraMethod}
+     *
+     * @param kapuaMethod The {@link KapuaMethod} to match.
+     * @return The matching {@link KuraMethod}
+     * @since 1.2.0
+     */
+    public static KuraMethod translate(KapuaMethod kapuaMethod) {
         return DICTIONARY.get(kapuaMethod);
     }
 }

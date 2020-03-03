@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,63 +23,70 @@ import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataChannel;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataPayload;
 import org.eclipse.kapua.translator.Translator;
+import org.eclipse.kapua.translator.exception.InvalidChannelException;
+import org.eclipse.kapua.translator.exception.InvalidMessageException;
+import org.eclipse.kapua.translator.exception.InvalidPayloadException;
+import org.eclipse.kapua.translator.exception.TranslateException;
 
 import java.util.HashMap;
 
 /**
- * Messages translator implementation from {@link KuraDataMessage} to {@link KapuaDataMessage}
+ * {@link Translator} implementation from {@link KapuaDataMessage} to {@link KuraDataMessage}
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class TranslatorDataKapuaKura extends Translator<KapuaDataMessage, KuraDataMessage> {
 
     @Override
-    public KuraDataMessage translate(KapuaDataMessage kapuaDataMessage)
-            throws KapuaException {
+    public KuraDataMessage translate(KapuaDataMessage kapuaMessage) throws TranslateException {
         KapuaLocator locator = KapuaLocator.getInstance();
         AccountService accountService = locator.getService(AccountService.class);
-        Account account = accountService.find(kapuaDataMessage.getScopeId());
 
-        if (account == null) {
-            throw new KapuaEntityNotFoundException(Account.TYPE, kapuaDataMessage.getScopeId());
+        try {
+            Account account = accountService.find(kapuaMessage.getScopeId());
+
+            if (account == null) {
+                throw new KapuaEntityNotFoundException(Account.TYPE, kapuaMessage.getScopeId());
+            }
+
+            //
+            // Kapua Channel
+            KuraDataChannel kuraDataChannel = translate(kapuaMessage.getChannel());
+            kuraDataChannel.setClientId(kapuaMessage.getClientId());
+            kuraDataChannel.setScope(account.getName());
+
+            //
+            // Kapua payload
+            KuraDataPayload kuraDataPayload = translate(kapuaMessage.getPayload());
+            kuraDataPayload.setBody(kapuaMessage.getPayload().getBody());
+            kuraDataPayload.setMetrics(kapuaMessage.getPayload().getMetrics());
+            kuraDataPayload.setPosition(TranslatorKapuaKuraUtils.translate(kapuaMessage.getPosition()));
+            kuraDataPayload.setTimestamp(kapuaMessage.getSentOn());
+
+            //
+            // Kapua message
+            KuraDataMessage kuraDataMessage = new KuraDataMessage();
+            kuraDataMessage.setChannel(kuraDataChannel);
+            kuraDataMessage.setPayload(kuraDataPayload);
+
+            // Return Kapua Message
+            return kuraDataMessage;
+        } catch (InvalidChannelException | InvalidPayloadException te) {
+            throw te;
+        } catch (KapuaException ke) {
+            throw new InvalidMessageException(ke, kapuaMessage);
         }
-
-        //
-        // Kapua Channel
-        KuraDataChannel kuraDataChannel = translate(kapuaDataMessage.getChannel());
-        kuraDataChannel.setClientId(kapuaDataMessage.getClientId());
-        kuraDataChannel.setScope(account.getName());
-
-        //
-        // Kapua payload
-        KuraDataPayload kuraDataPayload = translate(kapuaDataMessage.getPayload());
-        kuraDataPayload.setBody(kapuaDataMessage.getPayload().getBody());
-        kuraDataPayload.setMetrics(kapuaDataMessage.getPayload().getMetrics());
-        kuraDataPayload.setPosition(TranslatorKapuaKuraUtils.translate(kapuaDataMessage.getPosition()));
-        kuraDataPayload.setTimestamp(kapuaDataMessage.getSentOn());
-
-        //
-        // Kapua message
-        KuraDataMessage kuraDataMessage = new KuraDataMessage();
-        kuraDataMessage.setChannel(kuraDataChannel);
-        kuraDataMessage.setPayload(kuraDataPayload);
-
-        // Return Kapua Message
-        return kuraDataMessage;
     }
 
-    private KuraDataChannel translate(KapuaDataChannel kapuaChannel)
-            throws KapuaException {
+    protected KuraDataChannel translate(KapuaDataChannel kapuaChannel) {
         KuraDataChannel kuraChannel = new KuraDataChannel();
         kuraChannel.setSemanticParts(kapuaChannel.getSemanticParts());
 
-        //
         // Return Kapua Channel
         return kuraChannel;
     }
 
-    private KuraDataPayload translate(KapuaDataPayload kapuaPayload)
-            throws KapuaException {
+    protected KuraDataPayload translate(KapuaDataPayload kapuaPayload) {
         KuraDataPayload kuraPayload = new KuraDataPayload();
 
         if (kapuaPayload.getMetrics() != null) {
@@ -90,7 +97,6 @@ public class TranslatorDataKapuaKura extends Translator<KapuaDataMessage, KuraDa
             kuraPayload.setBody(kapuaPayload.getBody());
         }
 
-        //
         // Return Kura payload
         return kuraPayload;
     }
@@ -104,5 +110,4 @@ public class TranslatorDataKapuaKura extends Translator<KapuaDataMessage, KuraDa
     public Class<KuraDataMessage> getClassTo() {
         return KuraDataMessage.class;
     }
-
 }

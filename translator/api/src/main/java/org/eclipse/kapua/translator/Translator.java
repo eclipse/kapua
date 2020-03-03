@@ -14,7 +14,7 @@ package org.eclipse.kapua.translator;
 
 import org.eclipse.kapua.message.Message;
 import org.eclipse.kapua.translator.cache.TranslatorCache;
-import org.eclipse.kapua.translator.exception.TranslatorException;
+import org.eclipse.kapua.translator.exception.TranslateException;
 import org.eclipse.kapua.translator.exception.TranslatorNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,10 +80,10 @@ public abstract class Translator<FROM_M extends Message, TO_M extends Message> {
      *
      * @param message The {@link Message} to translate.
      * @return the translated {@link Message}.
-     * @throws TranslatorException When translating a message causes an error.
+     * @throws TranslateException When translating a {@link Message} cannot be performed properly, perhaps due to a processing error.
      * @since 1.0.0
      */
-    public abstract TO_M translate(FROM_M message) throws TranslatorException;
+    public abstract TO_M translate(FROM_M message) throws TranslateException;
 
     /**
      * Returns the FROM_M {@link Message} type.

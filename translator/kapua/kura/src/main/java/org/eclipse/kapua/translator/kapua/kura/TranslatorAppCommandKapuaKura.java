@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.service.device.call.kura.app.CommandMetrics;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
@@ -22,24 +20,22 @@ import org.eclipse.kapua.service.device.management.command.internal.CommandAppPr
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandRequestChannel;
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandRequestMessage;
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandRequestPayload;
+import org.eclipse.kapua.translator.exception.InvalidChannelException;
+import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * Messages translator implementation from {@link CommandRequestMessage} to {@link KuraRequestMessage}
+ * {@link org.eclipse.kapua.translator.Translator} implementation from {@link CommandRequestMessage} to {@link KuraRequestMessage}
  *
  * @since 1.0
  */
 public class TranslatorAppCommandKapuaKura extends AbstractTranslatorKapuaKura<CommandRequestChannel, CommandRequestPayload, CommandRequestMessage> {
 
-    private static final String CONTROL_MESSAGE_CLASSIFIER = SystemSetting.getInstance().getMessageClassifier();
-    private static final Map<CommandAppProperties, CommandMetrics> PROPERTIES_DICTIONARY = new HashMap<>();
+    private static final Map<CommandAppProperties, CommandMetrics> PROPERTIES_DICTIONARY = new EnumMap<>(CommandAppProperties.class);
 
     static {
-        PROPERTIES_DICTIONARY.put(CommandAppProperties.APP_NAME, CommandMetrics.APP_ID);
-        PROPERTIES_DICTIONARY.put(CommandAppProperties.APP_VERSION, CommandMetrics.APP_VERSION);
-
         PROPERTIES_DICTIONARY.put(CommandAppProperties.APP_PROPERTY_CMD, CommandMetrics.APP_METRIC_CMD);
         PROPERTIES_DICTIONARY.put(CommandAppProperties.APP_PROPERTY_ARG, CommandMetrics.APP_METRIC_ARG);
         PROPERTIES_DICTIONARY.put(CommandAppProperties.APP_PROPERTY_ENVP, CommandMetrics.APP_METRIC_ENVP);
@@ -51,56 +47,54 @@ public class TranslatorAppCommandKapuaKura extends AbstractTranslatorKapuaKura<C
     }
 
     @Override
-    protected KuraRequestChannel translateChannel(CommandRequestChannel kapuaChannel) throws KapuaException {
-        KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
-        kuraRequestChannel.setMessageClassification(CONTROL_MESSAGE_CLASSIFIER);
+    protected KuraRequestChannel translateChannel(CommandRequestChannel kapuaChannel) throws InvalidChannelException {
+        try {
+            KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
+            kuraRequestChannel.setMessageClassification(getControlMessageClassifier());
+            kuraRequestChannel.setAppId(CommandMetrics.APP_ID + "-" + CommandMetrics.APP_VERSION);
+            kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.translate(kapuaChannel.getMethod()));
+            kuraRequestChannel.setResources(new String[]{"command"});
 
-        // Build appId
-        StringBuilder appIdSb = new StringBuilder();
-        appIdSb.append(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_NAME).getValue())
-                .append("-")
-                .append(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_VERSION).getValue());
-
-        kuraRequestChannel.setAppId(appIdSb.toString());
-        kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.get(kapuaChannel.getMethod()));
-        kuraRequestChannel.setResources(new String[] { "command" });
-
-        //
-        // Return Kura Channel
-        return kuraRequestChannel;
+            //
+            // Return Kura Channel
+            return kuraRequestChannel;
+        } catch (Exception e) {
+            throw new InvalidChannelException(e, kapuaChannel);
+        }
     }
 
     @Override
-    protected KuraRequestPayload translatePayload(CommandRequestPayload kapuaPayload) throws KapuaException {
-        KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
+    protected KuraRequestPayload translatePayload(CommandRequestPayload kapuaPayload) throws InvalidPayloadException {
+        try {
+            KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
-        //
-        // Payload translation
-        Map<String, Object> metrics = kuraRequestPayload.getMetrics();
-        metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_CMD).getValue(), kapuaPayload.getCommand());
-        metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_ENVP).getValue(), kapuaPayload.getEnvironmentPairs());
-        metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_DIR).getValue(), kapuaPayload.getWorkingDir());
-        metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_STDIN).getValue(), kapuaPayload.getStdin());
-        metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_TOUT).getValue(), kapuaPayload.getTimeout());
-        metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_ASYNC).getValue(), kapuaPayload.isRunAsync());
-        metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_PASSWORD).getValue(), kapuaPayload.getPassword());
+            // Payload translation
+            Map<String, Object> metrics = kuraRequestPayload.getMetrics();
+            metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_CMD).getValue(), kapuaPayload.getCommand());
+            metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_ENVP).getValue(), kapuaPayload.getEnvironmentPairs());
+            metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_DIR).getValue(), kapuaPayload.getWorkingDir());
+            metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_STDIN).getValue(), kapuaPayload.getStdin());
+            metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_TOUT).getValue(), kapuaPayload.getTimeout());
+            metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_ASYNC).getValue(), kapuaPayload.isRunAsync());
+            metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_PASSWORD).getValue(), kapuaPayload.getPassword());
 
-        // argument translation
-        int i = 0;
-        String[] arguments = kapuaPayload.getArguments();
-        if (arguments != null) {
-            for (String argument : arguments) {
-                metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_ARG).getValue() + i++, argument);
+            // argument translation
+            int i = 0;
+            String[] arguments = kapuaPayload.getArguments();
+            if (arguments != null) {
+                for (String argument : arguments) {
+                    metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_ARG).getValue() + i++, argument);
+                }
             }
+
+            // Body translation
+            kuraRequestPayload.setBody(kapuaPayload.getBody());
+
+            // Return Kura Payload
+            return kuraRequestPayload;
+        } catch (Exception e) {
+            throw new InvalidPayloadException(e, kapuaPayload);
         }
-
-        //
-        // Body translation
-        kuraRequestPayload.setBody(kapuaPayload.getBody());
-
-        //
-        // Return Kura Payload
-        return kuraRequestPayload;
     }
 
     @Override

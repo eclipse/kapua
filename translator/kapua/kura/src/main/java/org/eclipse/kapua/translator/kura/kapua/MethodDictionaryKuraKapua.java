@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,10 +19,11 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * Dictionary class to define actions translations between Kura domain to Kapua domain.<br>
- * For detail about action please refer to {@link KapuaMethod} and {@link KuraMethod}
+ * Dictionary class to define actions translations between {@link org.eclipse.kapua.service.device.call.kura.Kura} domain to Kapua domain.<br>
  *
- * @since 1.0
+ * @see KapuaMethod
+ * @see KuraMethod
+ * @since 1.0.0
  */
 public class MethodDictionaryKuraKapua {
 
@@ -49,8 +50,22 @@ public class MethodDictionaryKuraKapua {
      *
      * @param kuraMethod
      * @return
+     * @since 1.0.0
+     * @deprecated Since 1.2.0. Renamed to
      */
+    @Deprecated
     public static KapuaMethod get(KuraMethod kuraMethod) {
+        return translate(kuraMethod);
+    }
+
+    /**
+     * Translates the given {@link KuraMethod} to the matching {@link KapuaMethod}.
+     *
+     * @param kuraMethod The {@link KuraMethod} to translate.
+     * @return The matching {@link KapuaMethod}
+     * @since 1.2.0
+     */
+    public static KapuaMethod translate(KuraMethod kuraMethod) {
         return DICTIONARY.get(kuraMethod);
     }
 }

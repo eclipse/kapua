@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,7 +12,6 @@
 package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
@@ -26,11 +25,15 @@ import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataPayload;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.translator.Translator;
+import org.eclipse.kapua.translator.exception.InvalidChannelException;
+import org.eclipse.kapua.translator.exception.InvalidMessageException;
+import org.eclipse.kapua.translator.exception.InvalidPayloadException;
+import org.eclipse.kapua.translator.exception.TranslateException;
 
 import java.util.HashMap;
 
 /**
- * Messages translator implementation from {@link KuraDataMessage} to {@link KapuaDataMessage}
+ * {@link Translator} implementation from {@link KuraDataMessage} to {@link KapuaDataMessage}
  *
  * @since 1.0
  */
@@ -39,51 +42,55 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final KapuaDataMessageFactory KAPUA_DATA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaDataMessageFactory.class);
 
-
     @Override
-    public KapuaDataMessage translate(KuraDataMessage kuraDataMessage)
-            throws KapuaException {
-        //
-        // Kapua Channel
-        KapuaDataChannel kapuaDataChannel = translate(kuraDataMessage.getChannel());
-
-        //
-        // Kapua payload
-        KapuaDataPayload kapuaDataPayload = translate(kuraDataMessage.getPayload());
-
-        //
-        // Kapua message
+    public KapuaDataMessage translate(KuraDataMessage kuraMessage) throws TranslateException {
         KapuaLocator locator = KapuaLocator.getInstance();
         AccountService accountService = locator.getService(AccountService.class);
-        Account account = accountService.findByName(kuraDataMessage.getChannel().getScope());
 
-        if (account == null) {
-            throw new KapuaEntityNotFoundException(Account.TYPE, kuraDataMessage.getChannel().getScope());
+        try {
+            //
+            // Kapua Channel
+            KapuaDataChannel kapuaDataChannel = translate(kuraMessage.getChannel());
+
+            //
+            // Kapua payload
+            KapuaDataPayload kapuaDataPayload = translate(kuraMessage.getPayload());
+
+            //
+            // Kapua message
+            Account account = accountService.findByName(kuraMessage.getChannel().getScope());
+
+            if (account == null) {
+                throw new KapuaEntityNotFoundException(Account.TYPE, kuraMessage.getChannel().getScope());
+            }
+
+            DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
+            Device device = deviceRegistryService.findByClientId(account.getId(), kuraMessage.getChannel().getClientId());
+
+            KapuaDataMessage kapuaDataMessage = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataMessage();
+            kapuaDataMessage.setScopeId(account.getId());
+            kapuaDataMessage.setDeviceId(device != null ? device.getId() : null);
+            kapuaDataMessage.setClientId(kuraMessage.getChannel().getClientId());
+            kapuaDataMessage.setChannel(kapuaDataChannel);
+            kapuaDataMessage.setPayload(kapuaDataPayload);
+            kapuaDataMessage.setCapturedOn(kuraMessage.getPayload().getTimestamp());
+            kapuaDataMessage.setSentOn(kuraMessage.getPayload().getTimestamp());
+            kapuaDataMessage.setReceivedOn(kuraMessage.getTimestamp());
+            kapuaDataMessage.setPosition(TranslatorKuraKapuaUtils.translate(kuraMessage.getPayload().getPosition()));
+
+            // Return Kapua Message
+            return kapuaDataMessage;
+        } catch (InvalidChannelException | InvalidPayloadException te) {
+            throw te;
+        } catch (Exception e) {
+            throw new InvalidMessageException(e, kuraMessage);
         }
-
-        DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
-        Device device = deviceRegistryService.findByClientId(account.getId(), kuraDataMessage.getChannel().getClientId());
-
-        KapuaDataMessage kapuaDataMessage = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataMessage();
-        kapuaDataMessage.setScopeId(account.getId());
-        kapuaDataMessage.setDeviceId(device != null ? device.getId() : null);
-        kapuaDataMessage.setClientId(kuraDataMessage.getChannel().getClientId());
-        kapuaDataMessage.setChannel(kapuaDataChannel);
-        kapuaDataMessage.setPayload(kapuaDataPayload);
-        kapuaDataMessage.setCapturedOn(kuraDataMessage.getPayload().getTimestamp());
-        kapuaDataMessage.setSentOn(kuraDataMessage.getPayload().getTimestamp());
-        kapuaDataMessage.setReceivedOn(kuraDataMessage.getTimestamp());
-        kapuaDataMessage.setPosition(TranslatorKuraKapuaUtils.translate(kuraDataMessage.getPayload().getPosition()));
-
-        // Return Kapua Message
-        return kapuaDataMessage;
     }
 
     private KapuaDataChannel translate(KuraDataChannel kuraChannel) {
         KapuaDataChannel kapuaChannel = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataChannel();
         kapuaChannel.setSemanticParts(kuraChannel.getSemanticParts());
 
-        //
         // Return Kapua Channel
         return kapuaChannel;
     }
@@ -99,7 +106,6 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
             kapuaPayload.setBody(kuraPayload.getBody());
         }
 
-        //
         // Return Kapua payload
         return kapuaPayload;
     }
