@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-    Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
+    Copyright (c) 2020 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -15,23 +15,23 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.eclipse.kapua</groupId>
-        <artifactId>kapua-job</artifactId>
+        <artifactId>kapua-scheduler</artifactId>
         <version>1.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kapua-job-test</artifactId>
+    <artifactId>kapua-scheduler-test</artifactId>
     <name>${project.artifactId}</name>
 
     <dependencies>
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-job-internal</artifactId>
+            <artifactId>kapua-scheduler-quartz</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-job-test-steps</artifactId>
+            <artifactId>kapua-scheduler-test-steps</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -41,7 +41,12 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-scheduler-quartz</artifactId>
+            <artifactId>kapua-job-test-steps</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-job-internal</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

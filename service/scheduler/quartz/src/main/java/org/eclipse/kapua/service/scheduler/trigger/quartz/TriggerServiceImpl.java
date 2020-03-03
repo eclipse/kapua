@@ -79,7 +79,6 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
     private static TriggerDefinition intervalJobTriggerDefinition;
     private static TriggerDefinition cronJobTriggerDefinition;
-
     /**
      * Constructor.
      *

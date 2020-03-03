@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.job.test;
+package org.eclipse.kapua.service.scheduler.test;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -25,25 +25,9 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.JobFactory;
 import org.eclipse.kapua.service.job.JobService;
-import org.eclipse.kapua.service.job.execution.JobExecutionFactory;
-import org.eclipse.kapua.service.job.execution.JobExecutionService;
-import org.eclipse.kapua.service.job.execution.internal.JobExecutionFactoryImpl;
-import org.eclipse.kapua.service.job.execution.internal.JobExecutionServiceImpl;
-import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
 import org.eclipse.kapua.service.job.internal.JobFactoryImpl;
 import org.eclipse.kapua.service.job.internal.JobServiceImpl;
-import org.eclipse.kapua.service.job.step.JobStepFactory;
-import org.eclipse.kapua.service.job.step.JobStepService;
-import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory;
-import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
-import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionFactoryImpl;
-import org.eclipse.kapua.service.job.step.definition.internal.JobStepDefinitionServiceImpl;
-import org.eclipse.kapua.service.job.step.internal.JobStepFactoryImpl;
-import org.eclipse.kapua.service.job.step.internal.JobStepServiceImpl;
-import org.eclipse.kapua.service.job.targets.JobTargetFactory;
-import org.eclipse.kapua.service.job.targets.JobTargetService;
-import org.eclipse.kapua.service.job.targets.internal.JobTargetFactoryImpl;
-import org.eclipse.kapua.service.job.targets.internal.JobTargetServiceImpl;
+import org.eclipse.kapua.service.scheduler.quartz.SchedulerEntityManagerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory;
@@ -58,9 +42,9 @@ import org.mockito.Mockito;
 
 import java.io.IOException;
 
-public class CucumberWithPropertiesForJob extends CucumberWithProperties {
+public class CucumberWithPropertiesForScheduler extends CucumberWithProperties {
 
-    public CucumberWithPropertiesForJob(Class<?> clazz) throws InitializationError, IOException {
+    public CucumberWithPropertiesForScheduler(Class<?> clazz) throws InitializationError, IOException {
         super(clazz);
         setupDI();
     }
@@ -86,35 +70,19 @@ public class CucumberWithPropertiesForJob extends CucumberWithProperties {
                 } catch (KapuaException e) {
                     // skip
                 }
-
                 bind(AuthorizationService.class).toInstance(mockedAuthorization);
                 // Inject mocked Permission Factory
                 bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
                 // Set KapuaMetatypeFactory for Metatype configuration
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
 
-                // Inject actual Job service related services
-                JobEntityManagerFactory jobEntityManagerFactory = JobEntityManagerFactory.getInstance();
-                bind(JobEntityManagerFactory.class).toInstance(jobEntityManagerFactory);
-
+                // Inject actual Tag service related services
+                SchedulerEntityManagerFactory schedulerEntityManagerFactory = SchedulerEntityManagerFactory.getInstance();
+                bind(SchedulerEntityManagerFactory.class).toInstance(schedulerEntityManagerFactory);
                 bind(JobService.class).toInstance(new JobServiceImpl());
                 bind(JobFactory.class).toInstance(new JobFactoryImpl());
-
-                bind(JobStepDefinitionService.class).toInstance(new JobStepDefinitionServiceImpl());
-                bind(JobStepDefinitionFactory.class).toInstance(new JobStepDefinitionFactoryImpl());
-
-                bind(JobStepService.class).toInstance(new JobStepServiceImpl());
-                bind(JobStepFactory.class).toInstance(new JobStepFactoryImpl());
-
-                bind(JobTargetService.class).toInstance(new JobTargetServiceImpl());
-                bind(JobTargetFactory.class).toInstance(new JobTargetFactoryImpl());
-
-                bind(JobExecutionService.class).toInstance(new JobExecutionServiceImpl());
-                bind(JobExecutionFactory.class).toInstance(new JobExecutionFactoryImpl());
-
                 bind(TriggerService.class).toInstance(new TriggerServiceImpl());
                 bind(TriggerFactory.class).toInstance(new TriggerFactoryImpl());
-
                 bind(TriggerDefinitionService.class).toInstance(new TriggerDefinitionServiceImpl());
                 bind(TriggerDefinitionFactory.class).toInstance(new TriggerDefinitionFactoryImpl());
             }
