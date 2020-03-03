@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,6 +19,8 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
+import org.eclipse.kapua.commons.model.query.predicate.OrPredicateImpl;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -36,6 +38,8 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
+import org.eclipse.kapua.model.query.predicate.MatchPredicate;
 import org.eclipse.kapua.model.query.predicate.OrPredicate;
 import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
@@ -577,6 +581,13 @@ public class ServiceDAO {
         } else if (queryPredicate instanceof OrPredicate) {
             OrPredicate orPredicate = (OrPredicate) queryPredicate;
             predicate = handleOrPredicate(orPredicate, binds, cb, userPermissionRoot, entityType);
+        } else if (queryPredicate instanceof MatchPredicate) {
+            MatchPredicate<?> matchPredicate = (MatchPredicate<?>) queryPredicate;
+            OrPredicate orPredicate = new OrPredicateImpl();
+            for (String attributeName : matchPredicate.getAttributeNames()) {
+                orPredicate.getPredicates().add(new AttributePredicateImpl<>(attributeName, matchPredicate.getMatchTerm(), Operator.STARTS_WITH_IGNORE_CASE));
+            }
+            predicate = handleOrPredicate(orPredicate, binds, cb, userPermissionRoot, entityType);
         }
         return predicate;
     }
@@ -681,11 +692,25 @@ public class ServiceDAO {
                     expr = cb.like(extractAttribute(entityRoot, attrName), pl);
                     break;
 
+                case LIKE_IGNORE_CASE:
+                    strAttrValue = attrValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY).toLowerCase();
+                    ParameterExpression<String> plci = cb.parameter(String.class);
+                    binds.put(plci, LIKE + strAttrValue + LIKE);
+                    expr = cb.like(cb.lower(extractAttribute(entityRoot, attrName)), plci);
+                    break;
+
                 case STARTS_WITH:
                     strAttrValue = attrValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY);
                     ParameterExpression<String> psw = cb.parameter(String.class);
                     binds.put(psw, strAttrValue + LIKE);
                     expr = cb.like(extractAttribute(entityRoot, attrName), psw);
+                    break;
+
+                case STARTS_WITH_IGNORE_CASE:
+                    strAttrValue = attrValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY).toLowerCase();
+                    ParameterExpression<String> pswci = cb.parameter(String.class);
+                    binds.put(pswci, strAttrValue + LIKE);
+                    expr = cb.like(cb.lower(extractAttribute(entityRoot, attrName)), pswci);
                     break;
 
                 case IS_NULL:

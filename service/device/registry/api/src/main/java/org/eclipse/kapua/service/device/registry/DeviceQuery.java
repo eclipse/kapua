@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,7 +20,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 
 /**
  * {@link Device} query definition.
- * 
+ *
  * @since 1.0.0
  *
  */
@@ -28,5 +28,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = DeviceXmlRegistry.class, factoryMethod = "newQuery")
 public interface DeviceQuery extends KapuaQuery<Device> {
+
+    <T> DeviceMatchPredicate<T> matchPredicate(T matchTerm);
 
 }

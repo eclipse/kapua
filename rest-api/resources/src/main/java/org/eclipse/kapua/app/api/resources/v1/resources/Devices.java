@@ -60,6 +60,7 @@ public class Devices extends AbstractKapuaResource {
      * @param tagId            The id of the {@link Tag} in which to search results
      * @param clientId         The id of the {@link Device} in which to search results
      * @param connectionStatus The {@link DeviceConnectionStatus} in which to search results
+     * @param matchTerm        A term to be matched in at least one of the configured fields of this entity
      * @param fetchAttributes  Additional attributes to be returned. Allowed values: connection, lastEvent
      * @param askTotalCount    Ask for the total count of the matched entities in the result
      * @param sortParam        The name of the parameter that will be used as a sorting key
@@ -77,6 +78,7 @@ public class Devices extends AbstractKapuaResource {
             @QueryParam("tagId") EntityId tagId,
             @QueryParam("clientId") String clientId,
             @QueryParam("status") DeviceConnectionStatus connectionStatus,
+            @QueryParam("matchTerm") String matchTerm,
             @QueryParam("fetchAttributes") List<String> fetchAttributes,
             @QueryParam("askTotalCount") boolean askTotalCount,
             @QueryParam("sortParam") String sortParam,
@@ -95,10 +97,14 @@ public class Devices extends AbstractKapuaResource {
         if (connectionStatus != null) {
             andPredicate.and(query.attributePredicate(DeviceAttributes.CONNECTION_STATUS, connectionStatus));
         }
+        if (matchTerm != null && !matchTerm.isEmpty()) {
+            andPredicate.and(query.matchPredicate(matchTerm));
+        }
 
         if (!Strings.isNullOrEmpty(sortParam)) {
             query.setSortCriteria(query.fieldSortCriteria(sortParam, sortDir));
         }
+
         query.setPredicate(andPredicate);
         query.setFetchAttributes(fetchAttributes);
         query.setOffset(offset);

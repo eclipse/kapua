@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -71,6 +71,17 @@ public interface AttributePredicate<T> extends QueryPredicate {
          * @since 1.0.0
          */
         STARTS_WITH,
+
+        /**
+         * The same of {@link #STARTS_WITH} {@link Operator} but case insensitive
+         * <p>
+         * Matches results with value that starts with the given value, case insensitive.
+         * To be used with {@link String} {@link org.eclipse.kapua.model.KapuaEntityAttributes}.
+         *
+         * @since 1.2.0
+         */
+        STARTS_WITH_IGNORE_CASE,
+
         /**
          * {@link #LIKE} {@link Operator}
          * <p>
@@ -82,6 +93,18 @@ public interface AttributePredicate<T> extends QueryPredicate {
          * @since 1.0.0
          */
         LIKE,
+
+        /**
+         * {@link #LIKE} {@link Operator} but case insensitive
+         * <p>
+         * Matches results with value that are like (in SQL fashion) the given value case insensitive.
+         * To be used with {@link String} {@link org.eclipse.kapua.model.KapuaEntityAttributes}.
+         * <p>
+         * If you want to match only the beginning of the {@link String} please consider using {@link #STARTS_WITH_IGNORE_CASE}.
+         *
+         * @since 1.2.0
+         */
+        LIKE_IGNORE_CASE,
 
         /**
          * {@link #GREATER_THAN} {@link Operator}

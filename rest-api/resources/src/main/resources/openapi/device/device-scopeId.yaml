@@ -31,6 +31,27 @@ paths:
         - $ref: '../openapi.yaml#/components/parameters/askTotalCount'
         - $ref: '../openapi.yaml#/components/parameters/sortParam'
         - $ref: '../openapi.yaml#/components/parameters/sortDir'
+        - name: matchTerm
+          in: query
+          description: |
+            A term to match on different fields. Every entity whose at least one of the specified fields starts with this value will be matched.
+            Matches on the following fields:
+
+            - CLIENT_ID
+            - DISPLAY_NAME
+            - SERIAL_NUMBER
+            - MODEL_ID
+            - MODEL_NAME
+            - BIOS_VERSION
+            - FIRMWARE_VERSION
+            - OS_VERSION
+            - JVM_VERSION
+            - OSGI_FRAMEWORK_VERSION
+            - APPLICATION_FRAMEWORK_VERSION
+            - CONNECTION_INTERFACE
+            - CONNECTION_IP
+          schema:
+            type: string
         - $ref: '../openapi.yaml#/components/parameters/limit'
         - $ref: '../openapi.yaml#/components/parameters/offset'
       responses:
