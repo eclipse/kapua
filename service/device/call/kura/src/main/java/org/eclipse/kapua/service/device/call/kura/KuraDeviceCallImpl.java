@@ -34,6 +34,7 @@ import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraRespo
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.translator.Translator;
+import org.eclipse.kapua.translator.exception.TranslatorNotFoundException;
 import org.eclipse.kapua.transport.TransportClientFactory;
 import org.eclipse.kapua.transport.TransportFacade;
 import org.eclipse.kapua.transport.exception.TransportClientGetException;
@@ -201,7 +202,7 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
             }
 
             Map<String, Object> configParameters = new HashMap<>(1);
-            configParameters.put("serverAddress", serverIp);
+        configParameters.put("serverAddress", serverIp);
             return TRANSPORT_CLIENT_FACTORY.getFacade(configParameters);
         } catch (TransportClientGetException tcge) {
             throw tcge;
@@ -215,7 +216,7 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
      *
      * @param from The {@link Message} type from which to translate.
      * @param to   The {@link Message} type to which to translate.
-     * @param <F>  The {@link Message} {@code class} from which to translate.
+     * @param <F>  The {@link Message} {@code class}from which to translate.
      * @param <T>  The {@link Message} {@code class} to which to translate.
      * @return The {@link Translator} found.
      * @throws KuraDeviceCallException If error occurs while searching the {@link Translator}.
@@ -225,7 +226,7 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
         Translator<F, T> translator;
         try {
             translator = Translator.getTranslatorFor(from, to);
-        } catch (KapuaException e) {
+        } catch (TranslatorNotFoundException e) {
             throw new KuraDeviceCallException(KuraDeviceCallErrorCodes.CALL_ERROR, e);
         }
         return translator;

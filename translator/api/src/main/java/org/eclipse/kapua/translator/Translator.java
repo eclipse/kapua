@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,29 +12,31 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaRuntimeErrorCodes;
-import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.message.Message;
+import org.eclipse.kapua.translator.cache.TranslatorCache;
+import org.eclipse.kapua.translator.exception.TranslatorException;
+import org.eclipse.kapua.translator.exception.TranslatorNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
+import javax.validation.constraints.NotNull;
 import java.util.ServiceLoader;
 
 /**
- * Translator base class. Translators are used to allow heterogeneous systems to exchange messages through layered messages domain.
- * Kapua platform has 3 different layer:<br>
- * <br>
+ * {@link javassist.Translator} defintions.
+ * <p>
+ * Translators are used to allow heterogeneous systems to exchange messages through layered messages domain.
+ * Kapua  has 3 different layer:
+ *
  * <ul>
- * <li>Kapua level</li>
- * <li>Application level (ie Kura)</li>
- * <li>Transport level (ie jms, mqtt, ...)</li>
+ * <li>Kapua layeer</li>
+ * <li>Application layer (i.e. Kura)</li>
+ * <li>Transport layer (ie jms, mqtt, ...)</li>
  * </ul>
  *
- * @param <FROM_M> message from type
- * @param <TO_M>   message to type
- * @since 1.0
+ * @param <FROM_M> {@link Message} type from which {@link #translate(Message)}.
+ * @param <TO_M>   {@link Message} type to which {@link #translate(Message)}.
+ * @since 1.0.0
  */
 public abstract class Translator<FROM_M extends Message, TO_M extends Message> {
 
@@ -43,57 +45,59 @@ public abstract class Translator<FROM_M extends Message, TO_M extends Message> {
     private static final ServiceLoader<Translator> AVAILABLE_TRANSLATORS = ServiceLoader.load(Translator.class);
 
     /**
-     * Return a translator for the given messages classes.
+     * Return a {@link Translator} for the given {@link Message}s types.
      * <br>
-     * This method will lookup instances of Translator through {@link java.util.ServiceLoader}
+     * This method will lookup instances of {@link Translator} through {@link java.util.ServiceLoader}
      *
-     * @param fromMessageClass message from type
-     * @param toMessageClass   message to type
-     * @return
-     * @throws KapuaException
+     * @param fromMessageClass {@link Message} type from which {@link #translate(Message)}.
+     * @param toMessageClass   {@link Message} type to which {@link #translate(Message)}.
+     * @return The matching {@link Translator} for the given {@link Message}s types.
      */
-    public static synchronized <FROM_M extends Message, TO_M extends Message, T extends Translator<FROM_M, TO_M>> T getTranslatorFor(Class<? extends FROM_M> fromMessageClass,
-            Class<? extends TO_M> toMessageClass)
-            throws KapuaException {
+    public static <FROM_M extends Message, TO_M extends Message, T extends Translator<FROM_M, TO_M>> T getTranslatorFor(@NotNull Class<? extends FROM_M> fromMessageClass, @NotNull Class<? extends TO_M> toMessageClass) {
 
-        Objects.requireNonNull(fromMessageClass);
-        Objects.requireNonNull(toMessageClass);
+        T cachedTranslator = TranslatorCache.getCachedTranslator(fromMessageClass, toMessageClass);
 
-        for (Translator translator : AVAILABLE_TRANSLATORS) {
-            if ((fromMessageClass.isAssignableFrom(translator.getClassFrom())) &&
-                    toMessageClass.isAssignableFrom(translator.getClassTo())) {
-                return (T) translator;
+        if (cachedTranslator != null) {
+            return cachedTranslator;
+        }
+
+        synchronized (AVAILABLE_TRANSLATORS) {
+            for (Translator<FROM_M, TO_M> translator : AVAILABLE_TRANSLATORS) {
+                if ((fromMessageClass.isAssignableFrom(translator.getClassFrom())) &&
+                        toMessageClass.isAssignableFrom(translator.getClassTo())) {
+                    TranslatorCache.cacheTranslator(fromMessageClass, toMessageClass, translator);
+
+                    return (T) translator;
+                }
             }
         }
 
-        LOG.error("Cannot find translator from: {} - to: {}", fromMessageClass.getName(), toMessageClass.getName());
-        throw new KapuaRuntimeException(KapuaRuntimeErrorCodes.TRANSLATOR_NOT_FOUND,
-                null,
-                AVAILABLE_TRANSLATORS,
-                fromMessageClass.getName(),
-                toMessageClass.getName());
+        throw new TranslatorNotFoundException(fromMessageClass, toMessageClass);
     }
 
     /**
-     * Translate message from the domain FROM_M to the domain TO_M
+     * Translates {@link Message} from the domain FROM_M to the domain TO_M
      *
-     * @param message the message to translate
-     * @return the translated message
-     * @throws KapuaException
+     * @param message The {@link Message} to translate.
+     * @return the translated {@link Message}.
+     * @throws TranslatorException When translating a message causes an error.
+     * @since 1.0.0
      */
-    public abstract TO_M translate(FROM_M message) throws KapuaException;
+    public abstract TO_M translate(FROM_M message) throws TranslatorException;
 
     /**
-     * Return the FROM_M message type
+     * Returns the FROM_M {@link Message} type.
      *
-     * @return
+     * @return The FROM_M {@link Message} type.
+     * @since 1.0.0
      */
     public abstract Class<FROM_M> getClassFrom();
 
     /**
-     * Return the TO_M message type
+     * Returns the TO_M {@link Message} type.
      *
-     * @return
+     * @return The TO_M {@link Message} type.
+     * @since 1.0.0
      */
     public abstract Class<TO_M> getClassTo();
 }
