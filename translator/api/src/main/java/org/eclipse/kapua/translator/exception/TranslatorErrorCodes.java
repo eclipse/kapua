@@ -14,17 +14,47 @@ package org.eclipse.kapua.translator.exception;
 import org.eclipse.kapua.KapuaErrorCode;
 
 /**
- * Translator error codes
- * 
- * @since 1.0
- * 
+ * {@link org.eclipse.kapua.translator.Translator} {@link KapuaErrorCode}s.
+ *
+ * @since 1.0.0
  */
 public enum TranslatorErrorCodes implements KapuaErrorCode {
+    /**
+     * @since 1.0.0
+     */
     INVALID_MESSAGE,
 
-    INVALID_CHANNEL, INVALID_CHANNEL_CLASSIFIER, INVALID_CHANNEL_APP_NAME, INVALID_CHANNEL_APP_VERSION,
+    /**
+     * @since 1.0.0
+     */
+    INVALID_CHANNEL,
+    /**
+     * @since 1.0.0
+     */
+    INVALID_CHANNEL_CLASSIFIER,
+    /**
+     * @since 1.0.0
+     */
+    INVALID_CHANNEL_APP_NAME,
+    /**
+     * @since 1.0.0
+     */
+    INVALID_CHANNEL_APP_VERSION,
 
+    /**
+     * @since 1.0.0
+     */
     INVALID_PAYLOAD,
 
+    /**
+     * @since 1.0.0
+     */
     INVALID_BODY,
+
+
+    /**
+     * @see TranslatorNotFoundException
+     * @since 1.2.0
+     */
+    TRANSLATOR_NOT_FOUND
 }

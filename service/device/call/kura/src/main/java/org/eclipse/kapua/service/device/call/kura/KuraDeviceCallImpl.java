@@ -31,6 +31,7 @@ import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraRespo
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.translator.Translator;
+import org.eclipse.kapua.translator.exception.TranslatorNotFoundException;
 import org.eclipse.kapua.transport.TransportClientFactory;
 import org.eclipse.kapua.transport.TransportFacade;
 import org.eclipse.kapua.transport.exception.TransportTimeoutException;
@@ -210,7 +211,7 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
         Translator<F, T> translator;
         try {
             translator = Translator.getTranslatorFor(from, to);
-        } catch (KapuaException e) {
+        } catch (TranslatorNotFoundException e) {
             throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CALL_ERROR, e);
         }
         return translator;

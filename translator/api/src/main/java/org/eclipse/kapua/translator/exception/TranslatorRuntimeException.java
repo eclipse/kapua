@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,16 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.exception;
 
-import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaRuntimeException;
 
 /**
- * {@link org.eclipse.kapua.translator.Translator} {@link KapuaException}.
+ * {@link org.eclipse.kapua.translator.Translator} {@link KapuaRuntimeException}.
  *
- * @since 1.0.0
+ * @since 1.2.0
  */
-public class TranslatorException extends KapuaException {
-
-    private static final long serialVersionUID = -6207605695086240243L;
+public class TranslatorRuntimeException extends KapuaRuntimeException {
 
     private static final String TRANSLATOR_ERROR_MESSAGES = "translator-error-messages";
 
@@ -28,9 +26,9 @@ public class TranslatorException extends KapuaException {
      * Constructor.
      *
      * @param code The {@link TranslatorErrorCodes}.
-     * @since 1.0.0
+     * @since 1.2.0
      */
-    public TranslatorException(TranslatorErrorCodes code) {
+    public TranslatorRuntimeException(TranslatorErrorCodes code) {
         super(code);
     }
 
@@ -38,10 +36,10 @@ public class TranslatorException extends KapuaException {
      * Constructor.
      *
      * @param code      The {@link TranslatorErrorCodes}.
-     * @param arguments Additional argument associated with the {@link TranslatorException}.
-     * @since 1.0.0
+     * @param arguments Additional argument associated with the {@link TranslatorRuntimeException}.
+     * @since 1.2.0
      */
-    public TranslatorException(TranslatorErrorCodes code, Object... arguments) {
+    public TranslatorRuntimeException(TranslatorErrorCodes code, Object... arguments) {
         super(code, arguments);
     }
 
@@ -49,11 +47,11 @@ public class TranslatorException extends KapuaException {
      * Constructor.
      *
      * @param code      The {@link TranslatorErrorCodes}.
-     * @param cause     The root {@link Throwable} of this {@link TranslatorException}.
-     * @param arguments Additional argument associated with the {@link TranslatorException}.
-     * @since 1.0.0
+     * @param cause     The root {@link Throwable} of this {@link TranslatorRuntimeException}.
+     * @param arguments Additional argument associated with the {@link TranslatorRuntimeException}.
+     * @since 1.2.0
      */
-    public TranslatorException(TranslatorErrorCodes code, Throwable cause, Object... arguments) {
+    public TranslatorRuntimeException(TranslatorErrorCodes code, Throwable cause, Object... arguments) {
         super(code, cause, arguments);
     }
 
