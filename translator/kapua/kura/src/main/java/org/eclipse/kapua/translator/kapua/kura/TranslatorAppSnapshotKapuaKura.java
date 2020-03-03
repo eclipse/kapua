@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,92 +12,78 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.service.device.call.kura.app.SnapshotMetrics;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
-import org.eclipse.kapua.service.device.management.snapshot.internal.DeviceSnapshotAppProperties;
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotRequestChannel;
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotRequestMessage;
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotRequestPayload;
+import org.eclipse.kapua.translator.exception.InvalidChannelException;
+import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Messages translator implementation from {@link SnapshotRequestMessage} to {@link KuraRequestMessage}
+ * {@link org.eclipse.kapua.translator.Translator} implementation from {@link SnapshotRequestMessage} to {@link KuraRequestMessage}
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class TranslatorAppSnapshotKapuaKura extends AbstractTranslatorKapuaKura<SnapshotRequestChannel, SnapshotRequestPayload, SnapshotRequestMessage> {
 
-    private static final String CONTROL_MESSAGE_CLASSIFIER = SystemSetting.getInstance().getMessageClassifier();
-    private static final Map<DeviceSnapshotAppProperties, SnapshotMetrics> PROPERTIES_DICTIONARY = new HashMap<>();
+    @Override
+    protected KuraRequestChannel translateChannel(SnapshotRequestChannel kapuaChannel) throws InvalidChannelException {
+        try {
+            KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
+            kuraRequestChannel.setMessageClassification(getControlMessageClassifier());
+            kuraRequestChannel.setAppId(SnapshotMetrics.APP_ID + "-" + SnapshotMetrics.APP_VERSION);
+            kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.translate(kapuaChannel.getMethod()));
 
-    static {
-        PROPERTIES_DICTIONARY.put(DeviceSnapshotAppProperties.APP_NAME, SnapshotMetrics.APP_ID);
-        PROPERTIES_DICTIONARY.put(DeviceSnapshotAppProperties.APP_VERSION, SnapshotMetrics.APP_VERSION);
+            // Build resources
+            List<String> resources = new ArrayList<>();
+            switch (kapuaChannel.getMethod()) {
+                case EXECUTE:
+                    resources.add("rollback");
+                    break;
+                case READ:
+                    resources.add("snapshots");
+                    break;
+                case CREATE:
+                case DELETE:
+                case OPTIONS:
+                case WRITE:
+                default:
+                    break;
+            }
+
+            String snapshotId = kapuaChannel.getSnapshotId();
+            if (snapshotId != null) {
+                resources.add(snapshotId);
+            }
+            kuraRequestChannel.setResources(resources.toArray(new String[0]));
+
+            // Return Kura Channel
+            return kuraRequestChannel;
+        } catch (Exception e) {
+            throw new InvalidChannelException(e, kapuaChannel);
+        }
     }
 
     @Override
-    protected KuraRequestChannel translateChannel(SnapshotRequestChannel kapuaChannel) throws KapuaException {
-        KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
-        kuraRequestChannel.setMessageClassification(CONTROL_MESSAGE_CLASSIFIER);
+    protected KuraRequestPayload translatePayload(SnapshotRequestPayload kapuaPayload) throws InvalidPayloadException {
+        try {
+            KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
-        // Build appId
-        StringBuilder appIdSb = new StringBuilder();
-        appIdSb.append(PROPERTIES_DICTIONARY.get(DeviceSnapshotAppProperties.APP_NAME).getValue())
-                .append("-")
-                .append(PROPERTIES_DICTIONARY.get(DeviceSnapshotAppProperties.APP_VERSION).getValue());
+            if (kapuaPayload.getBody() != null) {
+                kuraRequestPayload.setBody(kapuaPayload.getBody());
+            }
 
-        kuraRequestChannel.setAppId(appIdSb.toString());
-
-        kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.get(kapuaChannel.getMethod()));
-
-        // Build resources
-        List<String> resources = new ArrayList<>();
-        switch (kapuaChannel.getMethod()) {
-        case EXECUTE:
-            resources.add("rollback");
-            break;
-        case READ:
-            resources.add("snapshots");
-            break;
-        case CREATE:
-        case DELETE:
-        case OPTIONS:
-        case WRITE:
-        default:
-            break;
-
+            // Return Kura Payload
+            return kuraRequestPayload;
+        } catch (Exception e) {
+            throw new InvalidPayloadException(e, kapuaPayload);
         }
-
-        String snapshotId = kapuaChannel.getSnapshotId();
-        if (snapshotId != null) {
-            resources.add(snapshotId);
-        }
-        kuraRequestChannel.setResources(resources.toArray(new String[resources.size()]));
-
-        //
-        // Return Kura Channel
-        return kuraRequestChannel;
-    }
-
-    @Override
-    protected KuraRequestPayload translatePayload(SnapshotRequestPayload kapuaPayload) throws KapuaException {
-        KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
-
-        if (kapuaPayload.getBody() != null) {
-            kuraRequestPayload.setBody(kapuaPayload.getBody());
-        }
-
-        //
-        // Return Kura Payload
-        return kuraRequestPayload;
     }
 
     @Override
@@ -109,5 +95,4 @@ public class TranslatorAppSnapshotKapuaKura extends AbstractTranslatorKapuaKura<
     public Class<KuraRequestMessage> getClassTo() {
         return KuraRequestMessage.class;
     }
-
 }

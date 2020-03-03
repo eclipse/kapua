@@ -21,6 +21,13 @@ public class TranslatorNotFoundException extends TranslatorRuntimeException {
     private final Class<?> fromMessageClass;
     private final Class<?> toMessageClass;
 
+    /**
+     * Constructor.
+     *
+     * @param fromMessageClass The {@link org.eclipse.kapua.message.Message} type for which the {@link org.eclipse.kapua.translator.Translator} was from.
+     * @param toMessageClass   The {@link org.eclipse.kapua.message.Message} type for which the {@link org.eclipse.kapua.translator.Translator} was to.
+     * @since 1.2.0
+     */
     public TranslatorNotFoundException(Class<?> fromMessageClass, Class<?> toMessageClass) {
         super(TranslatorErrorCodes.TRANSLATOR_NOT_FOUND, fromMessageClass, toMessageClass);
 
@@ -28,10 +35,22 @@ public class TranslatorNotFoundException extends TranslatorRuntimeException {
         this.toMessageClass = toMessageClass;
     }
 
+    /**
+     * Gets the {@link org.eclipse.kapua.message.Message} type for which the {@link org.eclipse.kapua.translator.Translator} was from.
+     *
+     * @return The {@link org.eclipse.kapua.message.Message} type for which the {@link org.eclipse.kapua.translator.Translator} was from.
+     * @since 1.2.0
+     */
     public Class<?> getFromMessageClass() {
         return fromMessageClass;
     }
 
+    /**
+     * Gets the {@link org.eclipse.kapua.message.Message} type for which the {@link org.eclipse.kapua.translator.Translator} was to.
+     *
+     * @return The {@link org.eclipse.kapua.message.Message} type for which the {@link org.eclipse.kapua.translator.Translator} was to.
+     * @since 1.2.0
+     */
     public Class<?> getToMessageClass() {
         return toMessageClass;
     }

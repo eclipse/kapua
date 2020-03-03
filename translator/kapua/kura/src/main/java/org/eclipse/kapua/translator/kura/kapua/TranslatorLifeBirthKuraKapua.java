@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,7 +12,6 @@
 package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage;
@@ -28,55 +27,62 @@ import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraBirthPay
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.translator.Translator;
+import org.eclipse.kapua.translator.exception.InvalidChannelException;
+import org.eclipse.kapua.translator.exception.InvalidMessageException;
+import org.eclipse.kapua.translator.exception.InvalidPayloadException;
+import org.eclipse.kapua.translator.exception.TranslateException;
 
 /**
- * Messages translator implementation from {@link KuraBirthMessage} to {@link KapuaBirthMessage}
+ * {@link Translator} implementation from {@link KuraBirthMessage} to {@link KapuaBirthMessage}
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class TranslatorLifeBirthKuraKapua extends Translator<KuraBirthMessage, KapuaBirthMessage> {
 
     @Override
-    public KapuaBirthMessage translate(KuraBirthMessage kuraBirthMessage)
-            throws KapuaException {
-        KapuaBirthMessage kapuaBirthMessage = new KapuaBirthMessageImpl();
-        kapuaBirthMessage.setChannel(translate(kuraBirthMessage.getChannel()));
-        kapuaBirthMessage.setPayload(translate(kuraBirthMessage.getPayload()));
+    public KapuaBirthMessage translate(KuraBirthMessage kuraBirthMessage) throws TranslateException {
+        try {
+            KapuaBirthMessage kapuaBirthMessage = new KapuaBirthMessageImpl();
+            kapuaBirthMessage.setChannel(translate(kuraBirthMessage.getChannel()));
+            kapuaBirthMessage.setPayload(translate(kuraBirthMessage.getPayload()));
 
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AccountService accountService = locator.getService(AccountService.class);
-        Account account = accountService.findByName(kuraBirthMessage.getChannel().getScope());
+            KapuaLocator locator = KapuaLocator.getInstance();
+            AccountService accountService = locator.getService(AccountService.class);
+            Account account = accountService.findByName(kuraBirthMessage.getChannel().getScope());
 
-        if (account == null) {
-            throw new KapuaEntityNotFoundException(Account.TYPE, kuraBirthMessage.getChannel().getScope());
+            if (account == null) {
+                throw new KapuaEntityNotFoundException(Account.TYPE, kuraBirthMessage.getChannel().getScope());
+            }
+
+            DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
+            Device device = deviceRegistryService.findByClientId(account.getId(), kuraBirthMessage.getChannel().getClientId());
+
+            kapuaBirthMessage.setScopeId(account.getId());
+            if (device != null) {
+                kapuaBirthMessage.setDeviceId(device.getId());
+            } else {
+                kapuaBirthMessage.setClientId(kuraBirthMessage.getChannel().getClientId());
+            }
+            kapuaBirthMessage.setCapturedOn(kuraBirthMessage.getPayload().getTimestamp());
+            kapuaBirthMessage.setSentOn(kuraBirthMessage.getPayload().getTimestamp());
+            kapuaBirthMessage.setReceivedOn(kuraBirthMessage.getTimestamp());
+            kapuaBirthMessage.setPosition(TranslatorKuraKapuaUtils.translate(kuraBirthMessage.getPayload().getPosition()));
+
+            return kapuaBirthMessage;
+        } catch (InvalidChannelException | InvalidPayloadException te) {
+            throw te;
+        } catch (Exception e) {
+            throw new InvalidMessageException(e, kuraBirthMessage);
         }
-
-        DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
-        Device device = deviceRegistryService.findByClientId(account.getId(), kuraBirthMessage.getChannel().getClientId());
-
-        kapuaBirthMessage.setScopeId(account.getId());
-        if (device != null) {
-            kapuaBirthMessage.setDeviceId(device.getId());
-        } else {
-            kapuaBirthMessage.setClientId(kuraBirthMessage.getChannel().getClientId());
-        }
-        kapuaBirthMessage.setCapturedOn(kuraBirthMessage.getPayload().getTimestamp());
-        kapuaBirthMessage.setSentOn(kuraBirthMessage.getPayload().getTimestamp());
-        kapuaBirthMessage.setReceivedOn(kuraBirthMessage.getTimestamp());
-        kapuaBirthMessage.setPosition(TranslatorKuraKapuaUtils.translate(kuraBirthMessage.getPayload().getPosition()));
-
-        return kapuaBirthMessage;
     }
 
-    private KapuaBirthChannel translate(KuraBirthChannel kuraBirthChannel)
-            throws KapuaException {
+    private KapuaBirthChannel translate(KuraBirthChannel kuraBirthChannel) {
         KapuaBirthChannel kapuaBirthChannel = new KapuaBirthChannelImpl();
         kapuaBirthChannel.setClientId(kuraBirthChannel.getClientId());
         return kapuaBirthChannel;
     }
 
-    private KapuaBirthPayload translate(KuraBirthPayload kuraBirthPayload)
-            throws KapuaException {
+    private KapuaBirthPayload translate(KuraBirthPayload kuraBirthPayload) {
         return new KapuaBirthPayloadImpl(
                 kuraBirthPayload.getUptime(),
                 kuraBirthPayload.getDisplayName(),

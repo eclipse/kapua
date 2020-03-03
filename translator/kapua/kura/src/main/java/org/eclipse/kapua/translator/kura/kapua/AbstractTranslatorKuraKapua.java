@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,7 +13,6 @@
 package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaChannel;
@@ -25,27 +24,52 @@ import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraRespo
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
 import org.eclipse.kapua.translator.Translator;
+import org.eclipse.kapua.translator.exception.InvalidChannelException;
+import org.eclipse.kapua.translator.exception.InvalidMessageException;
+import org.eclipse.kapua.translator.exception.InvalidPayloadException;
+import org.eclipse.kapua.translator.exception.TranslateException;
 
+/**
+ * {@link Translator} {@code abstract} implementation from {@link KuraResponseMessage} to {@link KapuaMessage}
+ *
+ * @since 1.0.0
+ */
 public abstract class AbstractTranslatorKuraKapua<TO_C extends KapuaChannel, TO_P extends KapuaPayload, TO_M extends KapuaMessage<TO_C, TO_P>> extends Translator<KuraResponseMessage, TO_M> {
 
     @Override
-    public TO_M translate(KuraResponseMessage kuraMessage) throws KapuaException {
+    public TO_M translate(KuraResponseMessage kuraMessage) throws TranslateException {
 
-        final KapuaLocator locator = KapuaLocator.getInstance();
-        final AccountService accountService = locator.getService(AccountService.class);
-        final Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.findByName(kuraMessage.getChannel().getScope()));
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AccountService accountService = locator.getService(AccountService.class);
 
-        if (account == null) {
-            throw new KapuaEntityNotFoundException(Account.TYPE, kuraMessage.getChannel().getScope());
+        try {
+            Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.findByName(kuraMessage.getChannel().getScope()));
+
+            if (account == null) {
+                throw new KapuaEntityNotFoundException(Account.TYPE, kuraMessage.getChannel().getScope());
+            }
+
+            return translateMessage(kuraMessage, account);
+        } catch (TranslateException te) {
+            throw te;
+        } catch (Exception e) {
+            throw new InvalidMessageException(e, kuraMessage);
         }
-
-        return translateMessage(kuraMessage, account);
     }
 
-    protected abstract TO_M translateMessage(KuraResponseMessage kuraMessage, Account account) throws KapuaException;
+    /**
+     * @since 1.0.0
+     */
+    protected abstract TO_M translateMessage(KuraResponseMessage kuraMessage, Account account) throws TranslateException;
 
-    protected abstract TO_C translateChannel(KuraResponseChannel kuraChannel) throws KapuaException;
+    /**
+     * @since 1.0.0
+     */
+    protected abstract TO_C translateChannel(KuraResponseChannel kuraChannel) throws InvalidChannelException;
 
-    protected abstract TO_P translatePayload(KuraResponsePayload kuraPayload) throws KapuaException;
+    /**
+     * @since 1.0.0
+     */
+    protected abstract TO_P translatePayload(KuraResponsePayload kuraPayload) throws InvalidPayloadException;
 
 }

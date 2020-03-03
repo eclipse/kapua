@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,24 +15,25 @@ package org.eclipse.kapua.translator.kapua.kura;
 import org.eclipse.kapua.service.device.call.kura.KuraMethod;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * Dictionary class to define actions translations between Kapua domain to Kura domain.<br>
- * For detail about action please refer to {@link KapuaMethod} and {@link KuraMethod}
+ * Dictionary class to define actions translations between Kapua domain to {@link org.eclipse.kapua.service.device.call.kura.Kura} domain.<br>
  *
- * @since 1.0
+ * @see KapuaMethod
+ * @see KuraMethod
+ * @since 1.0.0
  */
 public class MethodDictionaryKapuaKura {
 
     /**
-     * Translations dictionary map
+     * Translations dictionary map.
      */
     private static final Map<KapuaMethod, KuraMethod> DICTIONARY;
 
     static {
-        DICTIONARY = new HashMap<>(5);
+        DICTIONARY = new EnumMap<>(KapuaMethod.class);
 
         DICTIONARY.put(KapuaMethod.READ, KuraMethod.GET);
         DICTIONARY.put(KapuaMethod.CREATE, KuraMethod.POST);
@@ -45,12 +46,26 @@ public class MethodDictionaryKapuaKura {
     }
 
     /**
-     * Returns the action translation from Kapua domain to Kura domain
+     * Gets the given {@link KapuaMethod} in the matching {@link KuraMethod}
      *
-     * @param kapuaMethod
-     * @return
+     * @param kapuaMethod The {@link KapuaMethod} to match.
+     * @return The matching {@link KuraMethod}
+     * @since 1.0.0
+     * @deprecated Since 1.2.0. Renamed to {@link #translate(KapuaMethod)}
      */
+    @Deprecated
     public static KuraMethod get(KapuaMethod kapuaMethod) {
+        return translate(kapuaMethod);
+    }
+
+    /**
+     * Translates the given {@link KapuaMethod} in the matching {@link KuraMethod}
+     *
+     * @param kapuaMethod The {@link KapuaMethod} to match.
+     * @return The matching {@link KuraMethod}
+     * @since 1.2.0
+     */
+    public static KuraMethod translate(KapuaMethod kapuaMethod) {
         return DICTIONARY.get(kapuaMethod);
     }
 }

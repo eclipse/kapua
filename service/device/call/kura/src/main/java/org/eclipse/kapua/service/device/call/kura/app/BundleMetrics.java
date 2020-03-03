@@ -13,9 +13,8 @@ package org.eclipse.kapua.service.device.call.kura.app;
 
 /**
  * Bundle metrics properties definition.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public enum BundleMetrics {
 
@@ -37,10 +36,15 @@ public enum BundleMetrics {
 
     /**
      * Get a value property associated to this specific enumeration key.
-     * 
+     *
      * @return
      */
     public String getValue() {
         return value;
+    }
+
+    @Override
+    public String toString() {
+        return getValue();
     }
 }

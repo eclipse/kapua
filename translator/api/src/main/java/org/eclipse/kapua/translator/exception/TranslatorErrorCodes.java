@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,41 +20,55 @@ import org.eclipse.kapua.KapuaErrorCode;
  */
 public enum TranslatorErrorCodes implements KapuaErrorCode {
     /**
+     * @see InvalidMessageException
      * @since 1.0.0
      */
     INVALID_MESSAGE,
-
     /**
+     * @see InvalidChannelException
      * @since 1.0.0
      */
     INVALID_CHANNEL,
     /**
-     * @since 1.0.0
-     */
-    INVALID_CHANNEL_CLASSIFIER,
-    /**
-     * @since 1.0.0
-     */
-    INVALID_CHANNEL_APP_NAME,
-    /**
-     * @since 1.0.0
-     */
-    INVALID_CHANNEL_APP_VERSION,
-
-    /**
+     * @see InvalidPayloadException
      * @since 1.0.0
      */
     INVALID_PAYLOAD,
-
-    /**
-     * @since 1.0.0
-     */
-    INVALID_BODY,
-
-
     /**
      * @see TranslatorNotFoundException
      * @since 1.2.0
      */
-    TRANSLATOR_NOT_FOUND
+    TRANSLATOR_NOT_FOUND,
+
+    //
+    // Deprecated
+    //
+
+    /**
+     * @since 1.0.0
+     * @deprecated Since 1.2.0. Moved to implementation module
+     */
+    @Deprecated
+    INVALID_CHANNEL_CLASSIFIER,
+    /**
+     * @since 1.0.0
+     * @deprecated Since 1.2.0. Moved to implementation module
+     */
+    @Deprecated
+
+    INVALID_CHANNEL_APP_NAME,
+    /**
+     * @since 1.0.0
+     * @deprecated Since 1.2.0. Moved to implementation module
+     */
+    @Deprecated
+    INVALID_CHANNEL_APP_VERSION,
+    /**
+     * @since 1.0.0
+     * @deprecated Since 1.2.0. Moved to implementation module
+     */
+    @Deprecated
+    INVALID_BODY
+
+
 }
