@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.device.call.message.kura;
 import com.google.common.primitives.Booleans;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.message.internal.MessageErrorCodes;
 import org.eclipse.kapua.message.internal.MessageException;
 import org.eclipse.kapua.service.device.call.message.DevicePayload;
@@ -31,6 +30,8 @@ import java.util.Map;
 
 /**
  * {@link DevicePayload} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
+ *
+ * @since 1.0.0
  */
 public class KuraPayload implements DevicePayload {
 
@@ -42,7 +43,9 @@ public class KuraPayload implements DevicePayload {
     protected byte[] body;
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public KuraPayload() {
         metrics = new HashMap<>();
@@ -115,11 +118,9 @@ public class KuraPayload implements DevicePayload {
                     setProtoKuraMetricValue(metricBuilder, value);
                     metricBuilder.build();
 
-                    // add it to the message
                     protoMsg.addMetric(metricBuilder);
-                } catch (MessageException eihte) {
-                    LOG.error("During serialization, ignoring metric named: {}. Unrecognized value type: {}.", name, value.getClass().getName());
-                    throw new RuntimeException(eihte);
+                } catch (MessageException me) {
+                    LOG.warn("During serialization, ignoring metric named: {}. Unrecognized value type: {}.", name, value.getClass().getName(), me);
                 }
             }
         });
@@ -134,7 +135,7 @@ public class KuraPayload implements DevicePayload {
     }
 
     @Override
-    public void readFromByteArray(byte[] bytes) throws KapuaException {
+    public void readFromByteArray(byte[] bytes) throws MessageException {
         //
         // Decompress
         if (GZIPUtils.isCompressed(bytes)) {
@@ -187,35 +188,25 @@ public class KuraPayload implements DevicePayload {
     //
     // Private methods
     //
-    private Object getProtoKuraMetricValue(KuraPayloadProto.KuraPayload.KuraMetric metric,
-            KuraPayloadProto.KuraPayload.KuraMetric.ValueType type)
-            throws MessageException {
+    private Object getProtoKuraMetricValue(KuraPayloadProto.KuraPayload.KuraMetric metric, KuraPayloadProto.KuraPayload.KuraMetric.ValueType type) throws MessageException {
         switch (type) {
-
-        case DOUBLE:
-            return metric.getDoubleValue();
-
-        case FLOAT:
-            return metric.getFloatValue();
-
-        case INT64:
-            return metric.getLongValue();
-
-        case INT32:
-            return metric.getIntValue();
-
-        case BOOL:
-            return metric.getBoolValue();
-
-        case STRING:
-            return metric.getStringValue();
-
-        case BYTES:
-            ByteString bs = metric.getBytesValue();
-            return bs.toByteArray();
-
-        default:
-            throw new MessageException(MessageErrorCodes.INVALID_METRIC_TYPE, null, type);
+            case DOUBLE:
+                return metric.getDoubleValue();
+            case FLOAT:
+                return metric.getFloatValue();
+            case INT64:
+                return metric.getLongValue();
+            case INT32:
+                return metric.getIntValue();
+            case BOOL:
+                return metric.getBoolValue();
+            case STRING:
+                return metric.getStringValue();
+            case BYTES:
+                ByteString bs = metric.getBytesValue();
+                return bs.toByteArray();
+            default:
+                throw new MessageException(MessageErrorCodes.INVALID_METRIC_TYPE, null, type);
         }
     }
 
