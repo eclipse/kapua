@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.device.call.message.kura;
 import com.google.common.primitives.Booleans;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.message.internal.MessageErrorCodes;
 import org.eclipse.kapua.message.internal.MessageException;
 import org.eclipse.kapua.service.device.call.message.DevicePayload;
@@ -156,11 +155,9 @@ public class KuraPayload implements DevicePayload {
                     setProtoKuraMetricValue(metricBuilder, value);
                     metricBuilder.build();
 
-                    // add it to the message
                     protoMsg.addMetric(metricBuilder);
                 } catch (MessageException me) {
-                    LOG.error("During serialization, ignoring metric named: {}. Unrecognized value type: {}.", name, value.getClass().getName());
-                    throw new RuntimeException(me);
+                    LOG.warn("During serialization, ignoring metric named: {}. Unrecognized value type: {}.", name, value.getClass().getName(), me);
                 }
             }
         });
@@ -175,7 +172,7 @@ public class KuraPayload implements DevicePayload {
     }
 
     @Override
-    public void readFromByteArray(byte[] bytes) throws KapuaException {
+    public void readFromByteArray(byte[] bytes) throws MessageException {
         //
         // Decompress
         if (GZIPUtils.isCompressed(bytes)) {
@@ -229,32 +226,24 @@ public class KuraPayload implements DevicePayload {
     // Private methods
     //
     private Object getProtoKuraMetricValue(KuraPayloadProto.KuraPayload.KuraMetric metric, KuraPayloadProto.KuraPayload.KuraMetric.ValueType type) throws MessageException {
-
         switch (type) {
-            case DOUBLE:
-                return metric.getDoubleValue();
-
-            case FLOAT:
-                return metric.getFloatValue();
-
-            case INT64:
-                return metric.getLongValue();
-
-            case INT32:
-                return metric.getIntValue();
-
-            case BOOL:
-                return metric.getBoolValue();
-
-            case STRING:
-                return metric.getStringValue();
-
-            case BYTES:
-                ByteString bs = metric.getBytesValue();
-                return bs.toByteArray();
-
-            default:
-                throw new MessageException(MessageErrorCodes.INVALID_METRIC_TYPE, null, type);
+        case DOUBLE:
+            return metric.getDoubleValue();
+        case FLOAT:
+            return metric.getFloatValue();
+        case INT64:
+            return metric.getLongValue();
+        case INT32:
+            return metric.getIntValue();
+        case BOOL:
+            return metric.getBoolValue();
+        case STRING:
+            return metric.getStringValue();
+        case BYTES:
+            ByteString bs = metric.getBytesValue();
+            return bs.toByteArray();
+        default:
+            throw new MessageException(MessageErrorCodes.INVALID_METRIC_TYPE, null, type);
         }
     }
 
