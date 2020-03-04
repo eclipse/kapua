@@ -46,6 +46,8 @@ import java.util.Date;
  */
 public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<AssetResponseChannel, AssetResponsePayload, AssetResponseMessage> {
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
     public TranslatorAppAssetKuraKapua() {
         super(AssetResponseMessage.class);
     }
@@ -55,39 +57,38 @@ public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorRespons
         try {
             if (!getControlMessageClassifier().equals(kuraChannel.getMessageClassification())) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER, null, kuraChannel.getMessageClassification());
-        }
+            }
 
-        String[] appIdTokens = kuraChannel.getAppId().split("-");
+            String[] appIdTokens = kuraChannel.getAppId().split("-");
 
-        if (!AssetMetrics.APP_ID.getValue().equals(appIdTokens[0])) {
+            if (!AssetMetrics.APP_ID.getValue().equals(appIdTokens[0])) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, appIdTokens[0]);
-        }
+            }
 
-        if (!AssetMetrics.APP_VERSION.getValue().equals(appIdTokens[1])) {
+            if (!AssetMetrics.APP_VERSION.getValue().equals(appIdTokens[1])) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_VERSION, null, appIdTokens[1]);
-        }
+            }
 
             AssetResponseChannel assetResponseChannel = new AssetResponseChannel();
-        assetResponseChannel.setAppName(DeviceAssetAppProperties.APP_NAME);
-        assetResponseChannel.setVersion(DeviceAssetAppProperties.APP_VERSION);
+            assetResponseChannel.setAppName(DeviceAssetAppProperties.APP_NAME);
+            assetResponseChannel.setVersion(DeviceAssetAppProperties.APP_VERSION);
 
-        // Return Kapua Channel
-        return assetResponseChannel;
+            // Return Kapua Channel
+            return assetResponseChannel;
         } catch (Exception e) {
             throw new InvalidChannelException(e, kuraChannel);
-    }
+        }
     }
 
     @Override
     protected AssetResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws InvalidPayloadException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceAssetFactory deviceAssetFactory = locator.getFactory(DeviceAssetFactory.class);
-
         try {
-        AssetResponsePayload assetResponsePayload = new AssetResponsePayload();
+            DeviceAssetFactory deviceAssetFactory = LOCATOR.getFactory(DeviceAssetFactory.class);
 
-        assetResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_MESSAGE.getName()));
-        assetResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_STACK.getName()));
+            AssetResponsePayload assetResponsePayload = new AssetResponsePayload();
+
+            assetResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_MESSAGE.getName()));
+            assetResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_STACK.getName()));
 
         if (kuraPayload.hasBody()) {
 
@@ -123,8 +124,8 @@ public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorRespons
                 assetResponsePayload.setBody(XmlUtil.marshal(deviceAssets).getBytes());
             }
 
-        // Return Kapua Payload
-        return assetResponsePayload;
+            // Return Kapua Payload
+            return assetResponsePayload;
         } catch (InvalidPayloadException ipe) {
             throw ipe;
         } catch (Exception e) {

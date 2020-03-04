@@ -26,7 +26,7 @@ import java.util.ServiceLoader;
  * {@link javassist.Translator} defintions.
  * <p>
  * Translators are used to allow heterogeneous systems to exchange messages through layered messages domain.
- * Kapua  has 3 different layer:
+ * Kapua has 3 different layer:
  *
  * <ul>
  * <li>Kapua layeer</li>

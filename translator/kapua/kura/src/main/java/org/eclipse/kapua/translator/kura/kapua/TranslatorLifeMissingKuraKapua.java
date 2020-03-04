@@ -39,6 +39,11 @@ import org.eclipse.kapua.translator.exception.TranslateException;
  */
 public class TranslatorLifeMissingKuraKapua extends Translator<KuraMissingMessage, KapuaMissingMessage> {
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
+    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
+
     @Override
     public KapuaMissingMessage translate(KuraMissingMessage kuraMissingMessage) throws TranslateException {
         try {
@@ -46,17 +51,12 @@ public class TranslatorLifeMissingKuraKapua extends Translator<KuraMissingMessag
             kapuaMissingMessage.setChannel(translate(kuraMissingMessage.getChannel()));
             kapuaMissingMessage.setPayload(translate(kuraMissingMessage.getPayload()));
 
-            KapuaLocator locator = KapuaLocator.getInstance();
-            AccountService accountService = locator.getService(AccountService.class);
-            Account account = accountService.findByName(kuraMissingMessage.getChannel().getScope());
-
+            Account account = ACCOUNT_SERVICE.findByName(kuraMissingMessage.getChannel().getScope());
             if (account == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, kuraMissingMessage.getChannel().getScope());
             }
 
-            DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
-            Device device = deviceRegistryService.findByClientId(account.getId(), kuraMissingMessage.getChannel().getClientId());
-
+            Device device = DEVICE_REGISTRY_SERVICE.findByClientId(account.getId(), kuraMissingMessage.getChannel().getClientId());
             if (device == null) {
                 throw new KapuaEntityNotFoundException(Device.class.toString(), kuraMissingMessage.getChannel().getClientId());
             }

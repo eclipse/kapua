@@ -39,6 +39,11 @@ import org.eclipse.kapua.translator.exception.TranslateException;
  */
 public class TranslatorLifeBirthKuraKapua extends Translator<KuraBirthMessage, KapuaBirthMessage> {
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
+    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
+
     @Override
     public KapuaBirthMessage translate(KuraBirthMessage kuraBirthMessage) throws TranslateException {
         try {
@@ -46,23 +51,19 @@ public class TranslatorLifeBirthKuraKapua extends Translator<KuraBirthMessage, K
             kapuaBirthMessage.setChannel(translate(kuraBirthMessage.getChannel()));
             kapuaBirthMessage.setPayload(translate(kuraBirthMessage.getPayload()));
 
-            KapuaLocator locator = KapuaLocator.getInstance();
-            AccountService accountService = locator.getService(AccountService.class);
-            Account account = accountService.findByName(kuraBirthMessage.getChannel().getScope());
-
+            Account account = ACCOUNT_SERVICE.findByName(kuraBirthMessage.getChannel().getScope());
             if (account == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, kuraBirthMessage.getChannel().getScope());
             }
-
-            DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
-            Device device = deviceRegistryService.findByClientId(account.getId(), kuraBirthMessage.getChannel().getClientId());
-
             kapuaBirthMessage.setScopeId(account.getId());
+
+            Device device = DEVICE_REGISTRY_SERVICE.findByClientId(account.getId(), kuraBirthMessage.getChannel().getClientId());
             if (device != null) {
                 kapuaBirthMessage.setDeviceId(device.getId());
             } else {
                 kapuaBirthMessage.setClientId(kuraBirthMessage.getChannel().getClientId());
             }
+
             kapuaBirthMessage.setCapturedOn(kuraBirthMessage.getPayload().getTimestamp());
             kapuaBirthMessage.setSentOn(kuraBirthMessage.getPayload().getTimestamp());
             kapuaBirthMessage.setReceivedOn(kuraBirthMessage.getTimestamp());

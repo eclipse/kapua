@@ -40,18 +40,19 @@ public abstract class AbstractTranslatorKapuaKura<FROM_C extends KapuaChannel, F
 
     private static final String CONTROL_MESSAGE_CLASSIFIER = SystemSetting.getInstance().getMessageClassifier();
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
+    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
+
     @Override
     public KuraRequestMessage translate(FROM_M kapuaMessage) throws TranslateException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AccountService accountService = locator.getService(AccountService.class);
-
         try {
-            Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(kapuaMessage.getScopeId()));
+            Account account = KapuaSecurityUtils.doPrivileged(() -> ACCOUNT_SERVICE.find(kapuaMessage.getScopeId()));
 
             Device device = null;
-            DeviceRegistryService deviceService = locator.getService(DeviceRegistryService.class);
             if (kapuaMessage.getDeviceId() != null) {
-                device = deviceService.find(kapuaMessage.getScopeId(), kapuaMessage.getDeviceId());
+                device = DEVICE_REGISTRY_SERVICE.find(kapuaMessage.getScopeId(), kapuaMessage.getDeviceId());
             }
 
             KuraRequestChannel kuraRequestChannel = translateChannel(kapuaMessage.getChannel());
