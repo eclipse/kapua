@@ -52,6 +52,8 @@ public abstract class Translator<FROM_M extends Message, TO_M extends Message> {
      * @param fromMessageClass {@link Message} type from which {@link #translate(Message)}.
      * @param toMessageClass   {@link Message} type to which {@link #translate(Message)}.
      * @return The matching {@link Translator} for the given {@link Message}s types.
+     * @throws TranslatorNotFoundException if no {@link Translator} if found for the given {@link Message} types.
+     * @since 1.0.0
      */
     public static <FROM_M extends Message, TO_M extends Message, T extends Translator<FROM_M, TO_M>> T getTranslatorFor(@NotNull Class<? extends FROM_M> fromMessageClass, @NotNull Class<? extends TO_M> toMessageClass) {
 

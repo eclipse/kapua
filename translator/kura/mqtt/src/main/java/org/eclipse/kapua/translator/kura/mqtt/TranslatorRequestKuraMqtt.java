@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,93 +11,102 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.mqtt;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
 import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSetting;
 import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSettingKeys;
 import org.eclipse.kapua.translator.Translator;
+import org.eclipse.kapua.translator.exception.InvalidChannelException;
+import org.eclipse.kapua.translator.exception.InvalidMessageException;
+import org.eclipse.kapua.translator.exception.InvalidPayloadException;
+import org.eclipse.kapua.translator.exception.TranslateException;
 import org.eclipse.kapua.transport.message.mqtt.MqttMessage;
 import org.eclipse.kapua.transport.message.mqtt.MqttPayload;
 import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * Messages translator implementation from {@link KuraRequestMessage} to {@link org.eclipse.kapua.transport.message.mqtt.MqttMessage}
+ * {@link Translator} implementation from {@link KuraRequestMessage} to {@link MqttMessage}
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class TranslatorRequestKuraMqtt extends Translator<KuraRequestMessage, MqttMessage> {
 
+    private static final String REPLY_PART = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_REPLY_PART);
+
     @Override
-    public MqttMessage translate(KuraRequestMessage kuraMessage)
-            throws KapuaException {
-        //
-        // Mqtt request topic
-        MqttTopic mqttRequestTopic = translate(kuraMessage.getChannel());
+    public MqttMessage translate(KuraRequestMessage kuraMessage) throws TranslateException {
+        try {
+            // Mqtt request topic
+            MqttTopic mqttRequestTopic = translate(kuraMessage.getChannel());
 
-        //
-        // Mqtt response topic
+            // Mqtt response topic
+            MqttTopic mqttResponseTopic = generateResponseTopic(kuraMessage.getChannel());
 
-        MqttTopic mqttResponseTopic = generateResponseTopic(kuraMessage.getChannel());
+            // Mqtt payload
+            MqttPayload mqttPayload = translate(kuraMessage.getPayload());
 
-        //
-        // Mqtt payload
-        MqttPayload mqttPayload = translate(kuraMessage.getPayload());
-
-        //
-        // Return Mqtt message
-        return new MqttMessage(mqttRequestTopic,
-                mqttResponseTopic,
-                mqttPayload);
+            // Return Mqtt message
+            return new MqttMessage(mqttRequestTopic, mqttResponseTopic, mqttPayload);
+        } catch (InvalidChannelException | InvalidPayloadException te) {
+            throw te;
+        } catch (Exception e) {
+            throw new InvalidMessageException(e, kuraMessage);
+        }
     }
 
-    public MqttTopic translate(KuraRequestChannel kuraChannel)
-            throws KapuaException {
-        List<String> topicTokens = new ArrayList<>();
+    public MqttTopic translate(KuraRequestChannel kuraChannel) throws InvalidChannelException {
+        try {
+            List<String> topicTokens = new ArrayList<>();
 
-        if (kuraChannel.getMessageClassification() != null) {
-            topicTokens.add(kuraChannel.getMessageClassification());
+            if (kuraChannel.getMessageClassification() != null) {
+                topicTokens.add(kuraChannel.getMessageClassification());
+            }
+
+            topicTokens.add(kuraChannel.getScope());
+            topicTokens.add(kuraChannel.getClientId());
+            topicTokens.add(kuraChannel.getAppId());
+            topicTokens.add(kuraChannel.getMethod().name());
+
+            Collections.addAll(topicTokens, kuraChannel.getResources());
+
+            // Return Mqtt Topic
+            return new MqttTopic(topicTokens.toArray(new String[0]));
+        } catch (Exception e) {
+            throw new InvalidChannelException(e, kuraChannel);
         }
-
-        topicTokens.add(kuraChannel.getScope());
-        topicTokens.add(kuraChannel.getClientId());
-        topicTokens.add(kuraChannel.getAppId());
-        topicTokens.add(kuraChannel.getMethod().name());
-
-        for (String s : kuraChannel.getResources()) {
-            topicTokens.add(s);
-        }
-
-        //
-        // Return Mqtt Topic
-        return new MqttTopic(topicTokens.toArray(new String[0]));
     }
 
-    private MqttTopic generateResponseTopic(KuraRequestChannel kuraChannel) {
-        String replyPart = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_REPLY_PART);
+    private MqttTopic generateResponseTopic(KuraRequestChannel kuraChannel) throws InvalidChannelException {
+        try {
+            List<String> topicTokens = new ArrayList<>();
 
-        List<String> topicTokens = new ArrayList<>();
+            if (kuraChannel.getMessageClassification() != null) {
+                topicTokens.add(kuraChannel.getMessageClassification());
+            }
 
-        if (kuraChannel.getMessageClassification() != null) {
-            topicTokens.add(kuraChannel.getMessageClassification());
+            topicTokens.add(kuraChannel.getScope());
+            topicTokens.add(kuraChannel.getRequesterClientId());
+            topicTokens.add(kuraChannel.getAppId());
+            topicTokens.add(REPLY_PART);
+            topicTokens.add(kuraChannel.getRequestId());
+
+            return new MqttTopic(topicTokens.toArray(new String[0]));
+        } catch (Exception e) {
+            throw new InvalidChannelException(e, kuraChannel);
         }
-
-        topicTokens.add(kuraChannel.getScope());
-        topicTokens.add(kuraChannel.getRequesterClientId());
-        topicTokens.add(kuraChannel.getAppId());
-        topicTokens.add(replyPart);
-        topicTokens.add(kuraChannel.getRequestId());
-
-        return new MqttTopic(topicTokens.toArray(new String[0]));
     }
 
-    private MqttPayload translate(KuraPayload kuraPayload)
-            throws KapuaException {
-        return new MqttPayload(kuraPayload.toByteArray());
+    private MqttPayload translate(KuraPayload kuraPayload) throws InvalidPayloadException {
+        try {
+            return new MqttPayload(kuraPayload.toByteArray());
+        } catch (Exception e) {
+            throw new InvalidPayloadException(e, kuraPayload);
+        }
     }
 
     @Override
