@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -37,6 +37,7 @@ import org.eclipse.kapua.service.endpoint.EndpointInfoService;
 import org.eclipse.kapua.service.stream.StreamDomains;
 import org.eclipse.kapua.service.stream.StreamService;
 import org.eclipse.kapua.translator.Translator;
+import org.eclipse.kapua.translator.exception.TranslatorNotFoundException;
 import org.eclipse.kapua.transport.TransportClientFactory;
 import org.eclipse.kapua.transport.TransportFacade;
 import org.eclipse.kapua.transport.message.TransportMessage;
@@ -45,6 +46,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * {@link StreamService} implementation.
+ *
+ * @since 1.0.0
+ */
 @KapuaProvider
 public class StreamServiceImpl implements StreamService {
 
@@ -84,11 +90,7 @@ public class StreamServiceImpl implements StreamService {
 
         //
         // Do publish
-        TransportFacade<?, ?, TransportMessage<?, ?>, ?> transportFacade = null;
-        try {
-            //
-            // Borrow a KapuaClient
-            transportFacade = borrowClient(serverURI);
+        try (TransportFacade<?, ?, TransportMessage<?, ?>, ?> transportFacade = borrowClient(serverURI)) {
 
             //
             // Get Kura to transport translator for the request and vice versa
@@ -108,10 +110,6 @@ public class StreamServiceImpl implements StreamService {
 
         } catch (KapuaException ke) {
             throw new KuraDeviceCallException(KuraDeviceCallErrorCodes.CALL_ERROR, ke, (Object[]) null);
-        } finally {
-            if (transportFacade != null) {
-                transportFacade.clean();
-            }
         }
 
         return null;
@@ -132,23 +130,25 @@ public class StreamServiceImpl implements StreamService {
      *     <li>Both specified: The {@link Device#getClientId()} and the {@link KapuaDataMessage#getClientId()} must match</li>
      * </ul>
      *
-     * @param requestMessage
-     * @return
-     * @throws KapuaException
+     * @param dataMessage The {@link KapuaDataMessage} to publish
+     * @return The {@link Device} matching the {@link KapuaDataMessage#getDeviceId()} or {@link KapuaDataMessage#getClientId()}
+     * @throws KapuaEntityNotFoundException  if {@link KapuaDataMessage#getDeviceId()} does not match any existing {@link Device}
+     * @throws KapuaIllegalArgumentException if {@link KapuaDataMessage#getClientId()} does not match the {@link Device#getClientId()}
+     * @throws KapuaException                If any other error occurs.
      * @since 1.2.0
      */
-    private Device checkDeviceInfo(KapuaDataMessage requestMessage) throws KapuaException {
+    private Device checkDeviceInfo(KapuaDataMessage dataMessage) throws KapuaException {
         Device device = null;
-        if (requestMessage.getDeviceId() != null) {
-            device = DEVICE_REGISTRY_SERVICE.find(requestMessage.getScopeId(), requestMessage.getDeviceId());
+        if (dataMessage.getDeviceId() != null) {
+            device = DEVICE_REGISTRY_SERVICE.find(dataMessage.getScopeId(), dataMessage.getDeviceId());
 
             if (device == null) {
-                throw new KapuaEntityNotFoundException(Device.TYPE, requestMessage.getDeviceId());
+                throw new KapuaEntityNotFoundException(Device.TYPE, dataMessage.getDeviceId());
             } else {
-                if (requestMessage.getClientId() == null) {
-                    requestMessage.setClientId(device.getClientId());
-                } else if (!device.getClientId().equals(requestMessage.getClientId())) {
-                    throw new KapuaIllegalArgumentException("dataMessage.clientId", requestMessage.getClientId());
+                if (dataMessage.getClientId() == null) {
+                    dataMessage.setClientId(device.getClientId());
+                } else if (!device.getClientId().equals(dataMessage.getClientId())) {
+                    throw new KapuaIllegalArgumentException("dataMessage.clientId", dataMessage.getClientId());
                 }
             }
         }
@@ -156,16 +156,16 @@ public class StreamServiceImpl implements StreamService {
     }
 
     /**
-     * Looko for the available {@link EndpointInfo} with {@link EndpointInfo#getSchema()} = "mqtt"
+     * Looks for the available {@link EndpointInfo} with {@link EndpointInfo#getSchema()} = "mqtt"
      *
-     * @param requestMessage
-     * @return
+     * @param dataMessage The {@link KapuaDataMessage} to publish
+     * @return The {@link String} {@link java.net.URI} to connect to.
      * @throws KapuaException
      * @since 1.2.0
      */
-    private String getEndpointInfoDNS(KapuaDataMessage requestMessage) throws KapuaException {
+    private String getEndpointInfoDNS(KapuaDataMessage dataMessage) throws KapuaException {
         String serverURI;
-        EndpointInfoQuery query = ENDPOINT_INFO_FACTORY.newQuery(requestMessage.getScopeId());
+        EndpointInfoQuery query = ENDPOINT_INFO_FACTORY.newQuery(dataMessage.getScopeId());
         query.setPredicate(
                 query.andPredicate(
                         query.attributePredicate(EndpointInfoAttributes.SCHEMA, "mqtt"),
@@ -199,9 +199,7 @@ public class StreamServiceImpl implements StreamService {
 
             transportFacade = (TransportFacade<?, ?, TransportMessage<?, ?>, ?>) transportClientFactory.getFacade(configParameters);
         } catch (Exception e) {
-            throw new KuraDeviceCallException(KuraDeviceCallErrorCodes.CALL_ERROR,
-                    e,
-                    (Object[]) null);
+            throw new KuraDeviceCallException(KuraDeviceCallErrorCodes.CALL_ERROR, e, (Object[]) null);
         }
         return transportFacade;
     }
@@ -220,8 +218,8 @@ public class StreamServiceImpl implements StreamService {
         Translator<T1, T2> translator;
         try {
             translator = Translator.getTranslatorFor(from, to);
-        } catch (KapuaException e) {
-            throw new KuraDeviceCallException(KuraDeviceCallErrorCodes.CALL_ERROR, e, (Object[]) null);
+        } catch (TranslatorNotFoundException e) {
+            throw new KuraDeviceCallException(KuraDeviceCallErrorCodes.CALL_ERROR, e, from, to);
         }
         return translator;
     }
