@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,39 +17,55 @@ import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraBirthCha
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraBirthMessage;
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraBirthPayload;
 import org.eclipse.kapua.translator.Translator;
+import org.eclipse.kapua.translator.exception.InvalidChannelException;
+import org.eclipse.kapua.translator.exception.InvalidMessageException;
+import org.eclipse.kapua.translator.exception.InvalidPayloadException;
+import org.eclipse.kapua.translator.exception.TranslateException;
 import org.eclipse.kapua.transport.message.jms.JmsMessage;
+import org.eclipse.kapua.transport.message.jms.JmsPayload;
 import org.eclipse.kapua.transport.message.jms.JmsTopic;
 
 /**
- * Messages translator implementation from {@link org.eclipse.kapua.transport.message.jms.JmsMessage} to {@link org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraBirthMessage}
+ * {@link Translator} implementation from {@link JmsMessage} to {@link KuraBirthMessage}
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class TranslatorLifeBirthJmsKura extends Translator<JmsMessage, KuraBirthMessage> {
 
     @Override
-    public KuraBirthMessage translate(JmsMessage jmsMessage) throws KapuaException {
-        return new KuraBirthMessage(translate(jmsMessage.getTopic()),
-                jmsMessage.getReceivedOn(),
-                translate(jmsMessage.getPayload().getBody()));
-    }
-
-    private KuraBirthChannel translate(JmsTopic jmsTopic)
-            throws KapuaException {
-        String[] topicTokens = jmsTopic.getSplittedTopic();
-        // we shouldn't never get a shorter topic here (because that means we have issues on camel routing)
-        // TODO check exception type
-        if (topicTokens == null || topicTokens.length < 3) {
-            throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR);
+    public KuraBirthMessage translate(JmsMessage jmsMessage) throws TranslateException {
+        try {
+            return new KuraBirthMessage(translate(jmsMessage.getTopic()),
+                    jmsMessage.getReceivedOn(),
+                    translate(jmsMessage.getPayload()));
+        } catch (InvalidChannelException | InvalidPayloadException te) {
+            throw te;
+        } catch (Exception e) {
+            throw new InvalidMessageException(e, jmsMessage);
         }
-        return new KuraBirthChannel(topicTokens[0], topicTokens[1], topicTokens[2]);
     }
 
-    private KuraBirthPayload translate(byte[] jmsBody)
-            throws KapuaException {
-        KuraBirthPayload kuraBirthPayload = new KuraBirthPayload();
-        kuraBirthPayload.readFromByteArray(jmsBody);
-        return kuraBirthPayload;
+    private KuraBirthChannel translate(JmsTopic jmsTopic) throws InvalidChannelException {
+        try {
+            String[] topicTokens = jmsTopic.getSplittedTopic();
+            // we shouldn't never get a shorter topic here (because that means we have issues on camel routing)
+            if (topicTokens == null || topicTokens.length < 3) {
+                throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR);
+            }
+            return new KuraBirthChannel(topicTokens[0], topicTokens[1], topicTokens[2]);
+        } catch (Exception e) {
+            throw new InvalidChannelException(e, jmsTopic);
+        }
+    }
+
+    private KuraBirthPayload translate(JmsPayload jmsPayload) throws InvalidPayloadException {
+        try {
+            KuraBirthPayload kuraBirthPayload = new KuraBirthPayload();
+            kuraBirthPayload.readFromByteArray(jmsPayload.getBody());
+            return kuraBirthPayload;
+        } catch (Exception e) {
+            throw new InvalidPayloadException(e, jmsPayload);
+        }
     }
 
     @Override
