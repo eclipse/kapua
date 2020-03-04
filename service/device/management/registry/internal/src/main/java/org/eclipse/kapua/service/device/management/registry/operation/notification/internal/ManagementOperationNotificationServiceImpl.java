@@ -16,7 +16,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -32,15 +31,18 @@ import org.eclipse.kapua.service.device.management.registry.operation.notificati
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationListResult;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationService;
 
+import javax.inject.Inject;
+
 @KapuaProvider
 public class ManagementOperationNotificationServiceImpl extends AbstractKapuaService implements ManagementOperationNotificationService {
 
-    private static KapuaLocator locator = KapuaLocator.getInstance();
+    @Inject
+    private AuthorizationService authorizationService;
+    @Inject
+    private PermissionFactory permissionFactory;
 
-    private static AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-    private static PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-
-    private static DeviceManagementOperationRegistryService deviceManagementOperationRegistryService = locator.getService(DeviceManagementOperationRegistryService.class);
+    @Inject
+    private static DeviceManagementOperationRegistryService deviceManagementOperationRegistryService;
 
     protected ManagementOperationNotificationServiceImpl() {
         super(DeviceManagementOperationEntityManagerFactory.getInstance());
