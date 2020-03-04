@@ -28,6 +28,7 @@ paths:
         - $ref: './device.yaml#/components/parameters/clientId'
         - $ref: '../deviceConnection/deviceConnection.yaml#/components/parameters/connectionStatus'
         - $ref: './device.yaml#/components/parameters/fetchAttributes'
+        - $ref: '../openapi.yaml#/components/parameters/askTotalCount'
         - $ref: '../openapi.yaml#/components/parameters/limit'
         - $ref: '../openapi.yaml#/components/parameters/offset'
       responses:
