@@ -33,6 +33,8 @@ import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends KapuaResponseChannel, TO_P extends KapuaResponsePayload, TO_M extends KapuaResponseMessage<TO_C, TO_P>>
         extends AbstractTranslatorResponseKuraKapua<TO_C, TO_P, TO_M> {
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
     private final Class<TO_M> messageClazz;
 
     public AbstractSimpleTranslatorResponseKuraKapua(Class<TO_M> messageClazz) {
@@ -41,11 +43,10 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
 
     @Override
     protected TO_M createMessage() throws KapuaException {
+        GenericRequestFactory genericRequestFactory = LOCATOR.getFactory(GenericRequestFactory.class);
 
         try {
             if (this.messageClazz.equals(GenericResponseMessage.class)) {
-                KapuaLocator locator = KapuaLocator.getInstance();
-                GenericRequestFactory genericRequestFactory = locator.getFactory(GenericRequestFactory.class);
                 return this.messageClazz.cast(genericRequestFactory.newResponseMessage());
             } else {
                 return this.messageClazz.newInstance();

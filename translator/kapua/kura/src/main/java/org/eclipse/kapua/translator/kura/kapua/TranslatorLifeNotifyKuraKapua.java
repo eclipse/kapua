@@ -56,11 +56,15 @@ import java.util.Map;
  */
 public class TranslatorLifeNotifyKuraKapua extends Translator<KuraNotifyMessage, KapuaNotifyMessage> {
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
+    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
+
+    private static final KapuaIdFactory KAPUA_ID_FACTORY = LOCATOR.getFactory(KapuaIdFactory.class);
+
     private static final Map<String, KapuaAppProperties> APP_NAME_DICTIONARY;
     private static final Map<String, KapuaAppProperties> APP_VERSION_DICTIONARY;
-
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final KapuaIdFactory KAPUA_ID_FACTORY = LOCATOR.getFactory(KapuaIdFactory.class);
 
     static {
         APP_NAME_DICTIONARY = new HashMap<>();
@@ -88,17 +92,12 @@ public class TranslatorLifeNotifyKuraKapua extends Translator<KuraNotifyMessage,
             kapuaNotifyMessage.setChannel(translate(kuraNotifyMessage.getChannel()));
             kapuaNotifyMessage.setPayload(translate(kuraNotifyMessage.getPayload()));
 
-            KapuaLocator locator = KapuaLocator.getInstance();
-            AccountService accountService = locator.getService(AccountService.class);
-            Account account = accountService.findByName(kuraNotifyMessage.getChannel().getScope());
-
+            Account account = ACCOUNT_SERVICE.findByName(kuraNotifyMessage.getChannel().getScope());
             if (account == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, kuraNotifyMessage.getChannel().getScope());
             }
 
-            DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
-            Device device = deviceRegistryService.findByClientId(account.getId(), kuraNotifyMessage.getChannel().getClientId());
-
+            Device device = DEVICE_REGISTRY_SERVICE.findByClientId(account.getId(), kuraNotifyMessage.getChannel().getClientId());
             if (device == null) {
                 throw new KapuaEntityNotFoundException(Device.class.toString(), kuraNotifyMessage.getChannel().getClientId());
             }

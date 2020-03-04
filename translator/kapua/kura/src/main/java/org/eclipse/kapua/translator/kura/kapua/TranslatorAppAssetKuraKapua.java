@@ -46,6 +46,8 @@ import java.util.Date;
  */
 public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<AssetResponseChannel, AssetResponsePayload, AssetResponseMessage> {
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
     public TranslatorAppAssetKuraKapua() {
         super(AssetResponseMessage.class);
     }
@@ -80,10 +82,9 @@ public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorRespons
 
     @Override
     protected AssetResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws InvalidPayloadException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceAssetFactory deviceAssetFactory = locator.getFactory(DeviceAssetFactory.class);
-
         try {
+            DeviceAssetFactory deviceAssetFactory = LOCATOR.getFactory(DeviceAssetFactory.class);
+
             AssetResponsePayload assetResponsePayload = new AssetResponsePayload();
 
             assetResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_MESSAGE.getValue()));

@@ -37,6 +37,10 @@ import org.eclipse.kapua.translator.exception.TranslateException;
  */
 public class TranslatorLifeUnmatchedKuraKapua extends Translator<KuraUnmatchedMessage, KapuaUnmatchedMessage> {
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
+
     @Override
     public KapuaUnmatchedMessage translate(KuraUnmatchedMessage kuraUnmatchedMessage) throws TranslateException {
         try {
@@ -44,9 +48,7 @@ public class TranslatorLifeUnmatchedKuraKapua extends Translator<KuraUnmatchedMe
             kapuaUnmatchedMessage.setChannel(translate(kuraUnmatchedMessage.getChannel()));
             kapuaUnmatchedMessage.setPayload(translate(kuraUnmatchedMessage.getPayload()));
 
-            KapuaLocator locator = KapuaLocator.getInstance();
-            AccountService accountService = locator.getService(AccountService.class);
-            Account account = accountService.findByName(kuraUnmatchedMessage.getChannel().getScope());
+            Account account = ACCOUNT_SERVICE.findByName(kuraUnmatchedMessage.getChannel().getScope());
 
             if (account == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, kuraUnmatchedMessage.getChannel().getScope());

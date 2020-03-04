@@ -46,6 +46,8 @@ import java.util.List;
  */
 public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<BundleResponseChannel, BundleResponsePayload, BundleResponseMessage> {
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
     public TranslatorAppBundleKuraKapua() {
         super(BundleResponseMessage.class);
     }
@@ -118,10 +120,9 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
     }
 
     private void translate(BundleResponsePayload bundleResponsePayload, String charEncoding, KuraBundles kuraBundles) throws KapuaException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        DeviceBundleFactory deviceBundleFactory = locator.getFactory(DeviceBundleFactory.class);
-
         try {
+            DeviceBundleFactory deviceBundleFactory = LOCATOR.getFactory(DeviceBundleFactory.class);
+
             DeviceBundles deviceBundles = deviceBundleFactory.newBundleListResult();
             List<DeviceBundle> deviceBundlesList = deviceBundles.getBundles();
 

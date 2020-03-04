@@ -37,13 +37,14 @@ import java.util.HashMap;
  */
 public class TranslatorDataKapuaKura extends Translator<KapuaDataMessage, KuraDataMessage> {
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
+
     @Override
     public KuraDataMessage translate(KapuaDataMessage kapuaMessage) throws TranslateException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AccountService accountService = locator.getService(AccountService.class);
-
         try {
-            Account account = accountService.find(kapuaMessage.getScopeId());
+            Account account = ACCOUNT_SERVICE.find(kapuaMessage.getScopeId());
 
             if (account == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, kapuaMessage.getScopeId());

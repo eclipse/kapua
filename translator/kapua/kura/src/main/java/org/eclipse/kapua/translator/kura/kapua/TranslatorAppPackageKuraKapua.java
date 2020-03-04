@@ -53,6 +53,8 @@ import java.util.Map;
  */
 public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<PackageResponseChannel, PackageResponsePayload, PackageResponseMessage> {
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
     public TranslatorAppPackageKuraKapua() {
         super(PackageResponseMessage.class);
     }
@@ -171,22 +173,21 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
 
     private void translate(PackageResponsePayload packageResponsePayload, String charEncoding, KuraDeploymentPackages kuraDeploymentPackages) throws KapuaException {
         try {
+            DevicePackageFactory devicePackageFactory = LOCATOR.getFactory(DevicePackageFactory.class);
 
             KuraDeploymentPackage[] deploymentPackageArray = kuraDeploymentPackages.getDeploymentPackages();
             if (deploymentPackageArray != null) {
-                KapuaLocator locator = KapuaLocator.getInstance();
-                DevicePackageFactory deviceDeploymentFactory = locator.getFactory(DevicePackageFactory.class);
-                DevicePackages deviceDeploymentPackages = deviceDeploymentFactory.newDeviceDeploymentPackages();
+                DevicePackages deviceDeploymentPackages = devicePackageFactory.newDeviceDeploymentPackages();
 
                 for (KuraDeploymentPackage deploymentPackage : deploymentPackageArray) {
-                    DevicePackage deviceDeploymentPackage = deviceDeploymentFactory.newDeviceDeploymentPackage();
+                    DevicePackage deviceDeploymentPackage = devicePackageFactory.newDeviceDeploymentPackage();
                     deviceDeploymentPackage.setName(deploymentPackage.getName());
                     deviceDeploymentPackage.setVersion(deploymentPackage.getVersion());
 
                     DevicePackageBundleInfos devicePackageBundleInfos = deviceDeploymentPackage.getBundleInfos();
                     KuraBundleInfo[] bundleInfoArray = deploymentPackage.getBundleInfos();
                     for (KuraBundleInfo bundleInfo : bundleInfoArray) {
-                        DevicePackageBundleInfo devicePackageBundleInfo = deviceDeploymentFactory.newDevicePackageBundleInfo();
+                        DevicePackageBundleInfo devicePackageBundleInfo = devicePackageFactory.newDevicePackageBundleInfo();
                         devicePackageBundleInfo.setName(bundleInfo.getName());
                         devicePackageBundleInfo.setVersion(bundleInfo.getVersion());
 

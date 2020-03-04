@@ -44,6 +44,8 @@ import java.util.List;
  */
 public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<SnapshotResponseChannel, SnapshotResponsePayload, SnapshotResponseMessage> {
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
     public TranslatorAppSnapshotKuraKapua() {
         super(SnapshotResponseMessage.class);
     }
@@ -116,9 +118,9 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
 
     private void translateBody(SnapshotResponsePayload snapshotResponsePayload, String charEncoding, KuraSnapshotIds kuraSnapshotIdResult) throws TranslatorException {
         try {
+            DeviceSnapshotFactory deviceSnapshotFactory = LOCATOR.getFactory(DeviceSnapshotFactory.class);
+
             if (kuraSnapshotIdResult != null) {
-                KapuaLocator locator = KapuaLocator.getInstance();
-                DeviceSnapshotFactory deviceSnapshotFactory = locator.getFactory(DeviceSnapshotFactory.class);
                 DeviceSnapshots deviceSnapshots = deviceSnapshotFactory.newDeviceSnapshots();
 
                 List<Long> snapshotIds = kuraSnapshotIdResult.getSnapshotIds();

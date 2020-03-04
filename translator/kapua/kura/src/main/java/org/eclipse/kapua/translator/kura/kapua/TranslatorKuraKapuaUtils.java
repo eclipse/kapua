@@ -28,6 +28,9 @@ import org.eclipse.kapua.service.device.management.message.response.KapuaRespons
  */
 public final class TranslatorKuraKapuaUtils {
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final KapuaMessageFactory KAPUA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaMessageFactory.class);
+
     private TranslatorKuraKapuaUtils() {
     }
 
@@ -42,10 +45,8 @@ public final class TranslatorKuraKapuaUtils {
         KapuaPosition kapuaPosition = null;
 
         if (devicePosition != null) {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            KapuaMessageFactory kapuaMessageFactory = locator.getFactory(KapuaMessageFactory.class);
+            kapuaPosition = KAPUA_MESSAGE_FACTORY.newPosition();
 
-            kapuaPosition = kapuaMessageFactory.newPosition();
             kapuaPosition.setAltitude(devicePosition.getAltitude());
             kapuaPosition.setHeading(devicePosition.getHeading());
             kapuaPosition.setLatitude(devicePosition.getLatitude());

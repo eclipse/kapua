@@ -39,6 +39,11 @@ import org.eclipse.kapua.translator.exception.TranslateException;
  */
 public class TranslatorLifeDisconnectKuraKapua extends Translator<KuraDisconnectMessage, KapuaDisconnectMessage> {
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
+    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
+
     @Override
     public KapuaDisconnectMessage translate(KuraDisconnectMessage kuraDisconnectMessage) throws TranslateException {
         try {
@@ -46,16 +51,12 @@ public class TranslatorLifeDisconnectKuraKapua extends Translator<KuraDisconnect
             kapuaDisconnectMessage.setChannel(translate(kuraDisconnectMessage.getChannel()));
             kapuaDisconnectMessage.setPayload(translate(kuraDisconnectMessage.getPayload()));
 
-            KapuaLocator locator = KapuaLocator.getInstance();
-            AccountService accountService = locator.getService(AccountService.class);
-            Account account = accountService.findByName(kuraDisconnectMessage.getChannel().getScope());
-
+            Account account = ACCOUNT_SERVICE.findByName(kuraDisconnectMessage.getChannel().getScope());
             if (account == null) {
                 throw new KapuaEntityNotFoundException(Account.TYPE, kuraDisconnectMessage.getChannel().getScope());
             }
 
-            DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
-            Device device = deviceRegistryService.findByClientId(account.getId(), kuraDisconnectMessage.getChannel().getClientId());
+            Device device = DEVICE_REGISTRY_SERVICE.findByClientId(account.getId(), kuraDisconnectMessage.getChannel().getClientId());
             if (device == null) {
                 throw new KapuaEntityNotFoundException(Device.class.toString(), kuraDisconnectMessage.getChannel().getClientId());
             }

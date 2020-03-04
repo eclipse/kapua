@@ -31,16 +31,17 @@ import org.eclipse.kapua.translator.exception.TranslatorException;
  */
 public class TranslatorAppResponseKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<GenericResponseChannel, GenericResponsePayload, GenericResponseMessage> {
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
     public TranslatorAppResponseKuraKapua() {
         super(GenericResponseMessage.class);
     }
 
     @Override
     protected GenericResponseChannel translateChannel(KuraResponseChannel kuraChannel) throws InvalidChannelException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        GenericRequestFactory genericRequestFactory = locator.getFactory(GenericRequestFactory.class);
-
         try {
+            GenericRequestFactory genericRequestFactory = LOCATOR.getFactory(GenericRequestFactory.class);
+
             if (!getControlMessageClassifier().equals(kuraChannel.getMessageClassification())) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER, null, kuraChannel.getMessageClassification());
             }
@@ -61,10 +62,9 @@ public class TranslatorAppResponseKuraKapua extends AbstractSimpleTranslatorResp
 
     @Override
     protected GenericResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws InvalidPayloadException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        GenericRequestFactory genericRequestFactory = locator.getFactory(GenericRequestFactory.class);
-
         try {
+            GenericRequestFactory genericRequestFactory = LOCATOR.getFactory(GenericRequestFactory.class);
+
             GenericResponsePayload genericResponsePayload = genericRequestFactory.newResponsePayload();
             genericResponsePayload.setBody(kuraPayload.getBody());
             genericResponsePayload.setMetrics(kuraPayload.getMetrics());
