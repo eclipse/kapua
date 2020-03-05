@@ -114,4 +114,19 @@ public class KapuaExceptionUtils {
         }
         return ee;
     }
+
+    /**
+     * Walks the "cause" hierarchy of a {@link Throwable} until a {@link KapuaException} is found, and returns it
+     *
+     * @param       t A {@link Throwable} whose "cause" hierarchy will be searched for a {@link KapuaException}
+     * @return        The first {@link KapuaException} in the "cause" hierarchy, or null if none is found
+     * @since         1.2.0
+     */
+    public static KapuaException extractKapuaException(Throwable t) {
+        if (t instanceof KapuaException || t == null) {
+            return (KapuaException) t;
+        } else {
+            return extractKapuaException(t.getCause());
+        }
+    }
 }

@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.connection;
 
+import org.eclipse.kapua.KapuaIllegalArgumentException;
+
 /**
  * Device connection status.
  *
@@ -32,5 +34,15 @@ public enum DeviceConnectionStatus {
     /**
      * Value when andPredicate is null
      */
-    NULL
+    NULL;
+
+    public static DeviceConnectionStatus fromString(String value) throws KapuaIllegalArgumentException {
+        String ucValue = value.toUpperCase();
+        try {
+            return valueOf(ucValue);
+        } catch (Exception e) {
+            throw new KapuaIllegalArgumentException("connectionStatus", value);
+        }
+    }
+
 }
