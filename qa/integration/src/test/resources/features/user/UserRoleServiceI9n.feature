@@ -230,9 +230,8 @@ Feature: User role service integration tests
     And I add access role "test_role" to user "user1"
     And I logout
     Then I login as user with name "user1" and password "User@10031995"
-    And I create the group with name "group1"
-    And I find the group with name "group1"
-    And I update the group name to "group2"
+    And I create a group with name "group1"
+    And I change the group name from "group1" to "group2"
     And I delete the group with name "group2"
     Then No exception was thrown
     And I logout
@@ -809,7 +808,7 @@ Feature: User role service integration tests
     And I find a role with name "test_role"
     And I update the last created role name to "role1"
     And I delete the role with name "test_role"
-    And I create the group with name "TestGroup"
+    And I create a group with name "TestGroup"
     And I find the group with name "TestGroup"
     And I update the group name to "TestGroup1"
     And I delete the group with name "TestGroup1"
@@ -1315,7 +1314,7 @@ Feature: User role service integration tests
     And I add access role "Role1" to user "SubUser" in account "SubAccount"
     And I logout
     And I login as user with name "SubUser" and password "User@10031995"
-    And I create the group with name "TestGroup"
+    And I create a group with name "TestGroup"
     And I find the group with name "TestGroup"
     And I update the group name to "TestGroup1"
     When I delete the group with name "TestGroup1"

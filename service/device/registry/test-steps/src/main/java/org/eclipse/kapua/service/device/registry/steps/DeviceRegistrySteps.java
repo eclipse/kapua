@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,7 +23,6 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
@@ -45,6 +44,7 @@ import org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingPayload;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
@@ -63,6 +63,11 @@ import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
+import org.eclipse.kapua.service.authorization.group.Group;
+import org.eclipse.kapua.service.authorization.group.GroupAttributes;
+import org.eclipse.kapua.service.authorization.group.GroupFactory;
+import org.eclipse.kapua.service.authorization.group.GroupQuery;
+import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
 import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
@@ -173,6 +178,8 @@ public class DeviceRegistrySteps extends TestBase {
     private TagFactory tagFactory;
     private KapuaMessageFactory messageFactory;
     private KapuaLifecycleMessageFactory lifecycleMessageFactory;
+    private GroupService groupService;
+    private GroupFactory groupFactory;
 
     private AclCreator aclCreator;
 
@@ -225,6 +232,8 @@ public class DeviceRegistrySteps extends TestBase {
         accessInfoService = locator.getService(AccessInfoService.class);
         tagService = locator.getService(TagService.class);
         tagFactory = locator.getFactory(TagFactory.class);
+        groupService = locator.getService(GroupService.class);
+        groupFactory = locator.getFactory(GroupFactory.class);
 
         aclCreator = new AclCreator();
 
@@ -2600,6 +2609,96 @@ public class DeviceRegistrySteps extends TestBase {
             }
         } catch (KapuaException ex) {
             verifyException(ex);
+        }
+    }
+
+    @And("^I add device \"([^\"]*)\" to group \"([^\"]*)\"$")
+    public void iAddDeviceToGroup(String deviceName, String groupName) throws Exception{
+
+        try {
+            GroupQuery query = groupFactory.newQuery(getCurrentScopeId());
+            query.setPredicate(query.attributePredicate(GroupAttributes.NAME, groupName, AttributePredicate.Operator.EQUAL));
+            Group foundGroup = groupService.query(query).getFirstItem();
+
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, deviceName, AttributePredicate.Operator.EQUAL));
+            Device device = deviceRegistryService.query(tmpQuery).getFirstItem();
+
+            KapuaId groupId = foundGroup.getId();
+            device.setGroupId(groupId);
+            Device newDevice = deviceRegistryService.update(device);
+            stepData.put("Device", newDevice);
+        } catch (Exception e) {
+            verifyException(e);
+        }
+    }
+
+    @When("^I remove device \"([^\"]*)\" from all groups$")
+    public void iChangeDevicesGroupToNoGroup(String deviceName) throws Exception{
+
+        try {
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, deviceName, AttributePredicate.Operator.EQUAL));
+            Device device = deviceRegistryService.query(tmpQuery).getFirstItem();
+
+            device.setGroupId(null);
+            device = deviceRegistryService.update(device);
+            stepData.put("Device", device);
+        } catch (Exception e) {
+            verifyException(e);
+        }
+    }
+
+    @And("^I create (\\d+) devices and add them to group \"([^\"]*)\"$")
+    public void iCreateDevicesAndAddThemToGroup(int numberOfDevices, String groupName) throws Exception {
+        Group group = (Group) stepData.get("Group");
+        assertEquals(group.getName(), groupName);
+
+        try {
+            for(int i = 0; i < numberOfDevices; i++) {
+                iCreateADeviceWithName(String.format("Device%02d", i));
+                iAddDeviceToGroup(String.format("Device%02d", i), group.getName());
+            }
+        } catch (Exception e) {
+            verifyException(e);
+        }
+    }
+
+    @Then("^Device \"([^\"]*)\" is in Assigned Devices of group \"([^\"]*)\"$")
+    public void deviceIsInGroupsAssignedDevices(String deviceName, String groupName) throws Exception {
+
+        try {
+            GroupQuery query = groupFactory.newQuery(getCurrentScopeId());
+            query.setPredicate(query.attributePredicate(GroupAttributes.NAME, groupName, AttributePredicate.Operator.EQUAL));
+            Group foundGroup = groupService.query(query).getFirstItem();
+
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, deviceName, AttributePredicate.Operator.EQUAL));
+            Device device = deviceRegistryService.query(tmpQuery).getFirstItem();
+
+            KapuaId expectedGroupId = foundGroup.getId();
+            assertEquals(device.getGroupId(), expectedGroupId);
+        } catch (Exception e) {
+            verifyException(e);
+        }
+    }
+
+    @Then("^Device \"([^\"]*)\" is not in Assigned Devices of group \"([^\"]*)\"$")
+    public void deviceIsNotInGroupsAssignedDevices(String deviceName, String groupName) throws Exception {
+
+        try {
+            GroupQuery query = groupFactory.newQuery(getCurrentScopeId());
+            query.setPredicate(query.attributePredicate(GroupAttributes.NAME, groupName, AttributePredicate.Operator.EQUAL));
+            Group foundGroup = groupService.query(query).getFirstItem();
+
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, deviceName, AttributePredicate.Operator.EQUAL));
+            Device device = deviceRegistryService.query(tmpQuery).getFirstItem();
+
+            KapuaId expectedGroupId = foundGroup.getId();
+            assertNotEquals(device.getGroupId(), expectedGroupId);
+        } catch (Exception e) {
+            verifyException(e);
         }
     }
 }

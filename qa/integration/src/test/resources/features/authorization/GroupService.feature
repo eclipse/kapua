@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
+# Copyright (c) 2020 Eurotech and/or its affiliates and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -159,8 +159,8 @@ Feature: Group Service tests
       | integer | maxNumberChildEntities | 5     | 0       | 1        |
     Given I create the groups
       | scope | name        |
-      | 0     | test_name_6 |
-      | 0     | test_name_7 |
+      | 1     | test_name_6 |
+      | 1     | test_name_7 |
     And I search for the group with name "test_name_7"
     Then The group was found
     When I delete the group with name "test_name_7"
@@ -256,3 +256,278 @@ Feature: Group Service tests
     When I query for the group "test_name_25" in scope 1
     Then I count 0
     And I logout
+
+  Scenario: Creating Unique Group Without Description
+  Login as kapua-sys, go to groups, try to create a group with valid name without description.
+  Kapua should not return any errors.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure the group service
+      | type    | name                   | value | scopeId | parentId |
+      | boolean | infiniteChildEntities  | true  | 0       | 1        |
+      | integer | maxNumberChildEntities | 5     | 0       | 1        |
+    When I create a group with name "ValidGroup"
+    Then No exception was thrown
+    And I logout
+
+  Scenario: Creating Non-unique Group Without Description
+  Login as kapua-sys, go to groups, try to create a group with valid name without description. After that create another group with the same name.
+  Kapua should throw Exception.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure the group service
+      | type    | name                   | value | scopeId | parentId |
+      | boolean | infiniteChildEntities  | true  | 0       | 1        |
+      | integer | maxNumberChildEntities | 5     | 0       | 1        |
+    When I create a group with name "ValidGroup"
+    Then No exception was thrown
+    Given I expect the exception "Exception" with the text "*"
+    When I create a group with name "ValidGroup"
+    Then I logout
+
+  Scenario: Creating Group With Short Name Without Description
+  Login as kapua-sys, go to groups, try to create a group with short name (3 characters).
+  Kapua should not return any errors.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure the group service
+      | type    | name                   | value | scopeId | parentId |
+      | boolean | infiniteChildEntities  | true  | 0       | 1        |
+      | integer | maxNumberChildEntities | 5     | 0       | 1        |
+    When I create a group with name "abc"
+    Then No exception was thrown
+    Then I logout
+
+  Scenario: Creating Group With Too Short Name Without Description
+  Login as kapua-sys, go to groups, try to create a group with too short name (1 character).
+  Kapua should throw Exception.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure the group service
+      | type    | name                   | value | scopeId | parentId |
+      | boolean | infiniteChildEntities  | true  | 0       | 1        |
+      | integer | maxNumberChildEntities | 5     | 0       | 1        |
+    Given I expect the exception "Exception" with the text "*"
+    When I create a group with name "a"
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Creating Group With Long Name Without Description
+  Login as kapua-sys, go to groups, try to create a group with long name (255 characters).
+  Kapua should not return any errors.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure the group service
+      | type    | name                   | value | scopeId | parentId |
+      | boolean | infiniteChildEntities  | true  | 0       | 1        |
+      | integer | maxNumberChildEntities | 5     | 0       | 1        |
+    When I create a group with name "y6Nzz2qKaF8nbRxaRo8o9mRvH8CEvldYg0kCVq7EPfutbHvaQZf7m8eHcTBiXexxYl8zZI9taDwWGnnyMbnuOmpQp4tdmXeA9tnLx6dtuhu8vIfNU9YKyROkHW6f1RnMV8NhVChvE2eeTYdtczRzmJ5Zqx2MlHWJ68vbRqZ7Jw7BttDxB0bCveEYjg0JVJGsigZBRTifJhcQnXndfMcQ7WKAxXwJplvRx6sasjLKP2ZefVTqbxZQr1tVAuvLJvX"
+    Then No exception was thrown
+    Then I logout
+
+  Scenario: Creating Group With Too Long Name Without Description
+  Login as kapua-sys, go to groups, try to create a group with too long name (256 characters).
+  Kapua should throw Exception.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure the group service
+      | type    | name                   | value | scopeId | parentId |
+      | boolean | infiniteChildEntities  | true  | 0       | 1        |
+      | integer | maxNumberChildEntities | 5     | 0       | 1        |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "*"
+    When I create a group with name "aaay6Nzz2qKaF8nbRxaRo8o9mRvH8CEvldYg0kCVq7EPfutbHvaQZf7m8eHcTBiXexxYl8zZI9taDwWGnnyMbnuOmpQp4tdmXeA9tnLx6dtuhu8vIfNU9YKyROkHW6f1RnMV8NhVChvE2eeTYdtczRzmJ5Zqx2MlHWJ68vbRqZ7Jw7BttDxB0bCveEYjg0JVJGsigZBRTifJhcQnXndfMcQ7WKAxXwJplvRx6sasjLKP2ZefVTqbxZQr1tVAuvLJvX"
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Creating Group With Permitted Symbols And Numbers In Name Without Description
+  Login as kapua-sys, go to groups, try to create a group with name that contains permitted symbols.
+  Kapua should not return any errors.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure the group service
+      | type    | name                   | value | scopeId | parentId |
+      | boolean | infiniteChildEntities  | true  | 0       | 1        |
+      | integer | maxNumberChildEntities | 5     | 0       | 1        |
+    When I create a group with name "Valid-group-name_1_2_3"
+    Then No exception was thrown
+    Then I logout
+
+  Scenario: Creating Group Invalid Symbols In Name Without Description
+  Login as kapua-sys, go to groups, try to create a group with name that contains invalid symbols.
+  Kapua should throw Exception.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure the group service
+      | type    | name                   | value | scopeId | parentId |
+      | boolean | infiniteChildEntities  | true  | 0       | 1        |
+      | integer | maxNumberChildEntities | 5     | 0       | 1        |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "*"
+    When I try to create groups with invalid characters in name
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Creating Group Without a Name And Without Description
+  Login as kapua-sys, go to groups, try to create a group with without a name.
+  Kapua should throw Exception.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure the group service
+      | type    | name                   | value | scopeId | parentId |
+      | boolean | infiniteChildEntities  | true  | 0       | 1        |
+      | integer | maxNumberChildEntities | 5     | 0       | 1        |
+    Given I expect the exception "Exception" with the text "*"
+    When I create a group with name ""
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Creating Unique Group With Unique Description
+  Login as kapua-sys, go to groups, try to create a group with a valid description with all possible symbols.
+  Kapua should not return any errors.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure the group service
+      | type    | name                   | value | scopeId | parentId |
+      | boolean | infiniteChildEntities  | true  | 0       | 1        |
+      | integer | maxNumberChildEntities | 5     | 0       | 1        |
+    Given I create the group with name "Group1" and description "Valid_description-123 !#$%&'()=»Ç>:;<-.,⁄@‹›€*ı–°·‚_±Œ„‰?“‘”’ÉØ∏{}|ÆæÒÔÓÌÏÎÍÅ«◊Ñˆ¯Èˇ¿"
+    Then No exception was thrown
+    Then I logout
+
+  Scenario: Creating Unique Group With Non-unique Description
+  Login as kapua-sys, go to groups, try to create a group with a non-unique description.
+  Kapua should not return any errors.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure the group service
+      | type    | name                   | value | scopeId | parentId |
+      | boolean | infiniteChildEntities  | true  | 0       | 1        |
+      | integer | maxNumberChildEntities | 5     | 0       | 1        |
+    Given I create the group with name "Group1" and description "Non-unique description"
+    And I create the group with name "Group2" and description "Non-unique description"
+    Then No exception was thrown
+    Then I logout
+
+  Scenario: Creating Non-Unique Group With Valid Description
+  Login as kapua-sys, go to groups, try to create a group with a non-unique description.
+  Kapua should throw Exception.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure the group service
+      | type    | name                   | value | scopeId | parentId |
+      | boolean | infiniteChildEntities  | true  | 0       | 1        |
+      | integer | maxNumberChildEntities | 5     | 0       | 1        |
+    Given I create the group with name "Group1" and description "Non-unique description"
+    Given I expect the exception "Exception" with the text "*"
+    When I create the group with name "Group1" and description "Non-unique description"
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Creating Group With Short Name With Valid Description
+  Login as kapua-sys, go to groups, try to create a group with short (3 characters) name and valid description.
+  Kapua should not return any errors.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure the group service
+      | type    | name                   | value | scopeId | parentId |
+      | boolean | infiniteChildEntities  | true  | 0       | 1        |
+      | integer | maxNumberChildEntities | 5     | 0       | 1        |
+    When I create the group with name "abc" and description "Valid description 123"
+    Then No exception was thrown
+    Then I logout
+
+  Scenario: Creating Group With Too Short Name With Valid Description
+  Login as kapua-sys, go to groups, try to create a group with too short (1 character) name and valid description.
+  Kapua should throw Exception.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure the group service
+      | type    | name                   | value | scopeId | parentId |
+      | boolean | infiniteChildEntities  | true  | 0       | 1        |
+      | integer | maxNumberChildEntities | 5     | 0       | 1        |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "*"
+    When I create the group with name "a" and description "Valid description 123"
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Creating Group With Long Name With Valid Description
+  Login as kapua-sys, go to groups, try to create a group with long (255 characters) name and valid description.
+  Kapua should not return any errors.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure the group service
+      | type    | name                   | value | scopeId | parentId |
+      | boolean | infiniteChildEntities  | true  | 0       | 1        |
+      | integer | maxNumberChildEntities | 5     | 0       | 1        |
+    When I create the group with name "PxYHG9FEvy3d4CKlLwoA7b5FTk7XptHr1TZoKVft4Qhxe4BwjQE5zGFn5Jh0AGSQjbAv0ooPPBCRasXk0lnjeeHiU5mWM2KxG98ziV5WIxnUaZhIpGVfV8bqhQobJtx4QrIPizEPpG0p6DCcS72ulKqnoVsusqEkDsBBadZjhZzy4NbauKnlZnAoXerKBg23ku0CDDaB1boKqrlZ4yGmoLjgSWz4GMg6SCfjYabOCkt73HOs0SlZowCCmtzb7kF" and description "Valid description 123"
+    Then No exception was thrown
+    Then I logout
+
+  Scenario: Creating Group With Too Long Name With Valid Description
+  Login as kapua-sys, go to groups, try to create a group with too long (256) name and valid description.
+  Kapua should throw Exception.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure the group service
+      | type    | name                   | value | scopeId | parentId |
+      | boolean | infiniteChildEntities  | true  | 0       | 1        |
+      | integer | maxNumberChildEntities | 5     | 0       | 1        |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "*"
+    When I create the group with name "aPxYHG9FEvy3d4CKlLwoA7b5FTk7XptHr1TZoKVft4Qhxe4BwjQE5zGFn5Jh0AGSQjbAv0ooPPBCRasXk0lnjeeHiU5mWM2KxG98ziV5WIxnUaZhIpGVfV8bqhQobJtx4QrIPizEPpG0p6DCcS72ulKqnoVsusqEkDsBBadZjhZzy4NbauKnlZnAoXerKBg23ku0CDDaB1boKqrlZ4yGmoLjgSWz4GMg6SCfjYabOCkt73HOs0SlZowCCmtzb7kF" and description "Valid description 123"
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Creating Group With Permitted Symbols In Name With Valid Description
+  Login as kapua-sys, go to groups, try to create a group with permitted symbols in name and valid description.
+  Kapua should not return any errors.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure the group service
+      | type    | name                   | value | scopeId | parentId |
+      | boolean | infiniteChildEntities  | true  | 0       | 1        |
+      | integer | maxNumberChildEntities | 5     | 0       | 1        |
+    When I create the group with name "Group-1_2_3" and description "Valid description 123"
+    Then No exception was thrown
+    Then I logout
+
+  Scenario: Creating Group With Invalid Symbols In Name With Valid Description
+  Login as kapua-sys, go to groups, try to create a group with invalid symbols in name and valid description.
+  Kapua should throw Exception.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure the group service
+      | type    | name                   | value | scopeId | parentId |
+      | boolean | infiniteChildEntities  | true  | 0       | 1        |
+      | integer | maxNumberChildEntities | 5     | 0       | 1        |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "*"
+    When I create the group with name "Group@123" and description "Valid description 123"
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Creating Group Without a Name And With Valid Description
+  Login as kapua-sys, go to groups, try to create a group without a name and valid description.
+  Kapua should throw Exception.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure the group service
+      | type    | name                   | value | scopeId | parentId |
+      | boolean | infiniteChildEntities  | true  | 0       | 1        |
+      | integer | maxNumberChildEntities | 5     | 0       | 1        |
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "*"
+    When I create the group with name "" and description "Valid description 123"
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Creating Group With Numbers In Name With Valid Description
+  Login as kapua-sys, go to groups, try to create a group with name that contains numbers and valid description.
+  Kapua should not return any errors.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure the group service
+      | type    | name                   | value | scopeId | parentId |
+      | boolean | infiniteChildEntities  | true  | 0       | 1        |
+      | integer | maxNumberChildEntities | 5     | 0       | 1        |
+    When I create the group with name "Group1234567890" and description "Valid description 123"
+    Then No exception was thrown
+    When I create the group with name "1234567890" and description "Valid description 123"
+    Then No exception was thrown
+    Then I logout
