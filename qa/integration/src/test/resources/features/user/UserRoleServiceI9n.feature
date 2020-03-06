@@ -308,9 +308,8 @@ Feature: User role service integration tests
     And I add access role "test_role" to user "user1"
     And I logout
     Then I login as user with name "user1" and password "User@10031995"
-    And I create a tag with name "tag1"
-    And I find a tag with name "tag1"
-    And I try to edit tag to name "tag2"
+    And I create tag with name "tag1" without description
+    And Name of tag "tag1" is changed into "tag2"
     And I delete the tag with name "tag2"
     Then No exception was thrown
     And I logout
@@ -799,9 +798,9 @@ Feature: User role service integration tests
     And I find a job with name "TestJob"
     And I try to edit job to name "TestJob1"
     And I try to delete the job with name "TestJob1"
-    And I create a tag with name "Tag"
+    And I create tag with name "Tag" without description
     And I find a tag with name "Tag"
-    And I try to edit tag to name "Tag1"
+    And Name of tag "Tag" is changed into "Tag1"
     And I delete the tag with name "Tag1"
     And I create the following role
       | scopeId | name      |
@@ -1457,9 +1456,9 @@ Feature: User role service integration tests
     And I add access role "Role1" to user "SubUser" in account "SubAccount"
     And I logout
     And I login as user with name "SubUser" and password "User@10031995"
-    And I create a tag with name "TestTag"
+    And I create tag with name "TestTag" without description
     And I find a tag with name "TestTag"
-    And I try to edit tag to name "TestTag1"
+    And Name of tag "TestTag" is changed into "TestTag1"
     And I delete the tag with name "TestTag1"
     And No exception was thrown
     And I logout

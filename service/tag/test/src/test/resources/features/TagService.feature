@@ -20,7 +20,7 @@ Feature: Tag Service
     Create a tag entry, with specified name. Name is only tag specific attribute.
     Once created search for it and is should been created.
 
-    Given I create a tag with name "tagName"
+    Given Tag with name "tagName"
     When Tag with name "tagName" is searched
     Then I find a tag with name "tagName"
       
@@ -28,6 +28,6 @@ Feature: Tag Service
     Create a tag entry, with specified name. Name is only tag specific attribute.
     Once created search and find it, then delete it.
 
-    Given I create a tag with name "tagName2"
+    Given Tag with name "tagName2"
     When Tag with name "tagName2" is searched
     Then I find and delete tag with name "tagName2"

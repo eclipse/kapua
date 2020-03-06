@@ -384,7 +384,7 @@ Feature: User Permission tests
       | tag     | delete |
     Then I logout
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
-    Given I create a tag with name "tag_a"
+    Given I create tag with name "tag_a" without description
     When Tag with name "tag_a" is searched
     Then I find a tag with name "tag_a"
     Then I find and delete tag with name "tag_a"
@@ -1441,7 +1441,7 @@ Feature: User Permission tests
       | account | delete |
     And A device named "test_device"
     And I create a job with the name "test_job"
-    And I create a tag with name "test_tag"
+    And I create tag with name "test_tag" without description
     And I create the group with name "test_group"
     And I create the following role
       | scopeId | name      |
