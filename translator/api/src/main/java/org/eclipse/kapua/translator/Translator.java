@@ -12,9 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator;
 
+import org.eclipse.kapua.message.Channel;
 import org.eclipse.kapua.message.Message;
+import org.eclipse.kapua.message.Payload;
 import org.eclipse.kapua.translator.cache.TranslatorCache;
+import org.eclipse.kapua.translator.exception.InvalidChannelException;
+import org.eclipse.kapua.translator.exception.InvalidMessageException;
+import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
+import org.eclipse.kapua.translator.exception.TranslatorException;
 import org.eclipse.kapua.translator.exception.TranslatorNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +88,16 @@ public abstract class Translator<FROM_M extends Message, TO_M extends Message> {
      *
      * @param message The {@link Message} to translate.
      * @return the translated {@link Message}.
-     * @throws TranslateException When translating a {@link Message} cannot be performed properly, perhaps due to a processing error.
+     * @throws InvalidChannelException If the {@link Channel} cannot be translated.
+     * @throws InvalidPayloadException If the {@link Payload} cannot be translated.
+     * @throws InvalidMessageException If the {@link Message} cannot be translated.
+     * @throws TranslateException      This is the parent {@link TranslatorException} of:
+     *                                 <ul>
+     *                                     <li>InvalidChannelException</li>
+     *                                     <li>InvalidPayloadException</li>
+     *                                     <li>InvalidMessageException</li>
+     *                                 </ul>
+     *                                 which can be used to catch 'em all.
      * @since 1.0.0
      */
     public abstract TO_M translate(FROM_M message) throws TranslateException;
