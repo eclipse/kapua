@@ -30,6 +30,7 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.user.UserService;
 
 import com.opencsv.CSVWriter;
+import org.apache.commons.lang3.CharEncoding;
 
 public class DeviceEventExporterCsv extends DeviceEventExporter {
 
@@ -50,11 +51,11 @@ public class DeviceEventExporterCsv extends DeviceEventExporter {
         dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
 
         response.setContentType("text/csv");
-        response.setCharacterEncoding("UTF-8");
-        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(clientId, "UTF-8") + "_device_events.csv");
+        response.setCharacterEncoding(CharEncoding.UTF_8);
+        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(clientId, CharEncoding.UTF_8) + "_device_events.csv");
         response.setHeader("Cache-Control", "no-transform, max-age=0");
 
-        OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), Charset.forName("UTF-8"));
+        OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), Charset.forName(CharEncoding.UTF_8));
         writer = new CSVWriter(osw);
 
         List<String> cols = new ArrayList<String>();

@@ -62,6 +62,9 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
     private static final UserService USER_SERVICE = LOCATOR.getService(UserService.class);
     private static final UserFactory USER_FACTORY = LOCATOR.getFactory(UserFactory.class);
 
+    private static final String ENDPOINT_INFO = "endpointInfo";
+    private static final String ENTITY_INFO = "entityInfo";
+
     @Override
     public GwtEndpoint create(GwtEndpointCreator gwtEndpointCreator) throws GwtKapuaException {
         GwtEndpoint gwtEndpoint = null;
@@ -201,22 +204,22 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
                     usernameMap.put(user.getId().toCompactId(), user.getName());
                 }
 
-                gwtEndpointDescription.add(new GwtGroupedNVPair("endpointInfo", "endpointSchema", endpointInfo.getSchema()));
-                gwtEndpointDescription.add(new GwtGroupedNVPair("endpointInfo", "endpointDns", endpointInfo.getDns()));
-                gwtEndpointDescription.add(new GwtGroupedNVPair("endpointInfo", "endpointPort", endpointInfo.getPort()));
-                gwtEndpointDescription.add(new GwtGroupedNVPair("endpointInfo", "endpointSecure", endpointInfo.getSecure()));
+                gwtEndpointDescription.add(new GwtGroupedNVPair(ENDPOINT_INFO, "endpointSchema", endpointInfo.getSchema()));
+                gwtEndpointDescription.add(new GwtGroupedNVPair(ENDPOINT_INFO, "endpointDns", endpointInfo.getDns()));
+                gwtEndpointDescription.add(new GwtGroupedNVPair(ENDPOINT_INFO, "endpointPort", endpointInfo.getPort()));
+                gwtEndpointDescription.add(new GwtGroupedNVPair(ENDPOINT_INFO, "endpointSecure", endpointInfo.getSecure()));
 
                 List<String> usages = new ArrayList<String>();
                 for (EndpointUsage eu : endpointInfo.getUsages()) {
                     usages.add(eu.getName());
                 }
-                gwtEndpointDescription.add(new GwtGroupedNVPair("endpointInfo", "endpointUsages", usages));
+                gwtEndpointDescription.add(new GwtGroupedNVPair(ENDPOINT_INFO, "endpointUsages", usages));
 
-                gwtEndpointDescription.add(new GwtGroupedNVPair("entityInfo", "endpointModifiedOn", endpointInfo.getModifiedOn()));
-                gwtEndpointDescription.add(new GwtGroupedNVPair("entityInfo", "endpointModifiedBy",
+                gwtEndpointDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "endpointModifiedOn", endpointInfo.getModifiedOn()));
+                gwtEndpointDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "endpointModifiedBy",
                         endpointInfo.getModifiedBy() != null ? usernameMap.get(endpointInfo.getModifiedBy().toCompactId()) : null));
-                gwtEndpointDescription.add(new GwtGroupedNVPair("entityInfo", "endpointCreatedOn", endpointInfo.getCreatedOn()));
-                gwtEndpointDescription.add(new GwtGroupedNVPair("entityInfo", "endpointCreatedBy",
+                gwtEndpointDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "endpointCreatedOn", endpointInfo.getCreatedOn()));
+                gwtEndpointDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "endpointCreatedBy",
                         endpointInfo.getCreatedBy() != null ? usernameMap.get(endpointInfo.getCreatedBy().toCompactId()) : null));
 
             }

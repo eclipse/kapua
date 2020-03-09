@@ -40,6 +40,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaDateField;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaNumberField;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.module.api.client.util.CssLiterals;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.AfterDateValidator;
@@ -75,6 +76,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
     private static final String TRIGGER_DEFINITION_NAME_INTERVAL = "Interval Job";
     private static final String TRIGGER_DEFINITION_NAME_CRON = "Cron Job";
     private static final String TRIGGER_DEFINITION_NAME_DEVICE_CONNECT = "Device Connect";
+    private static final String DATE_FORMAT = "dd/MM/yyyy";
 
     private final String jobId;
 
@@ -103,12 +105,12 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         triggerName = new KapuaTextField<String>();
         startsOn = new KapuaDateField(this);
         startsOn.setMaxLength(10);
-        startsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
+        startsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat(DATE_FORMAT));
         startsOnTime = new TimeField();
         startsOnTime.setEditable(false);
         endsOn = new KapuaDateField(this);
         endsOn.setMaxLength(10);
-        endsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
+        endsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat(DATE_FORMAT));
         endsOnTime = new TimeField();
         endsOnTime.setEditable(false);
         startsOnLabel = new Label();
@@ -148,19 +150,19 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
 
         startsOnLabel.setText("* " + JOB_MSGS.dialogAddScheduleStartsOnLabel());
         startsOnLabel.setWidth(FORM_LABEL_WIDTH);
-        startsOnLabel.setStyleAttribute("padding", "0px 88px 0px 0px");
+        startsOnLabel.setStyleAttribute(CssLiterals.PADDING, "0px 88px 0px 0px");
 
         startsOn.setFormatValue(true);
         startsOn.setAllowBlank(false);
         startsOn.setWidth(140);
         startsOn.setEmptyText(JOB_MSGS.dialogAddScheduleDatePlaceholder());
-        startsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
+        startsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat(DATE_FORMAT));
         startsOn.setToolTip(JOB_MSGS.dialogAddScheduleStartsOnTooltip());
         startsOn.setValidator(new AfterDateValidator(endsOn));
         startsOn.getDatePicker().addListener(Events.Select, listener);
         startsOn.setValue(new Date());
         startsOn.setMinValue(new Date());
-        startsOn.getMessages().setMinText(JOB_MSGS.dialogAddScheduleStartsOnDateMin(DateTimeFormat.getFormat("dd/MM/yyyy").format(startsOn.getMinValue())));
+        startsOn.getMessages().setMinText(JOB_MSGS.dialogAddScheduleStartsOnDateMin(DateTimeFormat.getFormat(DATE_FORMAT).format(startsOn.getMinValue())));
 
         startsOnTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
         startsOnTime.setAllowBlank(false);
@@ -183,17 +185,17 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         endsOnLabel.setText(JOB_MSGS.dialogAddScheduleEndsOnLabel());
         endsOnLabel.setStyleAttribute("margin-left", "10px");
         endsOnLabel.setWidth(FORM_LABEL_WIDTH);
-        endsOnLabel.setStyleAttribute("padding", "0px 92px 0px 0px");
+        endsOnLabel.setStyleAttribute(CssLiterals.PADDING, "0px 92px 0px 0px");
 
         endsOn.setFormatValue(true);
         endsOn.setWidth(140);
         endsOn.setEmptyText(JOB_MSGS.dialogAddScheduleDatePlaceholder());
-        endsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
+        endsOn.getPropertyEditor().setFormat(DateTimeFormat.getFormat(DATE_FORMAT));
         endsOn.setToolTip(JOB_MSGS.dialogAddScheduleEndsOnTooltip());
         endsOn.setValidator(new BeforeDateValidator(startsOn));
         endsOn.getDatePicker().addListener(Events.Select, listener);
         endsOn.setMinValue(new Date());
-        endsOn.getMessages().setMinText(JOB_MSGS.dialogAddScheduleStartsOnDateMin(DateTimeFormat.getFormat("dd/MM/yyyy").format(endsOn.getMinValue())));
+        endsOn.getMessages().setMinText(JOB_MSGS.dialogAddScheduleStartsOnDateMin(DateTimeFormat.getFormat(DATE_FORMAT).format(endsOn.getMinValue())));
 
         endsOnTime.setFormat(DateTimeFormat.getFormat("HH:mm"));
         endsOnTime.setEditable(false);
@@ -206,7 +208,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
         endsOnTime.addListener(Events.Select, listener);
 
         HorizontalPanel endsOnPanel = new HorizontalPanel();
-        endsOnPanel.setStyleAttribute("padding", "4px 0px 4px 0px");
+        endsOnPanel.setStyleAttribute(CssLiterals.PADDING, "4px 0px 4px 0px");
         endsOnPanel.add(endsOnLabel);
         endsOnPanel.add(endsOn);
         endsOnPanel.add(endsOnTime);

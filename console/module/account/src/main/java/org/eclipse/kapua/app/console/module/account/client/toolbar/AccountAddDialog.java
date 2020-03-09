@@ -79,6 +79,8 @@ public class AccountAddDialog extends EntityAddEditDialog {
     protected final KapuaTextField<String> organizationStateProvinceCounty = new KapuaTextField<String>();
     protected final KapuaTextField<String> organizationCountry = new KapuaTextField<String>();
 
+    private static final String ERROR = "Error";
+
     public AccountAddDialog(GwtSession currentSession) {
         super(currentSession);
         DialogUtils.resizeDialog(this, 600, 580);
@@ -289,13 +291,13 @@ public class AccountAddDialog extends EntityAddEditDialog {
 
     public void validateAccount() {
         if (accountNameField.getValue() == null || organizationName.getValue() == null || organizationEmail.getValue() == null) {
-            ConsoleInfo.display("Error", CMSGS.allFieldsRequired());
+            ConsoleInfo.display(ERROR, CMSGS.allFieldsRequired());
         } else if (!expirationDateField.isValid()) {
-            ConsoleInfo.display("Error", KapuaSafeHtmlUtils.htmlUnescape(expirationDateField.getErrorMessage()));
+            ConsoleInfo.display(ERROR, KapuaSafeHtmlUtils.htmlUnescape(expirationDateField.getErrorMessage()));
         } else if (!organizationEmail.isValid()) {
-            ConsoleInfo.display("Error", organizationEmail.getErrorMessage());
+            ConsoleInfo.display(ERROR, organizationEmail.getErrorMessage());
         } else if (!organizationPhoneNumber.isValid()) {
-            ConsoleInfo.display("Error", organizationPhoneNumber.getErrorMessage());
+            ConsoleInfo.display(ERROR, organizationPhoneNumber.getErrorMessage());
         }
     }
 

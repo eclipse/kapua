@@ -67,6 +67,8 @@ public class TopicsTable extends LayoutContainer {
 
     AsyncCallback<List<GwtTopic>> topicsCallback;
 
+    private static final String TOPIC_NAME = "topicName";
+
     public TopicsTable(GwtSession currentGwtSession) {
         this.currentSession = currentGwtSession;
         topicsCallback = new AsyncCallback<List<GwtTopic>>() {
@@ -74,7 +76,7 @@ public class TopicsTable extends LayoutContainer {
             @Override
             public void onSuccess(List<GwtTopic> topics) {
                 store.add(topics, true);
-                store.sort("topicName", Style.SortDir.ASC);
+                store.sort(TOPIC_NAME, Style.SortDir.ASC);
                 updateTimestamps(new ArrayList<ModelData>(topics));
                 topicInfoGrid.unmask();
                 topicInfoGrid.getView().scrollToTop();
@@ -150,7 +152,7 @@ public class TopicsTable extends LayoutContainer {
     private void initTopicInfoGrid() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig column = new ColumnConfig("topicName", MSGS.topicInfoTableTopicHeader(), 150);
+        ColumnConfig column = new ColumnConfig(TOPIC_NAME, MSGS.topicInfoTableTopicHeader(), 150);
         column.setRenderer(new TreeGridCellRenderer<GwtTopic>());
         configs.add(column);
 
@@ -159,7 +161,7 @@ public class TopicsTable extends LayoutContainer {
         configs.add(column);
 
         store = new TreeStore<GwtTopic>();
-        store.setSortInfo(new SortInfo("topicName", Style.SortDir.ASC));
+        store.setSortInfo(new SortInfo(TOPIC_NAME, Style.SortDir.ASC));
         dataService.findTopicsTree(currentSession.getSelectedAccountId(), topicsCallback);
         topicInfoGrid = new KapuaTreeGrid<GwtTopic>(store, new ColumnModel(configs));
         topicInfoGrid.getView().setViewConfig(new GridViewConfig() {

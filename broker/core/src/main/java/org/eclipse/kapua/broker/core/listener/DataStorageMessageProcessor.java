@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMessage<?>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(DataStorageMessageProcessor.class);
-    private static final String METRIC_COMPONENT_NAME = "datastore";
 
     private final MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
 
@@ -47,9 +46,9 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
         super("DataStorage");
         MetricsService metricService = MetricServiceFactory.getInstance();
 
-        metricQueueCommunicationErrorCount = metricService.getCounter(METRIC_COMPONENT_NAME, "datastore", "store", "queue", "communication", "error", "count");
-        metricQueueConfigurationErrorCount = metricService.getCounter(METRIC_COMPONENT_NAME, "datastore", "store", "queue", "configuration", "error", "count");
-        metricQueueGenericErrorCount = metricService.getCounter(METRIC_COMPONENT_NAME, "datastore", "store", "queue", "generic", "error", "count");
+        metricQueueCommunicationErrorCount = metricService.getCounter(DataStoreMetrics.METRIC_MODULE_NAME, DataStoreMetrics.METRIC_COMPONENT_NAME, DataStoreMetrics.METRIC_STORE, DataStoreMetrics.METRIC_QUEUE, DataStoreMetrics.METRIC_COMMUNICATION, DataStoreMetrics.METRIC_ERROR, DataStoreMetrics.METRIC_COUNT);
+        metricQueueConfigurationErrorCount = metricService.getCounter(DataStoreMetrics.METRIC_MODULE_NAME, DataStoreMetrics.METRIC_COMPONENT_NAME, DataStoreMetrics.METRIC_STORE, DataStoreMetrics.METRIC_QUEUE, DataStoreMetrics.METRIC_CONFIGURATION, DataStoreMetrics.METRIC_ERROR, DataStoreMetrics.METRIC_COUNT);
+        metricQueueGenericErrorCount = metricService.getCounter(DataStoreMetrics.METRIC_MODULE_NAME, DataStoreMetrics.METRIC_COMPONENT_NAME, DataStoreMetrics.METRIC_STORE, DataStoreMetrics.METRIC_QUEUE, DataStoreMetrics.METRIC_GENERIC, DataStoreMetrics.METRIC_ERROR, DataStoreMetrics.METRIC_COUNT);
     }
 
     /**

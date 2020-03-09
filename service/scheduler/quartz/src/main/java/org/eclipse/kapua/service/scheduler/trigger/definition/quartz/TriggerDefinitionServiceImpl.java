@@ -45,6 +45,8 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
     @Inject
     private PermissionFactory permissionFactory;
 
+    private static final String STEP_DEFINITION_ID = "stepDefinitionId";
+
     public TriggerDefinitionServiceImpl() {
         super(SchedulerEntityManagerFactory.getInstance());
     }
@@ -89,7 +91,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
     public TriggerDefinition find(KapuaId stepDefinitionId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(stepDefinitionId, "stepDefinitionId");
+        ArgumentValidator.notNull(stepDefinitionId, STEP_DEFINITION_ID);
 
         //
         // Check Access
@@ -104,7 +106,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
     public TriggerDefinition find(KapuaId scopeId, KapuaId stepDefinitionId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(stepDefinitionId, "stepDefinitionId");
+        ArgumentValidator.notNull(stepDefinitionId, STEP_DEFINITION_ID);
 
         //
         // Check Access
@@ -169,7 +171,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(stepDefinitionId, "stepDefinitionId");
+        ArgumentValidator.notNull(stepDefinitionId, STEP_DEFINITION_ID);
 
         //
         // Check Access

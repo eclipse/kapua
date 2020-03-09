@@ -23,13 +23,16 @@ public class GwtDatastoreDevice extends KapuaBaseModel implements Serializable {
 
     public static final Date NO_TIMESTAMP = new Date(0);
 
+    private static final String DEVICE = "device";
+    private static final String TIMESTAMP = "timestamp";
+
     public GwtDatastoreDevice() {
         super();
     }
 
     public GwtDatastoreDevice(String device, Date timestamp) {
-        set("device", device);
-        set("timestamp", timestamp);
+        set(DEVICE, device);
+        set(TIMESTAMP, timestamp);
     }
 
     @Override
@@ -42,11 +45,11 @@ public class GwtDatastoreDevice extends KapuaBaseModel implements Serializable {
     }
 
     public String getDevice() {
-        return (String) get("device");
+        return (String) get(DEVICE);
     }
 
     public String getUnescapedDevice() {
-        return (String) getUnescaped("device");
+        return (String) getUnescaped(DEVICE);
     }
 
     public String getFriendlyDevice() {
@@ -58,7 +61,7 @@ public class GwtDatastoreDevice extends KapuaBaseModel implements Serializable {
     }
 
     public Date getTimestamp() {
-        return (Date) get("timestamp");
+        return (Date) get(TIMESTAMP);
     }
 
     public String getTimestampFormatted() {
@@ -66,7 +69,7 @@ public class GwtDatastoreDevice extends KapuaBaseModel implements Serializable {
     }
 
     public void setTimestamp(Date timestamp) {
-        set("timestamp", timestamp);
+        set(TIMESTAMP, timestamp);
     }
 
     public String getClientId() {

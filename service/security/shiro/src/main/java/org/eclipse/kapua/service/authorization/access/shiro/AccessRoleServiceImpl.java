@@ -47,6 +47,8 @@ import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizatio
 @KapuaProvider
 public class AccessRoleServiceImpl extends AbstractKapuaService implements AccessRoleService {
 
+    private static final String SCOPE_ID = "scopeId";
+
     public AccessRoleServiceImpl() {
         super(AuthorizationEntityManagerFactory.getInstance(), AccessRoleCacheFactory.getInstance());
     }
@@ -108,7 +110,7 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
 
     @Override
     public void delete(KapuaId scopeId, KapuaId accessRoleId) throws KapuaException {
-        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(accessRoleId, "accessRoleId");
 
         // Check Access
@@ -136,7 +138,7 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
     @Override
     public AccessRole find(KapuaId scopeId, KapuaId accessRoleId)
             throws KapuaException {
-        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(accessRoleId, "accessRoleId");
 
         //
@@ -154,7 +156,7 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
     @Override
     public AccessRoleListResult findByAccessInfoId(KapuaId scopeId, KapuaId accessInfoId)
             throws KapuaException {
-        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(accessInfoId, "accessInfoId");
 
         //

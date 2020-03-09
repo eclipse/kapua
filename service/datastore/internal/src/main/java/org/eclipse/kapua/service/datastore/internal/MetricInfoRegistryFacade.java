@@ -58,13 +58,16 @@ public class MetricInfoRegistryFacade {
     private final ConfigurationProvider configProvider;
     private DatastoreClient client;
 
+    private static final String QUERY = "query";
+    private static final String QUERY_SCOPE_ID = "query.scopeId";
+    private static final String STORAGE_NOT_ENABLED = "Storage not enabled for account {}, returning empty result";
+
     /**
      * Constructs the metric info registry facade
      *
      * @param configProvider
      * @param mediator
      * @throws ClientUnavailableException
-     * 
      * @since 1.0.0
      */
     public MetricInfoRegistryFacade(ConfigurationProvider configProvider, MetricInfoRegistryMediator mediator) throws ClientUnavailableException {
@@ -75,7 +78,7 @@ public class MetricInfoRegistryFacade {
 
     /**
      * Update the metric information after a message store operation (for a single metric)
-     * 
+     *
      * @param metricInfo
      * @return
      * @throws KapuaIllegalArgumentException
@@ -120,7 +123,7 @@ public class MetricInfoRegistryFacade {
 
     /**
      * Update the metrics informations after a message store operation (for few metrics)
-     * 
+     *
      * @param metricInfos
      * @return
      * @throws KapuaIllegalArgumentException
@@ -250,7 +253,7 @@ public class MetricInfoRegistryFacade {
 
     /**
      * Find metrics informations matching the given query
-     * 
+     *
      * @param query
      * @return
      * @throws KapuaIllegalArgumentException
@@ -263,14 +266,14 @@ public class MetricInfoRegistryFacade {
             ConfigurationException,
             QueryMappingException,
             ClientException {
-        ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
+        ArgumentValidator.notNull(query, QUERY);
+        ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
         MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
-            logger.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
+            logger.debug(STORAGE_NOT_ENABLED, query.getScopeId());
             return new MetricInfoListResultImpl();
         }
 
@@ -282,7 +285,7 @@ public class MetricInfoRegistryFacade {
 
     /**
      * Get metrics informations count matching the given query
-     * 
+     *
      * @param query
      * @return
      * @throws KapuaIllegalArgumentException
@@ -295,14 +298,14 @@ public class MetricInfoRegistryFacade {
             ConfigurationException,
             QueryMappingException,
             ClientException {
-        ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
+        ArgumentValidator.notNull(query, QUERY);
+        ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
         MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
-            logger.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
+            logger.debug(STORAGE_NOT_ENABLED, query.getScopeId());
             return 0;
         }
 
@@ -315,7 +318,7 @@ public class MetricInfoRegistryFacade {
      * Delete metrics informations count matching the given query.<br>
      * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
      * It just deletes the metric info registry entries that matching the query without checking the consistency of the others registries or the message store.</b>
-     * 
+     *
      * @param query
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
@@ -327,14 +330,14 @@ public class MetricInfoRegistryFacade {
             ConfigurationException,
             QueryMappingException,
             ClientException {
-        ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
+        ArgumentValidator.notNull(query, QUERY);
+        ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
         MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
-            logger.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
+            logger.debug(STORAGE_NOT_ENABLED, query.getScopeId());
         }
 
         String indexName = SchemaUtil.getKapuaIndexName(query.getScopeId());

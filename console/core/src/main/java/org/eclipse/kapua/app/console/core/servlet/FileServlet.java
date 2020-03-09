@@ -31,6 +31,7 @@ import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,11 +50,14 @@ public class FileServlet extends KapuaHttpServlet {
     private static final long serialVersionUID = -5016170117606322129L;
     private static final Logger logger = LoggerFactory.getLogger(FileServlet.class);
 
+    private static final String SCOPE_ID_STRING = "scopeIdString";
+    private static final String DEVICE_ID_STRING = "deviceIdString";
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         resp.setContentType("text/html");
-        resp.setCharacterEncoding("UTF-8");
+        resp.setCharacterEncoding(CharEncoding.UTF_8);
 
         String reqPathInfo = req.getPathInfo();
         if (reqPathInfo == null) {
@@ -85,15 +89,15 @@ public class FileServlet extends KapuaHttpServlet {
             throws IOException {
         try {
             List<FileItem> fileItems = kapuaFormFields.getFileItems();
-            String scopeIdString = kapuaFormFields.get("scopeIdString");
-            String deviceIdString = kapuaFormFields.get("deviceIdString");
+            String scopeIdString = kapuaFormFields.get(SCOPE_ID_STRING);
+            String deviceIdString = kapuaFormFields.get(DEVICE_ID_STRING);
 
             if (scopeIdString == null || scopeIdString.isEmpty()) {
-                throw new IllegalArgumentException("scopeIdString");
+                throw new IllegalArgumentException(SCOPE_ID_STRING);
             }
 
             if (deviceIdString == null || deviceIdString.isEmpty()) {
-                throw new IllegalArgumentException("deviceIdString");
+                throw new IllegalArgumentException(DEVICE_ID_STRING);
             }
 
             if (fileItems == null || fileItems.size() != 1) {
@@ -105,7 +109,7 @@ public class FileServlet extends KapuaHttpServlet {
 
             FileItem fileItem = fileItems.get(0);
             byte[] data = fileItem.get();
-            String xmlConfigurationString = new String(data, "UTF-8");
+            String xmlConfigurationString = new String(data, CharEncoding.UTF_8);
 
             deviceConfigurationManagementService.put(KapuaEid.parseCompactId(scopeIdString),
                     KapuaEid.parseCompactId(deviceIdString),
@@ -144,8 +148,8 @@ public class FileServlet extends KapuaHttpServlet {
         try {
             List<FileItem> fileItems = kapuaFormFields.getFileItems();
 
-            final String scopeIdString = kapuaFormFields.get("scopeIdString");
-            final String deviceIdString = kapuaFormFields.get("deviceIdString");
+            final String scopeIdString = kapuaFormFields.get(SCOPE_ID_STRING);
+            final String deviceIdString = kapuaFormFields.get(DEVICE_ID_STRING);
             final String command = kapuaFormFields.get("command");
             final String password = kapuaFormFields.get("password");
             final String timeoutString = kapuaFormFields.get("timeout");
@@ -286,9 +290,8 @@ public class FileServlet extends KapuaHttpServlet {
         }
 
         response.setContentType("application/octet-stream");
-        response.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding(CharEncoding.UTF_8);
         OutputStream out = response.getOutputStream();
         IOUtils.copy(new FileInputStream(requestedFile), out);
     }
 }
-

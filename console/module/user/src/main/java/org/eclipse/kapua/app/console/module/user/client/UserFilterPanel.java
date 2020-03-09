@@ -23,6 +23,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPane
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaDateField;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
+import org.eclipse.kapua.app.console.module.api.client.util.CssLiterals;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.user.client.messages.ConsoleUserMessages;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
@@ -58,7 +59,7 @@ public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
 
         Label clientIdLabel = new Label(USER_MSGS.filterFieldUsernameLabel());
         clientIdLabel.setWidth(WIDTH);
-        clientIdLabel.setStyleAttribute("margin", "5px");
+        clientIdLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
 
         fieldsPanel.add(clientIdLabel);
 
@@ -66,15 +67,15 @@ public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
         nameField.setName("name");
         nameField.setWidth(WIDTH);
         nameField.setMaxLength(MAX_LEN);
-        nameField.setStyleAttribute("margin-top", "0px");
-        nameField.setStyleAttribute("margin-left", "5px");
-        nameField.setStyleAttribute("margin-right", "5px");
-        nameField.setStyleAttribute("margin-bottom", "10px");
+        nameField.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        nameField.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        nameField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        nameField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(nameField);
 
         Label phoneNumberLabel = new Label(USER_MSGS.filterFieldPhoneNumber());
         phoneNumberLabel.setWidth(WIDTH);
-        phoneNumberLabel.setStyleAttribute("margin", "5px");
+        phoneNumberLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
 
         fieldsPanel.add(phoneNumberLabel);
 
@@ -82,25 +83,25 @@ public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
         phoneNumberField.setName("phoneNumber");
         phoneNumberField.setWidth(WIDTH);
         phoneNumberField.setMaxLength(MAX_LEN);
-        phoneNumberField.setStyleAttribute("margin-top", "0px");
-        phoneNumberField.setStyleAttribute("margin-left", "5px");
-        phoneNumberField.setStyleAttribute("margin-right", "5px");
-        phoneNumberField.setStyleAttribute("margin-bottom", "10px");
+        phoneNumberField.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        phoneNumberField.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        phoneNumberField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        phoneNumberField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(phoneNumberField);
 
         Label userStatusLabel = new Label(USER_MSGS.filterFieldStatusLabel());
         userStatusLabel.setWidth(WIDTH);
-        userStatusLabel.setStyleAttribute("margin", "5px");
+        userStatusLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
 
         fieldsPanel.add(userStatusLabel);
 
         statusCombo = new SimpleComboBox<GwtUser.GwtUserStatus>();
         statusCombo.setName("status");
         statusCombo.setWidth(WIDTH);
-        statusCombo.setStyleAttribute("margin-top", "0px");
-        statusCombo.setStyleAttribute("margin-left", "5px");
-        statusCombo.setStyleAttribute("margin-right", "5px");
-        statusCombo.setStyleAttribute("margin-bottom", "10px");
+        statusCombo.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        statusCombo.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        statusCombo.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        statusCombo.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         statusCombo.add(GwtUser.GwtUserStatus.ANY);
         statusCombo.add(GwtUser.GwtUserStatus.ENABLED);
         statusCombo.add(GwtUser.GwtUserStatus.DISABLED);
@@ -140,7 +141,7 @@ public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
 
         Label expirationDateLabel = new Label(USER_MSGS.filterFieldExpirationDate());
         expirationDateLabel.setWidth(WIDTH);
-        expirationDateLabel.setStyleAttribute("margin", "5px");
+        expirationDateLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
 
         fieldsPanel.add(expirationDateLabel);
 
@@ -150,16 +151,16 @@ public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
         expirationDate.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         expirationDate.setMaxLength(10);
         expirationDate.setWidth(WIDTH);
-        expirationDate.setStyleAttribute("margin-top", "0px");
-        expirationDate.setStyleAttribute("margin-left", "5px");
-        expirationDate.setStyleAttribute("margin-right", "5px");
-        expirationDate.setStyleAttribute("margin-bottom", "10px");
+        expirationDate.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        expirationDate.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        expirationDate.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        expirationDate.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
 
         fieldsPanel.add(expirationDate);
 
         Label emailLabel = new Label(USER_MSGS.filterFieldEmail());
         emailLabel.setWidth(WIDTH);
-        emailLabel.setStyleAttribute("margin", "5px");
+        emailLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
 
         fieldsPanel.add(emailLabel);
 
@@ -167,26 +168,26 @@ public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
         emailField.setName("email");
         emailField.setWidth(WIDTH);
         emailField.setMaxLength(MAX_LEN);
-        emailField.setStyleAttribute("margin-top", "0px");
-        emailField.setStyleAttribute("margin-left", "5px");
-        emailField.setStyleAttribute("margin-right", "5px");
-        emailField.setStyleAttribute("margin-bottom", "10px");
+        emailField.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        emailField.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        emailField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        emailField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
 
         fieldsPanel.add(emailField);
 
         Label displayNameLabel = new Label(USER_MSGS.filterFieldDisplayName());
         displayNameLabel.setWidth(WIDTH);
-        displayNameLabel.setStyleAttribute("margin", "5px");
+        displayNameLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
         fieldsPanel.add(displayNameLabel);
 
         displayNameField = new KapuaTextField<String>();
         displayNameField.setName("displayName");
         displayNameField.setWidth(WIDTH);
         displayNameField.setMaxLength(MAX_LEN);
-        displayNameField.setStyleAttribute("margin-top", "0px");
-        displayNameField.setStyleAttribute("margin-left", "5px");
-        displayNameField.setStyleAttribute("margin-right", "5px");
-        displayNameField.setStyleAttribute("margin-bottom", "10px");
+        displayNameField.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        displayNameField.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        displayNameField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        displayNameField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
 
         fieldsPanel.add(displayNameField);
 

@@ -48,6 +48,8 @@ public class EndpointAddDialog extends EntityAddEditDialog {
     protected CheckBoxGroup endpointSecureCheckboxGroup;
     protected CheckBox endpointSercureCheckbox;
 
+    private static final String ERROR = "Error";
+
     public EndpointAddDialog(GwtSession currentSession) {
         super(currentSession);
         DialogUtils.resizeDialog(this, 400, 220);
@@ -101,15 +103,15 @@ public class EndpointAddDialog extends EntityAddEditDialog {
 
     public void validateEndPoint() {
         if (endpointSchemaField.getValue() == null || endpointDnsField.getValue() == null) {
-            ConsoleInfo.display("Error", CMSGS.allFieldsRequired());
+            ConsoleInfo.display(ERROR, CMSGS.allFieldsRequired());
         } else if (endpointPortField.getValue() == null) {
-            ConsoleInfo.display("Error", MSGS.portFieldEmptyOrInvalid());
+            ConsoleInfo.display(ERROR, MSGS.portFieldEmptyOrInvalid());
         } else if (!endpointSchemaField.isValid()) {
-            ConsoleInfo.display("Error", endpointSchemaField.getErrorMessage());
+            ConsoleInfo.display(ERROR, endpointSchemaField.getErrorMessage());
         } else if (!endpointDnsField.isValid()) {
-            ConsoleInfo.display("Error", endpointDnsField.getErrorMessage());
+            ConsoleInfo.display(ERROR, endpointDnsField.getErrorMessage());
         } else if (!endpointPortField.isValid()) {
-            ConsoleInfo.display("Error", endpointPortField.getErrorMessage());
+            ConsoleInfo.display(ERROR, endpointPortField.getErrorMessage());
         }
     }
 

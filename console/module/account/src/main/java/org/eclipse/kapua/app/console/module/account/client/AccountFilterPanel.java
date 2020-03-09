@@ -24,6 +24,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPane
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaDateField;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
+import org.eclipse.kapua.app.console.module.api.client.util.CssLiterals;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
 public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
@@ -59,52 +60,52 @@ public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
 
         Label accountNameLabel = new Label(MSGS.accountFilterNameLabel());
         accountNameLabel.setWidth(WIDTH);
-        accountNameLabel.setStyleAttribute("margin", "5px");
+        accountNameLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
         fieldsPanel.add(accountNameLabel);
 
         accountNameField = new KapuaTextField<String>();
         accountNameField.setName("name");
         accountNameField.setWidth(WIDTH);
         accountNameField.setMaxLength(MAX_LEN);
-        accountNameField.setStyleAttribute("margin-top", "0px");
-        accountNameField.setStyleAttribute("margin-left", "5px");
-        accountNameField.setStyleAttribute("margin-right", "5px");
-        accountNameField.setStyleAttribute("margin-bottom", "10px");
+        accountNameField.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        accountNameField.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        accountNameField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        accountNameField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(accountNameField);
 
         Label accountOrgNameLabel = new Label(MSGS.accountFilterOrgNameLabel());
         accountOrgNameLabel.setWidth(WIDTH);
-        accountOrgNameLabel.setStyleAttribute("margin", "5px");
+        accountOrgNameLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
         fieldsPanel.add(accountOrgNameLabel);
 
         accountOrgNameField = new KapuaTextField<String>();
         accountOrgNameField.setName("orgName");
         accountOrgNameField.setWidth(WIDTH);
         accountOrgNameField.setMaxLength(MAX_LEN);
-        accountOrgNameField.setStyleAttribute("margin-top", "0px");
-        accountOrgNameField.setStyleAttribute("margin-left", "5px");
-        accountOrgNameField.setStyleAttribute("margin-right", "5px");
-        accountOrgNameField.setStyleAttribute("margin-bottom", "10px");
+        accountOrgNameField.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        accountOrgNameField.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        accountOrgNameField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        accountOrgNameField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(accountOrgNameField);
 
         Label accountOrgEmailLabel = new Label(MSGS.accountFilterOrgEmailLabel());
         accountOrgEmailLabel.setWidth(WIDTH);
-        accountOrgEmailLabel.setStyleAttribute("margin", "5px");
+        accountOrgEmailLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
         fieldsPanel.add(accountOrgEmailLabel);
 
         accountOrgEmailField = new KapuaTextField<String>();
         accountOrgEmailField.setName("name");
         accountOrgEmailField.setWidth(WIDTH);
         accountOrgEmailField.setMaxLength(MAX_LEN);
-        accountOrgEmailField.setStyleAttribute("margin-top", "0px");
-        accountOrgEmailField.setStyleAttribute("margin-left", "5px");
-        accountOrgEmailField.setStyleAttribute("margin-right", "5px");
-        accountOrgEmailField.setStyleAttribute("margin-bottom", "10px");
+        accountOrgEmailField.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        accountOrgEmailField.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        accountOrgEmailField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        accountOrgEmailField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(accountOrgEmailField);
 
         Label expirationDateLabel = new Label(MSGS.accountFilterExpirationDateLabel());
         expirationDateLabel.setWidth(WIDTH);
-        expirationDateLabel.setStyleAttribute("margin", "5px");
+        expirationDateLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
         fieldsPanel.add(expirationDateLabel);
 
         expirationDateField = new KapuaDateField();
@@ -112,122 +113,122 @@ public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
         expirationDateField.setWidth(WIDTH);
         expirationDateField.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd/MM/yyyy"));
         expirationDateField.setMaxLength(10);
-        expirationDateField.setStyleAttribute("margin-top", "0px");
-        expirationDateField.setStyleAttribute("margin-left", "5px");
-        expirationDateField.setStyleAttribute("margin-right", "5px");
-        expirationDateField.setStyleAttribute("margin-bottom", "10px");
+        expirationDateField.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        expirationDateField.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        expirationDateField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        expirationDateField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(expirationDateField);
 
         Label organizationContactNameLabel = new Label(MSGS.accountFilterOrgContactName());
         organizationContactNameLabel.setWidth(WIDTH);
-        organizationContactNameLabel.setStyleAttribute("margin", "5px");
+        organizationContactNameLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
         fieldsPanel.add(organizationContactNameLabel);
 
         organizationContactNameField = new KapuaTextField<String>();
         organizationContactNameField.setWidth(WIDTH);
         organizationContactNameField.setMaxLength(MAX_LEN);
-        organizationContactNameField.setStyleAttribute("margin-top", "0px");
-        organizationContactNameField.setStyleAttribute("margin-left", "5px");
-        organizationContactNameField.setStyleAttribute("margin-right", "5px");
-        organizationContactNameField.setStyleAttribute("margin-bottom", "10px");
+        organizationContactNameField.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        organizationContactNameField.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        organizationContactNameField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        organizationContactNameField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(organizationContactNameField);
 
         Label organizationPhoneNumberLabel = new Label(MSGS.accountFilterOrgPhoneNumber());
         organizationPhoneNumberLabel.setWidth(WIDTH);
-        organizationPhoneNumberLabel.setStyleAttribute("margin", "5px");
+        organizationPhoneNumberLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
         fieldsPanel.add(organizationPhoneNumberLabel);
 
         organizationPhoneNumberField = new KapuaTextField<String>();
         organizationPhoneNumberField.setWidth(WIDTH);
         organizationPhoneNumberField.setMaxLength(MAX_LEN);
-        organizationPhoneNumberField.setStyleAttribute("margin-top", "0px");
-        organizationPhoneNumberField.setStyleAttribute("margin-left", "5px");
-        organizationPhoneNumberField.setStyleAttribute("margin-right", "5px");
-        organizationPhoneNumberField.setStyleAttribute("margin-bottom", "10px");
+        organizationPhoneNumberField.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        organizationPhoneNumberField.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        organizationPhoneNumberField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        organizationPhoneNumberField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(organizationPhoneNumberField);
 
         Label organizationAddresLine1Label = new Label(MSGS.accountFilterOrgAddress1());
         organizationAddresLine1Label.setWidth(WIDTH);
-        organizationAddresLine1Label.setStyleAttribute("margin", "5px");
+        organizationAddresLine1Label.setStyleAttribute(CssLiterals.MARGIN, "5px");
         fieldsPanel.add(organizationAddresLine1Label);
 
         organizationAddressLine1Field = new KapuaTextField<String>();
         organizationAddressLine1Field.setWidth(WIDTH);
         organizationAddressLine1Field.setMaxLength(MAX_LEN);
-        organizationAddressLine1Field.setStyleAttribute("margin-top", "0px");
-        organizationAddressLine1Field.setStyleAttribute("margin-left", "5px");
-        organizationAddressLine1Field.setStyleAttribute("margin-right", "5px");
-        organizationAddressLine1Field.setStyleAttribute("margin-bottom", "10px");
+        organizationAddressLine1Field.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        organizationAddressLine1Field.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        organizationAddressLine1Field.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        organizationAddressLine1Field.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(organizationAddressLine1Field);
 
         Label organizationAddresLine2Label = new Label(MSGS.accountFilterOrgAddress2());
         organizationAddresLine2Label.setWidth(WIDTH);
-        organizationAddresLine2Label.setStyleAttribute("margin", "5px");
+        organizationAddresLine2Label.setStyleAttribute(CssLiterals.MARGIN, "5px");
         fieldsPanel.add(organizationAddresLine2Label);
 
         organizationAddressLine2Field = new KapuaTextField<String>();
         organizationAddressLine2Field.setWidth(WIDTH);
         organizationAddressLine2Field.setMaxLength(MAX_LEN);
-        organizationAddressLine2Field.setStyleAttribute("margin-top", "0px");
-        organizationAddressLine2Field.setStyleAttribute("margin-left", "5px");
-        organizationAddressLine2Field.setStyleAttribute("margin-right", "5px");
-        organizationAddressLine2Field.setStyleAttribute("margin-bottom", "10px");
+        organizationAddressLine2Field.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        organizationAddressLine2Field.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        organizationAddressLine2Field.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        organizationAddressLine2Field.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(organizationAddressLine2Field);
 
         Label organizationZipPostCodeLabel = new Label(MSGS.accountFilterOrgZipPostCode());
         organizationZipPostCodeLabel.setWidth(WIDTH);
-        organizationZipPostCodeLabel.setStyleAttribute("margin", "5px");
+        organizationZipPostCodeLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
         fieldsPanel.add(organizationZipPostCodeLabel);
 
         organizationZipPostCodeField = new KapuaTextField<String>();
         organizationZipPostCodeField.setWidth(WIDTH);
         organizationZipPostCodeField.setMaxLength(MAX_LEN);
-        organizationZipPostCodeField.setStyleAttribute("margin-top", "0px");
-        organizationZipPostCodeField.setStyleAttribute("margin-left", "5px");
-        organizationZipPostCodeField.setStyleAttribute("margin-right", "5px");
-        organizationZipPostCodeField.setStyleAttribute("margin-bottom", "10px");
+        organizationZipPostCodeField.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        organizationZipPostCodeField.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        organizationZipPostCodeField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        organizationZipPostCodeField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(organizationZipPostCodeField);
 
         Label organizationCityLabel = new Label(MSGS.accountFilterOrgCity());
         organizationCityLabel.setWidth(WIDTH);
-        organizationCityLabel.setStyleAttribute("margin", "5px");
+        organizationCityLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
         fieldsPanel.add(organizationCityLabel);
 
         organizationCityField = new KapuaTextField<String>();
         organizationCityField.setWidth(WIDTH);
         organizationCityField.setMaxLength(MAX_LEN);
-        organizationCityField.setStyleAttribute("margin-top", "0px");
-        organizationCityField.setStyleAttribute("margin-left", "5px");
-        organizationCityField.setStyleAttribute("margin-right", "5px");
-        organizationCityField.setStyleAttribute("margin-bottom", "10px");
+        organizationCityField.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        organizationCityField.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        organizationCityField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        organizationCityField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(organizationCityField);
 
         Label organizationStateProvinceLabel = new Label(MSGS.accountFilterOrgStateProvince());
         organizationStateProvinceLabel.setWidth(WIDTH);
-        organizationStateProvinceLabel.setStyleAttribute("margin", "5px");
+        organizationStateProvinceLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
         fieldsPanel.add(organizationStateProvinceLabel);
 
         organizationStateProvinceCountryField = new KapuaTextField<String>();
         organizationStateProvinceCountryField.setWidth(WIDTH);
         organizationStateProvinceCountryField.setMaxLength(MAX_LEN);
-        organizationStateProvinceCountryField.setStyleAttribute("margin-top", "0px");
-        organizationStateProvinceCountryField.setStyleAttribute("margin-left", "5px");
-        organizationStateProvinceCountryField.setStyleAttribute("margin-right", "5px");
-        organizationStateProvinceCountryField.setStyleAttribute("margin-bottom", "10px");
+        organizationStateProvinceCountryField.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        organizationStateProvinceCountryField.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        organizationStateProvinceCountryField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        organizationStateProvinceCountryField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(organizationStateProvinceCountryField);
 
         Label organizationSCountryLabel = new Label(MSGS.accountFilterOrgCountry());
         organizationSCountryLabel.setWidth(WIDTH);
-        organizationSCountryLabel.setStyleAttribute("margin", "5px");
+        organizationSCountryLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
         fieldsPanel.add(organizationSCountryLabel);
 
         organizationCountryField = new KapuaTextField<String>();
         organizationCountryField.setWidth(WIDTH);
         organizationCountryField.setMaxLength(MAX_LEN);
-        organizationCountryField.setStyleAttribute("margin-top", "0px");
-        organizationCountryField.setStyleAttribute("margin-left", "5px");
-        organizationCountryField.setStyleAttribute("margin-right", "5px");
-        organizationCountryField.setStyleAttribute("margin-bottom", "10px");
+        organizationCountryField.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        organizationCountryField.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        organizationCountryField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        organizationCountryField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(organizationCountryField);
     }
 

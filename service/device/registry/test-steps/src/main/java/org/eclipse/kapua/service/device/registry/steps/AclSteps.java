@@ -52,6 +52,11 @@ public class AclSteps extends TestBase {
 
     private static final String SYS_PASSWORD = "kapua-password";
 
+    private static final String ACCOUNT = "acme";
+    private static final String MAIL = "john@acme.org";
+    private static final String ORG = "ACME Corp.";
+    private static final String NAME = "luise";
+
     /**
      * Mqtt device for listening and sending data from/to broker
      */
@@ -225,8 +230,8 @@ public class AclSteps extends TestBase {
     @And("^broker account and user are created$")
     public void createBrokerAccountAndUser() throws Throwable {
 
-        Account account = aclCreator.createAccount("acme","ACME Corp.", "john@acme.org");
-        User user = aclCreator.createUser(account, "luise");
+        Account account = aclCreator.createAccount(ACCOUNT, ORG, MAIL);
+        User user = aclCreator.createUser(account, NAME);
         aclCreator.attachUserCredentials(account, user);
         aclCreator.attachBrokerPermissions(account, user);
     }
@@ -234,8 +239,8 @@ public class AclSteps extends TestBase {
     @And("^device account and user are created$")
     public void createDeviceAccountAndUser() throws Throwable {
 
-        Account account = aclCreator.createAccount("acme","ACME Corp.", "john@acme.org");
-        User user = aclCreator.createUser(account, "luise");
+        Account account = aclCreator.createAccount(ACCOUNT, ORG, MAIL);
+        User user = aclCreator.createUser(account, NAME);
         aclCreator.attachUserCredentials(account, user);
         aclCreator.attachDevicePermissions(account, user);
     }
@@ -243,8 +248,8 @@ public class AclSteps extends TestBase {
     @And("^data view account and user are created$")
     public void createDataViewAccountAndUser() throws Throwable {
 
-        Account account = aclCreator.createAccount("acme","ACME Corp.", "john@acme.org");
-        User user = aclCreator.createUser(account, "luise");
+        Account account = aclCreator.createAccount(ACCOUNT, ORG, MAIL);
+        User user = aclCreator.createUser(account, NAME);
         aclCreator.attachUserCredentials(account, user);
         aclCreator.attachDataViewPermissions(account, user);
     }
@@ -252,8 +257,8 @@ public class AclSteps extends TestBase {
     @And("^data manage account and user are created$")
     public void createDataManageAccountAndUser() throws Throwable {
 
-        Account account = aclCreator.createAccount("acme","ACME Corp.", "john@acme.org");
-        User user = aclCreator.createUser(account, "luise");
+        Account account = aclCreator.createAccount(ACCOUNT, ORG, MAIL);
+        User user = aclCreator.createUser(account, NAME);
         aclCreator.attachUserCredentials(account, user);
         aclCreator.attachDataManagePermissions(account, user);
     }

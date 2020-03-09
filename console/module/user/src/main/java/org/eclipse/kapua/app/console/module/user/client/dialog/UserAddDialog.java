@@ -79,6 +79,8 @@ public class UserAddDialog extends EntityAddEditDialog {
     private Boolean passwordIsShown = false;
     private Boolean externalIdIsShown = false;
 
+    private static final String ERROR = "Error";
+
     private GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
 
     public UserAddDialog(GwtSession currentSession) {
@@ -337,17 +339,17 @@ public class UserAddDialog extends EntityAddEditDialog {
         if (username.getValue() == null || (passwordIsShown && password.getValue() == null)
                 || (passwordIsShown && confirmPassword.getValue() == null)
                 || (externalIdIsShown && externalId.getValue() == null)) {
-            ConsoleInfo.display("Error", CMSGS.allFieldsRequired());
+            ConsoleInfo.display(ERROR, CMSGS.allFieldsRequired());
         } else if (passwordIsShown && !password.isValid()) {
-            ConsoleInfo.display("Error", password.getErrorMessage());
+            ConsoleInfo.display(ERROR, password.getErrorMessage());
         } else if (passwordIsShown && !password.getValue().equals(confirmPassword.getValue())) {
-            ConsoleInfo.display("Error", confirmPassword.getErrorMessage());
+            ConsoleInfo.display(ERROR, confirmPassword.getErrorMessage());
         } else if (!email.isValid()) {
-            ConsoleInfo.display("Error", email.getErrorMessage());
+            ConsoleInfo.display(ERROR, email.getErrorMessage());
         } else if (!phoneNumber.isValid()) {
-            ConsoleInfo.display("Error", phoneNumber.getErrorMessage());
+            ConsoleInfo.display(ERROR, phoneNumber.getErrorMessage());
         } else if (!expirationDate.isValid()) {
-            ConsoleInfo.display("Error", KapuaSafeHtmlUtils.htmlUnescape(expirationDate.getErrorMessage()));
+            ConsoleInfo.display(ERROR, KapuaSafeHtmlUtils.htmlUnescape(expirationDate.getErrorMessage()));
         }
     }
 

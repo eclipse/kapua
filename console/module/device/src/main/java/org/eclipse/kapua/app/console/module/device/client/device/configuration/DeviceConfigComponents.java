@@ -59,6 +59,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog.InfoDialogType;
 import org.eclipse.kapua.app.console.module.api.client.ui.label.Label;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.module.api.client.util.CssLiterals;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigComponent;
@@ -154,10 +155,10 @@ public class DeviceConfigComponents extends LayoutContainer {
     private void initToolBar() {
         toolBar = new ToolBar();
         toolBar.setBorders(true);
-        toolBar.setStyleAttribute("border-left", "1px solid rgb(208, 208, 208)");
-        toolBar.setStyleAttribute("border-right", "1px solid rgb(208, 208, 208)");
-        toolBar.setStyleAttribute("border-top", "1px solid rgb(208, 208, 208)");
-        toolBar.setStyleAttribute("border-bottom", "0px none");
+        toolBar.setStyleAttribute("border-left", CssLiterals.border1PxSolidRgb(208, 208, 208));
+        toolBar.setStyleAttribute("border-right", CssLiterals.border1PxSolidRgb(208, 208, 208));
+        toolBar.setStyleAttribute("border-top", CssLiterals.border1PxSolidRgb(208, 208, 208));
+        toolBar.setStyleAttribute("border-bottom", CssLiterals.BORDER_0PX_NONE);
 
         //
         // Refresh Button

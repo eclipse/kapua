@@ -41,6 +41,10 @@ public class RestClientSteps extends Assert {
 
     private static final Logger logger = LoggerFactory.getLogger(RestClientSteps.class);
 
+    private static final String TOKEN_ID = "tokenId";
+    private static final String REST_RESPONSE = "restResponse";
+    private static final String REST_RESPONSE_CODE = "restResponseCode";
+
     /**
      * Scenario scoped step data.
      */
@@ -61,7 +65,7 @@ public class RestClientSteps extends Assert {
 
         String host = (String) stepData.get("host");
         String port = (String) stepData.get("port");
-        String tokenId = (String) stepData.get("tokenId");
+        String tokenId = (String) stepData.get(TOKEN_ID);
         resource = insertStepData(resource);
         URL url = new URL("http://" + host + ":" + port + resource);
 
@@ -82,9 +86,9 @@ public class RestClientSteps extends Assert {
                         sb.append(output);
                     }
                 }
-                stepData.put("restResponse", sb.toString());
+                stepData.put(REST_RESPONSE, sb.toString());
             }
-            stepData.put("restResponseCode", httpRespCode);
+            stepData.put(REST_RESPONSE_CODE, httpRespCode);
         } catch ( IOException ioe) {
             logger.error("Exception on REST GET call execution: " + resource);
             throw ioe;
@@ -96,7 +100,7 @@ public class RestClientSteps extends Assert {
 
         String host = (String) stepData.get("host");
         String port = (String) stepData.get("port");
-        String tokenId = (String) stepData.get("tokenId");
+        String tokenId = (String) stepData.get(TOKEN_ID);
         resource = insertStepData(resource);
         json = insertStepData(json);
         URL url = new URL("http://" + host + ":" + port + resource);
@@ -124,9 +128,9 @@ public class RestClientSteps extends Assert {
                         sb.append(output);
                     }
                 }
-                stepData.put("restResponse", sb.toString());
+                stepData.put(REST_RESPONSE, sb.toString());
             }
-            stepData.put("restResponseCode", httpRespCode);
+            stepData.put(REST_RESPONSE_CODE, httpRespCode);
         } catch (IOException ioe) {
             logger.error("Exception on REST POST call execution: " + resource);
             throw ioe;
@@ -136,7 +140,7 @@ public class RestClientSteps extends Assert {
     @Then("^REST response containing text \"(.*)\"$")
     public void restResponseContaining(String checkStr) throws Exception {
 
-        String restResponse = (String) stepData.get("restResponse");
+        String restResponse = (String) stepData.get(REST_RESPONSE);
         assertTrue(String.format("Response %s doesn't include %s.", restResponse, checkStr),
                 restResponse.contains(checkStr));
     }
@@ -144,7 +148,7 @@ public class RestClientSteps extends Assert {
     @Then("^REST response containing Account$")
     public void restResponseContainingAccount() throws Exception {
 
-        String restResponse = (String) stepData.get("restResponse");
+        String restResponse = (String) stepData.get(REST_RESPONSE);
         Account account = XmlUtil.unmarshalJson(restResponse, Account.class, null);
         KapuaId accId = account.getId();
         System.out.println("Account Id = " + accId);
@@ -155,7 +159,7 @@ public class RestClientSteps extends Assert {
     @Then("^REST response containing \"(.*)\" with prefix account \"(.*)\"$")
     public void restResponseContainingPrefixVar(String checkStr, String var) {
 
-        String restResponse = (String) stepData.get("restResponse");
+        String restResponse = (String) stepData.get(REST_RESPONSE);
         Account account = (Account) stepData.get(var);
         assertTrue(String.format("Response %s doesn't include %s.", restResponse, account.getId() + checkStr),
                 restResponse.contains(account.getId() + checkStr));
@@ -164,17 +168,17 @@ public class RestClientSteps extends Assert {
     @Then("^REST response containing AccessToken$")
     public void restResponseContainingAccessToken() throws Exception {
 
-        String restResponse = (String) stepData.get("restResponse");
+        String restResponse = (String) stepData.get(REST_RESPONSE);
         XmlUtil.setContextProvider(new RestJAXBContextProvider());
         AccessToken token = XmlUtil.unmarshalJson(restResponse, AccessToken.class, null);
         assertTrue("Token is null.", token.getTokenId() != null);
-        stepData.put("tokenId", token.getTokenId());
+        stepData.put(TOKEN_ID, token.getTokenId());
     }
 
     @Then("^REST response containing User")
     public void restResponseContainingUser() throws Exception {
 
-        String restResponse = (String) stepData.get("restResponse");
+        String restResponse = (String) stepData.get(REST_RESPONSE);
         User user = XmlUtil.unmarshalJson(restResponse, User.class, null);
         stepData.put("lastUserCompactId", user.getId().toCompactId());
     }
@@ -182,7 +186,7 @@ public class RestClientSteps extends Assert {
     @Then("^REST response contains list of Users")
     public void restResponseContainsUsers() throws Exception {
 
-        String restResponse = (String) stepData.get("restResponse");
+        String restResponse = (String) stepData.get(REST_RESPONSE);
         UserListResult userList = XmlUtil.unmarshalJson(restResponse, UserListResult.class, null);
         Assert.assertFalse("Retrieved user list should NOT be empty.", userList.isEmpty());
     }
@@ -190,7 +194,7 @@ public class RestClientSteps extends Assert {
     @Then("^REST response doesn't contain User")
     public void restResponseDoesntContainUser() throws Exception {
 
-        String restResponse = (String) stepData.get("restResponse");
+        String restResponse = (String) stepData.get(REST_RESPONSE);
         User user = XmlUtil.unmarshalJson(restResponse, User.class, null);
         Assert.assertTrue("There should be NO User retrieved.", user == null);
     }
@@ -198,7 +202,7 @@ public class RestClientSteps extends Assert {
     @Then("^REST response code is (\\d+)$")
     public void restResponseDoesntContainUser(int expeted) throws Exception {
 
-        int restResponseCode = (Integer) stepData.get("restResponseCode");
+        int restResponseCode = (Integer) stepData.get(REST_RESPONSE_CODE);
         Assert.assertEquals("Wrong response code.", expeted, restResponseCode);
     }
 

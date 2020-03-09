@@ -25,6 +25,8 @@ import com.google.common.base.Function;
 
 public final class Topic {
 
+    private static final String APPLICATION_ID = "application-id";
+
     private static final Segment CONTROL = new Segment() {
 
         @Override
@@ -111,7 +113,7 @@ public final class Topic {
         }
 
         public static Segment applicationId() {
-            return replace("application-id");
+            return replace(APPLICATION_ID);
         }
     }
 
@@ -217,7 +219,7 @@ public final class Topic {
     }
 
     public static Topic reply(final String requesterClientId, final String requestId) {
-        return new Topic(Segment.control(), Segment.account(), Segment.plain(requesterClientId), Segment.replace("application-id"), Segment.plain("REPLY"),
+        return new Topic(Segment.control(), Segment.account(), Segment.plain(requesterClientId), Segment.replace(APPLICATION_ID), Segment.plain("REPLY"),
                 Segment.plain(requestId));
     }
 
@@ -226,7 +228,7 @@ public final class Topic {
         s.add(Segment.control());
         s.add(Segment.account());
         s.add(Segment.plain(requesterClientId));
-        s.add(Segment.replace("application-id"));
+        s.add(Segment.replace(APPLICATION_ID));
         s.add(Segment.plain("NOTIFY"));
         s.addAll(Segment.plain(resource));
         return new Topic(s);

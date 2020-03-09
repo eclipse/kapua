@@ -93,6 +93,8 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
     private static final String CLIENT_QUERY_PARSING_ERROR_MSG = "Cannot parse query!";
     private static final String CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG = "Cannot delete indexes!";
     private static final String CLIENT_CANNOT_REFRESH_INDEX_ERROR_MSG = "Cannot refresh indexes!";
+    private static final String CANNOT_FIND_INDEX = "Cannot find index '{}'";
+    private static final String GENERIC_SEARCH_ERROR = "Generic search error {}";
 
     private static final String INDEXES_ALL = "_all";
     private static final String DOC = "_doc";
@@ -231,9 +233,9 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
                 throw new RuntimeException("Total hits exceeds integer max value");
             }
         } catch (IndexNotFoundException infe) {
-            logger.warn("Cannot find index '{}'", typeDescriptor.getIndex());
+            logger.warn(CANNOT_FIND_INDEX, typeDescriptor.getIndex());
         } catch (SearchPhaseExecutionException spee) {
-            logger.warn("Generic search error {}", spee.getMessage(), spee);
+            logger.warn(GENERIC_SEARCH_ERROR, spee.getMessage(), spee);
         }
 
         ResultList<T> result = new ResultList<T>(totalCount);
@@ -263,9 +265,9 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
                     .actionGet(getQueryTimeout());
             searchHits = response.getHits();
         } catch (IndexNotFoundException infe) {
-            logger.warn("Cannot find index '{}'", typeDescriptor.getIndex());
+            logger.warn(CANNOT_FIND_INDEX, typeDescriptor.getIndex());
         } catch (SearchPhaseExecutionException spee) {
-            logger.warn("Generic search error {}", spee.getMessage(), spee);
+            logger.warn(GENERIC_SEARCH_ERROR, spee.getMessage(), spee);
         }
         if (searchHits == null) {
             return 0;
@@ -285,7 +287,7 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
         } catch (InvalidIndexNameException iine) {
             logger.warn("Index '{}' not valid", typeDescriptor.getIndex(), iine);
         } catch (IndexNotFoundException infe) {
-            logger.warn("Cannot find index '{}'", typeDescriptor.getIndex(), infe);
+            logger.warn(CANNOT_FIND_INDEX, typeDescriptor.getIndex(), infe);
         }
     }
 
@@ -308,9 +310,9 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
                     .setSource(toSearchSourceBuilder(queryMap))
                     .get(queryTimeout);
         } catch (IndexNotFoundException infe) {
-            logger.warn("Cannot find index '{}'", typeDescriptor.getIndex());
+            logger.warn(CANNOT_FIND_INDEX, typeDescriptor.getIndex());
         } catch (SearchPhaseExecutionException spee) {
-            logger.warn("Generic search error {}", spee.getMessage(), spee);
+            logger.warn(GENERIC_SEARCH_ERROR, spee.getMessage(), spee);
         }
 
         if (scrollResponse != null) {
@@ -492,7 +494,7 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
 
     /**
      * Get the scroll timeout (default value)
-     * 
+     *
      * @return
      */
     public TimeValue getScrollTimeout() {

@@ -21,8 +21,10 @@ public class GwtDeviceAsset extends KapuaBaseModel implements Serializable {
 
     private static final long serialVersionUID = 5527880046980004171L;
 
+    private static final String CHANNELS = "channels";
+
     public GwtDeviceAsset() {
-        set("channels", new ArrayList<GwtDeviceAssetChannel>());
+        set(CHANNELS, new ArrayList<GwtDeviceAssetChannel>());
     }
 
     public String getName() {
@@ -42,11 +44,11 @@ public class GwtDeviceAsset extends KapuaBaseModel implements Serializable {
     }
 
     public List<GwtDeviceAssetChannel> getChannels() {
-        return get("channels");
+        return get(CHANNELS);
     }
 
     public void setChannels(List<GwtDeviceAssetChannel> channels) {
-        set("channels", channels);
+        set(CHANNELS, channels);
     }
 
     public GwtDeviceAssetChannel getChannel(String name) {

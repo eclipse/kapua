@@ -63,6 +63,11 @@ public class EndpointInfoServiceImpl
 
     private static final EndpointInfoFactory ENDPOINT_INFO_FACTORY = LOCATOR.getFactory(EndpointInfoFactory.class);
 
+    private static final String ENDPOINT_INFO_CREATOR_SCHEMA = "endpointInfoCreator.schema";
+    private static final String ENDPOINT_INFO_CREATOR_DNS = "endpointInfoCreator.dns";
+    private static final String ENDPOINT_INFO_SCHEMA = "endpointInfo.schema";
+    private static final String ENDPOINT_INFO_DNS = "endpointInfo.dns";
+
     public EndpointInfoServiceImpl() {
         super(EndpointInfoService.class.getName(), EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, EndpointEntityManagerFactory.getInstance(), EndpointInfoService.class, EndpointInfoFactory.class);
     }
@@ -73,13 +78,13 @@ public class EndpointInfoServiceImpl
         ArgumentValidator.notNull(endpointInfoCreator, "endpointInfoCreator");
         ArgumentValidator.notNull(endpointInfoCreator.getScopeId(), "endpointInfoCreator.scopeId");
 
-        ArgumentValidator.notEmptyOrNull(endpointInfoCreator.getSchema(), "endpointInfoCreator.schema");
-        ArgumentValidator.match(endpointInfoCreator.getSchema(), CommonsValidationRegex.URI_SCHEME, "endpointInfoCreator.schema");
-        ArgumentValidator.lengthRange(endpointInfoCreator.getSchema(), 1, 64, "endpointInfoCreator.schema");
+        ArgumentValidator.notEmptyOrNull(endpointInfoCreator.getSchema(), ENDPOINT_INFO_CREATOR_SCHEMA);
+        ArgumentValidator.match(endpointInfoCreator.getSchema(), CommonsValidationRegex.URI_SCHEME, ENDPOINT_INFO_CREATOR_SCHEMA);
+        ArgumentValidator.lengthRange(endpointInfoCreator.getSchema(), 1, 64, ENDPOINT_INFO_CREATOR_SCHEMA);
 
-        ArgumentValidator.notEmptyOrNull(endpointInfoCreator.getDns(), "endpointInfoCreator.dns");
-        ArgumentValidator.match(endpointInfoCreator.getDns(), CommonsValidationRegex.URI_DNS, "endpointInfoCreator.dns");
-        ArgumentValidator.lengthRange(endpointInfoCreator.getDns(), 1, 1024, "endpointInfoCreator.dns");
+        ArgumentValidator.notEmptyOrNull(endpointInfoCreator.getDns(), ENDPOINT_INFO_CREATOR_DNS);
+        ArgumentValidator.match(endpointInfoCreator.getDns(), CommonsValidationRegex.URI_DNS, ENDPOINT_INFO_CREATOR_DNS);
+        ArgumentValidator.lengthRange(endpointInfoCreator.getDns(), 1, 1024, ENDPOINT_INFO_CREATOR_DNS);
 
         ArgumentValidator.notNegative(endpointInfoCreator.getPort(), "endpointInfoCreator.port");
         ArgumentValidator.numRange(endpointInfoCreator.getPort(), 1, 65535, "endpointInfoCreator.port");
@@ -107,13 +112,13 @@ public class EndpointInfoServiceImpl
         ArgumentValidator.notNull(endpointInfo, "endpointInfo");
         ArgumentValidator.notNull(endpointInfo.getScopeId(), "endpointInfo.scopeId");
 
-        ArgumentValidator.notEmptyOrNull(endpointInfo.getSchema(), "endpointInfo.schema");
-        ArgumentValidator.match(endpointInfo.getSchema(), CommonsValidationRegex.URI_SCHEME, "endpointInfo.schema");
-        ArgumentValidator.lengthRange(endpointInfo.getSchema(), 1, 64, "endpointInfo.schema");
+        ArgumentValidator.notEmptyOrNull(endpointInfo.getSchema(), ENDPOINT_INFO_SCHEMA);
+        ArgumentValidator.match(endpointInfo.getSchema(), CommonsValidationRegex.URI_SCHEME, ENDPOINT_INFO_SCHEMA);
+        ArgumentValidator.lengthRange(endpointInfo.getSchema(), 1, 64, ENDPOINT_INFO_SCHEMA);
 
-        ArgumentValidator.notEmptyOrNull(endpointInfo.getDns(), "endpointInfo.dns");
-        ArgumentValidator.match(endpointInfo.getDns(), CommonsValidationRegex.URI_DNS, "endpointInfo.dns");
-        ArgumentValidator.lengthRange(endpointInfo.getDns(), 1, 1024, "endpointInfo.dns");
+        ArgumentValidator.notEmptyOrNull(endpointInfo.getDns(), ENDPOINT_INFO_DNS);
+        ArgumentValidator.match(endpointInfo.getDns(), CommonsValidationRegex.URI_DNS, ENDPOINT_INFO_DNS);
+        ArgumentValidator.lengthRange(endpointInfo.getDns(), 1, 1024, ENDPOINT_INFO_DNS);
 
         ArgumentValidator.notNegative(endpointInfo.getPort(), "endpointInfo.port");
         ArgumentValidator.numRange(endpointInfo.getPort(), 1, 65535, "endpointInfo.port");

@@ -64,6 +64,8 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         super(CredentialService.class.getName(), AuthenticationDomains.CREDENTIAL_DOMAIN, AuthenticationEntityManagerFactory.getInstance());
     }
 
+    private static final String SCOPE_ID = "scopeId";
+
     @Override
     public Credential create(CredentialCreator credentialCreator)
             throws KapuaException {
@@ -207,7 +209,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
     public Credential find(KapuaId scopeId, KapuaId credentialId)
             throws KapuaException {
         // Validation of the fields
-        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(credentialId, "credentialId");
 
         //
@@ -282,7 +284,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
             throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(userId, "userId");
 
         //
@@ -365,7 +367,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
     public void unlock(KapuaId scopeId, KapuaId credentialId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(credentialId, "credentialId");
 
         //

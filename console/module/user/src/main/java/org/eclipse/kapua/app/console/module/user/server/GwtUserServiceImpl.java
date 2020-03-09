@@ -97,6 +97,9 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     private static final DeviceRegistryService DEVICE_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
     private static final DeviceFactory DEVICE_FACTORY = LOCATOR.getFactory(DeviceFactory.class);
 
+    private static final String USER_INFO = "userInfo";
+    private static final String ENTITY_INFO = "entityInfo";
+
     @Override
     public GwtUser create(GwtXSRFToken xsrfToken, GwtUserCreator gwtUserCreator) throws GwtKapuaException {
         checkXSRFToken(xsrfToken);
@@ -325,24 +328,24 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                         break;
                     }
                 }}
-                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userStatus", user.getStatus().toString()));
-                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userName", user.getName()));
-                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userDisplayName", user.getDisplayName()));
-                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userEmail", user.getEmail()));
-                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userPhoneNumber", user.getPhoneNumber()));
-                gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "expirationDate", user.getExpirationDate()));
+                gwtUserDescription.add(new GwtGroupedNVPair(USER_INFO, "userStatus", user.getStatus().toString()));
+                gwtUserDescription.add(new GwtGroupedNVPair(USER_INFO, "userName", user.getName()));
+                gwtUserDescription.add(new GwtGroupedNVPair(USER_INFO, "userDisplayName", user.getDisplayName()));
+                gwtUserDescription.add(new GwtGroupedNVPair(USER_INFO, "userEmail", user.getEmail()));
+                gwtUserDescription.add(new GwtGroupedNVPair(USER_INFO, "userPhoneNumber", user.getPhoneNumber()));
+                gwtUserDescription.add(new GwtGroupedNVPair(USER_INFO, "expirationDate", user.getExpirationDate()));
                 if (isSsoEnabled) {
-                    gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userType", user.getUserType().toString()));
+                    gwtUserDescription.add(new GwtGroupedNVPair(USER_INFO, "userType", user.getUserType().toString()));
                     if (user.getUserType() == UserType.EXTERNAL) {
-                        gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userExternalId", user.getExternalId()));
+                        gwtUserDescription.add(new GwtGroupedNVPair(USER_INFO, "userExternalId", user.getExternalId()));
                     }
                 }
-                gwtUserDescription.add(new GwtGroupedNVPair("entityInfo", "userCreatedOn", user.getCreatedOn()));
-                gwtUserDescription.add(new GwtGroupedNVPair("entityInfo", "userCreatedBy", user.getCreatedBy() != null ? usernameMap.get(user.getCreatedBy().toCompactId()) : null));
-                gwtUserDescription.add(new GwtGroupedNVPair("entityInfo", "userModifiedOn", user.getModifiedOn()));
-                gwtUserDescription.add(new GwtGroupedNVPair("entityInfo", "userModifiedBy", user.getModifiedBy() != null ? usernameMap.get(user.getModifiedBy().toCompactId()) : null));
+                gwtUserDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "userCreatedOn", user.getCreatedOn()));
+                gwtUserDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "userCreatedBy", user.getCreatedBy() != null ? usernameMap.get(user.getCreatedBy().toCompactId()) : null));
+                gwtUserDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "userModifiedOn", user.getModifiedOn()));
+                gwtUserDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "userModifiedBy", user.getModifiedBy() != null ? usernameMap.get(user.getModifiedBy().toCompactId()) : null));
                 if (deviceConnection != null && deviceConnection.getReservedUserId() != null && deviceConnection.getReservedUserId().equals(user.getId())) {
-                    gwtUserDescription.add(new GwtGroupedNVPair("userInfo", "userReservedConnection", "Yes" )); }
+                    gwtUserDescription.add(new GwtGroupedNVPair(USER_INFO, "userReservedConnection", "Yes" )); }
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);

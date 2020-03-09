@@ -50,6 +50,9 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
+    private static final String SCOPE_ID = "scopeId";
+    private static final String ACCESS_TOKEN_ID = "accessTokenId";
+
     /**
      * Constructor
      */
@@ -105,8 +108,8 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     public AccessToken find(KapuaId scopeId, KapuaId accessTokenId) throws KapuaException {
         //
         // Validation of the fields
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(accessTokenId, "accessTokenId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(accessTokenId, ACCESS_TOKEN_ID);
 
         //
         // Check Access
@@ -151,8 +154,8 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     public void delete(KapuaId scopeId, KapuaId accessTokenId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(accessTokenId, "accessTokenId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(accessTokenId, ACCESS_TOKEN_ID);
 
         //
         // Check Access
@@ -173,7 +176,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     public AccessTokenListResult findByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(userId, "userId");
 
         //
@@ -213,8 +216,8 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     public void invalidate(KapuaId scopeId, KapuaId accessTokenId) throws KapuaException {
         //
         // Validation of the fields
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(accessTokenId, "accessTokenId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(accessTokenId, ACCESS_TOKEN_ID);
 
         //
         // Check Access

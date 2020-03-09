@@ -49,14 +49,18 @@ import java.util.Date;
 @KapuaProvider
 public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceAssetManagementService {
 
+    private static final String SCOPE_ID = "scopeId";
+    private static final String DEVICE_ID = "deviceId";
+    private static final String DEVICE_ASSETS = "deviceAssets";
+
     @Override
     public DeviceAssets get(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets, Long timeout)
             throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(deviceId, "deviceId");
-        ArgumentValidator.notNull(deviceAssets, "deviceAssets");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(deviceId, DEVICE_ID);
+        ArgumentValidator.notNull(deviceAssets, DEVICE_ASSETS);
 
         //
         // Check Access
@@ -115,9 +119,9 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
     public DeviceAssets read(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets, Long timeout) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(deviceId, "deviceId");
-        ArgumentValidator.notNull(deviceAssets, "deviceAssets");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(deviceId, DEVICE_ID);
+        ArgumentValidator.notNull(deviceAssets, DEVICE_ASSETS);
 
         //
         // Check Access
@@ -177,9 +181,9 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
     public DeviceAssets write(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets, Long timeout) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(deviceId, "deviceId");
-        ArgumentValidator.notNull(deviceAssets, "deviceAssets");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(deviceId, DEVICE_ID);
+        ArgumentValidator.notNull(deviceAssets, DEVICE_ASSETS);
 
         //
         // Check Access

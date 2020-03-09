@@ -53,6 +53,8 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
 
     private static final RoleService ROLE_SERVICE = KapuaLocator.getInstance().getService(RoleService.class);
 
+    private static final String SCOPE_ID = "scopeId";
+
     public RolePermissionServiceImpl() {
         super(AuthorizationEntityManagerFactory.getInstance(), RolePermissionCacheFactory.getInstance());
     }

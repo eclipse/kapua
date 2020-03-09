@@ -39,6 +39,8 @@ public class UserEditDialog extends UserAddDialog {
     public static final int MAX_LINE_LENGTH = 30;
     public static final int MAX_TOOLTIP_WIDTH = 300;
 
+    private static final String ERROR = "Error";
+
     public UserEditDialog(GwtSession currentSession, GwtUser selectedUser) {
         super(currentSession);
         this.selectedUser = selectedUser;
@@ -79,11 +81,11 @@ public class UserEditDialog extends UserAddDialog {
     @Override
     public void validateUser() {
         if (!email.isValid()) {
-            ConsoleInfo.display("Error", email.getErrorMessage());
+            ConsoleInfo.display(ERROR, email.getErrorMessage());
         } else if (!phoneNumber.isValid()) {
-            ConsoleInfo.display("Error", phoneNumber.getErrorMessage());
+            ConsoleInfo.display(ERROR, phoneNumber.getErrorMessage());
         } else if (!expirationDate.isValid()) {
-            ConsoleInfo.display("Error", KapuaSafeHtmlUtils.htmlUnescape(expirationDate.getErrorMessage()));
+            ConsoleInfo.display(ERROR, KapuaSafeHtmlUtils.htmlUnescape(expirationDate.getErrorMessage()));
         }
     }
 

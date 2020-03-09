@@ -37,10 +37,11 @@ public class ChangePasswordDialog extends SimpleDialog {
 
     private TextField<String> oldPassword;
     private TextField<String> newPassword;
-    private TextField<String> confirmPassword;
     protected LabelField passwordTooltip;
 
     private GwtSession currentSession;
+
+    private static final String ERROR = "Error";
 
     public ChangePasswordDialog(GwtSession currentSession) {
         this.currentSession = currentSession;
@@ -67,7 +68,7 @@ public class ChangePasswordDialog extends SimpleDialog {
         newPassword.setPassword(true);
         credentialFormPanel.add(newPassword);
 
-        confirmPassword = new TextField<String>();
+        TextField<String> confirmPassword = new TextField<String>();
         confirmPassword.setAllowBlank(false);
         confirmPassword.setName("confirmPassword");
         confirmPassword.setFieldLabel("* " + ActionDialog.MSGS.confirmPassword());
@@ -103,14 +104,14 @@ public class ChangePasswordDialog extends SimpleDialog {
                 if (caught instanceof GwtKapuaException) {
                     GwtKapuaException gwtCaught = (GwtKapuaException) caught;
                     if (gwtCaught.getCode().equals(GwtKapuaErrorCode.INVALID_USERNAME_PASSWORD)) {
-                        ConsoleInfo.display("Error", ActionDialog.MSGS.changePasswordError(MSGS.changePasswordErrorWrongOldPassword()));
+                        ConsoleInfo.display(ERROR, ActionDialog.MSGS.changePasswordError(MSGS.changePasswordErrorWrongOldPassword()));
                         oldPassword.markInvalid(MSGS.changePasswordErrorWrongOldPassword());
                     } else if (gwtCaught.getCode().equals(GwtKapuaErrorCode.UNAUTHENTICATED)) {
-                        ConsoleInfo.display("Error", ActionDialog.MSGS.changePasswordError(caught.getLocalizedMessage()));
+                        ConsoleInfo.display(ERROR, ActionDialog.MSGS.changePasswordError(caught.getLocalizedMessage()));
                         hide();
                         TokenCleaner.cleanToken();
                     } else {
-                        ConsoleInfo.display("Error", ActionDialog.MSGS.changePasswordError(caught.getLocalizedMessage()));
+                        ConsoleInfo.display(ERROR, ActionDialog.MSGS.changePasswordError(caught.getLocalizedMessage()));
                     }
                 }
             }

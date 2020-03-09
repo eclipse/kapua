@@ -23,6 +23,8 @@ public class GwtDeviceConnectionQueryPredicates extends KapuaBaseModel implement
 
     private static final long serialVersionUID = 571130152596171388L;
 
+    private static final String CLIENT_ID = "clientId";
+
     public GwtDeviceConnectionQueryPredicates() {
         setSortAttribute(GwtSortAttribute.CLIENT_ID.name());
         setSortOrder(GwtSortOrder.ASCENDING.name());
@@ -47,7 +49,7 @@ public class GwtDeviceConnectionQueryPredicates extends KapuaBaseModel implement
     public <X> X get(String property) {
         if ("statusEnum".equals(property)) {
             return (X) (GwtDeviceQueryPredicates.GwtDeviceConnectionStatus.valueOf(getConnectionStatus()));
-        } else if ("deviceConnectionUserEnum".equals(property)) { 
+        } else if ("deviceConnectionUserEnum".equals(property)) {
             return (X) (GwtDeviceConnectionQueryPredicates.GwtDeviceConnectionUser.valueOf(getDeviceConnectionUser()));
         } else {
             return super.get(property);
@@ -55,15 +57,15 @@ public class GwtDeviceConnectionQueryPredicates extends KapuaBaseModel implement
     }
 
     public String getClientId() {
-        return (String) get("clientId");
+        return (String) get(CLIENT_ID);
     }
 
     public String getUnescapedClientId() {
-        return (String) getUnescaped("clientId");
+        return (String) getUnescaped(CLIENT_ID);
     }
 
     public void setClientId(String clientId) {
-        set("clientId", clientId);
+        set(CLIENT_ID, clientId);
     }
 
     public String getConnectionStatus() {

@@ -94,6 +94,12 @@ public class BrokerSteps extends TestBase {
      */
     private static final String BROKER_URI = "tcp://localhost:1883";
 
+    private static final String KURA_DEVICES = "KuraDevices";
+    private static final String PACKAGES = "packages";
+    private static final String BUNDLES = "bundles";
+    private static final String CONFIGURATIONS = "configurations";
+    private static final String MQTT_TEST_CLIENT_NOT_FOUND = "Mqtt test client not found";
+
     /**
      * Access to device management service.
      */
@@ -198,12 +204,12 @@ public class BrokerSteps extends TestBase {
         kuraDevice.mqttClientConnect();
         kuraDevices.add(kuraDevice);
 
-        stepData.put("KuraDevices", kuraDevices);
+        stepData.put(KURA_DEVICES, kuraDevices);
     }
 
     @When("^I restart the Kura Mock$")
     public void restartKuraMock() throws Exception {
-        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get("KuraDevices");
+        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get(KURA_DEVICES);
         List<KuraDevice> restartedKuraDevices = new ArrayList<>();
         if (!kuraDevices.isEmpty()) {
             for (KuraDevice kuraDevice : kuraDevices) {
@@ -212,7 +218,7 @@ public class BrokerSteps extends TestBase {
                 restartedKuraDevices.add(kuraDevice);
             }
         }
-        stepData.put("KuraDevices", restartedKuraDevices);
+        stepData.put(KURA_DEVICES, restartedKuraDevices);
     }
 
 
@@ -231,7 +237,7 @@ public class BrokerSteps extends TestBase {
 
     @When("^KuraMock is disconnected$")
     public void kuraMockDisconnected() throws Exception {
-        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get("KuraDevices");
+        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get(KURA_DEVICES);
         deviceDeathMessage();
 
         for (KuraDevice kuraDevice : kuraDevices) {
@@ -241,7 +247,7 @@ public class BrokerSteps extends TestBase {
 
     @When("^Device birth message is sent$")
     public void deviceBirthMessage() throws Exception {
-        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get("KuraDevices");
+        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get(KURA_DEVICES);
 
         for(KuraDevice kuraDevice : kuraDevices) {
             mqttBirth = "$EDC/kapua-sys/"+kuraDevice.getClientId()+"/MQTT/BIRTH";
@@ -262,7 +268,7 @@ public class BrokerSteps extends TestBase {
 
     @When("^Device death message is sent$")
     public void deviceDeathMessage() throws Exception {
-        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get("KuraDevices");
+        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get(KURA_DEVICES);
 
         for(KuraDevice kuraDevice : kuraDevices) {
             mqttDc = "$EDC/kapua-sys/"+kuraDevice.getClientId()+"/MQTT/DC";
@@ -285,7 +291,7 @@ public class BrokerSteps extends TestBase {
                 DevicePackages deploymentPackages = devicePackageManagementService.getInstalled(device.getScopeId(),
                         device.getId(), null);
                 List<DevicePackage> packages = deploymentPackages.getPackages();
-                stepData.put("packages", packages);
+                stepData.put(PACKAGES, packages);
             }
         }
     }
@@ -294,7 +300,7 @@ public class BrokerSteps extends TestBase {
     public void packagesReceived() {
 
         @SuppressWarnings("unchecked")
-        List<DevicePackage> packages = (List<DevicePackage>) stepData.get("packages");
+        List<DevicePackage> packages = (List<DevicePackage>) stepData.get(PACKAGES);
         if (packages != null) {
             assertEquals(1, packages.size());
         }
@@ -303,7 +309,7 @@ public class BrokerSteps extends TestBase {
     @Then("^Number of received packages is (\\d+)$")
     public void checkNumberOfReceivedDevicePackages(long number) {
         @SuppressWarnings("unchecked")
-        List<DevicePackage> receivedPackages = (List<DevicePackage>) stepData.get("packages");
+        List<DevicePackage> receivedPackages = (List<DevicePackage>) stepData.get(PACKAGES);
         assertEquals(number, receivedPackages.size());
     }
 
@@ -315,7 +321,7 @@ public class BrokerSteps extends TestBase {
     }
 
     private DevicePackage findPackageByNameAndVersion(final String packageSymbolicName, final String version) {
-        List<DevicePackage> savedPackages = (List<DevicePackage>) stepData.get("packages");
+        List<DevicePackage> savedPackages = (List<DevicePackage>) stepData.get(PACKAGES);
         List<DevicePackage> packages = savedPackages.stream()
                 .filter(bundle -> bundle.getName().equals(packageSymbolicName))
                 .filter(bundle -> bundle.getVersion().equals(version))
@@ -333,21 +339,21 @@ public class BrokerSteps extends TestBase {
 
     @When("^Bundles are requested$")
     public void requestBundles() throws Exception {
-        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get("KuraDevices");
+        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get(KURA_DEVICES);
 
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             Assert.assertNotNull(device);
             DeviceBundles deviceBundles = deviceBundleManagementService.get(device.getScopeId(), device.getId(), null);
             List<DeviceBundle> bundles = deviceBundles.getBundles();
-            stepData.put("bundles", bundles);
+            stepData.put(BUNDLES, bundles);
         }
     }
 
     @Then("^Bundles are received$")
     public void bundlesReceived() {
         @SuppressWarnings("unchecked")
-        List<DeviceBundle> bundles = (List<DeviceBundle>) stepData.get("bundles");
+        List<DeviceBundle> bundles = (List<DeviceBundle>) stepData.get(BUNDLES);
         assertEquals(137, bundles.size());
     }
 
@@ -359,7 +365,7 @@ public class BrokerSteps extends TestBase {
     }
 
     private DeviceBundle findBundleByNameAndVersion(final String bundleSymbolicName, final String version) {
-        List<DeviceBundle> savedBundles = (List<DeviceBundle>) stepData.get("bundles");
+        List<DeviceBundle> savedBundles = (List<DeviceBundle>) stepData.get(BUNDLES);
         List<DeviceBundle> bundles = savedBundles.stream()
                 .filter(bundle -> bundle.getName().equals(bundleSymbolicName))
                 .filter(bundle -> bundle.getVersion().equals(version))
@@ -394,14 +400,14 @@ public class BrokerSteps extends TestBase {
 
     @When("^Configuration is requested$")
     public void requestConfiguration() throws Exception {
-        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get("KuraDevices");
+        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get(KURA_DEVICES);
 
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             Assert.assertNotNull(device);
             DeviceConfiguration deviceConfiguration = deviceConfiguratiomManagementService.get(device.getScopeId(), device.getId(), null, null, null);
             List<DeviceComponentConfiguration> configurations = deviceConfiguration.getComponentConfigurations();
-            stepData.put("configurations", configurations);
+            stepData.put(CONFIGURATIONS, configurations);
         }
     }
 
@@ -414,7 +420,7 @@ public class BrokerSteps extends TestBase {
     }
 
     private DeviceComponentConfiguration findConfigurationByNameAndValue(final String configurationName, final String configurationKey, final String configurationValue) {
-        List<DeviceComponentConfiguration> savedConfigurations = (List<DeviceComponentConfiguration>) stepData.get("configurations");
+        List<DeviceComponentConfiguration> savedConfigurations = (List<DeviceComponentConfiguration>) stepData.get(CONFIGURATIONS);
         List<DeviceComponentConfiguration> configurations = savedConfigurations.stream()
                 .filter(configuration -> configuration.getDefinition().getId().equals(configurationName))
                 .filter(configuration -> configuration.getProperties().containsKey(configurationKey)
@@ -434,7 +440,7 @@ public class BrokerSteps extends TestBase {
     @Then("^Configuration is received$")
     public void configurationReceived() {
         @SuppressWarnings("unchecked")
-        List<DeviceComponentConfiguration> configurations = (List<DeviceComponentConfiguration>) stepData.get("configurations");
+        List<DeviceComponentConfiguration> configurations = (List<DeviceComponentConfiguration>) stepData.get(CONFIGURATIONS);
         assertEquals(17, configurations.size());
     }
 
@@ -509,7 +515,7 @@ public class BrokerSteps extends TestBase {
         byte[] payload = Files.readAllBytes(Paths.get(getClass().getResource(content).toURI()));
 
         if (mqttClient == null) {
-            throw new Exception("Mqtt test client not found");
+            throw new Exception(MQTT_TEST_CLIENT_NOT_FOUND);
         }
         mqttClient.publish(topic, payload, 0, false);
     }
@@ -518,7 +524,7 @@ public class BrokerSteps extends TestBase {
     public void clientConnected(String clientName) throws Exception {
         MqttClient mqttClient = (MqttClient) stepData.get(clientName);
         if (mqttClient == null) {
-            throw new Exception("Mqtt test client not found");
+            throw new Exception(MQTT_TEST_CLIENT_NOT_FOUND);
         }
         assertEquals(true, mqttClient.isConnected());
     }
@@ -527,7 +533,7 @@ public class BrokerSteps extends TestBase {
     public void clientNotConnected(String clientName) throws Exception {
         MqttClient mqttClient = (MqttClient) stepData.get(clientName);
         if (mqttClient == null) {
-            throw new Exception("Mqtt test client not found");
+            throw new Exception(MQTT_TEST_CLIENT_NOT_FOUND);
         }
         assertEquals(false, mqttClient.isConnected());
     }
@@ -536,7 +542,7 @@ public class BrokerSteps extends TestBase {
     public void disconnectClient(String clientName) throws Exception {
         MqttClient mqttClient = (MqttClient) stepData.get(clientName);
         if (mqttClient == null) {
-            throw new Exception("Mqtt test client not found");
+            throw new Exception(MQTT_TEST_CLIENT_NOT_FOUND);
         }
         try {
             mqttClient.disconnect();
@@ -550,7 +556,7 @@ public class BrokerSteps extends TestBase {
     @Then("^Device(?:|s) status is \"([^\"]*)\"$")
     public void deviceStatusIs(String deviceStatus) throws Exception {
         DeviceConnection deviceConn = null;
-        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get("KuraDevices");
+        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get(KURA_DEVICES);
         try {
             for (KuraDevice kuraDevice : kuraDevices) {
                 deviceConn = deviceConnectionService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
@@ -574,12 +580,12 @@ public class BrokerSteps extends TestBase {
             kuraDevice.mqttClientConnect();
             kuraDevices.add(kuraDevice);
         }
-        stepData.put("KuraDevices", kuraDevices);
+        stepData.put(KURA_DEVICES, kuraDevices);
     }
 
     @And("^Device assets are requested$")
     public void deviceAssetsAreRequested() throws Exception{
-        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get("KuraDevices");
+        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get(KURA_DEVICES);
         DeviceAssets deviceAssets = new DeviceAssetsImpl();
 
         for (KuraDevice kuraDevice : kuraDevices) {
@@ -609,7 +615,7 @@ public class BrokerSteps extends TestBase {
                 DevicePackages deploymentPackages = devicePackageManagementService.getInstalled(device.getScopeId(),
                         device.getId(), null);
                 List<DevicePackage> packages = deploymentPackages.getPackages();
-                stepData.put("packages", packages);
+                stepData.put(PACKAGES, packages);
 
                 assertEquals(numberOfPackages, packages.size());
             }

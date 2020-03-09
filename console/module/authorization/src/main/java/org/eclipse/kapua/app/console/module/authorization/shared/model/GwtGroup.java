@@ -17,6 +17,8 @@ public class GwtGroup extends GwtUpdatableEntityModel {
 
     private static final long serialVersionUID = 1L;
 
+    private static final String DESCRIPTION = "description";
+
     public String getGroupName() {
         return get("groupName");
     }
@@ -27,15 +29,15 @@ public class GwtGroup extends GwtUpdatableEntityModel {
     }
 
     public String getGroupDescription() {
-        return get("description");
+        return get(DESCRIPTION);
     }
 
     public String getUnescapedDescription() {
-        return (String) getUnescaped("description");
+        return (String) getUnescaped(DESCRIPTION);
     }
 
     public void setGroupDescription(String description) {
-        set("description", description);
+        set(DESCRIPTION, description);
         set("value", description);
     }
 

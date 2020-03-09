@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.util.CssLiterals;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
 import org.eclipse.kapua.app.console.module.api.client.util.FormUtils;
@@ -285,7 +286,7 @@ public class DeviceAssetsPanel extends LayoutContainer {
         field.setName(channel.getName());
         field.setAllowBlank(true);
         field.setFieldLabel(channel.getName() + " (" + channel.getType() + " - " + channel.getMode() + ")");
-        field.setLabelStyle("word-break:break-all");
+        field.setLabelStyle(CssLiterals.WORD_BREAK_BREAK_ALL);
         field.addPlugin(dirtyPlugin);
 
         if (channel.getValue() != null) {
@@ -300,7 +301,7 @@ public class DeviceAssetsPanel extends LayoutContainer {
         field.setName(channel.getName());
         field.setAllowBlank(true);
         field.setFieldLabel(channel.getName() + " (" + channel.getType() + " - " + channel.getMode() + ")");
-        field.setLabelStyle("word-break:break-all");
+        field.setLabelStyle(CssLiterals.WORD_BREAK_BREAK_ALL);
         field.addPlugin(dirtyPlugin);
         field.setMaxValue(MAX_SAFE_INTEGER);
 
@@ -355,7 +356,7 @@ public class DeviceAssetsPanel extends LayoutContainer {
         radioGroup.setName(channel.getName());
         radioGroup.setItemId(channel.getName());
         radioGroup.setFieldLabel(channel.getName() + " (" + channel.getType() + " - " + channel.getMode() + ")");
-        radioGroup.setLabelStyle("word-break:break-all");
+        radioGroup.setLabelStyle(CssLiterals.WORD_BREAK_BREAK_ALL);
         radioGroup.add(radioTrue);
         radioGroup.add(radioFalse);
 

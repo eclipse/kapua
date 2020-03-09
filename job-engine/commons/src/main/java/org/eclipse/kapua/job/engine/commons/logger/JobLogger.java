@@ -52,6 +52,8 @@ public class JobLogger {
     private static final String PRE_EXEC_LOG_FORMAT_DATE = "{} - ";
     private static final String POST_EXEC_LOG_FORMAT_ERROR = " {}";
 
+    private static final String CANNOT_LOG_THIS_LINE = "Cannot log this line: ";
+
     private Logger containerClassLog;
 
     private StringBuilder logSb = new StringBuilder();
@@ -145,7 +147,7 @@ public class JobLogger {
 
             logSb.append(MessageFormat.format(formatSb.toString(), finalArguments.toArray())).append(LF);
         } catch (Exception e) {
-            LOG.error("Cannot log this line: " + format, e);
+            LOG.error(CANNOT_LOG_THIS_LINE + format, e);
         }
     }
 
@@ -230,7 +232,7 @@ public class JobLogger {
 
             logSb.append(MessageFormat.format(formatSb.toString(), finalArguments.toArray())).append(LF);
         } catch (Exception e) {
-            LOG.error("Cannot log this line: " + format, e);
+            LOG.error(CANNOT_LOG_THIS_LINE + format, e);
         }
     }
 
@@ -315,7 +317,7 @@ public class JobLogger {
 
             logSb.append(MessageFormat.format(formatSb.toString(), finalArguments.toArray())).append(LF);
         } catch (Exception e) {
-            LOG.error("Cannot log this line: " + format, e);
+            LOG.error(CANNOT_LOG_THIS_LINE + format, e);
         }
     }
 

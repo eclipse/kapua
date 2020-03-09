@@ -19,6 +19,9 @@ public class GwtConfigComponent extends KapuaBaseModel implements Serializable {
 
     private static final long serialVersionUID = -6388356998309026758L;
 
+    private static final String COMPONENT_ID = "componentId";
+    private static final String COMPONENT_NAME = "componentName";
+
     private List<GwtConfigParameter> parameters;
 
     public GwtConfigComponent() {
@@ -26,27 +29,27 @@ public class GwtConfigComponent extends KapuaBaseModel implements Serializable {
     }
 
     public String getComponentId() {
-        return get("componentId");
+        return get(COMPONENT_ID);
     }
 
     public String getUnescapedComponentId() {
-        return getUnescaped("componentId");
+        return getUnescaped(COMPONENT_ID);
     }
 
     public void setId(String componentId) {
-        set("componentId", componentId);
+        set(COMPONENT_ID, componentId);
     }
 
     public String getComponentName() {
-        return get("componentName");
+        return get(COMPONENT_NAME);
     }
 
     public String getUnescapedComponentName() {
-        return getUnescaped("componentName");
+        return getUnescaped(COMPONENT_NAME);
     }
 
     public void setName(String componentName) {
-        set("componentName", componentName);
+        set(COMPONENT_NAME, componentName);
     }
 
     public String getComponentDescription() {

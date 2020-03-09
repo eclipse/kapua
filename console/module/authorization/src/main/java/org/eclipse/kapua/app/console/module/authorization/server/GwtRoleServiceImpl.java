@@ -87,6 +87,7 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
     private static final GroupService GROUP_SERVICE = LOCATOR.getService(GroupService.class);
 
+    private static final String ENTITY_INFO = "entityInfo";
 
     @Override
     public GwtRole create(GwtXSRFToken xsrfToken, GwtRoleCreator gwtRoleCreator) throws GwtKapuaException {
@@ -242,10 +243,10 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             if (role != null) {
                 gwtRoleDescription.add(new GwtGroupedNVPair("roleInfo", "roleName", role.getName()));
                 gwtRoleDescription.add(new GwtGroupedNVPair("roleInfo", "roleDescription", role.getDescription()));
-                gwtRoleDescription.add(new GwtGroupedNVPair("entityInfo", "roleModifiedOn", role.getModifiedOn()));
-                gwtRoleDescription.add(new GwtGroupedNVPair("entityInfo", "roleModifiedBy", role.getModifiedBy() != null ? usernameMap.get(role.getModifiedBy().toCompactId()) : null));
-                gwtRoleDescription.add(new GwtGroupedNVPair("entityInfo", "roleCreatedOn", role.getCreatedOn()));
-                gwtRoleDescription.add(new GwtGroupedNVPair("entityInfo", "roleCreatedBy", role.getCreatedBy() != null ? usernameMap.get(role.getCreatedBy().toCompactId()) : null));
+                gwtRoleDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "roleModifiedOn", role.getModifiedOn()));
+                gwtRoleDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "roleModifiedBy", role.getModifiedBy() != null ? usernameMap.get(role.getModifiedBy().toCompactId()) : null));
+                gwtRoleDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "roleCreatedOn", role.getCreatedOn()));
+                gwtRoleDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "roleCreatedBy", role.getCreatedBy() != null ? usernameMap.get(role.getCreatedBy().toCompactId()) : null));
             }
 
         } catch (Throwable t) {

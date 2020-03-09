@@ -29,6 +29,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.dialog.TabbedDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaNumberField;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.module.api.client.util.CssLiterals;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
@@ -110,7 +111,7 @@ public class PackageInstallDialog extends TabbedDialog {
 
             dpInfoText = new Text();
             dpInfoText.setText(DEVICE_MSGS.packageInstallDpDialogTabInfo());
-            dpInfoText.setStyleAttribute("margin-bottom", "10px");
+            dpInfoText.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
             packageInfoForm.add(dpInfoText);
 
             dpURIField = new KapuaTextField<String>();
@@ -194,7 +195,7 @@ public class PackageInstallDialog extends TabbedDialog {
 
             operationInfoText = new Text();
             operationInfoText.setText(DEVICE_MSGS.packageInstallDpDialogOperationTabInfo());
-            operationInfoText.setStyleAttribute("margin-bottom", "5px");
+            operationInfoText.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "5px");
             operationOptionsForm.add(operationInfoText);
 
             operationRebootField = new CheckBox();
@@ -249,7 +250,7 @@ public class PackageInstallDialog extends TabbedDialog {
 
             advancedInfoText = new Text();
             advancedInfoText.setText(DEVICE_MSGS.packageInstallDpDialogAdvancedTabInfo());
-            advancedInfoText.setStyleAttribute("margin-bottom", "5px");
+            advancedInfoText.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "5px");
             advancedOptionsForm.add(advancedInfoText);
 
             operationRestartField = new CheckBox();

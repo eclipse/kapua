@@ -62,6 +62,13 @@ public class JobScheduleServiceSteps extends TestBase {
     private TriggerDefinitionFactory triggerDefinitionFactory;
     private TriggerDefinitionService triggerDefinitionService;
 
+    private static final String TRIGGER_DEFINITION_ID = "TriggerDefinitionId";
+    private static final String TRIGGER = "Trigger";
+    private static final String TRIGGER_CREATOR = "TriggerCreator";
+    private static final String CURRENT_TRIGGER_ID = "CurrentTriggerId";
+    private static final String UPDATED_TRIGGER = "UpdatedTrigger";
+    private static final String TRIGGER_START_DATE = "TriggerStartDate";
+    private static final String TRIGGER_END_DATE = "TriggerEndDate";
 
 // ****************************************************************************************
 // * Implementation of Gherkin steps used in JobService.feature scenarios.                *
@@ -146,7 +153,7 @@ public class JobScheduleServiceSteps extends TestBase {
     @And("^I try to create scheduler with name \"([^\"]*)\"$")
     public void iTryToCreateSchedulerWithName(String schedulerName) throws Exception {
         TriggerCreator triggerCreator = triggerFactory.newCreator(getCurrentScopeId());
-        KapuaId triggerDefinitionId = (KapuaId) stepData.get("TriggerDefinitionId");
+        KapuaId triggerDefinitionId = (KapuaId) stepData.get(TRIGGER_DEFINITION_ID);
         triggerCreator.setName(schedulerName);
         triggerCreator.setStartsOn(new Date());
         triggerCreator.setTriggerDefinitionId(triggerDefinitionId);
@@ -154,9 +161,9 @@ public class JobScheduleServiceSteps extends TestBase {
 
         try {
             primeException();
-            stepData.remove("Trigger");
+            stepData.remove(TRIGGER);
             Trigger trigger = triggerService.create(triggerCreator);
-            stepData.put("Trigger", trigger);
+            stepData.put(TRIGGER, trigger);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -172,7 +179,7 @@ public class JobScheduleServiceSteps extends TestBase {
             TriggerDefinition triggerDefinition = triggerDefinitionService.query(triggerDefinitionQuery).getFirstItem();
 
             stepData.put("TriggerDefinition", triggerDefinition);
-            stepData.put("TriggerDefinitionId", triggerDefinition.getId());
+            stepData.put(TRIGGER_DEFINITION_ID, triggerDefinition.getId());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -181,32 +188,32 @@ public class JobScheduleServiceSteps extends TestBase {
     @And("^A regular trigger creator with the name \"([^\"]*)\" is created$")
     public void aRegularTriggerCreatorWithTheName(String triggerName) {
         TriggerCreator triggerCreator = triggerFactory.newCreator(getCurrentScopeId());
-        KapuaId currentTriggerDefId = (KapuaId) stepData.get("TriggerDefinitionId");
+        KapuaId currentTriggerDefId = (KapuaId) stepData.get(TRIGGER_DEFINITION_ID);
         KapuaId jobId = (KapuaId) stepData.get("CurrentJobId");
 
         triggerCreator.setName(triggerName);
         triggerCreator.setTriggerDefinitionId(currentTriggerDefId);
         triggerCreator.getTriggerProperties().add(triggerDefinitionFactory.newTriggerProperty("jobId", KAPUA_ID_CLASS_NAME, jobId.toCompactId()));
         triggerCreator.getTriggerProperties().add(triggerDefinitionFactory.newTriggerProperty("scopeId", KAPUA_ID_CLASS_NAME, getCurrentScopeId().toCompactId()));
-        stepData.remove("TriggerCreator");
-        stepData.put("TriggerCreator", triggerCreator);
+        stepData.remove(TRIGGER_CREATOR);
+        stepData.put(TRIGGER_CREATOR, triggerCreator);
     }
 
     @And("^A trigger creator without a name")
     public void aTriggerCreatorWithoutAName() {
         TriggerCreator triggerCreator = triggerFactory.newCreator(getCurrentScopeId());
-        KapuaId currentTriggerDefId = (KapuaId) stepData.get("TriggerDefinitionId");
+        KapuaId currentTriggerDefId = (KapuaId) stepData.get(TRIGGER_DEFINITION_ID);
 
         triggerCreator.setTriggerDefinitionId(currentTriggerDefId);
         triggerCreator.setName(null);
 
-        stepData.put("TriggerCreator", triggerCreator);
+        stepData.put(TRIGGER_CREATOR, triggerCreator);
     }
 
     @And("^A regular trigger creator with the name \"([^\"]*)\" and following properties$")
     public void aRegularTriggerCreatorWithTheNameAndFollowingProperties(String triggerName, List<CucTriggerProperty> list) {
         TriggerCreator triggerCreator = triggerFactory.newCreator(getCurrentScopeId());
-        KapuaId currentTriggerDefId = (KapuaId) stepData.get("TriggerDefinitionId");
+        KapuaId currentTriggerDefId = (KapuaId) stepData.get(TRIGGER_DEFINITION_ID);
 
         triggerCreator.setName(triggerName);
         triggerCreator.setTriggerDefinitionId(currentTriggerDefId);
@@ -217,22 +224,22 @@ public class JobScheduleServiceSteps extends TestBase {
         }
         triggerCreator.setTriggerProperties(tmpPropList);
 
-        stepData.put("TriggerCreator", triggerCreator);
+        stepData.put(TRIGGER_CREATOR, triggerCreator);
     }
 
     @And("^I try to create a new trigger entity from the existing creator$")
     public void iCreateANewTriggerEntityFromTheExistingCreator() throws Exception {
-        TriggerCreator triggerCreator = (TriggerCreator) stepData.get("TriggerCreator");
+        TriggerCreator triggerCreator = (TriggerCreator) stepData.get(TRIGGER_CREATOR);
         triggerCreator.setScopeId(getCurrentScopeId());
         triggerCreator.setStartsOn(new Date());
 
         primeException();
         try {
-            stepData.remove("Trigger");
-            stepData.remove("CurrentTriggerId");
+            stepData.remove(TRIGGER);
+            stepData.remove(CURRENT_TRIGGER_ID);
             Trigger trigger = triggerService.create(triggerCreator);
-            stepData.put("Trigger", trigger);
-            stepData.put("CurrentTriggerId", trigger.getId());
+            stepData.put(TRIGGER, trigger);
+            stepData.put(CURRENT_TRIGGER_ID, trigger.getId());
         } catch (Exception ex) {
             verifyException(ex);
         }
@@ -241,11 +248,11 @@ public class JobScheduleServiceSteps extends TestBase {
     @And("^I try to edit trigger name \"([^\"]*)\"$")
     public void iTryToEditTriggerName(String newTriggerName) throws Exception {
         try {
-            Trigger trigger = (Trigger) stepData.get("Trigger");
+            Trigger trigger = (Trigger) stepData.get(TRIGGER);
             trigger.setName(newTriggerName);
             primeException();
             Trigger updatedTrigger = triggerService.update(trigger);
-            stepData.put("UpdatedTrigger", updatedTrigger);
+            stepData.put(UPDATED_TRIGGER, updatedTrigger);
         } catch (Exception ex) {
             verifyException(ex);
         }
@@ -254,7 +261,7 @@ public class JobScheduleServiceSteps extends TestBase {
     @And("^I try to delete last created trigger$")
     public void iTryToDeleteTrigger() throws Exception {
         try {
-            Trigger trigger = (Trigger) stepData.get("Trigger");
+            Trigger trigger = (Trigger) stepData.get(TRIGGER);
             primeException();
             triggerService.delete(getCurrentScopeId(), trigger.getId());
         } catch (Exception ex) {
@@ -264,20 +271,20 @@ public class JobScheduleServiceSteps extends TestBase {
 
     @And("^I create a new trigger from the existing creator with previously defined date properties$")
     public void createTriggerWithDateProperties() throws Exception {
-        TriggerCreator triggerCreator = (TriggerCreator) stepData.get("TriggerCreator");
-        Date startDate = (Date) stepData.get("TriggerStartDate");
-        Date endDate = (Date) stepData.get("TriggerEndDate");
+        TriggerCreator triggerCreator = (TriggerCreator) stepData.get(TRIGGER_CREATOR);
+        Date startDate = (Date) stepData.get(TRIGGER_START_DATE);
+        Date endDate = (Date) stepData.get(TRIGGER_END_DATE);
         triggerCreator.setScopeId(getCurrentScopeId());
         triggerCreator.setStartsOn(startDate);
         triggerCreator.setEndsOn(endDate);
         primeException();
         try {
-            stepData.remove("Trigger");
-            stepData.remove("CurrentTriggerId");
+            stepData.remove(TRIGGER);
+            stepData.remove(CURRENT_TRIGGER_ID);
             Trigger trigger = triggerService.create(triggerCreator);
             trigger.getTriggerProperties();
-            stepData.put("Trigger", trigger);
-            stepData.put("CurrentTriggerId", trigger.getId());
+            stepData.put(TRIGGER, trigger);
+            stepData.put(CURRENT_TRIGGER_ID, trigger.getId());
         } catch (Exception ex) {
             verifyException(ex);
         }
@@ -288,7 +295,7 @@ public class JobScheduleServiceSteps extends TestBase {
         try {
             primeException();
             Date startDate = setDateAndTimeValue(startDateStr, startTimeStr);
-            stepData.put("TriggerStartDate", startDate);
+            stepData.put(TRIGGER_START_DATE, startDate);
         } catch (ParseException ex) {
             verifyException(ex);
         }
@@ -299,7 +306,7 @@ public class JobScheduleServiceSteps extends TestBase {
         try {
             primeException();
             Date startDate = setTodayAsDateValue(startTimeStr);
-            stepData.put("TriggerStartDate", startDate);
+            stepData.put(TRIGGER_START_DATE, startDate);
         } catch (Exception ex) {
             verifyException(ex);
         }
@@ -310,7 +317,7 @@ public class JobScheduleServiceSteps extends TestBase {
         try {
             primeException();
             Date startDate = setTomorrowAsDateValue(startTimeStr);
-            stepData.put("TriggerStartDate", startDate);
+            stepData.put(TRIGGER_START_DATE, startDate);
         } catch (Exception ex) {
             verifyException(ex);
         }
@@ -321,7 +328,7 @@ public class JobScheduleServiceSteps extends TestBase {
         try {
             primeException();
             Date endDate = setTomorrowAsDateValue(startTimeStr);
-            stepData.put("TriggerEndDate", endDate);
+            stepData.put(TRIGGER_END_DATE, endDate);
         } catch (Exception ex) {
             verifyException(ex);
         }
@@ -332,7 +339,7 @@ public class JobScheduleServiceSteps extends TestBase {
         try {
             primeException();
             Date endDate = setDateAndTimeValue(endDateStr, endTimeStr);
-            stepData.put("TriggerEndDate", endDate);
+            stepData.put(TRIGGER_END_DATE, endDate);
         } catch (ParseException ex) {
             verifyException(ex);
         }
@@ -375,31 +382,31 @@ public class JobScheduleServiceSteps extends TestBase {
 
     @And("^I set retry interval to (\\d+)$")
     public void iSetRetryIntervalTo(long retryInterval) {
-        TriggerCreator triggerCreator = (TriggerCreator) stepData.get("TriggerCreator");
+        TriggerCreator triggerCreator = (TriggerCreator) stepData.get(TRIGGER_CREATOR);
         triggerCreator.setRetryInterval(retryInterval);
-        stepData.remove("TriggerCreator");
-        stepData.put("TriggerCreator", triggerCreator);
+        stepData.remove(TRIGGER_CREATOR);
+        stepData.put(TRIGGER_CREATOR, triggerCreator);
     }
 
     @Then("^I set retry interval to null$")
     public void iSetRetryIntervalToNull() {
-        TriggerCreator triggerCreator = (TriggerCreator) stepData.get("TriggerCreator");
+        TriggerCreator triggerCreator = (TriggerCreator) stepData.get(TRIGGER_CREATOR);
         triggerCreator.setRetryInterval(null);
-        stepData.remove("TriggerCreator");
-        stepData.put("TriggerCreator", triggerCreator);
+        stepData.remove(TRIGGER_CREATOR);
+        stepData.put(TRIGGER_CREATOR, triggerCreator);
     }
 
     @Then("^I set cron expression to \"([^\"]*)\"$")
     public void iSetCronExpressionTo(String cron) throws Throwable {
-        TriggerCreator triggerCreator = (TriggerCreator) stepData.get("TriggerCreator");
+        TriggerCreator triggerCreator = (TriggerCreator) stepData.get(TRIGGER_CREATOR);
         triggerCreator.setCronScheduling(cron);
-        stepData.remove("TriggerCreator");
-        stepData.put("TriggerCreator", triggerCreator);
+        stepData.remove(TRIGGER_CREATOR);
+        stepData.put(TRIGGER_CREATOR, triggerCreator);
     }
 
     @Then("^I delete the previously created trigger$")
     public void iDeleteThePreviouslyCreatedTrigger() throws Exception {
-        Trigger trigger = (Trigger) stepData.get("Trigger");
+        Trigger trigger = (Trigger) stepData.get(TRIGGER);
         primeException();
         try {
             triggerService.delete(trigger.getScopeId(), trigger.getId());
@@ -410,12 +417,12 @@ public class JobScheduleServiceSteps extends TestBase {
 
     @And("^I search for the trigger in the database$")
     public void iSearchForTheTriggerInTheDatabase() throws Exception {
-        KapuaId currentTriggerID = (KapuaId) stepData.get("CurrentTriggerId");
+        KapuaId currentTriggerID = (KapuaId) stepData.get(CURRENT_TRIGGER_ID);
         primeException();
         try {
-            stepData.remove("Trigger");
+            stepData.remove(TRIGGER);
             Trigger trigger = triggerService.find(getCurrentScopeId(), currentTriggerID);
-            stepData.put("Trigger", trigger);
+            stepData.put(TRIGGER, trigger);
         } catch (Exception ex){
             verifyException(ex);
         }
@@ -423,7 +430,7 @@ public class JobScheduleServiceSteps extends TestBase {
 
     @Then("^I delete trigger with name \"([^\"]*)\"$")
     public void iDeleteTriggerWithName(String arg0) throws Throwable {
-        Trigger trigger = (Trigger) stepData.get("Trigger");
+        Trigger trigger = (Trigger) stepData.get(TRIGGER);
         primeException();
         try {
             triggerService.delete(trigger.getScopeId(), trigger.getId());
@@ -438,10 +445,10 @@ public class JobScheduleServiceSteps extends TestBase {
         triggerQuery.setPredicate(triggerQuery.attributePredicate(TriggerAttributes.NAME, triggerName, AttributePredicate.Operator.EQUAL));
         primeException();
         try {
-            stepData.remove("Trigger");
+            stepData.remove(TRIGGER);
             TriggerListResult triggerListResult = triggerService.query(triggerQuery);
             Trigger trigger = triggerListResult.getFirstItem();
-            stepData.put("Trigger", trigger);
+            stepData.put(TRIGGER, trigger);
         } catch (Exception ex) {
             verifyException(ex);
         }
@@ -449,12 +456,12 @@ public class JobScheduleServiceSteps extends TestBase {
 
     @And("^There is no trigger with the name \"([^\"]*)\" in the database$")
     public void thereIsNoTriggerWithTheNameInTheDatabase(String triggerName) throws Throwable {
-            assertNull(stepData.get("Trigger"));
+            assertNull(stepData.get(TRIGGER));
         }
 
     @And("^I try to edit trigger definition to \"([^\"]*)\"$")
     public void iTryToEditSchedulerPropertyTo(String trigerDefinition) throws Exception {
-    Trigger trigger = (Trigger) stepData.get("Trigger");
+    Trigger trigger = (Trigger) stepData.get(TRIGGER);
 
         primeException();
 
@@ -465,7 +472,7 @@ public class JobScheduleServiceSteps extends TestBase {
 
             trigger.setTriggerDefinitionId(triggerDefinition.getId());
             Trigger updateTrigger = triggerService.update(trigger);
-            stepData.put("UpdatedTrigger", updateTrigger);
+            stepData.put(UPDATED_TRIGGER, updateTrigger);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -474,13 +481,13 @@ public class JobScheduleServiceSteps extends TestBase {
     @And("^I try to edit start date to (.*) at (.*)$")
     public void iTryToEditStartDateTo(String startDate, String startTime) throws Exception{
 
-        Trigger trigger = (Trigger) stepData.get("Trigger");
+        Trigger trigger = (Trigger) stepData.get(TRIGGER);
         Date newTriggerStartOnDate = setDateAndTimeValue(startDate, startTime);
         trigger.setStartsOn(newTriggerStartOnDate);
         try {
             primeException();
             Trigger updatedTrigger = triggerService.update(trigger);
-            stepData.put("UpdatedTrigger", updatedTrigger);
+            stepData.put(UPDATED_TRIGGER, updatedTrigger);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -489,13 +496,13 @@ public class JobScheduleServiceSteps extends TestBase {
     @And("^I try to edit end date to (.*) at (.*)$")
     public void iTryToEditEndDateTo(String endDate, String endTime) throws Exception{
 
-        Trigger trigger = (Trigger) stepData.get("Trigger");
+        Trigger trigger = (Trigger) stepData.get(TRIGGER);
         Date newTriggerEndsOnDate = setDateAndTimeValue(endDate, endTime);
         trigger.setEndsOn(newTriggerEndsOnDate);
         try {
             primeException();
             Trigger updatedTrigger = triggerService.update(trigger);
-            stepData.put("UpdatedTrigger", updatedTrigger);
+            stepData.put(UPDATED_TRIGGER, updatedTrigger);
         } catch (KapuaException ex) {
             verifyException(ex);
         }

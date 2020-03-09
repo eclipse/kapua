@@ -47,9 +47,6 @@ public abstract class AbstractKapuaConverter {
 
     public static final Logger logger = LoggerFactory.getLogger(AbstractKapuaConverter.class);
 
-    // metrics
-    protected static final String METRIC_MODULE_NAME = "converter";
-    protected static final String METRIC_COMPONENT_NAME = "kapua";
     protected static final MetricsService METRICS_SERVICE = MetricServiceFactory.getInstance();
 
     private final Counter metricConverterJmsMessage;
@@ -60,9 +57,30 @@ public abstract class AbstractKapuaConverter {
      * Constructor
      */
     protected AbstractKapuaConverter() {
-        metricConverterJmsMessage = METRICS_SERVICE.getCounter(METRIC_MODULE_NAME, METRIC_COMPONENT_NAME, "jms", "message", "count");
-        metricConverterJmsErrorMessage = METRICS_SERVICE.getCounter(METRIC_MODULE_NAME, METRIC_COMPONENT_NAME, "jms", "message", "error", "count");
-        metricConverterErrorMessage = METRICS_SERVICE.getCounter(METRIC_MODULE_NAME, METRIC_COMPONENT_NAME, "kapua_message", "message", "error", "count");
+        metricConverterJmsMessage = METRICS_SERVICE.getCounter(
+                ConverterMetrics.METRIC_MODULE_NAME,
+                ConverterMetrics.METRIC_COMPONENT_NAME,
+                ConverterMetrics.METRIC_JMS,
+                ConverterMetrics.METRIC_MESSAGE,
+                ConverterMetrics.METRIC_COUNT
+        );
+
+        metricConverterJmsErrorMessage = METRICS_SERVICE.getCounter(
+                ConverterMetrics.METRIC_MODULE_NAME,
+                ConverterMetrics.METRIC_COMPONENT_NAME,
+                ConverterMetrics.METRIC_JMS,
+                ConverterMetrics.METRIC_MESSAGE,
+                ConverterMetrics.METRIC_ERROR,
+                ConverterMetrics.METRIC_COUNT
+        );
+
+        metricConverterErrorMessage = METRICS_SERVICE.getCounter(
+                ConverterMetrics.METRIC_MODULE_NAME,
+                ConverterMetrics.METRIC_COMPONENT_NAME,
+                ConverterMetrics.METRIC_KAPUA_MESSAGE,
+                ConverterMetrics.METRIC_MESSAGE,
+                ConverterMetrics.METRIC_ERROR,
+                ConverterMetrics.METRIC_COUNT);
     }
 
     /**
@@ -82,9 +100,9 @@ public abstract class AbstractKapuaConverter {
                 try {
                     // FIX #164
                     Date queuedOn = new Date(message.getHeader(CamelConstants.JMS_HEADER_TIMESTAMP, Long.class));
-                    KapuaId connectionId = (KapuaId) SerializationUtils.deserialize(Base64.getDecoder().decode(message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTION_ID, String.class)));
+                    KapuaId connectionId = SerializationUtils.deserialize(Base64.getDecoder().decode(message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTION_ID, String.class)));
                     String clientId = message.getHeader(MessageConstants.HEADER_KAPUA_CLIENT_ID, String.class);
-                    ConnectorDescriptor connectorDescriptor = (ConnectorDescriptor) SerializationUtils
+                    ConnectorDescriptor connectorDescriptor = SerializationUtils
                             .deserialize(Base64.getDecoder().decode(message.getHeader(MessageConstants.HEADER_KAPUA_CONNECTOR_DEVICE_PROTOCOL, String.class)));
                     return JmsUtil.convertToCamelKapuaMessage(connectorDescriptor, messageType, messageContent, CamelUtil.getTopic(message), queuedOn, connectionId, clientId);
                 } catch (JMSException e) {

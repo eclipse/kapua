@@ -55,6 +55,9 @@ public final class DeviceValidation {
     private static DeviceRegistryService deviceRegistryService;
     private static DeviceFactory deviceFactory;
 
+    private static final String SCOPE_ID = "scopeId";
+    private static final String DEVICE_CREATOR_CLIENT_ID = "deviceCreator.clientId";
+
     static {
         try {
             authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
@@ -102,9 +105,9 @@ public final class DeviceValidation {
     public static DeviceCreator validateCreatePreconditions(DeviceCreator deviceCreator) throws KapuaException {
         ArgumentValidator.notNull(deviceCreator, "deviceCreator");
         ArgumentValidator.notNull(deviceCreator.getScopeId(), "deviceCreator.scopeId");
-        ArgumentValidator.notEmptyOrNull(deviceCreator.getClientId(), "deviceCreator.clientId");
-        ArgumentValidator.lengthRange(deviceCreator.getClientId(), 1, 255, "deviceCreator.clientId");
-        ArgumentValidator.match(deviceCreator.getClientId(), DeviceValidationRegex.CLIENT_ID, "deviceCreator.clientId");
+        ArgumentValidator.notEmptyOrNull(deviceCreator.getClientId(), DEVICE_CREATOR_CLIENT_ID);
+        ArgumentValidator.lengthRange(deviceCreator.getClientId(), 1, 255, DEVICE_CREATOR_CLIENT_ID);
+        ArgumentValidator.match(deviceCreator.getClientId(), DeviceValidationRegex.CLIENT_ID, DEVICE_CREATOR_CLIENT_ID);
 
         if (deviceCreator.getGroupId() != null) {
             ArgumentValidator.notNull(groupService.find(deviceCreator.getScopeId(), deviceCreator.getGroupId()), "deviceCreator.groupId");
@@ -155,7 +158,7 @@ public final class DeviceValidation {
      * @throws KapuaException
      */
     public static void validateFindPreconditions(KapuaId scopeId, KapuaId entityId) throws KapuaException {
-        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(entityId, "entityId");
 
         KapuaId groupId = findCurrentGroupId(scopeId, entityId);
@@ -201,7 +204,7 @@ public final class DeviceValidation {
      * @throws KapuaException
      */
     public static void validateDeletePreconditions(KapuaId scopeId, KapuaId deviceId) throws KapuaException {
-        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(deviceId, "id");
 
         KapuaId groupId = findCurrentGroupId(scopeId, deviceId);
@@ -217,7 +220,7 @@ public final class DeviceValidation {
      * @since 1.0.0
      */
     public static void validateFindByClientIdPreconditions(KapuaId scopeId, String clientId) throws KapuaException {
-        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notEmptyOrNull(clientId, "clientId");
 
         // Check access is performed by the query method.

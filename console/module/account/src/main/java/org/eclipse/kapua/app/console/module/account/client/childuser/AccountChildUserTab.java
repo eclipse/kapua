@@ -17,6 +17,7 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
+import org.eclipse.kapua.app.console.module.api.client.util.CssLiterals;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 
@@ -51,9 +52,9 @@ public class AccountChildUserTab extends KapuaTabItem<GwtAccount> {
         EntityCRUDToolbar<GwtUser> toolBar = userGrid.getToolbar();
 
         layout(true);
-        toolBar.setStyleAttribute("border-top", "0px none");
-        toolBar.setStyleAttribute("border-left", "0px none");
-        toolBar.setStyleAttribute("border-right", "0px none");
+        toolBar.setStyleAttribute("border-top", CssLiterals.BORDER_0PX_NONE);
+        toolBar.setStyleAttribute("border-left", CssLiterals.BORDER_0PX_NONE);
+        toolBar.setStyleAttribute("border-right", CssLiterals.BORDER_0PX_NONE);
         toolBar.setStyleAttribute("border-bottom", "1px solid rgb(208, 208, 208)");
     }
 

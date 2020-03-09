@@ -25,6 +25,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPane
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.module.api.client.util.CssLiterals;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtGroup;
@@ -86,7 +87,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         // ClientId
         Label clientIdLabel = new Label(DEVICE_MSGS.deviceFilteringPanelClientId());
         clientIdLabel.setWidth(WIDTH);
-        clientIdLabel.setStyleAttribute("margin", "5px");
+        clientIdLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
 
         fieldsPanel.add(clientIdLabel);
 
@@ -94,60 +95,60 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         clientIdField.setName("clientId");
         clientIdField.setWidth(WIDTH);
         clientIdField.setMaxLength(MAX_LEN);
-        clientIdField.setStyleAttribute("margin-top", "0px");
-        clientIdField.setStyleAttribute("margin-left", "5px");
-        clientIdField.setStyleAttribute("margin-right", "5px");
-        clientIdField.setStyleAttribute("margin-bottom", "10px");
+        clientIdField.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        clientIdField.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        clientIdField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        clientIdField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(clientIdField);
 
         //
         // DisplayName
         Label displayNameLabel = new Label(DEVICE_MSGS.deviceFilteringPanelDisplayName());
         displayNameLabel.setWidth(WIDTH);
-        displayNameLabel.setStyleAttribute("margin", "5px");
+        displayNameLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
         fieldsPanel.add(displayNameLabel);
 
         displayNameField = new KapuaTextField<String>();
         displayNameField.setName("displayName");
         displayNameField.setWidth(WIDTH);
         displayNameField.setMaxLength(MAX_LEN);
-        displayNameField.setStyleAttribute("margin-top", "0px");
-        displayNameField.setStyleAttribute("margin-left", "5px");
-        displayNameField.setStyleAttribute("margin-right", "5px");
-        displayNameField.setStyleAttribute("margin-bottom", "10px");
+        displayNameField.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        displayNameField.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        displayNameField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        displayNameField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(displayNameField);
 
         //
         // Serial Number
         Label serialNumberLabel = new Label(DEVICE_MSGS.deviceFilteringPanelSerialNumber());
         serialNumberLabel.setWidth(WIDTH);
-        serialNumberLabel.setStyleAttribute("margin", "5px");
+        serialNumberLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
         fieldsPanel.add(serialNumberLabel);
 
         serialNumberField = new KapuaTextField<String>();
         serialNumberField.setName("serialNumber");
         serialNumberField.setWidth(WIDTH);
         serialNumberField.setMaxLength(MAX_LEN);
-        serialNumberField.setStyleAttribute("margin-top", "0px");
-        serialNumberField.setStyleAttribute("margin-left", "5px");
-        serialNumberField.setStyleAttribute("margin-right", "5px");
-        serialNumberField.setStyleAttribute("margin-bottom", "10px");
+        serialNumberField.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        serialNumberField.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        serialNumberField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        serialNumberField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(serialNumberField);
 
         //
         // Status
         Label statusLabel = new Label(DEVICE_MSGS.deviceFilteringPanelStatus());
         statusLabel.setWidth(WIDTH);
-        statusLabel.setStyleAttribute("margin", "5px");
+        statusLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
         fieldsPanel.add(statusLabel);
 
         statusCombo = new SimpleComboBox<GwtDeviceQueryPredicates.GwtDeviceStatus>();
         statusCombo.setName("status");
         statusCombo.setWidth(WIDTH);
-        statusCombo.setStyleAttribute("margin-top", "0px");
-        statusCombo.setStyleAttribute("margin-left", "5px");
-        statusCombo.setStyleAttribute("margin-right", "5px");
-        statusCombo.setStyleAttribute("margin-bottom", "10px");
+        statusCombo.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        statusCombo.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        statusCombo.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        statusCombo.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
 
         statusCombo.setEmptyText(DEVICE_MSGS.deviceFilteringPanelStatusEmptyText());
         statusCombo.add(GwtDeviceQueryPredicates.GwtDeviceStatus.ANY);
@@ -164,16 +165,16 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         // Connection Status
         Label connectionStatusLabel = new Label(DEVICE_MSGS.deviceFilteringPanelConnectionStatus());
         connectionStatusLabel.setWidth(WIDTH);
-        connectionStatusLabel.setStyleAttribute("margin", "5px");
+        connectionStatusLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
         fieldsPanel.add(connectionStatusLabel);
 
         connectionStatusCombo = new SimpleComboBox<GwtDeviceQueryPredicates.GwtDeviceConnectionStatus>();
         connectionStatusCombo.setName("status");
         connectionStatusCombo.setWidth(WIDTH);
-        connectionStatusCombo.setStyleAttribute("margin-top", "0px");
-        connectionStatusCombo.setStyleAttribute("margin-left", "5px");
-        connectionStatusCombo.setStyleAttribute("margin-right", "5px");
-        connectionStatusCombo.setStyleAttribute("margin-bottom", "10px");
+        connectionStatusCombo.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        connectionStatusCombo.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        connectionStatusCombo.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        connectionStatusCombo.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
 
         connectionStatusCombo.setEmptyText(DEVICE_MSGS.deviceFilteringPanelConnectionStatusEmptyText());
         connectionStatusCombo.add(GwtDeviceQueryPredicates.GwtDeviceConnectionStatus.ANY);
@@ -192,68 +193,68 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         // Esf Version
         Label iotFrameworkVersionLabel = new Label(DEVICE_MSGS.deviceFilteringPanelESFVersion());
         iotFrameworkVersionLabel.setWidth(WIDTH);
-        iotFrameworkVersionLabel.setStyleAttribute("margin", "5px");
+        iotFrameworkVersionLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
         fieldsPanel.add(iotFrameworkVersionLabel);
 
         iotFrameworkVersionField = new KapuaTextField<String>();
         iotFrameworkVersionField.setName("iotFrameworkVersion");
         iotFrameworkVersionField.setWidth(WIDTH);
         iotFrameworkVersionField.setMaxLength(MAX_LEN);
-        iotFrameworkVersionField.setStyleAttribute("margin-top", "0px");
-        iotFrameworkVersionField.setStyleAttribute("margin-left", "5px");
-        iotFrameworkVersionField.setStyleAttribute("margin-right", "5px");
-        iotFrameworkVersionField.setStyleAttribute("margin-bottom", "10px");
+        iotFrameworkVersionField.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        iotFrameworkVersionField.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        iotFrameworkVersionField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        iotFrameworkVersionField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(iotFrameworkVersionField);
 
         //
         // Application Identifiers
         Label applicationIdentifiersLabel = new Label(DEVICE_MSGS.deviceFilteringPanelApplications());
         applicationIdentifiersLabel.setWidth(WIDTH);
-        applicationIdentifiersLabel.setStyleAttribute("margin", "5px");
+        applicationIdentifiersLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
         fieldsPanel.add(applicationIdentifiersLabel);
 
         applicationIdentifiersField = new KapuaTextField<String>();
         applicationIdentifiersField.setName("applicationIdentifiers");
         applicationIdentifiersField.setWidth(WIDTH);
         applicationIdentifiersField.setMaxLength(MAX_LEN);
-        applicationIdentifiersField.setStyleAttribute("margin-top", "0px");
-        applicationIdentifiersField.setStyleAttribute("margin-left", "5px");
-        applicationIdentifiersField.setStyleAttribute("margin-right", "5px");
-        applicationIdentifiersField.setStyleAttribute("margin-bottom", "10px");
+        applicationIdentifiersField.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        applicationIdentifiersField.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        applicationIdentifiersField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        applicationIdentifiersField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(applicationIdentifiersField);
 
         //
         // Custom Attribute 1
         Label customAttribute1Label = new Label(DEVICE_MSGS.deviceFilteringPanelCustomAttribute1());
         customAttribute1Label.setWidth(WIDTH);
-        customAttribute1Label.setStyleAttribute("margin", "5px");
+        customAttribute1Label.setStyleAttribute(CssLiterals.MARGIN, "5px");
         fieldsPanel.add(customAttribute1Label);
 
         customAttribute1Field = new KapuaTextField<String>();
         customAttribute1Field.setName("customAttribute1");
         customAttribute1Field.setWidth(WIDTH);
         customAttribute1Field.setMaxLength(MAX_LEN);
-        customAttribute1Field.setStyleAttribute("margin-top", "0px");
-        customAttribute1Field.setStyleAttribute("margin-left", "5px");
-        customAttribute1Field.setStyleAttribute("margin-right", "5px");
-        customAttribute1Field.setStyleAttribute("margin-bottom", "10px");
+        customAttribute1Field.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        customAttribute1Field.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        customAttribute1Field.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        customAttribute1Field.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(customAttribute1Field);
 
         //
         // Custom Attribute 2
         Label customAttribute2Label = new Label(DEVICE_MSGS.deviceFilteringPanelCustomAttribute2());
         customAttribute2Label.setWidth(WIDTH);
-        customAttribute2Label.setStyleAttribute("margin", "5px");
+        customAttribute2Label.setStyleAttribute(CssLiterals.MARGIN, "5px");
         fieldsPanel.add(customAttribute2Label);
 
         customAttribute2Field = new KapuaTextField<String>();
         customAttribute2Field.setName("customAttribute1");
         customAttribute2Field.setWidth(WIDTH);
         customAttribute2Field.setMaxLength(MAX_LEN);
-        customAttribute2Field.setStyleAttribute("margin-top", "0px");
-        customAttribute2Field.setStyleAttribute("margin-left", "5px");
-        customAttribute2Field.setStyleAttribute("margin-right", "5px");
-        customAttribute2Field.setStyleAttribute("margin-bottom", "5px");
+        customAttribute2Field.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        customAttribute2Field.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        customAttribute2Field.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        customAttribute2Field.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "5px");
         fieldsPanel.add(customAttribute2Field);
 
         //
@@ -261,7 +262,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         if (currentSession.hasPermission(GroupSessionPermission.read())) {
             Label groupLabel = new Label(DEVICE_MSGS.deviceFilteringPanelGroup());
             groupLabel.setWidth(WIDTH);
-            groupLabel.setStyleAttribute("margin", "5px");
+            groupLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
             fieldsPanel.add(groupLabel);
 
             allGroup = new GwtGroup();
@@ -284,10 +285,10 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
             groupsCombo.setValueField("id");
             groupsCombo.setName("groupId");
             groupsCombo.setWidth(WIDTH);
-            groupsCombo.setStyleAttribute("margin-top", "0px");
-            groupsCombo.setStyleAttribute("margin-left", "5px");
-            groupsCombo.setStyleAttribute("margin-right", "5px");
-            groupsCombo.setStyleAttribute("margin-bottom", "10px");
+            groupsCombo.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+            groupsCombo.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+            groupsCombo.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+            groupsCombo.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
             groupsCombo.setTriggerAction(TriggerAction.ALL);
             groupsCombo.setValue(allGroup);
             groupService.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtGroup>>() {
@@ -316,7 +317,7 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
         if (currentSession.hasPermission(TagSessionPermission.read())) {
             Label tagLabel = new Label(DEVICE_MSGS.deviceFilteringPanelTag());
             tagLabel.setWidth(WIDTH);
-            tagLabel.setStyleAttribute("margin", "5px");
+            tagLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
             fieldsPanel.add(tagLabel);
 
             allTag = new GwtTag();
@@ -335,10 +336,10 @@ public class DeviceFilterPanel extends EntityFilterPanel<GwtDevice> {
             tagsCombo.setValueField("id");
             tagsCombo.setName("tagId");
             tagsCombo.setWidth(WIDTH);
-            tagsCombo.setStyleAttribute("margin-top", "0px");
-            tagsCombo.setStyleAttribute("margin-left", "5px");
-            tagsCombo.setStyleAttribute("margin-right", "5px");
-            tagsCombo.setStyleAttribute("margin-bottom", "10px");
+            tagsCombo.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+            tagsCombo.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+            tagsCombo.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+            tagsCombo.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
             tagsCombo.setTriggerAction(TriggerAction.ALL);
             tagsCombo.setValue(allTag);
             tagService.findAll(currentSession.getSelectedAccountId(), new AsyncCallback<List<GwtTag>>() {

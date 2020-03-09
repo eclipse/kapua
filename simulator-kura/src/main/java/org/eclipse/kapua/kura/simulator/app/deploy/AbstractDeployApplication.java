@@ -32,6 +32,8 @@ public abstract class AbstractDeployApplication {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractDeployApplication.class);
 
+    private static final String VERSION = "version";
+
     @Resource
     public void getBundles(final Request request) throws Exception {
         final List<BundleInformation> bundles = getBundles();
@@ -168,7 +170,7 @@ public abstract class AbstractDeployApplication {
             ps.appendChild(p);
 
             addValue(p, "name", dp.getSymbolicName());
-            addValue(p, "version", dp.getVersion());
+            addValue(p, VERSION, dp.getVersion());
 
             final Element bs = doc.createElement("bundles");
             p.appendChild(bs);
@@ -178,7 +180,7 @@ public abstract class AbstractDeployApplication {
                 bs.appendChild(b);
 
                 addValue(b, "name", bi.getSymbolicName());
-                addValue(b, "version", bi.getVersion());
+                addValue(b, VERSION, bi.getVersion());
             }
         }
     }
@@ -195,7 +197,7 @@ public abstract class AbstractDeployApplication {
             final Element b = doc.createElement("bundle");
             bs.appendChild(b);
             addValue(b, "name", bi.getSymbolicName());
-            addValue(b, "version", bi.getVersion());
+            addValue(b, VERSION, bi.getVersion());
             addValue(b, "id", Long.toString(bi.getId()));
             addValue(b, "state", bi.getStateString());
         }

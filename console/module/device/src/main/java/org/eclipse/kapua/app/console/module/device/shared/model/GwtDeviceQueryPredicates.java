@@ -21,6 +21,14 @@ public class GwtDeviceQueryPredicates extends KapuaBaseModel implements Serializ
 
     private static final long serialVersionUID = 2649696808210585054L;
 
+    private static final String CLIENT_ID = "clientId";
+    private static final String DISPLAY_NAME = "displayName";
+    private static final String SERIAL_NUMBER = "serialNumber";
+    private static final String IOT_FRAMEWORK_VERSION = "iotFrameworkVersion";
+    private static final String APPLICATION_IDENTIFIERS = "applicationIdentifiers";
+    private static final String CUSTOM_ATTRIBUTE_1 = "customAttribute1";
+    private static final String CUSTOM_ATTRIBUTE_2 = "customAttribute2";
+
     public enum GwtDeviceStatus implements IsSerializable {
         ENABLED, DISABLED, ANY;
 
@@ -89,39 +97,39 @@ public class GwtDeviceQueryPredicates extends KapuaBaseModel implements Serializ
     }
 
     public String getClientId() {
-        return (String) get("clientId");
+        return (String) get(CLIENT_ID);
     }
 
     public String getUnescapedClientId() {
-        return (String) getUnescaped("clientId");
+        return (String) getUnescaped(CLIENT_ID);
     }
 
     public void setClientId(String clientId) {
-        set("clientId", clientId);
+        set(CLIENT_ID, clientId);
     }
 
     public String getDisplayName() {
-        return (String) get("displayName");
+        return (String) get(DISPLAY_NAME);
     }
 
     public String getUnescapedDisplayName() {
-        return (String) getUnescaped("displayName");
+        return (String) getUnescaped(DISPLAY_NAME);
     }
 
     public void setDisplayName(String displayName) {
-        set("displayName", displayName);
+        set(DISPLAY_NAME, displayName);
     }
 
     public String getSerialNumber() {
-        return (String) get("serialNumber");
+        return (String) get(SERIAL_NUMBER);
     }
 
     public String getUnescapedSerialNumber() {
-        return (String) getUnescaped("serialNumber");
+        return (String) getUnescaped(SERIAL_NUMBER);
     }
 
     public void setSerialNumber(String serialNumber) {
-        set("serialNumber", serialNumber);
+        set(SERIAL_NUMBER, serialNumber);
     }
 
     public String getDeviceStatus() {
@@ -149,27 +157,27 @@ public class GwtDeviceQueryPredicates extends KapuaBaseModel implements Serializ
     }
 
     public String getIotFrameworkVersion() {
-        return (String) get("iotFrameworkVersion");
+        return (String) get(IOT_FRAMEWORK_VERSION);
     }
 
     public String getUnescapedIotFrameworkVersion() {
-        return (String) getUnescaped("iotFrameworkVersion");
+        return (String) getUnescaped(IOT_FRAMEWORK_VERSION);
     }
 
     public void setIotFrameworkVersion(String iotFrameworkVersion) {
-        set("iotFrameworkVersion", iotFrameworkVersion);
+        set(IOT_FRAMEWORK_VERSION, iotFrameworkVersion);
     }
 
     public String getApplicationIdentifiers() {
-        return (String) get("applicationIdentifiers");
+        return (String) get(APPLICATION_IDENTIFIERS);
     }
 
     public String getUnescapedApplicationIdentifiers() {
-        return (String) getUnescaped("applicationIdentifiers");
+        return (String) getUnescaped(APPLICATION_IDENTIFIERS);
     }
 
     public void setApplicationIdentifiers(String applicationIdentifiers) {
-        set("applicationIdentifiers", applicationIdentifiers);
+        set(APPLICATION_IDENTIFIERS, applicationIdentifiers);
     }
 
     public String getImei() {
@@ -197,27 +205,27 @@ public class GwtDeviceQueryPredicates extends KapuaBaseModel implements Serializ
     }
 
     public String getCustomAttribute1() {
-        return (String) get("customAttribute1");
+        return (String) get(CUSTOM_ATTRIBUTE_1);
     }
 
     public String getUnescapedCustomAttribute1() {
-        return (String) getUnescaped("customAttribute1");
+        return (String) getUnescaped(CUSTOM_ATTRIBUTE_1);
     }
 
     public void setCustomAttribute1(String customAttribute1) {
-        set("customAttribute1", customAttribute1);
+        set(CUSTOM_ATTRIBUTE_1, customAttribute1);
     }
 
     public String getCustomAttribute2() {
-        return (String) get("customAttribute2");
+        return (String) get(CUSTOM_ATTRIBUTE_2);
     }
 
     public String getUnescapedCustomAttribute2() {
-        return (String) getUnescaped("customAttribute2");
+        return (String) getUnescaped(CUSTOM_ATTRIBUTE_2);
     }
 
     public void setCustomAttribute2(String customAttribute2) {
-        set("customAttribute2", customAttribute2);
+        set(CUSTOM_ATTRIBUTE_2, customAttribute2);
     }
 
     public String getDeviceCertificateStatus() {

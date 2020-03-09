@@ -66,6 +66,10 @@ public class JobEngineServiceJbatch implements JobEngineService {
     private static final JobTargetService JOB_TARGET_SERVICE = LOCATOR.getService(JobTargetService.class);
     private static final JobTargetFactory JOB_TARGET_FACTORY = LOCATOR.getFactory(JobTargetFactory.class);
 
+    private static final String SCOPE_ID = "scopeId";
+    private static final String JOB_ID = "jobId";
+    private static final String JOB_EXECUTION_ID = "jobExecutionId";
+
     @Override
     public void startJob(KapuaId scopeId, KapuaId jobId) throws KapuaException {
         startJob(scopeId, jobId, new JobStartOptionsImpl());
@@ -75,8 +79,8 @@ public class JobEngineServiceJbatch implements JobEngineService {
     public void startJob(KapuaId scopeId, KapuaId jobId, JobStartOptions jobStartOptions) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(jobId, "jobId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(jobId, JOB_ID);
         ArgumentValidator.notNull(jobStartOptions, "jobStartOptions");
 
         //
@@ -134,8 +138,8 @@ public class JobEngineServiceJbatch implements JobEngineService {
     public boolean isRunning(KapuaId scopeId, KapuaId jobId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(jobId, "jobId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(jobId, JOB_ID);
 
         //
         // Check Access
@@ -161,8 +165,8 @@ public class JobEngineServiceJbatch implements JobEngineService {
     public void stopJob(KapuaId scopeId, KapuaId jobId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(jobId, "jobId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(jobId, JOB_ID);
 
         //
         // Check Access
@@ -194,9 +198,9 @@ public class JobEngineServiceJbatch implements JobEngineService {
     public void stopJobExecution(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(jobId, "jobId");
-        ArgumentValidator.notNull(jobExecutionId, "jobExecutionId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(jobId, JOB_ID);
+        ArgumentValidator.notNull(jobExecutionId, JOB_EXECUTION_ID);
 
         //
         // Check Access
@@ -219,7 +223,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         //
         // Check that JobExecution belongs to the Job
         if (!jobExecution.getJobId().equals(jobId)) {
-            throw new KapuaIllegalArgumentException("jobExecutionId", jobExecutionId.toString());
+            throw new KapuaIllegalArgumentException(JOB_EXECUTION_ID, jobExecutionId.toString());
         }
 
         //
@@ -236,9 +240,9 @@ public class JobEngineServiceJbatch implements JobEngineService {
     public void resumeJobExecution(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(jobId, "jobId");
-        ArgumentValidator.notNull(jobExecutionId, "jobExecutionId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(jobId, JOB_ID);
+        ArgumentValidator.notNull(jobExecutionId, JOB_EXECUTION_ID);
 
         //
         // Check Access
@@ -262,7 +266,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
         //
         // Check that JobExecution belongs to the Job
         if (!jobExecution.getJobId().equals(jobId)) {
-            throw new KapuaIllegalArgumentException("jobExecutionId", jobExecutionId.toString());
+            throw new KapuaIllegalArgumentException(JOB_EXECUTION_ID, jobExecutionId.toString());
         }
 
         //
@@ -278,8 +282,8 @@ public class JobEngineServiceJbatch implements JobEngineService {
     public void cleanJobData(KapuaId scopeId, KapuaId jobId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(jobId, "jobId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(jobId, JOB_ID);
 
         //
         // Check Access

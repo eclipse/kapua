@@ -67,6 +67,9 @@ public class DatastoreUtils {
     private static final char SPECIAL_DOLLAR = '$';
     private static final String SPECIAL_DOLLAR_ESC = "$24";
 
+    private static final String UNKNOWN_TYPE = "Unknown type [%s]";
+    private static final String TYPE_CANNOT_BE_CONVERTED = "Type [%s] cannot be converted to Double!";
+
     public static final CharSequence ILLEGAL_CHARS = "\"\\/*?<>|,. ";
 
     public static final String CLIENT_METRIC_TYPE_STRING = "string";
@@ -484,7 +487,7 @@ public class DatastoreUtils {
         if (CLIENT_METRIC_TYPE_BINARY.equals(acronym)) {
             return CLIENT_METRIC_TYPE_BINARY_ACRONYM;
         }
-        throw new IllegalArgumentException(String.format("Unknown type [%s]", acronym));
+        throw new IllegalArgumentException(String.format(UNKNOWN_TYPE, acronym));
     }
 
     /**
@@ -529,7 +532,7 @@ public class DatastoreUtils {
         if (aClass == byte[].class) {
             return CLIENT_METRIC_TYPE_BINARY;
         }
-        throw new IllegalArgumentException(String.format("Unknown type [%s]", aClass.getName()));
+        throw new IllegalArgumentException(String.format(UNKNOWN_TYPE, aClass.getName()));
     }
 
     /**
@@ -558,7 +561,7 @@ public class DatastoreUtils {
         } else if (CLIENT_METRIC_TYPE_BINARY.equals(clientType)) {
             clazz = byte[].class;
         } else {
-            throw new IllegalArgumentException(String.format("Unknown type [%s]", clientType));
+            throw new IllegalArgumentException(String.format(UNKNOWN_TYPE, clientType));
         }
         return clazz;
     }
@@ -579,7 +582,7 @@ public class DatastoreUtils {
             } else if (value instanceof String) {
                 convertedValue = Double.parseDouble((String) value);
             } else {
-                throw new IllegalArgumentException(String.format("Type [%s] cannot be converted to Double!", getValueClass(value)));
+                throw new IllegalArgumentException(String.format(TYPE_CANNOT_BE_CONVERTED, getValueClass(value)));
             }
         } else if (CLIENT_METRIC_TYPE_FLOAT_ACRONYM.equals(acronymType)) {
             if (value instanceof Number) {
@@ -587,7 +590,7 @@ public class DatastoreUtils {
             } else if (value instanceof String) {
                 convertedValue = Float.parseFloat((String) value);
             } else {
-                throw new IllegalArgumentException(String.format("Type [%s] cannot be converted to Double!", getValueClass(value)));
+                throw new IllegalArgumentException(String.format(TYPE_CANNOT_BE_CONVERTED, getValueClass(value)));
             }
         } else if (CLIENT_METRIC_TYPE_INTEGER_ACRONYM.equals(acronymType)) {
             if (value instanceof Number) {
@@ -595,7 +598,7 @@ public class DatastoreUtils {
             } else if (value instanceof String) {
                 convertedValue = Integer.parseInt((String) value);
             } else {
-                throw new IllegalArgumentException(String.format("Type [%s] cannot be converted to Double!", getValueClass(value)));
+                throw new IllegalArgumentException(String.format(TYPE_CANNOT_BE_CONVERTED, getValueClass(value)));
             }
         } else if (CLIENT_METRIC_TYPE_LONG_ACRONYM.equals(acronymType)) {
             if (value instanceof Number) {

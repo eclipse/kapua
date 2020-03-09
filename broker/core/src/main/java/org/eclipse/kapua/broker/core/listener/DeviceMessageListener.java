@@ -50,12 +50,12 @@ public class DeviceMessageListener extends AbstractListener {
     private Counter metricDeviceErrorMessage;
 
     public DeviceMessageListener() {
-        super("deviceLifeCycle");
-        metricDeviceBirthMessage = registerCounter("messages", "birth", "count");
-        metricDeviceDisconnectMessage = registerCounter("messages", "dc", "count");
-        metricDeviceMissingMessage = registerCounter("messages", "missing", "count");
-        metricDeviceAppsMessage = registerCounter("messages", "apps", "count");
-        metricDeviceErrorMessage = registerCounter("messages", "error", "count");
+        super(DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_DEVICE_LIFE_CYCLE);
+        metricDeviceBirthMessage = registerCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MESSAGES, DeviceManagementRegistryNotificationMetrics.METRIC_BIRTH, DeviceManagementRegistryNotificationMetrics.METRIC_COUNT);
+        metricDeviceDisconnectMessage = registerCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MESSAGES, DeviceManagementRegistryNotificationMetrics.METRIC_DC, DeviceManagementRegistryNotificationMetrics.METRIC_COUNT);
+        metricDeviceMissingMessage = registerCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MESSAGES, DeviceManagementRegistryNotificationMetrics.METRIC_MISSING, DeviceManagementRegistryNotificationMetrics.METRIC_COUNT);
+        metricDeviceAppsMessage = registerCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MESSAGES, DeviceManagementRegistryNotificationMetrics.METRIC_APPS, DeviceManagementRegistryNotificationMetrics.METRIC_COUNT);
+        metricDeviceErrorMessage = registerCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MESSAGES, DeviceManagementRegistryNotificationMetrics.METRIC_ERROR, DeviceManagementRegistryNotificationMetrics.METRIC_COUNT);
     }
 
     /**

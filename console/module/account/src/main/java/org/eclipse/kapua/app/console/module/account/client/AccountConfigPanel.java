@@ -85,6 +85,9 @@ public class AccountConfigPanel extends LayoutContainer {
 
     private static final GwtAccountServiceAsync ACCOUNT_SERVICE = GWT.create(GwtAccountService.class);
 
+    private static final String CONFIG_MIN_VALUE = "configMinValue";
+    private static final String CONFIG_MAX_VALUE = "configMaxValue";
+
     public AccountConfigPanel(GwtConfigComponent configComponent, GwtSession currentSession, GwtAccount selectedAccount) {
         super(new FitLayout());
         this.currentSession = currentSession;
@@ -786,12 +789,12 @@ public class AccountConfigPanel extends LayoutContainer {
             if (intValue != null) {
                 if (minValue != null) {
                     if (intValue.intValue() < minValue.intValue()) {
-                        return MessageUtils.get("configMinValue", minValue.intValue());
+                        return MessageUtils.get(CONFIG_MIN_VALUE, minValue.intValue());
                     }
                 }
                 if (maxValue != null) {
                     if (intValue.intValue() > maxValue.intValue()) {
-                        return MessageUtils.get("configMaxValue", maxValue.intValue());
+                        return MessageUtils.get(CONFIG_MAX_VALUE, maxValue.intValue());
                     }
                 }
             }
@@ -834,12 +837,12 @@ public class AccountConfigPanel extends LayoutContainer {
             if (longValue != null) {
                 if (minValue != null) {
                     if (longValue.longValue() < minValue.longValue()) {
-                        return MessageUtils.get("configMinValue", minValue.longValue());
+                        return MessageUtils.get(CONFIG_MIN_VALUE, minValue.longValue());
                     }
                 }
                 if (maxValue != null) {
                     if (longValue.longValue() > maxValue.longValue()) {
-                        return MessageUtils.get("configMaxValue", maxValue.longValue());
+                        return MessageUtils.get(CONFIG_MAX_VALUE, maxValue.longValue());
                     }
                 }
             }
@@ -882,12 +885,12 @@ public class AccountConfigPanel extends LayoutContainer {
             if (doubleValue != null) {
                 if (minValue != null) {
                     if (doubleValue.doubleValue() < minValue.doubleValue()) {
-                        return MessageUtils.get("configMinValue", minValue.doubleValue());
+                        return MessageUtils.get(CONFIG_MIN_VALUE, minValue.doubleValue());
                     }
                 }
                 if (maxValue != null) {
                     if (doubleValue.doubleValue() > maxValue.doubleValue()) {
-                        return MessageUtils.get("configMaxValue", maxValue.doubleValue());
+                        return MessageUtils.get(CONFIG_MAX_VALUE, maxValue.doubleValue());
                     }
                 }
             }
@@ -930,12 +933,12 @@ public class AccountConfigPanel extends LayoutContainer {
             if (floatValue != null) {
                 if (minValue != null) {
                     if (floatValue.floatValue() < minValue.floatValue()) {
-                        return MessageUtils.get("configMinValue", minValue.floatValue());
+                        return MessageUtils.get(CONFIG_MIN_VALUE, minValue.floatValue());
                     }
                 }
                 if (maxValue != null) {
                     if (floatValue.floatValue() > maxValue.floatValue()) {
-                        return MessageUtils.get("configMaxValue", maxValue.floatValue());
+                        return MessageUtils.get(CONFIG_MAX_VALUE, maxValue.floatValue());
                     }
                 }
             }
@@ -978,12 +981,12 @@ public class AccountConfigPanel extends LayoutContainer {
             if (shortValue != null) {
                 if (minValue != null) {
                     if (shortValue.shortValue() < minValue.shortValue()) {
-                        return MessageUtils.get("configMinValue", minValue.shortValue());
+                        return MessageUtils.get(CONFIG_MIN_VALUE, minValue.shortValue());
                     }
                 }
                 if (maxValue != null) {
                     if (shortValue.shortValue() > maxValue.shortValue()) {
-                        return MessageUtils.get("configMaxValue", maxValue.shortValue());
+                        return MessageUtils.get(CONFIG_MAX_VALUE, maxValue.shortValue());
                     }
                 }
             }
@@ -1026,12 +1029,12 @@ public class AccountConfigPanel extends LayoutContainer {
             if (byteValue != null) {
                 if (minValue != null) {
                     if (byteValue.byteValue() < minValue.byteValue()) {
-                        return MessageUtils.get("configMinValue", minValue.byteValue());
+                        return MessageUtils.get(CONFIG_MIN_VALUE, minValue.byteValue());
                     }
                 }
                 if (maxValue != null) {
                     if (byteValue.byteValue() > maxValue.byteValue()) {
-                        return MessageUtils.get("configMaxValue", maxValue.byteValue());
+                        return MessageUtils.get(CONFIG_MAX_VALUE, maxValue.byteValue());
                     }
                 }
             }
@@ -1074,12 +1077,12 @@ public class AccountConfigPanel extends LayoutContainer {
             if (charValue != null) {
                 if (minValue != null) {
                     if (charValue.charValue() < minValue.charValue()) {
-                        return MessageUtils.get("configMinValue", minValue.charValue());
+                        return MessageUtils.get(CONFIG_MIN_VALUE, minValue.charValue());
                     }
                 }
                 if (maxValue != null) {
                     if (charValue.charValue() > maxValue.charValue()) {
-                        return MessageUtils.get("configMaxValue", maxValue.charValue());
+                        return MessageUtils.get(CONFIG_MAX_VALUE, maxValue.charValue());
                     }
                 }
             }
@@ -1112,10 +1115,10 @@ public class AccountConfigPanel extends LayoutContainer {
         @Override
         public String validate(Field<?> field, String value) {
             if (value.length() > maxValue) {
-                return MessageUtils.get("configMaxValue", (maxValue + 1));
+                return MessageUtils.get(CONFIG_MAX_VALUE, (maxValue + 1));
             }
             if (value.length() < minValue) {
-                return MessageUtils.get("configMinValue", minValue);
+                return MessageUtils.get(CONFIG_MIN_VALUE, minValue);
             }
             return null;
         }

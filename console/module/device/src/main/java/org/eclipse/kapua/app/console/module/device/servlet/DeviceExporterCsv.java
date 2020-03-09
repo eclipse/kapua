@@ -35,6 +35,7 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.registry.Device;
 
 import com.opencsv.CSVWriter;
+import org.apache.commons.lang3.CharEncoding;
 
 public class DeviceExporterCsv extends DeviceExporter {
 
@@ -56,7 +57,7 @@ public class DeviceExporterCsv extends DeviceExporter {
         this.accountName = accountName;
         dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
 
-        OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), Charset.forName("UTF-8"));
+        OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), Charset.forName(CharEncoding.UTF_8));
         writer = new CSVWriter(osw);
 
         List<String> cols = new ArrayList<String>();
@@ -179,8 +180,8 @@ public class DeviceExporterCsv extends DeviceExporter {
     public void close()
             throws ServletException, IOException {
         response.setContentType("text/csv");
-        response.setCharacterEncoding("UTF-8");
-        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(accountName, "UTF-8") + "_devices.csv");
+        response.setCharacterEncoding(CharEncoding.UTF_8);
+        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(accountName, CharEncoding.UTF_8) + "_devices.csv");
         response.setHeader("Cache-Control", "no-transform, max-age=0");
 
         writer.flush();

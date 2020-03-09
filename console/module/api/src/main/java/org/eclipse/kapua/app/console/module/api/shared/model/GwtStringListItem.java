@@ -17,11 +17,13 @@ public class GwtStringListItem extends KapuaBaseModel implements Serializable {
 
     private static final long serialVersionUID = -9095667239285215364L;
 
+    private static final String VALUE = "value";
+
     public GwtStringListItem() {
     }
 
     public GwtStringListItem(String value) {
-        set("value", value);
+        set(VALUE, value);
     }
 
     public void setId(String id) {
@@ -33,11 +35,11 @@ public class GwtStringListItem extends KapuaBaseModel implements Serializable {
     }
 
     public void setValue(String value) {
-        set("value", value);
+        set(VALUE, value);
     }
 
     public String getValue() {
-        return (String) get("value");
+        return (String) get(VALUE);
     }
 
     @Override

@@ -59,6 +59,8 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
+    private static final String JOB_ID = "jobId";
+
     @Inject
     private AuthorizationService authorizationService;
     @Inject
@@ -149,7 +151,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(jobId, "jobId");
+        ArgumentValidator.notNull(jobId, JOB_ID);
 
         //
         // Check Access
@@ -221,7 +223,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(jobId, "jobId");
+        ArgumentValidator.notNull(jobId, JOB_ID);
 
         //
         // Check Access
@@ -237,7 +239,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         // Find all the triggers that are associated with this job
         TriggerQuery query = triggerFactory.newQuery(scopeId);
         AndPredicate andPredicate = query.andPredicate(
-                query.attributePredicate(TriggerAttributes.TRIGGER_PROPERTIES_NAME, "jobId"),
+                query.attributePredicate(TriggerAttributes.TRIGGER_PROPERTIES_NAME, JOB_ID),
                 query.attributePredicate(TriggerAttributes.TRIGGER_PROPERTIES_VALUE, jobId.toCompactId()),
                 query.attributePredicate(TriggerAttributes.TRIGGER_PROPERTIES_TYPE, KapuaId.class.getName())
         );
