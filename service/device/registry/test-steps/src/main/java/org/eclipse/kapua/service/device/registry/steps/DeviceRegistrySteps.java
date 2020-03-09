@@ -118,12 +118,10 @@ import java.util.Vector;
 
 /**
  * Implementation of Gherkin steps used in DeviceRegistry.feature scenarios.
- *
+ * <p>
  * MockedLocator is used for Location Service. Mockito is used to mock other
  * services that the Device Registry services dependent on. Dependent services are: -
  * Authorization Service -
- *
- *
  */
 @ScenarioScoped
 public class DeviceRegistrySteps extends TestBase {
@@ -2551,16 +2549,16 @@ public class DeviceRegistrySteps extends TestBase {
 
     @Then("^I try to edit device to clientId \"([^\"]*)\"$")
     public void iTryToEditDeviceToName(String clientId) throws Exception {
-      Device device = (Device) stepData.get("Device");
-      device.setClientId(clientId);
+        Device device = (Device) stepData.get("Device");
+        device.setClientId(clientId);
 
-      try {
-          primeException();
-          Device newDevice = deviceRegistryService.update(device);
-          stepData.put("Device", newDevice);
-      } catch (KapuaException ex) {
-          verifyException(ex);
-      }
+        try {
+            primeException();
+            Device newDevice = deviceRegistryService.update(device);
+            stepData.put("Device", newDevice);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
     }
 
     @Then("^I find device with clientId \"([^\"]*)\"$")
@@ -2600,6 +2598,124 @@ public class DeviceRegistrySteps extends TestBase {
             }
         } catch (KapuaException ex) {
             verifyException(ex);
+        }
+    }
+
+    @And("^I asign tag to device$")
+    public void iAsignTagToDevice() throws Exception {
+        Tag tag = (Tag) stepData.get("tag");
+        Device device = (Device) stepData.get("Device");
+        try {
+            Set<KapuaId> tags = device.getTagIds();
+            tags.add(tag.getId());
+            device.setTagIds(tags);
+            Device newDevice = deviceRegistryService.update(device);
+            stepData.put("tags", tags);
+            stepData.put("Device", newDevice);
+        } catch (Exception e) {
+            verifyException(e);
+        }
+    }
+
+    @And("^I asign tag \"([^\"]*)\" to device \"([^\"]*)\"$")
+    public void iAsignTagNamedToDevice(String tagName, String deviceName) throws Exception {
+        try {
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, deviceName, AttributePredicate.Operator.EQUAL));
+            DeviceListResult deviceList = deviceRegistryService.query(tmpQuery);
+            Device device = deviceList.getFirstItem();
+
+            TagQuery tagQuery = tagFactory.newQuery(getCurrentScopeId());
+            tagQuery.setPredicate(tagQuery.attributePredicate(TagAttributes.NAME, tagName, AttributePredicate.Operator.EQUAL));
+            TagListResult tagList = tagService.query(tagQuery);
+            Tag tag = tagList.getFirstItem();
+
+            Set<KapuaId> tags = device.getTagIds();
+            tags.add(tag.getId());
+            device.setTagIds(tags);
+            Device newDevice = deviceRegistryService.update(device);
+            stepData.put("tags", tags);
+            stepData.put("Device", newDevice);
+        } catch (Exception e) {
+            verifyException(e);
+        }
+    }
+
+    @Given("^Tag \"([^\"]*)\" is assigned to device \"([^\"]*)\"$")
+    public void tagIsAsignedToDevice(String tagName, String deviceName) throws Throwable {
+        try {
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, deviceName, AttributePredicate.Operator.EQUAL));
+            DeviceListResult deviceList = deviceRegistryService.query(tmpQuery);
+            Device device = deviceList.getFirstItem();
+
+            TagQuery tagQuery = tagFactory.newQuery(getCurrentScopeId());
+            tagQuery.setPredicate(tagQuery.attributePredicate(TagAttributes.NAME, tagName, AttributePredicate.Operator.EQUAL));
+            TagListResult tagList = tagService.query(tagQuery);
+            Tag tag = tagList.getFirstItem();
+
+            Set<KapuaId> tagIds = device.getTagIds();
+            assertTrue(tagIds.contains(tag.getId()));
+        } catch (Exception e) {
+            verifyException(e);
+        }
+    }
+
+    @Given("^I unassign tag from device$")
+    public void iUnassignTagFromDevice() throws Exception {
+        Tag tag = (Tag) stepData.get("tag");
+        Device device = (Device) stepData.get("Device");
+        try {
+            Set<KapuaId> tagIds = device.getTagIds();
+            tagIds.remove(tag.getId());
+            device.setTagIds(tagIds);
+            Device newDevice = deviceRegistryService.update(device);
+            stepData.put("Device", newDevice);
+        } catch (Exception e) {
+            verifyException(e);
+        }
+    }
+
+    @Given("^I unassign tag \"([^\"]*)\" from device \"([^\"]*)\"$")
+    public void iUnassignTagNamedFromDevice(String tagName, String deviceName) throws Exception {
+        try {
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, deviceName, AttributePredicate.Operator.EQUAL));
+            DeviceListResult deviceList = deviceRegistryService.query(tmpQuery);
+            Device device = deviceList.getFirstItem();
+
+            TagQuery tagQuery = tagFactory.newQuery(getCurrentScopeId());
+            tagQuery.setPredicate(tagQuery.attributePredicate(TagAttributes.NAME, tagName, AttributePredicate.Operator.EQUAL));
+            TagListResult tagList = tagService.query(tagQuery);
+            Tag tag = tagList.getFirstItem();
+
+            Set<KapuaId> tagIds = device.getTagIds();
+            tagIds.remove(tag.getId());
+            device.setTagIds(tagIds);
+            Device newDevice = deviceRegistryService.update(device);
+            stepData.put("Device", newDevice);
+        } catch (Exception e) {
+            verifyException(e);
+        }
+    }
+
+    @Given("^Tag \"([^\"]*)\" is not assigned to device \"([^\"]*)\"$")
+    public void tagWithNameIsNotAsignedToDevice(String tagName, String deviceName) throws Throwable {
+        try {
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, deviceName, AttributePredicate.Operator.EQUAL));
+            DeviceListResult deviceList = deviceRegistryService.query(tmpQuery);
+            Device device = deviceList.getFirstItem();
+
+            TagQuery tagQuery = tagFactory.newQuery(getCurrentScopeId());
+            tagQuery.setPredicate(tagQuery.attributePredicate(TagAttributes.NAME, tagName, AttributePredicate.Operator.EQUAL));
+            TagListResult tagList = tagService.query(tagQuery);
+            Tag tag = tagList.getFirstItem();
+
+            Set<KapuaId> tagIds = device.getTagIds();
+            assertFalse(tagIds.contains(tag.getId()));
+        } catch (Exception e) {
+            verifyException(e);
         }
     }
 }
