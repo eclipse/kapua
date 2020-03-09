@@ -367,6 +367,13 @@ components:
       schema:
         type: integer
         default: 0
+    askTotalCount:
+      name: askTotalCount
+      in: query
+      description: If true, the total count of the entities matching the query will be included in the result set
+      schema:
+        type: boolean
+        default: false
   schemas:
     kapuaId:
       type: string
@@ -492,7 +499,7 @@ components:
           description: The size of the list containing the items
           type: integer
         totalCount:
-          description: The total count of the elements that matched the query. Present only if `askTotalCount` was `true` in the query object.
+          description: The total count of the elements that matched the query. Available only if `askTotalCount` was `true` in the query object.
           type: integer
       required:
         - limitedExceeded
