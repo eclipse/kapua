@@ -865,11 +865,11 @@ Feature: User Permission tests
     When I create endpoint with schema "end2", domain "com" and port 20000
     Then An exception was thrown
     When I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: endpoint_info:delete:*:*"
-    And I delete endpoint with schema "endpoint1"
+    And I delete endpoint with schema "end2", domain "com" and port 20000
     Then An exception was thrown
     Then I logout
     And I login as user with name "kapua-sys" and password "kapua-password"
-    When I delete endpoint with schema "endpoint1"
+    When I delete endpoint with schema "end2", domain "com" and port 20000
     Then No exception was thrown
     And I logout
 

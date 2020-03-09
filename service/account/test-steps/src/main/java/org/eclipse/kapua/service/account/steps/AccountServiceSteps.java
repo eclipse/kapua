@@ -178,6 +178,24 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
+    @When("^I create a generic account with name \"(.*)\" in current scopeId$")
+    public void createGenericAccountInCurrentScopeId(String name)
+            throws Exception {
+
+        AccountCreator accountCreator = prepareRegularAccountCreator(getCurrentScopeId(), name);
+        stepData.put("AccountCreator", accountCreator);
+        stepData.remove("LastAccount");
+        stepData.remove("LastAccountId");
+        try {
+            primeException();
+            Account account = accountService.create(accountCreator);
+            stepData.put("LastAccount", account);
+            stepData.put("LastAccountId", account.getId());
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
     @Given("^An existing account that expires on \"(.*)\" with the name \"(.*)\"$")
     public void createTestAccountWithName(String expirationDateStr, String name)
             throws Exception {
@@ -384,13 +402,18 @@ public class AccountServiceSteps extends TestBase {
 //    }
 
     @When("^I select account \"(.*)\"$")
-    public void selectAccount(String accountName) throws KapuaException {
-        Account tmpAccount;
-        tmpAccount = accountService.findByName(accountName);
-        if (tmpAccount != null) {
-            stepData.put("LastAccount", tmpAccount);
-        } else {
-            stepData.remove("LastAccount");
+    public void selectAccount(String accountName) throws Exception {
+        try {
+            Account tmpAccount;
+            tmpAccount = accountService.findByName(accountName);
+            if (tmpAccount != null) {
+                stepData.put("LastAccount", tmpAccount);
+                stepData.put("LastAccountId", tmpAccount.getId());
+            } else {
+                stepData.remove("LastAccount");
+            }
+        } catch (KapuaException e) {
+            verifyException(e);
         }
     }
 
@@ -897,7 +920,9 @@ public class AccountServiceSteps extends TestBase {
         try {
             primeException();
             stepData.remove("LastAccount");
+            stepData.remove("LastAccount");
             Account account = accountService.create(accountCreator);
+            stepData.put("LastAccount", account);
             stepData.put("LastAccount", account);
         } catch (KapuaException ex) {
             verifyException(ex);
