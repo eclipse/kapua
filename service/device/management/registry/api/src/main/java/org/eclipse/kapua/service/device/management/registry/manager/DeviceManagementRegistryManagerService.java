@@ -21,11 +21,8 @@ import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
 import org.eclipse.kapua.service.device.management.registry.manager.exception.ManagementOperationNotificationProcessingException;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationAttributes;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationListResult;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationProperty;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationQuery;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationAttributes;
@@ -168,11 +165,7 @@ public interface DeviceManagementRegistryManagerService extends KapuaService {
     }
 
     default DeviceManagementOperation getDeviceManagementOperation(KapuaId scopeId, KapuaId operationId) throws KapuaException {
-        DeviceManagementOperationQuery query = DEVICE_MANAGEMENT_OPERATION_FACTORY.newQuery(scopeId);
-        query.setPredicate(query.attributePredicate(DeviceManagementOperationAttributes.OPERATION_ID, operationId));
-
-        DeviceManagementOperationListResult operations = DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.query(query);
-        DeviceManagementOperation deviceManagementOperation = operations.getFirstItem();
+        DeviceManagementOperation deviceManagementOperation = DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.findByOperationId(scopeId, operationId);
 
         if (deviceManagementOperation == null) {
             throw new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, operationId);

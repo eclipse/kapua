@@ -24,8 +24,10 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationAttributes;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationCreator;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationListResult;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationQuery;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementRegistryDomains;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -122,6 +124,24 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
         //
         // Do find
         return entityManagerSession.onResult(em -> DeviceManagementOperationDAO.find(em, scopeId, entityId));
+    }
+
+    @Override
+    public DeviceManagementOperation findByOperationId(KapuaId scopeId, KapuaId operationId) throws KapuaException {
+        //
+        // Argument Validation
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(operationId, "operationId");
+
+        // Check Access
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, scopeId));
+
+        //
+        // Do find
+        DeviceManagementOperationQuery query = new DeviceManagementOperationQueryImpl(scopeId);
+        query.setPredicate(query.attributePredicate(DeviceManagementOperationAttributes.OPERATION_ID, operationId));
+
+        return entityManagerSession.onResult(em -> DeviceManagementOperationDAO.query(em, query)).getFirstItem();
     }
 
     @Override
