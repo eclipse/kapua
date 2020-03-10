@@ -19,13 +19,14 @@ import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.kapua.commons.util.RandomUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
+import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -44,7 +45,7 @@ public abstract class AbstractMessageStoreServiceTest extends Assert {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractMessageStoreServiceTest.class);
 
-    protected static Random random = new Random();
+    protected static Random random = RandomUtils.getInstance();
     protected static KapuaLocator locator = KapuaLocator.getInstance();
 
     protected static KapuaId adminUserId;
@@ -117,13 +118,9 @@ public abstract class AbstractMessageStoreServiceTest extends Assert {
     /**
      * Generates a random {@link String} from the given parameters
      *
-     * @param chars
-     *            length of the generated {@link String}
-     * @param letters
-     *            whether or not use chars
-     * @param numbers
-     *            whether or not use numbers
-     *
+     * @param chars   length of the generated {@link String}
+     * @param letters whether or not use chars
+     * @param numbers whether or not use numbers
      * @return the generated {@link String}
      */
     private static String generateRandomString(int chars, boolean letters, boolean numbers) {

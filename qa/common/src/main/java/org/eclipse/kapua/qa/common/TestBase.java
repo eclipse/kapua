@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,7 +13,11 @@ package org.eclipse.kapua.qa.common;
 
 import cucumber.api.Scenario;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.util.RandomUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.account.Account;
+import org.junit.Assert;
 
 import java.math.BigInteger;
 import java.text.DateFormat;
@@ -23,10 +27,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Random;
-
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.account.Account;
-import org.junit.Assert;
 
 public class TestBase extends Assert {
 
@@ -59,7 +59,7 @@ public class TestBase extends Assert {
     /**
      * Random number generator
      */
-    public Random random = new Random();
+    public Random random = RandomUtils.getInstance();
 
     /**
      * Commonly used constants
@@ -96,7 +96,7 @@ public class TestBase extends Assert {
         if (stepData.contains("LastAccountId")) {
             return (KapuaId) stepData.get("LastAccountId");
         } else if (stepData.get("LastAccount") != null) {
-            return ((Account)stepData.get("LastAccount")).getId();
+            return ((Account) stepData.get("LastAccount")).getId();
         } else {
             return SYS_SCOPE_ID;
         }
@@ -105,7 +105,7 @@ public class TestBase extends Assert {
     public KapuaId getCurrentParentId() {
 
         if (stepData.get("LastAccount") != null) {
-            return ((Account)stepData.get("LastAccount")).getScopeId();
+            return ((Account) stepData.get("LastAccount")).getScopeId();
         } else {
             return SYS_SCOPE_ID;
         }
@@ -116,7 +116,7 @@ public class TestBase extends Assert {
         if (stepData.contains("LastUserId")) {
             return (KapuaId) stepData.get("LastUserId");
         } else if (stepData.get("LastUser") != null) {
-            return ((Account)stepData.get("LastUser")).getId();
+            return ((Account) stepData.get("LastUser")).getId();
         } else {
             return SYS_USER_ID;
         }
@@ -142,15 +142,15 @@ public class TestBase extends Assert {
     public void verifyException(Exception ex)
             throws Exception {
 
-        boolean exceptionExpected = stepData.contains("ExceptionExpected") ? (boolean)stepData.get("ExceptionExpected") : false;
-        String exceptionName = stepData.contains("ExceptionName") ? ((String)stepData.get("ExceptionName")).trim() : "";
-        String exceptionMessage = stepData.contains("ExceptionMessage") ? ((String)stepData.get("ExceptionMessage")).trim() : "";
+        boolean exceptionExpected = stepData.contains("ExceptionExpected") ? (boolean) stepData.get("ExceptionExpected") : false;
+        String exceptionName = stepData.contains("ExceptionName") ? ((String) stepData.get("ExceptionName")).trim() : "";
+        String exceptionMessage = stepData.contains("ExceptionMessage") ? ((String) stepData.get("ExceptionMessage")).trim() : "";
 
         if (!exceptionExpected ||
                 (!exceptionName.isEmpty() && !ex.getClass().toGenericString().contains(exceptionName)) ||
                 (!exceptionMessage.isEmpty() && !exceptionMessage.trim().contentEquals("*") && !ex.getMessage().contains(exceptionMessage))) {
             scenario.write("An unexpected exception was raised!");
-            throw(ex);
+            throw (ex);
         }
 
         scenario.write("Exception raised as expected: " + ex.getClass().getCanonicalName() + ", " + ex.getMessage());
@@ -161,15 +161,15 @@ public class TestBase extends Assert {
     public void verifyAssertionError(AssertionError assetError)
             throws AssertionError {
 
-        boolean assertErrorExpected = stepData.contains("AssertErrorExpected") ? (boolean)stepData.get("AssertErrorExpected") : false;
-        String assertErrorName = stepData.contains("AssertErrorName") ? ((String)stepData.get("AssertErrorName")).trim() : "";
-        String assertErrorMessage = stepData.contains("AssertErrorMessage") ? ((String)stepData.get("AssertErrorMessage")).trim() : "";
+        boolean assertErrorExpected = stepData.contains("AssertErrorExpected") ? (boolean) stepData.get("AssertErrorExpected") : false;
+        String assertErrorName = stepData.contains("AssertErrorName") ? ((String) stepData.get("AssertErrorName")).trim() : "";
+        String assertErrorMessage = stepData.contains("AssertErrorMessage") ? ((String) stepData.get("AssertErrorMessage")).trim() : "";
 
         if (!assertErrorExpected ||
                 (!assertErrorName.isEmpty() && !assetError.getClass().toGenericString().contains(assertErrorName)) ||
                 (!assertErrorMessage.isEmpty() && !assertErrorMessage.trim().contentEquals("*") && !assetError.getMessage().contains(assertErrorMessage))) {
             scenario.write("An unexpected assert error was raised!");
-            throw(assetError);
+            throw (assetError);
         }
 
         scenario.write("Assert error raised as expected: " + assetError.getClass().getCanonicalName() + ", " + assetError.getMessage());

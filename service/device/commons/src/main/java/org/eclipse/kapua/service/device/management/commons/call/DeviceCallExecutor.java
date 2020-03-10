@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -40,7 +40,7 @@ import javax.validation.constraints.NotNull;
 
 /**
  * {@link DeviceCallExecutor} definition.<br>
- * Invokes and manages thr {@link DeviceCall}.
+ * Invokes and manages the {@link DeviceCall}.
  *
  * @param <C>  The {@link KapuaRequestChannel} implementation.
  * @param <P>  The {@link KapuaRequestPayload} implementation.
@@ -122,30 +122,35 @@ public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRe
         //
         // Translate the request from Kapua to Device
         try {
-            DeviceCall<DeviceRequestMessage, DeviceResponseMessage> deviceCall = DEVICE_CALL_FACTORY.newDeviceCall();
-            Translator tKapuaToClient = Translator.getTranslatorFor(requestMessage.getRequestClass(), deviceCall.getBaseMessageClass());
-            DeviceRequestMessage deviceRequestMessage = (DeviceRequestMessage) tKapuaToClient.translate(requestMessage);
+            DeviceCall<DeviceRequestMessage<?, ?>, DeviceResponseMessage<?, ?>> deviceCall = DEVICE_CALL_FACTORY.newDeviceCall();
+            Translator<RQ, DeviceRequestMessage<?, ?>> tKapuaToClient = Translator.getTranslatorFor(requestMessage.getRequestClass(), deviceCall.getBaseMessageClass());
+            DeviceRequestMessage<?, ?> deviceRequestMessage = tKapuaToClient.translate(requestMessage);
 
             //
             // Send the request
-            DeviceResponseMessage responseMessage;
+            DeviceResponseMessage<?, ?> responseMessage;
             switch (requestMessage.getChannel().getMethod()) {
                 case CREATE:
+                case POST:
                     responseMessage = deviceCall.create(deviceRequestMessage, timeout);
                     break;
                 case READ:
+                case GET:
                     responseMessage = deviceCall.read(deviceRequestMessage, timeout);
                     break;
                 case OPTIONS:
                     responseMessage = deviceCall.options(deviceRequestMessage, timeout);
                     break;
                 case DELETE:
+                case DEL:
                     responseMessage = deviceCall.delete(deviceRequestMessage, timeout);
                     break;
                 case EXECUTE:
+                case EXEC:
                     responseMessage = deviceCall.execute(deviceRequestMessage, timeout);
                     break;
                 case WRITE:
+                case PUT:
                     responseMessage = deviceCall.write(deviceRequestMessage, timeout);
                     break;
                 default:
@@ -154,8 +159,8 @@ public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRe
 
             //
             // Translate the response from Device to Kapua
-            Translator tClientToKapua = Translator.getTranslatorFor(deviceCall.getBaseMessageClass(), requestMessage.getResponseClass());
-            return (RS) tClientToKapua.translate(responseMessage);
+            Translator<DeviceResponseMessage<?, ?>, RS> tClientToKapua = Translator.getTranslatorFor(deviceCall.getBaseMessageClass(), requestMessage.getResponseClass());
+            return tClientToKapua.translate(responseMessage);
         } catch (DeviceCallTimeoutException dcte) {
             throw new DeviceManagementTimeoutException(dcte, timeout);
         } catch (Exception e) {

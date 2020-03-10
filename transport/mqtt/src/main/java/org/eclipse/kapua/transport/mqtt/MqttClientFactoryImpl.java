@@ -11,11 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.transport.mqtt;
 
-import org.eclipse.kapua.KapuaException;
+import com.google.common.base.Strings;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.transport.TransportClientFactory;
+import org.eclipse.kapua.transport.exception.TransportClientGetException;
 import org.eclipse.kapua.transport.message.mqtt.MqttMessage;
 import org.eclipse.kapua.transport.message.mqtt.MqttPayload;
 import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
@@ -24,17 +25,21 @@ import java.util.Map;
 
 /**
  * Implementation of {@link TransportClientFactory} API for MQTT transport facade
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 @KapuaProvider
 public class MqttClientFactoryImpl implements TransportClientFactory<MqttTopic, MqttPayload, MqttMessage, MqttMessage, MqttFacade, MqttClientConnectionOptions> {
 
     @Override
-    public MqttFacade getFacade(Map<String, Object> configParameters)
-            throws KapuaException {
-        return new MqttFacade(formatNodeUri(configParameters.get("serverAddress").toString()));
+    public MqttFacade getFacade(Map<String, Object> configParameters) throws TransportClientGetException {
+        String host = (String) configParameters.get("serverAddress");
+
+        if (Strings.isNullOrEmpty(host)) {
+            throw new TransportClientGetException(host);
+        }
+
+        return new MqttFacade(formatNodeUri(host));
     }
 
     @Override

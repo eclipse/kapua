@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -38,6 +38,13 @@ public class MqttResponseCallback implements MqttCallback {
     private static final Logger LOG = LoggerFactory.getLogger(MqttResponseCallback.class);
 
     /**
+     * The response {@link MqttTopic}.
+     *
+     * @since 1.2.0
+     */
+    private final MqttTopic responseTopic;
+
+    /**
      * {@link List} of received {@link MqttMessage}s.
      *
      * @since 1.0.0
@@ -49,26 +56,29 @@ public class MqttResponseCallback implements MqttCallback {
      *
      * @since 1.0.0
      */
-    private int expectedResponses;
+    private final int expectedResponses;
 
     /**
      * Construct a {@link MqttCallback} with the given response container and 1 as expected response {@link MqttMessage}.
      *
-     * @param responses The container in which put the received {@link MqttMessage}s.
+     * @param responseTopic The response {@link MqttTopic} which the {@link MqttResponseCallback} is for.
+     * @param responses     The container in which put the received {@link MqttMessage}s.
      * @since 1.0.0
      */
-    public MqttResponseCallback(@NotNull List<MqttMessage> responses) {
-        this(responses, 1);
+    public MqttResponseCallback(@NotNull MqttTopic responseTopic, @NotNull List<MqttMessage> responses) {
+        this(responseTopic, responses, 1);
     }
 
     /**
      * Construct a {@link MqttCallback} with the given response container and the given number of expected {@link MqttMessage}.
      *
+     * @param responseTopic     The response {@link MqttTopic} which the {@link MqttResponseCallback} is for.
      * @param responses         The container in which put the received messages
      * @param expectedResponses The number of the expected responses to wait before notify observers.
      * @since 1.0.0
      */
-    public MqttResponseCallback(@NotNull List<MqttMessage> responses, int expectedResponses) {
+    public MqttResponseCallback(@NotNull MqttTopic responseTopic, @NotNull List<MqttMessage> responses, int expectedResponses) {
+        this.responseTopic = responseTopic;
         this.responses = responses;
         this.expectedResponses = expectedResponses;
     }
@@ -130,5 +140,15 @@ public class MqttResponseCallback implements MqttCallback {
         synchronized (this) {
             notifyAll();
         }
+    }
+
+    /**
+     * Gets the response {@link MqttTopic} on which {@code this} {@link MqttResponseCallback} is subscribed to.
+     *
+     * @return The response {@link MqttTopic} on which {@code this} {@link MqttResponseCallback} is subscribed to.
+     * @since 1.2.0
+     */
+    public MqttTopic getResponseTopic() {
+        return responseTopic;
     }
 }

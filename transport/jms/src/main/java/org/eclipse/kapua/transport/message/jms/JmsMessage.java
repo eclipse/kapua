@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.transport.message.jms;
 
-import java.util.Date;
-
 import org.eclipse.kapua.transport.message.TransportMessage;
+
+import java.util.Date;
 
 /**
  * Implementation of {@link TransportMessage} API for JMS transport facade.
@@ -25,34 +25,31 @@ public class JmsMessage implements TransportMessage<JmsTopic, JmsPayload> {
 
     /**
      * The topic of this {@link JmsMessage}.
-     * 
+     *
      * @since 1.0.0
      */
     private JmsTopic topic;
 
     /**
      * The receivedOn of this {@link JmsMessage}.
-     * 
+     *
      * @since 1.0.0
      */
     private Date receivedOn;
 
     /**
      * The payload of this {@link JmsMessage}.
-     * 
+     *
      * @since 1.0.0
      */
     private JmsPayload payload;
 
     /**
      * Construct a {@link JmsMessage} with the given parameters.
-     * 
-     * @param topic
-     *            The {@link JmsTopic} to set for this {@link JmsMessage}.
-     * @param receivedOn
-     *            The received on to set for this {@link JmsMessage}.
-     * @param payload
-     *            The {@link JmsPayload} to set for this {@link JmsMessage}.
+     *
+     * @param topic      The {@link JmsTopic} to set for this {@link JmsMessage}.
+     * @param receivedOn The received on to set for this {@link JmsMessage}.
+     * @param payload    The {@link JmsPayload} to set for this {@link JmsMessage}.
      * @since 1.0.0
      */
     public JmsMessage(JmsTopic topic, Date receivedOn, JmsPayload payload) {
@@ -63,7 +60,7 @@ public class JmsMessage implements TransportMessage<JmsTopic, JmsPayload> {
 
     /**
      * Gets the {@link JmsTopic} set for this {@link JmsMessage}.
-     * 
+     *
      * @return The {@link JmsTopic} set for this {@link JmsMessage}.
      * @since 1.0.0
      */
@@ -73,9 +70,8 @@ public class JmsMessage implements TransportMessage<JmsTopic, JmsPayload> {
 
     /**
      * Sets the {@link JmsTopic} set for this {@link JmsMessage}.
-     * 
-     * @param topic
-     *            The {@link JmsTopic} to set for this {@link JmsMessage}.
+     *
+     * @param topic The {@link JmsTopic} to set for this {@link JmsMessage}.
      * @since 1.0.0
      */
     public void setTopic(JmsTopic topic) {
@@ -84,7 +80,7 @@ public class JmsMessage implements TransportMessage<JmsTopic, JmsPayload> {
 
     /**
      * Gets the received on set for this {@link JmsMessage}.
-     * 
+     *
      * @return The received on set for this {@link JmsMessage}.
      * @since 1.0.0
      */
@@ -94,9 +90,8 @@ public class JmsMessage implements TransportMessage<JmsTopic, JmsPayload> {
 
     /**
      * Sets the received on set for this {@link JmsMessage}.
-     * 
-     * @param receivedOn
-     *            The received on to set for this {@link JmsMessage}.
+     *
+     * @param receivedOn The received on to set for this {@link JmsMessage}.
      * @since 1.0.0
      */
     public void setReceivedOn(Date receivedOn) {
@@ -105,19 +100,22 @@ public class JmsMessage implements TransportMessage<JmsTopic, JmsPayload> {
 
     /**
      * Gets the {@link JmsPayload} set for this {@link JmsMessage}.
-     * 
+     *
      * @return The {@link JmsPayload} set for this {@link JmsMessage}.
      * @since 1.0.0
      */
     public JmsPayload getPayload() {
+        if (payload == null) {
+            payload = new JmsPayload(new byte[0]);
+        }
+
         return payload;
     }
 
     /**
      * Sets the {@link JmsPayload} set for this {@link JmsMessage}.
-     * 
-     * @param payload
-     *            The {@link JmsPayload} to set for this {@link JmsMessage}.
+     *
+     * @param payload The {@link JmsPayload} to set for this {@link JmsMessage}.
      * @since 1.0.0
      */
     public void setPayload(JmsPayload payload) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,6 +25,7 @@ import org.apache.http.util.EntityUtils;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
+import org.eclipse.kapua.commons.util.RandomUtils;
 import org.eclipse.kapua.service.datastore.client.ClientCommunicationException;
 import org.eclipse.kapua.service.datastore.client.ClientErrorCodes;
 import org.eclipse.kapua.service.datastore.client.ClientException;
@@ -104,7 +105,7 @@ public class RestDatastoreClient implements org.eclipse.kapua.service.datastore.
     private static final String CLIENT_COMMUNICATION_TIMEOUT_MSG = "Elasticsearch client timeout";
     private static final String CLIENT_GENERIC_ERROR_MSG = "Generic client error";
 
-    private static final Random RANDOM = new Random();
+    private static final Random RANDOM = RandomUtils.getInstance();
     private static final int MAX_RETRY_ATTEMPT = ClientSettings.getInstance().getInt(ClientSettingsKey.ELASTICSEARCH_REST_TIMEOUT_MAX_RETRY, 3);
     private static final long MAX_RETRY_WAIT_TIME = ClientSettings.getInstance().getLong(ClientSettingsKey.ELASTICSEARCH_REST_TIMEOUT_MAX_WAIT, 2500);
 

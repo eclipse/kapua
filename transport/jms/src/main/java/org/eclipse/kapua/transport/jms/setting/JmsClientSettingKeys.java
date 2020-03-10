@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,7 +21,7 @@ import org.eclipse.kapua.commons.setting.SettingKey;
 public enum JmsClientSettingKeys implements SettingKey {
     /**
      * The character separator for topic levels.
-     * 
+     *
      * @since 1.0.0
      */
     TRANSPORT_TOPIC_SEPARATOR("transport.topic.separator"),
@@ -29,16 +29,15 @@ public enum JmsClientSettingKeys implements SettingKey {
 
     /**
      * The key value in the configuration resources.
-     * 
+     *
      * @since 1.0.0
      */
     private String key;
 
     /**
      * Set up the {@code enum} with the key value provided
-     * 
-     * @param key
-     *            The value mapped by this {@link Enum} value
+     *
+     * @param key The value mapped by this {@link Enum} value
      * @since 1.0.0
      */
     private JmsClientSettingKeys(String key) {
@@ -47,9 +46,10 @@ public enum JmsClientSettingKeys implements SettingKey {
 
     /**
      * Gets the key for this {@link JmsClientSettingKeys}
-     * 
+     *
      * @since 1.0.0
      */
+    @Override
     public String key() {
         return key;
     }

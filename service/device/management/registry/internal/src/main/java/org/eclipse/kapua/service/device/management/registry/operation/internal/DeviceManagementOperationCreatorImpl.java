@@ -81,12 +81,12 @@ public class DeviceManagementOperationCreatorImpl extends AbstractKapuaEntityCre
 
     @Override
     public KapuaMethod getAction() {
-        return action;
+        return action.normalizeAction();
     }
 
     @Override
     public void setAction(KapuaMethod action) {
-        this.action = action;
+        this.action = action.normalizeAction();
     }
 
     @Override

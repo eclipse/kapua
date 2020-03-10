@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,10 +14,9 @@ package org.eclipse.kapua.transport.message.mqtt;
 import org.eclipse.kapua.transport.message.TransportPayload;
 
 /**
- * Implementation of {@link TransportPayload} API for MQTT transport facade.
- * 
- * @since 1.0.0
+ * Implementation of {@link TransportPayload} API for {@link org.eclipse.kapua.transport.mqtt.MqttFacade}.
  *
+ * @since 1.0.0
  */
 public class MqttPayload implements TransportPayload {
 
@@ -28,9 +27,8 @@ public class MqttPayload implements TransportPayload {
 
     /**
      * Construct a {@link MqttPayload} with the given parameter.
-     * 
-     * @param body
-     *            The raw body to set for this {@link MqttPayload}.
+     *
+     * @param body The raw body to set for this {@link MqttPayload}.
      * @since 1.0.0
      */
     public MqttPayload(byte[] body) {
@@ -39,7 +37,7 @@ public class MqttPayload implements TransportPayload {
 
     /**
      * Gets the raw body set for this {@link MqttPayload}.
-     * 
+     *
      * @return The raw body set for this {@link MqttPayload}.
      * @since 1.0.0
      */
@@ -49,9 +47,8 @@ public class MqttPayload implements TransportPayload {
 
     /**
      * Sets the raw body set for this {@link MqttPayload}.
-     * 
-     * @param body
-     *            the raw body set for this {@link MqttPayload}.
+     *
+     * @param body the raw body set for this {@link MqttPayload}.
      * @since 1.0.0
      */
     public void setBody(byte[] body) {

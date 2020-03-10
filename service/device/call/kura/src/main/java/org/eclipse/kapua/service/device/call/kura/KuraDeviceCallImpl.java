@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.call.kura;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.util.RandomUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.Message;
 import org.eclipse.kapua.service.account.Account;
@@ -49,6 +50,8 @@ import java.util.Random;
  * @since 1.0.0
  */
 public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraResponseMessage> {
+
+    private static final Random RANDOM = RandomUtils.getInstance();
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
@@ -117,59 +120,51 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
     private KuraResponseMessage sendInternal(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException {
 
         KuraResponseMessage response;
-        TransportFacade transportFacade = null;
         try {
             Account account = KapuaSecurityUtils.doPrivileged(() -> ACCOUNT_SERVICE.findByName(requestMessage.getChannel().getScope()));
             Device device = DEVICE_REGISTRY_SERVICE.findByClientId(account.getId(), requestMessage.getChannel().getClientId());
             String serverIp = device.getConnection().getServerIp();
 
             //
-            // Borrow a KapuaClient
-            transportFacade = borrowClient(serverIp);
+            // Borrow a TransportClient
+            try (TransportFacade transportFacade = borrowClient(serverIp)) {
+                //
+                // Get Kura to transport translator for the request and vice versa
+                Translator<KuraRequestMessage, TransportMessage> translatorKuraTransport = getTranslator(KuraRequestMessage.class, transportFacade.getMessageClass());
+                Translator<TransportMessage, KuraResponseMessage> translatorTransportKura = getTranslator(transportFacade.getMessageClass(), KuraResponseMessage.class);
 
-            //
-            // Get Kura to transport translator for the request and vice versa
-            Translator<KuraRequestMessage, TransportMessage> translatorKuraTransport = getTranslator(KuraRequestMessage.class, transportFacade.getMessageClass());
-            Translator<TransportMessage, KuraResponseMessage> translatorTransportKura = getTranslator(transportFacade.getMessageClass(), KuraResponseMessage.class);
+                //
+                // Make the request
+                // Add requestId and requesterClientId to both payload and channel if response is expected
+                // Note: Adding to both payload and channel to let the translator choose what to do base on the transport used.
+                KuraRequestChannel requestChannel = requestMessage.getChannel();
+                KuraRequestPayload requestPayload = requestMessage.getPayload();
+                if (timeout != null) {
+                    String requestId = String.valueOf(RANDOM.nextLong());
 
-            //
-            // Make the request
-            // Add requestId and requesterClientId to both payload and channel if response is expected
-            // Note: Adding to both payload and channel to let the translator choose what to do base on the transport used.
-            KuraRequestChannel requestChannel = requestMessage.getChannel();
-            KuraRequestPayload requestPayload = requestMessage.getPayload();
-            if (timeout != null) {
-                // FIXME: create an utilty class to use the same synchronized random instance to avoid duplicates
-                Random r = new Random();
-                String requestId = String.valueOf(r.nextLong());
+                    requestChannel.setRequestId(requestId);
+                    requestChannel.setRequesterClientId(transportFacade.getClientId());
 
-                requestChannel.setRequestId(requestId);
-                requestChannel.setRequesterClientId(transportFacade.getClientId());
+                    requestPayload.setRequestId(requestId);
+                    requestPayload.setRequesterClientId(transportFacade.getClientId());
+                }
 
-                requestPayload.setRequestId(requestId);
-                requestPayload.setRequesterClientId(transportFacade.getClientId());
+                //
+                // Do send
+                // Set current timestamp
+                requestMessage.setTimestamp(new Date());
+
+                // Send
+                TransportMessage transportRequestMessage = translatorKuraTransport.translate(requestMessage);
+                TransportMessage transportResponseMessage = transportFacade.sendSync(transportRequestMessage, timeout);
+
+                // Translate response
+                response = translatorTransportKura.translate(transportResponseMessage);
             }
-
-            //
-            // Do send
-            // Set current timestamp
-            requestMessage.setTimestamp(new Date());
-
-            // Send
-            TransportMessage transportRequestMessage = translatorKuraTransport.translate(requestMessage);
-            TransportMessage transportResponseMessage = transportFacade.sendSync(transportRequestMessage, timeout);
-
-            // Translate response
-            response = translatorTransportKura.translate(transportResponseMessage);
-
         } catch (TransportTimeoutException te) {
             throw new DeviceCallTimeoutException(te, timeout);
         } catch (KapuaException se) {
             throw new DeviceCallSendException(se, requestMessage);
-        } finally {
-            if (transportFacade != null) {
-                transportFacade.clean();
-            }
         }
 
         return response;

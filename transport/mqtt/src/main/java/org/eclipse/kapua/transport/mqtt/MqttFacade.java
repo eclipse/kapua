@@ -11,14 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.transport.mqtt;
 
-import org.eclipse.kapua.KapuaErrorCodes;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.transport.TransportFacade;
+import org.eclipse.kapua.transport.exception.TransportClientGetException;
 import org.eclipse.kapua.transport.exception.TransportSendException;
 import org.eclipse.kapua.transport.exception.TransportTimeoutException;
 import org.eclipse.kapua.transport.message.mqtt.MqttMessage;
 import org.eclipse.kapua.transport.message.mqtt.MqttPayload;
 import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
+import org.eclipse.kapua.transport.mqtt.exception.MqttClientCallbackSetException;
+import org.eclipse.kapua.transport.mqtt.exception.MqttClientSubscribeException;
 import org.eclipse.kapua.transport.mqtt.pooling.MqttClientPool;
 
 import javax.annotation.Nullable;
@@ -34,20 +35,24 @@ import java.util.List;
 public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttMessage, MqttMessage> {
 
     /**
-     * The client to use to make requests.
+     * The {@link MqttClient} used to make requests.
      *
      * @since 1.0.0
      */
     private MqttClient borrowedClient;
 
+    /**
+     * The host that this {@link MqttClient} connects to.
+     */
     private final String nodeUri;
 
     /**
-     * Initialize a transport facade to be used to send requests to devices.
+     * Initializes a {@link MqttFacade} to be used to send requests to devices.
      *
-     * @throws KapuaException When MQTT client is not available.
+     * @throws TransportClientGetException When MQTT client is not available for the given node URI.
+     * @since 1.0.0
      */
-    public MqttFacade(@NotNull String nodeUri) throws KapuaException {
+    public MqttFacade(@NotNull String nodeUri) throws TransportClientGetException {
         this.nodeUri = nodeUri;
 
         //
@@ -55,7 +60,7 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
         try {
             borrowedClient = MqttClientPool.getInstance(nodeUri).borrowObject();
         } catch (Exception e) {
-            throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e, (Object[]) null);
+            throw new TransportClientGetException(e, nodeUri);
         }
     }
 
@@ -129,13 +134,17 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
 
     @Override
     public void clean() {
+        close();
+    }
+
+    @Override
+    public void close() {
         try {
             MqttClientPool.getInstance(nodeUri).returnObject(borrowedClient);
         } finally {
             borrowedClient = null;
         }
     }
-
 
     //
     // Private methods
@@ -162,19 +171,16 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
      * @param responseTopic The {@link MqttTopic} to subscribe to receive the response.
      * @param responses     The container of the received responses
      * @return The {@link MqttResponseCallback} which handles the received responses.
-     * @throws MqttClientException if the {@link MqttClient#subscribe(MqttTopic)} fails.
+     * @throws MqttClientCallbackSetException if {@link MqttClient#setCallback(MqttResponseCallback)} fails.
+     * @throws MqttClientSubscribeException   if the {@link MqttClient#subscribe(MqttTopic)} fails.
      * @since 1.1.0
      */
-    private MqttResponseCallback subscribeToResponse(MqttTopic responseTopic, List<MqttMessage> responses) throws MqttClientException {
-        try {
-            MqttResponseCallback mqttClientCallback = new MqttResponseCallback(responses);
-            borrowedClient.setCallback(mqttClientCallback);
-            borrowedClient.subscribe(responseTopic);
+    private MqttResponseCallback subscribeToResponse(MqttTopic responseTopic, List<MqttMessage> responses) throws MqttClientCallbackSetException, MqttClientSubscribeException {
+        MqttResponseCallback mqttClientCallback = new MqttResponseCallback(responseTopic, responses);
+        borrowedClient.setCallback(mqttClientCallback);
+        borrowedClient.subscribe(responseTopic);
 
-            return mqttClientCallback;
-        } catch (KapuaException e) {
-            throw new MqttClientException(MqttClientErrorCodes.CLIENT_SUBSCRIBE_ERROR, e, responseTopic);
-        }
+        return mqttClientCallback;
     }
 
     /**
@@ -193,10 +199,9 @@ public class MqttFacade implements TransportFacade<MqttTopic, MqttPayload, MqttM
                 mqttClientCallback.wait();
             }
         } catch (InterruptedException e) {
-            Thread.interrupted();
+            Thread.currentThread().interrupt();
         } finally {
             responseTimeoutTimer.cancel();
         }
     }
-
 }

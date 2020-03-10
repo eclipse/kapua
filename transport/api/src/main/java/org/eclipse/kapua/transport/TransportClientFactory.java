@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,6 +13,7 @@ package org.eclipse.kapua.transport;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaObjectFactory;
+import org.eclipse.kapua.transport.exception.TransportClientGetException;
 import org.eclipse.kapua.transport.message.TransportChannel;
 import org.eclipse.kapua.transport.message.TransportMessage;
 import org.eclipse.kapua.transport.message.TransportPayload;
@@ -43,10 +44,10 @@ public interface TransportClientFactory<C extends TransportChannel, P extends Tr
      *
      * @param configParameters a {@link Map} containing optional config values for the facade
      * @return An instance of the {@link TransportFacade} implementing class.
-     * @throws KapuaException If error occurs when getting the {@link TransportFacade}.
+     * @throws TransportClientGetException If error occurs when getting the {@link TransportFacade}.
      * @since 1.0.0
      */
-    T getFacade(Map<String, Object> configParameters) throws KapuaException;
+    T getFacade(Map<String, Object> configParameters) throws TransportClientGetException;
 
     /**
      * Gets an instance of the {@link TransportClientConnectOptions} implementing class.
