@@ -49,8 +49,16 @@ Suppose the target is the current snapshot 1.2.0-SNAPSHOT.
 * Start Docker runtime
 * Start Kapua:
 
+On Linux/MacOS:
+
 ```bash
-    ./deployment/docker/docker-deploy.sh
+    ./deployment/docker/unix/docker-deploy.sh
+```
+
+On Windows (PowerShell):
+
+```bash
+    ./deployment/docker/win/docker-deploy.ps1
 ```
 
 The command starts all the Kapua containers using Docker Compose.
@@ -71,8 +79,16 @@ Docker will list the containers currently running.
 
 To stop Kapua, run
 
+On Linux/MacOS:
+
 ```bash
-    ./deployment/docker/docker-undeploy.sh
+    ./deployment/docker/unix/docker-undeploy.sh
+```
+
+On Windows (PowerShell):
+
+```bash
+    ./deployment/docker/win/docker-undeploy.ps1
 ```
 
 ### Access
