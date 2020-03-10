@@ -37,7 +37,7 @@ import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.KapuaButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
@@ -83,7 +83,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
     protected final FormPanel jobStepPropertiesPanel;
     protected final HorizontalPanel propertiesButtonPanel;
 
-    protected Button exampleButton;
+    protected KapuaButton exampleButton;
 
     protected static final String PROPERTY_NAME = "propertyName";
     protected static final String PROPERTY_TYPE = "propertyType";
@@ -306,7 +306,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
                 jobStepPropertiesPanel.add(textArea);
                 if (property.getExampleValue() != null) {
                     final String exampleValue = KapuaSafeHtmlUtils.htmlUnescape(property.getExampleValue());
-                    exampleButton = new Button(getExampleButtonText(), new KapuaIcon(IconSet.EDIT), new SelectionListener<ButtonEvent>() {
+                    exampleButton = new KapuaButton(getExampleButtonText(), new KapuaIcon(IconSet.EDIT), new SelectionListener<ButtonEvent>() {
 
                         @Override
                         public void componentSelected(ButtonEvent ce) {

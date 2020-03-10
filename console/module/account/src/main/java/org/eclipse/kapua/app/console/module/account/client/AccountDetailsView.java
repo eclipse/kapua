@@ -30,9 +30,6 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
 public class AccountDetailsView extends AbstractView {
 
-    private GwtSession currentSession;
-    private AccountView centerAccountView;
-
     private GwtAccount selectedAccount;
     private static final ConsoleAccountMessages MSGS = GWT.create(ConsoleAccountMessages.class);
 
@@ -40,11 +37,6 @@ public class AccountDetailsView extends AbstractView {
 
     public AccountDetailsView(GwtSession currentSession) {
         this.currentSession = currentSession;
-    }
-
-    public AccountDetailsView(AccountView centerAccountView, GwtSession currentSession) {
-        this(currentSession);
-        this.centerAccountView = centerAccountView;
     }
 
     public static String getName() {

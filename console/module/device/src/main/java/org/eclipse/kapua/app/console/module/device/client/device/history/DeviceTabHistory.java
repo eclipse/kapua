@@ -52,7 +52,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.KapuaButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelector;
@@ -85,8 +85,8 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
 
     private ToolBar toolBar;
 
-    private Button refreshButton;
-    private Button export;
+    private KapuaButton refreshButton;
+    private KapuaButton export;
 
     private DateRangeSelector dateRangeSelector;
     private Grid<GwtDeviceEvent> grid;
@@ -158,7 +158,7 @@ public class DeviceTabHistory extends KapuaTabItem<GwtDevice> {
         toolBar.add(refreshButton);
         toolBar.add(new SeparatorToolItem());
 
-        export = new Button(MSGS.exportToCSV(), new KapuaIcon(IconSet.FILE_TEXT_O),
+        export = new KapuaButton(MSGS.exportToCSV(), new KapuaIcon(IconSet.FILE_TEXT_O),
                 new SelectionListener<ButtonEvent>() {
 
                     @Override

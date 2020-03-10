@@ -18,7 +18,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.KapuaButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
@@ -30,35 +30,35 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
 
     private static final ConsoleJobMessages JOB_MSGS = GWT.create(ConsoleJobMessages.class);
 
-    private Button startJobButton;
-    private Button stopJobButton;
-    private Button restartJobButton;
-    private Button deleteForcedJobButton;
+    private KapuaButton startJobButton;
+    private KapuaButton stopJobButton;
+    private KapuaButton restartJobButton;
+    private KapuaButton deleteForcedJobButton;
 
     public JobGridToolbar(GwtSession currentSession) {
         super(currentSession);
     }
 
-    public Button getStartJobButton() {
+    public KapuaButton getStartJobButton() {
         return startJobButton;
     }
 
-    public Button getStopJobButton() {
+    public KapuaButton getStopJobButton() {
         return stopJobButton;
     }
 
-    public Button getRestartJobButton() {
+    public KapuaButton getRestartJobButton() {
         return restartJobButton;
     }
 
-    public Button getDeleteForcedJobButton() {
+    public KapuaButton getDeleteForcedJobButton() {
         return deleteForcedJobButton;
     }
 
     @Override
     protected void onRender(Element target, int index) {
 
-        startJobButton = new Button(JOB_MSGS.jobStartButton(), new KapuaIcon(IconSet.PLAY), new SelectionListener<ButtonEvent>() {
+        startJobButton = new KapuaButton(JOB_MSGS.jobStartButton(), new KapuaIcon(IconSet.PLAY), new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
@@ -70,7 +70,7 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
         startJobButton.disable();
         addExtraButton(startJobButton);
 
-        stopJobButton = new Button(JOB_MSGS.jobStopButton(), new KapuaIcon(IconSet.STOP), new SelectionListener<ButtonEvent>() {
+        stopJobButton = new KapuaButton(JOB_MSGS.jobStopButton(), new KapuaIcon(IconSet.STOP), new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
@@ -82,7 +82,7 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
         stopJobButton.disable();
         addExtraButton(stopJobButton);
 
-        restartJobButton = new Button(JOB_MSGS.jobRestartButton(), new KapuaIcon(IconSet.REPEAT), new SelectionListener<ButtonEvent>() {
+        restartJobButton = new KapuaButton(JOB_MSGS.jobRestartButton(), new KapuaIcon(IconSet.REPEAT), new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
@@ -94,7 +94,7 @@ public class JobGridToolbar extends EntityCRUDToolbar<GwtJob> {
         restartJobButton.disable();
         addExtraButton(restartJobButton);
 
-        deleteForcedJobButton = new Button(JOB_MSGS.jobDeleteForcedButton(), new KapuaIcon(IconSet.EXCLAMATION_TRIANGLE), new SelectionListener<ButtonEvent>() {
+        deleteForcedJobButton = new KapuaButton(JOB_MSGS.jobDeleteForcedButton(), new KapuaIcon(IconSet.EXCLAMATION_TRIANGLE), new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {

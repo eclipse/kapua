@@ -19,7 +19,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.KapuaButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
@@ -31,13 +31,13 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
     private String selectedUserId;
     private String selectedUserName;
 
-    private final Button unlockButton;
+    private final KapuaButton unlockButton;
 
     private static final ConsoleCredentialMessages MSGS = GWT.create(ConsoleCredentialMessages.class);
 
     public CredentialToolbar(GwtSession currentSession) {
         super(currentSession, true);
-        unlockButton = new Button(MSGS.unlockButton(), new KapuaIcon(IconSet.UNLOCK), new SelectionListener<ButtonEvent>() {
+        unlockButton = new KapuaButton(MSGS.unlockButton(), new KapuaIcon(IconSet.UNLOCK), new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
@@ -110,7 +110,7 @@ public class CredentialToolbar extends EntityCRUDToolbar<GwtCredential> {
         //            unlockButton.setEnabled(selectedUserId != null);
     }
 
-    public Button getUnlockButton() {
+    public KapuaButton getUnlockButton() {
         return unlockButton;
     }
 

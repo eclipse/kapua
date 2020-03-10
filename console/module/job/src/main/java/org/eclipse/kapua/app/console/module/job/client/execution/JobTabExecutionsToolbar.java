@@ -17,7 +17,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.KapuaButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.EntityCRUDToolbar;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.job.client.messages.ConsoleJobMessages;
@@ -29,8 +29,8 @@ public class JobTabExecutionsToolbar extends EntityCRUDToolbar<GwtJobExecution> 
 
     private String jobId;
 
-    private Button stopJobButton;
-    private Button logExecutionButton;
+    private KapuaButton stopJobButton;
+    private KapuaButton logExecutionButton;
 
     public JobTabExecutionsToolbar(GwtSession currentSession) {
         super(currentSession, true);
@@ -48,7 +48,7 @@ public class JobTabExecutionsToolbar extends EntityCRUDToolbar<GwtJobExecution> 
     @Override
     protected void onRender(Element target, int index) {
 
-        stopJobButton = new Button(JOB_MSGS.jobStopButton(), new KapuaIcon(IconSet.STOP), new SelectionListener<ButtonEvent>() {
+        stopJobButton = new KapuaButton(JOB_MSGS.jobStopButton(), new KapuaIcon(IconSet.STOP), new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {

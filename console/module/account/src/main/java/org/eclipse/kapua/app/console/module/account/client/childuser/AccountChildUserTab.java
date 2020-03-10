@@ -24,7 +24,6 @@ import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 public class AccountChildUserTab extends KapuaTabItem<GwtAccount> {
 
     protected AccountChildUserGrid userGrid;
-    protected GwtSession currentSession;
 
     public AccountChildUserTab(GwtSession currentSession) {
         super(currentSession, "Users", new KapuaIcon(IconSet.USERS));
@@ -37,11 +36,7 @@ public class AccountChildUserTab extends KapuaTabItem<GwtAccount> {
     @Override
     public void setEntity(GwtAccount t) {
         super.setEntity(t);
-        if (t != null) {
-            setEnabled(true);
-        } else {
-            setEnabled(false);
-        }
+        setEnabled(t != null);
         userGrid.setSelectedAccount(t);
     }
 

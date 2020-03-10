@@ -13,7 +13,6 @@ package org.eclipse.kapua.app.console.module.api.server;
 
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
@@ -31,7 +30,6 @@ public class GwtSecurityTokenServiceImpl extends RemoteServiceServlet implements
         GwtSecurityTokenService {
 
     private static final long serialVersionUID = -6876999298300071273L;
-    private static ThreadLocal<HttpServletRequest> perThreadRequest = new ThreadLocal<HttpServletRequest>();
 
     public static final Logger logger = LoggerFactory.getLogger(GwtSecurityTokenServiceImpl.class);
     public static final String XSRF_TOKEN_KEY = "XSRF_TOKEN";
@@ -45,15 +43,6 @@ public class GwtSecurityTokenServiceImpl extends RemoteServiceServlet implements
         } finally {
             perThreadRequest.set(null);
         }
-    }
-
-    public static HttpServletRequest getRequest() {
-        return perThreadRequest.get();
-    }
-
-    public HttpSession getHttpSession() {
-        HttpServletRequest request = GwtSecurityTokenServiceImpl.getRequest();
-        return request.getSession();
     }
 
     @Override
@@ -70,4 +59,9 @@ public class GwtSecurityTokenServiceImpl extends RemoteServiceServlet implements
         }
         return token;
     }
+
+    private HttpSession getHttpSession() {
+        return perThreadRequest.get().getSession();
+    }
+
 }
