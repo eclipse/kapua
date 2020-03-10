@@ -354,7 +354,7 @@ public class DeviceRegistrySteps extends TestBase {
         stepData.put("Device", device);
     }
 
-    @Given("^(?:A d|D)evices? such as$")
+    @Given("^(?:(?:A d|D)evices? such as|I create (?:a device|devices) with parameters)$")
     public void createADevicesAsSpecified(List<CucDevice> devLst)
             throws Exception {
 
@@ -368,7 +368,7 @@ public class DeviceRegistrySteps extends TestBase {
                 tmpDevice = deviceRegistryService.create(devCr);
             }
             stepData.put("LastDevice", tmpDevice);
-        } catch (KapuaException ex) {
+        } catch (Exception ex) {
             verifyException(ex);
         }
     }
@@ -380,6 +380,28 @@ public class DeviceRegistrySteps extends TestBase {
         DeviceCreator tmpDevCr = deviceFactory.newCreator(tmpAcc.getId(), clientId);
         Device tmpDev = deviceRegistryService.create(tmpDevCr);
         stepData.put("LastDevice", tmpDev);
+    }
+
+    @Given("^I try to create devices with invalid symbols in name$")
+    public void createDeviceWithInvalidSymbolsInName() throws Exception {
+
+        String invalidSymbols = "!\"#$%&'()=»Ç" +
+                ">:;<-.,⁄@‹›€" +
+                "*ı–°·‚_±Œ„‰" +
+                "?“‘”’ÉØ∏{}|Æ" +
+                "æÒ\uF8FFÔÓÌÏÎÍÅ«" +
+                "◊Ñˆ¯Èˇ¿";
+        Account tmpAcc = (Account) stepData.get("LastAccount");
+        for (int i = 0; i < invalidSymbols.length(); i++) {
+            String clientId = "Device" + invalidSymbols.charAt(i);
+            try {
+
+                DeviceCreator tmpDevCr = deviceFactory.newCreator(tmpAcc.getId(), clientId);
+                Device tmpDev = deviceRegistryService.create(tmpDevCr);
+            } catch (KapuaException e) {
+                verifyException(e);
+            }
+        }
     }
 
     @Given("^A null device$")
@@ -556,6 +578,13 @@ public class DeviceRegistrySteps extends TestBase {
         } catch (KapuaException ex) {
             verifyException(ex);
         }
+    }
+
+    @When("^I find searched device$")
+    public void findDevice() throws Exception {
+
+        assertNotNull(stepData.get("Device"));
+
     }
 
     @When("^I search for a device with a random ID$")
@@ -782,13 +811,14 @@ public class DeviceRegistrySteps extends TestBase {
     public void deleteDeviceWithClientId(String clientId)
             throws Exception {
 
-        Device device = (Device) stepData.get("Device");
-
         try {
             primeException();
-            if (device.getClientId().equals(clientId)) {
-                deviceRegistryService.delete(getCurrentScopeId(), device.getId());
-            }
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, clientId, AttributePredicate.Operator.EQUAL));
+            DeviceListResult deviceList = deviceRegistryService.query(tmpQuery);
+            Device device = deviceList.getFirstItem();
+            deviceRegistryService.delete(getCurrentScopeId(), device.getId());
+
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -2542,19 +2572,20 @@ public class DeviceRegistrySteps extends TestBase {
             stepData.remove("Device");
             Device device = deviceRegistryService.create(deviceCreator);
             stepData.put("Device", device);
-        } catch (KapuaException ex) {
+        } catch (Exception ex) {
             verifyException(ex);
         }
     }
 
     @Then("^I try to edit device to clientId \"([^\"]*)\"$")
     public void iTryToEditDeviceToName(String clientId) throws Exception {
-        Device device = (Device) stepData.get("Device");
-        device.setClientId(clientId);
+        Device oldDevice = (Device) stepData.get("Device");
 
+        primeException();
         try {
-            primeException();
-            Device newDevice = deviceRegistryService.update(device);
+            oldDevice.setClientId(clientId);
+            stepData.remove("Device");
+            Device newDevice = deviceRegistryService.update(oldDevice);
             stepData.put("Device", newDevice);
         } catch (KapuaException ex) {
             verifyException(ex);
@@ -2641,6 +2672,20 @@ public class DeviceRegistrySteps extends TestBase {
         }
     }
 
+
+    @When("^I try to edit devices display name to \"([^\"]*)\"$")
+    public void iTryToEditDevicesDisplayNameTo(String displayName) throws Exception {
+        Device device = (Device) stepData.get("Device");
+
+        try {
+            device.setDisplayName(displayName);
+            device = deviceRegistryService.update(device);
+            stepData.put("Device", device);
+        } catch (Exception e) {
+            verifyException(e);
+        }
+    }
+
     @Given("^Tag \"([^\"]*)\" is assigned to device \"([^\"]*)\"$")
     public void tagIsAsignedToDevice(String tagName, String deviceName) throws Throwable {
         try {
@@ -2699,6 +2744,29 @@ public class DeviceRegistrySteps extends TestBase {
         }
     }
 
+    @And("^The devices display name is \"([^\"]*)\"$")
+    public void theDevicesDisplayNameIs(String displayName) throws Throwable {
+        Device device = (Device) stepData.get("Device");
+        assertEquals(device.getDisplayName(), displayName);
+    }
+
+    @And("^I change device status to \"([^\"]*)\"$")
+    public void iChangeDeviceStatusTo(String deviceStatus) throws Throwable {
+        Device device = (Device) stepData.get("Device");
+
+        try {
+            if (deviceStatus.trim().toLowerCase().equals("enabled")) {
+                device.setStatus(DeviceStatus.ENABLED);
+            } else if (deviceStatus.trim().toLowerCase().equals("disabled")) {
+                device.setStatus(DeviceStatus.DISABLED);
+            }
+            device = deviceRegistryService.update(device);
+            stepData.put("Device", device);
+        } catch (Exception e) {
+            verifyException(e);
+        }
+    }
+
     @Given("^Tag \"([^\"]*)\" is not assigned to device \"([^\"]*)\"$")
     public void tagWithNameIsNotAsignedToDevice(String tagName, String deviceName) throws Throwable {
         try {
@@ -2716,6 +2784,106 @@ public class DeviceRegistrySteps extends TestBase {
             assertFalse(tagIds.contains(tag.getId()));
         } catch (Exception e) {
             verifyException(e);
+        }
+    }
+
+    @And("^I filter devices by$")
+    public void iFilterDevices(List<CucDevice> parameters) throws Exception {
+        CucDevice deviceParams = parameters.get(0);
+        DeviceListResult devices;
+        stepData.remove("DeviceList");
+        if (deviceParams.getClientId() != null && deviceParams.getDisplayName() == null && deviceParams.getSerialNumber() == null && deviceParams.getStatus() == null) {
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, deviceParams.getClientId(), AttributePredicate.Operator.LIKE));
+            devices = deviceRegistryService.query(tmpQuery);
+            stepData.put("DeviceList", devices);
+        } else if (deviceParams.getClientId() == null && deviceParams.getDisplayName() != null && deviceParams.getSerialNumber() == null && deviceParams.getStatus() == null) {
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.DISPLAY_NAME, deviceParams.getDisplayName(), AttributePredicate.Operator.LIKE));
+            devices = deviceRegistryService.query(tmpQuery);
+            stepData.put("DeviceList", devices);
+        } else if (deviceParams.getClientId() == null && deviceParams.getDisplayName() == null && deviceParams.getSerialNumber() != null && deviceParams.getStatus() == null) {
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.SERIAL_NUMBER, deviceParams.getSerialNumber(), AttributePredicate.Operator.LIKE));
+            devices = deviceRegistryService.query(tmpQuery);
+            stepData.put("DeviceList", devices);
+        } else if (deviceParams.getClientId() == null && deviceParams.getDisplayName() == null && deviceParams.getSerialNumber() == null && deviceParams.getStatus() != null) {
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.STATUS, deviceParams.getStatus(), AttributePredicate.Operator.LIKE));
+            devices = deviceRegistryService.query(tmpQuery);
+            stepData.put("DeviceList", devices);
+        } else if (deviceParams.getClientId() != null && deviceParams.getDisplayName() != null && deviceParams.getSerialNumber() == null && deviceParams.getStatus() == null) {
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.andPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, deviceParams.getClientId(), AttributePredicate.Operator.LIKE),
+                                                        tmpQuery.attributePredicate(DeviceAttributes.DISPLAY_NAME, deviceParams.getDisplayName(), AttributePredicate.Operator.LIKE)));
+            devices = deviceRegistryService.query(tmpQuery);
+            stepData.put("DeviceList", devices);
+        } else if (deviceParams.getClientId() != null && deviceParams.getDisplayName() == null && deviceParams.getSerialNumber() != null && deviceParams.getStatus() == null) {
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.andPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, deviceParams.getClientId(), AttributePredicate.Operator.LIKE),
+                                                        tmpQuery.attributePredicate(DeviceAttributes.SERIAL_NUMBER, deviceParams.getSerialNumber(), AttributePredicate.Operator.LIKE)));
+            devices = deviceRegistryService.query(tmpQuery);
+            stepData.put("DeviceList", devices);
+        } else if (deviceParams.getClientId() != null && deviceParams.getDisplayName() == null && deviceParams.getSerialNumber() == null && deviceParams.getStatus() != null) {
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.andPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, deviceParams.getClientId(), AttributePredicate.Operator.LIKE),
+                                                        tmpQuery.attributePredicate(DeviceAttributes.STATUS, deviceParams.getStatus(), AttributePredicate.Operator.LIKE)));
+            devices = deviceRegistryService.query(tmpQuery);
+            stepData.put("DeviceList", devices);
+        } else if (deviceParams.getClientId() == null && deviceParams.getDisplayName() != null && deviceParams.getSerialNumber() != null && deviceParams.getStatus() == null) {
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.andPredicate(tmpQuery.attributePredicate(DeviceAttributes.SERIAL_NUMBER, deviceParams.getSerialNumber(), AttributePredicate.Operator.LIKE),
+                                                        tmpQuery.attributePredicate(DeviceAttributes.DISPLAY_NAME, deviceParams.getDisplayName(), AttributePredicate.Operator.LIKE)));
+            devices = deviceRegistryService.query(tmpQuery);
+            stepData.put("DeviceList", devices);
+        } else if (deviceParams.getClientId() == null && deviceParams.getDisplayName() != null && deviceParams.getSerialNumber() == null && deviceParams.getStatus() != null) {
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.andPredicate(tmpQuery.attributePredicate(DeviceAttributes.STATUS, deviceParams.getStatus(), AttributePredicate.Operator.LIKE),
+                                                        tmpQuery.attributePredicate(DeviceAttributes.DISPLAY_NAME, deviceParams.getDisplayName(), AttributePredicate.Operator.LIKE)));
+            devices = deviceRegistryService.query(tmpQuery);
+            stepData.put("DeviceList", devices);
+        } else if (deviceParams.getClientId() == null && deviceParams.getDisplayName() == null && deviceParams.getSerialNumber() != null && deviceParams.getStatus() != null) {
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.andPredicate(tmpQuery.attributePredicate(DeviceAttributes.SERIAL_NUMBER, deviceParams.getSerialNumber(), AttributePredicate.Operator.LIKE),
+                                                        tmpQuery.attributePredicate(DeviceAttributes.STATUS, deviceParams.getStatus(), AttributePredicate.Operator.LIKE)));
+            devices = deviceRegistryService.query(tmpQuery);
+            stepData.put("DeviceList", devices);
+        } else if (deviceParams.getClientId() != null && deviceParams.getDisplayName() != null && deviceParams.getSerialNumber() != null && deviceParams.getStatus() == null) {
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.andPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, deviceParams.getClientId(), AttributePredicate.Operator.LIKE),
+                                                        tmpQuery.attributePredicate(DeviceAttributes.DISPLAY_NAME, deviceParams.getDisplayName(), AttributePredicate.Operator.LIKE),
+                                                        tmpQuery.attributePredicate(DeviceAttributes.SERIAL_NUMBER, deviceParams.getSerialNumber(), AttributePredicate.Operator.LIKE)));
+            devices = deviceRegistryService.query(tmpQuery);
+            stepData.put("DeviceList", devices);
+        } else if (deviceParams.getClientId() != null && deviceParams.getDisplayName() != null && deviceParams.getSerialNumber() == null && deviceParams.getStatus() != null) {
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.andPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, deviceParams.getClientId(), AttributePredicate.Operator.LIKE),
+                                                        tmpQuery.attributePredicate(DeviceAttributes.DISPLAY_NAME, deviceParams.getDisplayName(), AttributePredicate.Operator.LIKE),
+                                                        tmpQuery.attributePredicate(DeviceAttributes.STATUS, deviceParams.getStatus(), AttributePredicate.Operator.LIKE)));
+            devices = deviceRegistryService.query(tmpQuery);
+            stepData.put("DeviceList", devices);
+        } else if (deviceParams.getClientId() != null && deviceParams.getDisplayName() == null && deviceParams.getSerialNumber() != null && deviceParams.getStatus() != null) {
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.andPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, deviceParams.getClientId(), AttributePredicate.Operator.LIKE),
+                                                        tmpQuery.attributePredicate(DeviceAttributes.SERIAL_NUMBER, deviceParams.getSerialNumber(), AttributePredicate.Operator.LIKE),
+                                                        tmpQuery.attributePredicate(DeviceAttributes.STATUS, deviceParams.getStatus(), AttributePredicate.Operator.LIKE)));
+            devices = deviceRegistryService.query(tmpQuery);
+            stepData.put("DeviceList", devices);
+        } else if (deviceParams.getClientId() == null && deviceParams.getDisplayName() != null && deviceParams.getSerialNumber() != null && deviceParams.getStatus() != null) {
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.andPredicate(tmpQuery.attributePredicate(DeviceAttributes.SERIAL_NUMBER, deviceParams.getSerialNumber(), AttributePredicate.Operator.LIKE),
+                                                        tmpQuery.attributePredicate(DeviceAttributes.DISPLAY_NAME, deviceParams.getDisplayName(), AttributePredicate.Operator.LIKE),
+                                                        tmpQuery.attributePredicate(DeviceAttributes.STATUS, deviceParams.getStatus(), AttributePredicate.Operator.LIKE)));
+            devices = deviceRegistryService.query(tmpQuery);
+            stepData.put("DeviceList", devices);
+        } else if (deviceParams.getClientId() != null && deviceParams.getDisplayName() != null && deviceParams.getSerialNumber() != null && deviceParams.getStatus() != null) {
+            DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.andPredicate(tmpQuery.attributePredicate(DeviceAttributes.SERIAL_NUMBER, deviceParams.getSerialNumber(), AttributePredicate.Operator.LIKE),
+                                                        tmpQuery.attributePredicate(DeviceAttributes.DISPLAY_NAME, deviceParams.getDisplayName(), AttributePredicate.Operator.LIKE),
+                                                        tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, deviceParams.getClientId(), AttributePredicate.Operator.LIKE),
+                                                        tmpQuery.attributePredicate(DeviceAttributes.STATUS, deviceParams.getStatus(), AttributePredicate.Operator.LIKE)));
+            devices = deviceRegistryService.query(tmpQuery);
+            stepData.put("DeviceList", devices);
         }
     }
 }

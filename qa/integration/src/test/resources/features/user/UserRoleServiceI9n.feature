@@ -793,7 +793,7 @@ Feature: User role service integration tests
     And I create a device with name "TestDevice"
     And I find device with clientId "TestDevice"
     And I try to edit device to clientId "TestDevice1"
-    And I delete the device with the clientId "TestDevice1"
+    And I delete the device with the clientId "TestDevice"
     And I create a job with the name "TestJob"
     And I find a job with name "TestJob"
     And I try to edit job to name "TestJob1"
@@ -1146,7 +1146,7 @@ Feature: User role service integration tests
     And I create a device with name "TestDevice"
     And I find device with clientId "TestDevice"
     And I try to edit device to clientId "TestDevice1"
-    And I delete the device with the clientId "TestDevice1"
+    And I delete the device with the clientId "TestDevice"
     And No exception was thrown
     And I logout
 
