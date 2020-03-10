@@ -57,12 +57,15 @@ public class KeyUsageSettingImpl implements KeyUsageSetting {
     }
 
     @Override
-    public void setKapuaAllowed(Boolean allowed) {
-        this.allowed = allowed;
+    public void setKapuaAllowed(Boolean kapuaAllowed) {
+        this.kapuaAllowed = kapuaAllowed;
     }
 
     public static KeyUsageSettingImpl parse(KeyUsageSetting keyUsageSetting) {
-        return keyUsageSetting != null ? keyUsageSetting instanceof KeyUsageSettingImpl ? (KeyUsageSettingImpl) keyUsageSetting : new KeyUsageSettingImpl(keyUsageSetting) : null;
+        if (keyUsageSetting != null) {
+            return keyUsageSetting instanceof KeyUsageSettingImpl ? (KeyUsageSettingImpl) keyUsageSetting : new KeyUsageSettingImpl(keyUsageSetting);
+        }
+        return null;
     }
 
     @Override

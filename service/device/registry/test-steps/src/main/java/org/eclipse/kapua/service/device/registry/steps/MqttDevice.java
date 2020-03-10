@@ -195,6 +195,7 @@ public class MqttDevice {
         }
 
         mqttClient.setCallback(new MqttCallback() {
+
             @Override
             public void connectionLost(Throwable throwable) {
                 logger.info("Client connection to broker lost.");
@@ -202,7 +203,7 @@ public class MqttDevice {
 
             @Override
             public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-                logger.info("Message arrived in client with topic: " + topic);
+                logger.info("Message arrived in client with topic: {}", topic);
 
                 clientReceivedMqttMessage.clear();
                 Map<String, String> topicPayload = new HashMap<>();

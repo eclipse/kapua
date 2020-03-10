@@ -48,7 +48,7 @@ public final class ConnectorDescriptorProviders {
 
     /**
      * Get a {@link ConnectorDescriptor} using the default instance
-     * 
+     *
      * @param connectorName
      *            the connector name to lookup
      * @return The connector descriptor, may be {@code null}
@@ -83,7 +83,7 @@ public final class ConnectorDescriptorProviders {
             if (result == null) {
                 result = provider;
             } else {
-                logger.warn("Multiple instances of {} found via ServiceLoader - first: {}, additional: {}", result, provider);
+                logger.warn("Multiple instances of ConnectorDescriptorProvider.class found via ServiceLoader - first: {}, additional: {}", result, provider);
             }
         }
 

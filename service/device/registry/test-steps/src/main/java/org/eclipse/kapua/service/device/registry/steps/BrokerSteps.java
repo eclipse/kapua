@@ -389,10 +389,10 @@ public class BrokerSteps extends TestBase {
                 .collect(Collectors.toList());
 
         if (assets.isEmpty()) {
-            Assert.fail(String.format("Asset %s/%s is not present", assetSymbolicName));
+            Assert.fail(String.format("Asset %s is not present", assetSymbolicName));
         }
         if (assets.size() > 1) {
-            Assert.fail(String.format("There is more than one entry for asset %s/%s", assetSymbolicName));
+            Assert.fail(String.format("There is more than one entry for asset %s", assetSymbolicName));
         }
 
         return assets.get(0);

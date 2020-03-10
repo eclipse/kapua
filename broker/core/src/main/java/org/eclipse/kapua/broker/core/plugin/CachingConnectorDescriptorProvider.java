@@ -25,9 +25,9 @@ public abstract class CachingConnectorDescriptorProvider implements ConnectorDes
     public ConnectorDescriptor getDescriptor(final String connectorName) {
         Optional<ConnectorDescriptor> result = cache.get(connectorName);
 
-        if (result != null) {
+        if (result.isPresent()) {
             // we have a cache hit, return it
-            return result.orElse(null);
+            return result.get();
         }
 
         result = Optional.ofNullable(lookupDescriptor(connectorName));
@@ -43,11 +43,8 @@ public abstract class CachingConnectorDescriptorProvider implements ConnectorDes
          * our local value, since it may be that someone else did
          * populate our cache in the meantime. This way we are
          * always returning the same value, from the cache.
-         *
-         * Using the default value (empty()) should not be necessary,
-         * but then you never know.
          */
-        return cache.getOrDefault(connectorName, Optional.empty()).orElse(null);
+        return cache.get(connectorName).orElse(null);
     }
 
 }

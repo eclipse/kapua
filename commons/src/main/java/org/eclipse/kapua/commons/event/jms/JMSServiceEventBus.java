@@ -41,9 +41,7 @@ import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
-import javax.jms.Message;
 import javax.jms.MessageConsumer;
-import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
@@ -56,6 +54,30 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.commons.event.ServiceEventBusDriver;
+import org.eclipse.kapua.commons.event.ServiceEventBusManager;
+import org.eclipse.kapua.commons.event.ServiceEventMarshaler;
+import org.eclipse.kapua.commons.event.ServiceEventScope;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.kapua.event.ServiceEvent;
+import org.eclipse.kapua.event.ServiceEventBus;
+import org.eclipse.kapua.event.ServiceEventBusException;
+import org.eclipse.kapua.event.ServiceEventBusListener;
+
+import org.apache.commons.pool2.BasePooledObjectFactory;
+import org.apache.commons.pool2.PooledObject;
+import org.apache.commons.pool2.impl.DefaultPooledObject;
+import org.apache.commons.pool2.impl.GenericObjectPool;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.apache.qpid.jms.jndi.JmsInitialContextFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * JMS event bus implementation
@@ -302,33 +324,29 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
                     final Session jmsSession = jmsConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
                     Topic jmsTopic = jmsSession.createTopic(subscriptionStr);
                     MessageConsumer jmsConsumer = jmsSession.createSharedDurableConsumer(jmsTopic, subscription.getName());
-                    jmsConsumer.setMessageListener(new MessageListener() {
+                    jmsConsumer.setMessageListener(message -> {
+                        try {
+                            if (message instanceof TextMessage) {
+                                TextMessage textMessage = (TextMessage) message;
+                                final ServiceEvent kapuaEvent = eventBusMarshaler.unmarshal(textMessage.getText());
+                                setSession(kapuaEvent);
+                                KapuaSecurityUtils.doPrivileged(() -> {
+                                    try {
+                                        // restore event context
+                                        ServiceEventScope.set(kapuaEvent);
+                                        subscription.getKapuaEventListener().onKapuaEvent(kapuaEvent);
+                                    } finally {
+                                        ServiceEventScope.end();
+                                    }
+                                });
 
-                        @Override
-                        public void onMessage(Message message) {
-                            try {
-                                if (message instanceof TextMessage) {
-                                    TextMessage textMessage = (TextMessage) message;
-                                    final ServiceEvent kapuaEvent = eventBusMarshaler.unmarshal(textMessage.getText());
-                                    setSession(kapuaEvent);
-                                    KapuaSecurityUtils.doPrivileged(() -> {
-                                        try {
-                                            // restore event context
-                                            ServiceEventScope.set(kapuaEvent);
-                                            subscription.getKapuaEventListener().onKapuaEvent(kapuaEvent);
-                                        } finally {
-                                            ServiceEventScope.end();
-                                        }
-                                    });
-
-                                } else {
-                                    LOGGER.error("Discarding wrong event message type '{}'", message != null ? message.getClass() : "null");
-                                }
-                            } catch (Throwable t) {
-                                LOGGER.error(t.getMessage(), t);
-                                // throwing the exception to prevent the message acknowledging (https://docs.oracle.com/javaee/7/api/javax/jms/Session.html#AUTO_ACKNOWLEDGE)
-                                throw KapuaRuntimeException.internalError(t);
+                            } else {
+                                LOGGER.error("Discarding wrong event message type '{}'", message != null ? message.getClass() : "null");
                             }
+                        } catch (Throwable t) {
+                            LOGGER.error(t.getMessage(), t);
+                            // throwing the exception to prevent the message acknowledging (https://docs.oracle.com/javaee/7/api/javax/jms/Session.html#AUTO_ACKNOWLEDGE)
+                            throw KapuaRuntimeException.internalError(t);
                         }
                     });
                 }

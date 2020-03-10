@@ -12,25 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso.provider;
 
-import org.apache.http.HttpHeaders;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicNameValuePair;
-import org.eclipse.kapua.sso.SingleSignOnService;
-import org.eclipse.kapua.sso.exception.SsoAccessTokenException;
-import org.eclipse.kapua.sso.exception.SsoException;
-import org.eclipse.kapua.sso.exception.uri.SsoLoginUriException;
-import org.eclipse.kapua.sso.exception.uri.SsoLogoutUriException;
-import org.eclipse.kapua.sso.exception.uri.SsoUriException;
-import org.eclipse.kapua.sso.provider.setting.SsoSetting;
-import org.eclipse.kapua.sso.provider.setting.SsoSettingKeys;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.json.Json;
-import javax.json.JsonObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -40,6 +21,28 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+
+import org.eclipse.kapua.sso.SingleSignOnService;
+import org.eclipse.kapua.sso.exception.SsoAccessTokenException;
+import org.eclipse.kapua.sso.exception.SsoException;
+import org.eclipse.kapua.sso.exception.uri.SsoLoginUriException;
+import org.eclipse.kapua.sso.exception.uri.SsoLogoutUriException;
+import org.eclipse.kapua.sso.exception.uri.SsoUriException;
+import org.eclipse.kapua.sso.provider.setting.SsoSetting;
+import org.eclipse.kapua.sso.provider.setting.SsoSettingKeys;
+
+import org.apache.http.HttpHeaders;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class represents an abstract SingleSignOnService.
@@ -136,13 +139,13 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
         try {
             final URIBuilder uri = new URIBuilder(getLogoutUri());
 
-            if (idTokenHint!=null) { // idTokenHint is recommended
+            if (idTokenHint != null) { // idTokenHint is recommended
                 uri.addParameter("id_token_hint", idTokenHint);
             }
-            if (postLogoutRedirectUri!=null) { // post_logout_redirect_uri is optional
+            if (postLogoutRedirectUri != null) { // post_logout_redirect_uri is optional
                 uri.addParameter("post_logout_redirect_uri", postLogoutRedirectUri.toString());
             }
-            if (state!=null) { // state is optional
+            if (state != null) { // state is optional
                 uri.addParameter("state", state);
             }
 
@@ -153,7 +156,6 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
     }
 
     /**
-     *
      * @throws SsoAccessTokenException if an {@link IOException} is caught or the {@link #getTokenUri} method fails.
      */
     @Override
@@ -192,11 +194,9 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
 
             // parse result
 
-            final JsonObject jsonObject;
-            try (final InputStream stream = urlConnection.getInputStream()) {
-                jsonObject = Json.createReader(stream).readObject();
+            try (InputStream stream = urlConnection.getInputStream(); JsonReader jsonReader = Json.createReader(stream)) {
+                return jsonReader.readObject();
             }
-            return jsonObject;
         } catch (SsoException | IOException e) {
             throw new SsoAccessTokenException(e);
         }
