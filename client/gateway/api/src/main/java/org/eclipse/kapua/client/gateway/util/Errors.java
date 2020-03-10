@@ -27,6 +27,7 @@ public final class Errors {
     }
 
     public static void ignore(final Throwable e, final Optional<Payload> payload) {
+        // Ignore the error
     }
 
     public static ErrorHandler<RuntimeException> handle(final BiConsumer<Throwable, Optional<Payload>> handler) {

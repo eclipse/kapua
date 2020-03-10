@@ -44,9 +44,6 @@ public class EndPointAdapter extends XmlAdapter<Element, List<EndPoint>> {
 
     private static final Logger logger = LoggerFactory.getLogger(EndPointAdapter.class);
 
-    public EndPointAdapter() {
-    }
-
     @Override
     public Element marshal(List<EndPoint> value) throws Exception {
         Document document = createDocument();

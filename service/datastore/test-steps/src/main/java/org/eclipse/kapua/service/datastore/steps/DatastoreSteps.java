@@ -46,7 +46,6 @@ import org.eclipse.kapua.qa.common.cucumber.CucMessageRange;
 import org.eclipse.kapua.qa.common.cucumber.CucMetric;
 import org.eclipse.kapua.qa.common.cucumber.CucTopic;
 import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
 import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
@@ -264,8 +263,6 @@ public class DatastoreSteps extends TestBase {
         }
     }
 
-    private AccountService accountService;
-
     private DeviceRegistryService deviceRegistryService;
 
     private DeviceFactory deviceFactory;
@@ -313,7 +310,6 @@ public class DatastoreSteps extends TestBase {
 
         // Get instance of services used in different scenarios
         KapuaLocator locator = KapuaLocator.getInstance();
-        accountService = locator.getService(AccountService.class);
         deviceRegistryService = locator.getService(DeviceRegistryService.class);
         deviceFactory = locator.getFactory(DeviceFactory.class);
         messageStoreService = locator.getService(MessageStoreService.class);
@@ -401,104 +397,98 @@ public class DatastoreSteps extends TestBase {
     @Then("I expect the number of messages for this device to be (\\d+)")
     public void expectNumberOfMessages(long numberOfMessages) throws Exception {
         final MessageStoreService service = KapuaLocator.getInstance().getService(MessageStoreService.class);
-        session.withLogin(() -> {
-            With.withUserAccount(currentDevice.getAccountName(), account -> {
+        session.withLogin(() -> With.withUserAccount(currentDevice.getAccountName(), account -> {
 
-                // create new query
+            // create new query
 
-                final MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(account.getId());
+            final MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(account.getId());
 
-                // filter for client only
+            // filter for client only
 
-                query.setPredicate(storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
+            query.setPredicate(storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
 
-            // set query options
-            query.setAskTotalCount(true);
-            query.setLimit((int)numberOfMessages);
+        // set query options
+        query.setAskTotalCount(true);
+        query.setLimit((int)numberOfMessages);
 
-                // perform query
+            // perform query
 
-                final MessageListResult result = service.query(query);
+            final MessageListResult result = service.query(query);
 
-                // eval just the size
+            // eval just the size
 
-                Assert.assertEquals(numberOfMessages, result.getSize());
+            Assert.assertEquals(numberOfMessages, result.getSize());
 
-                // eval the total count
+            // eval the total count
 
-                Assert.assertEquals(Long.valueOf(numberOfMessages), result.getTotalCount());
+            Assert.assertEquals(Long.valueOf(numberOfMessages), result.getTotalCount());
 
-                // different approach -> same result
+            // different approach -> same result
 
-                Assert.assertEquals(numberOfMessages, service.count(query));
-            });
-        });
+            Assert.assertEquals(numberOfMessages, service.count(query));
+        }));
     }
 
     @Then("I delete the messages for this device")
     public void deleteMessages() throws Exception {
         final MessageStoreService service = KapuaLocator.getInstance().getService(MessageStoreService.class);
-        session.withLogin(() -> {
-            With.withUserAccount(currentDevice.getAccountName(), account -> {
+        session.withLogin(() -> With.withUserAccount(currentDevice.getAccountName(), account -> {
 
-                // create new query
-                final MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(account.getId());
+            // create new query
+            final MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(account.getId());
 
-                // filter for client only
-                query.setPredicate(storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
+            // filter for client only
+            query.setPredicate(storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
 
-                // set query options
-                query.setAskTotalCount(true);
-                query.setLimit(100);
+            // set query options
+            query.setAskTotalCount(true);
+            query.setLimit(100);
 
-                // perform delete
-                service.delete(query);
-            });
-        });
+            // perform delete
+            service.delete(query);
+        }));
     }
 
     @Then("I expect the latest captured message on channel \"(.*)\" to have the metrics")
     public void testMessageData(final String topic, final List<MetricEntry> expectedMetrics) throws Exception {
         final MessageStoreService service = KapuaLocator.getInstance().getService(MessageStoreService.class);
-        session.withLogin(() -> {
-            With.withUserAccount(currentDevice.getAccountName(), account -> {
+        session.withLogin(() -> With.withUserAccount(currentDevice.getAccountName(), account -> {
 
-                // start a new query
+            // start a new query
 
-                final MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(account.getId());
+            final MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(account.getId());
 
-                // query for client and channel
+            // query for client and channel
 
-                final AndPredicate and = storablePredicateFactory.newAndPredicate();
-                and.getPredicates().add(storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
-                and.getPredicates().add(storablePredicateFactory.newTermPredicate(MessageField.CHANNEL, topic));
-                query.setPredicate(and);
+            final AndPredicate and = storablePredicateFactory.newAndPredicate();
+            and.getPredicates().add(storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
+            and.getPredicates().add(storablePredicateFactory.newTermPredicate(MessageField.CHANNEL, topic));
+            query.setPredicate(and);
 
-                // sort by captured time
+            // sort by captured time
 
-                query.setSortFields(Arrays.asList(SortField.descending(MessageField.CAPTURED_ON.field())));
+            query.setSortFields(Arrays.asList(SortField.descending(MessageField.CAPTURED_ON.field())));
 
-                // perform the query
+            // perform the query
 
-                final MessageListResult result = service.query(query);
+            final MessageListResult result = service.query(query);
 
-                Assert.assertEquals(1, result.getSize());
+            Assert.assertEquals(1, result.getSize());
 
-                // get the first item
+            // get the first item
 
-                final DatastoreMessage message = result.getFirstItem();
-                Assert.assertEquals(currentDevice.getClientId(), message.getClientId());
+            final DatastoreMessage message = result.getFirstItem();
+            Assert.assertEquals(currentDevice.getClientId(), message.getClientId());
 
-                // get payload structure
+            // get payload structure
 
-                final KapuaPayload payload = message.getPayload();
+            final KapuaPayload payload = message.getPayload();
 
-                // assert metrics data
+            // assert metrics data
 
-                final Map<String, Object> properties = payload.getMetrics();
-                Assert.assertEquals(toData(expectedMetrics), properties);
-            });
-        });
+            final Map<String, Object> properties = payload.getMetrics();
+            Assert.assertEquals(toData(expectedMetrics), properties);
+        }));
     }
 
     @When("^I set the datastore indexing window to \"(.+)\"$")
@@ -673,7 +663,8 @@ public class DatastoreSteps extends TestBase {
         DeviceCreator tmpDevCr2 = deviceFactory.newCreator(tmpAccount.getId(), clientId2);
         Device device2 = deviceRegistryService.create(tmpDevCr2);
         Device tmpDev;
-        Date sentOn, capturedOn;
+        Date sentOn;
+        Date capturedOn;
 
         String[] metrics = new String[]{
                 "m_order_metric1",
@@ -1372,7 +1363,7 @@ public class DatastoreSteps extends TestBase {
     }
 
     @Then("^The datastore messages in list \"(.*)\" matches the prepared messages in list \"(.*)\"$")
-    public void checkThatTheStoredMessagesMatchTheOriginals(String datastoreMsgLstKey, String originalMsgLstKey) throws KapuaException {
+    public void checkThatTheStoredMessagesMatchTheOriginals(String datastoreMsgLstKey, String originalMsgLstKey) {
 
         List<KapuaDataMessage> origMsgs = (List<KapuaDataMessage>) stepData.get(originalMsgLstKey);
         List<DatastoreMessage> dataMsg = (List<DatastoreMessage>) stepData.get(datastoreMsgLstKey);
@@ -1946,10 +1937,15 @@ public class DatastoreSteps extends TestBase {
         if ((parts1 == null) && (parts2 == null)) {
             return true;
         }
+
         if ((parts1 != null) && (parts2 != null)) {
-            assertEquals(parts1.size(), parts2.size());
+            if (parts1.size() != parts2.size()) {
+                return false;
+            }
             for (int i = 0; i < parts1.size(); i++) {
-                assertEquals(parts1.get(i), parts2.get(i));
+                if (!parts1.get(i).equals(parts2.get(i))) {
+                    return false;
+                }
             }
         }
         return true;
@@ -1960,9 +1956,9 @@ public class DatastoreSteps extends TestBase {
         assertEquals(properties1.size(), properties2.size());
 
         if (properties1.size() > 0) {
-            for (String key : properties1.keySet()) {
-                assertTrue(properties2.containsKey(key));
-                assertEquals(properties1.get(key), properties2.get(key));
+            for (Map.Entry<String, Object> entry : properties1.entrySet()) {
+                assertTrue(properties2.containsKey(entry.getKey()));
+                assertEquals(entry.getValue(), properties2.get(entry.getKey()));
             }
         }
         return true;
@@ -2041,10 +2037,8 @@ public class DatastoreSteps extends TestBase {
     // create a basic message query with default parameters. Also set the requested ordering.
     private MessageQuery getBaseMessageQuery(KapuaId scopeId, int limit, List<OrderConstraint<?>> order) {
 
-        MessageQuery tmpQuery = createBaseMessageQuery(scopeId, limit,
+        return createBaseMessageQuery(scopeId, limit,
                 order.stream().map(OrderConstraint::getField).collect(Collectors.toList()));
-
-        return tmpQuery;
     }
 
     // create a basic metric query with default parameters. Also set the requested ordering.
@@ -2057,7 +2051,7 @@ public class DatastoreSteps extends TestBase {
     }
 
     // Check whether the message that was inserted into the message store matches the originally prepared message
-    private boolean checkThatTheInsertedMessageMatchesTheOriginal(KapuaDataMessage origMsg, DatastoreMessage foundMsg) throws KapuaException {
+    private boolean checkThatTheInsertedMessageMatchesTheOriginal(KapuaDataMessage origMsg, DatastoreMessage foundMsg) {
 
         assertTrue(areSemanticPartsEqual(origMsg.getChannel().getSemanticParts(), foundMsg.getChannel().getSemanticParts()));
         if (origMsg.getPayload() != null) {
@@ -2075,7 +2069,7 @@ public class DatastoreSteps extends TestBase {
     }
 
     // Check that two datastore messages match
-    private boolean checkThatDatastoreMessagesMatch(DatastoreMessage firstMsg, DatastoreMessage secondMsg) throws KapuaException {
+    private boolean checkThatDatastoreMessagesMatch(DatastoreMessage firstMsg, DatastoreMessage secondMsg) {
 
         assertEquals(firstMsg.getDatastoreId().toString(), secondMsg.getDatastoreId().toString());
         assertTrue(areSemanticPartsEqual(firstMsg.getChannel().getSemanticParts(), secondMsg.getChannel().getSemanticParts()));
@@ -2325,7 +2319,7 @@ public class DatastoreSteps extends TestBase {
      */
     private static String getFieldName(String field, boolean capitalizeFirstLetter) {
 
-        String str[] = cleanupFieldName(field);
+        String[] str = cleanupFieldName(field);
 
         StringBuilder fieldNameSb = new StringBuilder();
         if (capitalizeFirstLetter) {
@@ -2348,7 +2342,7 @@ public class DatastoreSteps extends TestBase {
             field = field.substring(lastDot + 1, field.length());
         }
 
-        String str[] = field.split("_");
+        String[] str = field.split("_");
         if (str.length <= 0) {
             throw new IllegalArgumentException(String.format("Invalid field name [%s]", field));
         }

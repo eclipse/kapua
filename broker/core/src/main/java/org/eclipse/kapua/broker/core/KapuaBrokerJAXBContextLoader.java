@@ -35,9 +35,6 @@ public class KapuaBrokerJAXBContextLoader {
         BROKER_JAXB_CONTEXT_CLASS_NAME = config.getString(BrokerSettingKey.BROKER_JAXB_CONTEXT_CLASS_NAME);
     }
 
-    public KapuaBrokerJAXBContextLoader() throws KapuaException {
-    }
-
     public void init() throws KapuaException {
         logger.info(">>> Broker jaxb context loader... load context");
         JAXBContextProvider jaxbContextProvider = ClassUtil.newInstance(BROKER_JAXB_CONTEXT_CLASS_NAME, BrokerJAXBContextProvider.class);
