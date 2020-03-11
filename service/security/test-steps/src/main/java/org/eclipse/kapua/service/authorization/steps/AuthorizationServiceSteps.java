@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -40,7 +40,6 @@ import org.eclipse.kapua.qa.common.cucumber.CucGroup;
 import org.eclipse.kapua.qa.common.cucumber.CucRole;
 import org.eclipse.kapua.qa.common.cucumber.CucConfig;
 import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.authorization.access.AccessRoleAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
@@ -55,18 +54,19 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult
 import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
+import org.eclipse.kapua.service.authorization.access.AccessRoleAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
 import org.eclipse.kapua.service.authorization.access.AccessRoleFactory;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
+import org.eclipse.kapua.service.authorization.domain.DomainAttributes;
 import org.eclipse.kapua.service.authorization.domain.DomainCreator;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainListResult;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
-import org.eclipse.kapua.service.authorization.domain.DomainAttributes;
 import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupAttributes;
 import org.eclipse.kapua.service.authorization.group.GroupCreator;
@@ -89,6 +89,7 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleService;
+import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserFactory;
@@ -1067,13 +1068,13 @@ public class AuthorizationServiceSteps extends TestBase {
     public void deleteGroupWithName(String groupName)
             throws Exception {
 
-        Group group = (Group) stepData.get("Group");
-
         primeException();
         try {
-            assertEquals(groupName, group.getName());
+            GroupQuery tmpQuery = groupFactory.newQuery(getCurrentScopeId());
+            tmpQuery.setPredicate(tmpQuery.attributePredicate(GroupAttributes.NAME, groupName, AttributePredicate.Operator.EQUAL));
+            Group group = groupService.query(tmpQuery).getFirstItem();
             groupService.delete(group.getScopeId(), group.getId());
-        } catch (KapuaException ex) {
+        } catch (Exception ex) {
             verifyException(ex);
         }
     }
@@ -2137,8 +2138,8 @@ public class AuthorizationServiceSteps extends TestBase {
 
     }
 
-    @And("^I create the group with name \"([^\"]*)\"$")
-    public void iCreateTheGroupWithName(String groupName) throws Exception {
+    @And("^I create a group with name \"([^\"]*)\"$")
+    public void iCreateAGroupWithName(String groupName) throws Exception {
         GroupCreator groupCreator = groupFactory.newCreator(getCurrentScopeId());
         groupCreator.setName(groupName);
 
@@ -2148,6 +2149,41 @@ public class AuthorizationServiceSteps extends TestBase {
             Group group = groupService.create(groupCreator);
             stepData.put("Group", group);
         } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @And("^I try to create groups with invalid characters in name$")
+    public void iTryToCreateInvalidGroups() throws Exception {
+        GroupCreator groupCreator = groupFactory.newCreator(getCurrentScopeId());
+        String invalidCharacters = "!\"#$%&'()=»Ç>:;<-.,⁄@‹›€*ı–°·‚_±Œ„‰?“‘”’ÉØ∏{}|ÆæÒÔÓÌÏÎÍÅ«";
+        for (int i = 0; i < invalidCharacters.length(); i++) {
+            String groupName = "Group" + invalidCharacters.charAt(i);
+            groupCreator.setName(groupName);
+
+            try {
+                primeException();
+                stepData.remove("Group");
+                Group group = groupService.create(groupCreator);
+                stepData.put("Group", group);
+            } catch (KapuaException ex) {
+                verifyException(ex);
+            }
+        }
+    }
+
+    @And("^I create the group with name \"([^\"]*)\" and description \"([^\"]*)\"$")
+    public void iCreateTheGroupWithName(String groupName, String groupDescription) throws Exception {
+        GroupCreator groupCreator = groupFactory.newCreator(getCurrentScopeId());
+        groupCreator.setName(groupName);
+        groupCreator.setDescription(groupDescription);
+
+        try {
+            primeException();
+            stepData.remove("Group");
+            Group group = groupService.create(groupCreator);
+            stepData.put("Group", group);
+        } catch (Exception ex) {
             verifyException(ex);
         }
     }
@@ -2688,6 +2724,65 @@ public class AuthorizationServiceSteps extends TestBase {
             } catch (KapuaException ex) {
                 verifyException(ex);
             }
+        }
+    }
+
+    @And("^I change the group name from \"([^\"]*)\" to \"([^\"]*)\"$")
+    public void iChangeTheGroupNameTo(String groupName, String newGroupName) throws Throwable {
+
+        try {
+            GroupQuery query = groupFactory.newQuery(SYS_SCOPE_ID);
+            query.setPredicate(query.attributePredicate(GroupAttributes.NAME, groupName, AttributePredicate.Operator.EQUAL));
+            GroupListResult queryResult = groupService.query(query);
+            Group group = queryResult.getFirstItem();
+            group.setName(newGroupName);
+            groupService.update(group);
+            stepData.put("Group", group);
+        } catch (Exception e) {
+            verifyException(e);
+        }
+    }
+
+    @And("^I change the description of group with name \"([^\"]*)\" to \"([^\"]*)\"$")
+    public void iChangeTheGroupDescriptionTo(String groupName, String groupDescription) throws Throwable {
+
+        try {
+            GroupQuery query = groupFactory.newQuery(SYS_SCOPE_ID);
+            query.setPredicate(query.attributePredicate(GroupAttributes.NAME, groupName, AttributePredicate.Operator.EQUAL));
+            GroupListResult queryResult = groupService.query(query);
+            Group group = queryResult.getFirstItem();
+            group.setDescription(groupDescription);
+            stepData.put("Group", group);
+        } catch (Exception e) {
+            verifyException(e);
+        }
+    }
+
+    @And("^I search for a group named \"([^\"]*)\"$")
+    public void iSearchForAGroupNamed(String groupName) throws Exception {
+        try {
+            stepData.remove("GroupSecond");
+            GroupQuery query = groupFactory.newQuery(SYS_SCOPE_ID);
+            query.setPredicate(query.attributePredicate(GroupAttributes.NAME, groupName, AttributePredicate.Operator.EQUAL));
+            GroupListResult queryResult = groupService.query(query);
+            Group foundGroup = queryResult.getFirstItem();
+            stepData.put("GroupSecond", foundGroup);
+            stepData.put("queryResult", queryResult);
+        } catch (Exception e) {
+            verifyException(e);
+        }
+    }
+
+    @And("^I change devices group$")
+    public void iChangeDevicesGroup() throws Exception{
+        Group group = (Group) stepData.get("Group");
+        Device device = (Device) stepData.get("Device");
+
+        try {
+            device.setGroupId(group.getId());
+            stepData.put("Device", device);
+        } catch (Exception e) {
+            verifyException(e);
         }
     }
 }

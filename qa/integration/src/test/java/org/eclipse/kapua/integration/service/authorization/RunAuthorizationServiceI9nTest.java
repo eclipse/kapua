@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -29,7 +29,8 @@ import cucumber.api.CucumberOptions;
         glue = { "org.eclipse.kapua.qa.common",
                  "org.eclipse.kapua.service.authorization.steps",
                  "org.eclipse.kapua.service.account.steps",
-                 "org.eclipse.kapua.service.user.steps"
+                 "org.eclipse.kapua.service.user.steps",
+                 "org.eclipse.kapua.service.device.registry.steps"
                },
         plugin = {"pretty", 
                   "html:target/cucumber/AuthorizationServiceI9n",
