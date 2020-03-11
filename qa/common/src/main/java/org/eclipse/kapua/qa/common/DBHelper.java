@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,24 +13,21 @@
 package org.eclipse.kapua.qa.common;
 
 import com.google.common.base.MoreObjects;
+import cucumber.api.java.After;
+import cucumber.runtime.java.guice.ScenarioScoped;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtilsWithResources;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
+import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.h2.tools.Server;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Optional;
-
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtilsWithResources;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
-import org.h2.tools.Server;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import cucumber.api.java.After;
-import cucumber.runtime.java.guice.ScenarioScoped;
 
 /**
  * Singleton for managing database creation and deletion inside Gherkin scenarios.
@@ -115,7 +112,7 @@ public class DBHelper {
             throw new RuntimeException(e);
         }
 
-        new KapuaLiquibaseClient(jdbcUrl, dbUsername, dbPassword, Optional.ofNullable(schema)).update();
+        new KapuaLiquibaseClient(jdbcUrl, dbUsername, dbPassword, schema).update();
     }
 
     public void close() {
@@ -165,9 +162,9 @@ public class DBHelper {
     public void dropAll() throws SQLException {
 
         String[] types = {"TABLE"};
-        ResultSet sqlResults = connection.getMetaData().getTables(null, null, "%" , types);
+        ResultSet sqlResults = connection.getMetaData().getTables(null, null, "%", types);
 
-        while(sqlResults.next()) {
+        while (sqlResults.next()) {
             String sqlStatement = String.format("DROP TABLE %s", sqlResults.getString("TABLE_NAME").toUpperCase());
             connection.prepareStatement(sqlStatement).execute();
         }

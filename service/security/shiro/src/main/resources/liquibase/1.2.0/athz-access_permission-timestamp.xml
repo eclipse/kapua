@@ -17,7 +17,7 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
         logicalFilePath="KapuaDB/changelog-authorization-1.2.0.xml">
 
-    <changeSet id="changelog-access_permission-1.2.0_timestamp" author="eurotech" dbms="mysql, mariadb">
+    <changeSet id="changelog-access_permission-1.2.0_timestamp" author="eurotech" dbms="mysql, mariadb" context="fixTimestamps">
         <modifyDataType tableName="athz_access_permission" columnName="created_on" newDataType="timestamp(3) DEFAULT ${now}"/>
     </changeSet>
 

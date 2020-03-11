@@ -19,7 +19,7 @@
 
     <include relativeToChangelogFile="true" file="../common-properties.xml"/>
 
-    <changeSet id="changelog-housekeeper-1.2.0-timestamp" author="eurotech">
+    <changeSet id="changelog-housekeeper-1.2.0-timestamp" author="eurotech" dbms="mysql, mariadb" context="fixTimestamps">
         <modifyDataType tableName="sys_housekeeper_run" columnName="last_run_on" newDataType="timestamp(3) NULL"/>
     </changeSet>
 

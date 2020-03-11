@@ -17,7 +17,7 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
         logicalFilePath="KapuaDB/changelog-job_engine_jbatch-1.2.0.xml">
 
-    <changeSet id="changelog-job_engine_jbatch-1.2.0_timestamp" author="eurotech" dbms="mysql, mariadb">
+    <changeSet id="changelog-job_engine_jbatch-1.2.0_timestamp" author="eurotech" dbms="mysql, mariadb" context="fixTimestamps">
         <modifyDataType tableName="executioninstancedata" columnName="createtime" newDataType="timestamp(3) NULL"/>
         <modifyDataType tableName="executioninstancedata" columnName="endtime" newDataType="timestamp(3) NULL"/>
         <modifyDataType tableName="executioninstancedata" columnName="starttime" newDataType="timestamp(3) NULL"/>

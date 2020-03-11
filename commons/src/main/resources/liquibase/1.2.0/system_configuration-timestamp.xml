@@ -17,7 +17,7 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
         logicalFilePath="KapuaDB/changelog-system_configuration-1.2.0.xml">
 
-    <changeSet id="changelog-system_configuration-1.2.0_timestamp" author="eurotech" dbms="mysql, mariadb">
+    <changeSet id="changelog-system_configuration-1.2.0_timestamp" author="eurotech" dbms="mysql, mariadb" context="fixTimestamps">
         <modifyDataType tableName="sys_configuration" columnName="created_on" newDataType="timestamp(3) DEFAULT ${now}"/>
         <modifyDataType tableName="sys_configuration" columnName="modified_on" newDataType="timestamp(3) DEFAULT ${now}"/>
     </changeSet>
