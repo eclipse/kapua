@@ -1442,7 +1442,7 @@ Feature: User Permission tests
     And A device named "test_device"
     And I create a job with the name "test_job"
     And I create tag with name "test_tag" without description
-    And I create the group with name "test_group"
+    And I create a group with name "test_group"
     And I create the following role
       | scopeId | name      |
       | 1       | test_role |
