@@ -92,7 +92,6 @@ import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,7 +163,6 @@ public class AuthorizationServiceSteps extends TestBase {
     private RolePermissionService rolePermissionService;
     private RolePermissionFactory rolePermissionFactory;
     private UserService userService;
-    private UserFactory userFactory;
 
     @Inject
     public AuthorizationServiceSteps(StepData stepData, DBHelper dbHelper) {
@@ -197,7 +195,6 @@ public class AuthorizationServiceSteps extends TestBase {
         rolePermissionService = locator.getService(RolePermissionService.class);
         rolePermissionFactory = locator.getFactory(RolePermissionFactory.class);
         permissionFactory = locator.getFactory(PermissionFactory.class);
-        userFactory = locator.getFactory(UserFactory.class);
         userService = locator.getService(UserService.class);
 
         if (isUnitTest()) {
@@ -290,9 +287,9 @@ public class AuthorizationServiceSteps extends TestBase {
             throws Exception {
 
         Domain domain = (Domain) stepData.get(DOMAIN);
-        RoleCreator roleCreator = null;
+        RoleCreator roleCreator;
         Set<Permission> permissions;
-        Role role = null;
+        Role role;
 
         stepData.remove(PERMISSIONS);
         stepData.remove(ROLE_CREATOR);
@@ -302,7 +299,7 @@ public class AuthorizationServiceSteps extends TestBase {
         for (CucRole tmpRole : roles) {
             tmpRole.doParse();
             permissions = new HashSet<>();
-            if ((tmpRole.getActions() != null) && (tmpRole.getActions().size() > 0)) {
+            if ((tmpRole.getActions() != null) && (!tmpRole.getActions().isEmpty())) {
                 for (Actions tmpAct : tmpRole.getActions()) {
                     permissions.add(permissionFactory.newPermission(domain.getDomain(), tmpAct, tmpRole.getScopeId()));
                 }
@@ -569,7 +566,7 @@ public class AuthorizationServiceSteps extends TestBase {
         assertNotNull(permissions);
         assertNotNull(permissionList);
         assertEquals(permissions.size(), permissionList.getSize());
-        if (permissions.size() > 0) {
+        if (!permissions.isEmpty()) {
             for (RolePermission tmpRolePerm : permissionList.getItems()) {
                 found = false;
                 for (Permission tmpPerm : permissions) {
@@ -1306,6 +1303,8 @@ public class AuthorizationServiceSteps extends TestBase {
                 case "execute":
                     permissions.add(permissionFactory.newPermission(curDomain.getDomain(), Actions.execute, currId));
                     break;
+                default:
+                    break;
             }
         }
         // Make sure that there is at least one valid item
@@ -1968,8 +1967,7 @@ public class AuthorizationServiceSteps extends TestBase {
     // of the Authorization Permission factory.
     // As such this step is of limited usefulness and should be taken with a grain of salt.
     @Then("^The permission factory returns sane results$")
-    public void permissionFactorySanityChecks()
-            throws KapuaException {
+    public void permissionFactorySanityChecks() {
 
         Permission tmpPerm = null;
         TestDomain tmpDomain = new TestDomain();
@@ -2075,7 +2073,7 @@ public class AuthorizationServiceSteps extends TestBase {
     @And("^I create the roles$")
     public void iCreateTheRoles(List<CucRole> roleNames) throws Exception {
         RoleCreator roleCreator = roleFactory.newCreator(getCurrentScopeId());
-        ArrayList<Role> roleArrayList = new ArrayList<Role>();
+        ArrayList<Role> roleArrayList = new ArrayList<>();
         stepData.remove(ROLE_LIST);
         Role role = null;
         for (CucRole roleName : roleNames) {
@@ -2336,7 +2334,7 @@ public class AuthorizationServiceSteps extends TestBase {
     }
 
     @Then("^I find granted user(?:|s) with name$")
-    public void iFindGrantedUsersWithName(List<CucUser> grantedUsers) throws Exception {
+    public void iFindGrantedUsersWithName(List<CucUser> grantedUsers) {
         ArrayList<String> grantedUserNames = new ArrayList<>();
         ArrayList<User> grantedUsersList = (ArrayList<User>) stepData.get("GrantedUserList");
 
@@ -2742,7 +2740,6 @@ public class AuthorizationServiceSteps extends TestBase {
     public void iUpdateTheRoleNameWithSpecialCharacters(String invalidSymbols) throws Throwable {
         RoleCreator roleCreator = roleFactory.newCreator(SYS_SCOPE_ID);
         for (int i = 0; i < invalidSymbols.length(); i++) {
-            String roleName = ROLE_NAME + invalidSymbols.charAt(i);
             roleCreator.setName(ROLE_NAME + i);
 
             try {
