@@ -17,7 +17,7 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
         logicalFilePath="KapuaDB/changelog-scheduler-1.2.0.xml">
 
-    <changeSet id="changelog-trigger-1.2.0_timestamp" author="eurotech" dbms="mysql, mariadb">
+    <changeSet id="changelog-trigger-1.2.0_timestamp" author="eurotech" dbms="mysql, mariadb" context="fixTimestamps">
         <modifyDataType tableName="schdl_trigger" columnName="created_on" newDataType="timestamp(3) DEFAULT ${now}"/>
         <modifyDataType tableName="schdl_trigger" columnName="modified_on" newDataType="timestamp(3) DEFAULT ${now}"/>
         <modifyDataType tableName="schdl_trigger" columnName="starts_on" newDataType="timestamp(3) DEFAULT ${now}"/>

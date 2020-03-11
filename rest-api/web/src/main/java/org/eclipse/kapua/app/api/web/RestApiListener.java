@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,15 +15,14 @@ import com.google.common.base.MoreObjects;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.core.ServiceModuleBundle;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
+import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import java.util.Optional;
 
 public class RestApiListener implements ServletContextListener {
 
@@ -49,7 +48,7 @@ public class RestApiListener implements ServletContextListener {
 
             LOG.debug("Starting Liquibase embedded client update - URL: {}, user/pass: {}/{}", JdbcConnectionUrlResolvers.resolveJdbcUrl(), dbUsername, dbPassword);
 
-            new KapuaLiquibaseClient(JdbcConnectionUrlResolvers.resolveJdbcUrl(), dbUsername, dbPassword, Optional.of(schema)).update();
+            new KapuaLiquibaseClient(JdbcConnectionUrlResolvers.resolveJdbcUrl(), dbUsername, dbPassword, schema).update();
         }
 
         // Start service modules

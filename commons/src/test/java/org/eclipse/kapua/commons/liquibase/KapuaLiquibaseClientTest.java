@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 Red Hat Inc and others.
+ * Copyright (c) 2017, 2020 Red Hat Inc and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,7 +25,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 @Category(JUnitTests.class)
 public class KapuaLiquibaseClientTest {
@@ -109,7 +108,7 @@ public class KapuaLiquibaseClientTest {
 
         // When
         try {
-            new KapuaLiquibaseClient(JDBC_URL, USERNAME, PASSWORD, Optional.of("foo")).update();
+            new KapuaLiquibaseClient(JDBC_URL, USERNAME, PASSWORD, "foo").update();
         } catch (Exception e) {
             // Then
             Assertions.assertThat(e).hasMessageContaining("Schema \"FOO\" not found");

@@ -19,7 +19,7 @@
 
     <include relativeToChangelogFile="true" file="../common-properties.xml"/>
 
-    <changeSet id="changelog-event_store-1.2.0-timestamp" author="eurotech">
+    <changeSet id="changelog-event_store-1.2.0-timestamp" author="eurotech" dbms="mysql, mariadb" context="fixTimestamps">
         <modifyDataType tableName="sys_event_store" columnName="created_on" newDataType="timestamp(3) DEFAULT ${now}"/>
         <modifyDataType tableName="sys_event_store" columnName="modified_on" newDataType="timestamp(3) DEFAULT ${now}"/>
         <modifyDataType tableName="sys_event_store" columnName="event_on" newDataType="timestamp(3) DEFAULT ${now}"/>
