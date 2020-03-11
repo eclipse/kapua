@@ -37,7 +37,7 @@ public class SystemSetting extends AbstractKapuaSetting<SystemSettingKey> {
         super(CONFIG_RESOURCE_NAME);
     }
 
-    public String getMessageClassifier() throws KapuaRuntimeException {
+    public String getMessageClassifier() {
         String classifier = config.getString(COMMONS_CONTROL_MESSAGE_CLASSIFIER);
         if (classifier.matches("([#>\\./\\+\\*‌​])")) {
             throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, "The message classifier cannot contains special chars ('.', '/', '+', '*', '/', '>'");
