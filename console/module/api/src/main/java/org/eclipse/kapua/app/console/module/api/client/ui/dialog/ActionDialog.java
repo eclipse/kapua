@@ -58,8 +58,8 @@ public abstract class ActionDialog extends KapuaDialog {
 
     protected Boolean exitStatus;
     protected String exitMessage;
-    private Boolean dateValueNotNull = false;
-    private Boolean disabledFormPanelEvents = false;
+    private boolean dateValueNotNull;
+    private boolean disabledFormPanelEvents;
 
     public ActionDialog() {
         super();
@@ -106,11 +106,13 @@ public abstract class ActionDialog extends KapuaDialog {
                         }
                     };
                     timer.schedule(100);
-                };
+                }
             }
         };
 
-        KeyNav<ComponentEvent> keyNav = new KeyNav<ComponentEvent>(formPanel) {
+        new KeyNav<ComponentEvent>(formPanel) {
+
+            @Override
             public void onKeyPress(ComponentEvent ce) {
                 if (ce.getKeyCode() == KeyCodes.KEY_TAB || ce.getKeyCode() == KeyCodes.KEY_ENTER ) {
                     setSubmitButtonState();
@@ -134,9 +136,9 @@ public abstract class ActionDialog extends KapuaDialog {
     }
 
     /**
-     * 
+     *
      * Add the form listeners
-     * 
+     *
      */
     protected abstract void addListeners();
 
@@ -258,8 +260,8 @@ public abstract class ActionDialog extends KapuaDialog {
     /**
      * Method for checking the thrown exception for the SUBJECT_UNAUTHORIZED error code.
      * @param caught The exception thrown
-     * @return In case of the SUBJECT_UNAUTHORIZED error code the returned value is true, 
-     * the dialog is closed and the exitMessage is set. For every other case the returned 
+     * @return In case of the SUBJECT_UNAUTHORIZED error code the returned value is true,
+     * the dialog is closed and the exitMessage is set. For every other case the returned
      * value is false.
      */
     public boolean isPermissionErrorMessage(Throwable caught) {
@@ -274,7 +276,7 @@ public abstract class ActionDialog extends KapuaDialog {
     }
 
     /**
-     * Dialog specific load listener class that overrides the default loaderLoadException method.  
+     * Dialog specific load listener class that overrides the default loaderLoadException method.
      * The exception is handled by FailureHandler class's handle() method and the dialog is closed.
      */
     public class DialogLoadListener extends LoadListener {

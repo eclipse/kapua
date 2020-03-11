@@ -25,6 +25,7 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
@@ -61,14 +62,12 @@ import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
 import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 import org.eclipse.kapua.service.authorization.access.AccessRoleService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
-import org.eclipse.kapua.service.authorization.domain.DomainAttributes;
 import org.eclipse.kapua.service.authorization.domain.DomainCreator;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainListResult;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.group.Group;
-import org.eclipse.kapua.service.authorization.group.GroupAttributes;
 import org.eclipse.kapua.service.authorization.group.GroupCreator;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupListResult;
@@ -79,7 +78,6 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
-import org.eclipse.kapua.service.authorization.role.RoleAttributes;
 import org.eclipse.kapua.service.authorization.role.RolePermissionAttributes;
 import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
 import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
@@ -92,6 +90,7 @@ import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -163,6 +162,7 @@ public class AuthorizationServiceSteps extends TestBase {
     private RolePermissionService rolePermissionService;
     private RolePermissionFactory rolePermissionFactory;
     private UserService userService;
+    private UserFactory userFactory;
 
     @Inject
     public AuthorizationServiceSteps(StepData stepData, DBHelper dbHelper) {
@@ -195,6 +195,7 @@ public class AuthorizationServiceSteps extends TestBase {
         rolePermissionService = locator.getService(RolePermissionService.class);
         rolePermissionFactory = locator.getFactory(RolePermissionFactory.class);
         permissionFactory = locator.getFactory(PermissionFactory.class);
+        userFactory = locator.getFactory(UserFactory.class);
         userService = locator.getService(UserService.class);
 
         if (isUnitTest()) {
@@ -287,9 +288,9 @@ public class AuthorizationServiceSteps extends TestBase {
             throws Exception {
 
         Domain domain = (Domain) stepData.get(DOMAIN);
-        RoleCreator roleCreator;
+        RoleCreator roleCreator = null;
         Set<Permission> permissions;
-        Role role;
+        Role role = null;
 
         stepData.remove(PERMISSIONS);
         stepData.remove(ROLE_CREATOR);
@@ -299,7 +300,7 @@ public class AuthorizationServiceSteps extends TestBase {
         for (CucRole tmpRole : roles) {
             tmpRole.doParse();
             permissions = new HashSet<>();
-            if ((tmpRole.getActions() != null) && (!tmpRole.getActions().isEmpty())) {
+            if ((tmpRole.getActions() != null) && (tmpRole.getActions().size() > 0)) {
                 for (Actions tmpAct : tmpRole.getActions()) {
                     permissions.add(permissionFactory.newPermission(domain.getDomain(), tmpAct, tmpRole.getScopeId()));
                 }
@@ -508,7 +509,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
         KapuaId tmpId = getKapuaId(scope);
         RoleQuery tmpQuery = roleFactory.newQuery(tmpId);
-        tmpQuery.setPredicate(tmpQuery.attributePredicate(RoleAttributes.NAME, name, AttributePredicate.Operator.EQUAL));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(KapuaNamedEntityAttributes.NAME, name, AttributePredicate.Operator.EQUAL));
 
         stepData.remove(ROLE_LIST);
         stepData.remove(ROLE_FOUND);
@@ -566,7 +567,7 @@ public class AuthorizationServiceSteps extends TestBase {
         assertNotNull(permissions);
         assertNotNull(permissionList);
         assertEquals(permissions.size(), permissionList.getSize());
-        if (!permissions.isEmpty()) {
+        if (permissions.size() > 0) {
             for (RolePermission tmpRolePerm : permissionList.getItems()) {
                 found = false;
                 for (Permission tmpPerm : permissions) {
@@ -782,7 +783,7 @@ public class AuthorizationServiceSteps extends TestBase {
             throws Exception {
 
         DomainQuery query = domainFactory.newQuery(KapuaId.ANY);
-        query.setPredicate(query.attributePredicate(DomainAttributes.NAME, name, AttributePredicate.Operator.EQUAL));
+        query.setPredicate(query.attributePredicate(KapuaNamedEntityAttributes.NAME, name, AttributePredicate.Operator.EQUAL));
 
         try {
             primeException();
@@ -856,7 +857,7 @@ public class AuthorizationServiceSteps extends TestBase {
             throws Exception {
 
         DomainQuery query = domainFactory.newQuery(null);
-        query.setPredicate(query.attributePredicate(DomainAttributes.NAME, name, AttributePredicate.Operator.EQUAL));
+        query.setPredicate(query.attributePredicate(KapuaNamedEntityAttributes.NAME, name, AttributePredicate.Operator.EQUAL));
 
         stepData.remove("DomainList");
         stepData.remove(COUNT);
@@ -1101,7 +1102,7 @@ public class AuthorizationServiceSteps extends TestBase {
         primeException();
         try {
             GroupQuery tmpQuery = groupFactory.newQuery(getCurrentScopeId());
-            tmpQuery.setPredicate(tmpQuery.attributePredicate(GroupAttributes.NAME, groupName, AttributePredicate.Operator.EQUAL));
+            tmpQuery.setPredicate(tmpQuery.attributePredicate(KapuaNamedEntityAttributes.NAME, groupName, AttributePredicate.Operator.EQUAL));
             Group group = groupService.query(tmpQuery).getFirstItem();
             groupService.delete(group.getScopeId(), group.getId());
         } catch (Exception ex) {
@@ -1174,7 +1175,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
         KapuaId tmpId = getKapuaId(scope);
         GroupQuery tmpQuery = groupFactory.newQuery(tmpId);
-        tmpQuery.setPredicate(tmpQuery.attributePredicate(GroupAttributes.NAME, name, AttributePredicate.Operator.EQUAL));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(KapuaNamedEntityAttributes.NAME, name, AttributePredicate.Operator.EQUAL));
 
         stepData.remove("GroupList");
         stepData.remove(GROUP);
@@ -1302,8 +1303,6 @@ public class AuthorizationServiceSteps extends TestBase {
                     break;
                 case "execute":
                     permissions.add(permissionFactory.newPermission(curDomain.getDomain(), Actions.execute, currId));
-                    break;
-                default:
                     break;
             }
         }
@@ -1967,7 +1966,8 @@ public class AuthorizationServiceSteps extends TestBase {
     // of the Authorization Permission factory.
     // As such this step is of limited usefulness and should be taken with a grain of salt.
     @Then("^The permission factory returns sane results$")
-    public void permissionFactorySanityChecks() {
+    public void permissionFactorySanityChecks()
+            throws KapuaException {
 
         Permission tmpPerm = null;
         TestDomain tmpDomain = new TestDomain();
@@ -2058,7 +2058,7 @@ public class AuthorizationServiceSteps extends TestBase {
         try {
             primeException();
             RoleQuery roleQuery = roleFactory.newQuery(getCurrentScopeId());
-            roleQuery.setPredicate(roleQuery.attributePredicate(RoleAttributes.NAME, roleName));
+            roleQuery.setPredicate(roleQuery.attributePredicate(KapuaNamedEntityAttributes.NAME, roleName));
             RoleListResult roleList = roleService.query(roleQuery);
 
             AccessRoleQuery accessRoleQuery = accessRoleFactory.newQuery(getCurrentScopeId());
@@ -2073,7 +2073,7 @@ public class AuthorizationServiceSteps extends TestBase {
     @And("^I create the roles$")
     public void iCreateTheRoles(List<CucRole> roleNames) throws Exception {
         RoleCreator roleCreator = roleFactory.newCreator(getCurrentScopeId());
-        ArrayList<Role> roleArrayList = new ArrayList<>();
+        ArrayList<Role> roleArrayList = new ArrayList<Role>();
         stepData.remove(ROLE_LIST);
         Role role = null;
         for (CucRole roleName : roleNames) {
@@ -2168,7 +2168,7 @@ public class AuthorizationServiceSteps extends TestBase {
         try {
             primeException();
             RoleQuery roleQuery = roleFactory.newQuery(getCurrentScopeId());
-            roleQuery.setPredicate(roleQuery.attributePredicate(RoleAttributes.NAME, roleName, AttributePredicate.Operator.EQUAL));
+            roleQuery.setPredicate(roleQuery.attributePredicate(KapuaNamedEntityAttributes.NAME, roleName, AttributePredicate.Operator.EQUAL));
 
             stepData.remove(ROLE_LIST_RESULT);
             stepData.remove("Role");
@@ -2334,7 +2334,7 @@ public class AuthorizationServiceSteps extends TestBase {
     }
 
     @Then("^I find granted user(?:|s) with name$")
-    public void iFindGrantedUsersWithName(List<CucUser> grantedUsers) {
+    public void iFindGrantedUsersWithName(List<CucUser> grantedUsers) throws Exception {
         ArrayList<String> grantedUserNames = new ArrayList<>();
         ArrayList<User> grantedUsersList = (ArrayList<User>) stepData.get("GrantedUserList");
 
@@ -2354,7 +2354,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
         RoleQuery roleQuery = roleFactory.newQuery(account.getId());
 
-        roleQuery.setPredicate(roleQuery.attributePredicate(RoleAttributes.NAME, roleName, AttributePredicate.Operator.EQUAL));
+        roleQuery.setPredicate(roleQuery.attributePredicate(KapuaNamedEntityAttributes.NAME, roleName, AttributePredicate.Operator.EQUAL));
 
         RoleListResult childRolesList = roleService.query(roleQuery);
         stepData.put("ChildRolesList", childRolesList);
@@ -2687,7 +2687,7 @@ public class AuthorizationServiceSteps extends TestBase {
         try {
             primeException();
             RoleQuery roleQuery = roleFactory.newQuery(getCurrentScopeId());
-            roleQuery.setPredicate(roleQuery.attributePredicate(RoleAttributes.DESCRIPTION, roleDesc, AttributePredicate.Operator.EQUAL));
+            roleQuery.setPredicate(roleQuery.attributePredicate(KapuaNamedEntityAttributes.DESCRIPTION, roleDesc, AttributePredicate.Operator.EQUAL));
 
             stepData.remove(ROLE_LIST_RESULT);
             stepData.remove(ROLE_FOUND);
@@ -2740,6 +2740,7 @@ public class AuthorizationServiceSteps extends TestBase {
     public void iUpdateTheRoleNameWithSpecialCharacters(String invalidSymbols) throws Throwable {
         RoleCreator roleCreator = roleFactory.newCreator(SYS_SCOPE_ID);
         for (int i = 0; i < invalidSymbols.length(); i++) {
+            String roleName = ROLE_NAME + invalidSymbols.charAt(i);
             roleCreator.setName(ROLE_NAME + i);
 
             try {
@@ -2760,7 +2761,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
         try {
             GroupQuery query = groupFactory.newQuery(SYS_SCOPE_ID);
-            query.setPredicate(query.attributePredicate(GroupAttributes.NAME, groupName, AttributePredicate.Operator.EQUAL));
+            query.setPredicate(query.attributePredicate(KapuaNamedEntityAttributes.NAME, groupName, AttributePredicate.Operator.EQUAL));
             GroupListResult queryResult = groupService.query(query);
             Group group = queryResult.getFirstItem();
             group.setName(newGroupName);
@@ -2776,7 +2777,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
         try {
             GroupQuery query = groupFactory.newQuery(SYS_SCOPE_ID);
-            query.setPredicate(query.attributePredicate(GroupAttributes.NAME, groupName, AttributePredicate.Operator.EQUAL));
+            query.setPredicate(query.attributePredicate(KapuaNamedEntityAttributes.NAME, groupName, AttributePredicate.Operator.EQUAL));
             GroupListResult queryResult = groupService.query(query);
             Group group = queryResult.getFirstItem();
             group.setDescription(groupDescription);
@@ -2791,7 +2792,7 @@ public class AuthorizationServiceSteps extends TestBase {
         try {
             stepData.remove(GROUP_SECOND);
             GroupQuery query = groupFactory.newQuery(SYS_SCOPE_ID);
-            query.setPredicate(query.attributePredicate(GroupAttributes.NAME, groupName, AttributePredicate.Operator.EQUAL));
+            query.setPredicate(query.attributePredicate(KapuaNamedEntityAttributes.NAME, groupName, AttributePredicate.Operator.EQUAL));
             GroupListResult queryResult = groupService.query(query);
             Group foundGroup = queryResult.getFirstItem();
             stepData.put(GROUP_SECOND, foundGroup);

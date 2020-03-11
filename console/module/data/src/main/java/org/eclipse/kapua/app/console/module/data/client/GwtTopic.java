@@ -116,4 +116,10 @@ public class GwtTopic extends KapuaBaseTreeModel implements Serializable, IsSeri
         }
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
 }

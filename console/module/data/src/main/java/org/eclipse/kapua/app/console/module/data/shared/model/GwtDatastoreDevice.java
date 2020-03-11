@@ -21,7 +21,7 @@ public class GwtDatastoreDevice extends KapuaBaseModel implements Serializable {
 
     private static final long serialVersionUID = 5756712401178232349L;
 
-    public static final Date NO_TIMESTAMP = new Date(0);
+    public static final long NO_TIMESTAMP = new Date(0).getTime();
 
     private static final String DEVICE = "device";
     private static final String TIMESTAMP = "timestamp";
@@ -87,4 +87,10 @@ public class GwtDatastoreDevice extends KapuaBaseModel implements Serializable {
         }
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
 }

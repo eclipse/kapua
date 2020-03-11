@@ -13,11 +13,12 @@ package org.eclipse.kapua.app.console.module.device.client.device.assets;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.util.CssLiterals;
-import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.FormUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.UserAgentUtils;
@@ -45,7 +46,6 @@ import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -59,8 +59,8 @@ import com.google.gwt.dom.client.NodeList;
 public class DeviceAssetsPanel extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
-    private static final ConsoleDeviceMessages DEVICE_MSGS = GWT.create(ConsoleDeviceMessages.class);
     public static final long MAX_SAFE_INTEGER = 4503599627370496L;
+    private static final Logger LOGGER = Logger.getLogger(DeviceAssetsPanel.class.getName());
 
     private GwtDeviceAsset asset;
     private FormPanel actionFormPanel;
@@ -118,18 +118,19 @@ public class DeviceAssetsPanel extends LayoutContainer {
 
         List<Component> fields = actionFieldSet.getItems();
         List<GwtDeviceAssetChannel> updatedChannelsList = new ArrayList<GwtDeviceAssetChannel>();
-        for (int i = 0; i < fields.size(); i++) {
-            if (fields.get(i) instanceof Field<?>) {
-                Field<?> field = (Field<?>) fields.get(i);
+        for (Component component : fields) {
+            if (component instanceof Field<?>) {
+                Field<?> field = (Field<?>) component;
                 String fieldName = field.getItemId();
                 GwtDeviceAssetChannel channel = asset.getChannel(fieldName);
                 if (channel == null) {
-                    System.err.println(field);
-                }
-                String value = getUpdatedChannel(channel, field);
-                if (value != null) {
-                    channel.setValue(value);
-                    updatedChannelsList.add(channel);
+                    LOGGER.severe(fieldName);
+                } else {
+                    String value = getUpdatedChannel(channel, field);
+                    if (value != null) {
+                        channel.setValue(value);
+                        updatedChannelsList.add(channel);
+                    }
                 }
             }
         }
@@ -143,8 +144,7 @@ public class DeviceAssetsPanel extends LayoutContainer {
             case BOOLEAN:
                 RadioGroup radioGroup = (RadioGroup) field;
                 Radio radio = radioGroup.getValue();
-                String booleanValue = radio.getItemId();
-                return booleanValue;
+                return radio.getItemId();
             case LONG:
                 NumberField longField = (NumberField) field;
                 Number longNumber = longField.getValue();
@@ -182,8 +182,8 @@ public class DeviceAssetsPanel extends LayoutContainer {
             default:
                 return (String) field.getValue();
             }
-        } catch (Throwable t) {
-            t.printStackTrace();
+        } catch (Exception ex) {
+            FailureHandler.handle(ex);
             return null;
         }
 
@@ -236,7 +236,7 @@ public class DeviceAssetsPanel extends LayoutContainer {
         layout.setLabelWidth(Constants.LABEL_WIDTH_CONFIG_FORM);
         actionFieldSet.setLayout(layout);
 
-        Field<?> field = null;
+        Field<?> field;
         if (asset != null) {
             for (GwtDeviceAssetChannel channel : asset.getChannels()) {
                 field = paintChannel(channel);
@@ -257,21 +257,21 @@ public class DeviceAssetsPanel extends LayoutContainer {
     }
 
     private Field<?> paintChannel(GwtDeviceAssetChannel channel) {
-        Field<?> field = null;
+        Field<?> field;
         switch (channel.getTypeEnum()) {
         case LONG:
         case DOUBLE:
         case FLOAT:
         case INT:
         case INTEGER:
-            field = paintNumberChannel(channel, null);
+            field = paintNumberChannel(channel);
             break;
         case BOOLEAN:
             field = paintBooleanChannel(channel);
             break;
         case STRING:
         default:
-            field = paintTextChannel(channel, null);
+            field = paintTextChannel(channel);
             break;
         }
         field.setName(channel.getName());
@@ -280,7 +280,7 @@ public class DeviceAssetsPanel extends LayoutContainer {
         return field;
     }
 
-    private Field<?> paintTextChannel(GwtDeviceAssetChannel channel, Validator validator) {
+    private Field<?> paintTextChannel(GwtDeviceAssetChannel channel) {
 
         TextField<String> field = new TextField<String>();
         field.setName(channel.getName());
@@ -290,13 +290,13 @@ public class DeviceAssetsPanel extends LayoutContainer {
         field.addPlugin(dirtyPlugin);
 
         if (channel.getValue() != null) {
-            field.setValue(KapuaSafeHtmlUtils.htmlUnescape((String) channel.getValue()));
-            field.setOriginalValue(KapuaSafeHtmlUtils.htmlUnescape((String) channel.getValue()));
+            field.setValue(KapuaSafeHtmlUtils.htmlUnescape(channel.getValue()));
+            field.setOriginalValue(KapuaSafeHtmlUtils.htmlUnescape(channel.getValue()));
         }
         return field;
     }
 
-    private Field<?> paintNumberChannel(GwtDeviceAssetChannel channel, Validator validator) {
+    private Field<?> paintNumberChannel(GwtDeviceAssetChannel channel) {
         NumberField field = new NumberField();
         field.setName(channel.getName());
         field.setAllowBlank(true);

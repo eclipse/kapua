@@ -49,8 +49,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
 
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
-import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
-import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
@@ -63,14 +61,16 @@ import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigParameter;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 @SuppressWarnings("Duplicates")
 public class AccountConfigPanel extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+
+    private static final Logger logger = Logger.getLogger(AccountConfigPanel.class.getName());
 
     private GwtConfigComponent configComponent;
     private FormPanel actionFormPanel;
@@ -82,8 +82,6 @@ public class AccountConfigPanel extends LayoutContainer {
     private final GwtSession currentSession;
 
     private String selectedAccountId;
-
-    private static final GwtAccountServiceAsync ACCOUNT_SERVICE = GWT.create(GwtAccountService.class);
 
     private static final String CONFIG_MIN_VALUE = "configMinValue";
     private static final String CONFIG_MAX_VALUE = "configMaxValue";
@@ -155,34 +153,32 @@ public class AccountConfigPanel extends LayoutContainer {
     public GwtConfigComponent getUpdatedConfiguration() {
 
         List<Component> fields = actionFieldSet.getItems();
-        for (int i = 0; i < fields.size(); i++) {
-            if (fields.get(i) instanceof Field<?>) {
+        for (Component component : fields) {
+            if (component instanceof Field<?>) {
 
-                Field<?> field = (Field<?>) fields.get(i);
+                Field<?> field = (Field<?>) component;
                 String fieldName = field.getItemId();
                 GwtConfigParameter param = configComponent.getParameter(fieldName);
                 if (param == null) {
-                    System.err.println(field);
-                }
-                if (!(field instanceof MultiField) || (field instanceof RadioGroup)) {
-                    // get the updated values for the single field
-                    String value = getUpdatedFieldConfiguration(param, field);
-                    param.setValue(value);
+                    logger.severe(fieldName);
                 } else {
+                    if (!(field instanceof MultiField) || (field instanceof RadioGroup)) {
+                        // get the updated values for the single field
+                        String value = getUpdatedFieldConfiguration(param, field);
+                        param.setValue(value);
+                    } else {
 
-                    // iterate over the subfields and extract each value
-                    List<String> multiFieldValues = new ArrayList<String>();
-                    MultiField<?> multiField = (MultiField<?>) field;
-                    List<Field<?>> childFields = multiField.getAll();
-                    for (int j = 0; j < childFields.size(); j++) {
+                        // iterate over the subfields and extract each value
+                        List<String> multiFieldValues = new ArrayList<String>();
+                        MultiField<?> multiField = (MultiField<?>) field;
+                        List<Field<?>> childFields = multiField.getAll();
+                        for (Field<?> childField : childFields) {
 
-                        Field<?> childField = (Field<?>) childFields.get(j);
-                        String value = getUpdatedFieldConfiguration(param, childField);
-                        if (value != null) {
-                            multiFieldValues.add(value);
+                            String value = getUpdatedFieldConfiguration(param, childField);
+                            if (value != null) {
+                                multiFieldValues.add(value);
+                            }
                         }
-                    }
-                    if (param != null) {
                         param.setValues(multiFieldValues.toArray(new String[]{ }));
                     }
                 }
@@ -258,8 +254,7 @@ public class AccountConfigPanel extends LayoutContainer {
                 case BOOLEAN:
                     RadioGroup radioGroup = (RadioGroup) field;
                     Radio radio = radioGroup.getValue();
-                    String booleanValue = radio.getItemId();
-                    return booleanValue;
+                    return radio.getItemId();
 
                 case PASSWORD:
                 case CHAR:
@@ -371,8 +366,8 @@ public class AccountConfigPanel extends LayoutContainer {
             multiField.setEnabled(false);
         }
 
-        Field<?> field = null;
-        String value = null;
+        Field<?> field;
+        String value;
         String[] values = param.getValues();
         for (int i = 0; i < Math.min(param.getCardinality(), 10); i++) {
 
@@ -394,7 +389,7 @@ public class AccountConfigPanel extends LayoutContainer {
     }
 
     private Field<?> paintConfigParameter(GwtConfigParameter param) {
-        Field<?> field = null;
+        Field<?> field;
         Map<String, String> options = param.getOptions();
         if (options != null && options.size() > 0) {
             field = paintChoiceActionParameter(param);
@@ -454,7 +449,7 @@ public class AccountConfigPanel extends LayoutContainer {
 
         TextField<String> field = createTextFieldOrArea(param);
         field.setName(param.getId());
-        field.setValue((String) param.getValue());
+        field.setValue(param.getValue());
         field.setAllowBlank(true);
         field.setFieldLabel(param.getName());
         field.addPlugin(dirtyPlugin);
@@ -472,15 +467,15 @@ public class AccountConfigPanel extends LayoutContainer {
         }
 
         if (param.getValue() != null) {
-            field.setValue((String) param.getValue());
-            field.setOriginalValue((String) param.getValue());
+            field.setValue(param.getValue());
+            field.setOriginalValue(param.getValue());
         }
-        if (validator != null && validator instanceof CharValidator) {
+        if (validator instanceof CharValidator) {
             field.setMaxLength(1);
-            field.setValidator((CharValidator) validator);
+            field.setValidator(validator);
         }
-        if (validator != null && validator instanceof StringValidator) {
-            field.setValidator((StringValidator) validator);
+        if (validator instanceof StringValidator) {
+            field.setValidator(validator);
         }
         return field;
     }
@@ -488,7 +483,7 @@ public class AccountConfigPanel extends LayoutContainer {
     private Field<?> paintPasswordConfigParameter(GwtConfigParameter param) {
         TextField<String> field = new TextField<String>();
         field.setName(param.getId());
-        field.setValue((String) param.getValue());
+        field.setValue(param.getValue());
         field.setAllowBlank(true);
         field.setPassword(true);
         field.setFieldLabel(param.getName());
@@ -506,8 +501,8 @@ public class AccountConfigPanel extends LayoutContainer {
         }
 
         if (param.getValue() != null) {
-            field.setValue((String) param.getValue());
-            field.setOriginalValue((String) param.getValue());
+            field.setValue(param.getValue());
+            field.setOriginalValue(param.getValue());
         }
         return field;
     }
@@ -603,35 +598,24 @@ public class AccountConfigPanel extends LayoutContainer {
             field.setEnabled(false);
         }
 
-        /*
-         * for (String v : param.getOptions()) {
-         * field.add(v);
-         * }
-         */
-
         Map<String, String> oMap = param.getOptions();
-        Iterator<String> it = oMap.keySet().iterator();
-        while (it.hasNext()) {
-            field.add(it.next());
+        for (String s : oMap.keySet()) {
+            field.add(s);
         }
 
         if (param.getDefault() != null) {
-            // field.setSimpleValue((String) param.getDefault());
-            field.setSimpleValue(getKeyFromValue(oMap, (String) param.getDefault()));
+            field.setSimpleValue(getKeyFromValue(oMap, param.getDefault()));
         }
         if (param.getValue() != null) {
-            // field.setSimpleValue((String) param.getValue());
-            field.setSimpleValue(getKeyFromValue(oMap, (String) param.getValue()));
+            field.setSimpleValue(getKeyFromValue(oMap, param.getValue()));
         }
         return field;
     }
 
     private String getKeyFromValue(Map<String, String> m, String value) {
         String key = "";
-        Iterator<Map.Entry<String, String>> it = m.entrySet().iterator();
 
-        while (it.hasNext()) {
-            Map.Entry<String, String> es = it.next();
+        for (Map.Entry<String, String> es : m.entrySet()) {
             if (es.getValue().equals(value)) {
                 key = es.getKey();
             }
@@ -706,7 +690,7 @@ public class AccountConfigPanel extends LayoutContainer {
      */
     private static String[] splitDescription(GwtConfigParameter param) {
         if (param == null || param.getDescription() == null) {
-            return null;
+            return new String[0];
         }
         String description = param.getDescription();
         int idx = description.lastIndexOf('|');
@@ -730,7 +714,7 @@ public class AccountConfigPanel extends LayoutContainer {
      */
     private static String extractDescription(GwtConfigParameter param) {
         String[] desc = splitDescription(param);
-        if (desc == null) {
+        if (desc.length == 0) {
             return null;
         }
         return desc[0];
@@ -748,7 +732,7 @@ public class AccountConfigPanel extends LayoutContainer {
      */
     private static TextField<String> createTextFieldOrArea(GwtConfigParameter param) {
         String[] desc = splitDescription(param);
-        if (desc != null && desc.length > 1 && desc[1].equals("TextArea")) {
+        if (desc.length > 1 && desc[1].equals("TextArea")) {
             return new TextArea();
         }
         return new TextField<String>();
@@ -780,23 +764,17 @@ public class AccountConfigPanel extends LayoutContainer {
 
         @Override
         public String validate(Field<?> field, String value) {
-            Integer intValue = null;
+            int intValue;
             try {
-                intValue = Integer.valueOf(value);
+                intValue = Integer.parseInt(value);
             } catch (NumberFormatException nfe) {
                 return MSGS.numberTooLargeErrorMessage();
             }
-            if (intValue != null) {
-                if (minValue != null) {
-                    if (intValue.intValue() < minValue.intValue()) {
-                        return MessageUtils.get(CONFIG_MIN_VALUE, minValue.intValue());
-                    }
-                }
-                if (maxValue != null) {
-                    if (intValue.intValue() > maxValue.intValue()) {
-                        return MessageUtils.get(CONFIG_MAX_VALUE, maxValue.intValue());
-                    }
-                }
+            if (minValue != null && intValue < minValue) {
+                return MessageUtils.get(CONFIG_MIN_VALUE, minValue);
+            }
+            if (maxValue != null && intValue > maxValue) {
+                return MessageUtils.get(CONFIG_MAX_VALUE, maxValue);
             }
             return null;
         }
@@ -828,23 +806,18 @@ public class AccountConfigPanel extends LayoutContainer {
 
         @Override
         public String validate(Field<?> field, String value) {
-            Long longValue = null;
+            long longValue;
             try {
-                longValue = Long.valueOf(value);
+                longValue = Long.parseLong(value);
             } catch (NumberFormatException nfe) {
                 return MSGS.numberTooLargeErrorMessage();
             }
-            if (longValue != null) {
-                if (minValue != null) {
-                    if (longValue.longValue() < minValue.longValue()) {
-                        return MessageUtils.get(CONFIG_MIN_VALUE, minValue.longValue());
-                    }
-                }
-                if (maxValue != null) {
-                    if (longValue.longValue() > maxValue.longValue()) {
-                        return MessageUtils.get(CONFIG_MAX_VALUE, maxValue.longValue());
-                    }
-                }
+            if (minValue != null && longValue < minValue) {
+                return MessageUtils.get(CONFIG_MIN_VALUE, minValue);
+            }
+
+            if (maxValue != null && longValue > maxValue) {
+                return MessageUtils.get(CONFIG_MAX_VALUE, maxValue);
             }
             return null;
         }
@@ -876,23 +849,18 @@ public class AccountConfigPanel extends LayoutContainer {
 
         @Override
         public String validate(Field<?> field, String value) {
-            Double doubleValue = null;
+            double doubleValue;
             try {
-                doubleValue = Double.valueOf(value);
+                doubleValue = Double.parseDouble(value);
             } catch (NumberFormatException nfe) {
                 return nfe.getMessage();
             }
-            if (doubleValue != null) {
-                if (minValue != null) {
-                    if (doubleValue.doubleValue() < minValue.doubleValue()) {
-                        return MessageUtils.get(CONFIG_MIN_VALUE, minValue.doubleValue());
-                    }
-                }
-                if (maxValue != null) {
-                    if (doubleValue.doubleValue() > maxValue.doubleValue()) {
-                        return MessageUtils.get(CONFIG_MAX_VALUE, maxValue.doubleValue());
-                    }
-                }
+            if (minValue != null && doubleValue < minValue) {
+                return MessageUtils.get(CONFIG_MIN_VALUE, minValue);
+            }
+
+            if (maxValue != null && doubleValue > maxValue) {
+                return MessageUtils.get(CONFIG_MAX_VALUE, maxValue);
             }
             return null;
         }
@@ -924,23 +892,17 @@ public class AccountConfigPanel extends LayoutContainer {
 
         @Override
         public String validate(Field<?> field, String value) {
-            Float floatValue = null;
+            float floatValue;
             try {
-                floatValue = Float.valueOf(value);
+                floatValue = Float.parseFloat(value);
             } catch (NumberFormatException nfe) {
                 return nfe.getMessage();
             }
-            if (floatValue != null) {
-                if (minValue != null) {
-                    if (floatValue.floatValue() < minValue.floatValue()) {
-                        return MessageUtils.get(CONFIG_MIN_VALUE, minValue.floatValue());
-                    }
-                }
-                if (maxValue != null) {
-                    if (floatValue.floatValue() > maxValue.floatValue()) {
-                        return MessageUtils.get(CONFIG_MAX_VALUE, maxValue.floatValue());
-                    }
-                }
+            if (minValue != null && floatValue < minValue) {
+                return MessageUtils.get(CONFIG_MIN_VALUE, minValue);
+            }
+            if (maxValue != null && floatValue > maxValue) {
+                return MessageUtils.get(CONFIG_MAX_VALUE, maxValue);
             }
             return null;
         }
@@ -972,23 +934,18 @@ public class AccountConfigPanel extends LayoutContainer {
 
         @Override
         public String validate(Field<?> field, String value) {
-            Short shortValue = null;
+            short shortValue;
             try {
-                shortValue = Short.valueOf(value);
+                shortValue = Short.parseShort(value);
             } catch (NumberFormatException nfe) {
                 return nfe.getMessage();
             }
-            if (shortValue != null) {
-                if (minValue != null) {
-                    if (shortValue.shortValue() < minValue.shortValue()) {
-                        return MessageUtils.get(CONFIG_MIN_VALUE, minValue.shortValue());
-                    }
-                }
-                if (maxValue != null) {
-                    if (shortValue.shortValue() > maxValue.shortValue()) {
-                        return MessageUtils.get(CONFIG_MAX_VALUE, maxValue.shortValue());
-                    }
-                }
+            if (minValue != null && shortValue < minValue) {
+                return MessageUtils.get(CONFIG_MIN_VALUE, minValue);
+            }
+
+            if (maxValue != null && shortValue > maxValue) {
+                return MessageUtils.get(CONFIG_MAX_VALUE, maxValue);
             }
             return null;
         }
@@ -1020,23 +977,18 @@ public class AccountConfigPanel extends LayoutContainer {
 
         @Override
         public String validate(Field<?> field, String value) {
-            Byte byteValue = null;
+            byte byteValue;
             try {
-                byteValue = Byte.valueOf(value);
+                byteValue = Byte.parseByte(value);
             } catch (NumberFormatException nfe) {
                 return nfe.getMessage();
             }
-            if (byteValue != null) {
-                if (minValue != null) {
-                    if (byteValue.byteValue() < minValue.byteValue()) {
-                        return MessageUtils.get(CONFIG_MIN_VALUE, minValue.byteValue());
-                    }
-                }
-                if (maxValue != null) {
-                    if (byteValue.byteValue() > maxValue.byteValue()) {
-                        return MessageUtils.get(CONFIG_MAX_VALUE, maxValue.byteValue());
-                    }
-                }
+            if (minValue != null && byteValue < minValue) {
+                return MessageUtils.get(CONFIG_MIN_VALUE, minValue);
+            }
+
+            if (maxValue != null && byteValue > maxValue) {
+                return MessageUtils.get(CONFIG_MAX_VALUE, maxValue);
             }
             return null;
         }
@@ -1051,7 +1003,7 @@ public class AccountConfigPanel extends LayoutContainer {
             this.minValue = null;
             if (minValue != null) {
                 try {
-                    this.minValue = Character.valueOf(minValue.charAt(0));
+                    this.minValue = minValue.charAt(0);
                 } catch (NumberFormatException nfe) {
                     FailureHandler.handle(nfe);
                 }
@@ -1059,7 +1011,7 @@ public class AccountConfigPanel extends LayoutContainer {
             this.maxValue = null;
             if (maxValue != null) {
                 try {
-                    this.maxValue = Character.valueOf(maxValue.charAt(0));
+                    this.maxValue = maxValue.charAt(0);
                 } catch (NumberFormatException nfe) {
                     FailureHandler.handle(nfe);
                 }
@@ -1068,23 +1020,17 @@ public class AccountConfigPanel extends LayoutContainer {
 
         @Override
         public String validate(Field<?> field, String value) {
-            Character charValue = null;
+            char charValue;
             try {
-                charValue = Character.valueOf(value.charAt(0));
+                charValue = value.charAt(0);
             } catch (NumberFormatException nfe) {
                 return nfe.getMessage();
             }
-            if (charValue != null) {
-                if (minValue != null) {
-                    if (charValue.charValue() < minValue.charValue()) {
-                        return MessageUtils.get(CONFIG_MIN_VALUE, minValue.charValue());
-                    }
-                }
-                if (maxValue != null) {
-                    if (charValue.charValue() > maxValue.charValue()) {
-                        return MessageUtils.get(CONFIG_MAX_VALUE, maxValue.charValue());
-                    }
-                }
+            if (minValue != null && charValue < minValue) {
+                return MessageUtils.get(CONFIG_MIN_VALUE, minValue);
+            }
+            if (maxValue != null && charValue > maxValue) {
+                return MessageUtils.get(CONFIG_MAX_VALUE, maxValue);
             }
             return null;
         }
