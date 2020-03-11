@@ -13,10 +13,11 @@ package org.eclipse.kapua.app.console.core.servlet;
 
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
+
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,12 +34,12 @@ public class SkinServlet extends HttpServlet {
     private static final Logger LOGGER = LoggerFactory.getLogger(SkinServlet.class);
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) {
         FileReader fr = null;
-        PrintWriter w = response.getWriter();
+        PrintWriter w = null;
         String resourceName = request.getPathInfo();
         try {
+            w = response.getWriter();
 
             // check to see if we have an external resource directory configured
             ConsoleSetting consoleSetting = ConsoleSetting.getInstance();
@@ -46,40 +47,56 @@ public class SkinServlet extends HttpServlet {
             if (resourceDir != null && resourceDir.trim().length() != 0) {
 
                 File fResourceDir = new File(resourceDir);
-                if (!fResourceDir.exists()) {
-                    LOGGER.warn("Resource Directory {} does not exist", fResourceDir.getAbsolutePath());
-                    return;
-                }
+                File fResourceFile = checkPath(resourceName, fResourceDir);
 
-                List<String> resourceFragments = Arrays.asList(resourceName.split("\\\\|/"));
-                if (resourceFragments.contains("..")) {
-                    LOGGER.warn("No directory traversing allowed; requested path is {}", resourceFragments);
-                    return;
-                }
-                File fResourceFile = new File(fResourceDir, resourceName);
-                if (!fResourceFile.exists()) {
-                    LOGGER.warn("Resource File {} does not exist", fResourceFile.getAbsolutePath());
+                if (fResourceFile == null) {
                     return;
                 }
 
                 // write the requested resource
-                fr = new FileReader(fResourceFile);
-                char[] buffer = new char[1024];
-                int iRead = fr.read(buffer);
-                while (iRead != -1) {
-                    w.write(buffer, 0, iRead);
-                    iRead = fr.read(buffer);
+                if (FileUtils.directoryContains(fResourceDir, fResourceFile)) {
+                    fr = new FileReader(fResourceFile);
+                    char[] buffer = new char[1024];
+                    int iRead = fr.read(buffer);
+                    while (iRead != -1) {
+                        w.write(buffer, 0, iRead);
+                        iRead = fr.read(buffer);
+                    }
                 }
             }
         } catch (Exception e) {
             LOGGER.error("Error loading skin resource", e);
         } finally {
             if (fr != null) {
-                fr.close();
+                try {
+                    fr.close();
+                } catch (IOException ioex) {
+                    LOGGER.error("Error loading skin resource", ioex);
+                }
             }
             if (w != null) {
                 w.close();
             }
         }
     }
+
+    private File checkPath(String resourceName, File fResourceDir) {
+        if (!fResourceDir.exists()) {
+            LOGGER.warn("Resource Directory {} does not exist", fResourceDir.getAbsolutePath());
+            return null;
+        }
+
+        List<String> resourceFragments = Arrays.asList(resourceName.split("[\\\\/]"));
+        if (resourceFragments.contains("..")) {
+            LOGGER.warn("No directory traversing allowed; requested path is {}", resourceFragments);
+            return null;
+        }
+        File fResourceFile = new File(fResourceDir, resourceName);
+        if (!fResourceFile.exists()) {
+            LOGGER.warn("Resource File {} does not exist", fResourceFile.getAbsolutePath());
+            return null;
+        }
+        return fResourceFile;
+    }
+
 }

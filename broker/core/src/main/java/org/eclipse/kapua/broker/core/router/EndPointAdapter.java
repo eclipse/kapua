@@ -23,6 +23,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -70,6 +71,8 @@ public class EndPointAdapter extends XmlAdapter<Element, List<EndPoint>> {
 
     private Document createDocument() throws ParserConfigurationException {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, ""); // Sonar java:S2755
+        dbf.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, ""); // // Sonar java:S2755
         DocumentBuilder db = dbf.newDocumentBuilder();
         return db.newDocument();
     }

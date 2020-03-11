@@ -15,6 +15,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.function.Consumer;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -41,12 +42,16 @@ public final class Documents {
     public static void create(final Consumer<Document> documentBuilder, final Writer writer)
             throws ParserConfigurationException, TransformerException {
         final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, ""); // Sonar java:S2755
+        dbf.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, ""); // // Sonar java:S2755
         final DocumentBuilder db = dbf.newDocumentBuilder();
         final Document doc = db.newDocument();
 
         documentBuilder.accept(doc);
 
         final TransformerFactory tf = TransformerFactory.newInstance();
+        tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, ""); // Sonar java:S2755
+        tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, ""); // // Sonar java:S2755
         final Transformer t = tf.newTransformer();
 
         t.transform(new DOMSource(doc), new StreamResult(writer));
