@@ -34,10 +34,9 @@ import java.util.List;
 /**
  * {@link KapuaQuery} {@code abstract} implementation.
  *
- * @param <E> {@link KapuaEntity} domain for this query.
  * @since 1.0.0
  */
-public abstract class AbstractKapuaQuery<E extends KapuaEntity> implements KapuaQuery<E> {
+public abstract class AbstractKapuaQuery implements KapuaQuery {
 
     private KapuaId scopeId;
 

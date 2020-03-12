@@ -87,7 +87,7 @@ public class QueuedJobExecutionDAO {
      * @return
      * @throws KapuaException
      */
-    public static QueuedJobExecutionListResult query(EntityManager em, KapuaQuery<QueuedJobExecution> queuedJobExecutionKapuaQuery)
+    public static QueuedJobExecutionListResult query(EntityManager em, KapuaQuery queuedJobExecutionKapuaQuery)
             throws KapuaException {
         return ServiceDAO.query(em, QueuedJobExecution.class, QueuedJobExecutionImpl.class, new QueuedJobExecutionListResultImpl(), queuedJobExecutionKapuaQuery);
     }
@@ -100,7 +100,7 @@ public class QueuedJobExecutionDAO {
      * @return
      * @throws KapuaException
      */
-    public static long count(EntityManager em, KapuaQuery<QueuedJobExecution> queuedJobExecutionKapuaQuery)
+    public static long count(EntityManager em, KapuaQuery queuedJobExecutionKapuaQuery)
             throws KapuaException {
         return ServiceDAO.count(em, QueuedJobExecution.class, QueuedJobExecutionImpl.class, queuedJobExecutionKapuaQuery);
     }

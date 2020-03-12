@@ -99,7 +99,7 @@ public class AccessTokenDAO extends ServiceDAO {
      * @return
      * @throws KapuaException
      */
-    public static AccessTokenListResult query(EntityManager em, KapuaQuery<AccessToken> accessTokenQuery)
+    public static AccessTokenListResult query(EntityManager em, KapuaQuery accessTokenQuery)
             throws KapuaException {
         return ServiceDAO.query(em, AccessToken.class, AccessTokenImpl.class, new AccessTokenListResultImpl(), accessTokenQuery);
     }
@@ -112,7 +112,7 @@ public class AccessTokenDAO extends ServiceDAO {
      * @return
      * @throws KapuaException
      */
-    public static long count(EntityManager em, KapuaQuery<AccessToken> accessTokenQuery)
+    public static long count(EntityManager em, KapuaQuery accessTokenQuery)
             throws KapuaException {
         return ServiceDAO.count(em, AccessToken.class, AccessTokenImpl.class, accessTokenQuery);
     }

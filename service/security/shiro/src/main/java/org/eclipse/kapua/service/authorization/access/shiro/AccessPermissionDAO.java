@@ -23,7 +23,7 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult
 
 /**
  * {@link AccessPermission} {@link ServiceDAO}
- * 
+ *
  * @since 1.0
  *
  */
@@ -31,7 +31,7 @@ public class AccessPermissionDAO extends ServiceDAO {
 
     /**
      * Creates and return new access permission
-     * 
+     *
      * @param em
      * @param creator
      * @return
@@ -49,7 +49,7 @@ public class AccessPermissionDAO extends ServiceDAO {
 
     /**
      * Find the access info by access permission identifier
-     * 
+     *
      * @param em
      * @param scopeId
      * @param accessPermissionId
@@ -67,7 +67,7 @@ public class AccessPermissionDAO extends ServiceDAO {
      * @return
      * @throws KapuaException
      */
-    public static AccessPermissionListResult query(EntityManager em, KapuaQuery<AccessPermission> accessInfoPermissionQuery)
+    public static AccessPermissionListResult query(EntityManager em, KapuaQuery accessInfoPermissionQuery)
             throws KapuaException {
         return ServiceDAO.query(em, AccessPermission.class, AccessPermissionImpl.class, new AccessPermissionListResultImpl(), accessInfoPermissionQuery);
     }
@@ -80,7 +80,7 @@ public class AccessPermissionDAO extends ServiceDAO {
      * @return
      * @throws KapuaException
      */
-    public static long count(EntityManager em, KapuaQuery<AccessPermission> accessPermissionQuery)
+    public static long count(EntityManager em, KapuaQuery accessPermissionQuery)
             throws KapuaException {
         return ServiceDAO.count(em, AccessPermission.class, AccessPermissionImpl.class, accessPermissionQuery);
     }

@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.account.internal;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountQuery;
 
 /**
@@ -21,7 +20,7 @@ import org.eclipse.kapua.service.account.AccountQuery;
  *
  * @since 1.0
  */
-public class AccountQueryImpl extends AbstractKapuaQuery<Account> implements AccountQuery {
+public class AccountQueryImpl extends AbstractKapuaQuery implements AccountQuery {
 
     /**
      * Constructor

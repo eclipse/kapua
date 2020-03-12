@@ -71,7 +71,7 @@ public interface AccessInfoService extends KapuaEntityService<AccessInfo, Access
      * @since 1.0.0
      */
     @Override
-    AccessInfoListResult query(KapuaQuery<AccessInfo> query)
+    AccessInfoListResult query(KapuaQuery query)
             throws KapuaException;
 
     /**
@@ -83,7 +83,7 @@ public interface AccessInfoService extends KapuaEntityService<AccessInfo, Access
      * @since 1.0.0
      */
     @Override
-    long count(KapuaQuery<AccessInfo> query)
+    long count(KapuaQuery query)
             throws KapuaException;
 
     /**

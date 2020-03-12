@@ -196,7 +196,7 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
     }
 
     @Override
-    public RolePermissionListResult query(KapuaQuery<RolePermission> query)
+    public RolePermissionListResult query(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
 
@@ -211,7 +211,7 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
     }
 
     @Override
-    public long count(KapuaQuery<RolePermission> query)
+    public long count(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
 

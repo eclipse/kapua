@@ -121,7 +121,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     }
 
     @Override
-    public AccessTokenListResult query(KapuaQuery<AccessToken> query) throws KapuaException {
+    public AccessTokenListResult query(KapuaQuery query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
@@ -136,7 +136,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     }
 
     @Override
-    public long count(KapuaQuery<AccessToken> query) throws KapuaException {
+    public long count(KapuaQuery query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");

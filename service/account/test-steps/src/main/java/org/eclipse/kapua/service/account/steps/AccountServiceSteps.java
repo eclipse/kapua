@@ -704,7 +704,7 @@ public class AccountServiceSteps extends TestBase {
     public void checkNumberOfAccounts(String accountName, int num)
             throws KapuaException {
 
-        KapuaQuery<Account> query = accountFactory.newQuery(getCurrentScopeId());
+        KapuaQuery query = accountFactory.newQuery(getCurrentScopeId());
         Account account = accountService.find(getCurrentScopeId());
         assertEquals(accountName, account.getName());
 
@@ -719,7 +719,7 @@ public class AccountServiceSteps extends TestBase {
         try {
             primeException();
             Account tmpAcc = accountService.findByName(name);
-            KapuaQuery<Account> query = accountFactory.newQuery(tmpAcc.getId());
+            KapuaQuery query = accountFactory.newQuery(tmpAcc.getId());
             long accountCnt = accountService.count(query);
 
             assertEquals(num, accountCnt);

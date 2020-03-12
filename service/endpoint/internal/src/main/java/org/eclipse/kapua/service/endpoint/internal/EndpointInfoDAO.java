@@ -85,7 +85,7 @@ public class EndpointInfoDAO extends ServiceDAO {
      * @throws KapuaException On query error.
      * @since 1.0.0
      */
-    public static EndpointInfoListResult query(EntityManager em, KapuaQuery<EndpointInfo> endpointInfoQuery)
+    public static EndpointInfoListResult query(EntityManager em, KapuaQuery endpointInfoQuery)
             throws KapuaException {
         return ServiceDAO.query(em, EndpointInfo.class, EndpointInfoImpl.class, new EndpointInfoListResultImpl(), endpointInfoQuery);
     }
@@ -99,7 +99,7 @@ public class EndpointInfoDAO extends ServiceDAO {
      * @throws KapuaException
      * @since 1.0.0
      */
-    public static long count(EntityManager em, KapuaQuery<EndpointInfo> endpointInfoQuery)
+    public static long count(EntityManager em, KapuaQuery endpointInfoQuery)
             throws KapuaException {
         return ServiceDAO.count(em, EndpointInfo.class, EndpointInfoImpl.class, endpointInfoQuery);
     }

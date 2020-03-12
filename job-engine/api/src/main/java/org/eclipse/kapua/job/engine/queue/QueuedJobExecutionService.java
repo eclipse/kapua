@@ -37,5 +37,5 @@ public interface QueuedJobExecutionService extends KapuaEntityService<QueuedJobE
      * @since 1.1.0
      */
     @Override
-    QueuedJobExecutionListResult query(KapuaQuery<QueuedJobExecution> query) throws KapuaException;
+    QueuedJobExecutionListResult query(KapuaQuery query) throws KapuaException;
 }

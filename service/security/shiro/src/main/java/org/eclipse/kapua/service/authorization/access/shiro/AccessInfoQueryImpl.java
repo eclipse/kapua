@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.authorization.access.shiro;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
 
 /**
@@ -21,7 +20,7 @@ import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
  *
  * @since 1.0
  */
-public class AccessInfoQueryImpl extends AbstractKapuaQuery<AccessInfo> implements AccessInfoQuery {
+public class AccessInfoQueryImpl extends AbstractKapuaQuery implements AccessInfoQuery {
 
     /**
      * Constructor

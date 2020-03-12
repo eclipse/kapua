@@ -12,11 +12,10 @@
 package org.eclipse.kapua.commons.service.event.store.internal;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
-import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecord;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 
-public class EventStoreQueryImpl extends AbstractKapuaQuery<EventStoreRecord> implements EventStoreRecordQuery {
+public class EventStoreQueryImpl extends AbstractKapuaQuery implements EventStoreRecordQuery {
 
     /**
      * Constructor

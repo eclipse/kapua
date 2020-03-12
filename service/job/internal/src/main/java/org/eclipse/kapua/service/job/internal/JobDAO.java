@@ -101,7 +101,7 @@ public class JobDAO {
      * @return
      * @throws KapuaException
      */
-    public static JobListResult query(EntityManager em, KapuaQuery<Job> jobQuery)
+    public static JobListResult query(EntityManager em, KapuaQuery jobQuery)
             throws KapuaException {
         return ServiceDAO.query(em, Job.class, JobImpl.class, new JobListResultImpl(), jobQuery);
     }
@@ -114,7 +114,7 @@ public class JobDAO {
      * @return
      * @throws KapuaException
      */
-    public static long count(EntityManager em, KapuaQuery<Job> jobQuery)
+    public static long count(EntityManager em, KapuaQuery jobQuery)
             throws KapuaException {
         return ServiceDAO.count(em, Job.class, JobImpl.class, jobQuery);
     }

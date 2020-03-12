@@ -100,7 +100,7 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public CertificateListResult query(KapuaQuery<Certificate> query) throws KapuaException {
+    public CertificateListResult query(KapuaQuery query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
@@ -135,7 +135,7 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public long count(KapuaQuery<Certificate> query) {
+    public long count(KapuaQuery query) {
         return 1L;
     }
 

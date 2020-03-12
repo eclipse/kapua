@@ -24,14 +24,14 @@ import org.eclipse.kapua.service.authorization.group.GroupQuery;
 
 /**
  * {@link Group} DAO
- * 
+ *
  * @since 1.0.0
  */
 public class GroupDAO extends ServiceDAO {
 
     /**
      * Creates and returns new {@link Group}
-     * 
+     *
      * @param em
      *            The {@link EntityManager} that holds the transaction.
      * @param creator
@@ -51,7 +51,7 @@ public class GroupDAO extends ServiceDAO {
 
     /**
      * Updates and returns the updated {@link Group}
-     * 
+     *
      * @param em
      *            The {@link EntityManager} that holds the transaction.
      * @param group
@@ -67,7 +67,7 @@ public class GroupDAO extends ServiceDAO {
 
     /**
      * Finds the {@link Group} by {@link Group} identifier
-     * 
+     *
      * @param em
      *            The {@link EntityManager} that holds the transaction.
      * @param groupId
@@ -90,7 +90,7 @@ public class GroupDAO extends ServiceDAO {
      * @throws KapuaException
      * @since 1.0.0
      */
-    public static GroupListResult query(EntityManager em, KapuaQuery<Group> groupQuery)
+    public static GroupListResult query(EntityManager em, KapuaQuery groupQuery)
             throws KapuaException {
         return ServiceDAO.query(em, Group.class, GroupImpl.class, new GroupListResultImpl(), groupQuery);
     }
@@ -106,7 +106,7 @@ public class GroupDAO extends ServiceDAO {
      * @throws KapuaException
      * @since 1.0.0
      */
-    public static long count(EntityManager em, KapuaQuery<Group> groupQuery)
+    public static long count(EntityManager em, KapuaQuery groupQuery)
             throws KapuaException {
         return ServiceDAO.count(em, Group.class, GroupImpl.class, groupQuery);
     }

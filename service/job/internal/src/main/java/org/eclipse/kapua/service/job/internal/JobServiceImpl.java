@@ -163,7 +163,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
     }
 
     @Override
-    public JobListResult query(KapuaQuery<Job> query) throws KapuaException {
+    public JobListResult query(KapuaQuery query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
@@ -178,7 +178,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
     }
 
     @Override
-    public long count(KapuaQuery<Job> query) throws KapuaException {
+    public long count(KapuaQuery query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");

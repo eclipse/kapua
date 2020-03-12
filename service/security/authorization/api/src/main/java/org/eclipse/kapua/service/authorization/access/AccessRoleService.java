@@ -66,7 +66,7 @@ public interface AccessRoleService extends KapuaEntityService<AccessRole, Access
      * @since 1.0.0
      */
     @Override
-    AccessRoleListResult query(KapuaQuery<AccessRole> query) throws KapuaException;
+    AccessRoleListResult query(KapuaQuery query) throws KapuaException;
 
     /**
      * Returns the count of the {@link AccessRole} elements matching the provided query.
@@ -77,7 +77,7 @@ public interface AccessRoleService extends KapuaEntityService<AccessRole, Access
      * @since 1.0.0
      */
     @Override
-    long count(KapuaQuery<AccessRole> query) throws KapuaException;
+    long count(KapuaQuery query) throws KapuaException;
 
     /**
      * Delete the {@link AccessRole} by scope id and {@link AccessRole} id.

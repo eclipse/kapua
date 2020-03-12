@@ -169,7 +169,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
     }
 
     @Override
-    public GroupListResult query(KapuaQuery<Group> query) throws KapuaException {
+    public GroupListResult query(KapuaQuery query) throws KapuaException {
         //
         // Argument validation
         ArgumentValidator.notNull(query, "query");
@@ -184,7 +184,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
     }
 
     @Override
-    public long count(KapuaQuery<Group> query) throws KapuaException {
+    public long count(KapuaQuery query) throws KapuaException {
         //
         // Argument validation
         ArgumentValidator.notNull(query, "query");

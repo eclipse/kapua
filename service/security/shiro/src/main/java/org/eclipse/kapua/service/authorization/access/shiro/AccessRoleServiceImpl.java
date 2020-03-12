@@ -182,7 +182,7 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
     }
 
     @Override
-    public AccessRoleListResult query(KapuaQuery<AccessRole> query)
+    public AccessRoleListResult query(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
 
@@ -197,7 +197,7 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
     }
 
     @Override
-    public long count(KapuaQuery<AccessRole> query)
+    public long count(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
 

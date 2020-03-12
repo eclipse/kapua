@@ -58,13 +58,13 @@ public class CollisionServiceImpl extends AbstractKapuaConfigurableService imple
     }
 
     @Override
-    public KapuaListResult<CollisionEntity> query(KapuaQuery<CollisionEntity> query) throws KapuaException {
+    public KapuaListResult<CollisionEntity> query(KapuaQuery query) throws KapuaException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public long count(KapuaQuery<CollisionEntity> query) throws KapuaException {
+    public long count(KapuaQuery query) throws KapuaException {
         // TODO Auto-generated method stub
         return 0;
     }

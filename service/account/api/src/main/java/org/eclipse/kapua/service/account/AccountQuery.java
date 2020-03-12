@@ -20,12 +20,12 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 
 /**
  * Account query definition.
- * 
+ *
  * @since 1.0
- * 
+ *
  */
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = AccountXmlRegistry.class, factoryMethod = "newQuery")
-public interface AccountQuery extends KapuaQuery<Account> {
+public interface AccountQuery extends KapuaQuery {
 }

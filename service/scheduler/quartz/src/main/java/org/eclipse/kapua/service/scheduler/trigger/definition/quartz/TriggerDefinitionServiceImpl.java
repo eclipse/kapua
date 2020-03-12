@@ -137,7 +137,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
     }
 
     @Override
-    public TriggerDefinitionListResult query(KapuaQuery<TriggerDefinition> query) throws KapuaException {
+    public TriggerDefinitionListResult query(KapuaQuery query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
@@ -152,7 +152,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
     }
 
     @Override
-    public long count(KapuaQuery<TriggerDefinition> query) throws KapuaException {
+    public long count(KapuaQuery query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");

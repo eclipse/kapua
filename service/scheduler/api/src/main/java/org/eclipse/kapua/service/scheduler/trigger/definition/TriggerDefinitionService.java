@@ -47,8 +47,7 @@ public interface TriggerDefinitionService extends KapuaEntityService<TriggerDefi
      * @since 1.1.0
      */
     @Override
-    TriggerDefinitionListResult query(KapuaQuery<TriggerDefinition> query) throws KapuaException;
+    TriggerDefinitionListResult query(KapuaQuery query) throws KapuaException;
 
     TriggerDefinition findByName(String name) throws KapuaException;
-
 }

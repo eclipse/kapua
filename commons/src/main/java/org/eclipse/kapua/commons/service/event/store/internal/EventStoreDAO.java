@@ -27,7 +27,7 @@ public class EventStoreDAO {
 
     /**
      * Creates and return new KapuaEvent
-     * 
+     *
      * @param em
      * @param kapuaEvent
      * @return
@@ -40,7 +40,7 @@ public class EventStoreDAO {
 
     /**
      * Updates the provided KapuaEvent
-     * 
+     *
      * @param em
      * @param kapuaEvent
      * @return
@@ -74,7 +74,7 @@ public class EventStoreDAO {
      * @return
      * @throws KapuaException
      */
-    public static EventStoreRecordListResult query(EntityManager em, KapuaQuery<EventStoreRecord> kapuaEventQuery)
+    public static EventStoreRecordListResult query(EntityManager em, KapuaQuery kapuaEventQuery)
             throws KapuaException {
         return ServiceDAO.query(em, EventStoreRecord.class, EventStoreRecordImpl.class, new EventStoreRecordListResultImpl(), kapuaEventQuery);
     }
@@ -87,7 +87,7 @@ public class EventStoreDAO {
      * @return
      * @throws KapuaException
      */
-    public static long count(EntityManager em, KapuaQuery<EventStoreRecord> kapuaEventQuery)
+    public static long count(EntityManager em, KapuaQuery kapuaEventQuery)
             throws KapuaException {
         return ServiceDAO.count(em, EventStoreRecord.class, EventStoreRecordImpl.class, kapuaEventQuery);
     }

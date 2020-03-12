@@ -114,14 +114,14 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
     }
 
     @Override
-    public DeviceListResult query(KapuaQuery<Device> query) throws KapuaException {
+    public DeviceListResult query(KapuaQuery query) throws KapuaException {
         DeviceValidation.validateQueryPreconditions(query);
 
         return entityManagerSession.doAction(EntityManagerContainer.<DeviceListResult>create().onResultHandler(entityManager -> DeviceDAO.query(entityManager, query)));
     }
 
     @Override
-    public long count(KapuaQuery<Device> query) throws KapuaException {
+    public long count(KapuaQuery query) throws KapuaException {
         DeviceValidation.validateCountPreconditions(query);
 
         return entityManagerSession.doAction(EntityManagerContainer.<Long>create().onResultHandler(entityManager -> DeviceDAO.count(entityManager, query)));

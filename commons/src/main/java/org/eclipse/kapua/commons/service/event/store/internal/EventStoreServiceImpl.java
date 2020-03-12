@@ -140,7 +140,7 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
     }
 
     @Override
-    public EventStoreRecordListResult query(KapuaQuery<EventStoreRecord> query)
+    public EventStoreRecordListResult query(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
 
@@ -152,7 +152,7 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
     }
 
     @Override
-    public long count(KapuaQuery<EventStoreRecord> query)
+    public long count(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
 

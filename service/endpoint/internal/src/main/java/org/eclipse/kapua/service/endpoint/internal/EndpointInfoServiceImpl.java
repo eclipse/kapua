@@ -171,7 +171,7 @@ public class EndpointInfoServiceImpl
     }
 
     @Override
-    public EndpointInfoListResult query(KapuaQuery<EndpointInfo> query)
+    public EndpointInfoListResult query(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
 
@@ -214,7 +214,7 @@ public class EndpointInfoServiceImpl
     }
 
     @Override
-    public long count(KapuaQuery<EndpointInfo> query)
+    public long count(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
 

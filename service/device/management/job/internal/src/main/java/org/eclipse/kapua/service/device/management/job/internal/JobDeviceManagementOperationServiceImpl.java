@@ -112,7 +112,7 @@ public class JobDeviceManagementOperationServiceImpl extends AbstractKapuaConfig
     }
 
     @Override
-    public JobDeviceManagementOperationListResult query(KapuaQuery<JobDeviceManagementOperation> query) throws KapuaException {
+    public JobDeviceManagementOperationListResult query(KapuaQuery query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
@@ -127,7 +127,7 @@ public class JobDeviceManagementOperationServiceImpl extends AbstractKapuaConfig
     }
 
     @Override
-    public long count(KapuaQuery<JobDeviceManagementOperation> query) throws KapuaException {
+    public long count(KapuaQuery query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");

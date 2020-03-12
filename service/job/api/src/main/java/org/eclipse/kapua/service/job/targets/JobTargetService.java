@@ -37,5 +37,5 @@ public interface JobTargetService extends KapuaEntityService<JobTarget, JobTarge
      * @since 1.0.0
      */
     @Override
-    JobTargetListResult query(KapuaQuery<JobTarget> query) throws KapuaException;
+    JobTargetListResult query(KapuaQuery query) throws KapuaException;
 }

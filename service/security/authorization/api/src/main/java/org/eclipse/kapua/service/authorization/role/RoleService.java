@@ -71,7 +71,7 @@ public interface RoleService extends KapuaEntityService<Role, RoleCreator>,
      * @since 1.0.0
      */
     @Override
-    RoleListResult query(KapuaQuery<Role> query) throws KapuaException;
+    RoleListResult query(KapuaQuery query) throws KapuaException;
 
     /**
      * Returns the count of the {@link Role} elements matching the provided query.
@@ -82,7 +82,7 @@ public interface RoleService extends KapuaEntityService<Role, RoleCreator>,
      * @since 1.0.0
      */
     @Override
-    long count(KapuaQuery<Role> query) throws KapuaException;
+    long count(KapuaQuery query) throws KapuaException;
 
     /**
      * Delete the {@link Role} by scope id and {@link Role} id.

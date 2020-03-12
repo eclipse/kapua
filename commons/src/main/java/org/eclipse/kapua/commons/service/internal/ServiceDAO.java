@@ -376,7 +376,7 @@ public class ServiceDAO {
                                                                                              @NotNull Class<I> interfaceClass,
                                                                                              @NotNull Class<E> implementingClass,
                                                                                              @NotNull L resultContainer,
-                                                                                             @NotNull KapuaQuery<I> kapuaQuery)
+                                                                                             @NotNull KapuaQuery kapuaQuery)
             throws KapuaException {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<E> criteriaSelectQuery = cb.createQuery(implementingClass);
@@ -494,7 +494,7 @@ public class ServiceDAO {
     public static <I extends KapuaEntity, E extends I> long count(@NotNull EntityManager em,
                                                                   @NotNull Class<I> interfaceClass,
                                                                   @NotNull Class<E> implementingClass,
-                                                                  @NotNull KapuaQuery<I> kapuaQuery)
+                                                                  @NotNull KapuaQuery kapuaQuery)
             throws KapuaException {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> criteriaSelectQuery = cb.createQuery(Long.class);
@@ -802,7 +802,7 @@ public class ServiceDAO {
      * @param groupPredicateName The name of the {@link Group} id field.
      * @since 1.0.0
      */
-    protected static void handleKapuaQueryGroupPredicate(@NotNull KapuaQuery<?> query, @NotNull Domain domain, @NotNull String groupPredicateName) throws KapuaException {
+    protected static void handleKapuaQueryGroupPredicate(@NotNull KapuaQuery query, @NotNull Domain domain, @NotNull String groupPredicateName) throws KapuaException {
         KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
         if (ACCESS_INFO_FACTORY != null) {
             if (kapuaSession != null && !kapuaSession.isTrustedMode()) {
@@ -814,7 +814,7 @@ public class ServiceDAO {
         }
     }
 
-    private static void handleKapuaQueryGroupPredicate(KapuaSession kapuaSession, KapuaQuery<?> query, Domain domain, String groupPredicateName) throws KapuaException {
+    private static void handleKapuaQueryGroupPredicate(KapuaSession kapuaSession, KapuaQuery query, Domain domain, String groupPredicateName) throws KapuaException {
         try {
             KapuaId userId = kapuaSession.getUserId();
 

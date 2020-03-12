@@ -220,7 +220,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     @Override
-    public RoleListResult query(KapuaQuery<Role> query) throws KapuaException {
+    public RoleListResult query(KapuaQuery query) throws KapuaException {
         //
         // Argument validation
         ArgumentValidator.notNull(query, "query");
@@ -235,7 +235,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     @Override
-    public long count(KapuaQuery<Role> query) throws KapuaException {
+    public long count(KapuaQuery query) throws KapuaException {
         //
         // Argument validation
         ArgumentValidator.notNull(query, "query");

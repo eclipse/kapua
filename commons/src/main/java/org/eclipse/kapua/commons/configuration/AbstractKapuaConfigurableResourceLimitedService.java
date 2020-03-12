@@ -35,7 +35,7 @@ import org.eclipse.kapua.service.account.AccountService;
 
 import java.util.Map;
 
-public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends KapuaEntity, C extends KapuaEntityCreator<E>, S extends KapuaEntityService<E, C>, L extends KapuaListResult<E>, Q extends KapuaQuery<E>, F extends KapuaEntityFactory<E, C, Q, L>>
+public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends KapuaEntity, C extends KapuaEntityCreator<E>, S extends KapuaEntityService<E, C>, L extends KapuaListResult<E>, Q extends KapuaQuery, F extends KapuaEntityFactory<E, C, Q, L>>
         extends AbstractKapuaConfigurableService {
 
     private final Class<S> serviceClass;

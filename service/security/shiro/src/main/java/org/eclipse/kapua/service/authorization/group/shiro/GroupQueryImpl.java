@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.authorization.group.shiro;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupQuery;
 
 /**
@@ -21,7 +20,7 @@ import org.eclipse.kapua.service.authorization.group.GroupQuery;
  *
  * @since 1.0.0
  */
-public class GroupQueryImpl extends AbstractKapuaQuery<Group> implements GroupQuery {
+public class GroupQueryImpl extends AbstractKapuaQuery implements GroupQuery {
 
     public GroupQueryImpl(KapuaId scopeId) {
         super(scopeId);

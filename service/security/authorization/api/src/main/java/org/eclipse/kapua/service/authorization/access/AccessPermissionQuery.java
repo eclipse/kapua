@@ -20,12 +20,12 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 
 /**
  * {@link AccessPermission} query definition.
- * 
+ *
  * @since 1.0.0
  *
  */
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = AccessPermissionXmlRegistry.class, factoryMethod = "newQuery")
-public interface AccessPermissionQuery extends KapuaQuery<AccessPermission> {
+public interface AccessPermissionQuery extends KapuaQuery {
 }

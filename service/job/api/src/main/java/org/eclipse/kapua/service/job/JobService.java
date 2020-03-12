@@ -38,7 +38,7 @@ public interface JobService extends KapuaEntityService<Job, JobCreator>,
      * @since 1.0.0
      */
     @Override
-    JobListResult query(KapuaQuery<Job> query) throws KapuaException;
+    JobListResult query(KapuaQuery query) throws KapuaException;
 
     /**
      * Forcibly deletes a {@link Job} and all of its related data without checking for {@link org.eclipse.kapua.service.job.execution.JobExecution}s.

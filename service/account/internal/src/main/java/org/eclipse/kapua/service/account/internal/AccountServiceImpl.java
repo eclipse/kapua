@@ -356,7 +356,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    public AccountListResult query(KapuaQuery<Account> query) throws KapuaException {
+    public AccountListResult query(KapuaQuery query) throws KapuaException {
         //
         // Argument validation
         ArgumentValidator.notNull(query, "query");
@@ -373,7 +373,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    public long count(KapuaQuery<Account> query) throws KapuaException {
+    public long count(KapuaQuery query) throws KapuaException {
         //
         // Argument validation
         ArgumentValidator.notNull(query, "query");

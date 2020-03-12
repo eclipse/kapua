@@ -37,6 +37,6 @@ public interface JobExecutionService extends KapuaEntityService<JobExecution, Jo
      * @since 1.0.0
      */
     @Override
-    JobExecutionListResult query(KapuaQuery<JobExecution> query)
+    JobExecutionListResult query(KapuaQuery query)
             throws KapuaException;
 }

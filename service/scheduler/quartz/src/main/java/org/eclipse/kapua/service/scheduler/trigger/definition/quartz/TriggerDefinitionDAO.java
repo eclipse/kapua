@@ -92,7 +92,7 @@ public class TriggerDefinitionDAO {
      * @return
      * @throws KapuaException
      */
-    public static TriggerDefinitionListResult query(EntityManager em, KapuaQuery<TriggerDefinition> triggerDefinitionQuery)
+    public static TriggerDefinitionListResult query(EntityManager em, KapuaQuery triggerDefinitionQuery)
             throws KapuaException {
         return ServiceDAO.query(em, TriggerDefinition.class, TriggerDefinitionImpl.class, new TriggerDefinitionListResultImpl(), triggerDefinitionQuery);
     }
@@ -105,7 +105,7 @@ public class TriggerDefinitionDAO {
      * @return
      * @throws KapuaException
      */
-    public static long count(EntityManager em, KapuaQuery<TriggerDefinition> triggerDefinitionQuery)
+    public static long count(EntityManager em, KapuaQuery triggerDefinitionQuery)
             throws KapuaException {
         return ServiceDAO.count(em, TriggerDefinition.class, TriggerDefinitionImpl.class, triggerDefinitionQuery);
     }

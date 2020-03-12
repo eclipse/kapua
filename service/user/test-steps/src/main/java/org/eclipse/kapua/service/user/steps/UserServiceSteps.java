@@ -289,7 +289,7 @@ public class UserServiceSteps extends TestBase {
 
         stepData.remove(USER_LIST);
 
-        KapuaQuery<User> query = userFactory.newQuery(scpId);
+        KapuaQuery query = userFactory.newQuery(scpId);
         UserListResult queryResult = userService.query(query);
         iFoundUsers = new HashSet<>();
         List<User> users = queryResult.getItems();
@@ -1143,7 +1143,7 @@ public class UserServiceSteps extends TestBase {
         Set<ComparableUser> iFoundUsers;
 
         stepData.remove(USER_LIST);
-        KapuaQuery<User> query = userFactory.newQuery(scpId);
+        KapuaQuery query = userFactory.newQuery(scpId);
 
         UserListResult queryResult = userService.query(query);
         iFoundUsers = new HashSet<>();
@@ -1187,7 +1187,7 @@ public class UserServiceSteps extends TestBase {
         Set<ComparableUser> iFoundUsers;
 
         stepData.remove(USER_LIST);
-        KapuaQuery<User> query = userFactory.newQuery(scpId);
+        KapuaQuery query = userFactory.newQuery(scpId);
         UserListResult queryResult = userService.query(query);
         iFoundUsers = new HashSet<>();
         List<User> users = queryResult.getItems();

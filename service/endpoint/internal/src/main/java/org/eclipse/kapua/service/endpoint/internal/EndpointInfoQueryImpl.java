@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.endpoint.internal;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.endpoint.EndpointInfo;
 import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
 
 /**
@@ -21,7 +20,7 @@ import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
  *
  * @since 1.0.0
  */
-public class EndpointInfoQueryImpl extends AbstractKapuaQuery<EndpointInfo> implements EndpointInfoQuery {
+public class EndpointInfoQueryImpl extends AbstractKapuaQuery implements EndpointInfoQuery {
 
     public EndpointInfoQueryImpl(KapuaId scopeId) {
         super(scopeId);

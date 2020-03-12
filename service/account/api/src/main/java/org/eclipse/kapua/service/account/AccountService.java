@@ -49,7 +49,7 @@ public interface AccountService extends KapuaEntityService<Account, AccountCreat
      * @since 1.0.0
      */
     @Override
-    AccountListResult query(KapuaQuery<Account> query) throws KapuaException;
+    AccountListResult query(KapuaQuery query) throws KapuaException;
 
     /**
      * Returns a List of direct child account of the provided account identifier

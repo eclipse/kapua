@@ -171,7 +171,7 @@ public final class DeviceValidation {
      * @param query
      * @throws KapuaException
      */
-    public static void validateQueryPreconditions(KapuaQuery<Device> query) throws KapuaException {
+    public static void validateQueryPreconditions(KapuaQuery query) throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         List<String> fetchAttributes = query.getFetchAttributes();
 
@@ -190,7 +190,7 @@ public final class DeviceValidation {
      * @param query
      * @throws KapuaException
      */
-    public static void validateCountPreconditions(KapuaQuery<Device> query) throws KapuaException {
+    public static void validateCountPreconditions(KapuaQuery query) throws KapuaException {
         ArgumentValidator.notNull(query, "query");
 
         authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.read, query.getScopeId(), Group.ANY));

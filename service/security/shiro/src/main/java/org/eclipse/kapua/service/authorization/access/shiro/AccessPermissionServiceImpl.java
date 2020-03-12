@@ -197,7 +197,7 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
     }
 
     @Override
-    public AccessPermissionListResult query(KapuaQuery<AccessPermission> query)
+    public AccessPermissionListResult query(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
 
@@ -212,7 +212,7 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
     }
 
     @Override
-    public long count(KapuaQuery<AccessPermission> query)
+    public long count(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
 

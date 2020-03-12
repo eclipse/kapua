@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.device.registry.connection.option.internal;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOption;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionQuery;
 
 /**
@@ -21,7 +20,7 @@ import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnect
  *
  * @since 1.0.0
  */
-public class DeviceConnectionOptionQueryImpl extends AbstractKapuaQuery<DeviceConnectionOption> implements DeviceConnectionOptionQuery {
+public class DeviceConnectionOptionQueryImpl extends AbstractKapuaQuery implements DeviceConnectionOptionQuery {
 
     /**
      * Constructor

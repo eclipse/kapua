@@ -30,7 +30,7 @@ public interface CertificateService extends KapuaEntityService<Certificate, Cert
         KapuaConfigurableService {
 
     @Override
-    CertificateListResult query(KapuaQuery<Certificate> query) throws KapuaException;
+    CertificateListResult query(KapuaQuery query) throws KapuaException;
 
     Certificate generate(CertificateGenerator generator) throws KapuaException;
 

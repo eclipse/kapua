@@ -39,6 +39,6 @@ public interface DeviceManagementOperationRegistryService extends KapuaEntitySer
      * @since 1.0.0
      */
     @Override
-    DeviceManagementOperationListResult query(KapuaQuery<DeviceManagementOperation> query) throws KapuaException;
+    DeviceManagementOperationListResult query(KapuaQuery query) throws KapuaException;
 
 }

@@ -26,6 +26,6 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = ManagementOperationNotificationXmlRegistry.class, factoryMethod = "newQuery")
-public interface ManagementOperationNotificationQuery extends KapuaQuery<ManagementOperationNotification> {
+public interface ManagementOperationNotificationQuery extends KapuaQuery {
 
 }

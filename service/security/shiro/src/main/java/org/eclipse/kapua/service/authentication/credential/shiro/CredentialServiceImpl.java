@@ -223,7 +223,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
     }
 
     @Override
-    public CredentialListResult query(KapuaQuery<Credential> query)
+    public CredentialListResult query(KapuaQuery query)
             throws KapuaException {
         //
         // Argument Validation
@@ -240,7 +240,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
     }
 
     @Override
-    public long count(KapuaQuery<Credential> query)
+    public long count(KapuaQuery query)
             throws KapuaException {
         //
         // Argument Validation
@@ -326,7 +326,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
 
             //
             // Build query
-            KapuaQuery<Credential> query = new CredentialQueryImpl();
+            KapuaQuery query = new CredentialQueryImpl();
             AttributePredicate<CredentialType> typePredicate = query.attributePredicate(CredentialAttributes.CREDENTIAL_TYPE, CredentialType.API_KEY);
             AttributePredicate<String> keyPredicate = query.attributePredicate(CredentialAttributes.CREDENTIAL_KEY, apiKeyPreValue, Operator.STARTS_WITH);
 
@@ -388,7 +388,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
     private long countExistingCredentials(CredentialType credentialType, KapuaId scopeId, KapuaId userId) throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
         CredentialFactory credentialFactory = locator.getFactory(CredentialFactory.class);
-        KapuaQuery<Credential> query = credentialFactory.newQuery(scopeId);
+        KapuaQuery query = credentialFactory.newQuery(scopeId);
 
         QueryPredicate credentialTypePredicate = query.attributePredicate(CredentialAttributes.CREDENTIAL_TYPE, credentialType);
         QueryPredicate userIdPredicate = query.attributePredicate(CredentialAttributes.USER_ID, userId);

@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.device.management.registry.operation.internal;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationQuery;
 
 /**
@@ -21,7 +20,7 @@ import org.eclipse.kapua.service.device.management.registry.operation.DeviceMana
  *
  * @since 1.0
  */
-public class DeviceManagementOperationQueryImpl extends AbstractKapuaQuery<DeviceManagementOperation> implements DeviceManagementOperationQuery {
+public class DeviceManagementOperationQueryImpl extends AbstractKapuaQuery implements DeviceManagementOperationQuery {
 
     private DeviceManagementOperationQueryImpl() {
         super();

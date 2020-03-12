@@ -24,7 +24,7 @@ import java.util.List;
  */
 public interface CertificateInfoService extends KapuaEntityService<CertificateInfo, CertificateInfoCreator> {
     @Override
-    CertificateInfoListResult query(KapuaQuery<CertificateInfo> query) throws KapuaException;
+    CertificateInfoListResult query(KapuaQuery query) throws KapuaException;
 
     List<CertificateInfo> findAncestorsCertificates(KapuaId scopeId, CertificateUsage usage) throws KapuaException;
 }

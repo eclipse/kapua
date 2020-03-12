@@ -89,7 +89,7 @@ public class JobStepDefinitionDAO {
      * @return
      * @throws KapuaException
      */
-    public static JobStepDefinitionListResult query(EntityManager em, KapuaQuery<JobStepDefinition> stepDefinitionQuery)
+    public static JobStepDefinitionListResult query(EntityManager em, KapuaQuery stepDefinitionQuery)
             throws KapuaException {
         return ServiceDAO.query(em, JobStepDefinition.class, JobStepDefinitionImpl.class, new JobStepDefinitionListResultImpl(), stepDefinitionQuery);
     }
@@ -102,7 +102,7 @@ public class JobStepDefinitionDAO {
      * @return
      * @throws KapuaException
      */
-    public static long count(EntityManager em, KapuaQuery<JobStepDefinition> stepDefinitionQuery)
+    public static long count(EntityManager em, KapuaQuery stepDefinitionQuery)
             throws KapuaException {
         return ServiceDAO.count(em, JobStepDefinition.class, JobStepDefinitionImpl.class, stepDefinitionQuery);
     }

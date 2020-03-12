@@ -19,7 +19,7 @@ import org.eclipse.kapua.model.id.KapuaId;
  *
  * @since 1.0
  */
-public class ServiceConfigQueryImpl extends AbstractKapuaQuery<ServiceConfig> implements ServiceConfigQuery {
+public class ServiceConfigQueryImpl extends AbstractKapuaQuery implements ServiceConfigQuery {
 
     /**
      * Constructor

@@ -164,7 +164,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
     }
 
     @Override
-    public TagListResult query(KapuaQuery<Tag> query) throws KapuaException {
+    public TagListResult query(KapuaQuery query) throws KapuaException {
         //
         // Argument validation
         ArgumentValidator.notNull(query, "query");
@@ -179,7 +179,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
     }
 
     @Override
-    public long count(KapuaQuery<Tag> query) throws KapuaException {
+    public long count(KapuaQuery query) throws KapuaException {
         //
         // Argument validation
         ArgumentValidator.notNull(query, "query");

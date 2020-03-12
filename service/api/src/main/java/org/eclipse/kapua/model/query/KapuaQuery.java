@@ -29,9 +29,8 @@ import java.util.List;
 /**
  * {@link KapuaQuery} definition.
  *
- * @param <E> The {@link KapuaEntity} for which this {@link KapuaQuery} is for.
  */
-public interface KapuaQuery<E extends KapuaEntity> {
+public interface KapuaQuery {
 
     /**
      * Gets the fetch attribute names list.
@@ -76,7 +75,7 @@ public interface KapuaQuery<E extends KapuaEntity> {
      * @param scopeId The scope {@link KapuaId} in which to query.
      * @since 1.0.0
      */
-    void setScopeId(@NotNull KapuaId scopeId);
+    void setScopeId(KapuaId scopeId);
 
     /**
      * Gets the {@link KapuaQuery} {@link QueryPredicate}s.

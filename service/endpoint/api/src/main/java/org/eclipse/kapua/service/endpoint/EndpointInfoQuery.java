@@ -26,6 +26,6 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = EndpointInfoXmlRegistry.class, factoryMethod = "newQuery")
-public interface EndpointInfoQuery extends KapuaQuery<EndpointInfo> {
+public interface EndpointInfoQuery extends KapuaQuery {
 
 }

@@ -72,7 +72,7 @@ public interface GroupService extends KapuaEntityService<Group, GroupCreator>,
      * @since 1.0.0
      */
     @Override
-    GroupListResult query(KapuaQuery<Group> query) throws KapuaException;
+    GroupListResult query(KapuaQuery query) throws KapuaException;
 
     /**
      * Returns the count of the {@link Group} elements matching the provided query.
@@ -83,7 +83,7 @@ public interface GroupService extends KapuaEntityService<Group, GroupCreator>,
      * @since 1.0.0
      */
     @Override
-    long count(KapuaQuery<Group> query) throws KapuaException;
+    long count(KapuaQuery query) throws KapuaException;
 
     /**
      * Delete the {@link Group} by scope id and {@link Group} id.

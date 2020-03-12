@@ -107,7 +107,7 @@ public class CredentialDAO extends ServiceDAO {
      * @return
      * @throws KapuaException
      */
-    public static CredentialListResult query(EntityManager em, KapuaQuery<Credential> credentialQuery)
+    public static CredentialListResult query(EntityManager em, KapuaQuery credentialQuery)
             throws KapuaException {
         return ServiceDAO.query(em, Credential.class, CredentialImpl.class, new CredentialListResultImpl(), credentialQuery);
     }
@@ -120,7 +120,7 @@ public class CredentialDAO extends ServiceDAO {
      * @return
      * @throws KapuaException
      */
-    public static long count(EntityManager em, KapuaQuery<Credential> credentialQuery)
+    public static long count(EntityManager em, KapuaQuery credentialQuery)
             throws KapuaException {
         return ServiceDAO.count(em, Credential.class, CredentialImpl.class, credentialQuery);
     }

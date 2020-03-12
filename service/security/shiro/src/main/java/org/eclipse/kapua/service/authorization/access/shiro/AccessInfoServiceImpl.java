@@ -179,7 +179,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
     }
 
     @Override
-    public AccessInfoListResult query(KapuaQuery<AccessInfo> query)
+    public AccessInfoListResult query(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
 
@@ -194,7 +194,7 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
     }
 
     @Override
-    public long count(KapuaQuery<AccessInfo> query)
+    public long count(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
 

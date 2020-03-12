@@ -84,7 +84,7 @@ public class DeviceConnectionDAO extends ServiceDAO {
      * @return
      * @throws KapuaException
      */
-    public static DeviceConnectionListResult query(EntityManager em, KapuaQuery<DeviceConnection> query)
+    public static DeviceConnectionListResult query(EntityManager em, KapuaQuery query)
             throws KapuaException {
         return ServiceDAO.query(em, DeviceConnection.class, DeviceConnectionImpl.class, new DeviceConnectionListResultImpl(), query);
     }
@@ -97,7 +97,7 @@ public class DeviceConnectionDAO extends ServiceDAO {
      * @return
      * @throws KapuaException
      */
-    public static long count(EntityManager em, KapuaQuery<DeviceConnection> query)
+    public static long count(EntityManager em, KapuaQuery query)
             throws KapuaException {
         return ServiceDAO.count(em, DeviceConnection.class, DeviceConnectionImpl.class, query);
     }

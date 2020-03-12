@@ -15,7 +15,6 @@ import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteriaImpl;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceMatchPredicate;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
@@ -25,7 +24,7 @@ import org.eclipse.kapua.service.device.registry.DeviceQuery;
  *
  * @since 1.0.0
  */
-public class DeviceQueryImpl extends AbstractKapuaQuery<Device> implements DeviceQuery {
+public class DeviceQueryImpl extends AbstractKapuaQuery implements DeviceQuery {
 
     /**
      * Constructor

@@ -163,7 +163,7 @@ public class DeviceConnectionServiceImpl extends
     }
 
     @Override
-    public DeviceConnectionListResult query(KapuaQuery<DeviceConnection> query)
+    public DeviceConnectionListResult query(KapuaQuery query)
             throws KapuaException {
         //
         // Argument Validation
@@ -180,7 +180,7 @@ public class DeviceConnectionServiceImpl extends
     }
 
     @Override
-    public long count(KapuaQuery<DeviceConnection> query)
+    public long count(KapuaQuery query)
             throws KapuaException {
         //
         // Argument Validation

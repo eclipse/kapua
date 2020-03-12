@@ -66,7 +66,7 @@ public interface AccessPermissionService extends KapuaEntityService<AccessPermis
      * @since 1.0.0
      */
     @Override
-    AccessPermissionListResult query(KapuaQuery<AccessPermission> query) throws KapuaException;
+    AccessPermissionListResult query(KapuaQuery query) throws KapuaException;
 
     /**
      * Returns the count of the {@link AccessPermission} elements matching the provided query.
@@ -77,7 +77,7 @@ public interface AccessPermissionService extends KapuaEntityService<AccessPermis
      * @since 1.0.0
      */
     @Override
-    long count(KapuaQuery<AccessPermission> query) throws KapuaException;
+    long count(KapuaQuery query) throws KapuaException;
 
     /**
      * Delete the {@link AccessPermission} by scope id and {@link AccessPermission} id.
