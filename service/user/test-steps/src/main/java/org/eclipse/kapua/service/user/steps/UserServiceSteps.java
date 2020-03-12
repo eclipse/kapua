@@ -640,6 +640,23 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
+    @When("^I try to login as user with name \"(.*)\" with wrong password (\\d+) times$")
+    public void loginUserNTimes(String userName, int n) throws Exception {
+
+        String password = "wrongPassword";
+        LoginCredentials credentials = credentialsFactory.newUsernamePasswordCredentials(userName, password);
+        authenticationService.logout();
+
+        for (int i = 0; i < n; i++) {
+            primeException();
+            try {
+                authenticationService.login(credentials);
+            } catch (KapuaException e) {
+                verifyException(e);
+            }
+        }
+    }
+
     @Then("^I try to delete user \"(.*)\"$")
     public void thenDeleteUser(String userName) throws Exception {
 

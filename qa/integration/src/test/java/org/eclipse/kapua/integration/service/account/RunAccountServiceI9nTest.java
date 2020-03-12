@@ -19,28 +19,43 @@ import org.junit.runner.RunWith;
 
 @RunWith(CucumberWithProperties.class)
 @CucumberOptions(
-        features = {"classpath:features/account/AccountExpirationI9n.feature",
-                    "classpath:features/account/FindSelfAccount.feature"},
+        features = {
+                "classpath:features/account/AccountService.feature",
+                "classpath:features/account/AccountExpirationI9n.feature",
+                "classpath:features/account/FindSelfAccount.feature",
+                "classpath:features/account/AccountGroupService.feature",
+                "classpath:features/account/AccountDeviceRegistryService.feature",
+                "classpath:features/account/AccountJobService.feature",
+                "classpath:features/account/AccountRoleService.feature",
+                "classpath:features/account/AccountTagService.feature",
+                "classpath:features/account/AccountUserService.feature",
+                "classpath:features/account/AccountCredentialService.feature"
+                },
         glue = {"org.eclipse.kapua.qa.common",
                 "org.eclipse.kapua.service.account.steps",
-                "org.eclipse.kapua.service.user.steps"
-               },
-        plugin = {"pretty", 
-                  "html:target/cucumber/AccountServiceI9n",
-                  "json:target/AccountServiceI9n_cucumber.json"
-                 },
+                "org.eclipse.kapua.service.user.steps",
+                "org.eclipse.kapua.service.authorization.steps",
+                "org.eclipse.kapua.service.device.registry.steps",
+                "org.eclipse.kapua.service.job.steps",
+                "org.eclipse.kapua.service.tag.steps"
+        },
+        plugin = {"pretty",
+                "html:target/cucumber/AccountServiceI9n",
+                "json:target/AccountServiceI9n_cucumber.json"
+        },
         strict = true,
         monochrome = true)
-@CucumberProperty(key="DOCKER_HOST", value= "")
-@CucumberProperty(key="DOCKER_CERT_PATH", value= "")
-@CucumberProperty(key="commons.db.schema.update", value= "")
-@CucumberProperty(key="commons.db.connection.host", value= "")
-@CucumberProperty(key="commons.db.connection.port", value= "")
-@CucumberProperty(key="datastore.elasticsearch.nodes", value= "")
-@CucumberProperty(key="datastore.elasticsearch.port", value= "")
-@CucumberProperty(key="datastore.client.class", value= "")
-@CucumberProperty(key="commons.eventbus.url", value= "")
-@CucumberProperty(key="certificate.jwt.private.key", value= "")
-@CucumberProperty(key="certificate.jwt.certificate", value= "")
-@CucumberProperty(key="broker.ip", value= "")
-public class RunAccountServiceI9nTest {}
+@CucumberProperty(key = "DOCKER_HOST", value = "")
+@CucumberProperty(key = "DOCKER_CERT_PATH", value = "")
+@CucumberProperty(key = "commons.db.schema.update", value = "")
+@CucumberProperty(key = "commons.db.connection.host", value = "")
+@CucumberProperty(key = "commons.db.connection.port", value = "")
+@CucumberProperty(key = "datastore.elasticsearch.nodes", value = "")
+@CucumberProperty(key = "datastore.elasticsearch.port", value = "")
+@CucumberProperty(key = "datastore.client.class", value = "")
+@CucumberProperty(key = "commons.eventbus.url", value = "")
+@CucumberProperty(key = "certificate.jwt.private.key", value = "")
+@CucumberProperty(key = "certificate.jwt.certificate", value = "")
+@CucumberProperty(key = "broker.ip", value = "")
+public class RunAccountServiceI9nTest {
+}
