@@ -15,10 +15,9 @@ import org.eclipse.kapua.KapuaException;
 
 public class EntityManagerContainer<T> {
 
-    OnAfterResult<T> onAfterResult;
-    OnBeforeResult<T> onBeforeResult;
-    EntityManagerCallback<T> resultCallback;
-    EntityManagerVoidCallback resultVoidCallback;
+    private OnAfterResult<T> onAfter;
+    private OnBeforeResult<T> onBefore;
+    private EntityManagerCallback<T> resultCallback;
 
     public static <T> EntityManagerContainer<T> create() {
         return new EntityManagerContainer<>();
@@ -27,13 +26,13 @@ public class EntityManagerContainer<T> {
     private EntityManagerContainer() {
     }
 
-    public EntityManagerContainer<T> onAfterResult(OnAfterResult<T> onAfterResult) {
-        this.onAfterResult = onAfterResult;
+    public EntityManagerContainer<T> onAfter(OnAfterResult<T> onAfter) {
+        this.onAfter= onAfter;
         return this;
     }
 
-    public EntityManagerContainer<T> onBeforeResult(OnBeforeResult<T> onBeforeResult) {
-        this.onBeforeResult = onBeforeResult;
+    public EntityManagerContainer<T> onBefore(OnBeforeResult<T> onBefore) {
+        this.onBefore = onBefore;
         return this;
     }
 
@@ -42,16 +41,22 @@ public class EntityManagerContainer<T> {
         return this;
     }
 
-    public EntityManagerContainer<T> onVoidResultHandler(EntityManagerVoidCallback resultVoidCallback) {
-        this.resultVoidCallback = resultVoidCallback;
-        return this;
-    }
-
     public T onResult(EntityManager entityManager) throws KapuaException {
         return resultCallback.onAction(entityManager);
     }
 
-    public void onVoidResult(EntityManager entityManager) throws KapuaException {
-        resultVoidCallback.onAction(entityManager);
+    public T onBefore() {
+        if (onBefore != null) {
+            return onBefore.onBefore();
+        }
+        else {
+            return null;
+        }
+    }
+
+    public void onAfter(T instance) {
+        if (onAfter != null) {
+            onAfter.onAfter(instance);
+        }
     }
 }

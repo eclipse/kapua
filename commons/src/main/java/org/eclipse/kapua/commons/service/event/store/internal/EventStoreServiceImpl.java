@@ -13,7 +13,6 @@ package org.eclipse.kapua.commons.service.event.store.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreDomains;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecord;
@@ -75,7 +74,7 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
 
         //
         // Do update
-        return entityManagerSession.onTransactedResult(EntityManagerContainer.<EventStoreRecord>create().onResultHandler(em -> {
+        return entityManagerSession.doTransactedAction(em -> {
             EventStoreRecord oldKapuaEvent = EventStoreDAO.find(em, kapuaEvent.getScopeId(), kapuaEvent.getId());
             if (oldKapuaEvent == null) {
                 throw new KapuaEntityNotFoundException(EventStoreRecord.TYPE, kapuaEvent.getId());
@@ -83,7 +82,7 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
 
             // Update
             return EventStoreDAO.update(em, kapuaEvent);
-        }));
+        });
     }
 
     @Override
@@ -103,9 +102,10 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
 
         //
         // Do delete
-        entityManagerSession.doTransactedAction(EntityManagerContainer.<EventStoreRecord>create().onVoidResultHandler(em -> {
+        entityManagerSession.doTransactedAction(em -> {
             EventStoreDAO.delete(em, scopeId, kapuaEventId);
-        }));
+            return (EventStoreRecord)null;
+        });
     }
 
     @Override
@@ -150,7 +150,7 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
         // Check Access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onResult(EntityManagerContainer.<EventStoreRecordListResult>create().onResultHandler(em -> EventStoreDAO.query(em, query)));
+        return entityManagerSession.doAction(em -> EventStoreDAO.query(em, query));
     }
 
     @Override
@@ -162,7 +162,7 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
         // Check Access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EventStoreDomains.EVENT_STORE_DOMAIN, Actions.read, query.getScopeId()));
 
-        return entityManagerSession.onResult(EntityManagerContainer.<Long>create().onResultHandler(em -> EventStoreDAO.count(em, query)));
+        return entityManagerSession.doAction(em -> EventStoreDAO.count(em, query));
     }
 
     /**
@@ -179,7 +179,7 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
         // Argument Validation
         ArgumentValidator.notNull(kapuaEventId, "kapuaEventId");
 
-        return entityManagerSession.onResult(EntityManagerContainer.<EventStoreRecord>create().onResultHandler(em -> EventStoreDAO.find(em, null, kapuaEventId)));
+        return entityManagerSession.doAction(em -> EventStoreDAO.find(em, null, kapuaEventId));
     }
 
 }

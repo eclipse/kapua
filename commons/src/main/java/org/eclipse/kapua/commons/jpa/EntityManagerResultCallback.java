@@ -16,9 +16,12 @@ import org.eclipse.kapua.KapuaException;
 /**
  * Entity manager callback result service definition.
  *
+ * @deprecated this class will be removed in a next release (may be)
+ *
  * @param <T> Execution result return type
  * @since 1.0
  */
+@Deprecated
 public interface EntityManagerResultCallback<T> {
 
     /**

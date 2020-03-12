@@ -48,6 +48,10 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
     // old constructor
     //
     //============================================================================
+    /**
+     * @deprecated this constructor will be removed in a next release (may be)
+     */
+    @Deprecated
     protected AbstractKapuaConfigurableResourceLimitedService(
             String pid,
             Domain domain,

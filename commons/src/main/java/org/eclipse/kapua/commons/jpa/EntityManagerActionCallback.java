@@ -16,8 +16,11 @@ import org.eclipse.kapua.KapuaException;
 /**
  * Entity manager callback action service definition.
  *
+ * @deprecated this class will be removed in a next release (may be)
+ *
  * @since 1.0
  */
+@Deprecated
 public interface EntityManagerActionCallback {
 
     /**

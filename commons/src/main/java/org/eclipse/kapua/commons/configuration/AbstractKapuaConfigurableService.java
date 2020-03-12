@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,7 +17,6 @@ import javax.validation.constraints.NotNull;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.CacheConfigurationFactory;
-import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
@@ -61,12 +60,9 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     //
     //============================================================================
     /**
-     * Constructor
-     *
-     * @param pid
-     * @param domain
-     * @param entityManagerFactory
+     * @deprecated this constructor will be removed in a next release (may be)
      */
+    @Deprecated
     protected AbstractKapuaConfigurableService(String pid, Domain domain, EntityManagerFactory entityManagerFactory) {
         super(entityManagerFactory);
         this.pid = pid;
@@ -225,7 +221,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     private ServiceConfig createConfig(ServiceConfig serviceConfig)
             throws KapuaException {
 
-        return entityManagerSession.onResult(EntityManagerContainer.<ServiceConfig>create().onResultHandler(em -> ServiceDAO.create(em, serviceConfig)));
+        return entityManagerSession.doAction(em -> ServiceDAO.create(em, serviceConfig));
     }
 
     /**
@@ -237,7 +233,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      */
     private ServiceConfig updateConfig(ServiceConfig serviceConfig)
             throws KapuaException {
-        return entityManagerSession.onResult(EntityManagerContainer.<ServiceConfig>create().onResultHandler(em -> {
+        return entityManagerSession.doAction(em -> {
             ServiceConfig oldServiceConfig = ServiceConfigDAO.find(em, serviceConfig.getScopeId(), serviceConfig.getId());
             if (oldServiceConfig == null) {
                 throw new KapuaEntityNotFoundException(ServiceConfig.TYPE, serviceConfig.getId());
@@ -252,7 +248,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
             // Update
             return ServiceConfigDAO.update(em, serviceConfig);
-        }));
+        });
     }
 
     @Override
@@ -296,7 +292,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
         query.setPredicate(predicate);
 
-        ServiceConfigListResult result = entityManagerSession.onResult(EntityManagerContainer.<ServiceConfigListResult>create().onResultHandler(em -> ServiceDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query)));
+        ServiceConfigListResult result = entityManagerSession.doAction(em -> ServiceDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query));
 
         Properties properties = null;
         if (result != null && !result.isEmpty()) {
@@ -326,7 +322,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
                 )
         );
 
-        ServiceConfigListResult result = entityManagerSession.onResult(EntityManagerContainer.<ServiceConfigListResult>create().onResultHandler(em -> ServiceDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query)));
+        ServiceConfigListResult result = entityManagerSession.doAction(em -> ServiceDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query));
 
         Properties props = toProperties(values);
         if (result == null || result.isEmpty()) {
