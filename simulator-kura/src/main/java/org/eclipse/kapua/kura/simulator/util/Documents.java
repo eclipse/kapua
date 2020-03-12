@@ -51,7 +51,7 @@ public final class Documents {
 
         final TransformerFactory tf = TransformerFactory.newInstance();
         tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, ""); // Sonar java:S2755
-        tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, ""); // // Sonar java:S2755
+        tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, ""); // // Sonar java:S2755
         final Transformer t = tf.newTransformer();
 
         t.transform(new DOMSource(doc), new StreamResult(writer));

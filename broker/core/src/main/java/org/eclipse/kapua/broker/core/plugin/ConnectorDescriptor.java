@@ -12,12 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.service.device.call.message.DeviceMessage;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -35,7 +34,7 @@ public class ConnectorDescriptor implements Serializable {
     /**
      * Allowed message types
      */
-    public static enum MessageType {
+    public enum MessageType {
         /**
          * Application message type
          */
@@ -78,16 +77,16 @@ public class ConnectorDescriptor implements Serializable {
         Objects.requireNonNull(kapuaClass);
         Objects.requireNonNull(transportProtocol);
 
-        this.deviceClass = new HashMap<>(deviceClass);
-        this.kapuaClass = new HashMap<>(kapuaClass);
+        this.deviceClass = new EnumMap<>(deviceClass);
+        this.kapuaClass = new EnumMap<>(kapuaClass);
         this.transportProtocol = transportProtocol;
     }
 
-    public Class<? extends DeviceMessage<?, ?>> getDeviceClass(MessageType messageType) throws KapuaException {
+    public Class<? extends DeviceMessage<?, ?>> getDeviceClass(MessageType messageType) {
         return this.deviceClass.get(messageType);
     }
 
-    public Class<? extends KapuaMessage<?, ?>> getKapuaClass(MessageType messageType) throws KapuaException {
+    public Class<? extends KapuaMessage<?, ?>> getKapuaClass(MessageType messageType) {
         return this.kapuaClass.get(messageType);
     }
 

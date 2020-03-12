@@ -81,7 +81,6 @@ public class FileServlet extends KapuaHttpServlet {
             doPostConfigurationSnapshot(kapuaFormFields, resp);
         } else {
             resp.sendError(404);
-            return;
         }
     }
 
@@ -118,28 +117,21 @@ public class FileServlet extends KapuaHttpServlet {
 
         } catch (IllegalArgumentException iae) {
             resp.sendError(400, "Illegal value for query parameter: " + iae.getMessage());
-            return;
         } catch (KapuaEntityNotFoundException eenfe) {
             resp.sendError(400, eenfe.getMessage());
-            return;
         } catch (KapuaUnauthenticatedException eiae) {
             resp.sendError(401, eiae.getMessage());
-            return;
         } catch (KapuaIllegalAccessException eiae) {
             resp.sendError(403, eiae.getMessage());
-            return;
         } catch (DeviceMenagementException edme) {
             logger.error("Device menagement exception", edme);
             resp.sendError(404, edme.getMessage());
-            return;
         } catch (KapuaIllegalArgumentException kiae) {
             logger.error("Illegal argument exception", kiae);
             resp.sendError(400, kiae.getArgumentName());
-            return;
         } catch (Exception e) {
             logger.error("Generic error", e);
             resp.sendError(500, e.getMessage());
-            return;
         }
     }
 
@@ -172,18 +164,14 @@ public class FileServlet extends KapuaHttpServlet {
 
             Integer timeout = null;
             if (timeoutString != null && !timeoutString.isEmpty()) {
-                try {
-                    timeout = Integer.parseInt(timeoutString);
-                } catch (NumberFormatException nfe) {
-                    throw new IllegalArgumentException("timeout");
-                }
+                timeout = Integer.parseInt(timeoutString);
             }
 
             KapuaLocator locator = KapuaLocator.getInstance();
             DeviceCommandManagementService deviceService = locator.getService(DeviceCommandManagementService.class);
 
             // FIXME: set a max size on the MQtt payload
-            byte[] data = fileItems.size() == 0 ? null : fileItems.get(0).get();
+            byte[] data = fileItems.isEmpty() ? null : fileItems.get(0).get();
 
             DeviceCommandFactory deviceCommandFactory = locator.getFactory(DeviceCommandFactory.class);
             DeviceCommandInput commandInput = deviceCommandFactory.newCommandInput();
@@ -194,7 +182,10 @@ public class FileServlet extends KapuaHttpServlet {
             String cmd = count > 0 ? st.nextToken() : null;
             String[] args = count > 1 ? new String[count - 1] : null;
             int i = 0;
-            while (st.hasMoreTokens()) {
+            /* if count == 0 args is null but st will have no tokens so the while loop won't trigger
+             Sonar complains that args may not be null: in fact it will never be, but let's make him happy and test
+             for args != null as well */
+            while (st.hasMoreTokens() && args != null) {
                 args[i++] = st.nextToken();
             }
 
@@ -225,24 +216,18 @@ public class FileServlet extends KapuaHttpServlet {
 
         } catch (IllegalArgumentException iae) {
             resp.sendError(400, "Illegal value for query parameter: " + iae.getMessage());
-            return;
         } catch (KapuaEntityNotFoundException eenfe) {
             resp.sendError(400, eenfe.getMessage());
-            return;
         } catch (KapuaUnauthenticatedException eiae) {
             resp.sendError(401, eiae.getMessage());
-            return;
         } catch (KapuaIllegalAccessException eiae) {
             resp.sendError(403, eiae.getMessage());
-            return;
         } catch (DeviceMenagementException edme) {
             logger.error("Device menagement exception", edme);
             resp.sendError(404, edme.getMessage());
-            return;
         } catch (Exception e) {
             logger.error("Generic error", e);
             resp.sendError(500, e.getMessage());
-            return;
         }
     }
 
@@ -259,7 +244,7 @@ public class FileServlet extends KapuaHttpServlet {
     }
 
     private void doGetIconResource(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
         final String id = request.getParameter("id");
 
         if (id == null || id.isEmpty()) {
