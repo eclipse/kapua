@@ -44,6 +44,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+/**
+ * Client that execute {@link Liquibase} scripts.
+ * <p>
+ * It looks available scripts in {@code .xml} or {@code .sql} in the classpath.
+ *
+ * @since 1.0.0
+ */
 public class KapuaLiquibaseClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(KapuaLiquibaseClient.class);
@@ -58,6 +65,27 @@ public class KapuaLiquibaseClient {
     private final String schema;
     private final boolean runTimestampsFix;
 
+    /**
+     * Constructor.
+     *
+     * @param jdbcUrl  The JDBC connection string.
+     * @param username The username to connect to to the database.
+     * @param password The password to connect to to the database.
+     * @since 1.0.0
+     */
+    public KapuaLiquibaseClient(String jdbcUrl, String username, String password) {
+        this(jdbcUrl, username, password, null);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param jdbcUrl  The JDBC connection string.
+     * @param username The username to connect to to the database.
+     * @param password The password to connect to to the database.
+     * @param schema   The schema name.
+     * @since 1.0.0
+     */
     public KapuaLiquibaseClient(String jdbcUrl, String username, String password, String schema) {
         this.jdbcUrl = jdbcUrl;
         this.username = username;
@@ -76,10 +104,11 @@ public class KapuaLiquibaseClient {
         LOG.info("Apply timestamp fix: {}", runTimestampsFix);
     }
 
-    public KapuaLiquibaseClient(String jdbcUrl, String username, String password) {
-        this(jdbcUrl, username, password, null);
-    }
-
+    /**
+     * Starts the looking and execution of the Liquibase Scripts.
+     *
+     * @since 1.0.0
+     */
     public void update() {
         try {
             if (Boolean.parseBoolean(System.getProperty("LIQUIBASE_ENABLED", "true")) || Boolean.parseBoolean(System.getenv("LIQUIBASE_ENABLED"))) {
