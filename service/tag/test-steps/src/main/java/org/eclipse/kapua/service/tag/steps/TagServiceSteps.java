@@ -267,7 +267,7 @@ public class TagServiceSteps extends TestBase {
      */
     private TagCreator tagCreatorCreatorWithoutDescription(String tagName) {
 
-        TagCreator tagCreator = tagFactory.newCreator(SYS_SCOPE_ID);
+        TagCreator tagCreator = tagFactory.newCreator(getCurrentScopeId());
         tagCreator.setName(tagName);
 
         return tagCreator;

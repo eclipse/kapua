@@ -196,6 +196,21 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
+    @When("^I create (\\d+) accounts in current scopeId?$")
+    public void createAccountsInCurrentScopeId(int numberOfAccounts)
+            throws Exception {
+
+        for (int i = 0; i < numberOfAccounts; i++) {
+            AccountCreator accountCreator = prepareRegularAccountCreator(getCurrentScopeId(), "account" + i);
+            try {
+                primeException();
+                Account account = accountService.create(accountCreator);
+            } catch (KapuaException ex) {
+                verifyException(ex);
+            }
+        }
+    }
+
     @Given("^An existing account that expires on \"(.*)\" with the name \"(.*)\"$")
     public void createTestAccountWithName(String expirationDateStr, String name)
             throws Exception {
@@ -973,6 +988,26 @@ public class AccountServiceSteps extends TestBase {
             verifyException(ex);
         }
     }
+
+    @When("^I query for all sub-accounts in \"([^\"]*)\"$")
+    public void queryForAllAccountsInCurrentScopeId(String accountName) throws Exception {
+        Account tmpAccount = accountService.findByName(accountName);
+        AccountQuery query = accountFactory.newQuery(tmpAccount.getId());
+        try {
+            primeException();
+            AccountListResult accList = accountService.query(query);
+            stepData.put("NumberOfFoundAccounts", accList.getSize());
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("^I find (\\d+) accounts?$")
+    public void iFindAccounts(int numberOfAccounts) {
+        int foundAccounts = (int) stepData.get("NumberOfFoundAccounts");
+        assertEquals(foundAccounts, numberOfAccounts);
+    }
+
 
     // *****************
     // * Inner Classes *
