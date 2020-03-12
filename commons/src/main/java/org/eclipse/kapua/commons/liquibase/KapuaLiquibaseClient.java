@@ -70,6 +70,10 @@ public class KapuaLiquibaseClient {
         SemanticVersion currentLiquibaseVersion = new SemanticVersion(currentLiquibaseVersionString);
 
         runTimestampsFix = (currentLiquibaseVersion.afterOrMatches(LIQUIBASE_TIMESTAMP_FIX_VERSION) || forceTimestampFix);
+
+        LOG.info("Liquibase Version: {}", currentLiquibaseVersionString);
+        LOG.info("Force timestamp fix: {}", forceTimestampFix);
+        LOG.info("Apply timestamp fix: {}", runTimestampsFix);
     }
 
     public KapuaLiquibaseClient(String jdbcUrl, String username, String password) {
@@ -86,7 +90,7 @@ public class KapuaLiquibaseClient {
                     List<String> contexts = new ArrayList<>();
                     if (!runTimestampsFix) {
                         contexts.add("!fixTimestamps");
-                }
+                    }
 
                     executeMasters(connection, schema, changelogDir, contexts);
                 }
