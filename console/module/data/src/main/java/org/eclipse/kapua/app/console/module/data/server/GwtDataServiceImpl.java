@@ -215,6 +215,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             semanticTopic += "/#";
         }
         int i = 0;
+
         do {
             GwtTopic t = null;
             t = topicMap.get(semanticTopic);
@@ -256,7 +257,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 }
                 channelInfoQuery.setLimit(-1);
                 channelInfoQuery.setOffset(0);
-                totalLength = Long.valueOf(channelInfoService.count(channelInfoQuery)).intValue();
+                totalLength = (int) channelInfoService.count(channelInfoQuery);
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);
@@ -293,29 +294,40 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 }
                 DeviceQuery deviceQuery = deviceFactory.newQuery(convertedScopeId);
                 DeviceListResult deviceListResult = deviceRegistryService.query(deviceQuery);
-                Map<String, String> clientIdsMap = new HashMap<String, String>();
-                for (Device device : deviceListResult.getItems()) {
-                    if (clientIds.contains(device.getClientId())) {
-                        clientIdsMap.put(device.getClientId(), device.getDisplayName());
-                    }
-                }
+                Map<String, String> clientIdsMap = buildClientIdsMap(clientIds, deviceListResult);
 
-                for (ClientInfo client : result.getItems()) {
-                    GwtDatastoreDevice gwtDatastoreDevice = KapuaGwtDataModelConverter.convertToDatastoreDevice(client);
-                    String clientId = client.getClientId();
-                    String displayName = clientIdsMap.get(clientId);
-                    if (StringUtils.isNotEmpty(displayName)) {
-                        gwtDatastoreDevice.setFriendlyDevice(displayName + " (" + clientId + ")");
-                    } else {
-                        gwtDatastoreDevice.setFriendlyDevice(clientId);
-                    }
-                    devices.add(gwtDatastoreDevice);
-                }
+                devices = buildDevicesList(result, clientIdsMap);
             }
         } catch (KapuaException e) {
             KapuaExceptionHandler.handle(e);
         }
         return new BasePagingLoadResult<GwtDatastoreDevice>(devices, config.getOffset(), result != null ? result.getTotalCount().intValue() : 0);
+    }
+
+    private List<GwtDatastoreDevice> buildDevicesList(ClientInfoListResult result, Map<String, String> clientIdsMap) {
+        List<GwtDatastoreDevice> devices = new ArrayList<GwtDatastoreDevice>();
+        for (ClientInfo client : result.getItems()) {
+            GwtDatastoreDevice gwtDatastoreDevice = KapuaGwtDataModelConverter.convertToDatastoreDevice(client);
+            String clientId = client.getClientId();
+            String displayName = clientIdsMap.get(clientId);
+            if (StringUtils.isNotEmpty(displayName)) {
+                gwtDatastoreDevice.setFriendlyDevice(displayName + " (" + clientId + ")");
+            } else {
+                gwtDatastoreDevice.setFriendlyDevice(clientId);
+            }
+            devices.add(gwtDatastoreDevice);
+        }
+        return devices;
+    }
+
+    private Map<String, String> buildClientIdsMap(List<String> clientIds, DeviceListResult deviceListResult) {
+        Map<String, String> clientIdsMap = new HashMap<String, String>();
+        for (Device device : deviceListResult.getItems()) {
+            if (clientIds.contains(device.getClientId())) {
+                clientIdsMap.put(device.getClientId(), device.getDisplayName());
+            }
+        }
+        return clientIdsMap;
     }
 
     @Override
@@ -384,8 +396,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
     @Override
     public List<GwtMessage> findLastMessageByTopic(String accountName, int limit) throws GwtKapuaException {
-        // TODO Auto-generated method stub
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -462,7 +473,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         }
         messages = getMessagesList(query, headers);
         try {
-            totalLength = Long.valueOf(messageService.count(query)).intValue();
+            totalLength = (int) messageService.count(query);
             if (totalLength > 10000) {
                 totalLength = 10000;
             }

@@ -15,21 +15,21 @@ import org.eclipse.kapua.service.datastore.model.Metric;
 
 /**
  * Integer metric implementation
- * 
+ *
  * @since 1.0
  */
 public class IntMetric extends MetricImpl<Integer> implements Metric<Integer> {
 
     /**
      * Construct an integer metric with the provided name and value
-     * 
+     *
      * @param name
      * @param value
      */
     public IntMetric(String name, Object value) {
         setName(name);
         setType(Integer.class);
-        setValue(Integer.valueOf((Integer) value).intValue());
+        setValue((Integer)value);
     }
 
     @Override

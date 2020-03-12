@@ -39,8 +39,7 @@ public class DomainDAO extends ServiceDAO {
      * @throws KapuaException
      * @since 1.0.0
      */
-    public static Domain create(EntityManager em, DomainCreator creator)
-            throws KapuaException {
+    public static Domain create(EntityManager em, DomainCreator creator) {
         Domain domain = new DomainImpl();
 
         domain.setName(creator.getName());

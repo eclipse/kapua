@@ -15,21 +15,21 @@ import org.eclipse.kapua.service.datastore.model.Metric;
 
 /**
  * Float metric implementation
- * 
+ *
  * @since 1.0
  */
 public class FloatMetric extends MetricImpl<Float> implements Metric<Float> {
 
     /**
      * Construct a float metric with the provided name and value
-     * 
+     *
      * @param name
      * @param value
      */
     public FloatMetric(String name, Object value) {
         setName(name);
         setType(Float.class);
-        setValue(Float.valueOf((Float) value).floatValue());
+        setValue((Float)value);
     }
 
     @Override

@@ -156,7 +156,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
                 String key = property.getKey();
                 KapuaTad attrDef = attrDefs.get(key);
 
-                // is attribute undefined?
+                // is attribute undefined?ma po
                 if (attrDef == null) {
                     // we do not have an attribute descriptor to the validation
                     // against
@@ -179,20 +179,34 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
                 }
             }
 
-            // make sure all required properties are set
-            for (KapuaTad attrDef : ocd.getAD()) {
-                // to the required attributes make sure a value is defined.
-                if (attrDef.isRequired() && updatedProps.get(attrDef.getId()) == null) {
-                    // if the default one is not defined, throw
-                    // exception.
-                    throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.REQUIRED_ATTRIBUTE_MISSING, attrDef.getId());
-                }
-            }
+            checkRequiredProperties(ocd, updatedProps);
 
             validateNewConfigValuesCoherence(ocd, updatedProps, scopeId, parentId);
         }
     }
 
+    private void checkRequiredProperties(KapuaTocd ocd, Map<String, Object> updatedProps) throws KapuaConfigurationException {
+        // make sure all required properties are set
+        for (KapuaTad attrDef : ocd.getAD()) {
+            // to the required attributes make sure a value is defined.
+            if (Boolean.TRUE.equals(attrDef.isRequired()) && updatedProps.get(attrDef.getId()) == null) {
+                // if the default one is not defined, throw
+                // exception.
+                throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.REQUIRED_ATTRIBUTE_MISSING, attrDef.getId());
+            }
+        }
+    }
+
+    /**
+     * Validates that the configurations is coherent. By default returns true, but an extending {@link org.eclipse.kapua.service.KapuaService}
+     * may have its own logic
+     * @param ocd               The {@link KapuaTocd} containing the definition of the service configurations
+     * @param updatedProps      A {@link Map} containing the new values for the service
+     * @param scopeId           The Scope ID of the current configuration
+     * @param parentId          The ID of the Parent Scope
+     * @return                  {@literal true} if the configuration is valid, {@literal false} otherwise
+     * @throws KapuaException   When something goes wrong
+     */
     protected boolean validateNewConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, KapuaId parentId) throws KapuaException {
         return true;
     }

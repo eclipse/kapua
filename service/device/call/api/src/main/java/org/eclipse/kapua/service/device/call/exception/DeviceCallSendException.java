@@ -31,7 +31,8 @@ public class DeviceCallSendException extends DeviceCallException {
      * @since 1.1.0
      */
     public DeviceCallSendException(@NotNull DeviceMessage requestMessage) {
-        this(null, requestMessage);
+        super(DeviceCallErrorCodes.SEND_ERROR, requestMessage);
+        this.requestMessage = requestMessage;
     }
 
     /**
@@ -43,7 +44,6 @@ public class DeviceCallSendException extends DeviceCallException {
      */
     public DeviceCallSendException(@NotNull Throwable cause, @NotNull DeviceMessage requestMessage) {
         super(DeviceCallErrorCodes.SEND_ERROR, cause, requestMessage);
-
         this.requestMessage = requestMessage;
     }
 

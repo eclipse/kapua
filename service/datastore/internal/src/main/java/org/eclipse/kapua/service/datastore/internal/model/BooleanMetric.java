@@ -15,21 +15,21 @@ import org.eclipse.kapua.service.datastore.model.Metric;
 
 /**
  * Boolean metric implementation
- * 
+ *
  * @since 1.0
  */
 public class BooleanMetric extends MetricImpl<Boolean> implements Metric<Boolean> {
 
     /**
      * Construct a boolean metric with the provided name and value
-     * 
+     *
      * @param name
      * @param value
      */
     public BooleanMetric(String name, Object value) {
         setName(name);
         setType(Boolean.class);
-        setValue(Boolean.valueOf((Boolean) value).booleanValue());
+        setValue((Boolean) value);
     }
 
     @Override
