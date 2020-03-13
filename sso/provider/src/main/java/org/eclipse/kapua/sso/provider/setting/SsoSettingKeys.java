@@ -18,7 +18,8 @@ public enum SsoSettingKeys implements SettingKey {
     SSO_PROVIDER("sso.provider"), //
     SSO_OPENID_CONF_PATH("sso.openid.conf.path"),
     SSO_OPENID_CLIENT_ID("sso.openid.client.id"), //
-    SSO_OPENID_CLIENT_SECRET("sso.openid.client.secret") //
+    SSO_OPENID_CLIENT_SECRET("sso.openid.client.secret"), //
+    SSO_OPENID_JWT_PROCESSOR_TIMEOUT("sso.openid.jwt_processor_timeout"),  // the JwtProcessor expiration time
     ;
 
     private final String key;

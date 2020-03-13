@@ -13,7 +13,7 @@ environment.
 
 In order to enable single sign-on you will need to select an SSO provider. You can do this using the
 configuration option `sso.provider`. Currently there are two default providers in Kapua. However additional
-providers an be added to Kapua by using the Java service loader framework. 
+providers can be added to Kapua by using the Java service loader framework. 
 The current default providers are:
 
 * `generic` – A generic OpenID Connect provider
@@ -26,6 +26,7 @@ options:
     the "client id" used when communicating with the OpenID Connect server.
 - **`sso.openid.client.secret` (optional)** : 
     the "client secret" used when communicating with the OpenID Connect server.
+- **`sso.openid.jwt-processor-timeout` (optional)** : the JwtProcessor expiration time (the default value is 1 hour).
 
 It is also necessary to configure the Web Console what its external endpoint address is.
 Currently this is a required configuration, even if there is no difference between the servers
@@ -34,7 +35,7 @@ endpoint URL and its external URL, even if this may just be `http://localhost:80
 - **`site.home.uri`** : the URL to the web console, e.g. `http://localhost:8080`
 
 The SSO Login will be available in the form of a dedicated button on the Kapua login page 
-(the button is enabled through the configuration option `sso.provider`).
+(the button can be enabled through the configuration option `sso.provider`).
 
 ### Generic provider
 
@@ -43,7 +44,8 @@ documentation to look up the required values:
 
 - **`sso.generic.openid.server.endpoint.auth`** : the endpoint URL to the authentication API.
 - **`sso.generic.openid.server.endpoint.token`** : the endpoint URL to the token API.
-- **`authentication.credential.jwt.issuer.allowed`** : the base URL to the OpenID server provider.
+- **`sso.generic.openid.jwt.audience.allowed`** : the JWT audience.
+- **`sso.generic.openid.jwt.issuer.allowed`** : the base URL to the OpenID server provider.
 
 ### Keycloak provider
 
@@ -128,7 +130,7 @@ Open the Keycloak Admin Console on your preferred browser and follow the steps b
     - Included Custom Audience : "_console_"
     - Add to access token : _ON_
 4. On the "Scope" tab of the "_console_" client, check that "Full Scope Allowed" is set to _ON_
-5. On the "Client Scope" menu (see menu on the left) create a new Client Scope, called "_console_"
+5. On the "Client Scopes" menu (see menu on the left) create a new Client Scope, called "_console_"
 6. On the "Roles" menu (on the left) add a new role "_console_"
 7. On the "Realm Settings", under the "Tokens" tab, set "Access Token Lifespan" to 10 minutes (the default time is too 
 short)

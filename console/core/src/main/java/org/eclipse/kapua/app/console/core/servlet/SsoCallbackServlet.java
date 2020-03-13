@@ -75,7 +75,7 @@ public class SsoCallbackServlet extends HttpServlet {
             String errorDescription = "";
             if (error != null) {
                 errorDescription = req.getParameter("error_description");
-                logger.warn("Failed to log in: " + error + ", error_description: " + errorDescription);
+                logger.warn("Failed to log in: {}, error_description: {}", error, errorDescription);
             } else {
                 throw new ServletException("Invalid HttpServletRequest");
             }

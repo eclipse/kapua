@@ -271,7 +271,6 @@
                 <include>${pom.groupId}:kapua-security-certificate-internal</include>
                 <include>${pom.groupId}:kapua-security-shiro</include>
                 <include>${pom.groupId}:kapua-service-api</include>
-                <include>${pom.groupId}:kapua-sso-jwt</include>
                 <include>${pom.groupId}:kapua-tag-api</include>
                 <include>${pom.groupId}:kapua-tag-internal</include>
                 <include>${pom.groupId}:kapua-translator-api</include>

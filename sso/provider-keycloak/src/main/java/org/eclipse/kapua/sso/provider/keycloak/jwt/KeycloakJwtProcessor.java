@@ -20,7 +20,6 @@ import org.eclipse.kapua.sso.provider.setting.SsoSetting;
 import org.eclipse.kapua.sso.provider.setting.SsoSettingKeys;
 
 import java.net.URI;
-import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,7 +31,6 @@ public class KeycloakJwtProcessor extends AbstractJwtProcessor {
     private static final SsoSetting SSO_SETTING = SsoSetting.getInstance();
 
     public KeycloakJwtProcessor() throws SsoJwtException {
-        super(Duration.ofHours(1));
     }
 
     @Override

@@ -11,15 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso.provider.generic.jwt;
 
-import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
-import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.sso.exception.SsoJwtException;
+import org.eclipse.kapua.sso.provider.generic.setting.GenericSsoSetting;
+import org.eclipse.kapua.sso.provider.generic.setting.GenericSsoSettingKeys;
 import org.eclipse.kapua.sso.provider.jwt.AbstractJwtProcessor;
 import org.eclipse.kapua.sso.provider.setting.SsoSetting;
 import org.eclipse.kapua.sso.provider.setting.SsoSettingKeys;
 
 import java.net.URI;
-import java.time.Duration;
 import java.util.List;
 
 /**
@@ -27,10 +26,7 @@ import java.util.List;
  */
 public class GenericJwtProcessor extends AbstractJwtProcessor {
 
-    private static final KapuaAuthenticationSetting SETTING = KapuaAuthenticationSetting.getInstance();
-
     public GenericJwtProcessor() throws SsoJwtException {
-        super(Duration.ofHours(1));
     }
 
     @Override
@@ -41,15 +37,11 @@ public class GenericJwtProcessor extends AbstractJwtProcessor {
 
     @Override
     protected List<String> getJwtExpectedIssuers() {
-        // TODO: I don't like using KapuaAuthenticationSettingKeys (this also forces to add kapua-security-shiro in the
-        //  dependencies). Move these properties under SSO?
-        return SETTING.getList(String.class, KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_ISSUER_ALLOWED);
+        return GenericSsoSetting.getInstance().getList(String.class, GenericSsoSettingKeys.SSO_OPENID_JWT_ISSUER_ALLOWED);
     }
 
     @Override
     protected List<String> getJwtAudiences() {
-        // TODO: I don't like using KapuaAuthenticationSettingKeys (this also forces to add kapua-security-shiro in the
-        //  dependencies). Move these properties under SSO?
-        return SETTING.getList(String.class, KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_AUDIENCE_ALLOWED);
+        return GenericSsoSetting.getInstance().getList(String.class, GenericSsoSettingKeys.SSO_OPENID_JWT_AUDIENCE_ALLOWED);
     }
 }

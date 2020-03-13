@@ -14,6 +14,8 @@ package org.eclipse.kapua.sso.provider.jwt;
 
 import org.eclipse.kapua.sso.JwtProcessor;
 import org.eclipse.kapua.sso.exception.SsoJwtException;
+import org.eclipse.kapua.sso.provider.setting.SsoSetting;
+import org.eclipse.kapua.sso.provider.setting.SsoSettingKeys;
 import org.jose4j.jwk.HttpsJwks;
 import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.consumer.InvalidJwtException;
@@ -40,21 +42,20 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
     private Map<URI, Processor> processors = new HashMap<>();
     private String[] audiences;
     private String[] expectedIssuers;
-    private Duration cacheTimeout;
+    private Duration timeout;  // the JwtProcessor expiration time.
 
     /**
      * Constructs and AbstractJwtProcessor with the given expiration time.
      *
-     * @param cacheTimeout the JwtProcessor expiration time.
      * @throws SsoJwtException if the concrete implementation of {@link #getJwtExpectedIssuers()
      * getJwtExpectedIssuers} method throws such exception.
      */
-    public AbstractJwtProcessor(final Duration cacheTimeout) throws SsoJwtException {
+    public AbstractJwtProcessor() throws SsoJwtException {
         List<String> audiences = getJwtAudiences();
         List<String> expectedIssuers = getJwtExpectedIssuers();
         this.expectedIssuers = expectedIssuers.toArray(new String[expectedIssuers.size()]);
         this.audiences = audiences.toArray(new String[audiences.size()]);
-        this.cacheTimeout = cacheTimeout;
+        this.timeout = Duration.ofHours(SsoSetting.getInstance().getInt(SsoSettingKeys.SSO_OPENID_JWT_PROCESSOR_TIMEOUT, 1));
     }
 
     /**
@@ -151,7 +152,7 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
         Processor processor = processors.get(issuer);
 
         // test if validator is expired
-        if (processor != null && processor.isExpired(cacheTimeout)) {
+        if (processor != null && processor.isExpired(timeout)) {
             processors.remove(issuer);
             processor = null;
         }
@@ -160,7 +161,7 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
 
             // create new instance
 
-            final Optional<URI> uri = JwtUtils.retrieveJwtUri(JWKS_URI_WELL_KNOWN_KEY, getOpenIdConfPath(issuer));
+            final Optional<URI> uri = JsonUtils.getConfigUri(JWKS_URI_WELL_KNOWN_KEY, getOpenIdConfPath(issuer));
             if (!uri.isPresent()) {
                 return Optional.empty();
             }

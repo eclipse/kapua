@@ -17,6 +17,8 @@ public enum GenericSsoSettingKeys implements SettingKey {
 
     SSO_OPENID_SERVER_ENDPOINT_AUTH("sso.generic.openid.server.endpoint.auth"), //
     SSO_OPENID_SERVER_ENDPOINT_TOKEN("sso.generic.openid.server.endpoint.token"), //
+    SSO_OPENID_JWT_AUDIENCE_ALLOWED("sso.generic.openid.jwt.audience.allowed"),
+    SSO_OPENID_JWT_ISSUER_ALLOWED("sso.generic.openid.jwt.issuer.allowed"),
     ;
 
     private final String key;

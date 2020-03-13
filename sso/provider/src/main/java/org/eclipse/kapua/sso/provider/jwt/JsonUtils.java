@@ -25,11 +25,11 @@ import java.net.URL;
 import java.util.Optional;
 
 /**
- * JWT utility class.
+ * Json utility class.
  */
-public final class JwtUtils {
+public final class JsonUtils {
 
-    private JwtUtils() {
+    private JsonUtils() {
     }
 
     /**
@@ -37,11 +37,11 @@ public final class JwtUtils {
      *
      * @param property the property to get from the JSON response.
      * @param openIdConfPath the OpendID Connect configuration path.
-     * @return an Optional with a JWT {@link URI} corresponding to the given property if everything is fine, otherwise
+     * @return an Optional with a {@link URI} corresponding to the given property if everything is fine, otherwise
      * an empty Optional.
      * @throws SsoJwtException if an {@link IOException} is caught.
      */
-    public static Optional<URI> retrieveJwtUri(String property, String openIdConfPath) throws SsoJwtException {
+    public static Optional<URI> getConfigUri(String property, String openIdConfPath) throws SsoJwtException {
         final JsonObject jsonObject;
 
         // Read .well-known resource
@@ -52,7 +52,7 @@ public final class JwtUtils {
             throw new SsoJwtException(ioe);
         }
 
-        // Get jwt property
+        // Get property
         final JsonValue uriJsonValue = jsonObject.get(property);
 
         // test result
@@ -61,7 +61,7 @@ public final class JwtUtils {
                 return Optional.of(new URI(((JsonString) uriJsonValue).getString()));
             }
         } catch (URISyntaxException urise) {
-            throw new IllegalAccessError("Unable to retrieve Jwt Uri");
+            throw new IllegalAccessError("Unable to retrieve Config Uri");
         }
 
         // return
