@@ -91,7 +91,7 @@ public class AccessInfoDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param accessInfoId
-     * @return deleted entity
+     * @return the deleted {@link AccessInfo}
      * @throws KapuaEntityNotFoundException If {@link AccessInfo} is nott found.
      * @since 1.0.0
      */

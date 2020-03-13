@@ -39,10 +39,7 @@ import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.model.query.predicate.OrPredicate;
 import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
-import org.eclipse.kapua.service.authorization.access.AccessInfoAttributes;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
-import org.eclipse.kapua.service.authorization.access.AccessInfoListResult;
-import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
@@ -249,6 +246,7 @@ public class ServiceDAO {
      * @param clazz    The {@link KapuaEntity} class. This must be the implementing {@code class}.
      * @param scopeId  The {@link KapuaEntity} scopeId of the entity to be deleted.
      * @param entityId The {@link KapuaEntity} {@link KapuaId} of the entity to be deleted.
+     * @return The deleted {@link KapuaEntity}.
      * @throws KapuaEntityNotFoundException If the {@link KapuaEntity} does not exists.
      * @since 1.0.0
      */
@@ -795,16 +793,12 @@ public class ServiceDAO {
         try {
             KapuaId userId = kapuaSession.getUserId();
 
-            AccessInfoQuery accessInfoQuery = ACCESS_INFO_FACTORY.newQuery(kapuaSession.getScopeId());
-            accessInfoQuery.setPredicate(query.attributePredicate(AccessInfoAttributes.USER_ID, userId));
-
-            AccessInfoListResult accessInfos = KapuaSecurityUtils.doPrivileged(() -> ACCESS_INFO_SERVICE.query(accessInfoQuery));
+            AccessInfo accessInfo = KapuaSecurityUtils.doPrivileged(() -> ACCESS_INFO_SERVICE.findByUserId(kapuaSession.getScopeId(), userId));
 
             List<Permission> groupPermissions = new ArrayList<>();
-            if (!accessInfos.isEmpty()) {
+            if (accessInfo!=null) {
 
-                AccessInfo accessInfo = accessInfos.getFirstItem();
-                AccessPermissionListResult accessPermissions = KapuaSecurityUtils.doPrivileged(() -> ACCESS_PERMISSION_SERVICE.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
+                        AccessPermissionListResult accessPermissions = KapuaSecurityUtils.doPrivileged(() -> ACCESS_PERMISSION_SERVICE.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
 
                 for (AccessPermission ap : accessPermissions.getItems()) {
                     if (checkGroupPermission(domain, groupPermissions, ap.getPermission())) {

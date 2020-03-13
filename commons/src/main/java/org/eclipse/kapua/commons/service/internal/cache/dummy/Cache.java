@@ -20,6 +20,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Dummy Cache implementation, returns always null.
+ *
+ * @param <K>
+ * @param <V>
+ */
 public class Cache<K, V> implements javax.cache.Cache<K, V> {
 
     public Cache() {

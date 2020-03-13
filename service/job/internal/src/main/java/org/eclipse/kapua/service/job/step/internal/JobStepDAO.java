@@ -129,9 +129,10 @@ public class JobStepDAO {
      * @param em
      * @param scopeId
      * @param jobStepId
+     * @return the deleted entity
      * @throws KapuaEntityNotFoundException If the {@link JobStep} is not found
      */
-    public static void delete(EntityManager em, KapuaId scopeId, KapuaId jobStepId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, JobStepImpl.class, scopeId, jobStepId);
+    public static JobStep delete(EntityManager em, KapuaId scopeId, KapuaId jobStepId) throws KapuaEntityNotFoundException {
+        return ServiceDAO.delete(em, JobStepImpl.class, scopeId, jobStepId);
     }
 }

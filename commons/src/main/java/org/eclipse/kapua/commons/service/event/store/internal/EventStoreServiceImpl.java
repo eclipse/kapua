@@ -102,10 +102,7 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
 
         //
         // Do delete
-        entityManagerSession.doTransactedAction(em -> {
-            EventStoreDAO.delete(em, scopeId, kapuaEventId);
-            return (EventStoreRecord)null;
-        });
+        entityManagerSession.doTransactedAction(em -> EventStoreDAO.delete(em, scopeId, kapuaEventId));
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,23 +9,20 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.jpa;
+package org.eclipse.kapua.service.authorization.role.shiro;
 
-import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
 
 /**
- * Entity manager factory definition
- *
- * @since 1.0
+ * Cache factory for the {@link RoleServiceImpl}
  */
-public interface EntityManagerFactory {
+public class RoleCacheFactory extends AbstractEntityCacheFactory {
 
-    /**
-     * Creates an instance of {@link EntityManager}
-     *
-     * @return
-     * @throws KapuaException
-     */
-    public EntityManager createEntityManager() throws KapuaException;
+    private RoleCacheFactory() {
+        super("RoleId");
+    }
 
+    protected static RoleCacheFactory getInstance() {
+        return new RoleCacheFactory();
+    }
 }

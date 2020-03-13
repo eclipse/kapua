@@ -17,6 +17,7 @@ import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -65,7 +66,9 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     private RolePermissionFactory rolePermissionFactory;
 
     public RoleServiceImpl() {
-        super(RoleService.class.getName(), AuthorizationDomains.ROLE_DOMAIN, AuthorizationEntityManagerFactory.getInstance(), RoleService.class, RoleFactory.class);
+        super(RoleService.class.getName(), AuthorizationDomains.ROLE_DOMAIN,
+                AuthorizationEntityManagerFactory.getInstance(), RoleCacheFactory.getInstance(), RoleService.class,
+                RoleFactory.class);
     }
 
     @Override
@@ -111,7 +114,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Do create
-        return entityManagerSession.doTransactedAction(em -> {
+        return entityManagerSession.doTransactedAction(EntityManagerContainer.<Role>create().onResultHandler(em -> {
             Role role = RoleDAO.create(em, roleCreator);
 
             if (!roleCreator.getPermissions().isEmpty()) {
@@ -127,7 +130,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
             }
 
             return role;
-        });
+        }));
     }
 
     @Override
@@ -165,7 +168,11 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Do update
-        return entityManagerSession.doTransactedAction(em -> RoleDAO.update(em, role));
+        return entityManagerSession.doTransactedAction(EntityManagerContainer.<Role>create().onResultHandler(em -> RoleDAO.update(em, role))
+                .onBeforeHandler(() -> {
+                    entityCache.remove(null, role);
+                    return null;
+                }));
     }
 
     @Override
@@ -190,7 +197,8 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Do delete
-        entityManagerSession.doTransactedAction(em -> RoleDAO.delete(em, scopeId, roleId));
+        entityManagerSession.doTransactedAction(EntityManagerContainer.<Role>create().onResultHandler(em -> RoleDAO.delete(em, scopeId, roleId))
+                .onAfterHandler((emptyParam) -> entityCache.remove(scopeId, roleId)));
     }
 
     @Override
@@ -206,7 +214,9 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Do find
-        return entityManagerSession.doAction(em -> RoleDAO.find(em, scopeId, roleId));
+        return entityManagerSession.doAction(EntityManagerContainer.<Role>create().onResultHandler(em -> RoleDAO.find(em, scopeId, roleId))
+                .onBeforeHandler(() -> (Role) entityCache.get(scopeId, roleId))
+                .onAfterHandler((entity) -> entityCache.put(entity)));
     }
 
     @Override
@@ -221,7 +231,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Do query
-        return entityManagerSession.doAction(em -> RoleDAO.query(em, query));
+        return entityManagerSession.doAction(EntityManagerContainer.<RoleListResult>create().onResultHandler(em -> RoleDAO.query(em, query)));
     }
 
     @Override
@@ -236,7 +246,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Do count
-        return entityManagerSession.doAction(em -> RoleDAO.count(em, query));
+        return entityManagerSession.doAction(EntityManagerContainer.<Long>create().onResultHandler(em -> RoleDAO.count(em, query)));
     }
 
     //@ListenServiceEvent(fromAddress="account")

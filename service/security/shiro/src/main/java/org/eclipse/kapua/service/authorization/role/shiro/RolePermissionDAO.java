@@ -91,7 +91,7 @@ public class RolePermissionDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param rolePermissionId
-     * @return deleted entity
+     * @return the deleted {@link RolePermission}
      * @throws KapuaEntityNotFoundException
      *             If {@link RolePermission} is not found.
      */

@@ -9,32 +9,35 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.service.internal.cache;
+package org.eclipse.kapua.service.authorization.access.shiro;
 
+import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
+import org.eclipse.kapua.commons.service.internal.cache.KapuaCacheManager;
 import org.eclipse.kapua.model.KapuaEntity;
-import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authorization.access.AccessInfo;
 
 import javax.cache.Cache;
 import java.io.Serializable;
 
 /**
- * Extends the {@link EntityCache} by providing a further {@link Cache} object, called {@code nameCache}.
- * The {@code nameCache} cache adopts the entity name as key and the entity id as value.
+ * {@link AccessInfoServiceImpl} dedicated cache.
+ * Extends the {@link EntityCache} by providing a further {@link Cache} object, called {@code accessInfoByUserIdCache}.
+ * The {@code accessInfoByUserIdCache} cache adopts the userId as key and the entity id as value.
  * In such a way the correspondence with {@link EntityCache#idCache} is preserved.
  */
-public class NamedEntityCache extends EntityCache {
+public class AccessInfoCache extends EntityCache {
 
-    protected Cache<Serializable, Serializable> nameCache;
+    protected Cache<Serializable, Serializable> accessInfoByUserIdCache;
 
-    public NamedEntityCache(String idCacheName, String nameCacheName) {
+    public AccessInfoCache(String idCacheName, String nameCacheName) {
         super(idCacheName);
-        nameCache = KapuaCacheManager.getCache(nameCacheName);
+        accessInfoByUserIdCache = KapuaCacheManager.getCache(nameCacheName);
     }
 
-    public KapuaEntity get(KapuaId scopeId, String name) {
-        if (name != null) {
-            KapuaId entityId = (KapuaId) nameCache.get(name);
+    public KapuaEntity getByUserId(KapuaId scopeId, KapuaId userId) {
+        if (userId != null) {
+            KapuaId entityId = (KapuaId) accessInfoByUserIdCache.get(userId);
             return get(scopeId, entityId);
         }
         return null;
@@ -44,7 +47,7 @@ public class NamedEntityCache extends EntityCache {
     public void put(KapuaEntity entity) {
         if (entity != null) {
             idCache.put(entity.getId(), entity);
-            nameCache.put(((KapuaNamedEntity) entity).getName(), entity.getId());
+            accessInfoByUserIdCache.put(((AccessInfo) entity).getUserId(), entity.getId());
         }
     }
 
@@ -52,7 +55,7 @@ public class NamedEntityCache extends EntityCache {
     public KapuaEntity remove(KapuaId scopeId, KapuaId kapuaId) {
         KapuaEntity kapuaEntity = super.remove(scopeId, kapuaId);
         if (kapuaEntity != null) {
-            nameCache.remove(((KapuaNamedEntity) kapuaEntity).getName());
+            accessInfoByUserIdCache.remove(((AccessInfo) kapuaEntity).getUserId());
         }
         return kapuaEntity;
     }
