@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -37,7 +37,6 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Optional;
 import java.util.Random;
 
 @Category(JUnitTests.class)
@@ -66,7 +65,7 @@ public abstract class AbstractMessageStoreServiceTest extends Assert {
 
             connection = DriverManager.getConnection(jdbcUrl, dbUsername, dbPassword);
 
-            new KapuaLiquibaseClient(jdbcUrl, dbUsername, dbPassword, Optional.ofNullable(schema)).update();
+            new KapuaLiquibaseClient(jdbcUrl, dbUsername, dbPassword, schema).update();
 
             //
             // Login

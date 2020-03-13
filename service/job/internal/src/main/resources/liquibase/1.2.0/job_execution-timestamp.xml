@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="KapuaDB/changelog-job-1.2.0.xml">
+
+    <changeSet id="changelog-job_execution-1.2.0_timestamp" author="eurotech" dbms="mysql, mariadb" context="fixTimestamps">
+        <modifyDataType tableName="job_job_execution" columnName="created_on" newDataType="timestamp(3) DEFAULT ${now}"/>
+        <modifyDataType tableName="job_job_execution" columnName="modified_on" newDataType="timestamp(3) DEFAULT ${now}"/>
+        <modifyDataType tableName="job_job_execution" columnName="started_on" newDataType="timestamp(3) DEFAULT ${now}"/>
+        <modifyDataType tableName="job_job_execution" columnName="ended_on" newDataType="timestamp(3) NULL"/>
+    </changeSet>
+
+</databaseChangeLog>

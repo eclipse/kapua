@@ -20,4 +20,8 @@
     <include relativeToChangelogFile="true" file="./device_management_operation_notification-add_message.xml"/>
     <include relativeToChangelogFile="true" file="./device_management_operation-add_log.xml"/>
 
+    <include relativeToChangelogFile="true" file="./device_management_operation-timestamp.xml"/>
+    <include relativeToChangelogFile="true" file="./device_management_operation_notification-timestamp.xml"/>
+
+
 </databaseChangeLog>

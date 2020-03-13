@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,15 +18,13 @@ import org.eclipse.kapua.commons.jpa.CommonsEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
+import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Optional;
 
 public abstract class AbstractCommonServiceTest {
 
@@ -66,14 +64,13 @@ public abstract class AbstractCommonServiceTest {
     }
 
     @BeforeClass
-    public static void tearUp()
-            throws KapuaException {
+    public static void tearUp() throws KapuaException {
 
         SystemSetting config = SystemSetting.getInstance();
         String schema = MoreObjects.firstNonNull(config.getString(SystemSettingKey.DB_SCHEMA_ENV), config.getString(SystemSettingKey.DB_SCHEMA));
         String jdbcUrl = JdbcConnectionUrlResolvers.resolveJdbcUrl();
 
-        new KapuaLiquibaseClient(jdbcUrl, "kapua", "kapua", Optional.ofNullable(schema)).update();
+        new KapuaLiquibaseClient(jdbcUrl, "kapua", "kapua", schema).update();
     }
 
     @AfterClass
