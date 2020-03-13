@@ -55,3 +55,69 @@ Feature: Account Device Registry Service Integration Tests
     When I create a device with name "Device4"
     Then An exception was thrown
     And I logout
+
+  Scenario: Creating Devices Under Account That Does Not Allow Devices
+  Login as kapua-sys, create an account
+  Configure DeviceRegistryService of that account, set infiniteChildDevices to false and maxNumberChildDevices to 0
+  Try to create a device
+  Exception should be thrown
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    Then I create an account with name "acc1", organization name "acc1" and email adress "acc1@org.com"
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | false |
+      | integer | maxNumberChildEntities | 0     |
+    Given I select account "acc1"
+    Given I expect the exception "KapuaMaxNumberOfItemsReachedException" with the text "*"
+    When I create a device with name "Device1"
+    Then An exception was thrown
+    And I logout
+
+  Scenario: Creating Devices And Than Setting Device Service So It Does Not Allow Devices
+  Login as kapua-sys, create an account
+  Configure DeviceRegistryService of that account, set infiniteChildDevices to true
+  Create a few Devices
+  Configure DeviceRegistryService of that account, set infiniteChildDevices to false
+  Exception should be thrown
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    Then I create an account with name "acc1", organization name "acc1" and email adress "acc1@org.com"
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 0     |
+    Given I select account "acc1"
+    When I create a device with name "Device1"
+    When I create a device with name "Device2"
+    When I create a device with name "Device3"
+    Given I expect the exception "KapuaConfigurationException" with the text "*"
+    Then I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | false |
+      | integer | maxNumberChildEntities | 0     |
+    Then An exception was thrown
+    And I logout
+
+  Scenario: Creating Devices And Then Changing Device Service Values
+  Login as kapua-sys, create an account
+  Configure DeviceRegistryService of that account, set infiniteChildDevices to true
+  Create 2 Devices
+  Configure DeviceRegistryService of that account, set infiniteChildDevices to false and maxNumberChildDevices to 2
+  No exception should be thrown
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    Then I create an account with name "acc1", organization name "acc1" and email adress "acc1@org.com"
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 0     |
+    Given I select account "acc1"
+    When I create a device with name "Device1"
+    When I create a device with name "Device2"
+    Then I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | false |
+      | integer | maxNumberChildEntities | 2     |
+    Then No exception was thrown
+    And I logout
