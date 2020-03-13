@@ -72,7 +72,7 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> DeviceManagementOperationDAO.create(em, creator));
+        return entityManagerSession.doTransactedAction(em -> DeviceManagementOperationDAO.create(em, creator));
     }
 
     @Override
@@ -107,7 +107,7 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Do update
-        return entityManagerSession.onTransactedResult(em -> DeviceManagementOperationDAO.update(em, entity));
+        return entityManagerSession.doTransactedAction(em -> DeviceManagementOperationDAO.update(em, entity));
     }
 
     @Override
@@ -123,7 +123,7 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> DeviceManagementOperationDAO.find(em, scopeId, entityId));
+        return entityManagerSession.doAction(em -> DeviceManagementOperationDAO.find(em, scopeId, entityId));
     }
 
     @Override
@@ -141,7 +141,7 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
         DeviceManagementOperationQuery query = new DeviceManagementOperationQueryImpl(scopeId);
         query.setPredicate(query.attributePredicate(DeviceManagementOperationAttributes.OPERATION_ID, operationId));
 
-        return entityManagerSession.onResult(em -> DeviceManagementOperationDAO.query(em, query)).getFirstItem();
+        return entityManagerSession.doAction(em -> DeviceManagementOperationDAO.query(em, query)).getFirstItem();
     }
 
     @Override
@@ -156,7 +156,7 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> DeviceManagementOperationDAO.query(em, query));
+        return entityManagerSession.doAction(em -> DeviceManagementOperationDAO.query(em, query));
     }
 
     @Override
@@ -171,7 +171,7 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Do count
-        return entityManagerSession.onResult(em -> DeviceManagementOperationDAO.count(em, query));
+        return entityManagerSession.doAction(em -> DeviceManagementOperationDAO.count(em, query));
     }
 
     @Override
@@ -193,6 +193,6 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> DeviceManagementOperationDAO.delete(em, scopeId, entityId));
+        entityManagerSession.doTransactedAction(em -> DeviceManagementOperationDAO.delete(em, scopeId, entityId));
     }
 }

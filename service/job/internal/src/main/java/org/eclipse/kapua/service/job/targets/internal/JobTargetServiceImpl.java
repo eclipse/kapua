@@ -62,7 +62,7 @@ public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimit
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> JobTargetDAO.create(em, creator));
+        return entityManagerSession.doTransactedAction(em -> JobTargetDAO.create(em, creator));
     }
 
     @Override
@@ -85,7 +85,7 @@ public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimit
 
         //
         // Do update
-        return entityManagerSession.onTransactedResult(em -> JobTargetDAO.update(em, jobTarget));
+        return entityManagerSession.doTransactedAction(em -> JobTargetDAO.update(em, jobTarget));
     }
 
     @Override
@@ -107,7 +107,7 @@ public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimit
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> JobTargetDAO.delete(em, scopeId, jobTargetId));
+        entityManagerSession.doTransactedAction(em -> JobTargetDAO.delete(em, scopeId, jobTargetId));
     }
 
     @Override
@@ -123,7 +123,7 @@ public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimit
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> JobTargetDAO.find(em, scopeId, jobTargetId));
+        return entityManagerSession.doAction(em -> JobTargetDAO.find(em, scopeId, jobTargetId));
     }
 
     @Override
@@ -138,7 +138,7 @@ public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimit
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> JobTargetDAO.query(em, query));
+        return entityManagerSession.doAction(em -> JobTargetDAO.query(em, query));
     }
 
     @Override
@@ -153,6 +153,6 @@ public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimit
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> JobTargetDAO.count(em, query));
+        return entityManagerSession.doAction(em -> JobTargetDAO.count(em, query));
     }
 }

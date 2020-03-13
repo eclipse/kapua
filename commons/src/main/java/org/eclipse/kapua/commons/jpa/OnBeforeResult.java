@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
+import org.eclipse.kapua.KapuaException;
+
 /**
  * Entity manager callback result service definition.
  *
@@ -19,6 +21,6 @@ package org.eclipse.kapua.commons.jpa;
  */
 public interface OnBeforeResult<T> {
 
-    T onBefore();
+    T onBefore() throws KapuaException;
 
 }

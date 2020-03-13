@@ -71,7 +71,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
      * @since 1.0.0
      */
     public AccountServiceImpl() {
-        super(AccountService.class.getName(), AccountDomains.ACCOUNT_DOMAIN, AccountEntityManagerFactory.getInstance(), AccountCacheConfigurationFactory.getInstance(), AccountService.class, AccountFactory.class);
+        super(AccountService.class.getName(), AccountDomains.ACCOUNT_DOMAIN, AccountEntityManagerFactory.getInstance(), AccountService.class, AccountFactory.class);
     }
 
     @Override
@@ -309,15 +309,14 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Do find
         //TODO fix it, example using new container
-        return entityManagerSession.doAction(EntityManagerContainer.<Account>create().onResultHandler(em -> {
+        return entityManagerSession.doAction(em -> {
                 Account account = AccountDAO.findByName(em, name);
                 if (account != null) {
                     checkAccountPermission(account.getScopeId(), account.getId(), AccountDomains.ACCOUNT_DOMAIN, Actions.read);
                 }
                 return account;
             }
-         ).onBefore(() -> (Account)cache.get(name))
-         .onAfter((entity) -> (Account)cache.put(name, entity)));
+         );
     }
 
     @Override

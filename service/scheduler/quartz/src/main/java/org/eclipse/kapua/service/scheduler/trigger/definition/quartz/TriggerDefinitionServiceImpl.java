@@ -65,7 +65,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> TriggerDefinitionDAO.create(em, creator));
+        return entityManagerSession.doTransactedAction(em -> TriggerDefinitionDAO.create(em, creator));
     }
 
     @Override
@@ -82,7 +82,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
-        return entityManagerSession.onTransactedResult(em -> TriggerDefinitionDAO.update(em, triggerDefinition));
+        return entityManagerSession.doTransactedAction(em -> TriggerDefinitionDAO.update(em, triggerDefinition));
     }
 
     @Override
@@ -97,7 +97,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> TriggerDefinitionDAO.find(em, stepDefinitionId));
+        return entityManagerSession.doAction(em -> TriggerDefinitionDAO.find(em, stepDefinitionId));
     }
 
     @Override
@@ -112,7 +112,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> TriggerDefinitionDAO.find(em, scopeId, stepDefinitionId));
+        return entityManagerSession.doAction(em -> TriggerDefinitionDAO.find(em, scopeId, stepDefinitionId));
     }
 
     @Override
@@ -127,7 +127,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> TriggerDefinitionDAO.query(em, query));
+        return entityManagerSession.doAction(em -> TriggerDefinitionDAO.query(em, query));
     }
 
     @Override
@@ -142,7 +142,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> TriggerDefinitionDAO.count(em, query));
+        return entityManagerSession.doAction(em -> TriggerDefinitionDAO.count(em, query));
     }
 
     @Override
@@ -158,12 +158,12 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> {
+        entityManagerSession.doTransactedAction(em -> {
             if (TriggerDefinitionDAO.find(em, scopeId, stepDefinitionId) == null) {
                 throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, stepDefinitionId);
             }
 
-            TriggerDefinitionDAO.delete(em, scopeId, stepDefinitionId);
+            return TriggerDefinitionDAO.delete(em, scopeId, stepDefinitionId);
         });
 
     }

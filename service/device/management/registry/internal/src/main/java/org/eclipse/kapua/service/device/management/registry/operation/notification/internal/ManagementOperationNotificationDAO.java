@@ -60,10 +60,11 @@ public class ManagementOperationNotificationDAO {
      * @param em
      * @param scopeId
      * @param stepDefinitionId
+     * @return deleted entity
      * @throws KapuaEntityNotFoundException If the {@link ManagementOperationNotification} is not found
      */
-    public static void delete(EntityManager em, KapuaId scopeId, KapuaId stepDefinitionId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, ManagementOperationNotificationImpl.class, scopeId, stepDefinitionId);
+    public static ManagementOperationNotification delete(EntityManager em, KapuaId scopeId, KapuaId stepDefinitionId) throws KapuaEntityNotFoundException {
+        return ServiceDAO.delete(em, ManagementOperationNotificationImpl.class, scopeId, stepDefinitionId);
     }
 
     /**

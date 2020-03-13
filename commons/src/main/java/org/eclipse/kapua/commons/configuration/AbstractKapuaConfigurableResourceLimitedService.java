@@ -12,10 +12,8 @@
 package org.eclipse.kapua.commons.configuration;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.jpa.CacheConfigurationFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.service.internal.Cache;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
@@ -41,13 +39,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
 
     private final Class<S> serviceClass;
     private final Class<F> factoryClass;
-    protected Cache cache;
 
-    //============================================================================
-    //
-    // old constructor
-    //
-    //============================================================================
     /**
      * @deprecated this constructor will be removed in a next release (may be)
      */
@@ -59,23 +51,6 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
             Class<S> serviceClass,
             Class<F> factoryClass) {
         super(pid, domain, entityManagerFactory);
-        this.serviceClass = serviceClass;
-        this.factoryClass = factoryClass;
-    }
-
-    //============================================================================
-    //
-    // new constructor
-    //
-    //============================================================================
-    protected AbstractKapuaConfigurableResourceLimitedService(
-            String pid,
-            Domain domain,
-            EntityManagerFactory entityManagerFactory,
-            CacheConfigurationFactory cacheConfigurationFactory,
-            Class<S> serviceClass,
-            Class<F> factoryClass) {
-        super(pid, domain, entityManagerFactory, cacheConfigurationFactory);
         this.serviceClass = serviceClass;
         this.factoryClass = factoryClass;
     }

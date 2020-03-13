@@ -63,7 +63,7 @@ public class JobExecutionServiceImpl
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> JobExecutionDAO.create(em, creator));
+        return entityManagerSession.doTransactedAction(em -> JobExecutionDAO.create(em, creator));
     }
 
     @Override
@@ -77,7 +77,7 @@ public class JobExecutionServiceImpl
         // Check access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobExecution.getScopeId()));
 
-        return entityManagerSession.onTransactedResult(em -> JobExecutionDAO.update(em, jobExecution));
+        return entityManagerSession.doTransactedAction(em -> JobExecutionDAO.update(em, jobExecution));
     }
 
     @Override
@@ -93,7 +93,7 @@ public class JobExecutionServiceImpl
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> JobExecutionDAO.find(em, scopeId, jobExecutionId));
+        return entityManagerSession.doAction(em -> JobExecutionDAO.find(em, scopeId, jobExecutionId));
     }
 
     @Override
@@ -108,7 +108,7 @@ public class JobExecutionServiceImpl
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> JobExecutionDAO.query(em, query));
+        return entityManagerSession.doAction(em -> JobExecutionDAO.query(em, query));
     }
 
     @Override
@@ -123,7 +123,7 @@ public class JobExecutionServiceImpl
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> JobExecutionDAO.count(em, query));
+        return entityManagerSession.doAction(em -> JobExecutionDAO.count(em, query));
     }
 
     @Override
@@ -139,12 +139,12 @@ public class JobExecutionServiceImpl
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> {
+        entityManagerSession.doTransactedAction(em -> {
             if (JobExecutionDAO.find(em, scopeId, jobExecutionId) == null) {
                 throw new KapuaEntityNotFoundException(JobExecution.TYPE, jobExecutionId);
             }
 
-            JobExecutionDAO.delete(em, scopeId, jobExecutionId);
+            return JobExecutionDAO.delete(em, scopeId, jobExecutionId);
         });
 
     }

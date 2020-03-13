@@ -26,12 +26,12 @@ public class EntityManagerContainer<T> {
     private EntityManagerContainer() {
     }
 
-    public EntityManagerContainer<T> onAfter(OnAfterResult<T> onAfter) {
+    public EntityManagerContainer<T> onAfterHandler(OnAfterResult<T> onAfter) {
         this.onAfter= onAfter;
         return this;
     }
 
-    public EntityManagerContainer<T> onBefore(OnBeforeResult<T> onBefore) {
+    public EntityManagerContainer<T> onBeforeHandler(OnBeforeResult<T> onBefore) {
         this.onBefore = onBefore;
         return this;
     }
@@ -45,7 +45,7 @@ public class EntityManagerContainer<T> {
         return resultCallback.onAction(entityManager);
     }
 
-    public T onBefore() {
+    public T onBefore() throws KapuaException {
         if (onBefore != null) {
             return onBefore.onBefore();
         }
@@ -54,7 +54,7 @@ public class EntityManagerContainer<T> {
         }
     }
 
-    public void onAfter(T instance) {
+    public void onAfter(T instance) throws KapuaException {
         if (onAfter != null) {
             onAfter.onAfter(instance);
         }

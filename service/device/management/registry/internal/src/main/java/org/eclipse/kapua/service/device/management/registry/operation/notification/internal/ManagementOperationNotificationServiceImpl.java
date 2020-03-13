@@ -70,7 +70,7 @@ public class ManagementOperationNotificationServiceImpl extends AbstractKapuaSer
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> ManagementOperationNotificationDAO.create(em, creator));
+        return entityManagerSession.doTransactedAction(em -> ManagementOperationNotificationDAO.create(em, creator));
     }
 
     @Override
@@ -86,7 +86,7 @@ public class ManagementOperationNotificationServiceImpl extends AbstractKapuaSer
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> ManagementOperationNotificationDAO.find(em, scopeId, entityId));
+        return entityManagerSession.doAction(em -> ManagementOperationNotificationDAO.find(em, scopeId, entityId));
     }
 
     @Override
@@ -101,7 +101,7 @@ public class ManagementOperationNotificationServiceImpl extends AbstractKapuaSer
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> ManagementOperationNotificationDAO.query(em, query));
+        return entityManagerSession.doAction(em -> ManagementOperationNotificationDAO.query(em, query));
     }
 
     @Override
@@ -116,7 +116,7 @@ public class ManagementOperationNotificationServiceImpl extends AbstractKapuaSer
 
         //
         // Do count
-        return entityManagerSession.onResult(em -> ManagementOperationNotificationDAO.count(em, query));
+        return entityManagerSession.doAction(em -> ManagementOperationNotificationDAO.count(em, query));
     }
 
     @Override
@@ -132,6 +132,6 @@ public class ManagementOperationNotificationServiceImpl extends AbstractKapuaSer
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> ManagementOperationNotificationDAO.delete(em, scopeId, entityId));
+        entityManagerSession.doTransactedAction(em -> ManagementOperationNotificationDAO.delete(em, scopeId, entityId));
     }
 }
