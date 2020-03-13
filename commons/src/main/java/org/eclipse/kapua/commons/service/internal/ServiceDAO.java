@@ -378,10 +378,10 @@ public class ServiceDAO {
         if (kapuaQuery.getSortCriteria() != null) {
             FieldSortCriteria sortCriteria = (FieldSortCriteria) kapuaQuery.getSortCriteria();
 
-            if (SortOrder.ASCENDING.equals(sortCriteria.getSortOrder())) {
-                order = cb.asc(extractAttribute(entityRoot, sortCriteria.getAttributeName()));
-            } else {
+            if (SortOrder.DESCENDING.equals(sortCriteria.getSortOrder())) {
                 order = cb.desc(extractAttribute(entityRoot, sortCriteria.getAttributeName()));
+            } else {
+                order = cb.asc(extractAttribute(entityRoot, sortCriteria.getAttributeName()));
             }
 
         } else {
