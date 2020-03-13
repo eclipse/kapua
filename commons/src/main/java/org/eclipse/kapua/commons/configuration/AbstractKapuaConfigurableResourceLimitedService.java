@@ -12,6 +12,7 @@
 package org.eclipse.kapua.commons.configuration;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -50,7 +51,17 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
             EntityManagerFactory entityManagerFactory,
             Class<S> serviceClass,
             Class<F> factoryClass) {
-        super(pid, domain, entityManagerFactory);
+        this(pid, domain, entityManagerFactory, null, serviceClass, factoryClass);
+    }
+
+    protected AbstractKapuaConfigurableResourceLimitedService(
+            String pid,
+            Domain domain,
+            EntityManagerFactory entityManagerFactory,
+            AbstractEntityCacheFactory abstractCacheFactory,
+            Class<S> serviceClass,
+            Class<F> factoryClass) {
+        super(pid, domain, entityManagerFactory, abstractCacheFactory);
         this.serviceClass = serviceClass;
         this.factoryClass = factoryClass;
     }
