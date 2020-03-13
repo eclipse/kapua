@@ -115,6 +115,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     private static boolean stealingLinkEnabled;
     private Future<?> stealingLinkManagerFuture;
 
+    private static final String ERROR = "@@ error";
     static {
         BrokerSetting config = BrokerSetting.getInstance();
         BROKER_IP_RESOLVER_CLASS_NAME = config.getString(BrokerSettingKey.BROKER_IP_RESOLVER_CLASS_NAME);
@@ -414,25 +415,26 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
             // fix ENTMQ-731
             KapuaErrorCode errorCode = e.getCode();
-            if (errorCode.equals(KapuaAuthenticationErrorCodes.UNKNOWN_LOGIN_CREDENTIAL) ||
-                    errorCode.equals(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS) ||
-                    errorCode.equals(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED)) {
+            if (KapuaAuthenticationErrorCodes.UNKNOWN_LOGIN_CREDENTIAL.equals(errorCode) ||
+                    KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS.equals(errorCode) ||
+                    KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED.equals(errorCode)) {
                 logger.warn("Invalid username or password for user {} ({})", kcc.getUserName(), e.getMessage());
                 // activeMQ will map CredentialException into a CONNECTION_REFUSED_BAD_USERNAME_OR_PASSWORD message (see javadoc on top of this method)
                 CredentialException ce = new CredentialException("Invalid username and/or password or disabled or expired account!");
                 ce.setStackTrace(e.getStackTrace());
                 loginMetric.getInvalidUserPassword().inc();
+                logger.info(ERROR, e);
                 throw ce;
-            } else if (errorCode.equals(KapuaAuthenticationErrorCodes.LOCKED_LOGIN_CREDENTIAL) ||
-                    errorCode.equals(KapuaAuthenticationErrorCodes.DISABLED_LOGIN_CREDENTIAL) ||
-                    errorCode.equals(KapuaAuthenticationErrorCodes.EXPIRED_LOGIN_CREDENTIALS)) {
+            } else if (KapuaAuthenticationErrorCodes.LOCKED_LOGIN_CREDENTIAL.equals(errorCode) ||
+                    KapuaAuthenticationErrorCodes.DISABLED_LOGIN_CREDENTIAL.equals(errorCode) ||
+                    KapuaAuthenticationErrorCodes.EXPIRED_LOGIN_CREDENTIALS.equals(errorCode)) {
                 logger.warn("User {} not authorized ({})", kcc.getUserName(), e.getMessage());
                 // activeMQ-MQ will map SecurityException into a CONNECTION_REFUSED_NOT_AUTHORIZED message (see javadoc on top of this method)
                 SecurityException se = new SecurityException("User not authorized!");
                 se.setStackTrace(e.getStackTrace());
+                logger.info(ERROR, e);
                 throw se;
             }
-
         } catch (Exception e) {
             loginMetric.getFailure().inc();
 
@@ -440,7 +442,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             // javadoc on top of this method)
             // Not trapped exception now:
             // KapuaException
-            logger.info("@@ error", e);
+            logger.info(ERROR, e);
             throw e;
         } finally {
             // 7) logout
@@ -484,10 +486,8 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 authenticator.disconnect(kcc, error);
                 // multiple account stealing link fix
                 info.setClientId(kcc.getFullClientId());
-                if (context != null) {
-                    // context may be null according to isPassThroughConnection(context)
-                    context.setClientId(kcc.getFullClientId());
-                }
+                // context may be null according to isPassThroughConnection(context)
+                context.setClientId(kcc.getFullClientId());
             } finally {
                 loginRemoveConnectionTimeContext.stop();
                 authenticationService.logout();
@@ -504,10 +504,8 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             }
         }
         super.removeConnection(context, info, error);
-        if (context != null) {
             // context may be null according to isPassThroughConnection(context)
             context.setSecurityContext(null);
-        }
     }
 
     // ------------------------------------------------------------------

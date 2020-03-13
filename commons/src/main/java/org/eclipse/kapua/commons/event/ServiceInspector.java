@@ -50,13 +50,11 @@ public class ServiceInspector {
                 Method matchingMethod;
                 try {
                     matchingMethod = getMatchingMethod(superclass, method);
-                    if (matchingMethod != null) {
-                        if (ArrayUtils.isEmpty(listenAnnotations)) {
-                            listenAnnotations = matchingMethod.getAnnotationsByType(ListenServiceEvent.class);
-                        }
-                        if (ArrayUtils.isEmpty(raiseAnnotations)) {
-                            raiseAnnotations = matchingMethod.getAnnotationsByType(RaiseServiceEvent.class);
-                        }
+                    if (ArrayUtils.isEmpty(listenAnnotations)) {
+                        listenAnnotations = matchingMethod.getAnnotationsByType(ListenServiceEvent.class);
+                    }
+                    if (ArrayUtils.isEmpty(raiseAnnotations)) {
+                        raiseAnnotations = matchingMethod.getAnnotationsByType(RaiseServiceEvent.class);
                     }
                 } catch (NoSuchMethodException e) {
                     LOGGER.debug("Method not found in superclass: {}", method);
@@ -113,31 +111,29 @@ public class ServiceInspector {
 
     private static Method getMatchingMethod(Class<?> clazz, Method method) throws NoSuchMethodException {
         Method[] methods = clazz.getMethods();
-        if (methods.length == 0) {
-            return null;
-        }
-
-        List<Class<?>> methodParamTypes = Arrays.asList(method.getParameterTypes());
-
         Method matchingMethod = null;
-        for (Method candidate : methods) {
-            if (!candidate.getName().equals(method.getName())) {
-                continue;
-            }
-            if (!candidate.getReturnType().equals(method.getReturnType())) {
-                continue;
-            }
 
-            List<Class<?>> candidateParamTypes = Arrays.asList(method.getParameterTypes());
+        if (methods.length > 0) {
+            List<Class<?>> methodParamTypes = Arrays.asList(method.getParameterTypes());
 
-            if (candidateParamTypes.size() != methodParamTypes.size() || !candidateParamTypes.containsAll(methodParamTypes)) {
-                continue;
+            for (Method candidate : methods) {
+                if (!candidate.getName().equals(method.getName())) {
+                    continue;
+                }
+                if (!candidate.getReturnType().equals(method.getReturnType())) {
+                    continue;
+                }
+
+                List<Class<?>> candidateParamTypes = Arrays.asList(method.getParameterTypes());
+
+                if (candidateParamTypes.size() != methodParamTypes.size() || !candidateParamTypes.containsAll(methodParamTypes)) {
+                    continue;
+                }
+
+                matchingMethod = candidate;
+                break;
             }
-
-            matchingMethod = candidate;
-            break;
         }
-
         if (matchingMethod == null) {
             throw new NoSuchMethodException(method.getName());
         }

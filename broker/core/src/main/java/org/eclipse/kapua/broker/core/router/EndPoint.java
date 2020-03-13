@@ -29,7 +29,7 @@ public interface EndPoint {
 
     boolean matches(Exchange exchange, Object value, @Header(Exchange.SLIP_ENDPOINT) String previous, @Properties Map<String, Object> properties);
 
-    String getEndpoint(Exchange exchange, Object value, @Header(Exchange.SLIP_ENDPOINT) String previous, @Properties Map<String, Object> properties);
+    String getEndPoint(Exchange exchange, Object value, @Header(Exchange.SLIP_ENDPOINT) String previous, @Properties Map<String, Object> properties);
 
     void toLog(StringBuffer buffer, String prefix);
 

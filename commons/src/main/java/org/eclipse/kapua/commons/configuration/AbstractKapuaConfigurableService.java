@@ -156,7 +156,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
                 String key = property.getKey();
                 KapuaTad attrDef = attrDefs.get(key);
 
-                // is attribute undefined?ma po
+                // is attribute undefined?
                 if (attrDef == null) {
                     // we do not have an attribute descriptor to the validation
                     // against
