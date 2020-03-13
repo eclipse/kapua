@@ -14,7 +14,7 @@ package org.eclipse.kapua.transport.exception;
 import javax.validation.constraints.NotNull;
 
 /**
- * The {@link Exception} to throw when is not possible to get an instance of the {@link org.eclipse.kapua.transport.TransportFacades}
+ * The {@link TransportException} to throw when is not possible to get an instance of the {@link org.eclipse.kapua.transport.TransportFacade}
  *
  * @since 1.2.0
  */
@@ -29,7 +29,9 @@ public class TransportClientGetException extends TransportException {
      * @since 1.2.0
      */
     public TransportClientGetException(@NotNull String serverIp) {
-        this(null, serverIp);
+        super(TransportErrorCodes.CLIENT_GET, serverIp);
+
+        this.serverIp = serverIp;
     }
 
     /**

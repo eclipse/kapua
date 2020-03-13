@@ -38,9 +38,7 @@ public interface TransportClientFactory<C extends TransportChannel, P extends Tr
     /**
      * Gets an instance of the {@link TransportFacade} implementing class.
      * <p>
-     * <p>
      * The instance is ready to be used by the device layer.
-     * </p>
      *
      * @param configParameters a {@link Map} containing optional config values for the facade
      * @return An instance of the {@link TransportFacade} implementing class.

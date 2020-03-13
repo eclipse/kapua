@@ -30,6 +30,9 @@ public abstract class TransportException extends KapuaException {
     private static final String KAPUA_ERROR_MESSAGES = "transport-client-error-messages";
 
     /**
+     * Constructor.
+     *
+     * @param code The {@link TransportErrorCodes} associated this the {@link TransportException}
      * @since 1.1.0
      */
     protected TransportException(@NotNull TransportErrorCodes code) {
@@ -37,13 +40,22 @@ public abstract class TransportException extends KapuaException {
     }
 
     /**
+     * Constructor.
+     *
+     * @param code      The {@link TransportErrorCodes} associated this the {@link TransportException}
+     * @param arguments The arguments associated with the {@link TransportException}.
      * @since 1.1.0
      */
     protected TransportException(@NotNull TransportErrorCodes code, @Nullable Object... arguments) {
         super(code, arguments);
     }
 
-    /*
+    /**
+     * Constructor.
+     *
+     * @param code      The {@link TransportErrorCodes} associated this the {@link TransportException}
+     * @param cause     The root cause of the {@link TransportException}.
+     * @param arguments The arguments associated with the {@link TransportException}.
      * @since 1.1.0
      */
     protected TransportException(@NotNull TransportErrorCodes code, @NotNull Throwable cause, @Nullable Object... arguments) {
