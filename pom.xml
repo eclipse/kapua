@@ -1631,6 +1631,14 @@
                 <artifactId>swagger-ui</artifactId>
                 <version>${swagger-ui.version}</version>
             </dependency>
+
+            <!-- Caching dependencies -->
+            <dependency>
+                <groupId>javax.cache</groupId>
+                <artifactId>cache-api</artifactId>
+                <version>1.1.1</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
