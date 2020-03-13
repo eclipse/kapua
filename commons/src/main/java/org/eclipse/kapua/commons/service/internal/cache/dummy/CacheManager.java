@@ -15,6 +15,9 @@ import javax.cache.configuration.Configuration;
 import java.net.URI;
 import java.util.Properties;
 
+/**
+ * Dummy cache manager needed to instantiate {@link Cache}
+ */
 public class CacheManager implements javax.cache.CacheManager {
 
     private static CacheManager instance;

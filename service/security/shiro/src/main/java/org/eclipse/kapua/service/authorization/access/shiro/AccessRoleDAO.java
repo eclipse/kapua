@@ -90,7 +90,7 @@ public class AccessRoleDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param accessRoleId
-     * @return deleted entity
+     * @return the deleted {@link AccessRole}
      * @throws KapuaEntityNotFoundException
      *             If {@link AccessRole} is not found.
      */

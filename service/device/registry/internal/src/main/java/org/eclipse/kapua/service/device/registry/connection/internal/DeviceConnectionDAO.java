@@ -108,7 +108,7 @@ public class DeviceConnectionDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param deviceConnectionId
-     * @return deleted entity
+     * @return the deleted {@link DeviceConnection}
      * @throws KapuaEntityNotFoundException If the {@link DeviceConnection} is not found.
      */
     public static DeviceConnection delete(EntityManager em, KapuaId scopeId, KapuaId deviceConnectionId) throws KapuaEntityNotFoundException {

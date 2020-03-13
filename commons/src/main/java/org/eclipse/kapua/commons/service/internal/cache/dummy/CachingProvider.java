@@ -15,6 +15,9 @@ import javax.cache.configuration.OptionalFeature;
 import java.net.URI;
 import java.util.Properties;
 
+/**
+ * Dummy caching provider needed to instantiate {@link Cache}
+ */
 public class CachingProvider implements javax.cache.spi.CachingProvider {
     @Override
     public javax.cache.CacheManager getCacheManager(URI uri, ClassLoader classLoader, Properties properties) {

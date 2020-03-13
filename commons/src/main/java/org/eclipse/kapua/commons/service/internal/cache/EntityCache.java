@@ -22,10 +22,15 @@ import org.slf4j.LoggerFactory;
 import javax.cache.Cache;
 import java.io.Serializable;
 
+/**
+ * The basic cache class, it contains two {@link Cache} objects.
+ * The {@code idCache} cache contains {@link KapuaEntity} objects, while the {@code listsCache} contains {@link KapuaListResult} objects.
+ */
 public class EntityCache {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(EntityCache.class);
 
+    // metrics naming variables
     private static final String MODULE = "commons";
     private static final String COMPONENT = "cache";
     private static final String ENTITY = "entity";
@@ -37,6 +42,12 @@ public class EntityCache {
     protected Counter cacheHit;
     protected Counter cacheRemoval;
 
+    /**
+     * The constructor initializes the {@link #idCache} and the {@link #listsCache}.
+     * It also initializes metrics counters for analysis ({@link #cacheMiss}, {@link #cacheHit} and {@link #cacheRemoval} counters).
+     *
+     * @param idCacheName
+     */
     public EntityCache(String idCacheName) {
         idCache = KapuaCacheManager.getCache(idCacheName);
         listsCache = KapuaCacheManager.getCache(idCacheName + "_list");
@@ -105,6 +116,14 @@ public class EntityCache {
         return null;
     }
 
+    /**
+     * Checks that the scopeId of the entity matches the provided one.
+     * This mimics the checks that are performed in the 'find' method of the {@link org.eclipse.kapua.commons.service.internal.ServiceDAO} class.
+     *
+     * @param scopeId a {@link KapuaId} representing the scopeId
+     * @param entity the {@link KapuaEntity} to be checked
+     * @return the provided entity if it has the required scopeId, null otherwise
+     */
     protected KapuaEntity checkResult(KapuaId scopeId, KapuaEntity entity) {
         if (entity != null) {
             if (scopeId == null) {
@@ -121,6 +140,14 @@ public class EntityCache {
         }
     }
 
+    /**
+     * Checks that the scopeId of the entity matches the provided one.
+     * This mimics the checks that are performed in the 'find' method of the {@link org.eclipse.kapua.commons.service.internal.ServiceDAO} class.
+     *
+     * @param scopeId a {@link KapuaId} representing the scopeId
+     * @param entity the {@link KapuaListResult} entity to be checked
+     * @return the provided entity if it has the required scopeId, null otherwise
+     */
     protected KapuaListResult checkResult(KapuaId scopeId, KapuaListResult entity) {
         if (entity != null) {
             if (entity.getSize() == 0) {
