@@ -256,7 +256,28 @@ public enum SystemSettingKey implements SettingKey {
     /**
      * Allow System Settings to be updatable at runtime via System.setProperty()
      */
-    SETTINGS_HOTSWAP("commons.settings.hotswap");
+    SETTINGS_HOTSWAP("commons.settings.hotswap"),
+
+    /**
+     * Provide the classname for the Cache Provider
+     */
+    CACHING_PROVIDER("commons.cache.provider.classname"),
+    /**
+     * Size of the local cache for the KapuaTmetadata
+     */
+    TMETADATA_LOCAL_CACHE_SIZE_MAXIMUM("commons.cache.local.tmetadata.maxsize"),
+    /**
+     * Provide the CacheManager config file URL
+     */
+    CACHE_CONFIG_URL("commons.cache.config.url"),
+    /**
+     * Provide the Cache TTL
+     */
+    CACHE_TTL("commons.cache.config.ttl"),
+    /**
+     * Provide the JCache Expiry Policy. Allowed values: MODIFIED, TOUCHED
+     */
+    JCACHE_EXPIRY_POLICY("commons.cache.config.expiryPolicy");
 
     private String key;
 

@@ -16,6 +16,7 @@ import javax.validation.constraints.NotNull;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
@@ -53,12 +54,12 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     private Domain domain;
     private String pid;
 
-    /**
-     * @deprecated this constructor will be removed in a next release (may be)
-     */
-    @Deprecated
     protected AbstractKapuaConfigurableService(String pid, Domain domain, EntityManagerFactory entityManagerFactory) {
-        super(entityManagerFactory);
+        this(pid, domain, entityManagerFactory, null);
+    }
+
+    protected AbstractKapuaConfigurableService(String pid, Domain domain, EntityManagerFactory entityManagerFactory, AbstractEntityCacheFactory abstractCacheFactory) {
+        super(entityManagerFactory, abstractCacheFactory);
         this.pid = pid;
         this.domain = domain;
     }
@@ -197,7 +198,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     private ServiceConfig createConfig(ServiceConfig serviceConfig)
             throws KapuaException {
 
-        return entityManagerSession.doAction(em -> ServiceDAO.create(em, serviceConfig));
+        return entityManagerSession.doTransactedAction(em -> ServiceDAO.create(em, serviceConfig));
     }
 
     /**
@@ -209,7 +210,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      */
     private ServiceConfig updateConfig(ServiceConfig serviceConfig)
             throws KapuaException {
-        return entityManagerSession.doAction(em -> {
+        return entityManagerSession.doTransactedAction(em -> {
             ServiceConfig oldServiceConfig = ServiceConfigDAO.find(em, serviceConfig.getScopeId(), serviceConfig.getId());
             if (oldServiceConfig == null) {
                 throw new KapuaEntityNotFoundException(ServiceConfig.TYPE, serviceConfig.getId());
