@@ -36,6 +36,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Class responsible for managing the various caches that are instantiated.
+ * All the caches are stored in a Map, where the keys are the cache names and the value are the caches themselves.
+ */
 public class KapuaCacheManager {
 
     enum ExpiryPolicy {
@@ -56,6 +60,11 @@ public class KapuaCacheManager {
     private KapuaCacheManager() {
     }
 
+    /**
+     * Gets the URI with the cache config file path.
+     *
+     * @return the URI with the cache config file path
+     */
     private static URI getCacheConfig() {
         String configurationFileName = SystemSetting.getInstance().getString(SystemSettingKey.CACHE_CONFIG_URL);
         URI uri = null;
@@ -76,6 +85,12 @@ public class KapuaCacheManager {
         return uri;
     }
 
+    /**
+     * Method responsible for getting an existing cache, or instantiating a new cache if the searched one does not exists yet.
+     *
+     * @param cacheName the name of the cache.
+     * @return the Cache object containing the desired cache.
+     */
     public static Cache<Serializable, Serializable> getCache(String cacheName) {
         Cache<Serializable, Serializable> cache = CACHE_MAP.get(cacheName);
         if (cache == null) {
@@ -110,6 +125,9 @@ public class KapuaCacheManager {
         return cache;
     }
 
+    /**
+     * Utility method to cleanup the whole cache.
+     */
     public static void invalidateAll() {
         CACHE_MAP.forEach((cacheKey, cache) -> cache.clear());
     }

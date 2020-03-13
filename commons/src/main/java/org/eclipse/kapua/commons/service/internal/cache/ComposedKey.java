@@ -16,6 +16,9 @@ import org.eclipse.kapua.model.id.KapuaId;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * This class is needed to define the keys for the {@link EntityCache#listsCache}.
+ */
 public class ComposedKey implements Serializable {
 
     private KapuaId scopeId;

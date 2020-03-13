@@ -105,7 +105,7 @@ public class RoleDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param roleId
-     * @return deleted entity
+     * @return the deleted {@link Role}
      * @throws KapuaEntityNotFoundException
      *             If {@link Role} is not found.
      */

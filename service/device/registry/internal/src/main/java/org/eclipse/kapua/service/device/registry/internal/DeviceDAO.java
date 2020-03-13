@@ -169,7 +169,7 @@ public class DeviceDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param deviceId
-     * @return deleted entity
+     * @return the deleted {@link Device}
      * @throws KapuaEntityNotFoundException If {@link Device} is not found.
      */
     public static Device delete(EntityManager em, KapuaId scopeId, KapuaId deviceId) throws KapuaEntityNotFoundException {

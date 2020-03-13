@@ -9,19 +9,20 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.jpa;
+package org.eclipse.kapua.service.account.internal;
 
-import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
+import org.eclipse.kapua.commons.jpa.AbstractNamedEntityCacheFactory;
 
 /**
- * Cache factory definition
+ * Cache factory for the {@link AccountServiceImpl}
  */
-public interface CacheFactory {
+public class AccountCacheFactory extends AbstractNamedEntityCacheFactory {
 
-    /**
-     * Creates the cache for the given service.
-     *
-     * @return an {@link EntityCache} instance.
-     */
-    EntityCache createCache();
+    private AccountCacheFactory() {
+        super("AccountId", "AccountName");
+    }
+
+    protected static AccountCacheFactory getInstance() {
+        return new AccountCacheFactory();
+    }
 }

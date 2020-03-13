@@ -43,6 +43,12 @@ public class AbstractKapuaService {
         this(entityManagerFactory, null);
     }
 
+    /**
+     * Constructor.
+     *
+     * @param entityManagerFactory the EntityManager factory.
+     * @param abstractCacheFactory the service cache factory.
+     */
     protected AbstractKapuaService(EntityManagerFactory entityManagerFactory, AbstractEntityCacheFactory abstractCacheFactory) {
         this.entityManagerFactory = entityManagerFactory;
         this.entityManagerSession = new EntityManagerSession(entityManagerFactory);
