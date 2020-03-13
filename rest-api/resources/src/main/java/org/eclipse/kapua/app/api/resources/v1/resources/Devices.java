@@ -26,10 +26,12 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -59,11 +61,13 @@ public class Devices extends AbstractKapuaResource {
      * @param clientId         The id of the {@link Device} in which to search results
      * @param connectionStatus The {@link DeviceConnectionStatus} in which to search results
      * @param fetchAttributes  Additional attributes to be returned. Allowed values: connection, lastEvent
+     * @param askTotalCount    Ask for the total count of the matched entities in the result
+     * @param sortParam        The name of the parameter that will be used as a sorting key
+     * @param sortDir          The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive.
      * @param offset           The result set offset.
      * @param limit            The result set limit.
-     * @param askTotalCount    Ask for the total count of the matched entities in the result
      * @return The {@link DeviceListResult} of all the devices associated to the current selected scope.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -75,8 +79,10 @@ public class Devices extends AbstractKapuaResource {
             @QueryParam("status") DeviceConnectionStatus connectionStatus,
             @QueryParam("fetchAttributes") List<String> fetchAttributes,
             @QueryParam("askTotalCount") boolean askTotalCount,
+            @QueryParam("sortParam") String sortParam,
+            @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
             @QueryParam("offset") @DefaultValue("0") int offset,
-            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         DeviceQuery query = deviceFactory.newQuery(scopeId);
 
         AndPredicate andPredicate = query.andPredicate();
@@ -88,6 +94,10 @@ public class Devices extends AbstractKapuaResource {
         }
         if (connectionStatus != null) {
             andPredicate.and(query.attributePredicate(DeviceAttributes.CONNECTION_STATUS, connectionStatus));
+        }
+
+        if (!Strings.isNullOrEmpty(sortParam)) {
+            query.setSortCriteria(query.fieldSortCriteria(sortParam, sortDir));
         }
         query.setPredicate(andPredicate);
         query.setFetchAttributes(fetchAttributes);
@@ -104,7 +114,7 @@ public class Devices extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link DeviceQuery} to use to filter results.
      * @return The {@link DeviceListResult} of all the result matching the given {@link DeviceQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -113,7 +123,7 @@ public class Devices extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public DeviceListResult query(
             @PathParam("scopeId") ScopeId scopeId,
-            DeviceQuery query) throws Exception {
+            DeviceQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         return deviceService.query(query);
@@ -125,7 +135,7 @@ public class Devices extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link DeviceQuery} to use to filter results.
      * @return The count of all the result matching the given {@link DeviceQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -134,7 +144,7 @@ public class Devices extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public CountResult count(
             @PathParam("scopeId") ScopeId scopeId,
-            DeviceQuery query) throws Exception {
+            DeviceQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         return new CountResult(deviceService.count(query));
@@ -147,7 +157,7 @@ public class Devices extends AbstractKapuaResource {
      * @param scopeId       The {@link ScopeId} in which to create the {@link Device}
      * @param deviceCreator Provides the information for the new Device to be created.
      * @return The newly created Device object.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -155,7 +165,7 @@ public class Devices extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Device create(
             @PathParam("scopeId") ScopeId scopeId,
-            DeviceCreator deviceCreator) throws Exception {
+            DeviceCreator deviceCreator) throws KapuaException {
         deviceCreator.setScopeId(scopeId);
 
         return deviceService.create(deviceCreator);
@@ -167,7 +177,7 @@ public class Devices extends AbstractKapuaResource {
      * @param scopeId  The {@link ScopeId} of the requested {@link Device}.
      * @param deviceId The id of the requested Device.
      * @return The requested Device object.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -175,7 +185,7 @@ public class Devices extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Device find(
             @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("deviceId") EntityId deviceId) throws Exception {
+            @PathParam("deviceId") EntityId deviceId) throws KapuaException {
         Device device = deviceService.find(scopeId, deviceId);
 
         if (device != null) {
@@ -192,7 +202,7 @@ public class Devices extends AbstractKapuaResource {
      * @param deviceId The id of the requested {@link Device}
      * @param device   The modified Device whose attributed need to be updated.
      * @return The updated device.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @PUT
@@ -202,7 +212,7 @@ public class Devices extends AbstractKapuaResource {
     public Device update(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            Device device) throws Exception {
+            Device device) throws KapuaException {
         device.setScopeId(scopeId);
         device.setId(deviceId);
 
@@ -215,14 +225,14 @@ public class Devices extends AbstractKapuaResource {
      * @param scopeId  The ScopeId of the requested {@link Device}.
      * @param deviceId The id of the Device to be deleted.
      * @return HTTP 200 if operation has completed successfully.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @DELETE
     @Path("{deviceId}")
     public Response deleteDevice(
             @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("deviceId") EntityId deviceId) throws Exception {
+            @PathParam("deviceId") EntityId deviceId) throws KapuaException {
         deviceService.delete(scopeId, deviceId);
 
         return returnOk();

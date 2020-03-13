@@ -374,6 +374,22 @@ components:
       schema:
         type: boolean
         default: false
+    sortParam:
+      name: sortParam
+      in: query
+      description: The name of the parameter that will be used as a sorting key
+      schema:
+        type: string
+    sortDir:
+      name: sortDir
+      in: query
+      description: The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive.
+      schema:
+        type: string
+        enum:
+          - ASCENDING
+          - DESCENDING
+        default: ASCENDING
   schemas:
     kapuaId:
       type: string
