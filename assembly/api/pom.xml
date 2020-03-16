@@ -243,7 +243,7 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>install -g swagger-cli</arguments>
+                            <arguments>install -g @apidevtools/swagger-cli</arguments>
                         </configuration>
                     </execution>
                 </executions>
