@@ -21,6 +21,6 @@ import org.eclipse.kapua.KapuaException;
  */
 public interface OnAfterResult<T> {
 
-    T onAfter(T result) throws KapuaException;
+    void onAfter(T result) throws KapuaException;
 
 }
