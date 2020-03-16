@@ -73,17 +73,14 @@ public class DeviceConnectionServiceImpl extends
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, null));
+        checkPermission(null, Actions.write);
 
         //
         // Check duplicate clientId
         DeviceConnectionQuery query = new DeviceConnectionQueryImpl(deviceConnectionCreator.getScopeId());
         query.setPredicate(query.attributePredicate(DeviceConnectionAttributes.CLIENT_ID, deviceConnectionCreator.getClientId()));
 
-        if (count(query) > 0) {
+        if (count(query, false) > 0) {
             throw new KapuaDuplicateNameException(deviceConnectionCreator.getClientId());
         }
 
@@ -103,10 +100,7 @@ public class DeviceConnectionServiceImpl extends
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, null));
+        checkPermission(null, Actions.write);
 
         return entityManagerSession.onTransactedResult(em -> {
             if (DeviceConnectionDAO.find(em, deviceConnection.getScopeId(), deviceConnection.getId()) == null) {
@@ -126,10 +120,7 @@ public class DeviceConnectionServiceImpl extends
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, scopeId));
+        checkPermission(scopeId, Actions.read);
 
         return entityManagerSession.onResult(em -> DeviceConnectionDAO.find(em, scopeId, entityId));
     }
@@ -149,23 +140,25 @@ public class DeviceConnectionServiceImpl extends
 
         //
         // Query and parse result
-        DeviceConnectionListResult result = query(query);
+        DeviceConnectionListResult result = query(query, false);
         return result.getFirstItem();
     }
 
     @Override
     public DeviceConnectionListResult query(KapuaQuery<DeviceConnection> query)
             throws KapuaException {
+        return query(query, true);
+    }
+
+    private DeviceConnectionListResult query(KapuaQuery<DeviceConnection> query, boolean checkPermission)
+            throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
 
-        //
-        // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, query.getScopeId()));
+        if (checkPermission) {
+            checkPermission(query.getScopeId(), Actions.read);
+        }
 
         return entityManagerSession.onResult(em -> DeviceConnectionDAO.query(em, query));
     }
@@ -173,16 +166,18 @@ public class DeviceConnectionServiceImpl extends
     @Override
     public long count(KapuaQuery<DeviceConnection> query)
             throws KapuaException {
+        return count(query, true);
+    }
+
+    private long count(KapuaQuery<DeviceConnection> query, boolean checkPermission)
+            throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
 
-        //
-        // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.read, query.getScopeId()));
+        if (checkPermission) {
+            checkPermission(query.getScopeId(), Actions.read);
+        }
 
         return entityManagerSession.onResult(em -> DeviceConnectionDAO.count(em, query));
     }
@@ -197,10 +192,7 @@ public class DeviceConnectionServiceImpl extends
 
         //
         // Check Access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, Actions.write, null));
+        checkPermission(null, Actions.write);
 
         entityManagerSession.onTransactedAction(em -> {
             if (DeviceConnectionDAO.find(em, scopeId, deviceConnectionId) == null) {
@@ -246,6 +238,13 @@ public class DeviceConnectionServiceImpl extends
         for (DeviceConnection dc : deviceConnectionsToDelete.getItems()) {
             delete(dc.getScopeId(), dc.getId());
         }
+    }
+
+    private void checkPermission(KapuaId scopeId, Actions action) throws KapuaException {
+        KapuaLocator locator = KapuaLocator.getInstance();
+        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
+        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+        authorizationService.checkPermission(permissionFactory.newPermission(DeviceDomains.DEVICE_CONNECTION_DOMAIN, action, scopeId));
     }
 
 }
