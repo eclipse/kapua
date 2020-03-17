@@ -99,7 +99,7 @@ public class SemanticVersion {
      * @since 1.2.0
      */
     public boolean afterOrMatches(SemanticVersion other) {
-        return after(other) || match(other);
+        return after(other) || matches(other);
     }
 
     /**
@@ -112,14 +112,15 @@ public class SemanticVersion {
     public boolean after(SemanticVersion other) {
         if (getMajorVersion().after(other.getMajorVersion())) {
             return true;
-        }
+        } else if (getMajorVersion().matches(other.getMajorVersion())) {
 
-        if (getMinorVersion() != null && getMinorVersion().after(other.getMinorVersion())) {
-            return true;
-        }
-
-        if (getPatchVersion() != null && getPatchVersion().after(other.getPatchVersion())) {
-            return true;
+            if (getMinorVersion() != null && getMinorVersion().after(other.getMinorVersion())) {
+                return true;
+            } else if (getMinorVersion().matches(other.getMinorVersion())) {
+                if (getPatchVersion() != null && getPatchVersion().after(other.getPatchVersion())) {
+                    return true;
+                }
+            }
         }
 
         return false;
@@ -133,7 +134,7 @@ public class SemanticVersion {
      * @since 1.2.0
      */
     public boolean beforeOrMatches(SemanticVersion other) {
-        return before(other) || match(other);
+        return before(other) || matches(other);
     }
 
     /**
@@ -146,14 +147,15 @@ public class SemanticVersion {
     public boolean before(SemanticVersion other) {
         if (getMajorVersion().before(other.getMajorVersion())) {
             return true;
-        }
+        } else if (getMajorVersion().matches(other.getMajorVersion())) {
 
-        if (getMinorVersion() != null && getMinorVersion().before(other.getMinorVersion())) {
-            return true;
-        }
-
-        if (getPatchVersion() != null && getPatchVersion().before(other.getPatchVersion())) {
-            return true;
+            if (getMinorVersion() != null && getMinorVersion().before(other.getMinorVersion())) {
+                return true;
+            } else if (getMinorVersion().matches(other.getMinorVersion())) {
+                if (getPatchVersion() != null && getPatchVersion().before(other.getPatchVersion())) {
+                    return true;
+                }
+            }
         }
 
         return false;
@@ -166,13 +168,13 @@ public class SemanticVersion {
      * @return {@code true} if {@code this} {@link SemanticVersion} is matches the given {@link SemanticVersion}
      * @since 1.2.0
      */
-    public boolean match(SemanticVersion other) {
+    public boolean matches(SemanticVersion other) {
         return getVersionString().equals(other.getVersionString());
     }
 
     @Override
     public String toString() {
-        return versionString;
+        return getVersionString();
     }
 
     /**
@@ -252,6 +254,22 @@ public class SemanticVersion {
          * Compares {@code this} {@link VersionToken} with another {@link VersionToken}.
          *
          * @param other The {@link VersionToken} to use to compare.
+         * @return {@code true} if {@code this} {@link VersionToken} matches the given {@link VersionToken}
+         * @since 1.2.0
+         */
+        public boolean matches(VersionToken other) {
+            if (isIntegerComparison() && other.isIntegerComparison()) {
+                return getVersionInteger().equals(other.getVersionInteger());
+            } else {
+                return getVersionString().compareTo(other.getVersionString()) == 0;
+            }
+        }
+
+
+        /**
+         * Compares {@code this} {@link VersionToken} with another {@link VersionToken}.
+         *
+         * @param other The {@link VersionToken} to use to compare.
          * @return {@code true} if {@code this} {@link VersionToken} is before the given {@link VersionToken}
          * @since 1.2.0
          */
@@ -261,6 +279,11 @@ public class SemanticVersion {
             } else {
                 return getVersionString().compareTo(other.getVersionString()) < 0;
             }
+        }
+
+        @Override
+        public String toString() {
+            return getVersionString();
         }
     }
 }
