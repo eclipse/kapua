@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura;
 
+import com.google.common.base.Strings;
+import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.RandomUtils;
@@ -34,6 +36,7 @@ import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.transport.TransportClientFactory;
 import org.eclipse.kapua.transport.TransportFacade;
+import org.eclipse.kapua.transport.exception.TransportClientGetException;
 import org.eclipse.kapua.transport.exception.TransportTimeoutException;
 import org.eclipse.kapua.transport.message.TransportMessage;
 
@@ -117,21 +120,17 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
      * @throws DeviceCallSendException    if sending the request produces any error.
      * @since 1.0.0
      */
-    private KuraResponseMessage sendInternal(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException {
+    protected KuraResponseMessage sendInternal(@NotNull KuraRequestMessage requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException {
 
         KuraResponseMessage response;
         try {
-            Account account = KapuaSecurityUtils.doPrivileged(() -> ACCOUNT_SERVICE.findByName(requestMessage.getChannel().getScope()));
-            Device device = DEVICE_REGISTRY_SERVICE.findByClientId(account.getId(), requestMessage.getChannel().getClientId());
-            String serverIp = device.getConnection().getServerIp();
-
             //
             // Borrow a TransportClient
-            try (TransportFacade transportFacade = borrowClient(serverIp)) {
+            try (TransportFacade transportFacade = borrowClient(requestMessage)) {
                 //
                 // Get Kura to transport translator for the request and vice versa
-                Translator<KuraRequestMessage, TransportMessage> translatorKuraTransport = getTranslator(KuraRequestMessage.class, transportFacade.getMessageClass());
-                Translator<TransportMessage, KuraResponseMessage> translatorTransportKura = getTranslator(transportFacade.getMessageClass(), KuraResponseMessage.class);
+                Translator<KuraRequestMessage, TransportMessage<?, ?>> translatorKuraTransport = getTranslator(requestMessage.getClass(), transportFacade.getMessageClass());
+                Translator<TransportMessage<?, ?>, KuraResponseMessage> translatorTransportKura = getTranslator(transportFacade.getMessageClass(), KuraResponseMessage.class);
 
                 //
                 // Make the request
@@ -170,24 +169,45 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
         return response;
     }
 
+
     /**
      * Picks a {@link TransportFacade} to send the {@link KuraResponseMessage}.
      *
-     * @param serverIp
+     * @param kuraRequestMessage
      * @return The {@link TransportFacade} to use to send the {@link KuraResponseMessage}.
-     * @throws KuraMqttDeviceCallException If getting the {@link TransportFacade} causes an {@link Exception}.
+     * @throws TransportClientGetException If getting the {@link TransportFacade} causes an {@link Exception}.
      * @since 1.0.0
      */
-    private TransportFacade borrowClient(String serverIp) throws KuraMqttDeviceCallException {
-        TransportFacade transportFacade;
-        Map<String, Object> configParameters = new HashMap<>();
-        configParameters.put("serverAddress", serverIp);
+    protected TransportFacade<?, ?, ?, ?> borrowClient(KuraRequestMessage kuraRequestMessage) throws TransportClientGetException {
+        String serverIp = null;
         try {
-            transportFacade = TRANSPORT_CLIENT_FACTORY.getFacade(configParameters);
+            serverIp = KapuaSecurityUtils.doPrivileged(() -> {
+                Account account = ACCOUNT_SERVICE.findByName(kuraRequestMessage.getChannel().getScope());
+
+                if (account == null) {
+                    throw new KapuaEntityNotFoundException(Account.TYPE, kuraRequestMessage.getChannel().getScope());
+                }
+
+                Device device = DEVICE_REGISTRY_SERVICE.findByClientId(account.getId(), kuraRequestMessage.getChannel().getClientId());
+                if (device == null) {
+                    throw new KapuaEntityNotFoundException(Device.TYPE, kuraRequestMessage.getChannel().getClientId());
+                }
+
+                return device.getConnection().getServerIp();
+            });
+
+            if (Strings.isNullOrEmpty(serverIp)) {
+                throw new TransportClientGetException(serverIp);
+            }
+
+            Map<String, Object> configParameters = new HashMap<>(1);
+            configParameters.put("serverAddress", serverIp);
+            return TRANSPORT_CLIENT_FACTORY.getFacade(configParameters);
+        } catch (TransportClientGetException tcge) {
+            throw tcge;
         } catch (Exception e) {
-            throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CALL_ERROR, e);
+            throw new TransportClientGetException(e, serverIp);
         }
-        return transportFacade;
     }
 
     /**
@@ -195,13 +215,13 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
      *
      * @param from The {@link Message} type from which to translate.
      * @param to   The {@link Message} type to which to translate.
-     * @param <F>  The {@link Message} {@code class}from which to translate.
+     * @param <F>  The {@link Message} {@code class} from which to translate.
      * @param <T>  The {@link Message} {@code class} to which to translate.
      * @return The {@link Translator} found.
      * @throws KuraMqttDeviceCallException If error occurs while searching the {@link Translator}.
      * @since 1.0.0
      */
-    private <F extends Message, T extends Message> Translator getTranslator(Class<F> from, Class<T> to) throws KuraMqttDeviceCallException {
+    protected <F extends Message<?, ?>, T extends Message<?, ?>> Translator<F, T> getTranslator(Class<F> from, Class<T> to) throws KuraMqttDeviceCallException {
         Translator<F, T> translator;
         try {
             translator = Translator.getTranslatorFor(from, to);
