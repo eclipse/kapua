@@ -14,53 +14,61 @@ package org.eclipse.kapua.service.device.call.message;
 import org.eclipse.kapua.message.Channel;
 
 /**
- * Device {@link Channel} definition.
+ * {@link DeviceChannel} definition.
+ *
+ * @since 1.0.0
  */
 public interface DeviceChannel extends Channel {
 
     /**
-     * Gets the message classification.<br>
-     * This field it is used to distinguish between command messages and "standard" messages such as telemetry messages.<br>
+     * Gets the {@link DeviceMessage} classification.
+     * <p>
+     * This field it is used to distinguish between command messages and "standard" messages such as telemetry messages.
      * The domain values can be customized via configuration parameter.
      *
-     * @return
+     * @return The {@link DeviceMessage} classification.
+     * @since 1.0.0
      */
     String getMessageClassification();
 
     /**
-     * Sets the message classification.<br>
-     * This field it is used to distinguish between command messages and "standard" messages such as telemetry messages.<br>
-     * The domain values can be customized via configuration parameter.
+     * Sets the {@link DeviceMessage} classification.
      *
-     * @param messageClassification
+     * @param messageClassification The {@link DeviceMessage} classification.
+     * @see #getMessageClassification()
+     * @since 1.0.0
      */
     void setMessageClassification(String messageClassification);
 
     /**
-     * Get the message scope
+     * Gets the scope.
      *
-     * @return
+     * @return The scope.
+     * @since 1.0.0
      */
     String getScope();
 
     /**
-     * Set th emessage scope
+     * Sets the scope
      *
-     * @param scope
+     * @param scope The scope
+     * @since 1.0.0
      */
     void setScope(String scope);
 
     /**
-     * Get the client identifier
+     * Gets the client identifier.
      *
-     * @return
+     * @return The client identifier.
+     * @since 1.0.0
      */
     String getClientId();
 
     /**
-     * Set the client identifier
+     * Sets the client identifier.
      *
-     * @param clientId
+     * @param clientId The client identifier.
+     * @since 1.0.0
      */
     void setClientId(String clientId);
 

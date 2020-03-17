@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,135 +16,155 @@ import org.eclipse.kapua.message.Position;
 import java.util.Date;
 
 /**
- * Device {@link Position} definition.
+ * {@link DevicePosition} definition.
+ * <p>
+ * This represent GPS data bound to a {@link DeviceMessage}.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface DevicePosition extends Position {
 
     /**
-     * Get the device position longitude
+     * Gets the position longitude.
      *
-     * @return
+     * @return The position longitude. The position longitude..
+     * @since 1.0.0
      */
     Double getLongitude();
 
     /**
-     * Set the device position longitude
+     * Sets the position longitude.
      *
-     * @param longitude
+     * @param longitude The position longitude.
+     * @since 1.0.0
      */
     void setLongitude(Double longitude);
 
     /**
-     * Get the device position latitude
+     * Gets the position latitude.
      *
-     * @return
+     * @return The position latitude.
+     * @since 1.0.0
      */
     Double getLatitude();
 
     /**
-     * Set the device position latitude
+     * Sets the position latitude.
      *
-     * @param latitude
+     * @param latitude The position latitude.
+     * @since 1.0.0
      */
     void setLatitude(Double latitude);
 
     /**
-     * Get the device position altitude
+     * Gets the position altitude.
      *
-     * @return
+     * @return The position altitude.
+     * @since 1.0.0
      */
     Double getAltitude();
 
     /**
-     * Set the device position altitude
+     * Sets the position altitude.
      *
-     * @param altitude
+     * @param altitude The position altitude.
+     * @since 1.0.0
      */
     void setAltitude(Double altitude);
 
     /**
-     * Get the device precision
+     * Gets the precision.
      *
-     * @return
+     * @return The precision.
+     * @since 1.0.0
      */
     Double getPrecision();
 
     /**
-     * Set the device precision
+     * Sets the precision.
      *
-     * @param precision
+     * @param precision The precision.
+     * @since 1.0.0
      */
     void setPrecision(Double precision);
 
     /**
-     * Get the device heading
+     * Gets the heading.
      *
-     * @return
+     * @return The heading.
+     * @since 1.0.0
      */
     Double getHeading();
 
     /**
-     * Set the device heading
+     * Sets the heading.
      *
-     * @param heading
+     * @param heading The heading.
+     * @since 1.0.0
      */
     void setHeading(Double heading);
 
     /**
-     * Get the device speed
+     * Gets the speed.
      *
-     * @return
+     * @return The speed.
+     * @since 1.0.0
      */
     Double getSpeed();
 
     /**
-     * Set the device speed
+     * Sets the speed.
      *
-     * @param speed
+     * @param speed The speed.
+     * @since 1.0.0
      */
     void setSpeed(Double speed);
 
     /**
-     * Get the timestamp
+     * Gets the timestamp.
      *
-     * @return
+     * @return The timestamp.
+     * @since 1.0.0
      */
     Date getTimestamp();
 
     /**
-     * Set the timestamp
+     * Sets the timestamp.
      *
-     * @param timestamp
+     * @param timestamp The timestamp.
+     * @since 1.0.0
      */
     void setTimestamp(Date timestamp);
 
     /**
-     * Get the satellites count
+     * Gets the satellites count.
      *
-     * @return
+     * @return The satellites count.
+     * @since 1.0.0
      */
     Integer getSatellites();
 
     /**
-     * Set the satellites count
+     * Sets the satellites count.
      *
-     * @param satellites
+     * @param satellites The satellites count.
+     * @since 1.0.0
      */
     void setSatellites(Integer satellites);
 
     /**
-     * Get the device status
+     * Gets the status.
      *
-     * @return
+     * @return The status.
+     * @since 1.0.0
      */
     Integer getStatus();
 
     /**
-     * Set the device status
+     * Sets the status.
      *
-     * @param status
+     * @param status The status.
+     * @since 1.0.0
      */
     void setStatus(Integer status);
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,18 +17,19 @@ import org.eclipse.kapua.message.Message;
 import java.util.Date;
 
 /**
- * Device {@link Message} definition.
+ * {@link DeviceMessage} definition.
  *
  * @param <C> {@link DeviceChannel} type
  * @param <P> {@link DevicePayload} type
- * @since 1.0
+ * @since 1.0.0
  */
 public interface DeviceMessage<C extends DeviceChannel, P extends DevicePayload> extends Message<C, P> {
 
     /**
-     * Get the {@link DeviceChannel}.
+     * Gets the {@link DeviceChannel}.
      *
      * @return The {@link DeviceChannel}.
+     * @since 1.0.0
      */
     C getChannel();
 
@@ -36,6 +37,7 @@ public interface DeviceMessage<C extends DeviceChannel, P extends DevicePayload>
      * Sets the {@link DeviceChannel}.
      *
      * @param channel The {@link DeviceChannel} to set.
+     * @since 1.0.0
      */
     void setChannel(C channel);
 
@@ -43,6 +45,7 @@ public interface DeviceMessage<C extends DeviceChannel, P extends DevicePayload>
      * Gets the {@link DevicePayload}.
      *
      * @return The {@link DevicePayload}.
+     * @since 1.0.0
      */
     P getPayload();
 
@@ -50,13 +53,15 @@ public interface DeviceMessage<C extends DeviceChannel, P extends DevicePayload>
      * Sets the {@link DevicePayload}.
      *
      * @param payload The {@link DevicePayload} to set.
+     * @since 1.0.0
      */
     void setPayload(P payload);
 
     /**
-     * Gets the message timestamp.
+     * Gets the timestamp.
      *
      * @return The timestamp.
+     * @since 1.0.0
      */
     Date getTimestamp();
 
@@ -64,6 +69,7 @@ public interface DeviceMessage<C extends DeviceChannel, P extends DevicePayload>
      * Sets the timestamp.
      *
      * @param timestamp The timestamp to set.
+     * @since 1.0.0
      */
     void setTimestamp(Date timestamp);
 }
