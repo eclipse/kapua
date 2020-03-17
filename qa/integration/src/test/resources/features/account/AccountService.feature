@@ -132,12 +132,12 @@ Feature: Account Service Tests
     And I logout
 
   Scenario: Creating An Account With Wrong TLD Format In Email
-  Login as kapua-sys, try to create an account with wrong TLD (less than 2 or more than 4 characters)
+  Login as kapua-sys, try to create an account with wrong TLD (less than 2 or more than 63 characters)
   Exceptions should be thrown
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     Given I expect the exception "KapuaIllegalArgumentException" with the text "*"
-    When I create an account with name "acc1", organization name "org1" and email adress "org@abc.commm"
+    When I create an account with name "acc1", organization name "org1" and email adress "org@abc.commmcommmcommmcommmcommmcommmcommmcommmcommmcommmcommmcommmcommm"
     Then An exception was thrown
     And I select account "kapua-sys"
     Given I expect the exception "KapuaIllegalArgumentException" with the text "*"
