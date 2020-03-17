@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,67 +15,77 @@ import org.eclipse.kapua.service.device.call.DeviceMethod;
 import org.eclipse.kapua.service.device.call.message.app.DeviceAppChannel;
 
 /**
- * Device request channel definition.
+ * {@link DeviceRequestChannel} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface DeviceRequestChannel extends DeviceAppChannel {
 
     /**
-     * Get the request method
+     * Gets the request {@link DeviceMethod}.
      *
-     * @return
+     * @return The request {@link DeviceMethod}.
+     * @since 1.0.0
      */
     DeviceMethod getMethod();
 
     /**
-     * Set the request method
+     * Sets the request {@link DeviceMethod}.
      *
-     * @param method
+     * @param method The request {@link DeviceMethod}.
+     * @since 1.0.0
      */
     void setMethod(DeviceMethod method);
 
     /**
-     * Get the request resources
+     * Gets the requested resources.
      *
-     * @return
+     * @return The requested resources.
+     * @since 1.0.0
      */
     String[] getResources();
 
     /**
-     * Set the request resources
+     * Sets the requested resources.
      *
-     * @param resources
+     * @param resources The requested resources.
+     * @since 1.0.0
      */
     void setResources(String[] resources);
 
     /**
-     * Get the request identifier
+     * Gets the request identifier.
      *
-     * @return
+     * @return The request identifier.
+     * @since 1.0.0
      */
     String getRequestId();
 
     /**
-     * Set the request identifier
+     * Sets the request identifier.
      *
-     * @param requestId
+     * @param requestId The request identifier.
+     * @since 1.0.0
      */
     void setRequestId(String requestId);
 
     /**
-     * Get the requester client identifier.<br>
-     * May be useful to reply only to the requester
+     * Gets the requester client identifier.
+     * <p>
+     * May be useful to reply only to the requester.
      *
-     * @return
+     * @return The requester client identifier.
+     * @since 1.0.0
      */
     String getRequesterClientId();
 
     /**
-     * Set the requester client identifier.<br>
+     * Sets the requester client identifier.
+     * <p>
      * May be useful to reply only to the requester
      *
-     * @param requesterClientId
+     * @param requesterClientId The requester client identifier.
+     * @since 1.0.0
      */
     void setRequesterClientId(String requesterClientId);
 

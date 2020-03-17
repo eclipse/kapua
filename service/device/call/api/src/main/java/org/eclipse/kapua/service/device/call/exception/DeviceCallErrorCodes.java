@@ -18,7 +18,6 @@ import org.eclipse.kapua.KapuaErrorCode;
  */
 public enum DeviceCallErrorCodes implements KapuaErrorCode {
 
-
     /**
      * @see DeviceCallSendException
      * @since 1.1.0

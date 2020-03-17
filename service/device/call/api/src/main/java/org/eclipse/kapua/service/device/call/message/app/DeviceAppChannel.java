@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,23 +14,25 @@ package org.eclipse.kapua.service.device.call.message.app;
 import org.eclipse.kapua.service.device.call.message.DeviceChannel;
 
 /**
- * Device application channel definition.
+ * {@link DeviceAppChannel} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface DeviceAppChannel extends DeviceChannel {
 
     /**
-     * Get the application identifier
+     * Gets the application identifier.
      *
-     * @return
+     * @return The application identifier.
+     * @since 1.0.0
      */
     String getAppId();
 
     /**
-     * Set the application identifier
+     * Sets the application identifier
      *
-     * @param appId
+     * @param appId The application identifier.
+     * @since 1.0.0
      */
     void setAppId(String appId);
 
