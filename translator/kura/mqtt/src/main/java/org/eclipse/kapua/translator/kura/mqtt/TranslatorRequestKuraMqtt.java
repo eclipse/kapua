@@ -55,8 +55,7 @@ public class TranslatorRequestKuraMqtt extends Translator<KuraRequestMessage, Mq
                 mqttPayload);
     }
 
-    public MqttTopic translate(KuraRequestChannel kuraChannel)
-            throws KapuaException {
+    public MqttTopic translate(KuraRequestChannel kuraChannel) {
         List<String> topicTokens = new ArrayList<>();
 
         if (kuraChannel.getMessageClassification() != null) {
@@ -77,7 +76,7 @@ public class TranslatorRequestKuraMqtt extends Translator<KuraRequestMessage, Mq
         return new MqttTopic(topicTokens.toArray(new String[0]));
     }
 
-    private MqttTopic generateResponseTopic(KuraRequestChannel kuraChannel) {
+    public MqttTopic generateResponseTopic(KuraRequestChannel kuraChannel) {
         String replyPart = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_REPLY_PART);
 
         List<String> topicTokens = new ArrayList<>();
@@ -95,8 +94,7 @@ public class TranslatorRequestKuraMqtt extends Translator<KuraRequestMessage, Mq
         return new MqttTopic(topicTokens.toArray(new String[0]));
     }
 
-    private MqttPayload translate(KuraPayload kuraPayload)
-            throws KapuaException {
+    public MqttPayload translate(KuraPayload kuraPayload) {
         return new MqttPayload(kuraPayload.toByteArray());
     }
 
