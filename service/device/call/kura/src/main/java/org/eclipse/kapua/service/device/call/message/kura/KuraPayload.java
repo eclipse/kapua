@@ -42,10 +42,12 @@ public class KuraPayload implements DevicePayload {
     protected byte[] body;
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public KuraPayload() {
-        metrics = new HashMap<>();
+
     }
 
     @Override
@@ -70,12 +72,26 @@ public class KuraPayload implements DevicePayload {
 
     @Override
     public Map<String, Object> getMetrics() {
+        if (metrics == null) {
+            metrics = new HashMap<>();
+        }
+
         return metrics;
     }
 
     @Override
     public void setMetrics(Map<String, Object> metrics) {
         this.metrics = metrics;
+    }
+
+    @Override
+    public void addMetric(String name, Object value) {
+        getMetrics().put(name, value);
+    }
+
+    @Override
+    public void removeMetric(String name) {
+        getMetrics().remove(name);
     }
 
     @Override
@@ -171,16 +187,16 @@ public class KuraPayload implements DevicePayload {
         protoMsg.getMetricList().forEach(kuraMetric -> {
             try {
                 Object value = getProtoKuraMetricValue(kuraMetric, kuraMetric.getType());
-                metrics.put(kuraMetric.getName(), value);
-            } catch (MessageException ihte) {
-                LOG.warn("During deserialization, ignoring metric named: " + kuraMetric.getName() + ". Unrecognized value type: " + kuraMetric.getType(), ihte);
+                addMetric(kuraMetric.getName(), value);
+            } catch (MessageException me) {
+                LOG.warn("During deserialization, ignoring metric named: {}. Unrecognized value type: {}", kuraMetric.getName(), kuraMetric.getType(), me);
             }
         });
 
         //
         // Set the body
         if (protoMsg.hasBody()) {
-            body = (protoMsg.getBody().toByteArray());
+            setBody(protoMsg.getBody().toByteArray());
         }
     }
 
@@ -188,34 +204,34 @@ public class KuraPayload implements DevicePayload {
     // Private methods
     //
     private Object getProtoKuraMetricValue(KuraPayloadProto.KuraPayload.KuraMetric metric,
-            KuraPayloadProto.KuraPayload.KuraMetric.ValueType type)
+                                           KuraPayloadProto.KuraPayload.KuraMetric.ValueType type)
             throws MessageException {
         switch (type) {
 
-        case DOUBLE:
-            return metric.getDoubleValue();
+            case DOUBLE:
+                return metric.getDoubleValue();
 
-        case FLOAT:
-            return metric.getFloatValue();
+            case FLOAT:
+                return metric.getFloatValue();
 
-        case INT64:
-            return metric.getLongValue();
+            case INT64:
+                return metric.getLongValue();
 
-        case INT32:
-            return metric.getIntValue();
+            case INT32:
+                return metric.getIntValue();
 
-        case BOOL:
-            return metric.getBoolValue();
+            case BOOL:
+                return metric.getBoolValue();
 
-        case STRING:
-            return metric.getStringValue();
+            case STRING:
+                return metric.getStringValue();
 
-        case BYTES:
-            ByteString bs = metric.getBytesValue();
-            return bs.toByteArray();
+            case BYTES:
+                ByteString bs = metric.getBytesValue();
+                return bs.toByteArray();
 
-        default:
-            throw new MessageException(MessageErrorCodes.INVALID_METRIC_TYPE, null, type);
+            default:
+                throw new MessageException(MessageErrorCodes.INVALID_METRIC_TYPE, null, type);
         }
     }
 

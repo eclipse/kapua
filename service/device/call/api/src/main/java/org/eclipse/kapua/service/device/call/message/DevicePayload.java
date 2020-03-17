@@ -68,11 +68,30 @@ public interface DevicePayload extends Payload {
     /**
      * Sets the metrics.
      *
-     * @param metrics The metrics
+     * @param metrics The metrics.
      * @since 1.0.0
      */
     void setMetrics(Map<String, Object> metrics);
-    
+
+    /**
+     * Adds a new metric to {@link #getMetrics()}.
+     *
+     * @param name  The name of the metric.
+     * @param value The value of the metric.
+     * @since 1.2.0
+     */
+    void addMetric(String name, Object value);
+
+    /**
+     * Removes a metric from {@link #getMetrics()}.
+     * <p>
+     * If not present it will do nothing.
+     *
+     * @param name The name of the metric to remove.
+     * @since 1.2.0
+     */
+    void removeMetric(String name);
+
     /**
      * Gets the raw body.
      *
