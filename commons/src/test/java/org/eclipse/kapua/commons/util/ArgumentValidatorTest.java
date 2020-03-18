@@ -218,7 +218,6 @@ public class ArgumentValidatorTest extends Assert {
 
     @Test
     public void testIllegalCharacterEmailRegExp() throws Exception {
-        String argRegExprEmailRegExp = "^(\\w+)([-+.][\\w]+)*@(\\w[-\\w]*\\.){1,5}([A-Za-z]){2,4}$";
         StringBuilder namePart = new StringBuilder();
         String permittedSymbols = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890";
         for (int i = 0; i < 500; i++) {
@@ -240,13 +239,14 @@ public class ArgumentValidatorTest extends Assert {
                 "abcæ.ABC_123@co.co", "abcÆ.ABC_123@co.co", "abc|.ABC_123@co.co", "abcÈ.ABC_123@co.co", "abcˇ.ABC_123@co.co",
                 "abc‹.ABC_123@co.co", "abc›.ABC_123@co.co", "abc€.ABC_123@co.co", "abcı.ABC_123@co.co", "abc–.ABC_123@co.co",
                 "abc°.ABC_123@co.co", "abc·.ABC_123@co.co", "abc.ABC_123@a.B._.1.-.C.co", "abc@to.12.TO._-.ab.to.co",
-                "abc@com", "abc@co.c", "@co.co", "@com.com", "ab.@co.co", "abc.ABC_123@abc.toolong"};
+                "abc@com", "abc@co.c", "@co.co", "@com.com", "ab.@co.co", "abc.ABC_123@abc.toolongtoolongtoolongtoolongtoolongtoolongtoolongtoolongtoolongt"};
         int sizeOfFalseStrings = listOfFalseStringsEmailRegExp.length;
         String[] listOfPermittedStringsEmailRegExp = new String[]{"a@co.co", "ab@co.co", "abc@co.co", "a.a@co.co", "ab.ab@co.co",
                 "abc.abc@co.co", "1@co.co", "12@co.co", "123@co.co", "1.1@co.co", "12.12@co.co", "123.123@co.co", "a.1@co.co",
                 "abc.123@co.co", "abc.ABC-123+_@co.co", "ab.AB+12-_@12.co", "ab.AB+12-_@co12.co", "ab.AB+12-_@1.co", "ab.AB+12-_@12.co",
                 "ab.AB+12-_@123.co", "ab.AB+12-_@aB123.co", "ab.AB+12-_@ab-12.co", "abc123ABC@ABcde.coms", "aA1-_.aA1-_@a.A.1._1aB.co",
-                longname + "@co.co", "a.a.a.a.a.a.a.a.a.a@co.co", "abc.ABC_123@A12bc_.ab.12c.1234abc_.co", "abc.ABC_123@a.ab.co",};
+                longname + "@co.co", "a.a.a.a.a.a.a.a.a.a@co.co", "abc.ABC_123@A12bc_.ab.12c.1234abc_.co", "abc.ABC_123@a.ab.co",
+                "abc.ABC_123@abc.toolongtoolongtoolongtoolongtoolongtoolongtoolongtoolongtoolong"};
         int sizeOPermittedStrings = listOfPermittedStringsEmailRegExp.length;
         for (int i = 0; i < sizeOfFalseStrings; i++) {
             try {
