@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,30 +18,41 @@ import java.util.List;
 
 /**
  * {@link DeviceDataChannel} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
+ *
+ * @since 1.0.0
  */
 public class KuraDataChannel extends KuraChannel implements DeviceDataChannel {
 
-    private List<String> semanticChannelParts;
+    private List<String> semanticParts;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     public KuraDataChannel() {
         this(null, null);
     }
 
+    /**
+     * Constructor.
+     *
+     * @param scopeNamespace The scope namespace
+     * @param clientId       The clientId
+     * @see org.eclipse.kapua.service.device.call.message.DeviceChannel
+     * @since 1.0.0
+     */
     public KuraDataChannel(String scopeNamespace, String clientId) {
         super(scopeNamespace, clientId);
     }
 
     @Override
-    public List<String> getSemanticChannelParts() {
-        return semanticChannelParts;
+    public List<String> getSemanticParts() {
+        return semanticParts;
     }
 
-    /**
-     * Set the semantic channel tokens. {@link KuraChannel#getSemanticChannelParts() getSemanticChannelParts} for more detail.
-     *
-     * @param semanticChannelParts
-     */
-    public void setSemanticChannelParts(List<String> semanticChannelParts) {
-        this.semanticChannelParts = semanticChannelParts;
+    @Override
+    public void setSemanticParts(List<String> semanticParts) {
+        this.semanticParts = semanticParts;
     }
 }

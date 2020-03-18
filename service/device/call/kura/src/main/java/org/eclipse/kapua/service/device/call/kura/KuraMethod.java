@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,30 +15,43 @@ import org.eclipse.kapua.service.device.call.DeviceMethod;
 
 /**
  * {@link DeviceMethod} {@link Kura} definition.
- * <p>
- * This object defines the command methods supported by a Kura device.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public enum KuraMethod implements DeviceMethod {
+
     /**
-     * Get command
+     * Get command.
+     *
+     * @since 1.0.0
      */
     GET,
-    /**
-     * Post command
-     */
-    POST,
-    /**
-     * Put command
-     */
-    PUT,
+
     /**
      * Delete command
+     *
+     * @since 1.0.0
      */
     DEL,
+
     /**
      * Execute command
+     *
+     * @since 1.0.0
      */
-    EXEC
+    EXEC,
+
+    /**
+     * Post command
+     *
+     * @since 1.0.0
+     */
+    POST,
+
+    /**
+     * Put command
+     *
+     * @since 1.0.0
+     */
+    PUT
 }

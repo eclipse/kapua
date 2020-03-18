@@ -20,7 +20,7 @@ import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
-import org.eclipse.kapua.service.device.call.message.kura.KuraChannel;
+import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataChannel;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataPayload;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -79,9 +79,9 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
         return kapuaDataMessage;
     }
 
-    private KapuaDataChannel translate(KuraChannel kuraChannel) {
+    private KapuaDataChannel translate(KuraDataChannel kuraChannel) {
         KapuaDataChannel kapuaChannel = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataChannel();
-        kapuaChannel.setSemanticParts(kuraChannel.getSemanticChannelParts());
+        kapuaChannel.setSemanticParts(kuraChannel.getSemanticParts());
 
         //
         // Return Kapua Channel

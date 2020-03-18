@@ -25,9 +25,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Messages translator implementation from {@link org.eclipse.kapua.transport.message.jms.JmsMessage} to {@link org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraMissingMessage}
- * 
+ *
  * @since 1.0
- * 
  */
 public class TranslatorLifeMissingJmsKura extends Translator<JmsMessage, KuraMissingMessage> {
 
@@ -49,8 +48,7 @@ public class TranslatorLifeMissingJmsKura extends Translator<JmsMessage, KuraMis
         if (topicTokens == null || topicTokens.length < 3) {
             throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR);
         }
-        return new KuraMissingChannel(topicTokens[1],
-                topicTokens[2]);
+        return new KuraMissingChannel(topicTokens[0], topicTokens[1], topicTokens[2]);
     }
 
     private KuraMissingPayload translate(byte[] jmsBody)

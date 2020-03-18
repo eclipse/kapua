@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,7 +25,7 @@ import java.util.zip.GZIPOutputStream;
 /**
  * Gzip utilities.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class GZIPUtils {
 
@@ -33,10 +33,11 @@ public class GZIPUtils {
     }
 
     /**
-     * Check if the byte array represents compressed data
+     * Check if the byte array represents compressed data.
      *
-     * @param bytes The input data to check
+     * @param bytes The input data to check.
      * @return {@code true} if the data is compressed, {@code false} otherwise.
+     * @since 1.0.0
      */
     public static boolean isCompressed(byte[] bytes) {
         if (bytes == null || bytes.length < 2) {
@@ -47,11 +48,12 @@ public class GZIPUtils {
     }
 
     /**
-     * Compress provided data with GZIP
+     * Compress provided data with GZIP.
      *
-     * @param source the input data to compress
-     * @return the compressed output data, returns {@code null} if the input was {@code null}
-     * @throws IOException in case of an I/O error
+     * @param source the input data to compress.
+     * @return the compressed output data, returns {@code null} if the input was {@code null}.
+     * @throws IOException in case of an I/O error.
+     * @since 1.0.0
      */
     public static byte[] compress(byte[] source) throws IOException {
         if (source == null) {
@@ -68,11 +70,12 @@ public class GZIPUtils {
     }
 
     /**
-     * Uncompress GZIP compressed data
+     * Uncompress GZIP compressed data.
      *
-     * @param source the data to uncompress
-     * @return the uncompressed data, returns {@code null} if the input was {@code null}
-     * @throws IOException in case of an I/O error
+     * @param source the data to uncompress.
+     * @return the uncompressed data, returns {@code null} if the input was {@code null}.
+     * @throws IOException in case of an I/O error.
+     * @since 1.0.0
      */
     public static byte[] decompress(byte[] source) throws IOException {
         if (source == null) {

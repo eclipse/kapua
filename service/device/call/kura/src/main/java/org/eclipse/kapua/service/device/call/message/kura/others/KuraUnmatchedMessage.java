@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,25 +20,30 @@ import java.util.Date;
 /**
  * {@link DeviceMessage} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  * <p>
- * The unmatched messages aren't elaborated by the system.
- * In that category fall all the messages that aren't categorized in the others life cycle message groups.
- * </p>
+ * The unmatched messages are messages that aren't processed from Kapua.
+ * This happens when a {@link KuraMessage} does not match any of the listeners.
+ *
+ * @since 1.0.0
  */
 public class KuraUnmatchedMessage extends KuraMessage<KuraUnmatchedChannel, KuraUnmatchedPayload> implements DeviceMessage<KuraUnmatchedChannel, KuraUnmatchedPayload> {
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public KuraUnmatchedMessage() {
         super();
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param channel
-     * @param timestamp
-     * @param payload
+     * @param channel   The {@link KuraUnmatchedChannel}.
+     * @param timestamp The timestamp.
+     * @param payload   The {@link KuraUnmatchedPayload}.
+     * @see org.eclipse.kapua.service.device.call.message.DeviceMessage
+     * @since 1.0.0
      */
     public KuraUnmatchedMessage(KuraUnmatchedChannel channel, Date timestamp, KuraUnmatchedPayload payload) {
         super(channel, timestamp, payload);

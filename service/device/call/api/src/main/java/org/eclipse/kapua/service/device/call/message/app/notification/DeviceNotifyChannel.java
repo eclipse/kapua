@@ -21,17 +21,17 @@ import org.eclipse.kapua.service.device.call.message.app.DeviceAppChannel;
 public interface DeviceNotifyChannel extends DeviceAppChannel {
 
     /**
-     * Gets the request resources.
+     * Gets the notification resources.
      *
-     * @return The request resources.
+     * @return The notification resources.
      * @since 1.2.0
      */
     String[] getResources();
 
     /**
-     * Sets the request resources.
+     * Sets the notification resources.
      *
-     * @param resources The request resources.
+     * @param resources The notification resources.
      * @since 1.2.0
      */
     void setResources(String[] resources);

@@ -11,10 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.jms.kura;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.message.internal.MessageException;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataChannel;
@@ -24,6 +20,10 @@ import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.transport.message.jms.JmsMessage;
 import org.eclipse.kapua.transport.message.jms.JmsPayload;
 import org.eclipse.kapua.transport.message.jms.JmsTopic;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Messages translator implementation from {@link org.eclipse.kapua.transport.message.jms.JmsMessage} to {@link org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage}
@@ -48,12 +48,12 @@ public class TranslatorDataJmsKura extends Translator<JmsMessage, KuraDataMessag
         KuraDataChannel kuraDataChannel = new KuraDataChannel();
         kuraDataChannel.setScope(mqttTopicTokens[0]);
         kuraDataChannel.setClientId(mqttTopicTokens[1]);
-        List<String> channelPartsList = new LinkedList<String>(Arrays.asList(mqttTopicTokens));
+        List<String> channelPartsList = new LinkedList<>(Arrays.asList(mqttTopicTokens));
         // remove the first 2 items (do no use sublist since the returned object is not serializable then Camel will throws exception on error handling
         // channelPartsList.subList(2,mqttTopicTokens.length))
         channelPartsList.remove(0);
         channelPartsList.remove(0);
-        kuraDataChannel.setSemanticChannelParts(channelPartsList);
+        kuraDataChannel.setSemanticParts(channelPartsList);
         return kuraDataChannel;
     }
 

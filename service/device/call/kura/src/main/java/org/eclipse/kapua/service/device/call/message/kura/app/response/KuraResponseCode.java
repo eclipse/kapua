@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,60 +15,83 @@ import org.eclipse.kapua.service.device.call.message.app.response.DeviceResponse
 
 /**
  * {@link DeviceResponseCode} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation
+ *
+ * @since 1.0.0
  */
 public enum KuraResponseCode implements DeviceResponseCode {
+
     /**
-     * Accepted request
+     * Accepted request.
+     *
+     * @since 1.0.0
      */
     ACCEPTED(200),
+
     /**
-     * Bad request
+     * Bad request.
+     *
+     * @since 1.0.0
      */
     BAD_REQUEST(400),
+
     /**
-     * Resource not found
+     * Resource not found.
+     *
+     * @since 1.0.0
      */
     NOT_FOUND(404),
+
     /**
-     * Internal error
+     * Internal error.
+     *
+     * @since 1.0.0
      */
     INTERNAL_ERROR(500);
 
+    /**
+     * The REST-like response code.
+     *
+     * @since 1.0.0
+     */
     private int code;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param code
+     * @param code The REST-like response code.
+     * @since 1.0.0
      */
     KuraResponseCode(int code) {
         this.code = code;
     }
 
     /**
-     * Get the response code
+     * Gets the REST-like response code.
      *
-     * @return
+     * @return The REST-like response code.
+     * @since 1.0.0
      */
     public int getCode() {
         return code;
     }
 
     /**
-     * Constructs a {@link KuraResponseCode} from a string representation
+     * Constructs a {@link KuraResponseCode} from a {@link String} representation.
      *
-     * @param responseCode
-     * @return
+     * @param responseCode The {@link String} response code.
+     * @return The matching {@link KuraResponseCode}.
+     * @since 1.0.0
      */
     public static KuraResponseCode fromResponseCode(String responseCode) {
         return fromResponseCode(Integer.valueOf(responseCode));
     }
 
     /**
-     * Constructs a {@link KuraResponseCode} from an integer representation
+     * Constructs a {@link KuraResponseCode} from an {@link Integer} representation.
      *
-     * @param responseCode
-     * @return
+     * @param responseCode The REST-like response code.
+     * @return The matching {@link KuraResponseCode}.
+     * @since 1.0.0
      */
     public static KuraResponseCode fromResponseCode(int responseCode) {
         KuraResponseCode result = null;

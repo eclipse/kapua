@@ -22,9 +22,8 @@ import org.eclipse.kapua.transport.message.jms.JmsTopic;
 
 /**
  * Messages translator implementation from {@link org.eclipse.kapua.transport.message.jms.JmsMessage} to {@link org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraDisconnectMessage}
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class TranslatorLifeDisconnectJmsKura extends Translator<JmsMessage, KuraDisconnectMessage> {
 
@@ -44,8 +43,8 @@ public class TranslatorLifeDisconnectJmsKura extends Translator<JmsMessage, Kura
         if (topicTokens == null || topicTokens.length < 3) {
             throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR);
         }
-        return new KuraDisconnectChannel(topicTokens[1],
-                topicTokens[2]);
+
+        return new KuraDisconnectChannel(topicTokens[0], topicTokens[1], topicTokens[2]);
     }
 
     private KuraDisconnectPayload translate(byte[] jmsBody)

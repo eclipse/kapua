@@ -24,8 +24,8 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.call.DeviceCall;
 import org.eclipse.kapua.service.device.call.exception.DeviceCallSendException;
 import org.eclipse.kapua.service.device.call.exception.DeviceCallTimeoutException;
-import org.eclipse.kapua.service.device.call.kura.exception.KuraMqttDeviceCallErrorCodes;
-import org.eclipse.kapua.service.device.call.kura.exception.KuraMqttDeviceCallException;
+import org.eclipse.kapua.service.device.call.kura.exception.KuraDeviceCallErrorCodes;
+import org.eclipse.kapua.service.device.call.kura.exception.KuraDeviceCallException;
 import org.eclipse.kapua.service.device.call.message.kura.KuraMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
@@ -218,15 +218,15 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
      * @param <F>  The {@link Message} {@code class} from which to translate.
      * @param <T>  The {@link Message} {@code class} to which to translate.
      * @return The {@link Translator} found.
-     * @throws KuraMqttDeviceCallException If error occurs while searching the {@link Translator}.
+     * @throws KuraDeviceCallException If error occurs while searching the {@link Translator}.
      * @since 1.0.0
      */
-    protected <F extends Message<?, ?>, T extends Message<?, ?>> Translator<F, T> getTranslator(Class<F> from, Class<T> to) throws KuraMqttDeviceCallException {
+    protected <F extends Message<?, ?>, T extends Message<?, ?>> Translator<F, T> getTranslator(Class<F> from, Class<T> to) throws KuraDeviceCallException {
         Translator<F, T> translator;
         try {
             translator = Translator.getTranslatorFor(from, to);
         } catch (KapuaException e) {
-            throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CALL_ERROR, e);
+            throw new KuraDeviceCallException(KuraDeviceCallErrorCodes.CALL_ERROR, e);
         }
         return translator;
     }

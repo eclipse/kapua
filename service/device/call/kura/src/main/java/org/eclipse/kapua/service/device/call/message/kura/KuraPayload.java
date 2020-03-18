@@ -31,14 +31,39 @@ import java.util.Map;
 
 /**
  * {@link DevicePayload} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
+ *
+ * @since 1.0.0
  */
 public class KuraPayload implements DevicePayload {
 
     private static final Logger LOG = LoggerFactory.getLogger(KuraPayload.class);
 
+    /**
+     * The timestamp.
+     *
+     * @since 1.0.0
+     */
     protected Date timestamp;
+
+    /**
+     * The {@link DevicePosition}.
+     *
+     * @since 1.0.0
+     */
     protected DevicePosition position;
+
+    /**
+     * The metrics.
+     *
+     * @since 1.0.0
+     */
     protected Map<String, Object> metrics;
+
+    /**
+     * The raw body.
+     *
+     * @since 1.0.0
+     */
     protected byte[] body;
 
     /**
@@ -47,6 +72,7 @@ public class KuraPayload implements DevicePayload {
      * @since 1.0.0
      */
     public KuraPayload() {
+        super();
     }
 
     @Override
@@ -132,9 +158,9 @@ public class KuraPayload implements DevicePayload {
 
                     // add it to the message
                     protoMsg.addMetric(metricBuilder);
-                } catch (MessageException eihte) {
+                } catch (MessageException me) {
                     LOG.error("During serialization, ignoring metric named: {}. Unrecognized value type: {}.", name, value.getClass().getName());
-                    throw new RuntimeException(eihte);
+                    throw new RuntimeException(me);
                 }
             }
         });
@@ -202,11 +228,9 @@ public class KuraPayload implements DevicePayload {
     //
     // Private methods
     //
-    private Object getProtoKuraMetricValue(KuraPayloadProto.KuraPayload.KuraMetric metric,
-                                           KuraPayloadProto.KuraPayload.KuraMetric.ValueType type)
-            throws MessageException {
-        switch (type) {
+    private Object getProtoKuraMetricValue(KuraPayloadProto.KuraPayload.KuraMetric metric, KuraPayloadProto.KuraPayload.KuraMetric.ValueType type) throws MessageException {
 
+        switch (type) {
             case DOUBLE:
                 return metric.getDoubleValue();
 
