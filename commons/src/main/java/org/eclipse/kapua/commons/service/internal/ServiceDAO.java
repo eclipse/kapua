@@ -727,68 +727,72 @@ public class ServiceDAO {
      * @since 1.0.0
      */
     protected static void handleKapuaQueryGroupPredicate(@NotNull KapuaQuery<?> query, @NotNull Domain domain, @NotNull String groupPredicateName) throws KapuaException {
-
+        KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
         if (ACCESS_INFO_FACTORY != null) {
-            KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
-            if (kapuaSession != null) {
-                try {
-                    KapuaId userId = kapuaSession.getUserId();
+            if (kapuaSession != null && !kapuaSession.isTrustedMode()) {
+                handleKapuaQueryGroupPredicate(kapuaSession, query, domain, groupPredicateName);
+            }
+        }
+        else {
+            LOG.warn("'Access Group Permission' feature is disabled");
+        }
+    }
 
-                    AccessInfoQuery accessInfoQuery = ACCESS_INFO_FACTORY.newQuery(kapuaSession.getScopeId());
-                    accessInfoQuery.setPredicate(query.attributePredicate(AccessInfoAttributes.USER_ID, userId));
+    private static void handleKapuaQueryGroupPredicate(KapuaSession kapuaSession, KapuaQuery<?> query, Domain domain, String groupPredicateName) throws KapuaException {
+        try {
+            KapuaId userId = kapuaSession.getUserId();
 
-                    AccessInfoListResult accessInfos = KapuaSecurityUtils.doPrivileged(() -> ACCESS_INFO_SERVICE.query(accessInfoQuery));
+            AccessInfoQuery accessInfoQuery = ACCESS_INFO_FACTORY.newQuery(kapuaSession.getScopeId());
+            accessInfoQuery.setPredicate(query.attributePredicate(AccessInfoAttributes.USER_ID, userId));
 
-                    List<Permission> groupPermissions = new ArrayList<>();
-                    if (!accessInfos.isEmpty()) {
+            AccessInfoListResult accessInfos = KapuaSecurityUtils.doPrivileged(() -> ACCESS_INFO_SERVICE.query(accessInfoQuery));
 
-                        AccessInfo accessInfo = accessInfos.getFirstItem();
-                        AccessPermissionListResult accessPermissions = KapuaSecurityUtils.doPrivileged(() -> ACCESS_PERMISSION_SERVICE.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
+            List<Permission> groupPermissions = new ArrayList<>();
+            if (!accessInfos.isEmpty()) {
 
-                        for (AccessPermission ap : accessPermissions.getItems()) {
-                            if (checkGroupPermission(domain, groupPermissions, ap.getPermission())) {
-                                break;
-                            }
-                        }
+                AccessInfo accessInfo = accessInfos.getFirstItem();
+                AccessPermissionListResult accessPermissions = KapuaSecurityUtils.doPrivileged(() -> ACCESS_PERMISSION_SERVICE.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
 
-                        AccessRoleListResult accessRoles = KapuaSecurityUtils.doPrivileged(() -> ACCESS_ROLE_SERVICE.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
+                for (AccessPermission ap : accessPermissions.getItems()) {
+                    if (checkGroupPermission(domain, groupPermissions, ap.getPermission())) {
+                        break;
+                    }
+                }
 
-                        for (AccessRole ar : accessRoles.getItems()) {
-                            KapuaId roleId = ar.getRoleId();
+                AccessRoleListResult accessRoles = KapuaSecurityUtils.doPrivileged(() -> ACCESS_ROLE_SERVICE.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
 
-                            Role role = KapuaSecurityUtils.doPrivileged(() -> ROLE_SERVICE.find(ar.getScopeId(), roleId));
+                for (AccessRole ar : accessRoles.getItems()) {
+                    KapuaId roleId = ar.getRoleId();
 
-                            RolePermissionListResult rolePermissions = KapuaSecurityUtils.doPrivileged(() -> ROLE_PERMISSION_SERVICE.findByRoleId(role.getScopeId(), role.getId()));
+                    Role role = KapuaSecurityUtils.doPrivileged(() -> ROLE_SERVICE.find(ar.getScopeId(), roleId));
 
-                            for (RolePermission rp : rolePermissions.getItems()) {
-                                if (checkGroupPermission(domain, groupPermissions, rp.getPermission())) {
-                                    break;
-                                }
-                            }
+                    RolePermissionListResult rolePermissions = KapuaSecurityUtils.doPrivileged(() -> ROLE_PERMISSION_SERVICE.findByRoleId(role.getScopeId(), role.getId()));
+
+                    for (RolePermission rp : rolePermissions.getItems()) {
+                        if (checkGroupPermission(domain, groupPermissions, rp.getPermission())) {
+                            break;
                         }
                     }
-
-                    AndPredicate andPredicate = query.andPredicate();
-                    if (!groupPermissions.isEmpty()) {
-                        int i = 0;
-                        KapuaId[] groupsIds = new KapuaEid[groupPermissions.size()];
-                        for (Permission p : groupPermissions) {
-                            groupsIds[i++] = p.getGroupId();
-                        }
-                        andPredicate.and(query.attributePredicate(groupPredicateName, groupsIds));
-                    }
-
-                    if (query.getPredicate() != null) {
-                        andPredicate.and(query.getPredicate());
-                    }
-
-                    query.setPredicate(andPredicate);
-                } catch (Exception e) {
-                    throw KapuaException.internalError(e, "Error while grouping!");
                 }
             }
-        } else {
-            LOG.warn("'Access Group Permission' feature is disabled");
+
+            AndPredicate andPredicate = query.andPredicate();
+            if (!groupPermissions.isEmpty()) {
+                int i = 0;
+                KapuaId[] groupsIds = new KapuaEid[groupPermissions.size()];
+                for (Permission p : groupPermissions) {
+                    groupsIds[i++] = p.getGroupId();
+                }
+                andPredicate.and(query.attributePredicate(groupPredicateName, groupsIds));
+            }
+
+            if (query.getPredicate() != null) {
+                andPredicate.and(query.getPredicate());
+            }
+
+            query.setPredicate(andPredicate);
+        } catch (Exception e) {
+            throw KapuaException.internalError(e, "Error while grouping!");
         }
     }
 
