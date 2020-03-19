@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -74,7 +75,22 @@ public class KapuaLiquibaseClient {
      * @since 1.0.0
      */
     public KapuaLiquibaseClient(String jdbcUrl, String username, String password) {
-        this(jdbcUrl, username, password, null);
+        this(jdbcUrl, username, password, (String) null);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param jdbcUrl  The JDBC connection string.
+     * @param username The username to connect to to the database.
+     * @param password The password to connect to to the database.
+     * @param schema   The {@link java.util.Optional} schema name.
+     * @since 1.0.0
+     * @deprecated Since 1.2.0. Removed usage of {@link Optional} as parameter.
+     */
+    @Deprecated
+    public KapuaLiquibaseClient(String jdbcUrl, String username, String password, Optional<String> schema) {
+        this(jdbcUrl, username, password, schema.orElse(null));
     }
 
     /**
@@ -84,7 +100,7 @@ public class KapuaLiquibaseClient {
      * @param username The username to connect to to the database.
      * @param password The password to connect to to the database.
      * @param schema   The schema name.
-     * @since 1.0.0
+     * @since 1.2.0
      */
     public KapuaLiquibaseClient(String jdbcUrl, String username, String password, String schema) {
         this.jdbcUrl = jdbcUrl;
