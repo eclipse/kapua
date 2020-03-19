@@ -60,7 +60,6 @@ public class AccountAddDialog extends EntityAddEditDialog {
     protected final LabelField accountNameLabel = new LabelField();
     protected final KapuaTextField<String> accountNameField = new KapuaTextField<String>();
     protected final KapuaTextField<String> accountPassword = new KapuaTextField<String>();
-    protected final KapuaTextField<String> confirmPassword = new KapuaTextField<String>();
     protected final KapuaDateField expirationDateField = new KapuaDateField(this);
 
     // broker cluster
@@ -78,8 +77,6 @@ public class AccountAddDialog extends EntityAddEditDialog {
     protected final KapuaTextField<String> organizationCity = new KapuaTextField<String>();
     protected final KapuaTextField<String> organizationStateProvinceCounty = new KapuaTextField<String>();
     protected final KapuaTextField<String> organizationCountry = new KapuaTextField<String>();
-
-    private static final String ERROR = "Error";
 
     public AccountAddDialog(GwtSession currentSession) {
         super(currentSession);
@@ -291,13 +288,13 @@ public class AccountAddDialog extends EntityAddEditDialog {
 
     public void validateAccount() {
         if (accountNameField.getValue() == null || organizationName.getValue() == null || organizationEmail.getValue() == null) {
-            ConsoleInfo.display(ERROR, CMSGS.allFieldsRequired());
+            ConsoleInfo.display(CMSGS.error(), CMSGS.allFieldsRequired());
         } else if (!expirationDateField.isValid()) {
-            ConsoleInfo.display(ERROR, KapuaSafeHtmlUtils.htmlUnescape(expirationDateField.getErrorMessage()));
+            ConsoleInfo.display(CMSGS.error(), KapuaSafeHtmlUtils.htmlUnescape(expirationDateField.getErrorMessage()));
         } else if (!organizationEmail.isValid()) {
-            ConsoleInfo.display(ERROR, organizationEmail.getErrorMessage());
+            ConsoleInfo.display(CMSGS.error(), organizationEmail.getErrorMessage());
         } else if (!organizationPhoneNumber.isValid()) {
-            ConsoleInfo.display(ERROR, organizationPhoneNumber.getErrorMessage());
+            ConsoleInfo.display(CMSGS.error(), organizationPhoneNumber.getErrorMessage());
         }
     }
 

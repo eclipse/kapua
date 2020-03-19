@@ -79,8 +79,6 @@ public class UserAddDialog extends EntityAddEditDialog {
     private Boolean passwordIsShown = false;
     private Boolean externalIdIsShown = false;
 
-    private static final String ERROR = "Error";
-
     private GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
 
     public UserAddDialog(GwtSession currentSession) {
@@ -339,17 +337,17 @@ public class UserAddDialog extends EntityAddEditDialog {
         if (username.getValue() == null || (passwordIsShown && password.getValue() == null)
                 || (passwordIsShown && confirmPassword.getValue() == null)
                 || (externalIdIsShown && externalId.getValue() == null)) {
-            ConsoleInfo.display(ERROR, CMSGS.allFieldsRequired());
-        } else if (passwordIsShown && !password.isValid()) {
-            ConsoleInfo.display(ERROR, password.getErrorMessage());
-        } else if (passwordIsShown && !password.getValue().equals(confirmPassword.getValue())) {
-            ConsoleInfo.display(ERROR, confirmPassword.getErrorMessage());
+            ConsoleInfo.display(CMSGS.error(), CMSGS.allFieldsRequired());
+        } else if (Boolean.TRUE.equals(passwordIsShown) && !password.isValid()) {
+            ConsoleInfo.display(CMSGS.error(), password.getErrorMessage());
+        } else if (Boolean.TRUE.equals(passwordIsShown) && !password.getValue().equals(confirmPassword.getValue())) {
+            ConsoleInfo.display(CMSGS.error(), confirmPassword.getErrorMessage());
         } else if (!email.isValid()) {
-            ConsoleInfo.display(ERROR, email.getErrorMessage());
+            ConsoleInfo.display(CMSGS.error(), email.getErrorMessage());
         } else if (!phoneNumber.isValid()) {
-            ConsoleInfo.display(ERROR, phoneNumber.getErrorMessage());
+            ConsoleInfo.display(CMSGS.error(), phoneNumber.getErrorMessage());
         } else if (!expirationDate.isValid()) {
-            ConsoleInfo.display(ERROR, KapuaSafeHtmlUtils.htmlUnescape(expirationDate.getErrorMessage()));
+            ConsoleInfo.display(CMSGS.error(), KapuaSafeHtmlUtils.htmlUnescape(expirationDate.getErrorMessage()));
         }
     }
 

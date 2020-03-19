@@ -16,6 +16,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -44,8 +45,6 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
     @Inject
     private PermissionFactory permissionFactory;
-
-    private static final String STEP_DEFINITION_ID = "stepDefinitionId";
 
     public TriggerDefinitionServiceImpl() {
         super(SchedulerEntityManagerFactory.getInstance());
@@ -91,7 +90,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
     public TriggerDefinition find(KapuaId stepDefinitionId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(stepDefinitionId, STEP_DEFINITION_ID);
+        ArgumentValidator.notNull(stepDefinitionId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access
@@ -106,7 +105,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
     public TriggerDefinition find(KapuaId scopeId, KapuaId stepDefinitionId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(stepDefinitionId, STEP_DEFINITION_ID);
+        ArgumentValidator.notNull(stepDefinitionId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access
@@ -171,7 +170,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(stepDefinitionId, STEP_DEFINITION_ID);
+        ArgumentValidator.notNull(stepDefinitionId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access

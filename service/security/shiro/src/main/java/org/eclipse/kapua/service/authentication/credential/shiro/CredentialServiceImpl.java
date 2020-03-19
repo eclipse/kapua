@@ -23,6 +23,7 @@ import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -63,8 +64,6 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
     public CredentialServiceImpl() {
         super(CredentialService.class.getName(), AuthenticationDomains.CREDENTIAL_DOMAIN, AuthenticationEntityManagerFactory.getInstance());
     }
-
-    private static final String SCOPE_ID = "scopeId";
 
     @Override
     public Credential create(CredentialCreator credentialCreator)
@@ -209,7 +208,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
     public Credential find(KapuaId scopeId, KapuaId credentialId)
             throws KapuaException {
         // Validation of the fields
-        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(credentialId, "credentialId");
 
         //
@@ -284,7 +283,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
             throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(userId, "userId");
 
         //
@@ -367,7 +366,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
     public void unlock(KapuaId scopeId, KapuaId credentialId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(credentialId, "credentialId");
 
         //

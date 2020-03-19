@@ -17,6 +17,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog.InfoDialogType;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
@@ -36,10 +37,10 @@ public class UserEditDialog extends UserAddDialog {
     private boolean isChanged;
 
     private GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
+    private static final ConsoleMessages CMSGS = GWT.create(ConsoleMessages.class);
+
     public static final int MAX_LINE_LENGTH = 30;
     public static final int MAX_TOOLTIP_WIDTH = 300;
-
-    private static final String ERROR = "Error";
 
     public UserEditDialog(GwtSession currentSession, GwtUser selectedUser) {
         super(currentSession);
@@ -81,11 +82,11 @@ public class UserEditDialog extends UserAddDialog {
     @Override
     public void validateUser() {
         if (!email.isValid()) {
-            ConsoleInfo.display(ERROR, email.getErrorMessage());
+            ConsoleInfo.display(CMSGS.error(), email.getErrorMessage());
         } else if (!phoneNumber.isValid()) {
-            ConsoleInfo.display(ERROR, phoneNumber.getErrorMessage());
+            ConsoleInfo.display(CMSGS.error(), phoneNumber.getErrorMessage());
         } else if (!expirationDate.isValid()) {
-            ConsoleInfo.display(ERROR, KapuaSafeHtmlUtils.htmlUnescape(expirationDate.getErrorMessage()));
+            ConsoleInfo.display(CMSGS.error(), KapuaSafeHtmlUtils.htmlUnescape(expirationDate.getErrorMessage()));
         }
     }
 
@@ -141,7 +142,8 @@ public class UserEditDialog extends UserAddDialog {
                         } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.OPERATION_NOT_ALLOWED_ON_ADMIN_USER)) {
                             if (userStatus.getValue().getValue().equals(GwtUserStatus.DISABLED)) {
                                 userStatus.markInvalid(USER_MSGS.dialogEditAdminUserStatusError());
-                            } if (expirationDate.getValue() != null) {
+                            }
+                            if (expirationDate.getValue() != null) {
                                 expirationDate.markInvalid(USER_MSGS.dialogEditAdminExpirationDateError());
                             }
                         }

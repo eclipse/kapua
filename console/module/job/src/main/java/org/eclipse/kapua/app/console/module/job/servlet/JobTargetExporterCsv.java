@@ -20,7 +20,7 @@ import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,11 +65,14 @@ public class JobTargetExporterCsv extends JobTargetExporter {
         response.setHeader("Cache-Control", "no-transform, max-age=0");
 
         OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), Charset.forName(CharEncoding.UTF_8));
-        writer = new CSVWriter(osw);
+        try {
+            writer = new CSVWriter(osw);
 
-        List<String> cols = new ArrayList<String>();
-        Collections.addAll(cols, JOB_TARGET_PROPERTIES);
-        writer.writeNext(cols.toArray(new String[] {}));
+            List<String> cols = new ArrayList<String>(Arrays.asList(JOB_TARGET_PROPERTIES));
+            writer.writeNext(cols.toArray(new String[]{ }));
+        } finally {
+            osw.close();
+        }
     }
 
     @Override

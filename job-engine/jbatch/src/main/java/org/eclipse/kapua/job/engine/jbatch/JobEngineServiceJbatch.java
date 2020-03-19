@@ -30,6 +30,7 @@ import org.eclipse.kapua.job.engine.jbatch.exception.JobStartingException;
 import org.eclipse.kapua.job.engine.jbatch.exception.JobStopppingException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -66,8 +67,6 @@ public class JobEngineServiceJbatch implements JobEngineService {
     private static final JobTargetService JOB_TARGET_SERVICE = LOCATOR.getService(JobTargetService.class);
     private static final JobTargetFactory JOB_TARGET_FACTORY = LOCATOR.getFactory(JobTargetFactory.class);
 
-    private static final String SCOPE_ID = "scopeId";
-    private static final String JOB_ID = "jobId";
     private static final String JOB_EXECUTION_ID = "jobExecutionId";
 
     @Override
@@ -79,8 +78,8 @@ public class JobEngineServiceJbatch implements JobEngineService {
     public void startJob(KapuaId scopeId, KapuaId jobId, JobStartOptions jobStartOptions) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, SCOPE_ID);
-        ArgumentValidator.notNull(jobId, JOB_ID);
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
         ArgumentValidator.notNull(jobStartOptions, "jobStartOptions");
 
         //
@@ -108,7 +107,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
             jobTargetQuery.setPredicate(
                     jobTargetQuery.andPredicate(
                             jobTargetQuery.getPredicate(),
-                            jobTargetQuery.attributePredicate(JobTargetAttributes.ENTITY_ID, jobStartOptions.getTargetIdSublist().toArray())
+                            jobTargetQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, jobStartOptions.getTargetIdSublist().toArray())
                     )
             );
 
@@ -138,8 +137,8 @@ public class JobEngineServiceJbatch implements JobEngineService {
     public boolean isRunning(KapuaId scopeId, KapuaId jobId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, SCOPE_ID);
-        ArgumentValidator.notNull(jobId, JOB_ID);
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access
@@ -165,8 +164,8 @@ public class JobEngineServiceJbatch implements JobEngineService {
     public void stopJob(KapuaId scopeId, KapuaId jobId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, SCOPE_ID);
-        ArgumentValidator.notNull(jobId, JOB_ID);
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access
@@ -198,8 +197,8 @@ public class JobEngineServiceJbatch implements JobEngineService {
     public void stopJobExecution(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, SCOPE_ID);
-        ArgumentValidator.notNull(jobId, JOB_ID);
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
         ArgumentValidator.notNull(jobExecutionId, JOB_EXECUTION_ID);
 
         //
@@ -240,8 +239,8 @@ public class JobEngineServiceJbatch implements JobEngineService {
     public void resumeJobExecution(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, SCOPE_ID);
-        ArgumentValidator.notNull(jobId, JOB_ID);
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
         ArgumentValidator.notNull(jobExecutionId, JOB_EXECUTION_ID);
 
         //
@@ -282,8 +281,8 @@ public class JobEngineServiceJbatch implements JobEngineService {
     public void cleanJobData(KapuaId scopeId, KapuaId jobId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, SCOPE_ID);
-        ArgumentValidator.notNull(jobId, JOB_ID);
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access

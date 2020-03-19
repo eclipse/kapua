@@ -18,11 +18,10 @@ import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.kapua.KapuaException;
@@ -52,24 +51,27 @@ public class DeviceExporterCsv extends DeviceExporter {
 
     @Override
     public void init(String accountId, String accountName)
-            throws ServletException, IOException {
+            throws IOException {
         this.accountId = accountId;
         this.accountName = accountName;
         dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
 
         OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), Charset.forName(CharEncoding.UTF_8));
-        writer = new CSVWriter(osw);
+        try {
+            writer = new CSVWriter(osw);
 
-        List<String> cols = new ArrayList<String>();
-        Collections.addAll(cols, DEVICE_PROPERTIES);
-        writer.writeNext(cols.toArray(new String[] {}));
+            List<String> cols = new ArrayList<String>(Arrays.asList(DEVICE_PROPERTIES));
+            writer.writeNext(cols.toArray(new String[]{ }));
+        } finally {
+            osw.close();
+        }
     }
 
     @Override
     public void append(KapuaListResult<Device> devices)
-            throws ServletException, IOException, KapuaException {
+            throws KapuaException {
 
-        Account account = null;
+        Account account;
         try {
             account = KapuaSecurityUtils.doPrivileged(new Callable<Account>() {
                 @Override
@@ -178,7 +180,7 @@ public class DeviceExporterCsv extends DeviceExporter {
 
     @Override
     public void close()
-            throws ServletException, IOException {
+            throws IOException {
         response.setContentType("text/csv");
         response.setCharacterEncoding(CharEncoding.UTF_8);
         response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(accountName, CharEncoding.UTF_8) + "_devices.csv");

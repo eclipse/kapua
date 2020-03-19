@@ -18,6 +18,7 @@ import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -49,9 +50,6 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
-
-    private static final String SCOPE_ID = "scopeId";
-    private static final String ACCESS_TOKEN_ID = "accessTokenId";
 
     /**
      * Constructor
@@ -108,8 +106,8 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     public AccessToken find(KapuaId scopeId, KapuaId accessTokenId) throws KapuaException {
         //
         // Validation of the fields
-        ArgumentValidator.notNull(scopeId, SCOPE_ID);
-        ArgumentValidator.notNull(accessTokenId, ACCESS_TOKEN_ID);
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(accessTokenId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access
@@ -154,8 +152,8 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     public void delete(KapuaId scopeId, KapuaId accessTokenId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, SCOPE_ID);
-        ArgumentValidator.notNull(accessTokenId, ACCESS_TOKEN_ID);
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(accessTokenId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access
@@ -176,7 +174,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     public AccessTokenListResult findByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(userId, "userId");
 
         //
@@ -216,8 +214,8 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
     public void invalidate(KapuaId scopeId, KapuaId accessTokenId) throws KapuaException {
         //
         // Validation of the fields
-        ArgumentValidator.notNull(scopeId, SCOPE_ID);
-        ArgumentValidator.notNull(accessTokenId, ACCESS_TOKEN_ID);
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(accessTokenId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access

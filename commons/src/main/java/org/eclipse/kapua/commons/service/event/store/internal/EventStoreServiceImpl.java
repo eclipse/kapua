@@ -23,6 +23,7 @@ import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.RaiseServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -42,7 +43,6 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
-    private static final String KAPUA_EVENT_ID = "kapuaEventId";
     /**
      * Constructor.
      *
@@ -93,8 +93,8 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
 
         //
         // Validation of the fields
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(kapuaEventId, KAPUA_EVENT_ID);
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(kapuaEventId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access
@@ -111,8 +111,8 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
             throws KapuaException {
         //
         // Validation of the fields
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(kapuaEventId, KAPUA_EVENT_ID);
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(kapuaEventId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access
@@ -128,7 +128,7 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
             throws KapuaException {
         //
         // Validation of the fields
-        ArgumentValidator.notNull(kapuaEventId, KAPUA_EVENT_ID);
+        ArgumentValidator.notNull(kapuaEventId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access
@@ -175,7 +175,7 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
             throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(kapuaEventId, KAPUA_EVENT_ID);
+        ArgumentValidator.notNull(kapuaEventId, KapuaEntityAttributes.ENTITY_ID);
 
         return entityManagerSession.doAction(em -> EventStoreDAO.find(em, null, kapuaEventId));
     }

@@ -19,6 +19,7 @@ import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -48,8 +49,6 @@ import java.util.Map;
  */
 @KapuaProvider
 public class AccessPermissionServiceImpl extends AbstractKapuaService implements AccessPermissionService {
-
-    private static final String SCOPE_ID = "scopeId";
 
     public AccessPermissionServiceImpl() {
         super(AuthorizationEntityManagerFactory.getInstance(), AccessPermissionCacheFactory.getInstance());
@@ -85,7 +84,7 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
         AccessPermissionQuery query = new AccessPermissionQueryImpl(accessPermissionCreator.getScopeId());
         query.setPredicate(
                 query.andPredicate(
-                        query.attributePredicate(AccessPermissionAttributes.SCOPE_ID, accessPermissionCreator.getScopeId()),
+                        query.attributePredicate(KapuaEntityAttributes.SCOPE_ID, accessPermissionCreator.getScopeId()),
                         query.attributePredicate(AccessPermissionAttributes.ACCESS_INFO_ID, accessPermissionCreator.getAccessInfoId()),
                         query.attributePredicate(AccessPermissionAttributes.PERMISSION_DOMAIN, accessPermissionCreator.getPermission().getDomain()),
                         query.attributePredicate(AccessPermissionAttributes.PERMISSION_ACTION, accessPermissionCreator.getPermission().getAction()),
@@ -97,7 +96,7 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
         if (count(query) > 0) {
             List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
 
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.SCOPE_ID, accessPermissionCreator.getScopeId()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(KapuaEntityAttributes.SCOPE_ID, accessPermissionCreator.getScopeId()));
             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.ACCESS_INFO_ID, accessPermissionCreator.getAccessInfoId()));
             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.PERMISSION_DOMAIN, accessPermissionCreator.getPermission().getDomain()));
             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(AccessPermissionAttributes.PERMISSION_ACTION, accessPermissionCreator.getPermission().getAction()));
@@ -125,8 +124,8 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
 
     @Override
     public void delete(KapuaId scopeId, KapuaId accessPermissionId) throws KapuaException {
-        ArgumentValidator.notNull(scopeId, SCOPE_ID);
-        ArgumentValidator.notNull(accessPermissionId, "accessPermissionId");
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(accessPermissionId, KapuaEntityAttributes.ENTITY_ID);
 
         // Check Access
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -152,8 +151,8 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
     @Override
     public AccessPermission find(KapuaId scopeId, KapuaId accessPermissionId)
             throws KapuaException {
-        ArgumentValidator.notNull(scopeId, SCOPE_ID);
-        ArgumentValidator.notNull(accessPermissionId, "accessPermissionId");
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(accessPermissionId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access
@@ -170,7 +169,7 @@ public class AccessPermissionServiceImpl extends AbstractKapuaService implements
     @Override
     public AccessPermissionListResult findByAccessInfoId(KapuaId scopeId, KapuaId accessInfoId)
             throws KapuaException {
-        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(accessInfoId, "accessInfoId");
 
         //

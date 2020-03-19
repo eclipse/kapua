@@ -19,6 +19,7 @@ import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -46,8 +47,6 @@ import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizatio
  */
 @KapuaProvider
 public class AccessRoleServiceImpl extends AbstractKapuaService implements AccessRoleService {
-
-    private static final String SCOPE_ID = "scopeId";
 
     public AccessRoleServiceImpl() {
         super(AuthorizationEntityManagerFactory.getInstance(), AccessRoleCacheFactory.getInstance());
@@ -110,8 +109,8 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
 
     @Override
     public void delete(KapuaId scopeId, KapuaId accessRoleId) throws KapuaException {
-        ArgumentValidator.notNull(scopeId, SCOPE_ID);
-        ArgumentValidator.notNull(accessRoleId, "accessRoleId");
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(accessRoleId, KapuaEntityAttributes.ENTITY_ID);
 
         // Check Access
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -138,8 +137,8 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
     @Override
     public AccessRole find(KapuaId scopeId, KapuaId accessRoleId)
             throws KapuaException {
-        ArgumentValidator.notNull(scopeId, SCOPE_ID);
-        ArgumentValidator.notNull(accessRoleId, "accessRoleId");
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(accessRoleId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access
@@ -156,7 +155,7 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
     @Override
     public AccessRoleListResult findByAccessInfoId(KapuaId scopeId, KapuaId accessInfoId)
             throws KapuaException {
-        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(accessInfoId, "accessInfoId");
 
         //

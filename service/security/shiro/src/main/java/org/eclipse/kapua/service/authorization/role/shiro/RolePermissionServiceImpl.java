@@ -20,6 +20,7 @@ import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -52,8 +53,6 @@ import java.util.Map;
 public class RolePermissionServiceImpl extends AbstractKapuaService implements RolePermissionService {
 
     private static final RoleService ROLE_SERVICE = KapuaLocator.getInstance().getService(RoleService.class);
-
-    private static final String SCOPE_ID = "scopeId";
 
     public RolePermissionServiceImpl() {
         super(AuthorizationEntityManagerFactory.getInstance(), RolePermissionCacheFactory.getInstance());
@@ -95,7 +94,7 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
         RolePermissionQuery query = new RolePermissionQueryImpl(rolePermissionCreator.getScopeId());
         query.setPredicate(
                 query.andPredicate(
-                        query.attributePredicate(RolePermissionAttributes.SCOPE_ID, rolePermissionCreator.getScopeId()),
+                        query.attributePredicate(KapuaEntityAttributes.SCOPE_ID, rolePermissionCreator.getScopeId()),
                         query.attributePredicate(RolePermissionAttributes.ROLE_ID, rolePermissionCreator.getRoleId()),
                         query.attributePredicate(RolePermissionAttributes.PERMISSION_DOMAIN, rolePermissionCreator.getPermission().getDomain()),
                         query.attributePredicate(RolePermissionAttributes.PERMISSION_ACTION, rolePermissionCreator.getPermission().getAction()),
@@ -107,7 +106,7 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
         if (count(query) > 0) {
             List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
 
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.SCOPE_ID, rolePermissionCreator.getScopeId()));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(KapuaEntityAttributes.SCOPE_ID, rolePermissionCreator.getScopeId()));
             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.ROLE_ID, rolePermissionCreator.getRoleId()));
             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.PERMISSION_DOMAIN, rolePermissionCreator.getPermission().getDomain()));
             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(RolePermissionAttributes.PERMISSION_ACTION, rolePermissionCreator.getPermission().getAction()));
@@ -124,8 +123,8 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
 
     @Override
     public void delete(KapuaId scopeId, KapuaId rolePermissionId) throws KapuaException {
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(rolePermissionId, "rolePermissionId");
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(rolePermissionId, KapuaEntityAttributes.ENTITY_ID);
 
         // Check Access
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -153,8 +152,8 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
     @Override
     public RolePermission find(KapuaId scopeId, KapuaId rolePermissionId)
             throws KapuaException {
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(rolePermissionId, "rolePermissionId");
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(rolePermissionId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access
@@ -171,8 +170,8 @@ public class RolePermissionServiceImpl extends AbstractKapuaService implements R
     @Override
     public RolePermissionListResult findByRoleId(KapuaId scopeId, KapuaId roleId)
             throws KapuaException {
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(roleId, "roleId");
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(roleId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access
