@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
@@ -75,7 +76,7 @@ public class Streams extends AbstractKapuaResource {
      * @param timeout
      * @param requestMessage
      * @return
-     * @throws Exception
+     * @throws KapuaException
      */
     @POST
     @Path("messages")
@@ -83,7 +84,7 @@ public class Streams extends AbstractKapuaResource {
     public Response publish(
             @PathParam("scopeId") ScopeId scopeId,
             @QueryParam("timeout") Long timeout,
-            KapuaDataMessage requestMessage) throws Exception {
+            KapuaDataMessage requestMessage) throws KapuaException {
         requestMessage.setScopeId(scopeId);
         streamService.publish(requestMessage, timeout);
         return returnNoContent();

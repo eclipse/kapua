@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.marker.JsonSerializationFixed;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonKapuaDataMessage;
@@ -92,7 +93,7 @@ public class StreamsJson extends AbstractKapuaResource implements JsonSerializat
     public Response publish(
             @PathParam("scopeId") ScopeId scopeId,
             @QueryParam("timeout") Long timeout,
-            JsonKapuaDataMessage jsonKapuaDataMessage) throws Exception {
+            JsonKapuaDataMessage jsonKapuaDataMessage) throws KapuaException {
 
         KapuaDataMessage kapuaDataMessage = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataMessage();
 

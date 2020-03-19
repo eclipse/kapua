@@ -22,6 +22,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
@@ -58,7 +59,7 @@ public class JobExecutions extends AbstractKapuaResource {
      * @param offset  The result set offset.
      * @param limit   The result set limit.
      * @return The {@link JobExecutionListResult} of all the jobs executions associated to the current selected job.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -67,7 +68,7 @@ public class JobExecutions extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("jobId") EntityId jobId,
             @QueryParam("offset") @DefaultValue("0") int offset,
-            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         JobExecutionQuery query = jobExecutionFactory.newQuery(scopeId);
 
         query.setPredicate(query.attributePredicate(JobExecutionAttributes.JOB_ID, jobId));
@@ -84,7 +85,7 @@ public class JobExecutions extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link JobExecutionQuery} to use to filter results.
      * @return The {@link JobExecutionListResult} of all the result matching the given {@link JobExecutionQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -94,7 +95,7 @@ public class JobExecutions extends AbstractKapuaResource {
     public JobExecutionListResult query(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("jobId") EntityId jobId,
-            JobExecutionQuery query) throws Exception {
+            JobExecutionQuery query) throws KapuaException {
         query.setScopeId(scopeId);
         query.setPredicate(query.attributePredicate(JobExecutionAttributes.JOB_ID, jobId));
         return jobExecutionService.query(query);
@@ -106,7 +107,7 @@ public class JobExecutions extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link JobExecutionQuery} to use to filter results.
      * @return The count of all the result matching the given {@link JobExecutionQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -116,7 +117,7 @@ public class JobExecutions extends AbstractKapuaResource {
     public CountResult count(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("jobId") EntityId jobId,
-            JobExecutionQuery query) throws Exception {
+            JobExecutionQuery query) throws KapuaException {
         query.setScopeId(scopeId);
         query.setPredicate(query.attributePredicate(JobExecutionAttributes.JOB_ID, jobId));
 
@@ -130,7 +131,7 @@ public class JobExecutions extends AbstractKapuaResource {
      * @param jobId The id of the requested Job.
      * @param executionId The id of the requested JobExecution.
      * @return The requested Job object.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -139,7 +140,7 @@ public class JobExecutions extends AbstractKapuaResource {
     public JobExecution find(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("jobId") EntityId jobId,
-            @PathParam("executionId") EntityId executionId) throws Exception {
+            @PathParam("executionId") EntityId executionId) throws KapuaException {
         JobExecutionQuery jobExecutionQuery = jobExecutionFactory.newQuery(scopeId);
         jobExecutionQuery.setPredicate(jobExecutionQuery.andPredicate(
                 jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobId),
@@ -164,7 +165,7 @@ public class JobExecutions extends AbstractKapuaResource {
             @PathParam("jobId") EntityId jobId,
             @PathParam("executionId") EntityId executionId,
             @QueryParam("offset") @DefaultValue("0") int offset,
-            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         JobExecution jobExecution = jobExecutionService.find(scopeId, executionId);
         JobTargetQuery jobTargetQuery = jobTargetFactory.newQuery(scopeId);
         jobTargetQuery.setPredicate(jobTargetQuery.attributePredicate(JobTargetAttributes.ENTITY_ID, jobExecution.getTargetIds().toArray(new KapuaId[0])));

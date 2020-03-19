@@ -20,6 +20,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -44,7 +45,7 @@ public class DeviceManagementBundles extends AbstractKapuaResource {
      * @param timeout
      *            The timeout of the operation in milliseconds
      * @return The list of Bundles
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -53,7 +54,7 @@ public class DeviceManagementBundles extends AbstractKapuaResource {
     public DeviceBundles get(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") Long timeout) throws Exception {
+            @QueryParam("timeout") Long timeout) throws KapuaException {
         return bundleService.get(scopeId, deviceId, timeout);
     }
 
@@ -69,7 +70,7 @@ public class DeviceManagementBundles extends AbstractKapuaResource {
      * @param timeout
      *            The timeout of the operation in milliseconds
      * @return HTTP 200 if operation has completed successfully.
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -80,7 +81,7 @@ public class DeviceManagementBundles extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @PathParam("bundleId") String bundleId,
-            @QueryParam("timeout") Long timeout) throws Exception {
+            @QueryParam("timeout") Long timeout) throws KapuaException {
         bundleService.start(scopeId, deviceId, bundleId, timeout);
 
         return returnOk();
@@ -94,7 +95,7 @@ public class DeviceManagementBundles extends AbstractKapuaResource {
      * @param bundleId
      *            the ID of the bundle to stop
      * @return HTTP 200 if operation has completed successfully.
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -105,7 +106,7 @@ public class DeviceManagementBundles extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @PathParam("bundleId") String bundleId,
-            @QueryParam("timeout") Long timeout) throws Exception {
+            @QueryParam("timeout") Long timeout) throws KapuaException {
         bundleService.stop(scopeId, deviceId, bundleId, timeout);
 
         return returnOk();

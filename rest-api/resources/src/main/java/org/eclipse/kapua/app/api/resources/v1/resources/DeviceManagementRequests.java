@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -45,7 +46,7 @@ public class DeviceManagementRequests extends AbstractKapuaResource {
      * @param timeout        The timeout of the request execution
      * @param requestMessage The input request
      * @return The response output.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      */
     @POST
     @Consumes({MediaType.APPLICATION_XML})
@@ -54,7 +55,7 @@ public class DeviceManagementRequests extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @QueryParam("timeout") Long timeout,
-            GenericRequestMessage requestMessage) throws Exception {
+            GenericRequestMessage requestMessage) throws KapuaException {
         requestMessage.setScopeId(scopeId);
         requestMessage.setDeviceId(deviceId);
 

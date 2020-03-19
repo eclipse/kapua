@@ -13,6 +13,7 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
@@ -55,7 +56,7 @@ public class Users extends AbstractKapuaResource {
      * @param offset  The result set offset.
      * @param limit   The result set limit.
      * @return The {@link UserListResult} of all the users associated to the current selected scope.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -64,7 +65,7 @@ public class Users extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @QueryParam("name") String name,
             @QueryParam("offset") @DefaultValue("0") int offset,
-            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         UserQuery query = userFactory.newQuery(scopeId);
 
         AndPredicate andPredicate = query.andPredicate();
@@ -85,7 +86,7 @@ public class Users extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link UserQuery} to use to filter results.
      * @return The {@link UserListResult} of all the result matching the given {@link UserQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -94,7 +95,7 @@ public class Users extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public UserListResult query(
             @PathParam("scopeId") ScopeId scopeId,
-            UserQuery query) throws Exception {
+            UserQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         return userService.query(query);
@@ -106,7 +107,7 @@ public class Users extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to count results.
      * @param query   The {@link UserQuery} to use to filter results.
      * @return The count of all the result matching the given {@link UserQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -115,7 +116,7 @@ public class Users extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public CountResult count(
             @PathParam("scopeId") ScopeId scopeId,
-            UserQuery query) throws Exception {
+            UserQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         return new CountResult(userService.count(query));
@@ -128,7 +129,7 @@ public class Users extends AbstractKapuaResource {
      * @param scopeId     The {@link ScopeId} in which to create the {@link User}
      * @param userCreator Provides the information for the new User to be created.
      * @return The newly created User object.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -136,7 +137,7 @@ public class Users extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response create(
             @PathParam("scopeId") ScopeId scopeId,
-            UserCreator userCreator) throws Exception {
+            UserCreator userCreator) throws KapuaException {
         userCreator.setScopeId(scopeId);
 
         return returnCreated(userService.create(userCreator));
@@ -148,7 +149,7 @@ public class Users extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} of the requested {@link User}.
      * @param userId  The id of the requested User.
      * @return The requested User object.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -156,7 +157,7 @@ public class Users extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public User find(
             @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("userId") EntityId userId) throws Exception {
+            @PathParam("userId") EntityId userId) throws KapuaException {
         User user = userService.find(scopeId, userId);
 
         if (user == null) {
@@ -173,7 +174,7 @@ public class Users extends AbstractKapuaResource {
      * @param userId  The id of the requested {@link User}
      * @param user    The modified User whose attributed need to be updated.
      * @return The updated user.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @PUT
@@ -183,7 +184,7 @@ public class Users extends AbstractKapuaResource {
     public User update(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("userId") EntityId userId,
-            User user) throws Exception {
+            User user) throws KapuaException {
         user.setScopeId(scopeId);
         user.setId(userId);
 
@@ -196,14 +197,14 @@ public class Users extends AbstractKapuaResource {
      * @param scopeId The ScopeId of the requested {@link User}.
      * @param userId  The id of the User to be deleted.
      * @return HTTP 200 if operation has completed successfully.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @DELETE
     @Path("{userId}")
     public Response deleteUser(
             @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("userId") EntityId userId) throws Exception {
+            @PathParam("userId") EntityId userId) throws KapuaException {
         userService.delete(scopeId, userId);
 
         return returnNoContent();

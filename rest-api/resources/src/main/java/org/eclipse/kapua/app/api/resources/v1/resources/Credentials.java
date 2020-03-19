@@ -12,6 +12,7 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
@@ -53,7 +54,7 @@ public class Credentials extends AbstractKapuaResource {
      * @param offset  The result set offset.
      * @param limit   The result set limit.
      * @return The {@link CredentialListResult} of all the credentials associated to the current selected scope.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -62,7 +63,7 @@ public class Credentials extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @QueryParam("userId") EntityId userId,
             @QueryParam("offset") @DefaultValue("0") int offset,
-            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         CredentialQuery query = credentialFactory.newQuery(scopeId);
 
         AndPredicate andPredicate = query.andPredicate();
@@ -83,7 +84,7 @@ public class Credentials extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link CredentialQuery} to use to filter results.
      * @return The {@link CredentialListResult} of all the result matching the given {@link CredentialQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -92,7 +93,7 @@ public class Credentials extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public CredentialListResult query(
             @PathParam("scopeId") ScopeId scopeId,
-            CredentialQuery query) throws Exception {
+            CredentialQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         return credentialService.query(query);
@@ -104,7 +105,7 @@ public class Credentials extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link CredentialQuery} to use to filter results.
      * @return The count of all the result matching the given {@link CredentialQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -113,7 +114,7 @@ public class Credentials extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public CountResult count(
             @PathParam("scopeId") ScopeId scopeId,
-            CredentialQuery query) throws Exception {
+            CredentialQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         return new CountResult(credentialService.count(query));
@@ -126,7 +127,7 @@ public class Credentials extends AbstractKapuaResource {
      * @param scopeId           The {@link ScopeId} in which to create the {@link Credential}
      * @param credentialCreator Provides the information for the new Credential to be created.
      * @return The newly created Credential object.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -134,7 +135,7 @@ public class Credentials extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response create(
             @PathParam("scopeId") ScopeId scopeId,
-            CredentialCreator credentialCreator) throws Exception {
+            CredentialCreator credentialCreator) throws KapuaException {
         credentialCreator.setScopeId(scopeId);
 
         return returnCreated(credentialService.create(credentialCreator));
@@ -146,7 +147,7 @@ public class Credentials extends AbstractKapuaResource {
      * @param scopeId      The {@link ScopeId} of the requested {@link Credential}.
      * @param credentialId The id of the requested Credential.
      * @return The requested Credential object.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -154,7 +155,7 @@ public class Credentials extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Credential find(
             @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("credentialId") EntityId credentialId) throws Exception {
+            @PathParam("credentialId") EntityId credentialId) throws KapuaException {
         Credential credential = credentialService.find(scopeId, credentialId);
 
         if (credential == null) {
@@ -169,7 +170,7 @@ public class Credentials extends AbstractKapuaResource {
      *
      * @param credential The modified Credential whose attributed need to be updated.
      * @return The updated credential.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @PUT
@@ -179,7 +180,7 @@ public class Credentials extends AbstractKapuaResource {
     public Credential update(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("credentialId") EntityId credentialId,
-            Credential credential) throws Exception {
+            Credential credential) throws KapuaException {
         credential.setScopeId(scopeId);
         credential.setId(credentialId);
 
@@ -191,14 +192,14 @@ public class Credentials extends AbstractKapuaResource {
      *
      * @param credentialId The id of the Credential to be deleted.
      * @return HTTP 200 if operation has completed successfully.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @DELETE
     @Path("{credentialId}")
     public Response deleteCredential(
             @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("credentialId") EntityId credentialId) throws Exception {
+            @PathParam("credentialId") EntityId credentialId) throws KapuaException {
         credentialService.delete(scopeId, credentialId);
 
         return returnNoContent();
@@ -209,14 +210,14 @@ public class Credentials extends AbstractKapuaResource {
      *
      * @param credentialId The id of the Credential to be unlocked.
      * @return HTTP 200 if operation has completed successfully.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
     @Path("{credentialId}/unlock")
     public Response unlockCredential(
             @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("credentialId") EntityId credentialId) throws Exception {
+            @PathParam("credentialId") EntityId credentialId) throws KapuaException {
         credentialService.unlock(scopeId, credentialId);
 
         return returnNoContent();

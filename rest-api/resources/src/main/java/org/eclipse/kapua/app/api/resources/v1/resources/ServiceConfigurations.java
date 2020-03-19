@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.commons.configuration.metatype.EmptyTocd;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -44,7 +45,7 @@ public class ServiceConfigurations extends AbstractKapuaResource {
 
     @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    public ServiceConfiguration get(@PathParam("scopeId") ScopeId scopeId) throws Exception {
+    public ServiceConfiguration get(@PathParam("scopeId") ScopeId scopeId) throws KapuaException {
         List<KapuaConfigurableService> configurableServices = locator.getServices().stream().filter(service -> service instanceof KapuaConfigurableService).map(kapuaService -> (KapuaConfigurableService)kapuaService).collect(Collectors.toList());
         ServiceConfiguration serviceConfiguration = serviceConfigurationFactory.newConfigurationInstance();
         for (KapuaConfigurableService configurableService : configurableServices) {
@@ -67,7 +68,7 @@ public class ServiceConfigurations extends AbstractKapuaResource {
     public Response update(
             @PathParam("scopeId") ScopeId scopeId,
             ServiceConfiguration serviceConfiguration
-    ) throws Exception {
+    ) throws KapuaException, ClassNotFoundException {
         for (ServiceComponentConfiguration serviceComponentConfiguration : serviceConfiguration.getComponentConfigurations()) {
             Class<KapuaService> configurableServiceClass = (Class<KapuaService>) Class.forName(serviceComponentConfiguration.getId()).asSubclass(KapuaService.class);
             if (KapuaConfigurableService.class.isAssignableFrom(configurableServiceClass)) {
@@ -85,7 +86,7 @@ public class ServiceConfigurations extends AbstractKapuaResource {
     public ServiceComponentConfiguration getComponent(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("serviceId") String serviceId
-    ) throws Exception {
+    ) throws KapuaException, ClassNotFoundException {
         Class<KapuaService> configurableServiceClass = (Class<KapuaService>) Class.forName(serviceId).asSubclass(KapuaService.class);
         if (KapuaConfigurableService.class.isAssignableFrom(configurableServiceClass)) {
             KapuaConfigurableService configurableService = (KapuaConfigurableService)locator.getService(configurableServiceClass);
@@ -110,7 +111,7 @@ public class ServiceConfigurations extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("serviceId") String serviceId,
             ServiceComponentConfiguration serviceComponentConfiguration
-    ) throws Exception {
+    ) throws KapuaException, ClassNotFoundException {
         Class<KapuaService> configurableServiceClass = (Class<KapuaService>) Class.forName(serviceId).asSubclass(KapuaService.class);
         if (KapuaConfigurableService.class.isAssignableFrom(configurableServiceClass)) {
             KapuaConfigurableService configurableService = (KapuaConfigurableService) locator.getService(configurableServiceClass);

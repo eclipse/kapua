@@ -12,6 +12,8 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
+
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.DateParam;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.MetricType;
@@ -70,7 +72,7 @@ public class DataMessages extends AbstractKapuaResource {
      * @param offset         The result set offset.
      * @param limit          The result set limit.
      * @return The {@link MessageListResult} of all the datastoreMessages associated to the current selected scope.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
 
@@ -88,7 +90,7 @@ public class DataMessages extends AbstractKapuaResource {
             @QueryParam("metricMin") String metricMinValue, //
             @QueryParam("metricMax") String metricMaxValue, //
             @QueryParam("offset") @DefaultValue("0") int offset,//
-            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
 
         AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
         if (!Strings.isNullOrEmpty(clientId)) {
@@ -143,7 +145,7 @@ public class DataMessages extends AbstractKapuaResource {
      * @param message The {@link KapuaDataMessage } to be stored
      * @return an {@link InsertResponse} object encapsulating the response from
      * the datastore
-     * @throws Exception Whenever something bad happens. See specific
+     * @throws KapuaException Whenever something bad happens. See specific
      *                   {@link KapuaService} exceptions.
      */
     @POST
@@ -152,7 +154,7 @@ public class DataMessages extends AbstractKapuaResource {
 
     public Response storeMessage(
             @PathParam("scopeId") ScopeId scopeId,//
-            KapuaDataMessage message) throws Exception {
+            KapuaDataMessage message) throws KapuaException {
         message.setScopeId(scopeId);
         return returnCreated(new StorableEntityId(MESSAGE_STORE_SERVICE.store(message).toString()));
     }
@@ -163,7 +165,7 @@ public class DataMessages extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link MessageQuery} to used to filter results.
      * @return The {@link MessageListResult} of all the result matching the given {@link MessageQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -173,7 +175,7 @@ public class DataMessages extends AbstractKapuaResource {
 
     public MessageListResult query( //
             @PathParam("scopeId") ScopeId scopeId, //
-            MessageQuery query) throws Exception {
+            MessageQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         return MESSAGE_STORE_SERVICE.query(query);
@@ -185,7 +187,7 @@ public class DataMessages extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link MessageQuery} to used to filter results.
      * @return The count of all the result matching the given {@link MessageQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -195,7 +197,7 @@ public class DataMessages extends AbstractKapuaResource {
 
     public CountResult count( //
             @PathParam("scopeId") ScopeId scopeId, //
-            MessageQuery query) throws Exception {
+            MessageQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         return new CountResult(MESSAGE_STORE_SERVICE.count(query));
@@ -206,7 +208,7 @@ public class DataMessages extends AbstractKapuaResource {
      *
      * @param datastoreMessageId The id of the requested DatastoreMessage.
      * @return The requested DatastoreMessage object.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -215,7 +217,7 @@ public class DataMessages extends AbstractKapuaResource {
 
     public DatastoreMessage find( //
             @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("datastoreMessageId") StorableEntityId datastoreMessageId) throws Exception {
+            @PathParam("datastoreMessageId") StorableEntityId datastoreMessageId) throws KapuaException {
         DatastoreMessage datastoreMessage = MESSAGE_STORE_SERVICE.find(scopeId, datastoreMessageId, StorableFetchStyle.SOURCE_FULL);
 
         return returnNotNullEntity(datastoreMessage);

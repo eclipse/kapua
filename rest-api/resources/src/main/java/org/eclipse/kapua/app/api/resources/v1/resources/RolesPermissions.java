@@ -13,6 +13,7 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
@@ -58,7 +59,7 @@ public class RolesPermissions extends AbstractKapuaResource {
      * @param offset  The result set offset.
      * @param limit   The result set limit.
      * @return The {@link RolePermissionListResult} of all the rolePermissions associated to the current selected scope.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -69,7 +70,7 @@ public class RolesPermissions extends AbstractKapuaResource {
             @QueryParam("name") String domain,
             @QueryParam("action") Actions action,
             @QueryParam("offset") @DefaultValue("0") int offset,
-            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         RolePermissionQuery query = rolePermissionFactory.newQuery(scopeId);
 
         AndPredicate andPredicate = query.andPredicate();
@@ -95,7 +96,7 @@ public class RolesPermissions extends AbstractKapuaResource {
      * @param roleId  The {@link Role} id in which to search results.
      * @param query   The {@link RolePermissionQuery} to use to filter results.
      * @return The {@link RolePermissionListResult} of all the result matching the given {@link RolePermissionQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -105,7 +106,7 @@ public class RolesPermissions extends AbstractKapuaResource {
     public RolePermissionListResult query(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("roleId") EntityId roleId,
-            RolePermissionQuery query) throws Exception {
+            RolePermissionQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         AndPredicate andPredicate = query.andPredicate();
@@ -125,7 +126,7 @@ public class RolesPermissions extends AbstractKapuaResource {
      * @param roleId  The {@link Role} id in which to count results.
      * @param query   The {@link RolePermissionQuery} to use to filter results.
      * @return The count of all the result matching the given {@link RolePermissionQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -135,7 +136,7 @@ public class RolesPermissions extends AbstractKapuaResource {
     public CountResult count(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("roleId") EntityId roleId,
-            RolePermissionQuery query) throws Exception {
+            RolePermissionQuery query) throws KapuaException {
         query.setScopeId(scopeId);
         query.setPredicate(query.attributePredicate(RolePermissionAttributes.ROLE_ID, roleId));
 
@@ -150,7 +151,7 @@ public class RolesPermissions extends AbstractKapuaResource {
      * @param roleId                The {@link Role} id in which to create the RolePermission.
      * @param rolePermissionCreator Provides the information for the new RolePermission to be created.
      * @return The newly created RolePermission object.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -159,7 +160,7 @@ public class RolesPermissions extends AbstractKapuaResource {
     public Response create(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("roleId") EntityId roleId,
-            RolePermissionCreator rolePermissionCreator) throws Exception {
+            RolePermissionCreator rolePermissionCreator) throws KapuaException {
         rolePermissionCreator.setScopeId(scopeId);
         rolePermissionCreator.setRoleId(roleId);
 
@@ -173,7 +174,7 @@ public class RolesPermissions extends AbstractKapuaResource {
      * @param roleId           The {@link Role} id of the requested {@link RolePermission}.
      * @param rolePermissionId The id of the requested RolePermission.
      * @return The requested RolePermission object.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -182,7 +183,7 @@ public class RolesPermissions extends AbstractKapuaResource {
     public RolePermission find(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("roleId") EntityId roleId,
-            @PathParam("rolePermissionId") EntityId rolePermissionId) throws Exception {
+            @PathParam("rolePermissionId") EntityId rolePermissionId) throws KapuaException {
         RolePermissionQuery query = rolePermissionFactory.newQuery(scopeId);
 
         AndPredicate andPredicate = query.andPredicate(
@@ -210,7 +211,7 @@ public class RolesPermissions extends AbstractKapuaResource {
      * @param roleId           The {@link Role} id of the {@link RolePermission} to delete.
      * @param rolePermissionId The id of the RolePermission to be deleted.
      * @return HTTP 200 if operation has completed successfully.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @DELETE
@@ -218,7 +219,7 @@ public class RolesPermissions extends AbstractKapuaResource {
     public Response deleteRolePermission(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("roleId") EntityId roleId,
-            @PathParam("rolePermissionId") EntityId rolePermissionId) throws Exception {
+            @PathParam("rolePermissionId") EntityId rolePermissionId) throws KapuaException {
         rolePermissionService.delete(scopeId, rolePermissionId);
 
         return returnNoContent();

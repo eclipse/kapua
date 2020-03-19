@@ -21,6 +21,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.StorableEntityId;
@@ -58,7 +59,7 @@ public class DataClients extends AbstractKapuaResource {
      * @param limit
      *            The result set limit.
      * @return The {@link ClientInfoListResult} of all the clientInfos associated to the current selected scope.
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -69,7 +70,7 @@ public class DataClients extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,//
             @QueryParam("clientId") String clientId, //
             @QueryParam("offset") @DefaultValue("0") int offset,//
-            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
         if (!Strings.isNullOrEmpty(clientId)) {
             TermPredicate clientIdPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(ClientInfoField.CLIENT_ID, clientId);
@@ -94,7 +95,7 @@ public class DataClients extends AbstractKapuaResource {
      * @param query
      *            The {@link ClientInfoQuery} to used to filter results.
      * @return The {@link ClientInfoListResult} of all the result matching the given {@link ClientInfoQuery} parameter.
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -104,7 +105,7 @@ public class DataClients extends AbstractKapuaResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public ClientInfoListResult query(
             @PathParam("scopeId") ScopeId scopeId, //
-            ClientInfoQuery query) throws Exception {
+            ClientInfoQuery query) throws KapuaException {
         query.setScopeId(scopeId);
         query.addFetchAttributes(ClientInfoField.TIMESTAMP.field());
         return CLIENT_INFO_REGISTRY_SERVICE.query(query);
@@ -118,7 +119,7 @@ public class DataClients extends AbstractKapuaResource {
      * @param query
      *            The {@link ClientInfoQuery} to used to filter results.
      * @return The count of all the result matching the given {@link ClientInfoQuery} parameter.
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -129,7 +130,7 @@ public class DataClients extends AbstractKapuaResource {
 
     public CountResult count( //
             @PathParam("scopeId") ScopeId scopeId, //
-            ClientInfoQuery query) throws Exception {
+            ClientInfoQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         return new CountResult(CLIENT_INFO_REGISTRY_SERVICE.count(query));
@@ -141,7 +142,7 @@ public class DataClients extends AbstractKapuaResource {
      * @param clientInfoId
      *            The id of the requested ClientInfo.
      * @return The requested ClientInfo object.
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -151,7 +152,7 @@ public class DataClients extends AbstractKapuaResource {
 
     public ClientInfo find( //
             @PathParam("scopeId") ScopeId scopeId, //
-            @PathParam("clientInfoId") StorableEntityId clientInfoId) throws Exception {
+            @PathParam("clientInfoId") StorableEntityId clientInfoId) throws KapuaException {
         ClientInfo clientInfo = CLIENT_INFO_REGISTRY_SERVICE.find(scopeId, clientInfoId);
 
         return returnNotNullEntity(clientInfo);

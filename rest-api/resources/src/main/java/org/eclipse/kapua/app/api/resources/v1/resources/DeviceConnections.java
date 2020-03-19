@@ -13,6 +13,7 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
@@ -54,7 +55,7 @@ public class DeviceConnections extends AbstractKapuaResource {
      * @param offset   The result set offset.
      * @param limit    The result set limit.
      * @return The {@link DeviceConnectionListResult} of all the deviceConnections associated to the current selected scope.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -64,7 +65,7 @@ public class DeviceConnections extends AbstractKapuaResource {
             @QueryParam("clientId") String clientId,
             @QueryParam("status") DeviceConnectionStatus status,
             @QueryParam("offset") @DefaultValue("0") int offset,
-            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         DeviceConnectionQuery query = deviceConnectionFactory.newQuery(scopeId);
 
         AndPredicate andPredicate = query.andPredicate();
@@ -88,7 +89,7 @@ public class DeviceConnections extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link DeviceConnectionQuery} to use to filter results.
      * @return The {@link DeviceConnectionListResult} of all the result matching the given {@link DeviceConnectionQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -97,7 +98,7 @@ public class DeviceConnections extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public DeviceConnectionListResult query(
             @PathParam("scopeId") ScopeId scopeId,
-            DeviceConnectionQuery query) throws Exception {
+            DeviceConnectionQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         return deviceConnectionService.query(query);
@@ -109,7 +110,7 @@ public class DeviceConnections extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link DeviceConnectionQuery} to use to filter results.
      * @return The count of all the result matching the given {@link DeviceConnectionQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -118,7 +119,7 @@ public class DeviceConnections extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public CountResult count(
             @PathParam("scopeId") ScopeId scopeId,
-            DeviceConnectionQuery query) throws Exception {
+            DeviceConnectionQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         return new CountResult(deviceConnectionService.count(query));
@@ -130,7 +131,7 @@ public class DeviceConnections extends AbstractKapuaResource {
      * @param scopeId            The {@link ScopeId} of the requested {@link DeviceConnection}.
      * @param deviceConnectionId The id of the requested DeviceConnection.
      * @return The requested DeviceConnection object.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -138,7 +139,7 @@ public class DeviceConnections extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public DeviceConnection find(
             @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("deviceConnectionId") EntityId deviceConnectionId) throws Exception {
+            @PathParam("deviceConnectionId") EntityId deviceConnectionId) throws KapuaException {
         DeviceConnection deviceConnection = deviceConnectionService.find(scopeId, deviceConnectionId);
 
         if (deviceConnection != null) {

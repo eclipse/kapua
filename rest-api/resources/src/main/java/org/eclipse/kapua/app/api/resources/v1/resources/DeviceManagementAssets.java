@@ -19,6 +19,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -46,7 +47,7 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
      * @param timeout
      *            The timeout of the operation in milliseconds
      * @return The list of Assets
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -55,7 +56,7 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
     public DeviceAssets get(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") Long timeout) throws Exception {
+            @QueryParam("timeout") Long timeout) throws KapuaException {
         return get(scopeId, deviceId, timeout, deviceAssetFilter.newAssetListResult());
     }
 
@@ -69,7 +70,7 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
      * @param timeout
      *            The timeout of the operation in milliseconds
      * @return The list of Assets
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -79,7 +80,7 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @QueryParam("timeout") Long timeout,
-            DeviceAssets deviceAssetFilter) throws Exception {
+            DeviceAssets deviceAssetFilter) throws KapuaException {
         return deviceManagementAssetService.get(scopeId, deviceId, deviceAssetFilter, timeout);
     }
 
@@ -93,7 +94,7 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
      * @param timeout
      *            The timeout of the operation in milliseconds
      * @return The list of Assets
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -104,7 +105,7 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @QueryParam("timeout") Long timeout,
-            DeviceAssets deviceAssetFilter) throws Exception {
+            DeviceAssets deviceAssetFilter) throws KapuaException {
         return deviceManagementAssetService.read(scopeId, deviceId, deviceAssetFilter, timeout);
     }
 
@@ -118,7 +119,7 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
      * @param timeout
      *            The timeout of the operation in milliseconds
      * @return The list of Assets
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -129,7 +130,7 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @QueryParam("timeout") Long timeout,
-            DeviceAssets deviceAssetFilter) throws Exception {
+            DeviceAssets deviceAssetFilter) throws KapuaException {
         return deviceManagementAssetService.write(scopeId, deviceId, deviceAssetFilter, timeout);
     }
 

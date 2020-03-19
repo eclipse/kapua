@@ -22,6 +22,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
@@ -52,7 +53,7 @@ public class Jobs extends AbstractKapuaResource {
      * @param offset  The result set offset.
      * @param limit   The result set limit.
      * @return The {@link JobListResult} of all the jobs associated to the current selected scope.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -61,7 +62,7 @@ public class Jobs extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @QueryParam("name") String name,
             @QueryParam("offset") @DefaultValue("0") int offset,
-            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         JobQuery query = jobFactory.newQuery(scopeId);
 
         AndPredicate andPredicate = query.andPredicate();
@@ -82,7 +83,7 @@ public class Jobs extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link JobQuery} to use to filter results.
      * @return The {@link JobListResult} of all the result matching the given {@link JobQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -91,7 +92,7 @@ public class Jobs extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public JobListResult query(
             @PathParam("scopeId") ScopeId scopeId,
-            JobQuery query) throws Exception {
+            JobQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         return jobService.query(query);
@@ -103,7 +104,7 @@ public class Jobs extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link JobQuery} to use to filter results.
      * @return The count of all the result matching the given {@link JobQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -112,7 +113,7 @@ public class Jobs extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public CountResult count(
             @PathParam("scopeId") ScopeId scopeId,
-            JobQuery query) throws Exception {
+            JobQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         return new CountResult(jobService.count(query));
@@ -124,7 +125,7 @@ public class Jobs extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} of the requested {@link Job}.
      * @param jobId The id of the requested Job.
      * @return The requested Job object.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -132,7 +133,7 @@ public class Jobs extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Job find(
             @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("jobId") EntityId jobId) throws Exception {
+            @PathParam("jobId") EntityId jobId) throws KapuaException {
         Job job = jobService.find(scopeId, jobId);
 
         if (job == null) {
