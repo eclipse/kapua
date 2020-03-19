@@ -59,6 +59,6 @@ public class DeviceManagementRequests extends AbstractKapuaResource {
         requestMessage.setScopeId(scopeId);
         requestMessage.setDeviceId(deviceId);
 
-        return requestService.exec(requestMessage, timeout);
+        return requestService.exec(scopeId, deviceId, requestMessage, timeout);
     }
 }

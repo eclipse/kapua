@@ -31,9 +31,7 @@ import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
-import org.eclipse.kapua.service.datastore.model.query.ExistsPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
-import org.eclipse.kapua.service.datastore.model.query.MetricPredicate;
 import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
@@ -99,13 +97,7 @@ public class DataMessages extends AbstractKapuaResource {
         }
 
         if (!Strings.isNullOrEmpty(channel)) {
-            StorablePredicate channelPredicate = null;
-            if (strictChannel) {
-                channelPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(ChannelInfoField.CHANNEL, channel);
-            } else {
-                channelPredicate = STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(channel);
-            }
-            andPredicate.getPredicates().add(channelPredicate);
+            andPredicate.getPredicates().add(getChannelPredicate(channel, strictChannel));
         }
 
         Date startDate = startDateParam != null ? startDateParam.getDate() : null;
@@ -116,17 +108,7 @@ public class DataMessages extends AbstractKapuaResource {
         }
 
         if (!Strings.isNullOrEmpty(metricName)) {
-            if (metricMinValue == null && metricMaxValue == null) {
-                Class<V> type = metricType != null ? metricType.getType() : null;
-                ExistsPredicate existsPredicate = STORABLE_PREDICATE_FACTORY.newMetricExistsPredicate(metricName, type);
-                andPredicate.getPredicates().add(existsPredicate);
-            } else {
-                V minValue = (V) ObjectValueConverter.fromString(metricMinValue, metricType.getType());
-                V maxValue = (V) ObjectValueConverter.fromString(metricMaxValue, metricType.getType());
-
-                MetricPredicate metricPredicate = STORABLE_PREDICATE_FACTORY.newMetricPredicate(metricName, metricType.getType(), minValue, maxValue);
-                andPredicate.getPredicates().add(metricPredicate);
-            }
+            andPredicate.getPredicates().add(getMetricPredicate(metricName, metricType, metricMinValue, metricMaxValue));
         }
 
         MessageQuery query = DATASTORE_OBJECT_FACTORY.newDatastoreMessageQuery(scopeId);
@@ -135,6 +117,28 @@ public class DataMessages extends AbstractKapuaResource {
         query.setLimit(limit);
 
         return query(scopeId, query);
+    }
+
+    private StorablePredicate getChannelPredicate(String channel, boolean strictChannel) {
+        StorablePredicate channelPredicate;
+        if (strictChannel) {
+            channelPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(ChannelInfoField.CHANNEL, channel);
+        } else {
+            channelPredicate = STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(channel);
+        }
+        return channelPredicate;
+    }
+
+    private <V extends Comparable<V>> StorablePredicate getMetricPredicate(String metricName, MetricType<V> metricType, String metricMinValue, String metricMaxValue) {
+        if (metricMinValue == null && metricMaxValue == null) {
+            Class<V> type = metricType != null ? metricType.getType() : null;
+            return STORABLE_PREDICATE_FACTORY.newMetricExistsPredicate(metricName, type);
+        } else {
+            V minValue = (V) ObjectValueConverter.fromString(metricMinValue, metricType.getType());
+            V maxValue = (V) ObjectValueConverter.fromString(metricMaxValue, metricType.getType());
+
+            return STORABLE_PREDICATE_FACTORY.newMetricPredicate(metricName, metricType.getType(), minValue, maxValue);
+        }
     }
 
     /**
