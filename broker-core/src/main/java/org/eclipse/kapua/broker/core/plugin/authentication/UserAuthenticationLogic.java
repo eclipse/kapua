@@ -19,6 +19,7 @@ import org.eclipse.kapua.broker.core.plugin.Acl;
 import org.eclipse.kapua.broker.core.plugin.KapuaConnectionContext;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
@@ -182,12 +183,12 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
     }
 
     protected boolean[] checkPermissions(KapuaConnectionContext kcc) throws KapuaException {
-        boolean[] hasPermissions = new boolean[] {
-                authorizationService.isPermitted(permissionFactory.newPermission(BROKER_DOMAIN, Actions.connect, kcc.getScopeId())),
-                authorizationService.isPermitted(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.write, kcc.getScopeId())),
-                authorizationService.isPermitted(permissionFactory.newPermission(DATASTORE_DOMAIN, Actions.read, kcc.getScopeId())),
-                authorizationService.isPermitted(permissionFactory.newPermission(DATASTORE_DOMAIN, Actions.write, kcc.getScopeId()))
-        };
+        List<Permission> permissions = new ArrayList<>();
+        permissions.add(permissionFactory.newPermission(BROKER_DOMAIN, Actions.connect, kcc.getScopeId()));
+        permissions.add(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.write, kcc.getScopeId()));
+        permissions.add(permissionFactory.newPermission(DATASTORE_DOMAIN, Actions.read, kcc.getScopeId()));
+        permissions.add(permissionFactory.newPermission(DATASTORE_DOMAIN, Actions.write, kcc.getScopeId()));
+        boolean[] hasPermissions = authorizationService.isPermitted(permissions);
 
         if (!hasPermissions[BROKER_CONNECT_IDX]) {
             throw new KapuaIllegalAccessException(permissionFactory.newPermission(BROKER_DOMAIN, Actions.connect, kcc.getScopeId()).toString());

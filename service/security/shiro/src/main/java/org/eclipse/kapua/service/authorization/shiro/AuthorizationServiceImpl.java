@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaUnauthenticatedException;
@@ -28,6 +31,28 @@ import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthoriz
  */
 @KapuaProvider
 public class AuthorizationServiceImpl implements AuthorizationService {
+
+    @Override
+    public boolean[] isPermitted(List<Permission> permissions) throws KapuaException {
+        KapuaSession session = KapuaSecurityUtils.getSession();
+
+        if (session == null) {
+            throw new KapuaUnauthenticatedException();
+        }
+        if (session.isTrustedMode()) {
+            boolean[] returnedPermissions = new boolean[permissions.size()];
+            for (int i=0; i<permissions.size(); i++) {
+                returnedPermissions[i] = true;
+            }
+            return returnedPermissions;
+        }
+        else {
+            List<org.apache.shiro.authz.Permission> permissionsShiro = permissions.stream()
+                    .map(permission -> (org.apache.shiro.authz.Permission) permission)
+                    .collect(Collectors.toList());
+            return SecurityUtils.getSubject().isPermitted(permissionsShiro);
+        }
+    }
 
     @Override
     public boolean isPermitted(Permission permission)
@@ -48,4 +73,5 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             throw new SubjectUnauthorizedException(permission);
         }
     }
+
 }

@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization;
 
+import java.util.List;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
@@ -33,6 +35,16 @@ public interface AuthorizationService extends KapuaService {
      * @since 1.0.0
      */
     boolean isPermitted(Permission permission) throws KapuaException;
+
+    /**
+     * Returns if the user (the current logged user retrieved by thread context) is allowed to perform the operation identified by provided the permission.
+     *
+     * @param permission The permissions to check.
+     * @return an array representing the current user permissions.
+     * @throws KapuaException If there is no logged context.
+     * @since 1.0.0
+     */
+    boolean[] isPermitted(List<Permission> permission) throws KapuaException;
 
     /**
      * Checks if the user (the current logged user retrieved by thread context) is allowed to perform the operation identified by provided the permission.
