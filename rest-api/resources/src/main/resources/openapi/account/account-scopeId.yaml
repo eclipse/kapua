@@ -56,7 +56,7 @@ paths:
               $ref: './account.yaml#/components/schemas/accountCreator'
         required: true
       responses:
-        200:
+        201:
           description: The Account that has just been created
           content:
             application/json:

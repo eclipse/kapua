@@ -80,7 +80,7 @@ paths:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: './group.yaml#/components/parameters/groupId'
       responses:
-        200:
+        204:
           description: The Group has been deleted
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'

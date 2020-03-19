@@ -47,7 +47,7 @@ paths:
         - $ref: '../device/device.yaml#/components/parameters/deviceId'
         - $ref: './deviceOperation.yaml#/components/parameters/operationId'
       responses:
-        200:
+        204:
           description: The Registry Operation has been deleted
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'

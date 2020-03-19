@@ -47,7 +47,7 @@ paths:
         - $ref: './accessInfo.yaml#/components/parameters/accessInfoId'
         - $ref: './accessInfo.yaml#/components/parameters/accessPermissionId'
       responses:
-        200:
+        204:
           description: The AccessPermission has been deleted
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'

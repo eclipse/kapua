@@ -53,7 +53,7 @@ paths:
               sentOn: '2019-09-12T09:25:05.096Z'
               timestamp: '2019-09-12T09:25:05.096Z'
       responses:
-        200:
+        204:
           description: The message has been sent successfully
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'

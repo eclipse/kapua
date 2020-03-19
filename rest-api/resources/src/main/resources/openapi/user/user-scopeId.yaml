@@ -64,7 +64,7 @@ paths:
                   $ref: './user.yaml#/components/schemas/userCreator'
         required: true
       responses:
-        200:
+        201:
           description: The User that has just been created
           content:
             application/json:

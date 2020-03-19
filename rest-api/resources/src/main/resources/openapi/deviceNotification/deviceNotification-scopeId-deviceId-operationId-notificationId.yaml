@@ -49,7 +49,7 @@ paths:
         - $ref: '../deviceOperation/deviceOperation.yaml#/components/parameters/operationId'
         - $ref: './deviceNotification.yaml#/components/parameters/notificationId'
       responses:
-        200:
+        204:
           description: The Registry Notification has been deleted
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'

@@ -67,7 +67,7 @@ paths:
                 forwardable: true
         required: true
       responses:
-        200:
+        201:
           description: The Role Permissionthat has just been created
           content:
             application/json:

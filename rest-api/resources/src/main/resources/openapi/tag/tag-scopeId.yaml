@@ -55,7 +55,7 @@ paths:
               $ref: './tag.yaml#/components/schemas/tagCreator'
         required: true
       responses:
-        200:
+        201:
           description: The Tag that has just been created
           content:
             application/json:

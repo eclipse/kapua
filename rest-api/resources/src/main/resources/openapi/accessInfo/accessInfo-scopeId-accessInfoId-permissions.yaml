@@ -50,7 +50,7 @@ paths:
             schema:
               $ref: './accessInfo.yaml#/components/schemas/accessPermissionCreator'
       responses:
-        200:
+        201:
           description: The AccessPermission that has just been created
           content:
             application/json:

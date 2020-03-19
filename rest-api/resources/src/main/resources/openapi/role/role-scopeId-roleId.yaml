@@ -90,7 +90,7 @@ paths:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: './role.yaml#/components/parameters/roleId'
       responses:
-        200:
+        204:
           description: The Role has been deleted
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'

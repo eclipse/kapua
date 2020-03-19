@@ -95,7 +95,7 @@ paths:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: './account.yaml#/components/parameters/accountId'
       responses:
-        200:
+        204:
           description: The Account has been deleted
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
