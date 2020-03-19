@@ -134,12 +134,12 @@ public class Users extends AbstractKapuaResource {
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public User create(
+    public Response create(
             @PathParam("scopeId") ScopeId scopeId,
             UserCreator userCreator) throws Exception {
         userCreator.setScopeId(scopeId);
 
-        return userService.create(userCreator);
+        return returnCreated(userService.create(userCreator));
     }
 
     /**
@@ -206,6 +206,6 @@ public class Users extends AbstractKapuaResource {
             @PathParam("userId") EntityId userId) throws Exception {
         userService.delete(scopeId, userId);
 
-        return returnOk();
+        return returnNoContent();
     }
 }

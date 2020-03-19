@@ -124,6 +124,6 @@ public class StreamsJson extends AbstractKapuaResource implements JsonSerializat
 
         STREAMS.publish(scopeId, timeout, kapuaDataMessage);
 
-        return Response.ok().build();
+        return returnNoContent();
     }
 }

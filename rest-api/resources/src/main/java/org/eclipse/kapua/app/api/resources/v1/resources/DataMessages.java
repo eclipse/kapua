@@ -47,6 +47,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.Date;
 
 @Path("{scopeId}/data/messages")
@@ -149,11 +150,11 @@ public class DataMessages extends AbstractKapuaResource {
     @Consumes({ MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_XML })
 
-    public StorableEntityId storeMessage(
+    public Response storeMessage(
             @PathParam("scopeId") ScopeId scopeId,//
             KapuaDataMessage message) throws Exception {
         message.setScopeId(scopeId);
-        return new StorableEntityId(MESSAGE_STORE_SERVICE.store(message).toString());
+        return returnCreated(new StorableEntityId(MESSAGE_STORE_SERVICE.store(message).toString()));
     }
 
     /**

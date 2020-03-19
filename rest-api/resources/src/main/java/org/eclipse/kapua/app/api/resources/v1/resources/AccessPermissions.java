@@ -144,14 +144,14 @@ public class AccessPermissions extends AbstractKapuaResource {
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public AccessPermission create(
+    public Response create(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("accessInfoId") EntityId accessInfoId,
             AccessPermissionCreator accessPermissionCreator) throws Exception {
         accessPermissionCreator.setScopeId(scopeId);
         accessPermissionCreator.setAccessInfoId(accessInfoId);
 
-        return accessPermissionService.create(accessPermissionCreator);
+        return returnCreated(accessPermissionService.create(accessPermissionCreator));
     }
 
     /**
@@ -209,6 +209,6 @@ public class AccessPermissions extends AbstractKapuaResource {
             @PathParam("accessPermissionId") EntityId accessPermissionId) throws Exception {
         accessPermissionService.delete(scopeId, accessPermissionId);
 
-        return returnOk();
+        return returnNoContent();
     }
 }

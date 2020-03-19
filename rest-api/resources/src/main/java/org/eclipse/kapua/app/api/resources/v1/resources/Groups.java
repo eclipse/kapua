@@ -132,12 +132,12 @@ public class Groups extends AbstractKapuaResource {
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Group create(
+    public Response create(
             @PathParam("scopeId") ScopeId scopeId,
             GroupCreator groupCreator) throws Exception {
         groupCreator.setScopeId(scopeId);
 
-        return groupService.create(groupCreator);
+        return returnCreated(groupService.create(groupCreator));
     }
 
     /**
@@ -204,6 +204,6 @@ public class Groups extends AbstractKapuaResource {
             @PathParam("groupId") EntityId groupId) throws Exception {
         groupService.delete(scopeId, groupId);
 
-        return returnOk();
+        return returnNoContent();
     }
 }

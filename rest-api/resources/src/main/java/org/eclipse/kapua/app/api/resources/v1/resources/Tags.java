@@ -138,12 +138,12 @@ public class Tags extends AbstractKapuaResource {
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Tag create(
+    public Response create(
             @PathParam("scopeId") ScopeId scopeId,
             TagCreator tagCreator) throws Exception {
         tagCreator.setScopeId(scopeId);
 
-        return tagService.create(tagCreator);
+        return returnCreated(tagService.create(tagCreator));
     }
 
     /**
@@ -213,6 +213,6 @@ public class Tags extends AbstractKapuaResource {
             @PathParam("tagId") EntityId tagId) throws Exception {
         tagService.delete(scopeId, tagId);
 
-        return returnOk();
+        return returnNoContent();
     }
 }

@@ -187,6 +187,6 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
             @PathParam("managementOperationNotificationId") EntityId managementOperationNotificationId) throws Exception {
         managementOperationNotificationService.delete(scopeId, managementOperationNotificationId);
 
-        return returnOk();
+        return returnNoContent();
     }
 }

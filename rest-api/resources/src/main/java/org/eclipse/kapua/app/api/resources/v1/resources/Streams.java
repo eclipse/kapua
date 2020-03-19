@@ -86,6 +86,6 @@ public class Streams extends AbstractKapuaResource {
             KapuaDataMessage requestMessage) throws Exception {
         requestMessage.setScopeId(scopeId);
         streamService.publish(requestMessage, timeout);
-        return Response.ok().build();
+        return returnNoContent();
     }
 }

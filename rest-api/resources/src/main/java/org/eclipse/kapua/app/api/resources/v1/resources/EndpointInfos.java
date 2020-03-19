@@ -138,12 +138,12 @@ public class EndpointInfos extends AbstractKapuaResource {
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public EndpointInfo create(
+    public Response create(
             @PathParam("scopeId") ScopeId scopeId,
             EndpointInfoCreator endpointInfoCreator) throws Exception {
         endpointInfoCreator.setScopeId(scopeId);
 
-        return endpointInfoService.create(endpointInfoCreator);
+        return returnCreated(endpointInfoService.create(endpointInfoCreator));
     }
 
     /**
@@ -213,6 +213,6 @@ public class EndpointInfos extends AbstractKapuaResource {
             @PathParam("endpointInfoId") EntityId endpointInfoId) throws Exception {
         endpointInfoService.delete(scopeId, endpointInfoId);
 
-        return returnOk();
+        return returnNoContent();
     }
 }

@@ -132,12 +132,12 @@ public class Credentials extends AbstractKapuaResource {
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Credential create(
+    public Response create(
             @PathParam("scopeId") ScopeId scopeId,
             CredentialCreator credentialCreator) throws Exception {
         credentialCreator.setScopeId(scopeId);
 
-        return credentialService.create(credentialCreator);
+        return returnCreated(credentialService.create(credentialCreator));
     }
 
     /**
@@ -201,7 +201,7 @@ public class Credentials extends AbstractKapuaResource {
             @PathParam("credentialId") EntityId credentialId) throws Exception {
         credentialService.delete(scopeId, credentialId);
 
-        return returnOk();
+        return returnNoContent();
     }
 
     /**
@@ -219,7 +219,7 @@ public class Credentials extends AbstractKapuaResource {
             @PathParam("credentialId") EntityId credentialId) throws Exception {
         credentialService.unlock(scopeId, credentialId);
 
-        return returnOk();
+        return returnNoContent();
     }
 
 }

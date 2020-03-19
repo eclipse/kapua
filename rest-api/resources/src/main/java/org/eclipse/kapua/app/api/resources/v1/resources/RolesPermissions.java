@@ -156,14 +156,14 @@ public class RolesPermissions extends AbstractKapuaResource {
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public RolePermission create(
+    public Response create(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("roleId") EntityId roleId,
             RolePermissionCreator rolePermissionCreator) throws Exception {
         rolePermissionCreator.setScopeId(scopeId);
         rolePermissionCreator.setRoleId(roleId);
 
-        return rolePermissionService.create(rolePermissionCreator);
+        return returnCreated(rolePermissionService.create(rolePermissionCreator));
     }
 
     /**
@@ -221,6 +221,6 @@ public class RolesPermissions extends AbstractKapuaResource {
             @PathParam("rolePermissionId") EntityId rolePermissionId) throws Exception {
         rolePermissionService.delete(scopeId, rolePermissionId);
 
-        return returnOk();
+        return returnNoContent();
     }
 }

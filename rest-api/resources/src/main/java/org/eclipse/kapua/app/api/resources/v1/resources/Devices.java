@@ -163,12 +163,12 @@ public class Devices extends AbstractKapuaResource {
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Device create(
+    public Response create(
             @PathParam("scopeId") ScopeId scopeId,
             DeviceCreator deviceCreator) throws KapuaException {
         deviceCreator.setScopeId(scopeId);
 
-        return deviceService.create(deviceCreator);
+        return returnCreated(deviceService.create(deviceCreator));
     }
 
     /**
@@ -235,6 +235,6 @@ public class Devices extends AbstractKapuaResource {
             @PathParam("deviceId") EntityId deviceId) throws KapuaException {
         deviceService.delete(scopeId, deviceId);
 
-        return returnOk();
+        return returnNoContent();
     }
 }

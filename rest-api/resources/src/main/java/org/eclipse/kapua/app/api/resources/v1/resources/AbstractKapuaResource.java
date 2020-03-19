@@ -18,7 +18,7 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.kapua.model.KapuaEntity;
 
 /**
- * 
+ *
  * @author alberto.codutti
  *
  */
@@ -29,7 +29,7 @@ public abstract class AbstractKapuaResource {
     /**
      * Checks if the given entity is {@code null}.
      * If it is <code>null</code> a {@link WebApplicationException} is raised.
-     * 
+     *
      * @param entity
      *            The {@link KapuaEntity} to check.
      * @return The entity given if not <code>null</code>.
@@ -46,16 +46,24 @@ public abstract class AbstractKapuaResource {
 
     /**
      * Builds a 200 HTTP Response.
-     * 
+     *
      * <pre>
      * return javax.ws.rs.core.Response.ok().build();
      * </pre>
-     * 
+     *
      * @return A build {@link Response#ok()}
      * @since 1.0.0
      */
     protected Response returnOk() {
         return Response.ok().build();
+    }
+
+    protected Response returnNoContent() {
+        return Response.noContent().build();
+    }
+
+    protected Response returnCreated(Object entity) {
+        return Response.status(Status.CREATED).entity(entity).build();
     }
 
 }

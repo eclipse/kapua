@@ -160,12 +160,12 @@ public class Roles extends AbstractKapuaResource {
     @POST
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public Role create(
+    public Response create(
             @PathParam("scopeId") ScopeId scopeId,
             RoleCreator roleCreator) throws Exception {
         roleCreator.setScopeId(scopeId);
 
-        return roleService.create(roleCreator);
+        return returnCreated(roleService.create(roleCreator));
     }
 
     /**
@@ -232,7 +232,7 @@ public class Roles extends AbstractKapuaResource {
             @PathParam("roleId") EntityId roleId) throws Exception {
         roleService.delete(scopeId, roleId);
 
-        return returnOk();
+        return returnNoContent();
     }
 
     /**

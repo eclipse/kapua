@@ -42,6 +42,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,7 +130,7 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
 
-    public StorableEntityId storeMessageJson(
+    public Response storeMessageJson(
             @PathParam("scopeId") ScopeId scopeId,
             JsonKapuaDataMessage jsonKapuaDataMessage) throws Exception {
 
@@ -160,7 +161,7 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
         }
         kapuaDataMessage.setPayload(kapuaDataPayload);
 
-        return DATA_MESSAGES.storeMessage(scopeId, kapuaDataMessage);
+        return returnCreated(DATA_MESSAGES.storeMessage(scopeId, kapuaDataMessage));
     }
 
     /**

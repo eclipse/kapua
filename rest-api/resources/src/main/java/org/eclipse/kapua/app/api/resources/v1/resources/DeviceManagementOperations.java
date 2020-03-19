@@ -187,6 +187,6 @@ public class DeviceManagementOperations extends AbstractKapuaResource {
                                                     @PathParam("deviceManagementOperationId") EntityId deviceManagementOperationId) throws Exception {
         deviceManagementOperationRegistryService.delete(scopeId, deviceManagementOperationId);
 
-        return returnOk();
+        return returnNoContent();
     }
 }

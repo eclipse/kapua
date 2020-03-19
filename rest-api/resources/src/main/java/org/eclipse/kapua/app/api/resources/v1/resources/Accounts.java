@@ -137,12 +137,12 @@ public class Accounts extends AbstractKapuaResource {
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Account create(
+    public Response create(
             @PathParam("scopeId") ScopeId scopeId, //
             AccountCreator accountCreator) throws Exception {
         accountCreator.setScopeId(scopeId);
 
-        return accountService.create(accountCreator);
+        return returnCreated(accountService.create(accountCreator));
     }
 
     /**
@@ -212,7 +212,7 @@ public class Accounts extends AbstractKapuaResource {
             @PathParam("accountId") EntityId accountId) throws Exception {
         accountService.delete(scopeId, accountId);
 
-        return returnOk();
+        return returnNoContent();
     }
 
 }
