@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,16 +9,20 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call;
+package org.eclipse.kapua.service.device.call.message;
 
 /**
- * {@link DeviceMethod} definition.
- * <p>
- * Marker {@code interface}.
- * Defines the REST-like methods supported by a {@link org.eclipse.kapua.service.device.call.message.app.request.DeviceRequestMessage}.
+ * {@link DeviceMetrics} definition.
  *
- * @since 1.0.0
+ * @since 1.2.0
  */
-public interface DeviceMethod {
+public interface DeviceMetrics {
 
+    /**
+     * Gets the name of this {@link DeviceMetrics}.
+     *
+     * @return The name of this {@link DeviceMetrics}.
+     * @since 1.2.0
+     */
+    String getName();
 }

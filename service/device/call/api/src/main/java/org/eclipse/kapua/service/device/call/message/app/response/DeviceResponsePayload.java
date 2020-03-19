@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,36 +14,41 @@ package org.eclipse.kapua.service.device.call.message.app.response;
 import org.eclipse.kapua.service.device.call.message.app.DeviceAppPayload;
 
 /**
- * Device response {@link DeviceAppPayload} definition.
+ * {@link DeviceResponsePayload} definition.
+ *
+ * @since 1.0.0
  */
 public interface DeviceResponsePayload extends DeviceAppPayload {
 
     /**
-     * Get the command response code
+     * Gets the {@link DeviceResponseCode}.
      *
-     * @return
+     * @return The {@link DeviceResponseCode}.
+     * @since 1.0.0
      */
     <C extends DeviceResponseCode> C getResponseCode();
 
     /**
-     * Get the command exception message
+     * Gets the response exception message, if {@link #getResponseCode()} is not {@link DeviceResponseCode#isAccepted()}.
      *
-     * @return
+     * @return The response exception message.
+     * @since 1.0.0
      */
     String getExceptionMessage();
 
     /**
-     * Get the command exception stack
+     * Gets the response exception stack, if {@link #getResponseCode()} is not {@link DeviceResponseCode#isAccepted()}
      *
-     * @return
+     * @return The response exception stack.
+     * @since 1.0.0
      */
     String getExceptionStack();
 
     /**
-     * Get the command response body
+     * Gets the response body.
      *
-     * @return
+     * @return The response body.
+     * @since 1.0.0
      */
     byte[] getResponseBody();
-
 }

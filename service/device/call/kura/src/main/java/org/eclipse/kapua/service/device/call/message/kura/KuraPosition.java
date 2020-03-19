@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,79 +11,97 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura;
 
-import java.util.Date;
-
-import javax.xml.bind.annotation.XmlElement;
-
 import org.eclipse.kapua.service.device.call.message.DevicePosition;
 
+import javax.xml.bind.annotation.XmlElement;
+import java.util.Date;
+
 /**
- * Kura device position implementation.
- * 
- * @since 1.0
+ * {@link DevicePosition} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  *
+ * @since 1.0.0
  */
 public class KuraPosition implements DevicePosition {
 
     /**
-     * Longitude of this position in degrees. This is a mandatory field.
+     * Longitude of this position in degrees.
+     *
+     * @since 1.0.0
      */
     @XmlElement(name = "longitude")
     private Double longitude;
 
     /**
-     * Latitude of this position in degrees. This is a mandatory field.
+     * Latitude of this position in degrees.
+     *
+     * @since 1.0.0
      */
     @XmlElement(name = "latitude")
     private Double latitude;
 
     /**
      * Altitude of the position in meters.
+     *
+     * @since 1.0.0
      */
     @XmlElement(name = "altitude")
     private Double altitude;
 
     /**
      * Dilution of the precision (DOP) of the current GPS fix.
+     *
+     * @since 1.0.0
      */
     @XmlElement(name = "precision")
     private Double precision;
 
     /**
-     * Heading (direction) of the position in degrees
+     * Heading (direction) of the position in degrees.
+     *
+     * @since 1.0.0
      */
     @XmlElement(name = "heading")
     private Double heading;
 
     /**
      * Speed for this position in meter/sec.
+     *
+     * @since 1.0.0
      */
     @XmlElement(name = "speed")
     private Double speed;
 
     /**
-     * Timestamp extracted from the GPS system
+     * Timestamp extracted from the GPS system.
+     *
+     * @since 1.0.0
      */
     @XmlElement(name = "timestamp")
     private Date timestamp;
 
     /**
      * Number of satellites seen by the systems
+     *
+     * @since 1.0.0
      */
     @XmlElement(name = "satellites")
     private Integer satellites;
 
     /**
-     * Status of GPS system: 1 = no GPS response, 2 = error in response, 4 =
-     * valid.
+     * Status of GPS system: 1 = no GPS response, 2 = error in response, 4 = valid.
+     *
+     * @since 1.0.0
      */
     @XmlElement(name = "status")
     private Integer status;
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public KuraPosition() {
+        super();
     }
 
     @Override

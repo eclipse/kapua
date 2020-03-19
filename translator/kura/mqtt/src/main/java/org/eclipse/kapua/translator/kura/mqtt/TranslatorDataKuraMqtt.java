@@ -55,9 +55,9 @@ public class TranslatorDataKuraMqtt extends Translator<KuraDataMessage, MqttMess
         topicTokens.add(kuraChannel.getScope());
         topicTokens.add(kuraChannel.getClientId());
 
-        if (kuraChannel.getSemanticChannelParts() != null &&
-                !kuraChannel.getSemanticChannelParts().isEmpty()) {
-            topicTokens.addAll(kuraChannel.getSemanticChannelParts());
+        if (kuraChannel.getSemanticParts() != null &&
+                !kuraChannel.getSemanticParts().isEmpty()) {
+            topicTokens.addAll(kuraChannel.getSemanticParts());
         }
 
         return new MqttTopic(topicTokens.toArray(new String[0]));

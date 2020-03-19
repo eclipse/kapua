@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,51 +20,57 @@ import org.eclipse.kapua.service.device.call.message.app.request.DeviceRequestMe
 import org.eclipse.kapua.service.device.call.message.app.request.DeviceRequestPayload;
 
 /**
- * Device message service factory definition.
+ * {@link DeviceMessageFactory} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface DeviceMessageFactory extends KapuaObjectFactory {
 
     /**
-     * Creates a new device message
+     * Instantiates a new {@link DeviceMessage}
      *
-     * @return
+     * @return The newly instantiated {@link DeviceMessage}.
+     * @since 1.0.0
      */
     DeviceMessage newMessage();
 
     /**
-     * Creates a new device request message
+     * Instantiates a new {@link DeviceRequestMessage}
      *
-     * @return
+     * @return The newly instantiated {@link DeviceRequestMessage}.
+     * @since 1.0.0
      */
     DeviceRequestMessage newRequestMessage();
 
     /**
-     * Creates a new device channel
+     * Instantiates a new {@link DeviceChannel}
      *
-     * @return
+     * @return The newly instantiated {@link DeviceChannel}.
+     * @since 1.0.0
      */
     DeviceChannel newChannel();
 
     /**
-     * Creates a new device request channel
+     * Instantiates a new {@link DeviceRequestChannel}
      *
-     * @return
+     * @return The newly instantiated {@link DeviceRequestChannel}.
+     * @since 1.0.0
      */
     DeviceRequestChannel newRequestChannel();
 
     /**
-     * Creates a new device payload
+     * Instantiates a new {@link DevicePayload}
      *
-     * @return
+     * @return The newly instantiated {@link DevicePayload}.
+     * @since 1.0.0
      */
     DevicePayload newPayload();
 
     /**
-     * Creates a new device request payload
+     * Instantiates a new {@link DeviceRequestPayload}
      *
-     * @return
+     * @return The newly instantiated {@link DeviceRequestPayload}.
+     * @since 1.0.0
      */
     DeviceRequestPayload newRequestPayload();
 

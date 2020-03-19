@@ -15,8 +15,8 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
-import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSetting;
 import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSettingKeys;
+import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSettings;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.transport.message.mqtt.MqttMessage;
 import org.eclipse.kapua.transport.message.mqtt.MqttPayload;
@@ -55,8 +55,7 @@ public class TranslatorRequestKuraMqtt extends Translator<KuraRequestMessage, Mq
                 mqttPayload);
     }
 
-    public MqttTopic translate(KuraRequestChannel kuraChannel)
-            throws KapuaException {
+    public MqttTopic translate(KuraRequestChannel kuraChannel) {
         List<String> topicTokens = new ArrayList<>();
 
         if (kuraChannel.getMessageClassification() != null) {
@@ -77,8 +76,8 @@ public class TranslatorRequestKuraMqtt extends Translator<KuraRequestMessage, Mq
         return new MqttTopic(topicTokens.toArray(new String[0]));
     }
 
-    private MqttTopic generateResponseTopic(KuraRequestChannel kuraChannel) {
-        String replyPart = DeviceCallSetting.getInstance().getString(DeviceCallSettingKeys.DESTINATION_REPLY_PART);
+    public MqttTopic generateResponseTopic(KuraRequestChannel kuraChannel) {
+        String replyPart = DeviceCallSettings.getInstance().getString(DeviceCallSettingKeys.DESTINATION_REPLY_PART);
 
         List<String> topicTokens = new ArrayList<>();
 
@@ -95,8 +94,7 @@ public class TranslatorRequestKuraMqtt extends Translator<KuraRequestMessage, Mq
         return new MqttTopic(topicTokens.toArray(new String[0]));
     }
 
-    private MqttPayload translate(KuraPayload kuraPayload)
-            throws KapuaException {
+    public MqttPayload translate(KuraPayload kuraPayload) {
         return new MqttPayload(kuraPayload.toByteArray());
     }
 

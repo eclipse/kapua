@@ -108,10 +108,10 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
         PackageResponsePayload responsePayload = new PackageResponsePayload();
 
         Map<String, Object> metrics = kuraResponsePayload.getMetrics();
-        responsePayload.setExceptionMessage((String) metrics.get(KuraResponseMetrics.EXCEPTION_MESSAGE.getValue()));
-        responsePayload.setExceptionStack((String) metrics.get(KuraResponseMetrics.EXCEPTION_STACK.getValue()));
+        responsePayload.setExceptionMessage((String) metrics.get(KuraResponseMetrics.EXCEPTION_MESSAGE.getName()));
+        responsePayload.setExceptionStack((String) metrics.get(KuraResponseMetrics.EXCEPTION_STACK.getName()));
 
-        KuraResponseCode responseCode = KuraResponseCode.fromResponseCode((Integer) metrics.get(KuraResponseMetrics.EXIT_CODE.getValue()));
+        KuraResponseCode responseCode = KuraResponseCode.fromResponseCode((Integer) metrics.get(KuraResponseMetrics.EXIT_CODE.getName()));
 
         if (!KuraResponseCode.INTERNAL_ERROR.equals(responseCode)) {
             if (metrics.get(PackageMetrics.APP_METRIC_PACKAGE_OPERATION_ID.getValue()) != null) {

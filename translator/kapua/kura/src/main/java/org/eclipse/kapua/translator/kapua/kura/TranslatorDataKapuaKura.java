@@ -30,7 +30,6 @@ import java.util.HashMap;
  * Messages translator implementation from {@link KuraDataMessage} to {@link KapuaDataMessage}
  *
  * @since 1.0
- *
  */
 public class TranslatorDataKapuaKura extends Translator<KapuaDataMessage, KuraDataMessage> {
 
@@ -72,7 +71,7 @@ public class TranslatorDataKapuaKura extends Translator<KapuaDataMessage, KuraDa
     private KuraDataChannel translate(KapuaDataChannel kapuaChannel)
             throws KapuaException {
         KuraDataChannel kuraChannel = new KuraDataChannel();
-        kuraChannel.setSemanticChannelParts(kapuaChannel.getSemanticParts());
+        kuraChannel.setSemanticParts(kapuaChannel.getSemanticParts());
 
         //
         // Return Kapua Channel

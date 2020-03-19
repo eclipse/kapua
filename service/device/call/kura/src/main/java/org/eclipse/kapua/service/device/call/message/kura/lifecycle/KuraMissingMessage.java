@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,23 +21,19 @@ import java.util.Date;
  * {@link DeviceLifecycleMessage} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  * <p>
  * The missing message is sent by the platform to notify that a device is no more available (likely due to network error).
- * </p>
+ *
+ * @since 1.0.0
  */
 public class KuraMissingMessage extends KuraMessage<KuraMissingChannel, KuraMissingPayload> implements DeviceLifecycleMessage<KuraMissingChannel, KuraMissingPayload> {
 
     /**
-     * Constructor
-     */
-    public KuraMissingMessage() {
-        super();
-    }
-
-    /**
-     * Constructor
+     * Constructor.
      *
-     * @param channel
-     * @param timestamp
-     * @param payload
+     * @param channel   The {@link KuraMissingChannel}.
+     * @param timestamp The timestamp.
+     * @param payload   The {@link KuraMissingPayload}.
+     * @see org.eclipse.kapua.service.device.call.message.DeviceMessage
+     * @since 1.0.0
      */
     public KuraMissingMessage(KuraMissingChannel channel, Date timestamp, KuraMissingPayload payload) {
         super(channel, timestamp, payload);

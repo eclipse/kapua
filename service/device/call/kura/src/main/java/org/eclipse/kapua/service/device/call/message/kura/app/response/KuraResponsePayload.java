@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,22 +16,24 @@ import org.eclipse.kapua.service.device.call.message.kura.app.KuraAppPayload;
 
 /**
  * {@link DeviceResponsePayload} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
+ *
+ * @since 1.0.0
  */
 public class KuraResponsePayload extends KuraAppPayload implements DeviceResponsePayload {
 
     @Override
     public KuraResponseCode getResponseCode() {
-        return KuraResponseCode.valueOf((String) getMetrics().get("response.code"));
+        return KuraResponseCode.valueOf((String) getMetrics().get(KuraResponseMetrics.EXIT_CODE.getName()));
     }
 
     @Override
     public String getExceptionMessage() {
-        return (String) getMetrics().get("response.exception.message");
+        return (String) getMetrics().get(KuraResponseMetrics.EXCEPTION_MESSAGE.getName());
     }
 
     @Override
     public String getExceptionStack() {
-        return (String) getMetrics().get("response.exception.stack");
+        return (String) getMetrics().get(KuraResponseMetrics.EXCEPTION_STACK.getName());
     }
 
     @Override

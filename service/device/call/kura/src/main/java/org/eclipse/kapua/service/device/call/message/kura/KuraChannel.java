@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,11 +14,10 @@ package org.eclipse.kapua.service.device.call.message.kura;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.service.device.call.message.DeviceChannel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * {@link DeviceChannel} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
+ *
+ * @since 1.0.0
  */
 public class KuraChannel implements DeviceChannel {
 
@@ -29,27 +28,31 @@ public class KuraChannel implements DeviceChannel {
     protected String clientId;
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public KuraChannel() {
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeNamespace
-     * @param clientId
+     * @param scopeNamespace The scope namespace.
+     * @param clientId       The clientId.
+     * @since 1.0.0
      */
     public KuraChannel(String scopeNamespace, String clientId) {
         this(null, scopeNamespace, clientId);
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param messageClassification
-     * @param scopeNamespace
-     * @param clientId
+     * @param messageClassification The message classification.
+     * @param scopeNamespace        The scope namespace.
+     * @param clientId              The clientId.
+     * @since 1.0.0
      */
     public KuraChannel(String messageClassification, String scopeNamespace, String clientId) {
         setMessageClassification(messageClassification);
@@ -85,15 +88,5 @@ public class KuraChannel implements DeviceChannel {
     @Override
     public void setClientId(String clientId) {
         this.clientId = clientId;
-    }
-
-    /**
-     * Get the semantic tokens list.<br>
-     * The semantic part, of a channel, describes an action or a destination inside a domain (eg a scope identifier and a client identifier)
-     *
-     * @return
-     */
-    public List<String> getSemanticChannelParts() {
-        return new ArrayList<>();
     }
 }

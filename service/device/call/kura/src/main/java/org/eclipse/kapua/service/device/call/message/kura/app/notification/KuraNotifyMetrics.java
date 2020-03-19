@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.device.call.message.kura.app.notification;
 import org.eclipse.kapua.service.device.call.message.app.request.DeviceRequestMetrics;
 
 /**
- * {@link DeviceRequestMetrics} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation
+ * {@link DeviceRequestMetrics} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  *
  * @since 1.0.0
  */
@@ -97,17 +97,30 @@ public enum KuraNotifyMetrics implements DeviceRequestMetrics {
     UNINSTALL_ERROR_MESSAGE("dp.uninstall.error.message"),
     ;
 
-    private String value;
-
     /**
+     * The metric name
+     *
      * @since 1.0.0
      */
-    KuraNotifyMetrics(String value) {
-        this.value = value;
+    private final String name;
+
+    /**
+     * Constructor.
+     *
+     * @param name The metric name
+     * @since 1.0.0
+     */
+    KuraNotifyMetrics(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
     public String getValue() {
-        return value;
+        return getName();
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,37 +14,41 @@ package org.eclipse.kapua.service.device.call.message.app.response;
 import org.eclipse.kapua.service.device.call.message.app.DeviceAppChannel;
 
 /**
- * Device response channel definition.
+ * {@link DeviceResponseChannel} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface DeviceResponseChannel extends DeviceAppChannel {
 
     /**
-     * Get the reply part
+     * Gets the reply part.
      *
-     * @return
+     * @return The reply part.
+     * @since 1.0.0
      */
     String getReplyPart();
 
     /**
-     * Set the reply part
+     * Sets the reply part.
      *
-     * @param replyPart
+     * @param replyPart The reply part.
+     * @since 1.0.0
      */
     void setReplyPart(String replyPart);
 
     /**
-     * Get the request identifier
+     * Gets the request identifier.
      *
-     * @return
+     * @return The request identifier.
+     * @since 1.0.0
      */
     String getRequestId();
 
     /**
-     * Set the request identifier
+     * Sets the request identifier.
      *
-     * @param requestId
+     * @param requestId The request identifier.
+     * @since 1.0.0
      */
     void setRequestId(String requestId);
 }

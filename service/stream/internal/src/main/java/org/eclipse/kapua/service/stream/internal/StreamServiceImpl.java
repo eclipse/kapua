@@ -23,8 +23,8 @@ import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.device.call.kura.exception.KuraMqttDeviceCallErrorCodes;
-import org.eclipse.kapua.service.device.call.kura.exception.KuraMqttDeviceCallException;
+import org.eclipse.kapua.service.device.call.kura.exception.KuraDeviceCallErrorCodes;
+import org.eclipse.kapua.service.device.call.kura.exception.KuraDeviceCallException;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -107,7 +107,7 @@ public class StreamServiceImpl implements StreamService {
             transportFacade.sendAsync((TransportMessage<?, ?>) translatorKuraTransport.translate(kuraDataMessage));
 
         } catch (KapuaException ke) {
-            throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CALL_ERROR, ke, (Object[]) null);
+            throw new KuraDeviceCallException(KuraDeviceCallErrorCodes.CALL_ERROR, ke, (Object[]) null);
         } finally {
             if (transportFacade != null) {
                 transportFacade.clean();
@@ -185,11 +185,11 @@ public class StreamServiceImpl implements StreamService {
     /**
      * @param serverUri
      * @return
-     * @throws KuraMqttDeviceCallException
+     * @throws KuraDeviceCallException
      * @since 1.0.0
      */
     private TransportFacade<?, ?, TransportMessage<?, ?>, ?> borrowClient(String serverUri)
-            throws KuraMqttDeviceCallException {
+            throws KuraDeviceCallException {
         TransportFacade<?, ?, TransportMessage<?, ?>, ?> transportFacade;
         Map<String, Object> configParameters = new HashMap<>();
         configParameters.put("serverAddress", serverUri);
@@ -199,7 +199,7 @@ public class StreamServiceImpl implements StreamService {
 
             transportFacade = (TransportFacade<?, ?, TransportMessage<?, ?>, ?>) transportClientFactory.getFacade(configParameters);
         } catch (Exception e) {
-            throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CALL_ERROR,
+            throw new KuraDeviceCallException(KuraDeviceCallErrorCodes.CALL_ERROR,
                     e,
                     (Object[]) null);
         }
@@ -212,16 +212,16 @@ public class StreamServiceImpl implements StreamService {
      * @param <T1>
      * @param <T2>
      * @return
-     * @throws KuraMqttDeviceCallException
+     * @throws KuraDeviceCallException
      * @since 1.0.0
      */
     private <T1 extends Message<?, ?>, T2 extends Message<?, ?>> Translator<T1, T2> getTranslator(Class<T1> from, Class<T2> to)
-            throws KuraMqttDeviceCallException {
+            throws KuraDeviceCallException {
         Translator<T1, T2> translator;
         try {
             translator = Translator.getTranslatorFor(from, to);
         } catch (KapuaException e) {
-            throw new KuraMqttDeviceCallException(KuraMqttDeviceCallErrorCodes.CALL_ERROR, e, (Object[]) null);
+            throw new KuraDeviceCallException(KuraDeviceCallErrorCodes.CALL_ERROR, e, (Object[]) null);
         }
         return translator;
     }

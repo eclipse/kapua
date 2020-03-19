@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,13 +18,31 @@ import java.util.Date;
 
 /**
  * {@link DeviceAppMessage} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
+ *
+ * @param <C> The {@link KuraAppChannel} type.
+ * @param <P> The {@link KuraAppPayload} type.
+ * @since 1.0.0
  */
 public abstract class KuraAppMessage<C extends KuraAppChannel, P extends KuraAppPayload> extends KuraMessage<C, P> implements DeviceAppMessage<C, P> {
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     public KuraAppMessage() {
         super();
     }
 
+    /**
+     * Constructor.
+     *
+     * @param channel   The {@link KuraAppChannel}.
+     * @param timestamp The timestamp.
+     * @param payload   The {@link KuraAppPayload}.
+     * @see org.eclipse.kapua.service.device.call.message.DeviceMessage
+     * @since 1.0.0
+     */
     public KuraAppMessage(C channel, Date timestamp, P payload) {
         super(channel, timestamp, payload);
     }

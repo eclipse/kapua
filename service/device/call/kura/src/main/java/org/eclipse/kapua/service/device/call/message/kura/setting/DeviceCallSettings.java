@@ -11,41 +11,46 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura.setting;
 
-import org.eclipse.kapua.commons.setting.SettingKey;
+import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
 /**
- * {@link SettingKey}s for {@code kapua-device-call-kura} module.
+ * {@link DeviceCallSettings} for {@code kapua-device-call-kura} module.
  *
+ * @see AbstractKapuaSetting
  * @since 1.0.0
  */
-public enum DeviceCallSettingKeys implements SettingKey {
+public class DeviceCallSettings extends AbstractKapuaSetting<DeviceCallSettingKeys> {
 
     /**
-     * Destination reply part.
+     * Setting filename.
      *
      * @since 1.0.0
      */
-    DESTINATION_REPLY_PART("destination.reply.part");
+    private static final String DEVICE_CALL_SETTING_RESOURCE = "device-call-settings.properties";
 
     /**
-     * The key value of the {@link SettingKey}.
+     * Singleton instance.
      *
      * @since 1.0.0
      */
-    private final String key;
+    private static final DeviceCallSettings INSTANCE = new DeviceCallSettings();
 
     /**
      * Constructor.
      *
-     * @param key The key value of the {@link SettingKey}.
      * @since 1.0.0
      */
-    private DeviceCallSettingKeys(String key) {
-        this.key = key;
+    private DeviceCallSettings() {
+        super(DEVICE_CALL_SETTING_RESOURCE);
     }
 
-    @Override
-    public String key() {
-        return key;
+    /**
+     * Gets a singleton instance of {@link DeviceCallSettings}.
+     *
+     * @return A singleton instance of {@link DeviceCallSettings}.
+     * @since 1.0.0
+     */
+    public static DeviceCallSettings getInstance() {
+        return INSTANCE;
     }
 }

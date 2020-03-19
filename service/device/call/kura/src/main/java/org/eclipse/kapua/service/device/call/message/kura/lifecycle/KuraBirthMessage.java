@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,16 +19,20 @@ import java.util.Date;
 /**
  * {@link DeviceLifecycleMessage} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  * <p>
- * The birth message is sent by the {@link org.eclipse.kapua.service.device.registry.Device} to notify to the platform that it is available.
+ * The {@link KuraBirthMessage} is sent by the {@link org.eclipse.kapua.service.device.registry.Device} to notify to the platform that it is available.
+ *
+ * @since 1.0.0
  */
 public class KuraBirthMessage extends AbstractKuraAppsBirthMessage<KuraBirthChannel, KuraBirthPayload> implements DeviceLifecycleMessage<KuraBirthChannel, KuraBirthPayload> {
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param channel
-     * @param timestamp
-     * @param payload
+     * @param channel   The {@link KuraBirthChannel}.
+     * @param timestamp The timestamp.
+     * @param payload   The {@link KuraBirthPayload}.
+     * @see org.eclipse.kapua.service.device.call.message.DeviceMessage
+     * @since 1.0.0
      */
     public KuraBirthMessage(KuraBirthChannel channel, Date timestamp, KuraBirthPayload payload) {
         super(channel, timestamp, payload);

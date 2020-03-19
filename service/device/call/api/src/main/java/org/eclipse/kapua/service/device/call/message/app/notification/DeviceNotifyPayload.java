@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,32 +14,40 @@ package org.eclipse.kapua.service.device.call.message.app.notification;
 import org.eclipse.kapua.service.device.call.message.app.DeviceAppPayload;
 
 /**
- * {@link DeviceNotifyMessage} {@link org.eclipse.kapua.message.KapuaPayload} definition.
+ * {@link DeviceNotifyPayload} definition.
  *
  * @since 1.0.0
  */
 public interface DeviceNotifyPayload extends DeviceAppPayload {
 
     /**
-     * @return
+     * Gets the device management operation identifier.
+     *
+     * @return The device management operation identifier.
      * @since 1.0.0
      */
     Long getOperationId();
 
     /**
-     * @return
+     * Sets the device management operation identifier.
+     *
+     * @return The device management operation identifier.
      * @since 1.0.0
      */
     String getStatus();
 
     /**
-     * @return
+     * Gets the progress of the processing.
+     *
+     * @return The progress of the processing.
      * @since 1.0.0
      */
     Integer getProgress();
 
     /**
-     * @return
+     * Sets the progress of the processing.
+     *
+     * @return The progress of the processing.
      * @since 1.2.0
      */
     String getMessage();

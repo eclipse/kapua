@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,17 +18,14 @@ import org.eclipse.kapua.KapuaErrorCode;
  */
 public enum DeviceCallErrorCodes implements KapuaErrorCode {
 
-
     /**
-     * An error occurred when sending the {@link org.eclipse.kapua.service.device.call.message.DeviceMessage}.
-     *
+     * @see DeviceCallSendException
      * @since 1.1.0
      */
     SEND_ERROR,
 
     /**
-     * A response as not been received within the given timeout.
-     *
+     * @see DeviceCallTimeoutException
      * @since 1.1.0
      */
     TIMEOUT

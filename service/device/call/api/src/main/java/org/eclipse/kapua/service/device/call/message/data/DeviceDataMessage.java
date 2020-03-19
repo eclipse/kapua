@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,7 +14,11 @@ package org.eclipse.kapua.service.device.call.message.data;
 import org.eclipse.kapua.service.device.call.message.DeviceMessage;
 
 /**
- * Data {@link DeviceMessage}
+ * {@link DeviceDataMessage} definition.
+ *
+ * @param <C> The {@link DeviceDataChannel} type.
+ * @param <P> The {@link DeviceDataPayload} type.
+ * @since 1.0.0
  */
 public interface DeviceDataMessage<C extends DeviceDataChannel, P extends DeviceDataPayload> extends DeviceMessage<C, P> {
 
