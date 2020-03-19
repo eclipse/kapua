@@ -27,6 +27,7 @@ import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.job.Job;
@@ -36,7 +37,6 @@ import org.eclipse.kapua.service.job.execution.JobExecutionFactory;
 import org.eclipse.kapua.service.job.execution.JobExecutionListResult;
 import org.eclipse.kapua.service.job.execution.JobExecutionQuery;
 import org.eclipse.kapua.service.job.execution.JobExecutionService;
-import org.eclipse.kapua.service.job.targets.JobTargetAttributes;
 import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetListResult;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
@@ -144,7 +144,7 @@ public class JobExecutions extends AbstractKapuaResource {
         JobExecutionQuery jobExecutionQuery = jobExecutionFactory.newQuery(scopeId);
         jobExecutionQuery.setPredicate(jobExecutionQuery.andPredicate(
                 jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobId),
-                jobExecutionQuery.attributePredicate(JobExecutionAttributes.ENTITY_ID, executionId)
+                jobExecutionQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, executionId)
         ));
         jobExecutionQuery.setOffset(0);
         jobExecutionQuery.setLimit(1);
@@ -168,7 +168,7 @@ public class JobExecutions extends AbstractKapuaResource {
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         JobExecution jobExecution = jobExecutionService.find(scopeId, executionId);
         JobTargetQuery jobTargetQuery = jobTargetFactory.newQuery(scopeId);
-        jobTargetQuery.setPredicate(jobTargetQuery.attributePredicate(JobTargetAttributes.ENTITY_ID, jobExecution.getTargetIds().toArray(new KapuaId[0])));
+        jobTargetQuery.setPredicate(jobTargetQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, jobExecution.getTargetIds().toArray(new KapuaId[0])));
         jobTargetQuery.setLimit(limit);
         jobTargetQuery.setOffset(offset);
 

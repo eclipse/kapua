@@ -27,6 +27,7 @@ import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.job.Job;
@@ -144,7 +145,7 @@ public class JobTargets extends AbstractKapuaResource {
         JobTargetQuery jobTargetQuery = jobTargetFactory.newQuery(scopeId);
         jobTargetQuery.setPredicate(jobTargetQuery.andPredicate(
                 jobTargetQuery.attributePredicate(JobTargetAttributes.JOB_ID, jobId),
-                jobTargetQuery.attributePredicate(JobTargetAttributes.ENTITY_ID, targetId)
+                jobTargetQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, targetId)
         ));
         jobTargetQuery.setOffset(0);
         jobTargetQuery.setLimit(1);

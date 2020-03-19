@@ -27,6 +27,8 @@ import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
+import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
@@ -73,7 +75,7 @@ public class JobTriggers extends AbstractKapuaResource {
         AndPredicate andPredicate = query.andPredicate(returnJobIdPredicate(jobId, query));
 
         if (!Strings.isNullOrEmpty(name)) {
-            andPredicate = andPredicate.and(query.attributePredicate(TriggerAttributes.NAME, name));
+            andPredicate = andPredicate.and(query.attributePredicate(KapuaNamedEntityAttributes.NAME, name));
         }
 
         query.setPredicate(andPredicate);
@@ -148,7 +150,7 @@ public class JobTriggers extends AbstractKapuaResource {
         TriggerQuery triggerQuery = triggerFactory.newQuery(scopeId);
         triggerQuery.setPredicate(triggerQuery.andPredicate(
                 returnJobIdPredicate(jobId, triggerQuery),
-                triggerQuery.attributePredicate(TriggerAttributes.ENTITY_ID, triggerId)
+                triggerQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, triggerId)
         ));
         triggerQuery.setOffset(0);
         triggerQuery.setLimit(1);

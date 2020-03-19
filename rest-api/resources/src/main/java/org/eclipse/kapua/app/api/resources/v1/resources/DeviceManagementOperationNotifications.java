@@ -17,6 +17,7 @@ import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
@@ -154,7 +155,7 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
 
         AndPredicate andPredicate = query.andPredicate(
                 query.attributePredicate(ManagementOperationNotificationAttributes.OPERATION_ID, operationId),
-                query.attributePredicate(ManagementOperationNotificationAttributes.ENTITY_ID, managementOperationNotificationId)
+                query.attributePredicate(KapuaEntityAttributes.ENTITY_ID, managementOperationNotificationId)
         );
 
         query.setPredicate(andPredicate);

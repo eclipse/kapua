@@ -18,6 +18,7 @@ import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
@@ -188,7 +189,7 @@ public class RolesPermissions extends AbstractKapuaResource {
 
         AndPredicate andPredicate = query.andPredicate(
                 query.attributePredicate(RolePermissionAttributes.ROLE_ID, roleId),
-                query.attributePredicate(RolePermissionAttributes.ENTITY_ID, rolePermissionId)
+                query.attributePredicate(KapuaEntityAttributes.ENTITY_ID, rolePermissionId)
         );
 
         query.setPredicate(andPredicate);
