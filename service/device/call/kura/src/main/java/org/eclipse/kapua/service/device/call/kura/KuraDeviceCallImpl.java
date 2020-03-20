@@ -174,7 +174,7 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
     /**
      * Picks a {@link TransportFacade} to send the {@link KuraResponseMessage}.
      *
-     * @param kuraRequestMessage
+     * @param kuraRequestMessage The {@link KuraRequestMessage} to send.
      * @return The {@link TransportFacade} to use to send the {@link KuraResponseMessage}.
      * @throws TransportClientGetException If getting the {@link TransportFacade} causes an {@link Exception}.
      * @since 1.0.0
@@ -219,7 +219,7 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
      * @param <F>  The {@link Message} {@code class}from which to translate.
      * @param <T>  The {@link Message} {@code class} to which to translate.
      * @return The {@link Translator} found.
-     * @throws KuraDeviceCallException If error occurs while searching the {@link Translator}.
+     * @throws KuraDeviceCallException If error occurs while looking for the {@link Translator}.
      * @since 1.0.0
      */
     protected <F extends Message<?, ?>, T extends Message<?, ?>> Translator<F, T> getTranslator(Class<F> from, Class<T> to) throws KuraDeviceCallException {
@@ -227,7 +227,7 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
         try {
             translator = Translator.getTranslatorFor(from, to);
         } catch (TranslatorNotFoundException e) {
-            throw new KuraDeviceCallException(KuraDeviceCallErrorCodes.CALL_ERROR, e);
+            throw new KuraDeviceCallException(KuraDeviceCallErrorCodes.CALL_ERROR, e, from, to);
         }
         return translator;
     }

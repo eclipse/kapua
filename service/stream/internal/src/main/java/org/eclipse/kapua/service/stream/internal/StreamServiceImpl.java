@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.stream.internal;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
@@ -25,6 +26,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.call.kura.exception.KuraDeviceCallErrorCodes;
 import org.eclipse.kapua.service.device.call.kura.exception.KuraDeviceCallException;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -40,6 +42,7 @@ import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.TranslatorNotFoundException;
 import org.eclipse.kapua.transport.TransportClientFactory;
 import org.eclipse.kapua.transport.TransportFacade;
+import org.eclipse.kapua.transport.exception.TransportClientGetException;
 import org.eclipse.kapua.transport.message.TransportMessage;
 
 import java.util.Date;
@@ -64,40 +67,30 @@ public class StreamServiceImpl implements StreamService {
     private static final EndpointInfoService ENDPOINT_INFO_SERVICE = LOCATOR.getService(EndpointInfoService.class);
     private static final EndpointInfoFactory ENDPOINT_INFO_FACTORY = LOCATOR.getFactory(EndpointInfoFactory.class);
 
+    private static final TransportClientFactory TRANSPORT_CLIENT_FACTORY = LOCATOR.getFactory(TransportClientFactory.class);
+
     @Override
-    public KapuaResponseMessage<?, ?> publish(KapuaDataMessage requestMessage, Long timeout)
+    public KapuaResponseMessage<?, ?> publish(KapuaDataMessage kapuaDataMessage, Long timeout)
             throws KapuaException {
         //
         // Argument validation
-        ArgumentValidator.notNull(requestMessage.getScopeId(), "dataMessage.scopeId");
-        ArgumentValidator.notNull(requestMessage.getChannel(), "dataMessage.channel");
+        ArgumentValidator.notNull(kapuaDataMessage.getScopeId(), "dataMessage.scopeId");
+        ArgumentValidator.notNull(kapuaDataMessage.getChannel(), "dataMessage.channel");
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(StreamDomains.STREAM_DOMAIN, Actions.write, requestMessage.getScopeId()));
-
-        //
-        // Check Device existence
-        Device device = checkDeviceInfo(requestMessage);
-
-        // Resolve URI
-        String serverURI;
-        if (device != null) {
-            serverURI = device.getConnection().getServerIp();
-        } else {
-            serverURI = getEndpointInfoDNS(requestMessage);
-        }
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(StreamDomains.STREAM_DOMAIN, Actions.write, kapuaDataMessage.getScopeId()));
 
         //
         // Do publish
-        try (TransportFacade<?, ?, TransportMessage<?, ?>, ?> transportFacade = borrowClient(serverURI)) {
+        try (TransportFacade transportFacade = borrowClient(kapuaDataMessage)) {
 
             //
             // Get Kura to transport translator for the request and vice versa
             Translator<KapuaDataMessage, KuraDataMessage> translatorKapuaKura = getTranslator(KapuaDataMessage.class, KuraDataMessage.class);
             Translator<KuraDataMessage, ?> translatorKuraTransport = getTranslator(KuraDataMessage.class, transportFacade.getMessageClass());
 
-            KuraDataMessage kuraDataMessage = translatorKapuaKura.translate(requestMessage);
+            KuraDataMessage kuraDataMessage = translatorKapuaKura.translate(kapuaDataMessage);
 
             //
             // Do send
@@ -115,10 +108,43 @@ public class StreamServiceImpl implements StreamService {
         return null;
     }
 
-
     //
     // Private methods
     //
+
+    /**
+     * Picks a {@link TransportFacade} to send the {@link KuraResponseMessage}.
+     *
+     * @param kapuaDataMessage The K
+     * @return The {@link TransportFacade} to use to send the {@link KuraDataMessage}.
+     * @throws KuraDeviceCallException If getting the {@link TransportFacade} causes any {@link Exception}.
+     * @since 1.0.0
+     */
+    protected TransportFacade<?, ?, ?, ?> borrowClient(KapuaDataMessage kapuaDataMessage) throws KuraDeviceCallException {
+        String serverURI = null;
+        try {
+            //
+            // Check Device existence
+            Device device = checkDeviceInfo(kapuaDataMessage);
+
+            // Resolve URI
+            if (device != null) {
+                serverURI = device.getConnection().getServerIp();
+            } else {
+                serverURI = getEndpointInfoDNS(kapuaDataMessage);
+            }
+
+            if (Strings.isNullOrEmpty(serverURI)) {
+                throw new TransportClientGetException(serverURI);
+            }
+
+            Map<String, Object> configParameters = new HashMap<>(1);
+            configParameters.put("serverAddress", serverURI);
+            return TRANSPORT_CLIENT_FACTORY.getFacade(configParameters);
+        } catch (Exception e) {
+            throw new KuraDeviceCallException(KuraDeviceCallErrorCodes.CALL_ERROR, e, serverURI);
+        }
+    }
 
     /**
      * Checks the {@link KapuaDataMessage#getDeviceId()} and {@link KapuaDataMessage#getClientId()}.
@@ -160,7 +186,7 @@ public class StreamServiceImpl implements StreamService {
      *
      * @param dataMessage The {@link KapuaDataMessage} to publish
      * @return The {@link String} {@link java.net.URI} to connect to.
-     * @throws KapuaException
+     * @throws KapuaException If no {@link EndpointInfo} is available
      * @since 1.2.0
      */
     private String getEndpointInfoDNS(KapuaDataMessage dataMessage) throws KapuaException {
@@ -183,39 +209,18 @@ public class StreamServiceImpl implements StreamService {
 
 
     /**
-     * @param serverUri
-     * @return
-     * @throws KuraDeviceCallException
+     * Gets the translator for the given {@link Message} types.
+     *
+     * @param from The {@link Message} type from which to translate.
+     * @param to   The {@link Message} type to which to translate.
+     * @param <F>  The {@link Message} {@code class}from which to translate.
+     * @param <T>  The {@link Message} {@code class} to which to translate.
+     * @return The {@link Translator} found.
+     * @throws KuraDeviceCallException If error occurs while loojing for  the {@link Translator}.
      * @since 1.0.0
      */
-    private TransportFacade<?, ?, TransportMessage<?, ?>, ?> borrowClient(String serverUri)
-            throws KuraDeviceCallException {
-        TransportFacade<?, ?, TransportMessage<?, ?>, ?> transportFacade;
-        Map<String, Object> configParameters = new HashMap<>();
-        configParameters.put("serverAddress", serverUri);
-        try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            TransportClientFactory<?, ?, ?, ?, ?, ?> transportClientFactory = locator.getFactory(TransportClientFactory.class);
-
-            transportFacade = (TransportFacade<?, ?, TransportMessage<?, ?>, ?>) transportClientFactory.getFacade(configParameters);
-        } catch (Exception e) {
-            throw new KuraDeviceCallException(KuraDeviceCallErrorCodes.CALL_ERROR, e, (Object[]) null);
-        }
-        return transportFacade;
-    }
-
-    /**
-     * @param from
-     * @param to
-     * @param <T1>
-     * @param <T2>
-     * @return
-     * @throws KuraDeviceCallException
-     * @since 1.0.0
-     */
-    private <T1 extends Message<?, ?>, T2 extends Message<?, ?>> Translator<T1, T2> getTranslator(Class<T1> from, Class<T2> to)
-            throws KuraDeviceCallException {
-        Translator<T1, T2> translator;
+    protected <F extends Message<?, ?>, T extends Message<?, ?>> Translator<F, T> getTranslator(Class<F> from, Class<T> to) throws KuraDeviceCallException {
+        Translator<F, T> translator;
         try {
             translator = Translator.getTranslatorFor(from, to);
         } catch (TranslatorNotFoundException e) {
