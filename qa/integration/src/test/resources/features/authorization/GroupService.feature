@@ -15,6 +15,10 @@
 
 Feature: Group Service tests
 
+  Scenario: Init Security Context for all scenarios
+
+    Given Init Security Context
+
   Scenario: Count groups in a blank database
   The default group table must be empty.
 
@@ -256,3 +260,7 @@ Feature: Group Service tests
     When I query for the group "test_name_25" in scope 1
     Then I count 0
     And I logout
+
+  Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context

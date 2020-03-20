@@ -18,11 +18,12 @@ Feature: Tag Service
   User for example.
 
   Background:
+    Given Init Security Context
     Given I login as user with name "kapua-sys" and password "kapua-password"
-      And I configure the tag service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
+    And I configure the tag service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
 
   Scenario: Start datastore for all scenarios
 
@@ -43,8 +44,8 @@ Feature: Tag Service
     Given Tag with name "tagName"
     When Tag with name "tagName" is searched
     Then Tag with name "tagName" is found
-      And I logout
-      
+    And I logout
+
   Scenario: Deleting tag
     Create a tag entry, with specified name. Name is only tag specific attribute.
     Once created search and find it, then delete it.
@@ -52,7 +53,7 @@ Feature: Tag Service
     Given Tag with name "tagName2"
     When Tag with name "tagName2" is searched
     Then Tag with name "tagName2" is found and deleted
-      And I logout
+    And I logout
 
   Scenario: Stop broker after all scenarios
 
@@ -65,3 +66,7 @@ Feature: Tag Service
   Scenario: Stop datastore after all scenarios
 
     Given Stop Datastore
+
+  Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context

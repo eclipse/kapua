@@ -18,6 +18,10 @@ Feature: User and Credential expiration abd lockout features
   There is also expiration and status on user's credentials which are also tested.
   Additionally login failures and lockout and lockout resets are tested.
 
+  Scenario: Init Security Context for all scenarios
+
+    Given Init Security Context
+
 #
 # Credential state
 #
@@ -497,3 +501,7 @@ Feature: User and Credential expiration abd lockout features
     And I login as user with name "kapua-a" and password "ToManySecrets123#"
     Then No exception was thrown
     And I logout
+
+  Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context

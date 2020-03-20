@@ -16,6 +16,10 @@
 Feature: Job service CRUD tests
   The Job service is responsible for executing scheduled actions on various targets.
 
+  Scenario: Init Security Context for all scenarios
+
+    Given Init Security Context
+
   Scenario: Regular job creation
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
@@ -251,3 +255,7 @@ Feature: Job service CRUD tests
 
     When I test the sanity of the job factory
     Then No exception was thrown
+
+  Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context

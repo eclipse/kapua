@@ -15,6 +15,10 @@
 
 Feature: User role service integration tests
 
+  Scenario: Init Security Context for all scenarios
+
+    Given Init Security Context
+
   Scenario: Start datastore for all scenarios
 
     Given Start Datastore
@@ -746,6 +750,9 @@ Feature: User role service integration tests
 
     Given Stop Datastore
 
+  Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context
 
 
 

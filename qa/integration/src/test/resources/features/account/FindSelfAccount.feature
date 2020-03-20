@@ -16,6 +16,10 @@
 Feature: Self account find feature
   Finding self accounts require a different logic to be applied to the permission
 
+  Scenario: Init Security Context for all scenarios
+
+    Given Init Security Context
+
   Scenario: Find self account by id
     When I login as user with name "kapua-sys" and password "kapua-password"
     And I configure account service
@@ -93,3 +97,7 @@ Feature: Self account find feature
     Given I login as user with name "test-user" and password "ToManySecrets123#"
     And I look for my account by name
     Then I am able to read my account info
+
+  Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context

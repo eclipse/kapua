@@ -17,6 +17,10 @@ Feature: Tenant service with Service Events
   Basic workflow of Account and User creation and deletion, where Service Events are
   being trigered on create, update and delete action on Account and User service.
 
+  Scenario: Init Security Context for all scenarios
+
+    Given Init Security Context
+
   Scenario: Start event broker for all scenarios
 
     Given Start Event Broker
@@ -64,3 +68,7 @@ Feature: Tenant service with Service Events
   Scenario: Stop event broker for all scenarios
 
     Given Stop Event Broker
+
+  Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context
