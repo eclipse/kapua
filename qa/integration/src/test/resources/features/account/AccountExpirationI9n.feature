@@ -17,6 +17,10 @@ Feature: Account expiration features
     Accounts have an expiration date. From this date onward the accounts are considered disabled
     and cannot be logged into anymore.
 
+Scenario: Init Security Context for all scenarios
+
+  Given Init Security Context
+
   Scenario: Account with future expiration date
     Set the expiration date of an account in the future. It must be possible to log into such
     account.
@@ -509,3 +513,7 @@ Feature: Account expiration features
     When I change the current account expiration date to "null"
     Then An exception was thrown
     And I logout
+
+  Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context

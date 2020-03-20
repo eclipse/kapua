@@ -15,6 +15,10 @@
 
 Feature: Account Credential Service Integration Tests
 
+Scenario: Init Security Context for all scenarios
+
+  Given Init Security Context
+
   Scenario: Uncorrect Login While Lockout Policy Is Enabled
   Login as kapua-sys, create an account, create a user under that account (user1)
   Configure CredentialService of that account, set lockoutPolicy.enabled to true and lockoutPolicy.maxFailures to 2, leave other fields at default values
@@ -388,3 +392,7 @@ Feature: Account Credential Service Integration Tests
       | integer | lockoutPolicy.lockDuration | -1    |
     Then An exception was thrown
     And I logout
+
+  Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context

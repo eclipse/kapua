@@ -16,6 +16,10 @@
 Feature: User Service Integration
   User Service integration scenarios
 
+Scenario: Init Security Context for all scenarios
+
+  Given Init Security Context
+
   Scenario: Start event broker for all scenarios
 
     Given Start Event Broker
@@ -212,3 +216,7 @@ Feature: User Service Integration
   Scenario: Stop event broker for all scenarios
 
     Given Stop Event Broker
+
+  Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context

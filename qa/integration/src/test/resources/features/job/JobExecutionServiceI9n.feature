@@ -16,6 +16,10 @@
 Feature: Job Execution service CRUD tests
     The Job service is responsible for maintaining the status of the target step executions.
 
+Scenario: Init Security Context for all scenarios
+
+  Given Init Security Context
+
 Scenario: Regular job execution creation
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
@@ -208,3 +212,6 @@ Scenario: Job execution factory sanity checks
 
     And I test the sanity of the job execution factory
 
+Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context

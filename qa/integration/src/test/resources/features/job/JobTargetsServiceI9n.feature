@@ -16,6 +16,10 @@
 Feature: Job Target service CRUD tests
     The Job service is responsible for maintaining a list of job targets.
 
+Scenario: Init Security Context for all scenarios
+
+  Given Init Security Context
+
 Scenario: Regular target creation
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
@@ -203,3 +207,6 @@ Scenario: Job target factory sanity checks
 
     When I test the sanity of the job target factory
 
+Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context

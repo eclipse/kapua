@@ -15,6 +15,10 @@
 
 Feature: Account User Service Integration Tests
 
+Scenario: Init Security Context for all scenarios
+
+  Given Init Security Context
+
   Scenario: Creating Users Under Account That Allows Infinite Child Users
   Login as kapua-sys, create an account
   Configure UserService of that account, set infiniteChildUsers to true and maxNumberChildUsers to 0
@@ -119,3 +123,7 @@ Feature: Account User Service Integration Tests
       | integer | maxNumberChildEntities | 2     |
     Then No exception was thrown
     And I logout
+
+  Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context

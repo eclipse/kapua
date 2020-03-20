@@ -17,6 +17,10 @@ Feature: Tag Service
   used to attach tags to Devices, but could be used to tag eny kapua entity, like
   User for example.
 
+Scenario: Init Security Context for all scenarios
+
+  Given Init Security Context
+
   Scenario: Creating Unique Tag Without Description
   Login as kapua-sys, go to tags, try to create a tag with unique name without description.
   Kapua should not return any errors.
@@ -855,3 +859,7 @@ Feature: Tag Service
     When I asign tag "Tag1" to device "Device1"
     Then An exception was thrown
     Then I logout
+
+  Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context

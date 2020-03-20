@@ -16,6 +16,10 @@ Feature: Device Registry Integration
   Device Registy integration test scenarios. These scenarios test higher level device service functionality
   with all services live.
 
+Scenario: Init Security Context for all scenarios
+
+  Given Init Security Context
+
   Scenario: Set environment variables
 
     Given System property "commons.settings.hotswap" with value "true"
@@ -1527,3 +1531,7 @@ Feature: Device Registry Integration
       | 126          | test        | ENABLED | dev      |
     Then I find 0 devices
     And I logout
+
+  Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context

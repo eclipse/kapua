@@ -15,6 +15,10 @@
 
 Feature: Account Group Service Integration Tests
 
+Scenario: Init Security Context for all scenarios
+
+  Given Init Security Context
+
   Scenario: Creating Groups Under Account That Allows Infinite Child Groups
   Login as kapua-sys, create an account
   Configure GroupService of that account, set infiniteChildGroups to true and maxNumberChildGroups to 0
@@ -118,3 +122,7 @@ Feature: Account Group Service Integration Tests
       | integer | maxNumberChildEntities | 2     |
     Then No exception was thrown
     And I logout
+
+  Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context

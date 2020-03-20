@@ -15,6 +15,10 @@
 
 Feature: Role Service tests
 
+Scenario: Init Security Context for all scenarios
+
+  Given Init Security Context
+
 Scenario: Regular role creation
     Create a regular role entry. The entry must match the creator details.
 
@@ -410,9 +414,12 @@ Scenario: Role object equality check
     Then The role comparator does its job
 
 Scenario: Role service related objects sanity checks
-    Check that the objects related to the shiro role service behave sanely.
+    Check that the objects related to the Security Context role service behave sanely.
 
     Then The role permission factory returns sane results
     Then The role permission object constructors are sane
     Then The role permission comparator does its job
 
+Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context

@@ -15,6 +15,10 @@
 
 Feature: Domain Service tests
 
+Scenario: Init Security Context for all scenarios
+
+  Given Init Security Context
+
   Scenario: Count domains in a blank database
   The default domain table must contain 20 preset entries.
 
@@ -135,3 +139,7 @@ Feature: Domain Service tests
       | test_name_3 | write,delete |
     When I query for domains with the name "test_name_2"
     Then I count 1
+
+  Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context

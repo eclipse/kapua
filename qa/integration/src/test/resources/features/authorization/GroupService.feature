@@ -15,6 +15,10 @@
 
 Feature: Group Service tests
 
+Scenario: Init Security Context for all scenarios
+
+  Given Init Security Context
+
   Scenario: Count groups in a blank database
   The default group table must be empty.
 
@@ -1045,3 +1049,7 @@ Feature: Group Service tests
     Then Device "Device1" is not in Assigned Devices of group "Group1"
     And No exception was thrown
     And I logout
+
+  Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context

@@ -15,6 +15,10 @@
 
 Feature: Account Job Service Integration Tests
 
+Scenario: Init Security Context for all scenarios
+
+  Given Init Security Context
+
   Scenario: Creating Jobs Under Account That Allows Infinite Child Devices
   Login as kapua-sys, create an account
   Configure JobRegistryService of that account, set infiniteChildJobs to true and maxNumberChildJobs to 0
@@ -121,3 +125,7 @@ Feature: Account Job Service Integration Tests
       | integer | maxNumberChildEntities | 2     |
     Then No exception was thrown
     And I logout
+
+  Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context
