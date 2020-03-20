@@ -36,45 +36,45 @@ import java.util.List;
 public class TranslatorDataKuraMqtt extends Translator<KuraDataMessage, MqttMessage> {
 
     @Override
-    public MqttMessage translate(KuraDataMessage kuraMessage) throws TranslateException {
+    public MqttMessage translate(KuraDataMessage kuraDataMessage) throws TranslateException {
         try {
             // Mqtt request topic
-            MqttTopic mqttRequestTopic = translate(kuraMessage.getChannel());
+            MqttTopic mqttRequestTopic = translate(kuraDataMessage.getChannel());
 
             // Mqtt payload
-            MqttPayload mqttPayload = translate(kuraMessage.getPayload());
+            MqttPayload mqttPayload = translate(kuraDataMessage.getPayload());
 
             // Return Mqtt message
             return new MqttMessage(mqttRequestTopic, new Date(), mqttPayload);
         } catch (InvalidChannelException | InvalidPayloadException te) {
             throw te;
         } catch (Exception e) {
-            throw new InvalidMessageException(e, kuraMessage);
+            throw new InvalidMessageException(e, kuraDataMessage);
         }
     }
 
-    private MqttTopic translate(KuraDataChannel kuraChannel) throws InvalidChannelException {
+    private MqttTopic translate(KuraDataChannel kuraDataChannel) throws InvalidChannelException {
         try {
             List<String> topicTokens = new ArrayList<>();
 
-            topicTokens.add(kuraChannel.getScope());
-            topicTokens.add(kuraChannel.getClientId());
+            topicTokens.add(kuraDataChannel.getScope());
+            topicTokens.add(kuraDataChannel.getClientId());
 
-            if (!kuraChannel.getSemanticParts().isEmpty()) {
-                topicTokens.addAll(kuraChannel.getSemanticParts());
+            if (!kuraDataChannel.getSemanticParts().isEmpty()) {
+                topicTokens.addAll(kuraDataChannel.getSemanticParts());
             }
 
             return new MqttTopic(topicTokens.toArray(new String[0]));
         } catch (Exception e) {
-            throw new InvalidChannelException(e, kuraChannel);
+            throw new InvalidChannelException(e, kuraDataChannel);
         }
     }
 
-    private MqttPayload translate(KuraDataPayload kuraPayload) throws InvalidPayloadException {
+    private MqttPayload translate(KuraDataPayload kuraDataPayload) throws InvalidPayloadException {
         try {
-          return new MqttPayload(kuraPayload.toByteArray());
+            return new MqttPayload(kuraDataPayload.toByteArray());
         } catch (Exception e) {
-            throw new InvalidPayloadException(e, kuraPayload);
+            throw new InvalidPayloadException(e, kuraDataPayload);
         }
     }
 

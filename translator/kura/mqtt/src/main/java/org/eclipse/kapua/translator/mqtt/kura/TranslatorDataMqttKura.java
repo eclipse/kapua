@@ -35,26 +35,26 @@ public class TranslatorDataMqttKura extends Translator<MqttMessage, KuraDataMess
     @Override
     public KuraDataMessage translate(MqttMessage mqttMessage) throws TranslateException {
         try {
-        // Kura topic
-        KuraDataChannel kuraChannel = translate(mqttMessage.getRequestTopic());
+            // Kura topic
+            KuraDataChannel kuraChannel = translate(mqttMessage.getRequestTopic());
 
-        // Kura payload
-        KuraDataPayload kuraPayload = translate(mqttMessage.getPayload());
+            // Kura payload
+            KuraDataPayload kuraPayload = translate(mqttMessage.getPayload());
 
-        // Return Kura message
+            // Return Kura message
             return new KuraDataMessage(kuraChannel, mqttMessage.getTimestamp(), kuraPayload);
         } catch (InvalidChannelException | InvalidPayloadException te) {
             throw te;
         } catch (Exception e) {
             throw new InvalidMessageException(e, mqttMessage);
-    }
+        }
     }
 
     private KuraDataChannel translate(MqttTopic mqttTopic) throws InvalidChannelException {
         try {
-        String[] mqttTopicTokens = mqttTopic.getSplittedTopic();
+            String[] mqttTopicTokens = mqttTopic.getSplittedTopic();
 
-        // Return Kura Channel
+            // Return Kura Channel
             return new KuraDataChannel(mqttTopicTokens[0], mqttTopicTokens[1]);
         } catch (Exception e) {
             throw new InvalidChannelException(e, mqttTopic);
@@ -63,20 +63,20 @@ public class TranslatorDataMqttKura extends Translator<MqttMessage, KuraDataMess
 
     private KuraDataPayload translate(MqttPayload mqttPayload) throws InvalidPayloadException {
         try {
-            KuraDataPayload kuraPayload = new KuraDataPayload();
+            KuraDataPayload kuraDataPayload = new KuraDataPayload();
 
-            if (mqttPayload.hasBody) {
+            if (mqttPayload.hasBody()) {
                 byte[] mqttBody = mqttPayload.getBody();
 
                 try {
-                    kuraPayload.readFromByteArray(mqttBody);
+                    kuraDataPayload.readFromByteArray(mqttBody);
                 } catch (MessageException ex) {
-                    kuraPayload.setBody(mqttBody);
+                    kuraDataPayload.setBody(mqttBody);
                 }
             }
 
             // Return Kura Payload
-            return kuraPayload;
+            return kuraDataPayload;
         } catch (Exception e) {
             throw new InvalidPayloadException(e, mqttPayload);
         }

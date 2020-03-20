@@ -42,11 +42,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
             }
         }
 
-        if (argumentsList.isEmpty()) {
-            return null;
-        } else {
-            return argumentsList.toArray(new String[argumentsList.size()]);
-        }
+        return argumentsList.toArray(new String[0]);
     }
 
     /**
@@ -79,11 +75,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
             }
         }
 
-        if (v.isEmpty()) {
-            return null;
-        } else {
-            return v.toArray(new String[v.size()]);
-        }
+        return v.toArray(new String[0]);
     }
 
     /**
@@ -154,7 +146,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
      * @param timeout
      */
     public void setTimeout(int timeout) {
-        getMetrics().put(CommandAppProperties.APP_PROPERTY_TOUT.getValue(), Integer.valueOf(timeout));
+        getMetrics().put(CommandAppProperties.APP_PROPERTY_TOUT.getValue(), timeout);
     }
 
     /**
@@ -172,7 +164,7 @@ public class CommandRequestPayload extends KapuaPayloadImpl implements KapuaRequ
      * @param runAsync
      */
     public void setRunAsync(boolean runAsync) {
-        getMetrics().put(CommandAppProperties.APP_PROPERTY_ASYNC.getValue(), Boolean.valueOf(runAsync));
+        getMetrics().put(CommandAppProperties.APP_PROPERTY_ASYNC.getValue(), runAsync);
     }
 
     /**

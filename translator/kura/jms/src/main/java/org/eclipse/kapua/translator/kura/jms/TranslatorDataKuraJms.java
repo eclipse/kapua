@@ -35,38 +35,38 @@ import java.util.List;
 public class TranslatorDataKuraJms extends Translator<KuraDataMessage, JmsMessage> {
 
     @Override
-    public JmsMessage translate(KuraDataMessage kuraMessage) throws TranslateException {
+    public JmsMessage translate(KuraDataMessage kuraDataMessage) throws TranslateException {
         try {
-            JmsTopic jmsRequestTopic = translate(kuraMessage.getChannel());
-            JmsPayload jmsPayload = translate(kuraMessage.getPayload());
+            JmsTopic jmsRequestTopic = translate(kuraDataMessage.getChannel());
+            JmsPayload jmsPayload = translate(kuraDataMessage.getPayload());
             return new JmsMessage(jmsRequestTopic, new Date(), jmsPayload);
         } catch (InvalidChannelException | InvalidPayloadException te) {
             throw te;
         } catch (Exception e) {
-            throw new InvalidMessageException(e, kuraMessage);
+            throw new InvalidMessageException(e, kuraDataMessage);
         }
     }
 
-    private JmsTopic translate(KuraDataChannel kuraChannel) throws InvalidChannelException {
+    private JmsTopic translate(KuraDataChannel kuraDataChannel) throws InvalidChannelException {
         try {
             List<String> topicTokens = new ArrayList<>();
-            topicTokens.add(kuraChannel.getScope());
-            topicTokens.add(kuraChannel.getClientId());
-            if (!kuraChannel.getSemanticParts().isEmpty()) {
-                topicTokens.addAll(kuraChannel.getSemanticParts());
+            topicTokens.add(kuraDataChannel.getScope());
+            topicTokens.add(kuraDataChannel.getClientId());
+            if (!kuraDataChannel.getSemanticParts().isEmpty()) {
+                topicTokens.addAll(kuraDataChannel.getSemanticParts());
             }
 
             return new JmsTopic(topicTokens.toArray(new String[0]));
         } catch (Exception e) {
-            throw new InvalidChannelException(e, kuraChannel);
+            throw new InvalidChannelException(e, kuraDataChannel);
         }
     }
 
-    private JmsPayload translate(KuraDataPayload kuraPayload) throws InvalidPayloadException {
+    private JmsPayload translate(KuraDataPayload kuraDataPayload) throws InvalidPayloadException {
         try {
-            return new JmsPayload(kuraPayload.toByteArray());
+            return new JmsPayload(kuraDataPayload.toByteArray());
         } catch (Exception e) {
-            throw new InvalidPayloadException(e, kuraPayload);
+            throw new InvalidPayloadException(e, kuraDataPayload);
         }
     }
 

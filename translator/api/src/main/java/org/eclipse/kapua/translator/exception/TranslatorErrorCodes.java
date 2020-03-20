@@ -50,19 +50,21 @@ public enum TranslatorErrorCodes implements KapuaErrorCode {
      */
     @Deprecated
     INVALID_CHANNEL_CLASSIFIER,
+
     /**
      * @since 1.0.0
      * @deprecated Since 1.2.0. Moved to implementation module
      */
     @Deprecated
-
     INVALID_CHANNEL_APP_NAME,
+
     /**
      * @since 1.0.0
      * @deprecated Since 1.2.0. Moved to implementation module
      */
     @Deprecated
     INVALID_CHANNEL_APP_VERSION,
+
     /**
      * @since 1.0.0
      * @deprecated Since 1.2.0. Moved to implementation module

@@ -27,7 +27,7 @@ import org.eclipse.kapua.transport.message.jms.JmsTopic;
 
 /**
  * {@link Translator} implementation from {@link JmsMessage} to {@link KuraDisconnectMessage}
- * 
+ *
  * @since 1.0.0
  */
 public class TranslatorLifeDisconnectJmsKura extends Translator<JmsMessage, KuraDisconnectMessage> {

@@ -20,8 +20,7 @@ import org.eclipse.kapua.message.Message;
  */
 public class InvalidMessageException extends TranslateException {
 
-    private final Message msg;
-
+    private final Message<?, ?> msg;
 
     /**
      * Constructor.
@@ -30,7 +29,7 @@ public class InvalidMessageException extends TranslateException {
      * @param message The {@link Message} which translation has caused the error.
      * @since 1.2.0
      */
-    public InvalidMessageException(Throwable cause, Message message) {
+    public InvalidMessageException(Throwable cause, Message<?, ?> message) {
         super(TranslatorErrorCodes.INVALID_MESSAGE, cause, message);
 
         this.msg = message;
@@ -42,7 +41,7 @@ public class InvalidMessageException extends TranslateException {
      * @return The {@link Message} which translation has caused the error.
      * @since 1.2.0
      */
-    public Message getMsg() {
+    public Message<?, ?> getMsg() {
         return msg;
     }
 }

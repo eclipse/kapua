@@ -28,7 +28,7 @@ import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
 
 /**
  * {@link Translator} implementation from {@link MqttMessage} to {@link KuraResponseMessage}
- * 
+ *
  * @since 1.0.0
  */
 public class TranslatorResponseMqttKura extends Translator<MqttMessage, KuraResponseMessage> {
@@ -38,37 +38,37 @@ public class TranslatorResponseMqttKura extends Translator<MqttMessage, KuraResp
     @Override
     public KuraResponseMessage translate(MqttMessage mqttMessage) throws TranslateException {
         try {
-        // Kura topic
-        KuraResponseChannel kuraChannel = translate(mqttMessage.getRequestTopic());
+            // Kura topic
+            KuraResponseChannel kuraChannel = translate(mqttMessage.getRequestTopic());
 
-        // Kura payload
-        KuraResponsePayload kuraPayload = translate(mqttMessage.getPayload());
+            // Kura payload
+            KuraResponsePayload kuraPayload = translate(mqttMessage.getPayload());
 
-        // Kura message
+            // Kura message
             return new KuraResponseMessage(kuraChannel, mqttMessage.getTimestamp(), kuraPayload);
         } catch (InvalidChannelException | InvalidPayloadException te) {
             throw te;
         } catch (Exception e) {
             throw new InvalidMessageException(e, mqttMessage);
-    }
+        }
     }
 
     private KuraResponseChannel translate(MqttTopic mqttTopic) throws InvalidChannelException {
         try {
-        String[] mqttTopicTokens = mqttTopic.getSplittedTopic();
+            String[] mqttTopicTokens = mqttTopic.getSplittedTopic();
 
-        if (!CONTROL_MESSAGE_CLASSIFIER.equals(mqttTopicTokens[0])) {
+            if (!CONTROL_MESSAGE_CLASSIFIER.equals(mqttTopicTokens[0])) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER, null, mqttTopicTokens[0]);
-        }
+            }
 
             KuraResponseChannel kuraResponseChannel = new KuraResponseChannel(mqttTopicTokens[0], mqttTopicTokens[1], mqttTopicTokens[2]);
 
-        kuraResponseChannel.setAppId(mqttTopicTokens[3]);
-        kuraResponseChannel.setReplyPart(mqttTopicTokens[4]);
-        kuraResponseChannel.setRequestId(mqttTopicTokens[5]);
+            kuraResponseChannel.setAppId(mqttTopicTokens[3]);
+            kuraResponseChannel.setReplyPart(mqttTopicTokens[4]);
+            kuraResponseChannel.setRequestId(mqttTopicTokens[5]);
 
-        // Return Kura Channel
-        return kuraResponseChannel;
+            // Return Kura Channel
+            return kuraResponseChannel;
         } catch (Exception e) {
             throw new InvalidChannelException(e, mqttTopic);
         }
@@ -76,13 +76,14 @@ public class TranslatorResponseMqttKura extends Translator<MqttMessage, KuraResp
 
     private KuraResponsePayload translate(MqttPayload mqttPayload) throws InvalidPayloadException {
         try {
-        KuraResponsePayload kuraResponsePayload = new KuraResponsePayload();
+            KuraResponsePayload kuraResponsePayload = new KuraResponsePayload();
 
-        if (mqttPayload.hasBody()) {
-            kuraResponsePayload.readFromByteArray(mqttPayload.getBody());
+            if (mqttPayload.hasBody()) {
+                kuraResponsePayload.readFromByteArray(mqttPayload.getBody());
+            }
 
-        // Return Kura Payload
-        return kuraResponsePayload;
+            // Return Kura Payload
+            return kuraResponsePayload;
         } catch (Exception e) {
             throw new InvalidPayloadException(e, mqttPayload);
         }

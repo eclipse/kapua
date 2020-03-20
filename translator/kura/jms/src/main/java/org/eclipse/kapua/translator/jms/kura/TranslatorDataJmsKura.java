@@ -38,9 +38,9 @@ public class TranslatorDataJmsKura extends Translator<JmsMessage, KuraDataMessag
     @Override
     public KuraDataMessage translate(JmsMessage jmsMessage) throws TranslateException {
         try {
-        KuraDataChannel kuraChannel = translate(jmsMessage.getTopic());
-        KuraDataPayload kuraPayload = translate(jmsMessage.getPayload());
-                return new KuraDataMessage(kuraChannel, jmsMessage.getReceivedOn(), kuraPayload);
+            KuraDataChannel kuraChannel = translate(jmsMessage.getTopic());
+            KuraDataPayload kuraPayload = translate(jmsMessage.getPayload());
+            return new KuraDataMessage(kuraChannel, jmsMessage.getReceivedOn(), kuraPayload);
         } catch (InvalidChannelException | InvalidPayloadException te) {
             throw te;
         } catch (Exception e) {
@@ -50,18 +50,18 @@ public class TranslatorDataJmsKura extends Translator<JmsMessage, KuraDataMessag
 
     private KuraDataChannel translate(JmsTopic jmsTopic) throws InvalidChannelException {
         try {
-        String[] mqttTopicTokens = jmsTopic.getSplittedTopic();
-        KuraDataChannel kuraDataChannel = new KuraDataChannel();
-        kuraDataChannel.setScope(mqttTopicTokens[0]);
-        kuraDataChannel.setClientId(mqttTopicTokens[1]);
+            String[] mqttTopicTokens = jmsTopic.getSplittedTopic();
+            KuraDataChannel kuraDataChannel = new KuraDataChannel();
+            kuraDataChannel.setScope(mqttTopicTokens[0]);
+            kuraDataChannel.setClientId(mqttTopicTokens[1]);
 
-        List<String> channelPartsList = new LinkedList<>(Arrays.asList(mqttTopicTokens));
-        // remove the first 2 items (do no use sublist since the returned object is not serializable then Camel will throws exception on error handling
-        // channelPartsList.subList(2,mqttTopicTokens.length))
-        channelPartsList.remove(0);
-        channelPartsList.remove(0);
-        kuraDataChannel.setSemanticParts(channelPartsList);
-        return kuraDataChannel;
+            List<String> channelPartsList = new LinkedList<>(Arrays.asList(mqttTopicTokens));
+            // remove the first 2 items (do no use sublist since the returned object is not serializable then Camel will throws exception on error handling
+            // channelPartsList.subList(2,mqttTopicTokens.length))
+            channelPartsList.remove(0);
+            channelPartsList.remove(0);
+            kuraDataChannel.setSemanticParts(channelPartsList);
+            return kuraDataChannel;
         } catch (Exception e) {
             throw new InvalidChannelException(e, jmsTopic);
         }
@@ -69,16 +69,16 @@ public class TranslatorDataJmsKura extends Translator<JmsMessage, KuraDataMessag
 
     private KuraDataPayload translate(JmsPayload jmsPayload) throws InvalidPayloadException {
         try {
-        KuraDataPayload kuraPayload = new KuraDataPayload();
-        if (jmsPayload.hasBody()) {
-            try {
-                kuraPayload.readFromByteArray(jmsPayload.getBody());
+            KuraDataPayload kuraPayload = new KuraDataPayload();
+            if (jmsPayload.hasBody()) {
+                try {
+                    kuraPayload.readFromByteArray(jmsPayload.getBody());
                 } catch (MessageException me) {
                     // When reading a payload which is not Kura-protobuf encoded we use that payload as a raw KapuaPayload.body
-                kuraPayload.setBody(jmsPayload.getBody());
+                    kuraPayload.setBody(jmsPayload.getBody());
+                }
             }
-        }
-        return kuraPayload;
+            return kuraPayload;
         } catch (Exception e) {
             throw new InvalidPayloadException(e, jmsPayload);
         }

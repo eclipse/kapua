@@ -35,56 +35,56 @@ public class TranslatorAppBundleKapuaKura extends AbstractTranslatorKapuaKura<Bu
     @Override
     protected KuraRequestChannel translateChannel(BundleRequestChannel kapuaChannel) throws InvalidChannelException {
         try {
-        KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
+            KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
             kuraRequestChannel.setMessageClassification(getControlMessageClassifier());
             kuraRequestChannel.setAppId(BundleMetrics.APP_ID + "-" + BundleMetrics.APP_VERSION);
             kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.translate(kapuaChannel.getMethod()));
 
-        // Build resources
-        List<String> resources = new ArrayList<>();
-        switch (kapuaChannel.getMethod()) {
-        case READ:
-            resources.add("bundles");
-            break;
-        case EXECUTE: {
-            if (kapuaChannel.isStart()) {
-                resources.add("start");
-            } else {
-                resources.add("stop");
-            }
+            // Build resources
+            List<String> resources = new ArrayList<>();
+            switch (kapuaChannel.getMethod()) {
+                case READ:
+                    resources.add("bundles");
+                    break;
+                case EXECUTE: {
+                    if (kapuaChannel.isStart()) {
+                        resources.add("start");
+                    } else {
+                        resources.add("stop");
+                    }
 
-            String bundleId = kapuaChannel.getBundleId();
-            if (bundleId != null) {
-                resources.add(bundleId);
+                    String bundleId = kapuaChannel.getBundleId();
+                    if (bundleId != null) {
+                        resources.add(bundleId);
+                    }
+                }
+                break;
+                case CREATE:
+                case DELETE:
+                case OPTIONS:
+                case WRITE:
+                default:
+                    break;
             }
-        }
-        break;
-        case CREATE:
-        case DELETE:
-        case OPTIONS:
-        case WRITE:
-        default:
-            break;
-        }
             kuraRequestChannel.setResources(resources.toArray(new String[0]));
 
-        // Return Kura Channel
-        return kuraRequestChannel;
+            // Return Kura Channel
+            return kuraRequestChannel;
         } catch (Exception e) {
             throw new InvalidChannelException(e, kapuaChannel);
-    }
+        }
     }
 
     @Override
     protected KuraRequestPayload translatePayload(BundleRequestPayload kapuaPayload) throws InvalidPayloadException {
         try {
-        KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
+            KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
-        if (kapuaPayload.hasBody()) {
-            kuraRequestPayload.setBody(kapuaPayload.getBody());
-        }
+            if (kapuaPayload.hasBody()) {
+                kuraRequestPayload.setBody(kapuaPayload.getBody());
+            }
 
-        return kuraRequestPayload;
+            return kuraRequestPayload;
         } catch (Exception e) {
             throw new InvalidPayloadException(e, kapuaPayload);
         }

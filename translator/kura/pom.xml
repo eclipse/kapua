@@ -20,8 +20,8 @@
         <version>1.2.0-SNAPSHOT</version>
     </parent>
 
-    <packaging>pom</packaging>
     <artifactId>kapua-translator-kura</artifactId>
+    <packaging>pom</packaging>
 
     <modules>
         <module>jms</module>

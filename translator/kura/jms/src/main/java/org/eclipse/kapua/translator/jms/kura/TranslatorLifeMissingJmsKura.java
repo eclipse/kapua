@@ -29,7 +29,7 @@ import org.eclipse.kapua.transport.message.jms.JmsTopic;
 
 /**
  * {@link Translator} implementation from {@link JmsMessage} to {@link KuraMissingMessage}
- * 
+ *
  * @since 1.0.0
  */
 public class TranslatorLifeMissingJmsKura extends Translator<JmsMessage, KuraMissingMessage> {

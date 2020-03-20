@@ -90,7 +90,7 @@ public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorRespons
             assetResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_MESSAGE.getName()));
             assetResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_STACK.getName()));
 
-        if (kuraPayload.hasBody()) {
+            if (kuraPayload.hasBody()) {
 
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode jsonNode = mapper.readTree(kuraPayload.getBody());

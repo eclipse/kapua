@@ -104,12 +104,9 @@ public class TranslatorAppAssetKapuaKura extends AbstractTranslatorKapuaKura<Ass
             KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
             try (StringWriter sw = new StringWriter()) {
                 ObjectMapper mapper = new ObjectMapper();
-                JsonGenerator jsonGenerator = mapper.getFactory().createGenerator(sw);
 
-                try {
+                try (JsonGenerator jsonGenerator = mapper.getFactory().createGenerator(sw)) {
                     kuraAssets.writeJsonNode(jsonGenerator);
-                } finally {
-                    jsonGenerator.close();
                 }
 
                 kuraRequestPayload.setBody(sw.toString().getBytes());

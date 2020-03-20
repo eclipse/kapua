@@ -51,68 +51,68 @@ public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapua
     @Override
     protected KuraRequestChannel translateChannel(ConfigurationRequestChannel kapuaChannel) throws InvalidChannelException {
         try {
-        KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
+            KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
             kuraRequestChannel.setMessageClassification(getControlMessageClassifier());
             kuraRequestChannel.setAppId(ConfigurationMetrics.APP_ID + "-" + ConfigurationMetrics.APP_VERSION);
             kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.translate(kapuaChannel.getMethod()));
 
-        // Build resources
-        List<String> resources = new ArrayList<>();
-        if (kapuaChannel.getConfigurationId() == null) {
-            resources.add("configurations");
-            String componentId = kapuaChannel.getComponentId();
-            if (componentId != null) {
-                resources.add(componentId);
-            }
-        } else if (kapuaChannel.getConfigurationId() != null) {
-            resources.add("snapshots");
+            // Build resources
+            List<String> resources = new ArrayList<>();
+            if (kapuaChannel.getConfigurationId() == null) {
+                resources.add("configurations");
+                String componentId = kapuaChannel.getComponentId();
+                if (componentId != null) {
+                    resources.add(componentId);
+                }
+            } else if (kapuaChannel.getConfigurationId() != null) {
+                resources.add("snapshots");
 
-            String configurationId = kapuaChannel.getConfigurationId();
-            if (configurationId != null) {
-                resources.add(configurationId);
+                String configurationId = kapuaChannel.getConfigurationId();
+                if (configurationId != null) {
+                    resources.add(configurationId);
+                }
             }
-        }
             kuraRequestChannel.setResources(resources.toArray(new String[0]));
 
-        // Return Kura Channel
-        return kuraRequestChannel;
+            // Return Kura Channel
+            return kuraRequestChannel;
         } catch (Exception e) {
             throw new InvalidChannelException(e, kapuaChannel);
-    }
+        }
     }
 
     @Override
     protected KuraRequestPayload translatePayload(ConfigurationRequestPayload kapuaPayload) throws InvalidPayloadException {
         try {
-        KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
+            KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
-        if (kapuaPayload.hasBody()) {
-            DeviceConfiguration kapuaDeviceConfiguration;
-            try {
+            if (kapuaPayload.hasBody()) {
+                DeviceConfiguration kapuaDeviceConfiguration;
+                try {
                     kapuaDeviceConfiguration = XmlUtil.unmarshal(new String(kapuaPayload.getBody()), DeviceConfigurationImpl.class);
-            } catch (Exception e) {
+                } catch (Exception e) {
                     throw new InvalidPayloadException(e, kapuaPayload);
+                }
+
+                KuraDeviceConfiguration kuraDeviceConfiguration = translate(kapuaDeviceConfiguration);
+
+                byte[] body;
+                try {
+                    body = XmlUtil.marshal(kuraDeviceConfiguration).getBytes();
+                } catch (Exception e) {
+                    throw new InvalidPayloadException(e, kapuaPayload);
+                }
+
+                kuraRequestPayload.setBody(body);
             }
 
-            KuraDeviceConfiguration kuraDeviceConfiguration = translate(kapuaDeviceConfiguration);
-
-            byte[] body;
-            try {
-                body = XmlUtil.marshal(kuraDeviceConfiguration).getBytes();
-            } catch (Exception e) {
-                    throw new InvalidPayloadException(e, kapuaPayload);
-            }
-
-            kuraRequestPayload.setBody(body);
-        }
-
-        // Return Kura Payload
-        return kuraRequestPayload;
+            // Return Kura Payload
+            return kuraRequestPayload;
         } catch (InvalidPayloadException ipe) {
             throw ipe;
         } catch (Exception e) {
             throw new InvalidPayloadException(e, kapuaPayload);
-    }
+        }
     }
 
     protected KuraDeviceConfiguration translate(DeviceConfiguration kapuaDeviceConfiguration) {

@@ -81,10 +81,8 @@ public class TranslatorAppCommandKapuaKura extends AbstractTranslatorKapuaKura<C
             // argument translation
             int i = 0;
             String[] arguments = kapuaPayload.getArguments();
-            if (arguments != null) {
-                for (String argument : arguments) {
-                    metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_ARG).getName() + i++, argument);
-                }
+            for (String argument : arguments) {
+                metrics.put(PROPERTIES_DICTIONARY.get(CommandAppProperties.APP_PROPERTY_ARG).getName() + i++, argument);
             }
 
             // Body translation

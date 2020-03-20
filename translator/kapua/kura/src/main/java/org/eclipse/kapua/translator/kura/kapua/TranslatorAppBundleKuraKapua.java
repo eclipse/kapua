@@ -89,7 +89,7 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
             bundleResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_MESSAGE.getName()));
             bundleResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_STACK.getName()));
 
-        if (kuraPayload.hasBody()) {
+            if (kuraPayload.hasBody()) {
                 DeviceManagementSetting config = DeviceManagementSetting.getInstance();
                 String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
 

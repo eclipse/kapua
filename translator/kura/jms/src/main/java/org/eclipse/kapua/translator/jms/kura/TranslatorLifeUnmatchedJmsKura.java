@@ -54,7 +54,7 @@ public class TranslatorLifeUnmatchedJmsKura extends Translator<JmsMessage, KuraU
             if (topicTokens == null || topicTokens.length < 3) {
                 throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR);
             }
-            return new KuraUnmatchedChannel(topicTokens[1], topicTokens[2]);
+            return new KuraUnmatchedChannel(topicTokens[0], topicTokens[1], topicTokens[2]);
         } catch (Exception e) {
             throw new InvalidChannelException(e, jmsTopic);
         }

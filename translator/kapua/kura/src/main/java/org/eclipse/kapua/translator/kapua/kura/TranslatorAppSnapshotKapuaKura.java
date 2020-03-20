@@ -35,52 +35,52 @@ public class TranslatorAppSnapshotKapuaKura extends AbstractTranslatorKapuaKura<
     @Override
     protected KuraRequestChannel translateChannel(SnapshotRequestChannel kapuaChannel) throws InvalidChannelException {
         try {
-        KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
+            KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
             kuraRequestChannel.setMessageClassification(getControlMessageClassifier());
             kuraRequestChannel.setAppId(SnapshotMetrics.APP_ID + "-" + SnapshotMetrics.APP_VERSION);
             kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.translate(kapuaChannel.getMethod()));
 
-        // Build resources
-        List<String> resources = new ArrayList<>();
-        switch (kapuaChannel.getMethod()) {
-        case EXECUTE:
-            resources.add("rollback");
-            break;
-        case READ:
-            resources.add("snapshots");
-            break;
-        case CREATE:
-        case DELETE:
-        case OPTIONS:
-        case WRITE:
-        default:
-            break;
-        }
+            // Build resources
+            List<String> resources = new ArrayList<>();
+            switch (kapuaChannel.getMethod()) {
+                case EXECUTE:
+                    resources.add("rollback");
+                    break;
+                case READ:
+                    resources.add("snapshots");
+                    break;
+                case CREATE:
+                case DELETE:
+                case OPTIONS:
+                case WRITE:
+                default:
+                    break;
+            }
 
-        String snapshotId = kapuaChannel.getSnapshotId();
-        if (snapshotId != null) {
-            resources.add(snapshotId);
-        }
+            String snapshotId = kapuaChannel.getSnapshotId();
+            if (snapshotId != null) {
+                resources.add(snapshotId);
+            }
             kuraRequestChannel.setResources(resources.toArray(new String[0]));
 
-        // Return Kura Channel
-        return kuraRequestChannel;
+            // Return Kura Channel
+            return kuraRequestChannel;
         } catch (Exception e) {
             throw new InvalidChannelException(e, kapuaChannel);
-    }
+        }
     }
 
     @Override
     protected KuraRequestPayload translatePayload(SnapshotRequestPayload kapuaPayload) throws InvalidPayloadException {
         try {
-        KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
+            KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
-        if (kapuaPayload.hasBody()) {
-            kuraRequestPayload.setBody(kapuaPayload.getBody());
-        }
+            if (kapuaPayload.hasBody()) {
+                kuraRequestPayload.setBody(kapuaPayload.getBody());
+            }
 
-        // Return Kura Payload
-        return kuraRequestPayload;
+            // Return Kura Payload
+            return kuraRequestPayload;
         } catch (Exception e) {
             throw new InvalidPayloadException(e, kapuaPayload);
         }

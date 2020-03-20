@@ -29,6 +29,8 @@ public class MethodDictionaryKapuaKura {
 
     /**
      * Translations dictionary map.
+     *
+     * @since 1.0.0
      */
     private static final Map<KapuaMethod, KuraMethod> DICTIONARY;
 
@@ -47,6 +49,11 @@ public class MethodDictionaryKapuaKura {
         DICTIONARY.put(KapuaMethod.EXEC, KuraMethod.EXEC);
     }
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     private MethodDictionaryKapuaKura() {
     }
 
