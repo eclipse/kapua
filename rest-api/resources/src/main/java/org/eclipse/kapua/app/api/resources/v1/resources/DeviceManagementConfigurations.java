@@ -85,7 +85,7 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
             DeviceConfiguration deviceConfiguration) throws KapuaException {
         configurationService.put(scopeId, deviceId, deviceConfiguration, timeout);
 
-        return returnOk();
+        return returnNoContent();
     }
 
     /**
@@ -154,6 +154,6 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
 
         configurationService.put(scopeId, deviceId, deviceComponentConfiguration, timeout);
 
-        return returnOk();
+        return returnNoContent();
     }
 }

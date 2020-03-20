@@ -107,7 +107,7 @@ public class Authentication extends AbstractKapuaResource {
     public Response logout() throws KapuaException {
         authenticationService.logout();
 
-        return returnOk();
+        return returnNoContent();
     }
 
     /**

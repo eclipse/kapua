@@ -93,7 +93,7 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
         options.setTimeout(timeout);
         packageService.downloadExec(scopeId, deviceId, packageDownloadRequest, options);
 
-        return returnOk();
+        return returnNoContent();
     }
 
     /**
@@ -124,7 +124,7 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
         options.setTimeout(timeout);
         packageService.uninstallExec(scopeId, deviceId, packageUninstallRequest, options);
 
-        return returnOk();
+        return returnNoContent();
     }
 
 }

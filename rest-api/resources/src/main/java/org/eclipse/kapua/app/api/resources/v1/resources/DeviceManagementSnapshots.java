@@ -87,7 +87,7 @@ public class DeviceManagementSnapshots extends AbstractKapuaResource {
             @QueryParam("timeout") Long timeout) throws KapuaException {
         snapshotService.rollback(scopeId, deviceId, snapshotId, timeout);
 
-        return returnOk();
+        return returnNoContent();
     }
 
     /**

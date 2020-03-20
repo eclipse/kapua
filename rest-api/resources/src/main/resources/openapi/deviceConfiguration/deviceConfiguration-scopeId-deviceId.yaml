@@ -53,12 +53,8 @@ paths:
               $ref: './deviceConfiguration.yaml#/components/schemas/componentConfigurationsInput'
         required: true
       responses:
-        200:
+        204:
           description: The updated list of Configurations on a single Device
-          content:
-            application/json:
-              schema:
-                $ref: './deviceConfiguration.yaml#/components/schemas/componentConfiguration'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

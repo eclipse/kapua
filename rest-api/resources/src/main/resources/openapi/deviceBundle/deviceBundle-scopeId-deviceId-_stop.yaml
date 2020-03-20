@@ -24,7 +24,7 @@ paths:
         - $ref: './deviceBundle.yaml#/components/parameters/bundleId'
         - $ref: '../device/device.yaml#/components/parameters/timeout'
       responses:
-        200:
+        204:
           description: The Bundle has been successfully stopped
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
