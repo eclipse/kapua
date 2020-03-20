@@ -69,19 +69,19 @@ public class TranslatorLifeNotifyKuraKapua extends Translator<KuraNotifyMessage,
     static {
         APP_NAME_DICTIONARY = new HashMap<>();
 
-        APP_NAME_DICTIONARY.put(AssetMetrics.APP_ID.getValue(), DeviceAssetAppProperties.APP_NAME);
-        APP_NAME_DICTIONARY.put(BundleMetrics.APP_ID.getValue(), DeviceBundleAppProperties.APP_NAME);
-        APP_NAME_DICTIONARY.put(CommandMetrics.APP_ID.getValue(), CommandAppProperties.APP_NAME);
-        APP_NAME_DICTIONARY.put(ConfigurationMetrics.APP_ID.getValue(), DeviceConfigurationAppProperties.APP_NAME);
-        APP_NAME_DICTIONARY.put(PackageMetrics.APP_ID.getValue(), PackageAppProperties.APP_NAME);
+        APP_NAME_DICTIONARY.put(AssetMetrics.APP_ID.getName(), DeviceAssetAppProperties.APP_NAME);
+        APP_NAME_DICTIONARY.put(BundleMetrics.APP_ID.getName(), DeviceBundleAppProperties.APP_NAME);
+        APP_NAME_DICTIONARY.put(CommandMetrics.APP_ID.getName(), CommandAppProperties.APP_NAME);
+        APP_NAME_DICTIONARY.put(ConfigurationMetrics.APP_ID.getName(), DeviceConfigurationAppProperties.APP_NAME);
+        APP_NAME_DICTIONARY.put(PackageMetrics.APP_ID.getName(), PackageAppProperties.APP_NAME);
 
         APP_VERSION_DICTIONARY = new HashMap<>();
 
-        APP_VERSION_DICTIONARY.put(AssetMetrics.APP_ID.getValue(), DeviceAssetAppProperties.APP_VERSION);
-        APP_VERSION_DICTIONARY.put(BundleMetrics.APP_ID.getValue(), DeviceBundleAppProperties.APP_VERSION);
-        APP_VERSION_DICTIONARY.put(CommandMetrics.APP_ID.getValue(), CommandAppProperties.APP_VERSION);
-        APP_VERSION_DICTIONARY.put(ConfigurationMetrics.APP_ID.getValue(), DeviceConfigurationAppProperties.APP_VERSION);
-        APP_VERSION_DICTIONARY.put(PackageMetrics.APP_ID.getValue(), PackageAppProperties.APP_VERSION);
+        APP_VERSION_DICTIONARY.put(AssetMetrics.APP_ID.getName(), DeviceAssetAppProperties.APP_VERSION);
+        APP_VERSION_DICTIONARY.put(BundleMetrics.APP_ID.getName(), DeviceBundleAppProperties.APP_VERSION);
+        APP_VERSION_DICTIONARY.put(CommandMetrics.APP_ID.getName(), CommandAppProperties.APP_VERSION);
+        APP_VERSION_DICTIONARY.put(ConfigurationMetrics.APP_ID.getName(), DeviceConfigurationAppProperties.APP_VERSION);
+        APP_VERSION_DICTIONARY.put(PackageMetrics.APP_ID.getName(), PackageAppProperties.APP_VERSION);
     }
 
     @Override

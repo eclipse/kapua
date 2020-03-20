@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,40 +11,66 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.app;
 
+import org.eclipse.kapua.service.device.call.message.DeviceMetrics;
+
 /**
- * Bundle metrics properties definition.
+ * Bundle {@link DeviceMetrics}.
  *
- * @since 1.0
+ * @since 1.0.0
  */
-public enum BundleMetrics {
+public enum BundleMetrics implements DeviceMetrics {
 
     /**
-     * Application identifier
+     * Application identifier.
+     *
+     * @since 1.0.0
      */
     APP_ID("DEPLOY"),
+
     /**
-     * Application version
+     * Application version.
+     *
+     * @since 1.0.0
      */
     APP_VERSION("V2"),
     ;
 
-    private String value;
+    /**
+     * The name of the metric.
+     *
+     * @since 1.0.0
+     */
+    private final String name;
 
-    BundleMetrics(String value) {
-        this.value = value;
+    /**
+     * Constructor.
+     *
+     * @param name The name of the metric.
+     * @since 1.0.0
+     */
+    BundleMetrics(String name) {
+        this.name = name;
     }
 
     /**
-     * Get a value property associated to this specific enumeration key.
+     * Gets the value property associated to this specific enumeration key.
      *
-     * @return
+     * @return the value property associated to this specific enumeration key.
+     * @since 1.0.0
+     * @deprecated Since 1.2.0. Renamed to {@link #getName()}.
      */
+    @Deprecated
     public String getValue() {
-        return value;
+        return getName();
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
     public String toString() {
-        return getValue();
+        return getName();
     }
 }

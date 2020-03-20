@@ -55,24 +55,24 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
         try {
             if (!getControlMessageClassifier().equals(kuraChannel.getMessageClassification())) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER, null, kuraChannel.getMessageClassification());
-        }
+            }
 
-        String[] appIdTokens = kuraChannel.getAppId().split("-");
+            String[] appIdTokens = kuraChannel.getAppId().split("-");
 
-        if (!SnapshotMetrics.APP_ID.getValue().equals(appIdTokens[0])) {
+            if (!SnapshotMetrics.APP_ID.getName().equals(appIdTokens[0])) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, appIdTokens[0]);
-        }
+            }
 
-        if (!SnapshotMetrics.APP_VERSION.getValue().equals(appIdTokens[1])) {
+            if (!SnapshotMetrics.APP_VERSION.getName().equals(appIdTokens[1])) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_VERSION, null, appIdTokens[1]);
-        }
+            }
 
             SnapshotResponseChannel snapshotResponseChannel = new SnapshotResponseChannel();
-        snapshotResponseChannel.setAppName(DeviceConfigurationAppProperties.APP_NAME);
-        snapshotResponseChannel.setVersion(DeviceConfigurationAppProperties.APP_VERSION);
+            snapshotResponseChannel.setAppName(DeviceConfigurationAppProperties.APP_NAME);
+            snapshotResponseChannel.setVersion(DeviceConfigurationAppProperties.APP_VERSION);
 
-        // Return Kapua Channel
-        return snapshotResponseChannel;
+            // Return Kapua Channel
+            return snapshotResponseChannel;
         } catch (Exception e) {
             throw new InvalidChannelException(e, kuraChannel);
         }
@@ -81,33 +81,33 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
     @Override
     protected SnapshotResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws InvalidPayloadException {
         try {
-        SnapshotResponsePayload snapshotResponsePayload = new SnapshotResponsePayload();
+            SnapshotResponsePayload snapshotResponsePayload = new SnapshotResponsePayload();
 
-        snapshotResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_MESSAGE.getName()));
-        snapshotResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_STACK.getName()));
+            snapshotResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_MESSAGE.getName()));
+            snapshotResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_STACK.getName()));
 
-        DeviceManagementSetting config = DeviceManagementSetting.getInstance();
-        String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
+            DeviceManagementSetting config = DeviceManagementSetting.getInstance();
+            String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
-        KuraSnapshotIds snapshotIdResult = null;
-        if (kuraPayload.hasBody()) {
-            String body = null;
-            try {
-                body = new String(kuraPayload.getBody(), charEncoding);
-            } catch (Exception e) {
+            KuraSnapshotIds snapshotIdResult = null;
+            if (kuraPayload.hasBody()) {
+                String body = null;
+                try {
+                    body = new String(kuraPayload.getBody(), charEncoding);
+                } catch (Exception e) {
                     throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, snapshotResponsePayload.getBody());
-            }
+                }
 
-            try {
-                snapshotIdResult = XmlUtil.unmarshal(body, KuraSnapshotIds.class);
-            } catch (Exception e) {
+                try {
+                    snapshotIdResult = XmlUtil.unmarshal(body, KuraSnapshotIds.class);
+                } catch (Exception e) {
                     throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, body);
+                }
             }
-        }
-        translateBody(snapshotResponsePayload, charEncoding, snapshotIdResult);
+            translateBody(snapshotResponsePayload, charEncoding, snapshotIdResult);
 
-        // Return Kapua Payload
-        return snapshotResponsePayload;
+            // Return Kapua Payload
+            return snapshotResponsePayload;
         } catch (InvalidPayloadException ipe) {
             throw ipe;
         } catch (Exception e) {

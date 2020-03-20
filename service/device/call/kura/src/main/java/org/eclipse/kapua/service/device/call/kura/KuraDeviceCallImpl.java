@@ -202,7 +202,7 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
             }
 
             Map<String, Object> configParameters = new HashMap<>(1);
-        configParameters.put("serverAddress", serverIp);
+            configParameters.put("serverAddress", serverIp);
             return TRANSPORT_CLIENT_FACTORY.getFacade(configParameters);
         } catch (TransportClientGetException tcge) {
             throw tcge;

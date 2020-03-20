@@ -227,23 +227,23 @@ public class KuraPayload implements DevicePayload {
     //
     private Object getProtoKuraMetricValue(KuraPayloadProto.KuraPayload.KuraMetric metric, KuraPayloadProto.KuraPayload.KuraMetric.ValueType type) throws MessageException {
         switch (type) {
-        case DOUBLE:
-            return metric.getDoubleValue();
-        case FLOAT:
-            return metric.getFloatValue();
-        case INT64:
-            return metric.getLongValue();
-        case INT32:
-            return metric.getIntValue();
-        case BOOL:
-            return metric.getBoolValue();
-        case STRING:
-            return metric.getStringValue();
-        case BYTES:
-            ByteString bs = metric.getBytesValue();
-            return bs.toByteArray();
-        default:
-            throw new MessageException(MessageErrorCodes.INVALID_METRIC_TYPE, null, type);
+            case DOUBLE:
+                return metric.getDoubleValue();
+            case FLOAT:
+                return metric.getFloatValue();
+            case INT64:
+                return metric.getLongValue();
+            case INT32:
+                return metric.getIntValue();
+            case BOOL:
+                return metric.getBoolValue();
+            case STRING:
+                return metric.getStringValue();
+            case BYTES:
+                ByteString bs = metric.getBytesValue();
+                return bs.toByteArray();
+            default:
+                throw new MessageException(MessageErrorCodes.INVALID_METRIC_TYPE, null, type);
         }
     }
 

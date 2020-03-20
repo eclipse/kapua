@@ -58,60 +58,60 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
         try {
             if (!getControlMessageClassifier().equals(kuraChannel.getMessageClassification())) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER, null, kuraChannel.getMessageClassification());
-        }
+            }
 
-        String[] appIdTokens = kuraChannel.getAppId().split("-");
+            String[] appIdTokens = kuraChannel.getAppId().split("-");
 
-        if (!BundleMetrics.APP_ID.getValue().equals(appIdTokens[0])) {
+            if (!BundleMetrics.APP_ID.getName().equals(appIdTokens[0])) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, appIdTokens[0]);
-        }
+            }
 
-        if (!BundleMetrics.APP_VERSION.getValue().equals(appIdTokens[1])) {
+            if (!BundleMetrics.APP_VERSION.getName().equals(appIdTokens[1])) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_VERSION, null, appIdTokens[1]);
-        }
+            }
 
             BundleResponseChannel bundleResponseChannel = new BundleResponseChannel();
-        bundleResponseChannel.setAppName(DeviceBundleAppProperties.APP_NAME);
-        bundleResponseChannel.setVersion(DeviceBundleAppProperties.APP_VERSION);
+            bundleResponseChannel.setAppName(DeviceBundleAppProperties.APP_NAME);
+            bundleResponseChannel.setVersion(DeviceBundleAppProperties.APP_VERSION);
 
-        // Return Kapua Channel
-        return bundleResponseChannel;
+            // Return Kapua Channel
+            return bundleResponseChannel;
         } catch (Exception e) {
             throw new InvalidChannelException(e, kuraChannel);
-    }
+        }
     }
 
     @Override
     protected BundleResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws InvalidPayloadException {
         try {
-        BundleResponsePayload bundleResponsePayload = new BundleResponsePayload();
+            BundleResponsePayload bundleResponsePayload = new BundleResponsePayload();
 
-        bundleResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_MESSAGE.getName()));
-        bundleResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_STACK.getName()));
+            bundleResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_MESSAGE.getName()));
+            bundleResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_STACK.getName()));
 
         if (kuraPayload.hasBody()) {
-            DeviceManagementSetting config = DeviceManagementSetting.getInstance();
-            String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
+                DeviceManagementSetting config = DeviceManagementSetting.getInstance();
+                String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
-            String body = null;
-            try {
-                body = new String(kuraPayload.getBody(), charEncoding);
-            } catch (Exception e) {
+                String body = null;
+                try {
+                    body = new String(kuraPayload.getBody(), charEncoding);
+                } catch (Exception e) {
                     throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, (Object) kuraPayload.getBody());
-            }
+                }
 
-            KuraBundles kuraBundles = null;
-            try {
-                kuraBundles = XmlUtil.unmarshal(body, KuraBundles.class);
-            } catch (Exception e) {
+                KuraBundles kuraBundles = null;
+                try {
+                    kuraBundles = XmlUtil.unmarshal(body, KuraBundles.class);
+                } catch (Exception e) {
                     throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, body);
+                }
+
+                translate(bundleResponsePayload, charEncoding, kuraBundles);
             }
 
-            translate(bundleResponsePayload, charEncoding, kuraBundles);
-        }
-
-        // Return Kapua Payload
-        return bundleResponsePayload;
+            // Return Kapua Payload
+            return bundleResponsePayload;
         } catch (InvalidPayloadException ipe) {
             throw ipe;
         } catch (Exception e) {

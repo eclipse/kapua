@@ -61,65 +61,65 @@ public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslato
         try {
             if (!getControlMessageClassifier().equals(kuraChannel.getMessageClassification())) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER, null, kuraChannel.getMessageClassification());
-        }
+            }
 
-        String[] appIdTokens = kuraChannel.getAppId().split("-");
+            String[] appIdTokens = kuraChannel.getAppId().split("-");
 
-        if (!ConfigurationMetrics.APP_ID.getValue().equals(appIdTokens[0])) {
+            if (!ConfigurationMetrics.APP_ID.getName().equals(appIdTokens[0])) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, appIdTokens[0]);
-        }
+            }
 
-        if (!ConfigurationMetrics.APP_VERSION.getValue().equals(appIdTokens[1])) {
+            if (!ConfigurationMetrics.APP_VERSION.getName().equals(appIdTokens[1])) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_VERSION, null, appIdTokens[1]);
-        }
+            }
 
             ConfigurationResponseChannel configurationResponseChannel = new ConfigurationResponseChannel();
-        configurationResponseChannel.setAppName(DeviceConfigurationAppProperties.APP_NAME);
-        configurationResponseChannel.setVersion(DeviceConfigurationAppProperties.APP_VERSION);
+            configurationResponseChannel.setAppName(DeviceConfigurationAppProperties.APP_NAME);
+            configurationResponseChannel.setVersion(DeviceConfigurationAppProperties.APP_VERSION);
 
-        // Return Kapua Channel
-        return configurationResponseChannel;
+            // Return Kapua Channel
+            return configurationResponseChannel;
         } catch (Exception e) {
             throw new InvalidChannelException(e, kuraChannel);
-    }
+        }
     }
 
     @Override
     protected ConfigurationResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws InvalidPayloadException {
         try {
-        ConfigurationResponsePayload configurationResponsePayload = new ConfigurationResponsePayload();
+            ConfigurationResponsePayload configurationResponsePayload = new ConfigurationResponsePayload();
 
-        configurationResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_MESSAGE.getName()));
-        configurationResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_STACK.getName()));
+            configurationResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_MESSAGE.getName()));
+            configurationResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_STACK.getName()));
 
-        DeviceManagementSetting config = DeviceManagementSetting.getInstance();
-        String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
+            DeviceManagementSetting config = DeviceManagementSetting.getInstance();
+            String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
-        if (kuraPayload.hasBody()) {
-            String body = null;
-            try {
-                body = new String(kuraPayload.getBody(), charEncoding);
-            } catch (Exception e) {
+            if (kuraPayload.hasBody()) {
+                String body = null;
+                try {
+                    body = new String(kuraPayload.getBody(), charEncoding);
+                } catch (Exception e) {
                     throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, (Object) configurationResponsePayload.getBody());
-            }
+                }
 
-            KuraDeviceConfiguration kuraDeviceConfiguration = null;
-            try {
-                kuraDeviceConfiguration = XmlUtil.unmarshal(body, KuraDeviceConfiguration.class);
-            } catch (Exception e) {
+                KuraDeviceConfiguration kuraDeviceConfiguration = null;
+                try {
+                    kuraDeviceConfiguration = XmlUtil.unmarshal(body, KuraDeviceConfiguration.class);
+                } catch (Exception e) {
                     throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, body);
-            }
+                }
 
                 translateBody(configurationResponsePayload, charEncoding, kuraDeviceConfiguration);
-        }
+            }
 
-        // Return Kapua Payload
-        return configurationResponsePayload;
+            // Return Kapua Payload
+            return configurationResponsePayload;
         } catch (InvalidPayloadException ipe) {
             throw ipe;
         } catch (Exception e) {
             throw new InvalidPayloadException(e, kuraPayload);
-    }
+        }
     }
 
     private void translateBody(ConfigurationResponsePayload configurationResponsePayload, String charEncoding, KuraDeviceConfiguration kuraDeviceConfiguration)

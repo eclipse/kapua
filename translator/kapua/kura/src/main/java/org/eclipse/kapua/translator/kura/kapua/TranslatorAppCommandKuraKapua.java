@@ -48,11 +48,11 @@ public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorRespo
 
             String[] appIdTokens = kuraChannel.getAppId().split("-");
 
-            if (!CommandMetrics.APP_ID.getValue().equals(appIdTokens[0])) {
+            if (!CommandMetrics.APP_ID.getName().equals(appIdTokens[0])) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, appIdTokens[0]);
             }
 
-            if (!CommandMetrics.APP_VERSION.getValue().equals(appIdTokens[1])) {
+            if (!CommandMetrics.APP_VERSION.getName().equals(appIdTokens[1])) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_VERSION, null, appIdTokens[1]);
             }
 
@@ -73,11 +73,11 @@ public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorRespo
             CommandResponsePayload commandResponsePayload = new CommandResponsePayload();
 
             Map<String, Object> metrics = kuraPayload.getMetrics();
-            commandResponsePayload.setStderr((String) metrics.get(CommandMetrics.APP_METRIC_STDERR.getValue()));
-            commandResponsePayload.setStdout((String) metrics.get(CommandMetrics.APP_METRIC_STDOUT.getValue()));
-            commandResponsePayload.setExitCode((Integer) metrics.get(CommandMetrics.APP_METRIC_EXIT_CODE.getValue()));
+            commandResponsePayload.setStderr((String) metrics.get(CommandMetrics.APP_METRIC_STDERR.getName()));
+            commandResponsePayload.setStdout((String) metrics.get(CommandMetrics.APP_METRIC_STDOUT.getName()));
+            commandResponsePayload.setExitCode((Integer) metrics.get(CommandMetrics.APP_METRIC_EXIT_CODE.getName()));
 
-            Boolean timedout = (Boolean) metrics.get(CommandMetrics.APP_METRIC_TIMED_OUT.getValue());
+            Boolean timedout = (Boolean) metrics.get(CommandMetrics.APP_METRIC_TIMED_OUT.getName());
             if (timedout != null) {
                 commandResponsePayload.setTimedout(timedout);
             }

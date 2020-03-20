@@ -61,11 +61,11 @@ public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorRespons
 
             String[] appIdTokens = kuraChannel.getAppId().split("-");
 
-            if (!AssetMetrics.APP_ID.getValue().equals(appIdTokens[0])) {
+            if (!AssetMetrics.APP_ID.getName().equals(appIdTokens[0])) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, appIdTokens[0]);
             }
 
-            if (!AssetMetrics.APP_VERSION.getValue().equals(appIdTokens[1])) {
+            if (!AssetMetrics.APP_VERSION.getName().equals(appIdTokens[1])) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_VERSION, null, appIdTokens[1]);
             }
 
