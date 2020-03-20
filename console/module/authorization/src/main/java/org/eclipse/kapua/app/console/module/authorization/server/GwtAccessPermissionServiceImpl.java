@@ -146,6 +146,7 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
                     }
                     SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
                     FieldSortCriteria sortCriteria = query.fieldSortCriteria(sortField, sortOrder);
+                    query.setAskTotalCount(true);
                     query.setSortCriteria(sortCriteria);
 
                     AccessPermissionListResult accessPermissionList = ACCESS_PERMISSION_SERVICE.query(query);

@@ -16,10 +16,8 @@ package org.eclipse.kapua.service.user;
  */
 public enum UserType {
     /**
-     * Device user type
-     * @deprecated no longer used.
+     * Device user type (no longer used).
      */
-    @Deprecated
     DEVICE,
 
     /**

@@ -28,11 +28,9 @@ options:
     the "client secret" used when communicating with the OpenID Connect server.
 - **`sso.openid.jwt-processor-timeout` (optional)** : the JwtProcessor expiration time (the default value is 1 hour).
 
-It is also necessary to configure the Web Console what its external endpoint address is.
-Currently this is a required configuration, even if there is no difference between the servers
-endpoint URL and its external URL, even if this may just be `http://localhost:8080`.
+It is also necessary to configure the Web Console external endpoint address.
 
-- **`site.home.uri`** : the URL to the web console, e.g. `http://localhost:8080`
+- **`console.sso.home.uri`** : the URL to the web console, e.g. `http://localhost:8080`
 
 The SSO Login will be available in the form of a dedicated button on the Kapua login page 
 (the button can be enabled through the configuration option `sso.provider`).
@@ -43,6 +41,7 @@ The follow values are specific to your OpenID Connection solution, please use it
 documentation to look up the required values:
 
 - **`sso.generic.openid.server.endpoint.auth`** : the endpoint URL to the authentication API.
+- **`sso.generic.openid.server.endpoint.logout`** : the logout endpoint of the OpenID provider.
 - **`sso.generic.openid.server.endpoint.token`** : the endpoint URL to the token API.
 - **`sso.generic.openid.jwt.audience.allowed`** : the JWT audience.
 - **`sso.generic.openid.jwt.issuer.allowed`** : the base URL to the OpenID server provider.
@@ -168,7 +167,7 @@ The following properties must be passed (as VM options) in order to set up SSO o
 - `sso.keycloak.realm=kapua` : the Keycloak Realm (we are using the "kapua" realm)
 - `sso.keycloak.uri=http://<Keycloak-IP-address>:9090` : the Keycloak Server URI 
 - `sso.openid.client.id=console` : the OpenID Client ID (the one set on Keycloak)
-- `site.home.uri=http://localhost:8080` : the Kapua web console URI 
+- `console.sso.home.uri=http://localhost:8080` : the Kapua web console URI 
 
 Using docker it is sufficient to provide the following docker environment variables (these ones will automatically set 
 up the configuration properties described above):

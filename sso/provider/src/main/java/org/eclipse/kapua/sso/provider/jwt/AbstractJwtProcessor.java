@@ -21,8 +21,6 @@ import org.eclipse.kapua.sso.provider.setting.SsoSettingKeys;
 import org.eclipse.kapua.sso.exception.jwt.SsoJwtExtractionException;
 import org.eclipse.kapua.sso.exception.jwt.SsoJwtProcessException;
 import org.eclipse.kapua.sso.exception.uri.SsoIllegalUriException;
-import org.eclipse.kapua.sso.provider.setting.SsoSetting;
-import org.eclipse.kapua.sso.provider.setting.SsoSettingKeys;
 import org.jose4j.jwk.HttpsJwks;
 import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.consumer.InvalidJwtException;

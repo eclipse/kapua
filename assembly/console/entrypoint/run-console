@@ -29,7 +29,7 @@ if [ -n "$KEYCLOAK_URL" ] && [ -n "$KAPUA_URL" ]; then
    JAVA_OPTS="$JAVA_OPTS -Dsso.keycloak.uri=${KEYCLOAK_URL}"
    JAVA_OPTS="$JAVA_OPTS -Dsso.keycloak.realm=${KEYCLOAK_REALM}"
 
-   JAVA_OPTS="$JAVA_OPTS -Dsite.home.uri=${KAPUA_URL}"
+   JAVA_OPTS="$JAVA_OPTS -Dconsole.sso.home.uri=${KAPUA_URL}"
    
    export JAVA_OPTS
 fi
@@ -49,7 +49,7 @@ if [ -n "$KAPUA_URL" ] && [ -n "$OPENID_JWT_ISSUER" ] && [ -n "$OPENID_AUTH_ENDP
    JAVA_OPTS="$JAVA_OPTS -Dsso.provider=generic"
    JAVA_OPTS="$JAVA_OPTS -Dsso.openid.client.id=${OPENID_CLIENT_ID}"
    test -n "$CLIENT_SECRET" && JAVA_OPTS="$JAVA_OPTS -Dsso.openid.client.secret=${CLIENT_SECRET}"
-   JAVA_OPTS="$JAVA_OPTS -Dsite.home.uri=${KAPUA_URL}"
+   JAVA_OPTS="$JAVA_OPTS -Dconsole.sso.home.uri=${KAPUA_URL}"
 
    JAVA_OPTS="$JAVA_OPTS -Dsso.generic.openid.jwt.audience.allowed=${JWT_AUDIENCE}"
    JAVA_OPTS="$JAVA_OPTS -Dsso.generic.openid.jwt.issuer.allowed=${OPENID_JWT_ISSUER}"

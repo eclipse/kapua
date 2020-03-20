@@ -48,6 +48,12 @@ public class SsoCallbackServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final String authCode = req.getParameter("code");
 
+        final String homeUri;
+        try {
+            homeUri = SsoHelper.getHomeUri();
+        } catch (SsoIllegalUriException e) {
+            throw new ServletException("Failed to get Home URI (null or empty): " + e.getMessage(), e);
+        }
         final URI redirectUri = SsoHelper.getRedirectUri();
         if (authCode != null) {
 
@@ -60,19 +66,12 @@ public class SsoCallbackServlet extends HttpServlet {
 
             // Get and clean jwks_uri property
             final String accessToken = jsonObject.getString("access_token");
-            final String homeUri;
-            try {
-                homeUri = SsoHelper.getHomeUri();
-            } catch (SsoIllegalUriException e) {
-                throw new ServletException("Failed to get Home URI (null or empty).");
-            }
-
             try {
                 final URIBuilder redirect = new URIBuilder(homeUri);
                 redirect.addParameter("access_token", accessToken);
                 resp.sendRedirect(redirect.toString());
             } catch (final URISyntaxException e) {
-                throw new ServletException("Failed to parse redirect URL: " + homeUri, e);
+                throw new ServletException("Failed to parse redirect URL " + homeUri + " : " + e.getMessage(), e);
             }
         } else {
 
@@ -85,19 +84,13 @@ public class SsoCallbackServlet extends HttpServlet {
             } else {
                 throw new ServletException("Invalid HttpServletRequest");
             }
-            final String homeUri;
-            try {
-                homeUri = SsoHelper.getHomeUri();
-            } catch (SsoIllegalUriException e) {
-                throw new ServletException("Failed to get Home URI (null or empty).");
-            }
             try {
                 final URIBuilder redirect = new URIBuilder(homeUri);
                 redirect.addParameter("error", error);
                 redirect.addParameter("error_description", errorDescription);
                 resp.sendRedirect(redirect.toString());
             } catch (final URISyntaxException e) {
-                throw new ServletException("Failed to parse redirect URL: " + homeUri, e);
+                throw new ServletException("Failed to parse redirect URL " + homeUri + " : " + e.getMessage(), e);
             }
         }
     }

@@ -38,7 +38,7 @@ public enum ConsoleSettingKeys implements SettingKey {
     FILE_UPLOAD_INMEMORY_SIZE_THRESHOLD("console.file.upload.inmemory.size.threshold"), //
 
     SSO_REDIRECT_URI("console.sso.redirect.uri"), //
-    SITE_HOME_URI("site.home.uri"), //
+    SSO_CONSOLE_HOME_URI("console.sso.home.uri"), //
 
     EXPORT_MAX_PAGES("console.export.max.pages"),
     EXPORT_MAX_PAGE_SIZE("console.export.max.pagesize");

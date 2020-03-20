@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -29,9 +29,9 @@ public final class SsoHelper {
     }
 
     public static String getHomeUri() throws SsoIllegalUriException {
-        String homeUri = getSettings().getString(ConsoleSettingKeys.SITE_HOME_URI);
+        String homeUri = getSettings().getString(ConsoleSettingKeys.SSO_CONSOLE_HOME_URI);
         if (homeUri == null || homeUri.isEmpty()) {
-            throw new SsoIllegalUriException(ConsoleSettingKeys.SITE_HOME_URI.key(), null);
+            throw new SsoIllegalUriException(ConsoleSettingKeys.SSO_CONSOLE_HOME_URI.key(), null);
         }
         return homeUri;
     }

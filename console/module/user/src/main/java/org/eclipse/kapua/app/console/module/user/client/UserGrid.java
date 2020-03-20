@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -150,43 +150,7 @@ public class UserGrid extends EntityGrid<GwtUser> {
         columnConfigs.add(columnConfig);
 
         if (currentSession.isSsoEnabled()) {
-
-            columnConfig = new ColumnConfig("userType", USER_MSGS.gridUserColumnHeaderUserType(), 50);
-            GridCellRenderer<GwtUser> setUserTypeIcon = new GridCellRenderer<GwtUser>() {
-
-                @Override
-                public String render(GwtUser gwtUser, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtUser> deviceList, Grid<GwtUser> grid) {
-
-                    KapuaIcon icon;
-                    if (gwtUser.getUserTypeEnum() != null) {
-                        switch (gwtUser.getUserTypeEnum()) {
-                            case INTERNAL:
-                                icon = new KapuaIcon(IconSet.SQUARE);
-                                icon.setColor(Color.BLUE_KAPUA);
-                                icon.setTitle(MSGS.internal());
-                                break;
-                            case EXTERNAL:
-                                icon = new KapuaIcon(IconSet.EXTERNAL_LINK);
-                                icon.setColor(Color.BLUE_KAPUA);
-                                icon.setTitle(MSGS.external());
-                                break;
-                            default:
-                                icon = new KapuaIcon(IconSet.SQUARE_O);
-                                icon.setColor(Color.GREY);
-                                icon.setTitle(MSGS.unknown());
-                                break;
-                        }
-                    } else {
-                        icon = new KapuaIcon(IconSet.USER);
-                        icon.setColor(Color.GREY);
-                    }
-
-                    return icon.getInlineHTML();
-                }
-            };
-            columnConfig.setRenderer(setUserTypeIcon);
-            columnConfig.setAlignment(HorizontalAlignment.CENTER);
-            columnConfig.setSortable(false);
+            columnConfig = new ColumnConfig("userType", USER_MSGS.gridUserColumnHeaderUserType(), 150);
             columnConfigs.add(columnConfig);
         }
 

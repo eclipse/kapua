@@ -13,7 +13,6 @@
 package org.eclipse.kapua.service.user.internal;
 
 import org.eclipse.kapua.KapuaDuplicateExternalIdException;
-import org.eclipse.kapua.KapuaDuplicateExternalIdInAnotherAccountError;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
@@ -115,15 +114,9 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         if (userCreator.getUserType() == UserType.EXTERNAL) {
             // Check duplicate externalId
-            UserQuery queryExternalId = new UserQueryImpl(userCreator.getScopeId());
-            queryExternalId.setPredicate(query.attributePredicate(UserAttributes.EXTERNAL_ID, userCreator.getExternalId()));
-            if (count(queryExternalId) > 0) {
-                throw new KapuaDuplicateExternalIdException(userCreator.getExternalId());
-            }
-
             User userByExternalId = KapuaSecurityUtils.doPrivileged(() -> findByExternalId(userCreator.getExternalId()));
             if (userByExternalId != null) {
-                throw new KapuaDuplicateExternalIdInAnotherAccountError(userCreator.getExternalId());
+                throw new KapuaDuplicateExternalIdException(userCreator.getExternalId());
             }
         }
 
