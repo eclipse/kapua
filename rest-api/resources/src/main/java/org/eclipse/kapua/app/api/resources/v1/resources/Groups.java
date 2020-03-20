@@ -13,14 +13,15 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authorization.group.Group;
-import org.eclipse.kapua.service.authorization.group.GroupAttributes;
 import org.eclipse.kapua.service.authorization.group.GroupCreator;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupListResult;
@@ -55,7 +56,7 @@ public class Groups extends AbstractKapuaResource {
      * @param offset  The result set offset.
      * @param limit   The result set limit.
      * @return The {@link GroupListResult} of all the groups associated to the current selected scope.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -64,12 +65,12 @@ public class Groups extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @QueryParam("name") String name,
             @QueryParam("offset") @DefaultValue("0") int offset,
-            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         GroupQuery query = groupFactory.newQuery(scopeId);
 
         AndPredicate andPredicate = query.andPredicate();
         if (!Strings.isNullOrEmpty(name)) {
-            andPredicate.and(query.attributePredicate(GroupAttributes.NAME, name));
+            andPredicate.and(query.attributePredicate(KapuaNamedEntityAttributes.NAME, name));
         }
         query.setPredicate(andPredicate);
 
@@ -85,7 +86,7 @@ public class Groups extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link GroupQuery} to use to filter results.
      * @return The {@link GroupListResult} of all the result matching the given {@link GroupQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -94,7 +95,7 @@ public class Groups extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public GroupListResult query(
             @PathParam("scopeId") ScopeId scopeId,
-            GroupQuery query) throws Exception {
+            GroupQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         return groupService.query(query);
@@ -106,7 +107,7 @@ public class Groups extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link GroupQuery} to use to filter results.
      * @return The count of all the result matching the given {@link GroupQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -115,7 +116,7 @@ public class Groups extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public CountResult count(
             @PathParam("scopeId") ScopeId scopeId,
-            GroupQuery query) throws Exception {
+            GroupQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         return new CountResult(groupService.count(query));
@@ -132,12 +133,12 @@ public class Groups extends AbstractKapuaResource {
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Group create(
+    public Response create(
             @PathParam("scopeId") ScopeId scopeId,
-            GroupCreator groupCreator) throws Exception {
+            GroupCreator groupCreator) throws KapuaException {
         groupCreator.setScopeId(scopeId);
 
-        return groupService.create(groupCreator);
+        return returnCreated(groupService.create(groupCreator));
     }
 
     /**
@@ -146,7 +147,7 @@ public class Groups extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} of the requested {@link Group}.
      * @param groupId The id of the requested Group.
      * @return The requested Group object.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -154,7 +155,7 @@ public class Groups extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Group find(
             @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("groupId") EntityId groupId) throws Exception {
+            @PathParam("groupId") EntityId groupId) throws KapuaException {
         Group group = groupService.find(scopeId, groupId);
 
         if (group == null) {
@@ -171,7 +172,7 @@ public class Groups extends AbstractKapuaResource {
      * @param groupId The id of the requested {@link Group}
      * @param group   The modified Group whose attributed need to be updated.
      * @return The updated group.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @PUT
@@ -181,7 +182,7 @@ public class Groups extends AbstractKapuaResource {
     public Group update(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("groupId") EntityId groupId,
-            Group group) throws Exception {
+            Group group) throws KapuaException {
         group.setScopeId(scopeId);
         group.setId(groupId);
 
@@ -194,16 +195,16 @@ public class Groups extends AbstractKapuaResource {
      * @param scopeId The ScopeId of the requested {@link Group}.
      * @param groupId The id of the Group to be deleted.
      * @return HTTP 200 if operation has completed successfully.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @DELETE
     @Path("{groupId}")
     public Response deleteGroup(
             @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("groupId") EntityId groupId) throws Exception {
+            @PathParam("groupId") EntityId groupId) throws KapuaException {
         groupService.delete(scopeId, groupId);
 
-        return returnOk();
+        return returnNoContent();
     }
 }

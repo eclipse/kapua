@@ -90,7 +90,7 @@ paths:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: './tag.yaml#/components/parameters/tagId'
       responses:
-        200:
+        204:
           description: The Tag has been deleted
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'

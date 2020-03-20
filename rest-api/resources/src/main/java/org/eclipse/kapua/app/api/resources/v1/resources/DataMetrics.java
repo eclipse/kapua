@@ -21,6 +21,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.StorableEntityId;
@@ -74,7 +75,7 @@ public class DataMetrics extends AbstractKapuaResource {
             @QueryParam("channel") String channel,
             @QueryParam("name") String name,
             @QueryParam("offset") @DefaultValue("0") int offset,//
-            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
         if (!Strings.isNullOrEmpty(clientId)) {
             TermPredicate clientIdPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MetricInfoField.CLIENT_ID, clientId);
@@ -116,7 +117,7 @@ public class DataMetrics extends AbstractKapuaResource {
 
     public MetricInfoListResult query( //
             @PathParam("scopeId") ScopeId scopeId, //
-            MetricInfoQuery query) throws Exception {
+            MetricInfoQuery query) throws KapuaException {
         query.setScopeId(scopeId);
         query.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
         return METRIC_INFO_REGISTRY_SERVICE.query(query);
@@ -139,7 +140,7 @@ public class DataMetrics extends AbstractKapuaResource {
 
     public CountResult count( //
             @PathParam("scopeId") ScopeId scopeId, //
-            MetricInfoQuery query) throws Exception {
+            MetricInfoQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         return new CountResult(METRIC_INFO_REGISTRY_SERVICE.count(query));
@@ -158,7 +159,7 @@ public class DataMetrics extends AbstractKapuaResource {
 
     public MetricInfo find(
             @PathParam("scopeId") ScopeId scopeId, //
-            @PathParam("metricInfoId") StorableEntityId metricInfoId) throws Exception {
+            @PathParam("metricInfoId") StorableEntityId metricInfoId) throws KapuaException {
         MetricInfo metricInfo = METRIC_INFO_REGISTRY_SERVICE.find(scopeId, metricInfoId);
 
         return returnNotNullEntity(metricInfo);

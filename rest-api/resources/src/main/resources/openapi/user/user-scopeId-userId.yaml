@@ -84,7 +84,7 @@ paths:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: './user.yaml#/components/parameters/userId'
       responses:
-        200:
+        204:
           description: The User has been deleted
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'

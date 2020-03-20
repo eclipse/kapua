@@ -12,10 +12,12 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
@@ -59,7 +61,7 @@ public class AccessPermissions extends AbstractKapuaResource {
      * @param offset       The result set offset.
      * @param limit        The result set limit.
      * @return The {@link AccessPermissionListResult} of all the {@link AccessPermission}s associated to the current selected scope.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -68,7 +70,7 @@ public class AccessPermissions extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("accessInfoId") EntityId accessInfoId,
             @QueryParam("offset") @DefaultValue("0") int offset,
-            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         AccessPermissionQuery query = accessPermissionFactory.newQuery(scopeId);
 
         query.setPredicate(query.attributePredicate(AccessPermissionAttributes.ACCESS_INFO_ID, accessInfoId));
@@ -86,7 +88,7 @@ public class AccessPermissions extends AbstractKapuaResource {
      * @param accessInfoId The {@link AccessInfo} id in which to search results.
      * @param query        The {@link AccessPermissionQuery} to use to filter results.
      * @return The {@link AccessPermissionListResult} of all the result matching the given {@link AccessPermissionQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -96,7 +98,7 @@ public class AccessPermissions extends AbstractKapuaResource {
     public AccessPermissionListResult query(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("accessInfoId") EntityId accessInfoId,
-            AccessPermissionQuery query) throws Exception {
+            AccessPermissionQuery query) throws KapuaException {
 
         query.setScopeId(scopeId);
 
@@ -112,7 +114,7 @@ public class AccessPermissions extends AbstractKapuaResource {
      * @param accessInfoId The {@link AccessInfo} id in which to count results.
      * @param query        The {@link AccessPermissionQuery} to use to filter count results.
      * @return The count of all the result matching the given {@link AccessPermissionQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -122,7 +124,7 @@ public class AccessPermissions extends AbstractKapuaResource {
     public CountResult count(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("accessInfoId") EntityId accessInfoId,
-            AccessPermissionQuery query) throws Exception {
+            AccessPermissionQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         query.setPredicate(query.attributePredicate(AccessPermissionAttributes.ACCESS_INFO_ID, accessInfoId));
@@ -138,20 +140,20 @@ public class AccessPermissions extends AbstractKapuaResource {
      * @param accessInfoId            The {@link AccessInfo} id in which to create the AccessPermission.
      * @param accessPermissionCreator Provides the information for the new {@link AccessPermission} to be created.
      * @return The newly created {@link AccessPermission} object.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public AccessPermission create(
+    public Response create(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("accessInfoId") EntityId accessInfoId,
-            AccessPermissionCreator accessPermissionCreator) throws Exception {
+            AccessPermissionCreator accessPermissionCreator) throws KapuaException {
         accessPermissionCreator.setScopeId(scopeId);
         accessPermissionCreator.setAccessInfoId(accessInfoId);
 
-        return accessPermissionService.create(accessPermissionCreator);
+        return returnCreated(accessPermissionService.create(accessPermissionCreator));
     }
 
     /**
@@ -161,7 +163,7 @@ public class AccessPermissions extends AbstractKapuaResource {
      * @param accessInfoId       The {@link AccessInfo} id of the requested {@link AccessPermission}.
      * @param accessPermissionId The id of the requested AccessPermission.
      * @return The requested AccessPermission object.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -170,12 +172,12 @@ public class AccessPermissions extends AbstractKapuaResource {
     public AccessPermission find(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("accessInfoId") EntityId accessInfoId,
-            @PathParam("accessPermissionId") EntityId accessPermissionId) throws Exception {
+            @PathParam("accessPermissionId") EntityId accessPermissionId) throws KapuaException {
         AccessPermissionQuery query = accessPermissionFactory.newQuery(scopeId);
 
         AndPredicate andPredicate = query.andPredicate(
                 query.attributePredicate(AccessPermissionAttributes.ACCESS_INFO_ID, accessInfoId),
-                query.attributePredicate(AccessPermissionAttributes.ENTITY_ID, accessPermissionId)
+                query.attributePredicate(KapuaEntityAttributes.ENTITY_ID, accessPermissionId)
         );
 
         query.setPredicate(andPredicate);
@@ -198,7 +200,7 @@ public class AccessPermissions extends AbstractKapuaResource {
      * @param accessInfoId       The {@link AccessInfo} id of the {@link AccessPermission} to delete.
      * @param accessPermissionId The id of the AccessPermission to be deleted.
      * @return HTTP 200 if operation has completed successfully.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @DELETE
@@ -206,9 +208,9 @@ public class AccessPermissions extends AbstractKapuaResource {
     public Response deleteAccessPermission(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("accessInfoId") EntityId accessInfoId,
-            @PathParam("accessPermissionId") EntityId accessPermissionId) throws Exception {
+            @PathParam("accessPermissionId") EntityId accessPermissionId) throws KapuaException {
         accessPermissionService.delete(scopeId, accessPermissionId);
 
-        return returnOk();
+        return returnNoContent();
     }
 }

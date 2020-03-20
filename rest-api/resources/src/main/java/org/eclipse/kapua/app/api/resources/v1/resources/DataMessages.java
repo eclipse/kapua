@@ -12,6 +12,8 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
+
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.DateParam;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.MetricType;
@@ -29,9 +31,7 @@ import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
-import org.eclipse.kapua.service.datastore.model.query.ExistsPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
-import org.eclipse.kapua.service.datastore.model.query.MetricPredicate;
 import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
@@ -47,6 +47,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.Date;
 
 @Path("{scopeId}/data/messages")
@@ -69,7 +70,7 @@ public class DataMessages extends AbstractKapuaResource {
      * @param offset         The result set offset.
      * @param limit          The result set limit.
      * @return The {@link MessageListResult} of all the datastoreMessages associated to the current selected scope.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
 
@@ -87,7 +88,7 @@ public class DataMessages extends AbstractKapuaResource {
             @QueryParam("metricMin") String metricMinValue, //
             @QueryParam("metricMax") String metricMaxValue, //
             @QueryParam("offset") @DefaultValue("0") int offset,//
-            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
 
         AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
         if (!Strings.isNullOrEmpty(clientId)) {
@@ -96,13 +97,7 @@ public class DataMessages extends AbstractKapuaResource {
         }
 
         if (!Strings.isNullOrEmpty(channel)) {
-            StorablePredicate channelPredicate = null;
-            if (strictChannel) {
-                channelPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(ChannelInfoField.CHANNEL, channel);
-            } else {
-                channelPredicate = STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(channel);
-            }
-            andPredicate.getPredicates().add(channelPredicate);
+            andPredicate.getPredicates().add(getChannelPredicate(channel, strictChannel));
         }
 
         Date startDate = startDateParam != null ? startDateParam.getDate() : null;
@@ -113,17 +108,7 @@ public class DataMessages extends AbstractKapuaResource {
         }
 
         if (!Strings.isNullOrEmpty(metricName)) {
-            if (metricMinValue == null && metricMaxValue == null) {
-                Class<V> type = metricType != null ? metricType.getType() : null;
-                ExistsPredicate existsPredicate = STORABLE_PREDICATE_FACTORY.newMetricExistsPredicate(metricName, type);
-                andPredicate.getPredicates().add(existsPredicate);
-            } else {
-                V minValue = (V) ObjectValueConverter.fromString(metricMinValue, metricType.getType());
-                V maxValue = (V) ObjectValueConverter.fromString(metricMaxValue, metricType.getType());
-
-                MetricPredicate metricPredicate = STORABLE_PREDICATE_FACTORY.newMetricPredicate(metricName, metricType.getType(), minValue, maxValue);
-                andPredicate.getPredicates().add(metricPredicate);
-            }
+            andPredicate.getPredicates().add(getMetricPredicate(metricName, metricType, metricMinValue, metricMaxValue));
         }
 
         MessageQuery query = DATASTORE_OBJECT_FACTORY.newDatastoreMessageQuery(scopeId);
@@ -134,6 +119,28 @@ public class DataMessages extends AbstractKapuaResource {
         return query(scopeId, query);
     }
 
+    private StorablePredicate getChannelPredicate(String channel, boolean strictChannel) {
+        StorablePredicate channelPredicate;
+        if (strictChannel) {
+            channelPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(ChannelInfoField.CHANNEL, channel);
+        } else {
+            channelPredicate = STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(channel);
+        }
+        return channelPredicate;
+    }
+
+    private <V extends Comparable<V>> StorablePredicate getMetricPredicate(String metricName, MetricType<V> metricType, String metricMinValue, String metricMaxValue) {
+        if (metricMinValue == null && metricMaxValue == null) {
+            Class<V> type = metricType != null ? metricType.getType() : null;
+            return STORABLE_PREDICATE_FACTORY.newMetricExistsPredicate(metricName, type);
+        } else {
+            V minValue = (V) ObjectValueConverter.fromString(metricMinValue, metricType.getType());
+            V maxValue = (V) ObjectValueConverter.fromString(metricMaxValue, metricType.getType());
+
+            return STORABLE_PREDICATE_FACTORY.newMetricPredicate(metricName, metricType.getType(), minValue, maxValue);
+        }
+    }
+
     /**
      * Stores a new Message under the account of the currently connected user.
      * In this case, the provided message will only be stored in the back-end
@@ -142,18 +149,18 @@ public class DataMessages extends AbstractKapuaResource {
      * @param message The {@link KapuaDataMessage } to be stored
      * @return an {@link InsertResponse} object encapsulating the response from
      * the datastore
-     * @throws Exception Whenever something bad happens. See specific
+     * @throws KapuaException Whenever something bad happens. See specific
      *                   {@link KapuaService} exceptions.
      */
     @POST
     @Consumes({ MediaType.APPLICATION_XML })
     @Produces({ MediaType.APPLICATION_XML })
 
-    public StorableEntityId storeMessage(
+    public Response storeMessage(
             @PathParam("scopeId") ScopeId scopeId,//
-            KapuaDataMessage message) throws Exception {
+            KapuaDataMessage message) throws KapuaException {
         message.setScopeId(scopeId);
-        return new StorableEntityId(MESSAGE_STORE_SERVICE.store(message).toString());
+        return returnCreated(new StorableEntityId(MESSAGE_STORE_SERVICE.store(message).toString()));
     }
 
     /**
@@ -162,7 +169,7 @@ public class DataMessages extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link MessageQuery} to used to filter results.
      * @return The {@link MessageListResult} of all the result matching the given {@link MessageQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -172,7 +179,7 @@ public class DataMessages extends AbstractKapuaResource {
 
     public MessageListResult query( //
             @PathParam("scopeId") ScopeId scopeId, //
-            MessageQuery query) throws Exception {
+            MessageQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         return MESSAGE_STORE_SERVICE.query(query);
@@ -184,7 +191,7 @@ public class DataMessages extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link MessageQuery} to used to filter results.
      * @return The count of all the result matching the given {@link MessageQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -194,7 +201,7 @@ public class DataMessages extends AbstractKapuaResource {
 
     public CountResult count( //
             @PathParam("scopeId") ScopeId scopeId, //
-            MessageQuery query) throws Exception {
+            MessageQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         return new CountResult(MESSAGE_STORE_SERVICE.count(query));
@@ -205,7 +212,7 @@ public class DataMessages extends AbstractKapuaResource {
      *
      * @param datastoreMessageId The id of the requested DatastoreMessage.
      * @return The requested DatastoreMessage object.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -214,7 +221,7 @@ public class DataMessages extends AbstractKapuaResource {
 
     public DatastoreMessage find( //
             @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("datastoreMessageId") StorableEntityId datastoreMessageId) throws Exception {
+            @PathParam("datastoreMessageId") StorableEntityId datastoreMessageId) throws KapuaException {
         DatastoreMessage datastoreMessage = MESSAGE_STORE_SERVICE.find(scopeId, datastoreMessageId, StorableFetchStyle.SOURCE_FULL);
 
         return returnNotNullEntity(datastoreMessage);

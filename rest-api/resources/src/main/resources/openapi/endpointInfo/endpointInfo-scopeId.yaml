@@ -55,7 +55,7 @@ paths:
               $ref: './endpointInfo.yaml#/components/schemas/endpointInfoCreator'
         required: true
       responses:
-        200:
+        201:
           description: The EndpointInfo that has just been created
           content:
             application/json:

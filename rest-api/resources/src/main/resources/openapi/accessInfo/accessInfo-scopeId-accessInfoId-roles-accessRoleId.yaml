@@ -47,7 +47,7 @@ paths:
         - $ref: './accessInfo.yaml#/components/parameters/accessInfoId'
         - $ref: './accessInfo.yaml#/components/parameters/accessRoleId'
       responses:
-        200:
+        204:
           description: The AccessRole has been deleted
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'

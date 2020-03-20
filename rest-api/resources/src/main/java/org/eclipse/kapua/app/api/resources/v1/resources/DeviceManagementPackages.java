@@ -20,13 +20,17 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
+import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOptions;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
+import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOptions;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 import org.eclipse.kapua.service.device.registry.Device;
 
@@ -35,6 +39,7 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final DevicePackageManagementService packageService = locator.getService(DevicePackageManagementService.class);
+    private final DevicePackageFactory packageFactory = locator.getFactory(DevicePackageFactory.class);
 
     /**
      * Returns the list of all the packages installed on the device.
@@ -46,7 +51,7 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
      * @param timeout
      *            The timeout of the operation
      * @return The list of packages installed.
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -55,7 +60,7 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
     public DevicePackages get(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") Long timeout) throws Exception {
+            @QueryParam("timeout") Long timeout) throws KapuaException {
         return packageService.getInstalled(scopeId, deviceId, timeout);
     }
 
@@ -71,7 +76,7 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
      * @param packageDownloadRequest
      *            Mandatory object with all the informations needed to download and install a package
      * @return HTTP 200 if operation has completed successfully.
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -83,10 +88,12 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
             @PathParam("deviceId") EntityId deviceId,
             @QueryParam("timeout") Long timeout,
             DevicePackageDownloadRequest packageDownloadRequest)
-            throws Exception {
-        packageService.downloadExec(scopeId, deviceId, packageDownloadRequest, timeout);
+            throws KapuaException {
+        DevicePackageDownloadOptions options = packageFactory.newDevicePackageDownloadOptions();
+        options.setTimeout(timeout);
+        packageService.downloadExec(scopeId, deviceId, packageDownloadRequest, options);
 
-        return returnOk();
+        return returnNoContent();
     }
 
     /**
@@ -101,7 +108,7 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
      * @param packageUninstallRequest
      *            Mandatory object with all the informations needed to uninstall a package
      * @return HTTP 200 if operation has completed successfully.
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -112,10 +119,12 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @QueryParam("timeout") Long timeout,
-            DevicePackageUninstallRequest packageUninstallRequest) throws Exception {
-        packageService.uninstallExec(scopeId, deviceId, packageUninstallRequest, timeout);
+            DevicePackageUninstallRequest packageUninstallRequest) throws KapuaException {
+        DevicePackageUninstallOptions options = packageFactory.newDevicePackageUninstallOptions();
+        options.setTimeout(timeout);
+        packageService.uninstallExec(scopeId, deviceId, packageUninstallRequest, options);
 
-        return returnOk();
+        return returnNoContent();
     }
 
 }

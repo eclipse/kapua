@@ -50,7 +50,7 @@ paths:
             schema:
               $ref: './accessInfo.yaml#/components/schemas/accessRoleCreator'
       responses:
-        200:
+        201:
           description: The AccessRole that has just been created
           content:
             application/json:

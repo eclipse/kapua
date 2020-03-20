@@ -47,7 +47,7 @@ paths:
         - $ref: './role.yaml#/components/parameters/roleId'
         - $ref: './role.yaml#/components/parameters/rolePermissionId'
       responses:
-        200:
+        204:
           description: The RolePermission has been deleted
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'

@@ -89,7 +89,7 @@ paths:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: './device.yaml#/components/parameters/deviceId'
       responses:
-        200:
+        204:
           description: The Device has been deleted
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'

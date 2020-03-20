@@ -42,7 +42,7 @@ public class JsonKapuaPayload {
 
         setBody(payload.getBody());
 
-        payload.getMetrics().entrySet().stream().filter((metric) -> metric.getValue() != null).forEach((metric) -> {
+        payload.getMetrics().entrySet().stream().filter(metric -> metric.getValue() != null).forEach(metric -> {
 
             XmlAdaptedMetric jsonMetric = new XmlAdaptedMetric();
             jsonMetric.setName(metric.getKey());

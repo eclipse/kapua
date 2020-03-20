@@ -13,14 +13,15 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authorization.domain.Domain;
-import org.eclipse.kapua.service.authorization.domain.DomainAttributes;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainListResult;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
@@ -51,7 +52,7 @@ public class Domains extends AbstractKapuaResource {
      * @param offset  The result set offset.
      * @param limit   The result set limit.
      * @return The {@link DomainListResult} of all the domains associated to the current selected scope.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -60,12 +61,12 @@ public class Domains extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @QueryParam("name") String name,
             @QueryParam("offset") @DefaultValue("0") int offset,
-            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         DomainQuery query = domainFactory.newQuery(null);
 
         AndPredicate andPredicate = query.andPredicate();
         if (!Strings.isNullOrEmpty(name)) {
-            andPredicate.and(query.attributePredicate(DomainAttributes.NAME, name));
+            andPredicate.and(query.attributePredicate(KapuaNamedEntityAttributes.NAME, name));
         }
         query.setPredicate(andPredicate);
 
@@ -81,7 +82,7 @@ public class Domains extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link DomainQuery} to use to filter results.
      * @return The {@link DomainListResult} of all the result matching the given {@link DomainQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -90,7 +91,7 @@ public class Domains extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public DomainListResult query(
             @PathParam("scopeId") ScopeId scopeId,
-            DomainQuery query) throws Exception {
+            DomainQuery query) throws KapuaException {
         return domainRegistryService.query(query);
     }
 
@@ -100,7 +101,7 @@ public class Domains extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link DomainQuery} to use to filter results.
      * @return The count of all the result matching the given {@link DomainQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -109,7 +110,7 @@ public class Domains extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public CountResult count(
             @PathParam("scopeId") ScopeId scopeId,
-            DomainQuery query) throws Exception {
+            DomainQuery query) throws KapuaException {
         return new CountResult(domainRegistryService.count(query));
     }
 
@@ -119,7 +120,7 @@ public class Domains extends AbstractKapuaResource {
      * @param scopeId  The {@link ScopeId} of the requested {@link Domain}.
      * @param domainId The id of the requested {@link Domain}.
      * @return The requested Domain object.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -127,7 +128,7 @@ public class Domains extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Domain find(
             @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("domainId") EntityId domainId) throws Exception {
+            @PathParam("domainId") EntityId domainId) throws KapuaException {
         Domain domain = domainRegistryService.find(scopeId, domainId);
 
         if (domain == null) {

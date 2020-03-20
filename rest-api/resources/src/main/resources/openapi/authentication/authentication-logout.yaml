@@ -19,9 +19,9 @@ paths:
       summary: Logout
       operationId: authenticationLogout
       responses:
+        204:
+          description: Logout Successful
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
-        200:
-          description: Logout Successful
         500:
           $ref: '../openapi.yaml#/components/responses/kapuaError'

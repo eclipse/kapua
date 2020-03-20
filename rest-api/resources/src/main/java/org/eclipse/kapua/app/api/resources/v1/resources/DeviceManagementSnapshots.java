@@ -20,6 +20,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -47,7 +48,7 @@ public class DeviceManagementSnapshots extends AbstractKapuaResource {
      * @param timeout
      *            The timeout of the operation
      * @return The list of Snapshot Ids.
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -56,7 +57,7 @@ public class DeviceManagementSnapshots extends AbstractKapuaResource {
     public DeviceSnapshots get(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") Long timeout) throws Exception {
+            @QueryParam("timeout") Long timeout) throws KapuaException {
         return snapshotService.get(scopeId, deviceId, timeout);
     }
 
@@ -72,7 +73,7 @@ public class DeviceManagementSnapshots extends AbstractKapuaResource {
      * @param timeout
      *            The timeout of the operation
      * @return HTTP 200 if operation has completed successfully.
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -83,10 +84,10 @@ public class DeviceManagementSnapshots extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @PathParam("snapshotId") String snapshotId,
-            @QueryParam("timeout") Long timeout) throws Exception {
+            @QueryParam("timeout") Long timeout) throws KapuaException {
         snapshotService.rollback(scopeId, deviceId, snapshotId, timeout);
 
-        return returnOk();
+        return returnNoContent();
     }
 
     /**
@@ -101,7 +102,7 @@ public class DeviceManagementSnapshots extends AbstractKapuaResource {
      * @param timeout
      *            The timeout of the operation
      * @return HTTP 200 if operation has completed successfully.
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -112,7 +113,7 @@ public class DeviceManagementSnapshots extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @PathParam("snapshotId") String snapshotId,
-            @QueryParam("timeout") Long timeout) throws Exception {
+            @QueryParam("timeout") Long timeout) throws KapuaException {
         return configurationService.get(scopeId, deviceId, snapshotId, null, timeout);
     }
 

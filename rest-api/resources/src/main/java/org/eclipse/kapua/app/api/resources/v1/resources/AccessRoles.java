@@ -12,10 +12,12 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
@@ -52,7 +54,7 @@ public class AccessRoles extends AbstractKapuaResource {
      * @param offset  The result set offset.
      * @param limit   The result set limit.
      * @return The {@link AccessRoleListResult} of all the accessRoles associated to the current selected scope.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -61,7 +63,7 @@ public class AccessRoles extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("accessInfoId") EntityId accessInfoId,
             @QueryParam("offset") @DefaultValue("0") int offset,
-            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         AccessRoleQuery query = accessRoleFactory.newQuery(scopeId);
 
         query.setPredicate(query.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfoId));
@@ -78,7 +80,7 @@ public class AccessRoles extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link AccessRoleQuery} to use to filter results.
      * @return The {@link AccessRoleListResult} of all the result matching the given {@link AccessRoleQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -88,7 +90,7 @@ public class AccessRoles extends AbstractKapuaResource {
     public AccessRoleListResult query(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("accessInfoId") EntityId accessInfoId,
-            AccessRoleQuery query) throws Exception {
+            AccessRoleQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         query.setPredicate(query.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfoId));
@@ -102,7 +104,7 @@ public class AccessRoles extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link AccessRoleQuery} to use to filter results.
      * @return The count of all the result matching the given {@link AccessRoleQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -112,7 +114,7 @@ public class AccessRoles extends AbstractKapuaResource {
     public CountResult count(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("accessInfoId") EntityId accessInfoId,
-            AccessRoleQuery query) throws Exception {
+            AccessRoleQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         query.setPredicate(query.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfoId));
@@ -127,20 +129,20 @@ public class AccessRoles extends AbstractKapuaResource {
      * @param scopeId           The {@link ScopeId} in which to create the {@link AccessRole}.
      * @param accessRoleCreator Provides the information for the new AccessRole to be created.
      * @return The newly created {@link AccessRole} object.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public AccessRole create(
+    public Response create(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("accessInfoId") EntityId accessInfoId,
-            AccessRoleCreator accessRoleCreator) throws Exception {
+            AccessRoleCreator accessRoleCreator) throws KapuaException {
         accessRoleCreator.setScopeId(scopeId);
         accessRoleCreator.setAccessInfoId(accessInfoId);
 
-        return accessRoleService.create(accessRoleCreator);
+        return returnCreated(accessRoleService.create(accessRoleCreator));
     }
 
     /**
@@ -149,7 +151,7 @@ public class AccessRoles extends AbstractKapuaResource {
      * @param scopeId      The {@link ScopeId} of the requested {@link AccessRole}.
      * @param accessRoleId The id of the requested {@link AccessRole}.
      * @return The requested {@link AccessRole} object.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -158,12 +160,12 @@ public class AccessRoles extends AbstractKapuaResource {
     public AccessRole find(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("accessInfoId") EntityId accessInfoId,
-            @PathParam("accessRoleId") EntityId accessRoleId) throws Exception {
+            @PathParam("accessRoleId") EntityId accessRoleId) throws KapuaException {
         AccessRoleQuery query = accessRoleFactory.newQuery(scopeId);
 
         AndPredicate andPredicate = query.andPredicate(
                 query.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfoId),
-                query.attributePredicate(AccessRoleAttributes.ENTITY_ID, accessRoleId)
+                query.attributePredicate(KapuaEntityAttributes.ENTITY_ID, accessRoleId)
         );
 
         query.setPredicate(andPredicate);
@@ -184,7 +186,7 @@ public class AccessRoles extends AbstractKapuaResource {
      *
      * @param accessRoleId The id of the AccessRole to be deleted.
      * @return HTTP 200 if operation has completed successfully.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @DELETE
@@ -192,9 +194,9 @@ public class AccessRoles extends AbstractKapuaResource {
     public Response deleteAccessRole(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("accessInfoId") EntityId accessInfoId,
-            @PathParam("accessRoleId") EntityId accessRoleId) throws Exception {
+            @PathParam("accessRoleId") EntityId accessRoleId) throws KapuaException {
         accessRoleService.delete(scopeId, accessRoleId);
 
-        return returnOk();
+        return returnNoContent();
     }
 }

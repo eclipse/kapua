@@ -55,7 +55,7 @@ paths:
               $ref: './group.yaml#/components/schemas/groupCreator'
         required: true
       responses:
-        200:
+        201:
           description: The Group that has just been created
           content:
             application/json:

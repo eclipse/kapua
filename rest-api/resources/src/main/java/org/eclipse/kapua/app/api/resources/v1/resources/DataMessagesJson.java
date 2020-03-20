@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.marker.JsonSerializationFixed;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.DateParam;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.MetricType;
@@ -42,6 +43,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +73,7 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
      * @param offset         The result set offset.
      * @param limit          The result set limit.
      * @return The {@link MessageListResult} of all the datastoreMessages associated to the current selected scope.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
 
@@ -89,7 +91,7 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
             @QueryParam("metricMin") String metricMinValue,
             @QueryParam("metricMax") String metricMaxValue,
             @QueryParam("offset") @DefaultValue("0") int offset,
-            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
 
         MessageListResult result = DATA_MESSAGES.simpleQuery(
                 scopeId,
@@ -122,16 +124,16 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
      * @param jsonKapuaDataMessage The {@link KapuaDataMessage } to be stored
      * @return an {@link StorableEntityId} object encapsulating the response from
      * the datastore
-     * @throws Exception Whenever something bad happens. See specific
+     * @throws KapuaException Whenever something bad happens. See specific
      *                   {@link KapuaService} exceptions.
      */
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
 
-    public StorableEntityId storeMessageJson(
+    public Response storeMessageJson(
             @PathParam("scopeId") ScopeId scopeId,
-            JsonKapuaDataMessage jsonKapuaDataMessage) throws Exception {
+            JsonKapuaDataMessage jsonKapuaDataMessage) throws KapuaException {
 
         KapuaDataMessage kapuaDataMessage = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataMessage();
 
@@ -160,7 +162,7 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
         }
         kapuaDataMessage.setPayload(kapuaDataPayload);
 
-        return DATA_MESSAGES.storeMessage(scopeId, kapuaDataMessage);
+        return returnCreated(DATA_MESSAGES.storeMessage(scopeId, kapuaDataMessage));
     }
 
     /**
@@ -169,7 +171,7 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link MessageQuery} to used to filter results.
      * @return The {@link MessageListResult} of all the result matching the given {@link MessageQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -179,7 +181,7 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
 
     public JsonMessageListResult queryJson(
             @PathParam("scopeId") ScopeId scopeId,
-            JsonMessageQuery query) throws Exception {
+            JsonMessageQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         MessageListResult result = DATA_MESSAGES.query(scopeId, convertQuery(query));
@@ -199,7 +201,7 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
      *
      * @param datastoreMessageId The id of the requested DatastoreMessage.
      * @return The requested DatastoreMessage object.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -208,7 +210,7 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
 
     public JsonDatastoreMessage findJson(
             @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("datastoreMessageId") StorableEntityId datastoreMessageId) throws Exception {
+            @PathParam("datastoreMessageId") StorableEntityId datastoreMessageId) throws KapuaException {
         DatastoreMessage datastoreMessage = DATA_MESSAGES.find(scopeId, datastoreMessageId);
 
         JsonDatastoreMessage jsonDatastoreMessage = new JsonDatastoreMessage(datastoreMessage);

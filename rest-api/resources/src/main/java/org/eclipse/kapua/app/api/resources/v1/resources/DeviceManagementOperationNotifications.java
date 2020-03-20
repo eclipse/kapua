@@ -12,10 +12,12 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
@@ -54,7 +56,7 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
      * @param offset      The result set offset.
      * @param limit       The result set limit.
      * @return The {@link ManagementOperationNotificationListResult} of all the ManagementOperationNotifications associated to the current selected scope.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -65,7 +67,7 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
             @PathParam("operationId") EntityId operationId,
             @QueryParam("resource") String resource,
             @QueryParam("offset") @DefaultValue("0") int offset,
-            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         ManagementOperationNotificationQuery query = managementOperationNotificationFactory.newQuery(scopeId);
 
         AndPredicate andPredicate = query.andPredicate(query.attributePredicate(ManagementOperationNotificationAttributes.OPERATION_ID, operationId));
@@ -85,7 +87,7 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
      * @param operationId The id of the {@link Device} in which to search results
      * @param query       The {@link ManagementOperationNotificationQuery} to use to filter results.
      * @return The {@link ManagementOperationNotificationListResult} of all the result matching the given {@link ManagementOperationNotificationQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -96,7 +98,7 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @PathParam("operationId") EntityId operationId,
-            ManagementOperationNotificationQuery query) throws Exception {
+            ManagementOperationNotificationQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         AndPredicate andPredicate = query.andPredicate();
@@ -113,7 +115,7 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
      * @param operationId The id of the {@link Device} in which to search results
      * @param query       The {@link ManagementOperationNotificationQuery} to use to filter results.
      * @return The count of all the result matching the given {@link ManagementOperationNotificationQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -124,7 +126,7 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @PathParam("operationId") EntityId operationId,
-            ManagementOperationNotificationQuery query) throws Exception {
+            ManagementOperationNotificationQuery query) throws KapuaException {
         query.setScopeId(scopeId);
         query.setPredicate(query.attributePredicate(ManagementOperationNotificationAttributes.OPERATION_ID, operationId));
 
@@ -138,7 +140,7 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
      * @param operationId                       The {@link Device} id of the request {@link ManagementOperationNotification}.
      * @param managementOperationNotificationId The id of the requested ManagementOperationNotification.
      * @return The requested ManagementOperationNotification object.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -148,12 +150,12 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @PathParam("operationId") EntityId operationId,
-            @PathParam("managementOperationNotificationId") EntityId managementOperationNotificationId) throws Exception {
+            @PathParam("managementOperationNotificationId") EntityId managementOperationNotificationId) throws KapuaException {
         ManagementOperationNotificationQuery query = managementOperationNotificationFactory.newQuery(scopeId);
 
         AndPredicate andPredicate = query.andPredicate(
                 query.attributePredicate(ManagementOperationNotificationAttributes.OPERATION_ID, operationId),
-                query.attributePredicate(ManagementOperationNotificationAttributes.ENTITY_ID, managementOperationNotificationId)
+                query.attributePredicate(KapuaEntityAttributes.ENTITY_ID, managementOperationNotificationId)
         );
 
         query.setPredicate(andPredicate);
@@ -175,7 +177,7 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
      * @param operationId                       The id of the Device in which to delete the ManagementOperation
      * @param managementOperationNotificationId The id of the ManagementOperationNotification to be deleted.
      * @return HTTP 200 if operation has completed successfully.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @DELETE
@@ -184,9 +186,9 @@ public class DeviceManagementOperationNotifications extends AbstractKapuaResourc
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @PathParam("operationId") EntityId operationId,
-            @PathParam("managementOperationNotificationId") EntityId managementOperationNotificationId) throws Exception {
+            @PathParam("managementOperationNotificationId") EntityId managementOperationNotificationId) throws KapuaException {
         managementOperationNotificationService.delete(scopeId, managementOperationNotificationId);
 
-        return returnOk();
+        return returnNoContent();
     }
 }

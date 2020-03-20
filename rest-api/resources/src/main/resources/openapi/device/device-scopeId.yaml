@@ -160,7 +160,7 @@ paths:
               $ref: './device.yaml#/components/schemas/deviceCreator'
         required: true
       responses:
-        200:
+        201:
           description: The Device that has just been created
           content:
             application/json:

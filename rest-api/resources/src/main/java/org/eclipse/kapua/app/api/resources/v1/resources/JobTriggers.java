@@ -22,10 +22,13 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
+import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
@@ -55,7 +58,7 @@ public class JobTriggers extends AbstractKapuaResource {
      * @param offset  The result set offset.
      * @param limit   The result set limit.
      * @return The {@link TriggerListResult} of all the jobs triggers associated to the current selected job.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -65,14 +68,14 @@ public class JobTriggers extends AbstractKapuaResource {
             @PathParam("jobId") EntityId jobId,
             @QueryParam("name") String name,
             @QueryParam("offset") @DefaultValue("0") int offset,
-            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
 
         TriggerQuery query = triggerFactory.newQuery(scopeId);
 
         AndPredicate andPredicate = query.andPredicate(returnJobIdPredicate(jobId, query));
 
         if (!Strings.isNullOrEmpty(name)) {
-            andPredicate = andPredicate.and(query.attributePredicate(TriggerAttributes.NAME, name));
+            andPredicate = andPredicate.and(query.attributePredicate(KapuaNamedEntityAttributes.NAME, name));
         }
 
         query.setPredicate(andPredicate);
@@ -88,7 +91,7 @@ public class JobTriggers extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link TriggerQuery} to use to filter results.
      * @return The {@link TriggerListResult} of all the result matching the given {@link TriggerQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -98,7 +101,7 @@ public class JobTriggers extends AbstractKapuaResource {
     public TriggerListResult query(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("jobId") EntityId jobId,
-            TriggerQuery query) throws Exception {
+            TriggerQuery query) throws KapuaException {
         query.setScopeId(scopeId);
         query.setPredicate(returnJobIdPredicate(jobId, query));
         return triggerService.query(query);
@@ -110,7 +113,7 @@ public class JobTriggers extends AbstractKapuaResource {
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param query   The {@link TriggerQuery} to use to filter results.
      * @return The count of all the result matching the given {@link TriggerQuery} parameter.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @POST
@@ -120,7 +123,7 @@ public class JobTriggers extends AbstractKapuaResource {
     public CountResult count(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("jobId") EntityId jobId,
-            TriggerQuery query) throws Exception {
+            TriggerQuery query) throws KapuaException {
         query.setScopeId(scopeId);
         query.setPredicate(returnJobIdPredicate(jobId, query));
 
@@ -134,7 +137,7 @@ public class JobTriggers extends AbstractKapuaResource {
      * @param jobId The id of the requested Job.
      * @param triggerId The id of the requested Trigger.
      * @return The requested Job object.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
@@ -143,11 +146,11 @@ public class JobTriggers extends AbstractKapuaResource {
     public Trigger find(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("jobId") EntityId jobId,
-            @PathParam("triggerId") EntityId triggerId) throws Exception {
+            @PathParam("triggerId") EntityId triggerId) throws KapuaException {
         TriggerQuery triggerQuery = triggerFactory.newQuery(scopeId);
         triggerQuery.setPredicate(triggerQuery.andPredicate(
                 returnJobIdPredicate(jobId, triggerQuery),
-                triggerQuery.attributePredicate(TriggerAttributes.ENTITY_ID, triggerId)
+                triggerQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, triggerId)
         ));
         triggerQuery.setOffset(0);
         triggerQuery.setLimit(1);

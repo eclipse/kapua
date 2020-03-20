@@ -19,6 +19,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -42,7 +43,7 @@ public class DeviceConnectionOptions extends AbstractKapuaResource {
      *            The {@link DeviceConnectionOption} id of the request
      *            {@link DeviceConnectionOption}.
      * @return The requested {@link DeviceConnectionOption} object.
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -50,7 +51,7 @@ public class DeviceConnectionOptions extends AbstractKapuaResource {
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public DeviceConnectionOption find(
             @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("connectionId") EntityId connectionId) throws Exception {
+            @PathParam("connectionId") EntityId connectionId) throws KapuaException {
         DeviceConnectionOption deviceConnectionOptions = deviceConnectionOptionsService.find(scopeId, connectionId);
 
         if (deviceConnectionOptions != null) {
@@ -69,7 +70,7 @@ public class DeviceConnectionOptions extends AbstractKapuaResource {
      * @param deviceConnectionId
      *            The id of the requested DeviceConnection.
      * @return The requested DeviceConnection object.
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -79,7 +80,7 @@ public class DeviceConnectionOptions extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("connectionId") EntityId deviceConnectionId,
             DeviceConnectionOption deviceConnectionOptions)
-            throws Exception {
+            throws KapuaException {
 
         deviceConnectionOptions.setScopeId(scopeId);
         deviceConnectionOptions.setId(deviceConnectionId);

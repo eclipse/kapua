@@ -21,6 +21,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -46,7 +47,7 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
      * @param timeout
      *            The timeout of the operation in milliseconds
      * @return The requested configurations
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -55,7 +56,7 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
     public DeviceConfiguration get(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            @QueryParam("timeout") Long timeout) throws Exception {
+            @QueryParam("timeout") Long timeout) throws KapuaException {
         return getComponent(scopeId, deviceId, null, timeout);
     }
 
@@ -71,7 +72,7 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
      * @param deviceConfiguration
      *            The configuration to send to the {@link Device}
      * @return The {@link Response} of the operation
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -81,10 +82,10 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @QueryParam("timeout") Long timeout,
-            DeviceConfiguration deviceConfiguration) throws Exception {
+            DeviceConfiguration deviceConfiguration) throws KapuaException {
         configurationService.put(scopeId, deviceId, deviceConfiguration, timeout);
 
-        return returnOk();
+        return returnNoContent();
     }
 
     /**
@@ -103,7 +104,7 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
      * @param timeout
      *            The timeout of the operation in milliseconds
      * @return The requested configurations
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -114,7 +115,7 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @PathParam("componentId") String componentId,
-            @QueryParam("timeout") Long timeout) throws Exception {
+            @QueryParam("timeout") Long timeout) throws KapuaException {
         return configurationService.get(scopeId, deviceId, null, componentId, timeout);
     }
 
@@ -136,7 +137,7 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
      * @param deviceComponentConfiguration
      *            The component configuration to send to the {@link Device}
      * @return The requested configurations
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -148,11 +149,11 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
             @PathParam("deviceId") EntityId deviceId,
             @PathParam("componentId") String componentId,
             @QueryParam("timeout") Long timeout,
-            DeviceComponentConfiguration deviceComponentConfiguration) throws Exception {
+            DeviceComponentConfiguration deviceComponentConfiguration) throws KapuaException {
         deviceComponentConfiguration.setId(componentId);
 
         configurationService.put(scopeId, deviceId, deviceComponentConfiguration, timeout);
 
-        return returnOk();
+        return returnNoContent();
     }
 }

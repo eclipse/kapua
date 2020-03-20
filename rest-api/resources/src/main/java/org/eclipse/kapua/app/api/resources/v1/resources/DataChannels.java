@@ -21,6 +21,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.StorableEntityId;
@@ -63,7 +64,7 @@ public class DataChannels extends AbstractKapuaResource {
      * @param limit
      *            The result set limit.
      * @return The {@link ChannelInfoListResult} of all the channelInfos associated to the current selected scope.
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -75,7 +76,7 @@ public class DataChannels extends AbstractKapuaResource {
             @QueryParam("clientId") String clientId, //
             @QueryParam("name") String name, //
             @QueryParam("offset") @DefaultValue("0") int offset,//
-            @QueryParam("limit") @DefaultValue("50") int limit) throws Exception {
+            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         AndPredicate andPredicate = new AndPredicateImpl();
         if (!Strings.isNullOrEmpty(clientId)) {
             TermPredicate clientIdPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(ChannelInfoField.CLIENT_ID, clientId);
@@ -103,7 +104,7 @@ public class DataChannels extends AbstractKapuaResource {
      * @param query
      *            The {@link ChannelInfoQuery} to used to filter results.
      * @return The {@link ChannelInfoListResult} of all the result matching the given {@link ChannelInfoQuery} parameter.
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -114,7 +115,7 @@ public class DataChannels extends AbstractKapuaResource {
       //
     public ChannelInfoListResult query( //
             @PathParam("scopeId") ScopeId scopeId, //
-            ChannelInfoQuery query) throws Exception {
+            ChannelInfoQuery query) throws KapuaException {
         query.setScopeId(scopeId);
         query.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
         return CHANNEL_INFO_REGISTRY_SERVICE.query(query);
@@ -128,7 +129,7 @@ public class DataChannels extends AbstractKapuaResource {
      * @param query
      *            The {@link ChannelInfoQuery} to used to filter results.
      * @return The count of all the result matching the given {@link ChannelInfoQuery} parameter.
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -139,7 +140,7 @@ public class DataChannels extends AbstractKapuaResource {
 
     public CountResult count( //
             @PathParam("scopeId") ScopeId scopeId, //
-            ChannelInfoQuery query) throws Exception {
+            ChannelInfoQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         return new CountResult(CHANNEL_INFO_REGISTRY_SERVICE.count(query));
@@ -151,7 +152,7 @@ public class DataChannels extends AbstractKapuaResource {
      * @param channelInfoId
      *            The id of the requested ChannelInfo.
      * @return The requested ChannelInfo object.
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -161,7 +162,7 @@ public class DataChannels extends AbstractKapuaResource {
 
     public ChannelInfo find( //
             @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("channelInfoId") StorableEntityId channelInfoId) throws Exception {
+            @PathParam("channelInfoId") StorableEntityId channelInfoId) throws KapuaException {
         ChannelInfo channelInfo = CHANNEL_INFO_REGISTRY_SERVICE.find(scopeId, channelInfoId);
 
         return returnNotNullEntity(channelInfo);

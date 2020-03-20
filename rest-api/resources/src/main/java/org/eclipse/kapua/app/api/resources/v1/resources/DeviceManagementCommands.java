@@ -19,6 +19,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -66,7 +67,7 @@ public class DeviceManagementCommands extends AbstractKapuaResource {
      * @param commandInput
      *            The input command
      * @return The command output.
-     * @throws Exception
+     * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
@@ -78,7 +79,7 @@ public class DeviceManagementCommands extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @QueryParam("timeout") Long timeout,
-            DeviceCommandInput commandInput) throws Exception {
+            DeviceCommandInput commandInput) throws KapuaException {
         return commandService.exec(scopeId, deviceId, commandInput, timeout);
     }
 }
