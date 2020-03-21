@@ -46,26 +46,6 @@ public class EntityManager {
     }
 
     /**
-     * Find the entity by the given id and type
-     *
-     * @param clazz
-     * @param id
-     * @return
-     */
-    public <E extends Serializable> E findWithLock(Class<E> clazz, Object id) {
-        return javaxPersitenceEntityManager.find(clazz, id, LockModeType.PESSIMISTIC_WRITE);
-    }
-
-    /**
-     * Persist the entity
-     *
-     * @param entity
-     */
-    public <E extends Serializable> void persist(E entity) {
-        javaxPersitenceEntityManager.persist(entity);
-    }
-
-    /**
      * Opens a Jpa Transaction.
      *
      * @throws KapuaException if {@link org.eclipse.kapua.commons.jpa.EntityManager} is {@code null}
@@ -133,27 +113,52 @@ public class EntityManager {
     }
 
     /**
-     * Persist the entity
+     * Persist a {@link Serializable} entity;
      *
      * @param entity
      */
-    public <E extends KapuaEntity> void persist(E entity) {
+    public <E extends Serializable> void persist(E entity) {
         javaxPersitenceEntityManager.persist(entity);
     }
 
     /**
-     * Flush the entity manager
+     * Persist a {@link KapuaEntity}
+     *
+     * @param entity
+     * @since 1.0.0
+     */
+    public <E extends KapuaEntity> void persist(E entity) {
+        persist((Serializable) entity);
+    }
+
+    /**
+     * Flush the {@link EntityManager}
+     *
+     * @since 1.0.0}
      */
     public void flush() {
         javaxPersitenceEntityManager.flush();
     }
 
     /**
-     * Find the entity by the given id and type
+     * Finds a {@link KapuaEntity} by the given id and type
      *
-     * @param clazz
-     * @param id
-     * @return
+     * @param clazz The {@link Serializable} entity type.
+     * @param id    The id of the entity.
+     * @return The found {@link Serializable} or {@code null} otherwise.
+     * @since 1.2.0
+     */
+    public <E extends Serializable> E find(Class<E> clazz, Object id) {
+        return javaxPersitenceEntityManager.find(clazz, id);
+    }
+
+    /**
+     * Finds a {@link KapuaEntity} by the given id and type
+     *
+     * @param clazz The {@link KapuaEntity} type.
+     * @param id    The {@link KapuaEntity#getId()}
+     * @return The found {@link KapuaEntity} or {@code null} otherwise.
+     * @since 1.0.0
      */
     public <E extends KapuaEntity> E find(Class<E> clazz, KapuaId id) {
         KapuaEid eid = KapuaEid.parseKapuaId(id);
@@ -161,21 +166,56 @@ public class EntityManager {
     }
 
     /**
-     * Merge the entity
+     * Find a {@link Serializable} by the given id and type
      *
-     * @param entity
+     * @param clazz
+     * @param id
+     * @return
+     * @since 1.0.0
      */
-    public <E extends KapuaEntity> void merge(E entity) {
+    public <E extends Serializable> E findWithLock(Class<E> clazz, Object id) {
+        return javaxPersitenceEntityManager.find(clazz, id, LockModeType.PESSIMISTIC_WRITE);
+    }
+
+    /**
+     * Merges a {@link Serializable} entity.
+     *
+     * @param entity The {@link Serializable} entity to merge.
+     * @since 1.2.0.
+     */
+    public <E extends Serializable> void merge(E entity) {
         javaxPersitenceEntityManager.merge(entity);
     }
 
     /**
-     * Refresh the entity
+     * Merges a {@link KapuaEntity}
      *
-     * @param entity
+     * @param entity The {@link KapuaEntity} to merge.
+     * @since 1.0.0.
+     */
+    public <E extends KapuaEntity> void merge(E entity) {
+        merge((Serializable) entity);
+    }
+
+
+    /**
+     * Refresh a {@link Serializable} entity
+     *
+     * @param entity The {@link Serializable} entity to refresh.
+     * @since 1.2.0
+     */
+    public <E extends Serializable> void refresh(E entity) {
+        javaxPersitenceEntityManager.refresh(entity);
+    }
+
+    /**
+     * Refresh a {@link KapuaEntity}
+     *
+     * @param entity The {@link KapuaEntity} to refresh.
+     * @since 1.0.0
      */
     public <E extends KapuaEntity> void refresh(E entity) {
-        javaxPersitenceEntityManager.refresh(entity);
+        refresh((Serializable) entity);
     }
 
     /**

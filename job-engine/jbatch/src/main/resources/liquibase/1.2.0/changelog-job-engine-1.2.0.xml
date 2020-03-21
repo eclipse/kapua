@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2019 Eurotech and/or its affiliates and others
+    Copyright (c) 2019, 2020 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -18,5 +18,8 @@
 
     <include relativeToChangelogFile="true" file="./job-engine-jbatch-timestamp.xml"/>
     <include relativeToChangelogFile="true" file="./queued_job-timestamp.xml"/>
+
+    <include relativeToChangelogFile="true" file="./job_engine_jbatch-rename_tables.xml"/>
+    <include relativeToChangelogFile="true" file="./checkpoint_data-add_column_jobinstanceid.xml"/>
 
 </databaseChangeLog>

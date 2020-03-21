@@ -71,10 +71,12 @@ public class QueuedJobExecutionCheckTask extends TimerTask {
 
             QueuedJobExecutionListResult queuedJobExecutions = KapuaSecurityUtils.doPrivileged(() -> QUEUED_JOB_EXECUTION_SERVICE.query(query));
 
+            int i = 0;
+            int failedToResumeExecution = 0;
             for (QueuedJobExecution qje : queuedJobExecutions.getItems()) {
                 Thread.sleep(JOB_ENGINE_SETTING.getInt(JobEngineSettingKeys.JOB_ENGINE_QUEUE_PROCESSING_RUN_DELAY));
 
-                LOG.info("Resuming Job Execution: {}...", qje.getJobExecutionId());
+                LOG.info("Resuming Job Execution ({}/{}): {}...", ++i, queuedJobExecutions.getSize(), qje.getJobExecutionId());
 
                 try {
                     KapuaSecurityUtils.doPrivileged(() -> JOB_ENGINE_SERVICE.resumeJobExecution(qje.getScopeId(), qje.getJobId(), qje.getJobExecutionId()));
@@ -82,15 +84,20 @@ public class QueuedJobExecutionCheckTask extends TimerTask {
                     qje.setStatus(QueuedJobExecutionStatus.PROCESSED);
                     KapuaSecurityUtils.doPrivileged(() -> QUEUED_JOB_EXECUTION_SERVICE.update(qje));
                 } catch (Exception e) {
-                    LOG.error("Resuming Job Execution: {}... ERROR!", qje.getJobExecutionId(), e);
+                    LOG.error("Resuming Job Execution ({}/{}): {}... ERROR!", i, queuedJobExecutions.getSize(), qje.getJobExecutionId(), e);
+                    failedToResumeExecution++;
+
+                    qje.setStatus(QueuedJobExecutionStatus.FAILED_TO_RESUME);
+                    KapuaSecurityUtils.doPrivileged(() -> QUEUED_JOB_EXECUTION_SERVICE.update(qje));
+                    continue;
                 }
 
-                LOG.info("Resuming Job Execution: {}... DONE!", qje.getJobExecutionId());
+                LOG.info("Resuming Job Execution ({}/{}): {}... DONE!", i, queuedJobExecutions.getSize(), qje.getJobExecutionId());
             }
 
+            LOG.info("Checking Job Execution queue for: {}... DONE! Queued job failed to resume: {}.", jobExecutionId, failedToResumeExecution);
         } catch (Exception e) {
             LOG.error("Checking Job Execution queue for: {}... ERROR!", jobExecutionId, e);
         }
-        LOG.info("Checking Job Execution queue for: {}... DONE!", jobExecutionId);
     }
 }

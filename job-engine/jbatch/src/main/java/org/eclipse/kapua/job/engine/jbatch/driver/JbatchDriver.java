@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.jbatch.driver;
 
-import com.google.common.collect.Lists;
 import com.ibm.jbatch.container.jsl.ExecutionElement;
 import com.ibm.jbatch.container.jsl.ModelSerializerFactory;
 import com.ibm.jbatch.container.servicesmanager.ServicesManagerImpl;
@@ -34,7 +33,7 @@ import org.eclipse.kapua.job.engine.jbatch.driver.exception.JbatchDriverExceptio
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.JobExecutionIsRunningDriverException;
 import org.eclipse.kapua.job.engine.jbatch.driver.exception.JobStartingDriverException;
 import org.eclipse.kapua.job.engine.jbatch.driver.utils.JobDefinitionBuildUtils;
-import org.eclipse.kapua.job.engine.jbatch.persistence.KapuaJDBCPersistenceManagerImpl;
+import org.eclipse.kapua.job.engine.jbatch.persistence.JPAPersistenceManagerImpl;
 import org.eclipse.kapua.job.engine.jbatch.setting.JobEngineSettingKeys;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -192,7 +191,7 @@ public class JbatchDriver {
 
         //
         // Retrieve job XML definition file. Delete it if exist
-        File jobXmlDefinitionFile = new File(jobTempDirectory, jobId.toCompactId().concat("-").concat(String.valueOf(System.currentTimeMillis())).concat(".xml"));
+        File jobXmlDefinitionFile = new File(jobTempDirectory, jobId.toCompactId().concat("-").concat(String.valueOf(System.nanoTime())).concat(".xml"));
         if (jobXmlDefinitionFile.exists() && !jobXmlDefinitionFile.delete()) {
             throw new CannotCleanJobDefFileDriverException(jobName, jobXmlDefinitionFile.getAbsolutePath());
         }
@@ -313,10 +312,20 @@ public class JbatchDriver {
         return !getRunningJobExecutions(scopeId, jobId).isEmpty();
     }
 
+    /**
+     * Deletes jBatch internal data for the given {@link Job} id.
+     * <p>
+     * The cleanup is required when deleting a {@link Job} to avoid stale data to be left in the jBatch tables.
+     *
+     * @param scopeId The {@link Job#getScopeId()}
+     * @param jobId   The {@link Job#getId()}
+     * @throws CleanJobDataDriverException if the cleanup produces an error
+     * @since 1.0.0
+     */
     public static void cleanJobData(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) throws CleanJobDataDriverException {
         String jobName = getJbatchJobName(scopeId, jobId);
         try {
-            ((KapuaJDBCPersistenceManagerImpl) ServicesManagerImpl.getInstance().getPersistenceManagerService()).purgeByName(jobName);
+            ((JPAPersistenceManagerImpl) ServicesManagerImpl.getInstance().getPersistenceManagerService()).purgeByName(jobName);
         } catch (Exception ex) {
             throw new CleanJobDataDriverException(ex, jobName);
         }
@@ -330,21 +339,30 @@ public class JbatchDriver {
     }
 
     private static List<JobExecution> getJobExecutions(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) {
-        List<JobExecution> jobExecutions = Lists.newArrayList();
-
         String jobName = getJbatchJobName(scopeId, jobId);
+
+        // Get all JobInstances with this name
+        List<JobInstance> jobInstances;
         try {
-            int jobInstanceCount = JOB_OPERATOR.getJobInstanceCount(jobName);
-            List<JobInstance> jobInstances = JOB_OPERATOR.getJobInstances(jobName, 0, jobInstanceCount);
-            jobInstances.forEach(ji -> jobExecutions.addAll(getJbatchJobExecutions(ji)));
-        } catch (NoSuchJobException e) {
-            LOG.debug("Error while getting Job: " + jobName, e);
-            // This exception is thrown when there is no job, this means that the job never run before
-            // So we can ignore it and return `null`
-        } catch (NoSuchJobExecutionException e) {
-            LOG.debug("Error while getting execution status for Job: " + jobName, e);
-            // This exception is thrown when there is no execution is running.
-            // So we can ignore it and return `null`
+            jobInstances = JOB_OPERATOR.getJobInstances(jobName, 0, Integer.MAX_VALUE);
+        } catch (NoSuchJobException nsje) {
+            LOG.warn("Error while getting JobInstance by name: {}. Exception: {}: {}", jobName, nsje.getClass().getSimpleName(), nsje.getMessage());
+            return Collections.emptyList();
+        } catch (NullPointerException npe) {
+            LOG.error("Unexpected NPE!", npe);
+            return Collections.emptyList();
+        }
+
+        // For each JobInstance get its JobExecutions
+        List<JobExecution> jobExecutions = new ArrayList<>();
+        for (JobInstance ji : jobInstances) {
+            try {
+                jobExecutions.addAll(getJbatchJobExecutions(ji));
+            } catch (NoSuchJobInstanceException nsjie) {
+                LOG.warn("Error while getting JobExecutions by JobInstance: {}. Exception: {}: {}. Continuing with other JobInstances", ji.getInstanceId(), nsjie.getClass().getSimpleName(), nsjie.getMessage());
+            } catch (NullPointerException npe) {
+                LOG.error("Unexpected NPE!", npe);
+            }
         }
 
         return jobExecutions;
@@ -353,10 +371,10 @@ public class JbatchDriver {
     private static List<JobExecution> getJbatchJobExecutions(@NotNull JobInstance jobInstance) {
         try {
             return JOB_OPERATOR.getJobExecutions(jobInstance);
-        } catch (NoSuchJobInstanceException e) {
-            LOG.debug("Error while getting Job Instance: " + jobInstance.getInstanceId(), e);
+        } catch (NoSuchJobInstanceException nsjie) {
+            LOG.warn("Error while getting JobExecutions by JobInstance: {}. Exception {}: {}. Ignoring exception...", jobInstance.getInstanceId(), nsjie.getClass().getSimpleName(), nsjie.getMessage());
             // This exception is thrown when there is no job instance, this means that the job never run before
-            // So we can ignore it and return `null`
+            // So we can ignore it and return an empty `List<>`
         }
 
         return Collections.emptyList();

@@ -39,6 +39,8 @@ import org.quartz.SimpleScheduleBuilder;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -50,6 +52,10 @@ import java.util.TimeZone;
  * @since 1.1.0
  */
 public class QuartzTriggerDriver {
+
+    private static final Logger LOG = LoggerFactory.getLogger(QuartzTriggerDriver.class);
+
+    private static Scheduler scheduler;
 
     private QuartzTriggerDriver() {
     }
@@ -64,25 +70,7 @@ public class QuartzTriggerDriver {
      * @since 1.1.0
      */
     public static void createQuartzTrigger(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull KapuaId uniqueId, @NotNull JobDataMap triggerDataMap) throws QuartzTriggerDriverException {
-
-        Scheduler scheduler = getScheduler();
-
-        JobKey jobkey = JobKey.jobKey(KapuaJobLauncher.class.getName(), "USER");
-        JobDetail kapuaJobLauncherJobDetail;
-        try {
-            kapuaJobLauncherJobDetail = scheduler.getJobDetail(jobkey);
-
-            if (kapuaJobLauncherJobDetail == null) {
-                kapuaJobLauncherJobDetail = JobBuilder.newJob(KapuaJobLauncher.class)
-                        .withIdentity(jobkey)
-                        .storeDurably()
-                        .build();
-
-                scheduler.addJob(kapuaJobLauncherJobDetail, false);
-            }
-        } catch (SchedulerException se) {
-            throw new CannotAddQuartzJobException(se, KapuaJobLauncher.class, jobkey);
-        }
+        JobDetail kapuaJobLauncherJobDetail = getJobDetail();
 
         // Quartz Trigger data map definition
         TriggerKey triggerKey = TriggerKey.triggerKey(jobId.toCompactId().concat("-").concat(uniqueId.toCompactId()), scopeId.toCompactId());
@@ -96,7 +84,7 @@ public class QuartzTriggerDriver {
 
         org.quartz.Trigger quarztTrigger = triggerBuilder.build();
         try {
-            scheduler.scheduleJob(quarztTrigger);
+            getScheduler().scheduleJob(quarztTrigger);
         } catch (SchedulerException se) {
             throw new CannotScheduleJobException(se, kapuaJobLauncherJobDetail, triggerKey, triggerDataMap);
         }
@@ -151,24 +139,7 @@ public class QuartzTriggerDriver {
     //
 
     private static void createQuartzTriggerWithSchedule(Trigger trigger, ScheduleBuilder<?> scheduleBuilder) throws QuartzTriggerDriverException {
-        Scheduler scheduler = getScheduler();
-
-        JobKey jobkey = JobKey.jobKey(KapuaJobLauncher.class.getName(), "USER");
-        JobDetail kapuaJobLauncherJobDetail;
-        try {
-            kapuaJobLauncherJobDetail = scheduler.getJobDetail(jobkey);
-
-            if (kapuaJobLauncherJobDetail == null) {
-                kapuaJobLauncherJobDetail = JobBuilder.newJob(KapuaJobLauncher.class)
-                        .withIdentity(jobkey)
-                        .storeDurably()
-                        .build();
-
-                scheduler.addJob(kapuaJobLauncherJobDetail, false);
-            }
-        } catch (SchedulerException se) {
-            throw new CannotAddQuartzJobException(se, KapuaJobLauncher.class, jobkey);
-        }
+        JobDetail kapuaJobLauncherJobDetail = getJobDetail();
 
         //
         // Quartz Trigger data map definition
@@ -209,22 +180,68 @@ public class QuartzTriggerDriver {
         //
         // Schedule trigger
         try {
-            scheduler.scheduleJob(quartzTrigger);
+            getScheduler().scheduleJob(quartzTrigger);
         } catch (SchedulerException se) {
             throw new CannotScheduleJobException(se, kapuaJobLauncherJobDetail, triggerKey, triggerDataMap);
         }
     }
 
-    private static Scheduler getScheduler() throws SchedulerNotAvailableException {
-        SchedulerFactory sf = new StdSchedulerFactory();
-        Scheduler scheduler;
+    private static JobDetail getJobDetail() throws CannotAddQuartzJobException, SchedulerNotAvailableException {
 
+        JobKey jobkey = JobKey.jobKey(KapuaJobLauncher.class.getName(), "USER");
+        JobDetail kapuaJobLauncherJobDetail;
         try {
-            scheduler = sf.getScheduler();
+            kapuaJobLauncherJobDetail = getScheduler().getJobDetail(jobkey);
+
+            if (kapuaJobLauncherJobDetail == null) {
+                kapuaJobLauncherJobDetail = JobBuilder.newJob(KapuaJobLauncher.class)
+                        .withIdentity(jobkey)
+                        .storeDurably()
+                        .build();
+
+                getScheduler().addJob(kapuaJobLauncherJobDetail, false);
+            }
         } catch (SchedulerException se) {
-            throw new SchedulerNotAvailableException(se);
+            throw new CannotAddQuartzJobException(se, KapuaJobLauncher.class, jobkey);
+        }
+        return kapuaJobLauncherJobDetail;
+    }
+
+    private static Scheduler getScheduler() throws SchedulerNotAvailableException {
+        if (scheduler == null) {
+            initQuarztScheduler();
         }
 
         return scheduler;
+    }
+
+    private static synchronized void initQuarztScheduler() throws SchedulerNotAvailableException {
+        if (scheduler != null) {
+            return;
+        }
+
+        LOG.info("Initializing Quartz Scheduler instance...");
+        int attempt = 0;
+        int maxAttempt = 3;
+        do {
+            try {
+                SchedulerFactory sf = new StdSchedulerFactory();
+                scheduler = sf.getScheduler();
+            } catch (SchedulerException se) {
+                if (attempt++ < maxAttempt) {
+                    LOG.warn("Initializing Quartz Scheduler instance... ERROR! Retrying in a while ({}/{})... Error occurred: {}", attempt, maxAttempt, se.getMessage());
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                } else {
+                    LOG.error("Initializing Quartz Scheduler instance... ERROR!", se);
+                    throw new SchedulerNotAvailableException(se);
+                }
+            }
+        } while (scheduler == null);
+
+        LOG.info("Initializing Quartz Scheduler instance... DONE!");
     }
 }
