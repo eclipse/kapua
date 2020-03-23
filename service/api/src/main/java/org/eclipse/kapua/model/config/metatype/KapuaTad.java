@@ -57,10 +57,7 @@ import java.util.Map;
  */
 @XmlRootElement(name = "AD", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(name = "Tad", propOrder = {
-        "option",
-        "any"
-}, factoryClass = MetatypeXmlRegistry.class, factoryMethod = "newKapuaTad")
+@XmlType(name = "Tad", factoryClass = MetatypeXmlRegistry.class, factoryMethod = "newKapuaTad")
 public interface KapuaTad {
 
     /**

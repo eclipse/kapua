@@ -30,16 +30,7 @@ import java.util.Date;
  */
 @XmlRootElement(name = "channel")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { //
-        "id", //
-        "scopeId", //
-        "clientId", //
-        "name", //
-        "firstMessageId", //
-        "firstMessageOn", //
-        "lastMessageId", //
-        "lastMessageOn" //
-})
+@XmlType
 public interface ChannelInfo extends Storable {
 
     /**

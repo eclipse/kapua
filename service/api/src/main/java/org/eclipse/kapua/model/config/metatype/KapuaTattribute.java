@@ -11,6 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.config.metatype;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyAttribute;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +47,9 @@ import java.util.Map;
  *
  * @since 1.0
  */
+@XmlRootElement(name = "Attribute", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Tattribute")
 public interface KapuaTattribute {
 
     /**
@@ -56,6 +67,7 @@ public interface KapuaTattribute {
      * </pre>
      * <p>
      */
+    @XmlElement(name = "Value", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
     List<String> getValue();
 
     /**
@@ -73,6 +85,7 @@ public interface KapuaTattribute {
      * </pre>
      * <p>
      */
+    @XmlAnyElement(lax = true)
     List<Object> getAny();
 
     /**
@@ -87,6 +100,7 @@ public interface KapuaTattribute {
      *
      * @param value allowed object is {@link String }
      */
+    @XmlAttribute(name = "adref", required = true)
     void setAdref(String value);
 
     /**
@@ -94,6 +108,7 @@ public interface KapuaTattribute {
      *
      * @return possible object is {@link String }
      */
+    @XmlAttribute(name = "content")
     String getContent();
 
     /**
@@ -114,5 +129,6 @@ public interface KapuaTattribute {
      *
      * @return always non-null
      */
+    @XmlAnyAttribute
     Map<QName, String> getOtherAttributes();
 }

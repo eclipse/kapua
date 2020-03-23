@@ -30,12 +30,7 @@ import java.util.List;
  */
 @XmlRootElement(name = "deviceAsset")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {//
-        "name", //
-        "channels" //
-}, //
-        factoryClass = DeviceAssetXmlRegistry.class, //
-        factoryMethod = "newDeviceAsset")
+@XmlType(factoryClass = DeviceAssetXmlRegistry.class, factoryMethod = "newDeviceAsset")
 public interface DeviceAsset {
 
     /**

@@ -20,13 +20,13 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * Kura deployment package.
- * 
+ *
  * @since 1.0
  *
  */
 @XmlRootElement(name = "package")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "name", "version", "bundleInfos" })
+@XmlType
 public class KuraDeploymentPackage {
 
     @XmlElement(name = "name")
@@ -41,7 +41,7 @@ public class KuraDeploymentPackage {
 
     /**
      * Get the deployment package name
-     * 
+     *
      * @return
      */
     public String getName() {
@@ -50,7 +50,7 @@ public class KuraDeploymentPackage {
 
     /**
      * Set the deployment package name
-     * 
+     *
      * @param name
      */
     public void setName(String name) {
@@ -59,7 +59,7 @@ public class KuraDeploymentPackage {
 
     /**
      * Get the deployment package version
-     * 
+     *
      * @return
      */
     public String getVersion() {
@@ -68,7 +68,7 @@ public class KuraDeploymentPackage {
 
     /**
      * Set the deployment package version
-     * 
+     *
      * @param version
      */
     public void setVersion(String version) {
@@ -77,7 +77,7 @@ public class KuraDeploymentPackage {
 
     /**
      * Get the bundle information array
-     * 
+     *
      * @return
      */
     public KuraBundleInfo[] getBundleInfos() {
@@ -86,7 +86,7 @@ public class KuraDeploymentPackage {
 
     /**
      * Set the bundle information array
-     * 
+     *
      * @param bundleInfos
      */
     public void setBundleInfos(KuraBundleInfo[] bundleInfos) {

@@ -36,9 +36,7 @@ import java.util.Set;
  */
 @XmlRootElement(name = "domain")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {"name",
-        "actions",
-        "groupable"})
+@XmlType
 public interface Domain extends KapuaEntity {//, org.eclipse.kapua.model.domain.Domain {
 
     String TYPE = "domain";

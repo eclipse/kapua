@@ -21,13 +21,13 @@ import org.eclipse.kapua.service.device.management.packages.model.DevicePackageB
 
 /**
  * Device package bundle information.
- * 
+ *
  * @since 1.0
  *
  */
 @XmlRootElement(name = "bundleInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "name", "version" })
+@XmlType
 public class DevicePackageBundleInfoImpl implements DevicePackageBundleInfo {
 
     @XmlElement(name = "name")

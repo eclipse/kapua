@@ -24,29 +24,15 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.util.Date;
 
-@XmlRootElement(name = "serviceEvent")
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = {"id",
-        "contextId",
-        "timestamp",
-        "userId",
-        "service",
-        "entityType",
-        "scopeId",
-        "entityScopeId",
-        "entityId",
-        "operation",
-        "inputs",
-        "outputs",
-        "status",
-        "note",
-})
 /**
  * Service event bus event object
  *
  * @since 1.0
  *
  */
+@XmlRootElement(name = "serviceEvent")
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType
 public class ServiceEvent implements Serializable {
 
     private static final long serialVersionUID = -6642016486673574115L;

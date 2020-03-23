@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.eclipse.kapua.commons.service.event.store.api.EventStoreXmlRegistry;
 import org.eclipse.kapua.event.ServiceEvent.EventStatus;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -29,21 +28,7 @@ import org.eclipse.kapua.model.xml.DateXmlAdapter;
 
 @XmlRootElement(name = "eventStoreRecord")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "contextId",
-        "timestamp",
-        "userId",
-        "service",
-        "entityType",
-        "scopeId",
-        "entityId",
-        "operation",
-        "inputs",
-        "outputs",
-        "status",
-        "note",
-}, //
-        factoryClass = EventStoreXmlRegistry.class, //
-        factoryMethod = "newEventStoreRecord")
+@XmlType(factoryClass = EventStoreXmlRegistry.class, factoryMethod = "newEventStoreRecord")
 public interface EventStoreRecord extends KapuaUpdatableEntity {
 
     public static final String TYPE = "eventStoreRecord";

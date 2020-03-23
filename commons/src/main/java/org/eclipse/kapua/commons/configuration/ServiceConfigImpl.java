@@ -20,18 +20,9 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
 import java.io.IOException;
 import java.util.Properties;
 
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = {"pid", "configurations"})
 @Entity(name = "ServiceConfig")
 @Table(name = "sys_configuration")
 /**
@@ -43,12 +34,10 @@ public class ServiceConfigImpl extends AbstractKapuaUpdatableEntity implements S
 
     private static final long serialVersionUID = 8699765898092343484L;
 
-    @XmlElement(name = "pid")
     @Basic
     @Column(name = "pid")
     private String pid;
 
-    @XmlTransient
     @Basic
     @Column(name = "configurations")
     protected String configurations;

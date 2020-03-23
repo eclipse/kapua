@@ -46,10 +46,7 @@ import java.util.Map;
  */
 @XmlRootElement(name = "Object", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(name = "Tobject", propOrder = {
-        "attribute",
-        "any"
-}, factoryClass = MetatypeXmlRegistry.class, factoryMethod = "newKapuaTobject")
+@XmlType(name = "Tobject", factoryClass = MetatypeXmlRegistry.class, factoryMethod = "newKapuaTobject")
 public interface KapuaTobject {
 
     /**

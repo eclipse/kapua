@@ -34,20 +34,7 @@ import java.util.UUID;
  */
 @XmlRootElement(name = "message")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { //
-        "id", //
-        "datastoreId", //
-        "timestamp", //
-        "scopeId", //
-        "deviceId", //
-        "clientId", //
-        "receivedOn", //
-        "sentOn", //
-        "capturedOn", //
-        "position", //
-        "channel", //
-        "payload", //
-}) //
+@XmlType
 public interface DatastoreMessage extends Storable {
 
     /**

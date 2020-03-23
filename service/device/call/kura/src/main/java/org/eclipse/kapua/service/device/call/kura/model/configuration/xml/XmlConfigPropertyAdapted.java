@@ -23,9 +23,9 @@ import javax.xml.bind.annotation.XmlEnumValue;
  * Various flags help in the interpretation and semantics of the property value.<br>
  * For example, a property value might be an array or the property value might have been
  * encrypted.
- * 
+ *
  * @since 1.0
- * 
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class XmlConfigPropertyAdapted {
@@ -82,8 +82,8 @@ public class XmlConfigPropertyAdapted {
     }
 
     /**
-     * Constructor
-     * 
+     * Constructo
+     *
      * @param name
      * @param type
      * @param values
@@ -100,7 +100,7 @@ public class XmlConfigPropertyAdapted {
 
     /**
      * Get the property name
-     * 
+     *
      * @return
      */
     public String getName() {
@@ -109,7 +109,7 @@ public class XmlConfigPropertyAdapted {
 
     /**
      * Set the property name
-     * 
+     *
      * @param name
      */
     public void setName(String name) {
@@ -118,7 +118,7 @@ public class XmlConfigPropertyAdapted {
 
     /**
      * Get the is array flag property
-     * 
+     *
      * @return
      */
     public boolean getArray() {
@@ -127,7 +127,7 @@ public class XmlConfigPropertyAdapted {
 
     /**
      * Set the is array flag property
-     * 
+     *
      * @param array
      */
     public void setArray(boolean array) {
@@ -136,7 +136,7 @@ public class XmlConfigPropertyAdapted {
 
     /**
      * Get the property type
-     * 
+     *
      * @return
      */
     public ConfigPropertyType getType() {
@@ -145,7 +145,7 @@ public class XmlConfigPropertyAdapted {
 
     /**
      * Set the property type
-     * 
+     *
      * @param type
      */
     public void setType(ConfigPropertyType type) {
@@ -154,7 +154,7 @@ public class XmlConfigPropertyAdapted {
 
     /**
      * Get the is encrypted flag property
-     * 
+     *
      * @return
      */
     public boolean isEncrypted() {
@@ -163,7 +163,7 @@ public class XmlConfigPropertyAdapted {
 
     /**
      * Set the is encrypted flag property
-     * 
+     *
      * @param encrypted
      */
     public void setEncrypted(boolean encrypted) {
@@ -172,7 +172,7 @@ public class XmlConfigPropertyAdapted {
 
     /**
      * Get property values
-     * 
+     *
      * @return
      */
     public String[] getValues() {
@@ -181,7 +181,7 @@ public class XmlConfigPropertyAdapted {
 
     /**
      * Set property values
-     * 
+     *
      * @param values
      */
     public void setValues(String[] values) {

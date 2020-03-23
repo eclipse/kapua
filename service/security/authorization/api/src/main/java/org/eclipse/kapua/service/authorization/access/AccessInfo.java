@@ -33,9 +33,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "userId" }, //
-        factoryClass = AccessInfoXmlRegistry.class, //
-        factoryMethod = "newAccessInfo")
+@XmlType(factoryClass = AccessInfoXmlRegistry.class, factoryMethod = "newAccessInfo")
 public interface AccessInfo extends KapuaUpdatableEntity {
 
     String TYPE = "accessInfo";

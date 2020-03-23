@@ -25,10 +25,7 @@ import org.eclipse.kapua.broker.core.message.MessageConstants;
 
 @XmlRootElement(name = "simpleEndPoint")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {
-        "regex",
-        "endPoint"
-})
+@XmlType
 public class SimpleEndPoint implements EndPoint {
 
     @XmlTransient

@@ -47,13 +47,7 @@ import java.util.Map;
  */
 @XmlRootElement(name = "MetaData", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(name = "Tmetadata", propOrder = {
-        "OCD",
-        "designate",
-        "any",
-        "localization",
-        "otherAttributes"
-}, factoryClass = MetatypeXmlRegistry.class, factoryMethod = "newKapuaTmetadata")
+@XmlType(name = "Tmetadata", factoryClass = MetatypeXmlRegistry.class, factoryMethod = "newKapuaTmetadata")
 public interface KapuaTmetadata {
 
     /**

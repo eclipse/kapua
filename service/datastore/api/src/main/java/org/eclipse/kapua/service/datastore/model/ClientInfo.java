@@ -30,15 +30,7 @@ import java.util.Date;
  */
 @XmlRootElement(name = "clientInfo")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { //
-        "id", //
-        "scopeId", //
-        "clientId", //
-        "firstMessageId", //
-        "firstMessageOn", //
-        "lastMessageId", //
-        "lastMessageOn" //
-})
+@XmlType
 public interface ClientInfo extends Storable {
 
     /**

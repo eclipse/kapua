@@ -29,11 +29,7 @@ import java.util.Properties;
  *
  * @since 1.0.0
  */
-@XmlType(propOrder = {
-        "modifiedOn",
-        "modifiedBy",
-        "optlock"
-})
+@XmlType
 public interface KapuaUpdatableEntity extends KapuaEntity {
 
     /**
