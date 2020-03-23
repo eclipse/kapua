@@ -25,12 +25,10 @@ import java.util.Iterator;
 import java.util.Set;
 
 @XmlRootElement(name = "jobTargetSublist")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType
 public class JobTargetSublist implements Iterable<KapuaId> {
 
-    @XmlElement(name = "targetId")
-    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     private Set<KapuaId> targetIds = new HashSet<>();
 
     public JobTargetSublist() {
@@ -40,6 +38,8 @@ public class JobTargetSublist implements Iterable<KapuaId> {
         this.targetIds.addAll(targetIds);
     }
 
+    @XmlElement(name = "targetId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public Set<KapuaId> getTargetIds() {
         if (targetIds == null) {
             targetIds = new HashSet<>();

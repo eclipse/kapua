@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * @since 1.0.0
  */
 @XmlRootElement(name = "permission")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = PermissionXmlRegistry.class, factoryMethod = "newPermission")
 public interface Permission {
 

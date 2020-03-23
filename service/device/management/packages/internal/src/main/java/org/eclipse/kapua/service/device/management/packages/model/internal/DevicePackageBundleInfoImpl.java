@@ -26,16 +26,14 @@ import org.eclipse.kapua.service.device.management.packages.model.DevicePackageB
  *
  */
 @XmlRootElement(name = "bundleInfo")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType
 public class DevicePackageBundleInfoImpl implements DevicePackageBundleInfo {
 
-    @XmlElement(name = "name")
     public String name;
-
-    @XmlElement(name = "version")
     public String version;
 
+    @XmlElement(name = "name")
     public String getName() {
         return name;
     }
@@ -44,6 +42,7 @@ public class DevicePackageBundleInfoImpl implements DevicePackageBundleInfo {
         this.name = name;
     }
 
+    @XmlElement(name = "version")
     public String getVersion() {
         return version;
     }

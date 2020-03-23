@@ -28,7 +28,7 @@ import org.eclipse.kapua.model.KapuaUpdatableEntity;
  * @since 1.0
  */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType
 public interface ServiceConfig extends KapuaUpdatableEntity {
 

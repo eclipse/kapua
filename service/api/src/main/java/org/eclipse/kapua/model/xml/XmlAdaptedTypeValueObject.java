@@ -16,20 +16,18 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class XmlAdaptedTypeValueObject {
 
-    @XmlJavaTypeAdapter(ObjectTypeXmlAdapter.class)
-    @XmlElement(name = "valueType")
     private Class<?> valueType;
-
-    @XmlElement(name = "value")
     private String value;
 
     public XmlAdaptedTypeValueObject() {
         // Required by JAXB
     }
 
+    @XmlJavaTypeAdapter(ObjectTypeXmlAdapter.class)
+    @XmlElement(name = "valueType")
     public Class<?> getValueType() {
         return valueType;
     }
@@ -38,6 +36,7 @@ public class XmlAdaptedTypeValueObject {
         this.valueType = type;
     }
 
+    @XmlElement(name = "value")
     public String getValue() {
         return value;
     }

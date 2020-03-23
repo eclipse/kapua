@@ -21,10 +21,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "exceptionInfo")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class ExceptionInfo extends ThrowableInfo {
 
-    @XmlElement(name = "kapuaErrorCode")
     private String kapuaErrorCode;
 
     public ExceptionInfo() {
@@ -35,6 +34,7 @@ public class ExceptionInfo extends ThrowableInfo {
         setKapuaErrorCode(kapuaErrorCode);
     }
 
+    @XmlElement(name = "kapuaErrorCode")
     public String getKapuaErrorCode() {
         return kapuaErrorCode;
     }

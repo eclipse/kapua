@@ -48,7 +48,7 @@ import java.util.Map;
  * @since 1.0
  */
 @XmlRootElement(name = "Attribute", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(name = "Tattribute")
 public interface KapuaTattribute {
 

@@ -21,15 +21,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * A container for a list of OSGi component configurations.
- * 
+ *
  * @since 1.0
- * 
+ *
  */
 @XmlRootElement(name = "configurations")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class KuraDeviceConfiguration {
 
-    @XmlElement(name = "configuration")
     private List<KuraDeviceComponentConfiguration> configurations;
 
     // Required by JAXB
@@ -41,7 +40,7 @@ public class KuraDeviceConfiguration {
 
     /**
      * Constructor
-     * 
+     *
      * @param accountName
      * @param clientId
      */
@@ -52,9 +51,10 @@ public class KuraDeviceConfiguration {
 
     /**
      * Get the device component configuration list
-     * 
+     *
      * @return
      */
+    @XmlElement(name = "configuration")
     public List<KuraDeviceComponentConfiguration> getConfigurations() {
         if (configurations == null) {
             configurations = new ArrayList<>();
@@ -65,7 +65,7 @@ public class KuraDeviceConfiguration {
 
     /**
      * Set the device component configuration list
-     * 
+     *
      * @param configurations
      */
     public void setConfigurations(List<KuraDeviceComponentConfiguration> configurations) {

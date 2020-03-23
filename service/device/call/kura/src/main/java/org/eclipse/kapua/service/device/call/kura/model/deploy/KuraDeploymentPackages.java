@@ -18,29 +18,29 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Kura deployment packages.
- * 
+ *
  * @since 1.0
  *
  */
 @XmlRootElement(name = "packages")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class KuraDeploymentPackages {
 
-    @XmlElement(name = "package")
     public KuraDeploymentPackage[] deploymentPackages;
 
     /**
      * Get the deployment package array
-     * 
+     *
      * @return
      */
+    @XmlElement(name = "package")
     public KuraDeploymentPackage[] getDeploymentPackages() {
         return deploymentPackages;
     }
 
     /**
      * Set the deployment package array
-     * 
+     *
      * @param deploymentPackages
      */
     public void setDeploymentPackages(KuraDeploymentPackage[] deploymentPackages) {

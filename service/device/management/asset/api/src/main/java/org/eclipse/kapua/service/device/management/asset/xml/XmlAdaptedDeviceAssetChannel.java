@@ -26,23 +26,18 @@ import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannelMode;
 
 /**
  * XML friendly {@link DeviceAssetChannel}.
- * 
+ *
  * @since 1.0.0
  */
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(name = "")
 public class XmlAdaptedDeviceAssetChannel extends XmlAdaptedNameTypeValueObject {
 
-    @XmlElement(name = "mode")
     private DeviceAssetChannelMode mode;
-
-    @XmlElement(name = "error")
     private String error;
-
-    @XmlElement(name = "timestamp")
-    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     private Date timestamp;
 
+    @XmlElement(name = "mode")
     public DeviceAssetChannelMode getMode() {
         return mode;
     }
@@ -51,6 +46,7 @@ public class XmlAdaptedDeviceAssetChannel extends XmlAdaptedNameTypeValueObject 
         this.mode = mode;
     }
 
+    @XmlElement(name = "error")
     public String getError() {
         return error;
     }
@@ -59,6 +55,8 @@ public class XmlAdaptedDeviceAssetChannel extends XmlAdaptedNameTypeValueObject 
         this.error = error;
     }
 
+    @XmlElement(name = "timestamp")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     public Date getTimestamp() {
         return timestamp;
     }

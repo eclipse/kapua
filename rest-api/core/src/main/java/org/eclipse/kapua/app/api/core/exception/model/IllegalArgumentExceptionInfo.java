@@ -20,13 +20,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "illegalArgumentExceptionInfo")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class IllegalArgumentExceptionInfo extends ExceptionInfo {
 
-    @XmlElement(name = "argumentName")
     private String argumentName;
-
-    @XmlElement(name = "argumentValue")
     private String argumentValue;
 
     protected IllegalArgumentExceptionInfo() {
@@ -40,6 +37,7 @@ public class IllegalArgumentExceptionInfo extends ExceptionInfo {
         setArgumentValue(kapuaException.getArgumentValue());
     }
 
+    @XmlElement(name = "argumentName")
     public String getArgumenName() {
         return argumentName;
     }
@@ -48,6 +46,7 @@ public class IllegalArgumentExceptionInfo extends ExceptionInfo {
         this.argumentName = argumentName;
     }
 
+    @XmlElement(name = "argumentValue")
     public String getArgumentValue() {
         return argumentValue;
     }

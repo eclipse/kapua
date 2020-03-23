@@ -21,10 +21,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "subjectUnauthorizedExceptionInfo")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class SubjectUnauthorizedExceptionInfo extends ExceptionInfo {
 
-    @XmlElement(name = "permission")
     private Permission permission;
 
     protected SubjectUnauthorizedExceptionInfo() {
@@ -37,6 +36,7 @@ public class SubjectUnauthorizedExceptionInfo extends ExceptionInfo {
         setPermission(kapuaException.getPermission());
     }
 
+    @XmlElement(name = "permission")
     public Permission getPermission() {
         return permission;
     }

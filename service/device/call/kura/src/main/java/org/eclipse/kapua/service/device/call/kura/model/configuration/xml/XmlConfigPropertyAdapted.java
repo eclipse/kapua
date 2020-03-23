@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlEnumValue;
  * @since 1.0
  *
  */
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class XmlConfigPropertyAdapted {
 
     @XmlEnum
@@ -48,31 +48,26 @@ public class XmlConfigPropertyAdapted {
     /**
      * The name of the property.
      */
-    @XmlAttribute(name = "name")
     private String name;
 
     /**
      * Whether the property value is an array.
      */
-    @XmlAttribute(name = "array")
     private boolean array;
 
     /**
      * Whether the property value is encrypted.
      */
-    @XmlAttribute(name = "encrypted")
     private boolean encrypted;
 
     /**
      * The property type.
      */
-    @XmlAttribute(name = "type")
     private ConfigPropertyType type;
 
     /**
      * The property value(s).
      */
-    @XmlElement(name = "value")
     private String[] values;
 
     /**
@@ -82,7 +77,7 @@ public class XmlConfigPropertyAdapted {
     }
 
     /**
-     * Constructo
+     * Constructor
      *
      * @param name
      * @param type
@@ -103,6 +98,7 @@ public class XmlConfigPropertyAdapted {
      *
      * @return
      */
+    @XmlAttribute(name = "name")
     public String getName() {
         return name;
     }
@@ -121,6 +117,7 @@ public class XmlConfigPropertyAdapted {
      *
      * @return
      */
+    @XmlAttribute(name = "array")
     public boolean getArray() {
         return array;
     }
@@ -139,6 +136,7 @@ public class XmlConfigPropertyAdapted {
      *
      * @return
      */
+    @XmlAttribute(name = "type")
     public ConfigPropertyType getType() {
         return type;
     }
@@ -157,6 +155,7 @@ public class XmlConfigPropertyAdapted {
      *
      * @return
      */
+    @XmlAttribute(name = "encrypted")
     public boolean isEncrypted() {
         return encrypted;
     }
@@ -175,6 +174,7 @@ public class XmlConfigPropertyAdapted {
      *
      * @return
      */
+    @XmlElement(name = "value")
     public String[] getValues() {
         return values;
     }

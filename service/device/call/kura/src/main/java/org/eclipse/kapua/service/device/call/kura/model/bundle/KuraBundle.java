@@ -24,25 +24,19 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlRootElement(name = "bundle")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType
 public class KuraBundle {
 
-    @XmlElement(name = "name")
     public String name;
-
-    @XmlElement(name = "version")
     public String version;
-
-    @XmlElement(name = "id")
     public long id;
-
-    @XmlElement(name = "state")
     public String state;
 
     /**
      * Get bundle name
      */
+    @XmlElement(name = "name")
     public String getName() {
         return name;
     }
@@ -61,6 +55,7 @@ public class KuraBundle {
      *
      * @return
      */
+    @XmlElement(name = "version")
     public String getVersion() {
         return version;
     }
@@ -79,6 +74,7 @@ public class KuraBundle {
      *
      * @return
      */
+    @XmlElement(name = "id")
     public long getId() {
         return id;
     }
@@ -97,6 +93,7 @@ public class KuraBundle {
      *
      * @return
      */
+    @XmlElement(name = "state")
     public String getState() {
         return state;
     }

@@ -20,10 +20,9 @@ import javax.xml.bind.annotation.XmlElement;
  *
  * @since 1.0
  */
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class ServiceXmlConfigPropertiesAdapted {
 
-    @XmlElement(name = "property")
     private ServiceXmlConfigPropertyAdapted[] properties;
 
     /**
@@ -37,6 +36,7 @@ public class ServiceXmlConfigPropertiesAdapted {
      *
      * @return
      */
+    @XmlElement(name = "property")
     public ServiceXmlConfigPropertyAdapted[] getProperties() {
         return properties;
     }

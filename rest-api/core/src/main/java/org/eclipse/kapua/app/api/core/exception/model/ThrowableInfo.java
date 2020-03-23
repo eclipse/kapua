@@ -19,26 +19,17 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 import org.eclipse.kapua.app.api.core.settings.KapuaApiSetting;
 import org.eclipse.kapua.app.api.core.settings.KapuaApiSettingKeys;
 
 @XmlRootElement(name = "throwableInfo")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class ThrowableInfo {
 
-    @XmlElement(name = "httpErrorCode")
     private int httpErrorCode;
-
-    @XmlElement(name = "message")
     private String message;
-
-    @XmlElement(name = "stackTrace")
     private String stackTrace;
-
-    @XmlTransient
-    private final boolean showStacktrace = KapuaApiSetting.getInstance().getBoolean(KapuaApiSettingKeys.API_EXCEPTION_STACKTRACE_SHOW, false);
 
     protected ThrowableInfo() {
         super();
@@ -48,6 +39,7 @@ public class ThrowableInfo {
         this.httpErrorCode = httpStatus.getStatusCode();
         this.message = throwable.getMessage();
         // Print stack trace
+        boolean showStacktrace = KapuaApiSetting.getInstance().getBoolean(KapuaApiSettingKeys.API_EXCEPTION_STACKTRACE_SHOW, false);
         if (showStacktrace) {
             StringWriter stringWriter = new StringWriter();
             throwable.printStackTrace(new PrintWriter(stringWriter));
@@ -56,6 +48,7 @@ public class ThrowableInfo {
 
     }
 
+    @XmlElement(name = "httpErrorCode")
     public int getHttpErrorCode() {
         return httpErrorCode;
     }
@@ -64,6 +57,7 @@ public class ThrowableInfo {
         this.httpErrorCode = httpErrorCode.getStatusCode();
     }
 
+    @XmlElement(name = "message")
     public String getMessage() {
         return message;
     }
@@ -72,6 +66,7 @@ public class ThrowableInfo {
         this.message = message;
     }
 
+    @XmlElement(name = "stackTrace")
     public String getStackTrace() {
         return stackTrace;
     }
