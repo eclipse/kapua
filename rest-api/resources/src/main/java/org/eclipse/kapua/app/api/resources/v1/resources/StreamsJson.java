@@ -85,7 +85,7 @@ public class StreamsJson extends AbstractKapuaResource implements JsonSerializat
      * @param timeout
      * @param jsonKapuaDataMessage
      * @return
-     * @throws Exception
+     * @throws KapuaException
      */
     @POST
     @Path("messages")

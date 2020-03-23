@@ -55,7 +55,7 @@ public class DeviceManagementRequestsJson extends AbstractKapuaResource implemen
      * @param timeout                   The timeout of the request execution
      * @param jsonGenericRequestMessage The input request
      * @return The response output.
-     * @throws Exception Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      */
     @POST
     @Consumes({ MediaType.APPLICATION_JSON })
