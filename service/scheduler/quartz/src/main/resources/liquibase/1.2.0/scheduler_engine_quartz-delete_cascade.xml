@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2020 Eurotech and/or its affiliates and others
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Eurotech - initial API and implementation
+-->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+
+        logicalFilePath="KapuaDB/changelog-scheduler-1.2.0.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml"/>
+
+    <changeSet id="changelog-scheduler_engine_quartz-1.2.0-delete_cascade" author="eurotech">
+
+
+        <dropForeignKeyConstraint constraintName="fk_schdl_qrtz_triggers"
+                                  baseTableName="schdl_qrtz_triggers"/>
+        <addForeignKeyConstraint constraintName="fk_schdl_qrtz_triggers"
+                                 baseTableName="schdl_qrtz_triggers"
+                                 baseColumnNames="sched_name,job_name,job_group"
+                                 referencedTableName="schdl_qrtz_job_details"
+                                 referencedColumnNames="sched_name,job_name,job_group"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"/>
+
+        <dropForeignKeyConstraint constraintName="fk_schdl_qrtz_simple_triggers"
+                                  baseTableName="schdl_qrtz_simple_triggers"/>
+        <addForeignKeyConstraint constraintName="fk_schdl_qrtz_simple_triggers"
+                                 baseTableName="schdl_qrtz_simple_triggers"
+                                 baseColumnNames="sched_name,trigger_name,trigger_group"
+                                 referencedTableName="schdl_qrtz_triggers"
+                                 referencedColumnNames="sched_name,trigger_name,trigger_group"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"/>
+
+        <dropForeignKeyConstraint constraintName="fk_schdl_qrtz_cron_triggers"
+                                  baseTableName="schdl_qrtz_cron_triggers"/>
+        <addForeignKeyConstraint constraintName="fk_schdl_qrtz_cron_triggers"
+                                 baseTableName="schdl_qrtz_cron_triggers"
+                                 baseColumnNames="sched_name,trigger_name,trigger_group"
+                                 referencedTableName="schdl_qrtz_triggers"
+                                 referencedColumnNames="sched_name,trigger_name,trigger_group"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"/>
+
+        <dropForeignKeyConstraint constraintName="fk_schdl_qrtz_simprop_triggers"
+                                  baseTableName="schdl_qrtz_simprop_triggers"/>
+        <addForeignKeyConstraint constraintName="fk_schdl_qrtz_simprop_triggers"
+                                 baseTableName="schdl_qrtz_simprop_triggers"
+                                 baseColumnNames="sched_name,trigger_name,trigger_group"
+                                 referencedTableName="schdl_qrtz_triggers"
+                                 referencedColumnNames="sched_name,trigger_name,trigger_group"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"/>
+
+        <dropForeignKeyConstraint constraintName="fk_schdl_qrtz_blob_triggers"
+                                  baseTableName="schdl_qrtz_blob_triggers"/>
+        <addForeignKeyConstraint constraintName="fk_schdl_qrtz_blob_triggers"
+                                 baseTableName="schdl_qrtz_blob_triggers"
+                                 baseColumnNames="sched_name,trigger_name,trigger_group"
+                                 referencedTableName="schdl_qrtz_triggers"
+                                 referencedColumnNames="sched_name,trigger_name,trigger_group"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"/>
+
+    </changeSet>
+</databaseChangeLog>
