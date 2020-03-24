@@ -11,8 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.security;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.Authorizer;
@@ -44,27 +46,49 @@ public class EnhModularRealmAuthorizer extends ModularRealmAuthorizer {
     @Override
     public boolean[] isPermitted(PrincipalCollection principals, List<Permission> permissions) {
         assertRealmsConfigured();
-        if (CollectionUtils.isEmpty(permissions)) {
-            //return the first realm result
-            //the multiple realms case with aggregator should be handled or do we still have just one realm?
-            for (Realm realm : getRealms()) {
-                return ((Authorizer) realm).isPermitted(principals, permissions);
+        if (!CollectionUtils.isEmpty(permissions)) {
+            if (getRealms()!=null && getRealms().size()==1) {
+                return checkSingleRealm(principals, permissions);
+            }
+            else {
+                return checkMultipleRealms(principals, permissions);
             }
         }
-        return new boolean[0];
+        return new boolean[permissions.size()];
     }
 
     @Override
     public boolean[] isPermitted(PrincipalCollection principals, String... permissions) {
-        assertRealmsConfigured();
-        if (permissions != null && permissions.length>0) {
-            //return the first realm result
-            //the multiple realms case with aggregator should be handled or do we still have just one realm?
-            for (Realm realm : getRealms()) {
-                return ((Authorizer) realm).isPermitted(principals, permissions);
-            }
-        }
-        return new boolean[0];
+        return isPermitted(principals, Arrays.asList(permissions).stream()
+                .map(permission -> getPermissionResolver().resolvePermission(permission))
+                .collect(Collectors.toList()));
     }
 
+    private boolean[] checkSingleRealm(PrincipalCollection principals, List<Permission> permissions) {
+        Realm realm = getRealms().iterator().next();
+        if (realm instanceof Authorizer) {
+            return ((Authorizer) getRealms().iterator().next()).isPermitted(principals, permissions);
+        }
+        else {
+            return new boolean[permissions.size()];
+        }
+    }
+
+    private boolean[] checkMultipleRealms(PrincipalCollection principals, List<Permission> permissions) {
+        boolean[] results = new boolean[permissions.size()];
+        for (Realm realm : getRealms()) {
+            if (realm instanceof Authorizer) {
+                boolean allTrue = true;
+                boolean[] resultTmp = ((Authorizer) realm).isPermitted(principals, permissions);
+                for (int j=0; j<permissions.size(); j++) {
+                    results[j] = results[j] || resultTmp[j];
+                    allTrue = allTrue && results[j];
+                }
+                if (allTrue) {
+                    break;
+                }
+            }
+        }
+        return results;
+    }
 }
