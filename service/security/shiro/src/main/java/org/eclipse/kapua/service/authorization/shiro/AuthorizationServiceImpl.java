@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,9 +42,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         }
         if (session.isTrustedMode()) {
             boolean[] returnedPermissions = new boolean[permissions.size()];
-            for (int i=0; i<permissions.size(); i++) {
-                returnedPermissions[i] = true;
-            }
+            Arrays.fill(returnedPermissions, true);
             return returnedPermissions;
         }
         else {
