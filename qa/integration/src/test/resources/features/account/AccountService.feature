@@ -14,6 +14,10 @@
 
 Feature: Account Service Tests
 
+Scenario: Init Security Context for all scenarios
+
+  Given Init Security Context
+
   Scenario: Creating A Valid Account
   Login as kapua-sys, create an account with all valid fields
   No exception should be thrown
@@ -384,3 +388,7 @@ Feature: Account Service Tests
     When I create 100 accounts in current scopeId
     Then No exception was thrown
     And I logout
+
+  Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context

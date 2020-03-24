@@ -16,6 +16,10 @@
 Feature: Job step service CRUD tests
     The Job Step service is responsible for maintaining job steps.
 
+Scenario: Init Security Context for all scenarios
+
+  Given Init Security Context
+
 Scenario: Regular step creation
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
@@ -187,3 +191,7 @@ Scenario: Delete a non-existing step
 Scenario: Step factory sanity checks
 
     Given I test the sanity of the step factory
+
+Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context

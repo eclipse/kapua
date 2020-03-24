@@ -15,6 +15,10 @@
 
 Feature: Account Device Registry Service Integration Tests
 
+Scenario: Init Security Context for all scenarios
+
+  Given Init Security Context
+
   Scenario: Creating Devices Under Account That Allows Infinite Child Devices
   Login as kapua-sys, create an account
   Configure DeviceRegistryService of that account, set infiniteChildDevices to true and maxNumberChildDevices to 0
@@ -121,3 +125,7 @@ Feature: Account Device Registry Service Integration Tests
       | integer | maxNumberChildEntities | 2     |
     Then No exception was thrown
     And I logout
+
+  Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context

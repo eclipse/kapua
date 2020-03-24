@@ -15,6 +15,10 @@
 Feature: Endpoint Info Service Integration Tests
   Integration test scenarios for Endpoint Info service
 
+Scenario: Init Security Context for all scenarios
+
+  Given Init Security Context
+
   Scenario: Creating Valid Endpoint
   Login as kapua-sys
   Create an endpoint with valid Schema, Domain Name and Port
@@ -750,4 +754,6 @@ Feature: Endpoint Info Service Integration Tests
     And I delete endpoint with schema "Schema2", domain "abc.com" and port 2222
     And I logout
 
-    
+Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context

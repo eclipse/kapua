@@ -15,6 +15,10 @@
 
 Feature: Trigger service tests
 
+Scenario: Init Security Context for all scenarios
+
+  Given Init Security Context
+
   Scenario: Adding "Device Connect" Schedule With All Valid Parameters
     Login as kapua-sys user and create a job with name job0.
     Add schedule0 with a valid start date to the created job.
@@ -776,3 +780,7 @@ Feature: Trigger service tests
     And I search for the trigger with name "schedule0" in the database
     And There is no trigger with the name "schedule0" in the database
     Then I logout
+
+  Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context

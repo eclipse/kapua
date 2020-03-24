@@ -15,6 +15,9 @@
 
 Feature: Account Tag Service Integration Tests
 
+Scenario: Init Security Context for all scenarios
+
+  Given Init Security Context
 
   Scenario: Creating Tags Under Account That Allows Infinite Child Devices
   Login as kapua-sys, create an account
@@ -120,3 +123,7 @@ Feature: Account Tag Service Integration Tests
       | integer | maxNumberChildEntities | 2     |
     Then No exception was thrown
     And I logout
+
+  Scenario: Reset Security Context for all scenarios
+
+    Given Reset Security Context
