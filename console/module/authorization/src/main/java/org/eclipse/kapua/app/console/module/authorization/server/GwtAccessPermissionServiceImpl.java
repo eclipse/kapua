@@ -138,6 +138,7 @@ public class GwtAccessPermissionServiceImpl extends KapuaRemoteServiceServlet im
                     query.setPredicate(query.attributePredicate(AccessPermissionAttributes.ACCESS_INFO_ID, accessInfo.getId()));
                     query.setLimit(loadConfig.getLimit());
                     query.setOffset(loadConfig.getOffset());
+                    query.setAskTotalCount(true);
 
                     String sortField = StringUtils.isEmpty(loadConfig.getSortField()) ? KapuaEntityAttributes.CREATED_ON : loadConfig.getSortField();
                     if (sortField.equals("createdOnFormatted")) {

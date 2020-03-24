@@ -280,6 +280,7 @@ public class GwtRoleServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
             FieldSortCriteria sortCriteria = query.fieldSortCriteria(sortField, sortOrder);
             query.setSortCriteria(sortCriteria);
+            query.setAskTotalCount(true);
 
             RolePermissionListResult list = ROLE_PERMISSION_SERVICE.query(query);
             totalLength = list.getTotalCount().intValue();
