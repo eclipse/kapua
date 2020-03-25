@@ -22,7 +22,7 @@ import javax.persistence.Table;
 /**
  * JPA counterpart for {@link JobStatus} object.
  *
- * @sicne 1.2.0
+ * @since 1.2.0
  */
 @Entity(name = "JobStatus")
 @Table(name = "jbtc_job_status")
