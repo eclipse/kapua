@@ -19,5 +19,6 @@
 
     <include relativeToChangelogFile="true" file="./trigger-timestamp.xml"/>
     <include relativeToChangelogFile="true" file="./trigger_definition-timestamp.xml"/>
+    <include relativeToChangelogFile="true" file="./scheduler_engine_quartz-delete_cascade.xml"/>
 
 </databaseChangeLog>
