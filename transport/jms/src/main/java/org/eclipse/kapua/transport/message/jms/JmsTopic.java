@@ -107,4 +107,15 @@ public class JmsTopic implements TransportChannel {
 
         return SPLIT_PATTERN.split(getTopic());
     }
+
+    /**
+     * Gets {@link #getTopic()} for a more user-friendly output.
+     *
+     * @return The {@link #getTopic()}
+     * @since 1.2.0
+     */
+    @Override
+    public String toString() {
+        return getTopic();
+    }
 }

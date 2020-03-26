@@ -12,6 +12,7 @@
 package org.eclipse.kapua.transport.jms.setting;
 
 import org.eclipse.kapua.commons.setting.SettingKey;
+import org.eclipse.kapua.transport.message.jms.JmsPayload;
 
 /**
  * Available settings key for JMS transport level
@@ -25,6 +26,14 @@ public enum JmsClientSettingKeys implements SettingKey {
      * @since 1.0.0
      */
     TRANSPORT_TOPIC_SEPARATOR("transport.topic.separator"),
+
+    /**
+     * The max length of the {@link JmsPayload#getBody()}} used when invoking {@link JmsPayload#toString()}
+     *
+     * @since 1.2.0
+     */
+    PAYLOAD_TOSTRING_LENGTH("transport.jms.payload.body.toString.length"),
+
     ;
 
     /**
