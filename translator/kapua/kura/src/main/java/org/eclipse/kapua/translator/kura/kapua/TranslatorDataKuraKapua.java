@@ -95,7 +95,7 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
             kapuaPayload.setMetrics(new HashMap<>(kuraPayload.getMetrics()));
         }
 
-        if (kuraPayload.getBody() != null) {
+        if (kuraPayload.hasBody()) {
             kapuaPayload.setBody(kuraPayload.getBody());
         }
 

@@ -167,7 +167,7 @@ public class KuraPayload implements DevicePayload {
 
         //
         // Set the body
-        if (getBody() != null) {
+        if (hasBody()) {
             protoMsg.setBody(ByteString.copyFrom(getBody()));
         }
 

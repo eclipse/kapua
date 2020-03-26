@@ -108,6 +108,18 @@ public interface DevicePayload extends Payload {
      */
     void setBody(byte[] body);
 
+    /**
+     * Says whether or not the {@link #getBody()} has value.
+     * <p>
+     * Checks for {@code null} and size equals to 0
+     *
+     * @return {@code true} if {@link #getBody()} is not {@code null} and {@link #getBody()}{@code length > 0}, {@code false} otherwise.
+     * @since 1.2.0
+     */
+    default boolean hasBody() {
+        return getBody() != null && getBody().length > 0;
+    }
+
     //
     // Encode/Decode stuff
     //

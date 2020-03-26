@@ -106,7 +106,7 @@ public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorRespons
         assetResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_MESSAGE.getName()));
         assetResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_STACK.getName()));
 
-        if (kuraPayload.getBody() != null) {
+        if (kuraPayload.hasBody()) {
             try {
                 ObjectMapper mapper = new ObjectMapper();
 

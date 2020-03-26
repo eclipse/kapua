@@ -108,14 +108,14 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
         String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
         KuraSnapshotIds snapshotIdResult = null;
-        if (kuraPayload.getBody() != null) {
+        if (kuraPayload.hasBody()) {
             String body = null;
             try {
                 body = new String(kuraPayload.getBody(), charEncoding);
             } catch (Exception e) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD,
                         e,
-                        snapshotResponsePayload.getBody());
+                        (Object) snapshotResponsePayload.getBody());
             }
 
             try {

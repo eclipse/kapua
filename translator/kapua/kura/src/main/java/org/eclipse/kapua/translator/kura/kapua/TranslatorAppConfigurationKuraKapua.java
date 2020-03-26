@@ -117,7 +117,7 @@ public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslato
         DeviceManagementSetting config = DeviceManagementSetting.getInstance();
         String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
-        if (kuraPayload.getBody() != null) {
+        if (kuraPayload.hasBody()) {
             String body = null;
             try {
                 body = new String(kuraPayload.getBody(), charEncoding);

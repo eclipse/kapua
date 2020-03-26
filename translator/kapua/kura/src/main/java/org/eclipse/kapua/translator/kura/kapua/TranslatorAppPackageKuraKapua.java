@@ -145,7 +145,7 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
             }
 
             String body;
-            if (kuraResponsePayload.getBody() != null) {
+            if (kuraResponsePayload.hasBody()) {
                 DeviceManagementSetting config = DeviceManagementSetting.getInstance();
                 String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
@@ -168,7 +168,7 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
                 translate(responsePayload, charEncoding, kuraDeploymentPackages);
             }
         } else {
-            if (kuraResponsePayload.getBody() != null) {
+            if (kuraResponsePayload.hasBody()) {
                 String errorMessage = new String(kuraResponsePayload.getBody());
 
                 responsePayload.setExceptionMessage(errorMessage);
