@@ -125,7 +125,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
             PackageResponsePayload responsePayload = responseMessage.getPayload();
 
             DevicePackages devicePackages;
-            if (responsePayload.getBody() != null) {
+            if (responsePayload.hasBody()) {
                 DeviceManagementSetting config = DeviceManagementSetting.getInstance();
                 String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
 

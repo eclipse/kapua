@@ -104,7 +104,7 @@ public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapua
     protected KuraRequestPayload translatePayload(ConfigurationRequestPayload kapuaPayload) throws KapuaException {
         KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
-        if (kapuaPayload.getBody() != null) {
+        if (kapuaPayload.hasBody()) {
             DeviceConfiguration kapuaDeviceConfiguration;
             try {
                 kapuaDeviceConfiguration = XmlUtil.unmarshal(new String(kapuaPayload.getBody()),

@@ -61,18 +61,18 @@ public class TranslatorAppSnapshotKapuaKura extends AbstractTranslatorKapuaKura<
         // Build resources
         List<String> resources = new ArrayList<>();
         switch (kapuaChannel.getMethod()) {
-        case EXECUTE:
-            resources.add("rollback");
-            break;
-        case READ:
-            resources.add("snapshots");
-            break;
-        case CREATE:
-        case DELETE:
-        case OPTIONS:
-        case WRITE:
-        default:
-            break;
+            case EXECUTE:
+                resources.add("rollback");
+                break;
+            case READ:
+                resources.add("snapshots");
+                break;
+            case CREATE:
+            case DELETE:
+            case OPTIONS:
+            case WRITE:
+            default:
+                break;
 
         }
 
@@ -91,7 +91,7 @@ public class TranslatorAppSnapshotKapuaKura extends AbstractTranslatorKapuaKura<
     protected KuraRequestPayload translatePayload(SnapshotRequestPayload kapuaPayload) throws KapuaException {
         KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
-        if (kapuaPayload.getBody() != null) {
+        if (kapuaPayload.hasBody()) {
             kuraRequestPayload.setBody(kapuaPayload.getBody());
         }
 

@@ -104,7 +104,7 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
             String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
             DeviceConfiguration deviceConfiguration = null;
-            if (responsePayload.getBody() != null) {
+            if (responsePayload.hasBody()) {
                 String body = null;
                 try {
                     body = new String(responsePayload.getBody(), charEncoding);

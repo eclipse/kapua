@@ -60,28 +60,28 @@ public class TranslatorAppBundleKapuaKura extends AbstractTranslatorKapuaKura<Bu
         // Build resources
         List<String> resources = new ArrayList<>();
         switch (kapuaChannel.getMethod()) {
-        case READ:
-            resources.add("bundles");
-            break;
-        case EXECUTE: {
-            if (kapuaChannel.isStart()) {
-                resources.add("start");
-            } else {
-                resources.add("stop");
-            }
+            case READ:
+                resources.add("bundles");
+                break;
+            case EXECUTE: {
+                if (kapuaChannel.isStart()) {
+                    resources.add("start");
+                } else {
+                    resources.add("stop");
+                }
 
-            String bundleId = kapuaChannel.getBundleId();
-            if (bundleId != null) {
-                resources.add(bundleId);
+                String bundleId = kapuaChannel.getBundleId();
+                if (bundleId != null) {
+                    resources.add(bundleId);
+                }
             }
-        }
-        break;
-        case CREATE:
-        case DELETE:
-        case OPTIONS:
-        case WRITE:
-        default:
             break;
+            case CREATE:
+            case DELETE:
+            case OPTIONS:
+            case WRITE:
+            default:
+                break;
 
         }
         kuraRequestChannel.setResources(resources.toArray(new String[resources.size()]));
@@ -95,7 +95,7 @@ public class TranslatorAppBundleKapuaKura extends AbstractTranslatorKapuaKura<Bu
     protected KuraRequestPayload translatePayload(BundleRequestPayload kapuaPayload) throws KapuaException {
         KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
-        if (kapuaPayload.getBody() != null) {
+        if (kapuaPayload.hasBody()) {
             kuraRequestPayload.setBody(kapuaPayload.getBody());
         }
 
