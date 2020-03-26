@@ -470,7 +470,6 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     @Override
     public void removeConnection(ConnectionContext context, ConnectionInfo info, Throwable error)
             throws Exception {
-        logger.error("Throwable on remove connection: {}", error!=null ? error.getMessage() : "N/A");
         if (!isPassThroughConnection(context)) {
             Context loginRemoveConnectionTimeContext = loginMetric.getRemoveConnectionTime().time();
             KapuaConnectionContext kcc = null;
@@ -504,8 +503,8 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             }
         }
         super.removeConnection(context, info, error);
-            // context may be null according to isPassThroughConnection(context)
-            context.setSecurityContext(null);
+        // context may be null according to isPassThroughConnection(context)
+        context.setSecurityContext(null);
     }
 
     // ------------------------------------------------------------------
