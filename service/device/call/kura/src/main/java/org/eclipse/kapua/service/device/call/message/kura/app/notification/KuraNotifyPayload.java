@@ -124,9 +124,4 @@ public class KuraNotifyPayload extends KuraAppPayload implements DeviceNotifyPay
 
         return (String) message;
     }
-
-    @Override
-    public String toDisplayString() {
-        return null;
-    }
 }
