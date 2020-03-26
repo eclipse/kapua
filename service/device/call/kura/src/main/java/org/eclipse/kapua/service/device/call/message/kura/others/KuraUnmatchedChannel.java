@@ -53,5 +53,4 @@ public class KuraUnmatchedChannel extends KuraChannel implements DeviceChannel {
     public KuraUnmatchedChannel(String messageClassification, String scopeNamespace, String clientId) {
         super(messageClassification, scopeNamespace, clientId);
     }
-
 }

@@ -11,8 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura;
 
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import com.google.common.collect.Lists;
 import org.eclipse.kapua.service.device.call.message.DeviceChannel;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * {@link DeviceChannel} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
@@ -20,8 +23,6 @@ import org.eclipse.kapua.service.device.call.message.DeviceChannel;
  * @since 1.0.0
  */
 public class KuraChannel implements DeviceChannel {
-
-    protected static final String DESTINATION_CONTROL_PREFIX = SystemSetting.getInstance().getMessageClassifier();
 
     protected String messageClassification;
     protected String scopeNamespace;
@@ -88,5 +89,21 @@ public class KuraChannel implements DeviceChannel {
     @Override
     public void setClientId(String clientId) {
         this.clientId = clientId;
+    }
+
+    /**
+     * Gets the {@link KuraChannel} tokens in a user-friendly format.
+     *
+     * @return The {@link KuraChannel} tokens in a user-friendly format.
+     * @since 1.2.0
+     */
+    @Override
+    public String toString() {
+        return Arrays.toString(getParts().toArray());
+    }
+
+    @Override
+    public List<String> getParts() {
+        return Lists.newArrayList(getMessageClassification(), getScope(), getClientId());
     }
 }

@@ -14,6 +14,8 @@ package org.eclipse.kapua.service.device.call.message.kura.app;
 import org.eclipse.kapua.service.device.call.message.app.DeviceAppChannel;
 import org.eclipse.kapua.service.device.call.message.kura.KuraChannel;
 
+import java.util.List;
+
 /**
  * {@link DeviceAppChannel} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  *
@@ -58,5 +60,12 @@ public abstract class KuraAppChannel extends KuraChannel implements DeviceAppCha
     @Override
     public void setAppId(String appId) {
         this.appId = appId;
+    }
+
+    @Override
+    public List<String> getParts() {
+        List<String> parts = super.getParts();
+        parts.add(getAppId());
+        return parts;
     }
 }

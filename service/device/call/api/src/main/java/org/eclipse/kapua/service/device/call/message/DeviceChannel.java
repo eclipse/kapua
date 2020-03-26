@@ -13,6 +13,8 @@ package org.eclipse.kapua.service.device.call.message;
 
 import org.eclipse.kapua.message.Channel;
 
+import java.util.List;
+
 /**
  * {@link DeviceChannel} definition.
  *
@@ -72,4 +74,11 @@ public interface DeviceChannel extends Channel {
      */
     void setClientId(String clientId);
 
+    /**
+     * Gets the {@link DeviceChannel} ordered tokens.
+     *
+     * @return The {@link DeviceChannel} ordered tokens.
+     * @since 1.2.0
+     */
+    List<String> getParts();
 }

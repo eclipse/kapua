@@ -60,4 +60,11 @@ public class KuraDataChannel extends KuraChannel implements DeviceDataChannel {
     public void setSemanticParts(List<String> semanticParts) {
         this.semanticParts = semanticParts;
     }
+
+    @Override
+    public List<String> getParts() {
+        List<String> parts = super.getParts();
+        parts.addAll(getSemanticParts());
+        return parts;
+    }
 }

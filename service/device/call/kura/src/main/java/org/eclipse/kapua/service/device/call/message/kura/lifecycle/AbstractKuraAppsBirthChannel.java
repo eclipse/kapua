@@ -36,4 +36,5 @@ public class AbstractKuraAppsBirthChannel extends KuraChannel implements DeviceL
         super(messageClassification, scopeNamespace, clientId);
     }
 
+
 }

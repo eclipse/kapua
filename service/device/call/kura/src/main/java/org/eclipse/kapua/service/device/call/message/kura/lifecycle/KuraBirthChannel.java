@@ -13,6 +13,8 @@ package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
 
 import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecycleChannel;
 
+import java.util.List;
+
 /**
  * {@link DeviceLifecycleChannel} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  *
@@ -34,4 +36,10 @@ public class KuraBirthChannel extends AbstractKuraAppsBirthChannel implements De
         super(messageClassification, scopeNamespace, clientId);
     }
 
+    @Override
+    public List<String> getParts() {
+        List<String> parts = super.getParts();
+        parts.add("BIRTH");
+        return parts;
+    }
 }
