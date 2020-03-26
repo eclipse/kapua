@@ -43,25 +43,27 @@ public enum MqttClientSettingKeys implements SettingKey {
     PAYLOAD_TOSTRING_LENGTH("transport.mqtt.payload.body.toString.length"),
 
     /**
-     * The MQTT protocol version to use.
-     *
-     * @since 1.0.0
-     */
-    TRANSPORT_PROTOCOL_VERSION("transport.protocol.version"),
-
-    /**
      * The character separator for topic levels.
      *
      * @since 1.0.0
      */
-    TRANSPORT_TOPIC_SEPARATOR("transport.topic.separator"),
+    TRANSPORT_TOPIC_SEPARATOR("transport.mqtt.topic.separator"),
+
+    /**
+     * The MQTT protocol version to use.
+     *
+     * @since 1.0.0
+     */
+    TRANSPORT_PROTOCOL_VERSION("transport.mqtt.protocol.version"),
 
     /**
      * Timeout for send sync operations.
      *
      * @since 1.0.0
+     * @deprecated Since 1.2.0. It is not used.
      */
-    SEND_TIMEOUT_MAX("send.timeout.max"),
+    @Deprecated
+    SEND_TIMEOUT_MAX("transport.send.timeout.max"),
     ;
 
     /**
