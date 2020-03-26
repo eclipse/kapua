@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.jms.kura;
 
-import org.eclipse.kapua.KapuaErrorCodes;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.device.call.message.kura.app.notification.KuraNotifyChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.notification.KuraNotifyMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.notification.KuraNotifyPayload;
@@ -21,6 +19,8 @@ import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidMessageException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
+import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
+import org.eclipse.kapua.translator.exception.TranslatorException;
 import org.eclipse.kapua.transport.message.jms.JmsMessage;
 import org.eclipse.kapua.transport.message.jms.JmsPayload;
 import org.eclipse.kapua.transport.message.jms.JmsTopic;
@@ -51,8 +51,8 @@ public class TranslatorLifeNotifyJmsKura extends Translator<JmsMessage, KuraNoti
         try {
             String[] topicTokens = jmsTopic.getSplittedTopic();
 
-            if (topicTokens == null || topicTokens.length < 3) {
-                throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR);
+            if (topicTokens.length < 6) {
+                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL, null, (Object) topicTokens);
             }
 
             KuraNotifyChannel kuraNotifyChannel = new KuraNotifyChannel(topicTokens[0], topicTokens[1], topicTokens[2]);
@@ -69,7 +69,11 @@ public class TranslatorLifeNotifyJmsKura extends Translator<JmsMessage, KuraNoti
     private KuraNotifyPayload translate(JmsPayload jmsPayload) throws InvalidPayloadException {
         try {
             KuraNotifyPayload kuraNotifyPayload = new KuraNotifyPayload();
-            kuraNotifyPayload.readFromByteArray(jmsPayload.getBody());
+
+            if (jmsPayload.hasBody()) {
+                kuraNotifyPayload.readFromByteArray(jmsPayload.getBody());
+            }
+
             return kuraNotifyPayload;
         } catch (Exception e) {
             throw new InvalidPayloadException(e, jmsPayload);

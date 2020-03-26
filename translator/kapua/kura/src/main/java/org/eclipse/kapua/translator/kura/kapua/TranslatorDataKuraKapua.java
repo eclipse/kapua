@@ -30,8 +30,6 @@ import org.eclipse.kapua.translator.exception.InvalidMessageException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
 
-import java.util.HashMap;
-
 /**
  * {@link Translator} implementation from {@link KuraDataMessage} to {@link KapuaDataMessage}
  *
@@ -48,7 +46,6 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
 
     @Override
     public KapuaDataMessage translate(KuraDataMessage kuraMessage) throws TranslateException {
-
         try {
             //
             // Kapua Channel
@@ -99,8 +96,8 @@ public class TranslatorDataKuraKapua extends Translator<KuraDataMessage, KapuaDa
     private KapuaDataPayload translate(KuraDataPayload kuraPayload) {
         KapuaDataPayload kapuaPayload = DATA_MESSAGE_FACTORY.newKapuaDataPayload();
 
-        if (kuraPayload.getMetrics() != null) {
-            kapuaPayload.setMetrics(new HashMap<>(kuraPayload.getMetrics()));
+        if (!kuraPayload.getMetrics().isEmpty()) {
+            kapuaPayload.setMetrics(kuraPayload.getMetrics());
         }
 
         if (kuraPayload.hasBody()) {

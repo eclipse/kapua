@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.jms.kura;
 
-import org.eclipse.kapua.KapuaErrorCodes;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraAppsChannel;
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraAppsMessage;
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraAppsPayload;
@@ -21,6 +19,8 @@ import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidMessageException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
+import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
+import org.eclipse.kapua.translator.exception.TranslatorException;
 import org.eclipse.kapua.transport.message.jms.JmsMessage;
 import org.eclipse.kapua.transport.message.jms.JmsPayload;
 import org.eclipse.kapua.transport.message.jms.JmsTopic;
@@ -48,9 +48,8 @@ public class TranslatorLifeAppsJmsKura extends Translator<JmsMessage, KuraAppsMe
     private KuraAppsChannel translate(JmsTopic jmsTopic) throws InvalidChannelException {
         try {
             String[] topicTokens = jmsTopic.getSplittedTopic();
-            // we shouldn't never get a shorter topic here (because that means we have issues on camel routing)
-            if (topicTokens == null || topicTokens.length < 3) {
-                throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR);
+            if (topicTokens.length < 3) {
+                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL, null, (Object) topicTokens);
             }
 
             return new KuraAppsChannel(topicTokens[0], topicTokens[1], topicTokens[2]);
@@ -62,7 +61,11 @@ public class TranslatorLifeAppsJmsKura extends Translator<JmsMessage, KuraAppsMe
     private KuraAppsPayload translate(JmsPayload jmsPayload) throws InvalidPayloadException {
         try {
             KuraAppsPayload kuraAppsPayload = new KuraAppsPayload();
-            kuraAppsPayload.readFromByteArray(jmsPayload.getBody());
+
+            if (jmsPayload.hasBody()) {
+                kuraAppsPayload.readFromByteArray(jmsPayload.getBody());
+            }
+
             return kuraAppsPayload;
         } catch (Exception e) {
             throw new InvalidPayloadException(e, jmsPayload);

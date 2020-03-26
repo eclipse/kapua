@@ -57,12 +57,15 @@ public class TranslatorResponseMqttKura extends Translator<MqttMessage, KuraResp
         try {
             String[] mqttTopicTokens = mqttTopic.getSplittedTopic();
 
+            if (mqttTopicTokens.length != 6) {
+                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL, null, (Object) mqttTopicTokens);
+            }
+
             if (!CONTROL_MESSAGE_CLASSIFIER.equals(mqttTopicTokens[0])) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER, null, mqttTopicTokens[0]);
+                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL, null, mqttTopicTokens[0]);
             }
 
             KuraResponseChannel kuraResponseChannel = new KuraResponseChannel(mqttTopicTokens[0], mqttTopicTokens[1], mqttTopicTokens[2]);
-
             kuraResponseChannel.setAppId(mqttTopicTokens[3]);
             kuraResponseChannel.setReplyPart(mqttTopicTokens[4]);
             kuraResponseChannel.setRequestId(mqttTopicTokens[5]);

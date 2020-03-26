@@ -49,6 +49,10 @@ public class TranslatorAppResponseKuraKapua extends AbstractSimpleTranslatorResp
             GenericResponseChannel genericResponseChannel = genericRequestFactory.newResponseChannel();
             String[] appIdTokens = kuraChannel.getAppId().split("-");
 
+            if (appIdTokens.length < 1) {
+                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, (Object) appIdTokens);
+            }
+
             genericResponseChannel.setAppName(new GenericAppProperties(appIdTokens[0]));
             if (appIdTokens.length > 1) {
                 genericResponseChannel.setVersion(new GenericAppProperties(appIdTokens[1]));

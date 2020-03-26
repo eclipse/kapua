@@ -21,6 +21,8 @@ import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidMessageException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
+import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
+import org.eclipse.kapua.translator.exception.TranslatorException;
 import org.eclipse.kapua.transport.message.mqtt.MqttMessage;
 import org.eclipse.kapua.transport.message.mqtt.MqttPayload;
 import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
@@ -54,8 +56,17 @@ public class TranslatorDataMqttKura extends Translator<MqttMessage, KuraDataMess
         try {
             String[] mqttTopicTokens = mqttTopic.getSplittedTopic();
 
+            if (mqttTopicTokens.length < 2) {
+                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL, null, (Object) mqttTopicTokens);
+            }
+
+            KuraDataChannel kuraDataChannel = new KuraDataChannel(mqttTopicTokens[0], mqttTopicTokens[1]);
+            for (int i = 2; i < mqttTopicTokens.length; i++) {
+                kuraDataChannel.getSemanticParts().add(mqttTopicTokens[i]);
+            }
+
             // Return Kura Channel
-            return new KuraDataChannel(mqttTopicTokens[0], mqttTopicTokens[1]);
+            return kuraDataChannel;
         } catch (Exception e) {
             throw new InvalidChannelException(e, mqttTopic);
         }

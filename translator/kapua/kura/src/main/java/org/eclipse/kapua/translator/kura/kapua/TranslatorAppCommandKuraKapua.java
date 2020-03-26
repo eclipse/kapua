@@ -15,7 +15,6 @@ package org.eclipse.kapua.translator.kura.kapua;
 import org.eclipse.kapua.service.device.call.kura.app.CommandMetrics;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
-import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMetrics;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
 import org.eclipse.kapua.service.device.management.command.internal.CommandAppProperties;
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandResponseChannel;
@@ -47,6 +46,10 @@ public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorRespo
             }
 
             String[] appIdTokens = kuraChannel.getAppId().split("-");
+
+            if (appIdTokens.length < 2) {
+                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, (Object) appIdTokens);
+            }
 
             if (!CommandMetrics.APP_ID.getName().equals(appIdTokens[0])) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, appIdTokens[0]);
@@ -82,8 +85,8 @@ public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorRespo
                 commandResponsePayload.setTimedout(timedout);
             }
 
-            commandResponsePayload.setExceptionMessage((String) metrics.get(KuraResponseMetrics.EXCEPTION_MESSAGE.getName()));
-            commandResponsePayload.setExceptionStack((String) metrics.get(KuraResponseMetrics.EXCEPTION_STACK.getName()));
+            commandResponsePayload.setExceptionMessage(kuraPayload.getExceptionMessage());
+            commandResponsePayload.setExceptionStack(kuraPayload.getExceptionStack());
 
             // Return Kapua Payload
             return commandResponsePayload;

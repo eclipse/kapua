@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.jms.kura;
 
-import org.eclipse.kapua.KapuaErrorCodes;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.message.internal.MessageException;
 import org.eclipse.kapua.service.device.call.message.kura.others.KuraUnmatchedChannel;
 import org.eclipse.kapua.service.device.call.message.kura.others.KuraUnmatchedMessage;
@@ -23,6 +21,8 @@ import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidMessageException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
+import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
+import org.eclipse.kapua.translator.exception.TranslatorException;
 import org.eclipse.kapua.transport.message.jms.JmsMessage;
 import org.eclipse.kapua.transport.message.jms.JmsPayload;
 import org.eclipse.kapua.transport.message.jms.JmsTopic;
@@ -50,10 +50,11 @@ public class TranslatorLifeUnmatchedJmsKura extends Translator<JmsMessage, KuraU
     private KuraUnmatchedChannel translate(JmsTopic jmsTopic) throws InvalidChannelException {
         try {
             String[] topicTokens = jmsTopic.getSplittedTopic();
-            // we shouldn't never get a shorter topic here (because that means we have issues on camel routing)
-            if (topicTokens == null || topicTokens.length < 3) {
-                throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR);
+            if (topicTokens.length < 3) {
+                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL, null, (Object) topicTokens);
             }
+
+            // TODO: we are loosing the sematinc parts of this topic
             return new KuraUnmatchedChannel(topicTokens[0], topicTokens[1], topicTokens[2]);
         } catch (Exception e) {
             throw new InvalidChannelException(e, jmsTopic);
@@ -63,13 +64,16 @@ public class TranslatorLifeUnmatchedJmsKura extends Translator<JmsMessage, KuraU
     private KuraUnmatchedPayload translate(JmsPayload jmsPayload) throws InvalidPayloadException {
         try {
             KuraUnmatchedPayload kuraUnmatchedPayload = new KuraUnmatchedPayload();
-            // unmatched message may be a text message so if the message protobuf conversion fails, try to set the kura message body as jms message raw payload
-            try {
-                kuraUnmatchedPayload.readFromByteArray(jmsPayload.getBody());
-            } catch (MessageException me) {
-                // When reading a payload which is not Kura-protobuf encoded we use that payload as a raw KapuaPayload.body
-                kuraUnmatchedPayload.setBody(jmsPayload.getBody());
+
+            if (jmsPayload.hasBody()) {
+                try {
+                    kuraUnmatchedPayload.readFromByteArray(jmsPayload.getBody());
+                } catch (MessageException me) {
+                    // When reading a payload which is not Kura-protobuf encoded we use that payload as a raw KapuaPayload.body
+                    kuraUnmatchedPayload.setBody(jmsPayload.getBody());
+                }
             }
+
             return kuraUnmatchedPayload;
         } catch (Exception e) {
             throw new InvalidPayloadException(e, jmsPayload);

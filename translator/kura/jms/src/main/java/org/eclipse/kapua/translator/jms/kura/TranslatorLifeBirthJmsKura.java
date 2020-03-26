@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.jms.kura;
 
-import org.eclipse.kapua.KapuaErrorCodes;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraBirthChannel;
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraBirthMessage;
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraBirthPayload;
@@ -21,6 +19,8 @@ import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidMessageException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
+import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
+import org.eclipse.kapua.translator.exception.TranslatorException;
 import org.eclipse.kapua.transport.message.jms.JmsMessage;
 import org.eclipse.kapua.transport.message.jms.JmsPayload;
 import org.eclipse.kapua.transport.message.jms.JmsTopic;
@@ -48,10 +48,10 @@ public class TranslatorLifeBirthJmsKura extends Translator<JmsMessage, KuraBirth
     private KuraBirthChannel translate(JmsTopic jmsTopic) throws InvalidChannelException {
         try {
             String[] topicTokens = jmsTopic.getSplittedTopic();
-            // we shouldn't never get a shorter topic here (because that means we have issues on camel routing)
-            if (topicTokens == null || topicTokens.length < 3) {
-                throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR);
+            if (topicTokens.length < 3) {
+                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL, null, (Object) topicTokens);
             }
+
             return new KuraBirthChannel(topicTokens[0], topicTokens[1], topicTokens[2]);
         } catch (Exception e) {
             throw new InvalidChannelException(e, jmsTopic);
@@ -61,7 +61,11 @@ public class TranslatorLifeBirthJmsKura extends Translator<JmsMessage, KuraBirth
     private KuraBirthPayload translate(JmsPayload jmsPayload) throws InvalidPayloadException {
         try {
             KuraBirthPayload kuraBirthPayload = new KuraBirthPayload();
-            kuraBirthPayload.readFromByteArray(jmsPayload.getBody());
+
+            if (jmsPayload.hasBody()) {
+                kuraBirthPayload.readFromByteArray(jmsPayload.getBody());
+            }
+
             return kuraBirthPayload;
         } catch (Exception e) {
             throw new InvalidPayloadException(e, jmsPayload);

@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.transport.message.jms;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.eclipse.kapua.transport.jms.setting.JmsClientSetting;
 import org.eclipse.kapua.transport.jms.setting.JmsClientSettingKeys;
@@ -101,7 +102,7 @@ public class JmsTopic implements TransportChannel {
      * @since 1.0.0
      */
     public String[] getSplittedTopic() {
-        if (getTopic() == null) {
+        if (Strings.isNullOrEmpty(getTopic())) {
             return new String[0];
         }
 

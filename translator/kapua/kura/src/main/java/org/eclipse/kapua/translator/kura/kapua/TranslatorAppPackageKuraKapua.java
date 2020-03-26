@@ -68,6 +68,10 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
 
             String[] appIdTokens = kuraChannel.getAppId().split("-");
 
+            if (appIdTokens.length < 2) {
+                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, (Object) appIdTokens);
+            }
+
             if (!PackageMetrics.APP_ID.getName().equals(appIdTokens[0])) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, appIdTokens[0]);
             }

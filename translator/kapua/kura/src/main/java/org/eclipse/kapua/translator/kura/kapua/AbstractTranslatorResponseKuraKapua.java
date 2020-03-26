@@ -43,11 +43,9 @@ public abstract class AbstractTranslatorResponseKuraKapua<TO_C extends KapuaResp
             TO_C bundleResponseChannel = translateChannel(kuraMessage.getChannel());
 
             // Translate payload
-
             TO_P responsePayload = translatePayload(kuraMessage.getPayload());
 
             // Process messsage
-
             TO_M kapuaMessage = createMessage();
             kapuaMessage.setScopeId(account.getId());
             kapuaMessage.setChannel(bundleResponseChannel);
@@ -57,7 +55,6 @@ public abstract class AbstractTranslatorResponseKuraKapua<TO_C extends KapuaResp
             kapuaMessage.setReceivedOn(kuraMessage.getTimestamp());
             kapuaMessage.setResponseCode(TranslatorKuraKapuaUtils.translate(kuraMessage.getPayload().getResponseCode()));
 
-            //
             // Return Kapua Message
             return kapuaMessage;
         } catch (InvalidChannelException | InvalidPayloadException te) {

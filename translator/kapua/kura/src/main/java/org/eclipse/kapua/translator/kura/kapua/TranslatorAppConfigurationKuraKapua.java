@@ -65,6 +65,10 @@ public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslato
 
             String[] appIdTokens = kuraChannel.getAppId().split("-");
 
+            if (appIdTokens.length < 2) {
+                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, (Object) appIdTokens);
+            }
+
             if (!ConfigurationMetrics.APP_ID.getName().equals(appIdTokens[0])) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, appIdTokens[0]);
             }
@@ -96,7 +100,7 @@ public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslato
             String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
             if (kuraPayload.hasBody()) {
-                String body = null;
+                String body;
                 try {
                     body = new String(kuraPayload.getBody(), charEncoding);
                 } catch (Exception e) {
@@ -148,9 +152,7 @@ public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslato
 
             configurationResponsePayload.setBody(requestBody);
         } catch (Exception e) {
-            throw new TranslatorException(TranslatorErrorCodes.INVALID_BODY,
-                    e,
-                    kuraDeviceConfiguration);
+            throw new TranslatorException(TranslatorErrorCodes.INVALID_BODY, e, kuraDeviceConfiguration);
         }
     }
 

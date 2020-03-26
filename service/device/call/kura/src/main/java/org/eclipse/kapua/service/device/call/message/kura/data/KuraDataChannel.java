@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.call.message.kura.data;
 import org.eclipse.kapua.service.device.call.message.data.DeviceDataChannel;
 import org.eclipse.kapua.service.device.call.message.kura.KuraChannel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,6 +49,10 @@ public class KuraDataChannel extends KuraChannel implements DeviceDataChannel {
 
     @Override
     public List<String> getSemanticParts() {
+        if (semanticParts == null) {
+            semanticParts = new ArrayList<>();
+        }
+
         return semanticParts;
     }
 

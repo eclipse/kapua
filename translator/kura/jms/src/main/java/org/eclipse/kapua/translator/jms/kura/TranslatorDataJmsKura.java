@@ -20,6 +20,8 @@ import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidMessageException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslateException;
+import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
+import org.eclipse.kapua.translator.exception.TranslatorException;
 import org.eclipse.kapua.transport.message.jms.JmsMessage;
 import org.eclipse.kapua.transport.message.jms.JmsPayload;
 import org.eclipse.kapua.transport.message.jms.JmsTopic;
@@ -50,17 +52,22 @@ public class TranslatorDataJmsKura extends Translator<JmsMessage, KuraDataMessag
 
     private KuraDataChannel translate(JmsTopic jmsTopic) throws InvalidChannelException {
         try {
-            String[] mqttTopicTokens = jmsTopic.getSplittedTopic();
-            KuraDataChannel kuraDataChannel = new KuraDataChannel();
-            kuraDataChannel.setScope(mqttTopicTokens[0]);
-            kuraDataChannel.setClientId(mqttTopicTokens[1]);
+            String[] topicTokens = jmsTopic.getSplittedTopic();
+            if (topicTokens.length < 2) {
+                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL, null, (Object) topicTokens);
+            }
 
-            List<String> channelPartsList = new LinkedList<>(Arrays.asList(mqttTopicTokens));
+            KuraDataChannel kuraDataChannel = new KuraDataChannel();
+            kuraDataChannel.setScope(topicTokens[0]);
+            kuraDataChannel.setClientId(topicTokens[1]);
+
+            List<String> channelPartsList = new LinkedList<>(Arrays.asList(topicTokens));
             // remove the first 2 items (do no use sublist since the returned object is not serializable then Camel will throws exception on error handling
             // channelPartsList.subList(2,mqttTopicTokens.length))
             channelPartsList.remove(0);
             channelPartsList.remove(0);
             kuraDataChannel.setSemanticParts(channelPartsList);
+
             return kuraDataChannel;
         } catch (Exception e) {
             throw new InvalidChannelException(e, jmsTopic);

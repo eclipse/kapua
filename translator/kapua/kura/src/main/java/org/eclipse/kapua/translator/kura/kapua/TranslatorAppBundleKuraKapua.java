@@ -54,13 +54,16 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
 
     @Override
     protected BundleResponseChannel translateChannel(KuraResponseChannel kuraChannel) throws InvalidChannelException {
-
         try {
             if (!getControlMessageClassifier().equals(kuraChannel.getMessageClassification())) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER, null, kuraChannel.getMessageClassification());
             }
 
             String[] appIdTokens = kuraChannel.getAppId().split("-");
+
+            if (appIdTokens.length < 2) {
+                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, (Object) appIdTokens);
+            }
 
             if (!BundleMetrics.APP_ID.getName().equals(appIdTokens[0])) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, appIdTokens[0]);
