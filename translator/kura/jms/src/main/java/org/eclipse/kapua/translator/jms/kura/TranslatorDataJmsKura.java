@@ -59,9 +59,8 @@ public class TranslatorDataJmsKura extends Translator<JmsMessage, KuraDataMessag
 
     private KuraDataPayload translate(JmsPayload jmsPayload)
             throws KapuaException {
-        KuraDataPayload kuraPayload = null;
-        if (jmsPayload.getBody() != null) {
-            kuraPayload = new KuraDataPayload();
+        KuraDataPayload kuraPayload = new KuraDataPayload();
+        if (jmsPayload.hasBody()) {
             try {
                 kuraPayload.readFromByteArray(jmsPayload.getBody());
             } catch (MessageException ex) {

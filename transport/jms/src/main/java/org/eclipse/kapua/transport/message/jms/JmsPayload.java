@@ -56,4 +56,15 @@ public class JmsPayload implements TransportPayload {
     public void setBody(byte[] body) {
         this.body = body;
     }
+
+    /**
+     * Says whether or not the {@link #getBody()} has value.
+     * <p>
+     * Checks for {@code null} and size equals to 0
+     *
+     * @return {@code true} if {@link #getBody()} is not {@code null} and {@link #getBody()}{@code length > 0}, {@code false} otherwise.
+     */
+    public boolean hasBody() {
+        return getBody() != null && getBody().length > 0;
+    }
 }
