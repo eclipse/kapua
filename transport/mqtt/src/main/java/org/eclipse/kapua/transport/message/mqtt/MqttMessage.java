@@ -64,8 +64,9 @@ public class MqttMessage implements PubSubTransportMessage<MqttTopic, MqttPayloa
      * @since 1.0.0
      */
     public MqttMessage(@NotNull MqttTopic requestTopic, @NotNull MqttTopic responseTopic, @NotNull MqttPayload requestPayload) {
-        this(requestTopic, (Date) null, requestPayload);
-        this.responseTopic = responseTopic;
+        setRequestTopic(requestTopic);
+        setResponseTopic(responseTopic);
+        setPayload(requestPayload);
     }
 
     /**
@@ -77,9 +78,9 @@ public class MqttMessage implements PubSubTransportMessage<MqttTopic, MqttPayloa
      * @since 1.0.0
      */
     public MqttMessage(@NotNull MqttTopic requestTopic, @NotNull Date receivedOn, @NotNull MqttPayload requestPayload) {
-        this.requestTopic = requestTopic;
-        this.timestamp = receivedOn;
-        this.payload = requestPayload;
+        setRequestTopic(requestTopic);
+        setTimestamp(receivedOn);
+        setPayload(requestPayload);
     }
 
     /**
@@ -150,7 +151,7 @@ public class MqttMessage implements PubSubTransportMessage<MqttTopic, MqttPayloa
      */
     public MqttPayload getPayload() {
         if (payload == null) {
-            payload = new MqttPayload(new byte[0]);
+            payload = new MqttPayload();
         }
 
         return payload;
@@ -174,5 +175,22 @@ public class MqttMessage implements PubSubTransportMessage<MqttTopic, MqttPayloa
      */
     public boolean expectResponse() {
         return getResponseTopic() != null;
+    }
+
+    /**
+     * Gets the {@link MqttMessage} fields concatenated in a user-friendly {@link String}.
+     *
+     * @return The {@link MqttMessage} fields concatenated in a user-friendly {@link String}.
+     * @since 1.2.0
+     */
+    @Override
+    public String toString() {
+        String[] toStringTokens = new String[3];
+
+        toStringTokens[0] = getTimestamp() != null ? getTimestamp().toString() : null;
+        toStringTokens[1] = getRequestTopic() != null ? getRequestTopic().toString() : null;
+        toStringTokens[2] = getPayload() != null ? getPayload().toString() : null;
+
+        return String.join(", ", toStringTokens);
     }
 }
