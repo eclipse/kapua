@@ -25,9 +25,8 @@ import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
 
 /**
  * Messages translator implementation from {@link org.eclipse.kapua.transport.message.mqtt.MqttMessage} to {@link KuraResponseMessage}
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class TranslatorResponseMqttKura extends Translator<MqttMessage, KuraResponseMessage> {
 
@@ -76,10 +75,12 @@ public class TranslatorResponseMqttKura extends Translator<MqttMessage, KuraResp
 
     private KuraResponsePayload translate(MqttPayload mqttPayload)
             throws KapuaException {
-        byte[] mqttBody = mqttPayload.getBody();
-
         KuraResponsePayload kuraResponsePayload = new KuraResponsePayload();
-        kuraResponsePayload.readFromByteArray(mqttBody);
+
+        if (mqttPayload.hasBody()) {
+            byte[] mqttBody = mqttPayload.getBody();
+            kuraResponsePayload.readFromByteArray(mqttBody);
+        }
 
         //
         // Return Kura Payload

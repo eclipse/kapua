@@ -45,7 +45,7 @@ public class MqttClientPublishException extends MqttClientException {
      * @since 1.2.0
      */
     public MqttClientPublishException(Throwable cause, String clientId, String topic, MqttMessage mqttMessage) {
-        super(MqttClientErrorCodes.PUBLISH_EXCEPTION, cause, clientId, topic, mqttMessage.getPayload().getBody().length);
+        super(MqttClientErrorCodes.PUBLISH_EXCEPTION, cause, clientId, topic, mqttMessage.getPayload().hasBody() ? mqttMessage.getPayload().getBody().length : null);
 
         this.topic = topic;
         this.mqttMessage = mqttMessage;

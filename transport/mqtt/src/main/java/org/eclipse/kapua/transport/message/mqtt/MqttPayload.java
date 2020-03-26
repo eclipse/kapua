@@ -22,6 +22,8 @@ public class MqttPayload implements TransportPayload {
 
     /**
      * The raw body of this {@link MqttPayload}.
+     *
+     * @since 1.0.0
      */
     private byte[] body;
 
@@ -53,5 +55,17 @@ public class MqttPayload implements TransportPayload {
      */
     public void setBody(byte[] body) {
         this.body = body;
+    }
+
+    /**
+     * Says whether or not the {@link #getBody()} has value.
+     * <p>
+     * Checks for {@code null} and size equals to 0
+     *
+     * @return {@code true} if {@link #getBody()} is not {@code null} and {@link #getBody()}{@code length > 0}, {@code false} otherwise.
+     * @since 1.2.0
+     */
+    public boolean hasBody() {
+        return getBody() != null && getBody().length > 0;
     }
 }

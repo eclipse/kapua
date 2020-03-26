@@ -57,13 +57,16 @@ public class TranslatorDataMqttKura extends Translator<MqttMessage, KuraDataMess
 
     private KuraDataPayload translate(MqttPayload mqttPayload)
             throws KapuaException {
-        byte[] mqttBody = mqttPayload.getBody();
 
         KuraDataPayload kuraPayload = new KuraDataPayload();
-        try {
-            kuraPayload.readFromByteArray(mqttBody);
-        } catch (MessageException ex) {
-            kuraPayload.setBody(mqttBody);
+
+        if (mqttPayload.hasBody()) {
+            byte[] mqttBody = mqttPayload.getBody();
+            try {
+                kuraPayload.readFromByteArray(mqttBody);
+            } catch (MessageException ex) {
+                kuraPayload.setBody(mqttBody);
+            }
         }
 
         //
