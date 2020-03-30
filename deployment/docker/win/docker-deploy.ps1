@@ -17,7 +17,17 @@ $common_path = Join-Path $script_dir docker-common.ps1
 
 Write-Host "Deploying Eclipse Kapua..."
 
-docker-compose -f (Join-Path $script_dir .. compose docker-compose.yml) up -d
+If (Test-Path env:KAPUA_BROKER_DEBUG_PORT) {
+    If ($env:KAPUA_BROKER_DEBUG_SUSPEND -eq "true") {
+        $env:KAPUA_BROKER_DEBUG_SUSPEND = "y"
+    } Else {
+        $env:KAPUA_BROKER_DEBUG_SUSPEND = "n"
+    }
+    docker-compose -f (Join-Path $script_dir .. compose docker-compose.yml) -f (Join-Path $script_dir .. compose docker-compose.broker-debug.yml) up -d
+}
+Else {
+    docker-compose -f (Join-Path $script_dir .. compose docker-compose.yml) up -d
+}
 
 Write-Host "Deploying Eclipse Kapua... DONE!"
 Write-Host "Run `"docker-compose -f $(Join-Path $script_dir .. compose docker-compose.yml) logs -f`" for container logs"
