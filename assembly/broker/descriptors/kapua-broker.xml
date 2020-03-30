@@ -168,6 +168,7 @@
                 <include>com.tdunning:t-digest</include>
 
                 <include>commons-codec:commons-codec</include>
+                <include>commons-collections:commons-collections</include>
                 <include>commons-configuration:commons-configuration</include>
                 <include>commons-io:commons-io</include>
 
