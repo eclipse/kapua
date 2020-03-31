@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #*******************************************************************************
-# Copyright (c) 2011, 2018 Eurotech and/or its affiliates
+# Copyright (c) 2016, 2020 Eurotech and/or its affiliates
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -12,30 +12,42 @@
 #
 #******************************************************************************
 
-destroy_old_machines(){
-    vagrant destroy -f develop
+set -e
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+print_usage_start(){
+    echo "Usage: $(basename $0) help|base-box|develop [--ssh]" >&2
 }
 
 start_develop(){
-    echo 'Starting Kapua Vagrant develop machine...'
-
-    vagrant up
-
-    echo 'Starting Kapua Vagrant develop machine... DONE!'
-    echo "Please type 'vagrant ssh' to connect to the machine."
-    echo "Follow the instructions to start the Kapua components from the machine"
+    echo 'Starting Vagrant machine...'
+    vagrant up || { echo 'Starting Vagrant machine... ERROR!'; exit 1; }
+    echo 'Starting Vagrant machine... DONE!'
 }
 
-print_usage(){
-    echo "Usage: $(basename $0) help|base-box|develop" >&2
+start_ssh() {
+    if [[ "$2" == '--ssh' ]]; then
+        sh ${SCRIPT_DIR}/ssh.sh $1
+    else
+        echo "Unrecognised parameter: ${1}"
+        print_usage_start
+    fi
 }
 
-if [ "$1" == 'develop' ]; then
-    destroy_old_machines
+if [[ "$1" == 'develop' ]]; then
+    sh ${SCRIPT_DIR}/destroy.sh $1 || exit 1;
+
     start_develop
-elif [ "$1" == 'base-box' ]; then
-    sh baseBox/create.sh
+
+    if [[ -z "$2" ]]; then
+        echo "Please type './ssh.sh develop' to connect to the machine."
+    else
+        start_ssh $1 $2
+    fi
+
+elif [[ "$1" == 'base-box' ]]; then
+    sh ${SCRIPT_DIR}/baseBox/create.sh
 else
-    print_usage
+    print_usage_start
     exit 1
 fi
