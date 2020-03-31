@@ -16,7 +16,7 @@
     <parent>
         <artifactId>kapua</artifactId>
         <groupId>org.eclipse.kapua</groupId>
-        <version>1.1.4-SNAPSHOT</version>
+        <version>1.1.4</version>
     </parent>
     <packaging>pom</packaging>
 
