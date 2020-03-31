@@ -20,12 +20,12 @@ docker_common() {
     . ${SCRIPT_DIR}/docker-common.sh
 }
 
-docker_undeploy() {
-    docker-compose -f ${SCRIPT_DIR}/../compose/docker-compose.yml down
+docker_logs() {
+    docker-compose -f ${SCRIPT_DIR}/../compose/docker-compose.yml logs -f
 }
 
 docker_common
 
-echo "Undeploying Eclipse Kapua..."
-docker_undeploy || { echo "Undeploying Eclipse Kapua... ERROR!"; exit 1; }
-echo "Undeploying Eclipse Kapua... DONE!"
+echo "Opening Eclipse Kapua logs..."
+docker_logs  || { echo "Opening Eclipse Kapua logs... ERROR!"; exit 1; }
+echo "Opening Eclipse Kapua logs... DONE!"
