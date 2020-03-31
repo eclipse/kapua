@@ -23,14 +23,10 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
 @XmlRootElement(name = "entityNotFoundExceptionInfo")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class EntityNotFoundExceptionInfo extends ExceptionInfo {
 
-    @XmlElement(name = "entityType")
     private String entityType;
-
-    @XmlElement(name = "entityId")
-    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     private KapuaId entityId;
 
     protected EntityNotFoundExceptionInfo() {
@@ -44,6 +40,7 @@ public class EntityNotFoundExceptionInfo extends ExceptionInfo {
         setEntityId(kapuaException.getEntityId());
     }
 
+    @XmlElement(name = "entityType")
     public String getEntityType() {
         return entityType;
     }
@@ -52,6 +49,8 @@ public class EntityNotFoundExceptionInfo extends ExceptionInfo {
         this.entityType = entityType;
     }
 
+    @XmlElement(name = "entityId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getEntityId() {
         return entityId;
     }

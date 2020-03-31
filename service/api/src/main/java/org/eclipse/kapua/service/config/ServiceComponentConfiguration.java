@@ -29,12 +29,7 @@ import org.eclipse.kapua.model.config.metatype.KapuaTocd;
  */
 @XmlRootElement(name = "configuration")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {
-        "id",
-        "name",
-        "definition",
-        "properties"
-}, factoryClass = ServiceConfigurationXmlRegistry.class, factoryMethod = "newComponentConfiguration")
+@XmlType(factoryClass = ServiceConfigurationXmlRegistry.class, factoryMethod = "newComponentConfiguration")
 public interface ServiceComponentConfiguration {
 
     /**

@@ -23,8 +23,7 @@ import org.apache.camel.Exchange;
 
 @XmlRootElement(name = "endChainEndPoint")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {
-})
+@XmlType()
 public class EndChainEndPoint implements EndPoint {
 
     @Override

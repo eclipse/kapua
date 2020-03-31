@@ -27,7 +27,7 @@ import java.util.List;
  */
 @XmlRootElement(name = "channel")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {"semanticParts"}, factoryClass = MessageXmlRegistry.class, factoryMethod = "newKapuaChannel")
+@XmlType(factoryClass = MessageXmlRegistry.class, factoryMethod = "newKapuaChannel")
 public interface KapuaChannel extends Channel {
 
     /**

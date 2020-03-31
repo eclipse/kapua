@@ -16,14 +16,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlRootElement(name = "sortField")
 public class XmlAdaptedSortField {
 
-    @XmlElement
     private String field;
-
-    @XmlElement
     private SortDirection direction;
 
     public XmlAdaptedSortField() {
@@ -34,6 +31,7 @@ public class XmlAdaptedSortField {
         this.field = field;
     }
 
+    @XmlElement
     public String getField() {
         return field;
     }
@@ -42,6 +40,7 @@ public class XmlAdaptedSortField {
         this.field = field;
     }
 
+    @XmlElement
     public SortDirection getDirection() {
         return direction;
     }

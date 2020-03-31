@@ -24,29 +24,15 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.util.Date;
 
-@XmlRootElement(name = "serviceEvent")
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = {"id",
-        "contextId",
-        "timestamp",
-        "userId",
-        "service",
-        "entityType",
-        "scopeId",
-        "entityScopeId",
-        "entityId",
-        "operation",
-        "inputs",
-        "outputs",
-        "status",
-        "note",
-})
 /**
  * Service event bus event object
  *
  * @since 1.0
  *
  */
+@XmlRootElement(name = "serviceEvent")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType
 public class ServiceEvent implements Serializable {
 
     private static final long serialVersionUID = -6642016486673574115L;
@@ -69,51 +55,19 @@ public class ServiceEvent implements Serializable {
         SEND_ERROR
     }
 
-    @XmlElement(name = "id")
     private String id;
-
-    @XmlElement(name = "contextId")
     private String contextId;
-
-    @XmlElement(name = "timestamp")
-    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     private Date timestamp;
-
-    @XmlElement(name = "userId")
-    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     private KapuaId userId;
-
-    @XmlElement(name = "service")
     private String service;
-
-    @XmlElement(name = "entityType")
     private String entityType;
-
-    @XmlElement(name = "scopeId")
-    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     private KapuaId scopeId;
-
-    @XmlElement(name = "entityScopeId")
-    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     private KapuaId entityScopeId;
-
-    @XmlElement(name = "entityId")
-    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     private KapuaId entityId;
-
-    @XmlElement(name = "operation")
     private String operation;
-
-    @XmlElement(name = "inputs")
     private String inputs;
-
-    @XmlElement(name = "outputs")
     private String outputs;
-
-    @XmlElement(name = "status")
     private EventStatus status;
-
-    @XmlElement(name = "note")
     private String note;
 
     /**
@@ -121,6 +75,7 @@ public class ServiceEvent implements Serializable {
      *
      * @return
      */
+    @XmlElement(name = "id")
     public String getId() {
         return id;
     }
@@ -139,6 +94,7 @@ public class ServiceEvent implements Serializable {
      *
      * @return
      */
+    @XmlElement(name = "contextId")
     public String getContextId() {
         return contextId;
     }
@@ -157,6 +113,8 @@ public class ServiceEvent implements Serializable {
      *
      * @return
      */
+    @XmlElement(name = "timestamp")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     public Date getTimestamp() {
         return timestamp;
     }
@@ -175,6 +133,8 @@ public class ServiceEvent implements Serializable {
      *
      * @return
      */
+    @XmlElement(name = "userId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getUserId() {
         return userId;
     }
@@ -193,6 +153,7 @@ public class ServiceEvent implements Serializable {
      *
      * @return
      */
+    @XmlElement(name = "service")
     public String getService() {
         return service;
     }
@@ -211,6 +172,7 @@ public class ServiceEvent implements Serializable {
      *
      * @return
      */
+    @XmlElement(name = "entityType")
     public String getEntityType() {
         return entityType;
     }
@@ -229,6 +191,8 @@ public class ServiceEvent implements Serializable {
      *
      * @return
      */
+    @XmlElement(name = "scopeId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getScopeId() {
         return scopeId;
     }
@@ -247,6 +211,8 @@ public class ServiceEvent implements Serializable {
      *
      * @return
      */
+    @XmlElement(name = "entityScopeId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getEntityScopeId() {
         return entityScopeId;
     }
@@ -265,6 +231,8 @@ public class ServiceEvent implements Serializable {
      *
      * @return
      */
+    @XmlElement(name = "entityId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     public KapuaId getEntityId() {
         return entityId;
     }
@@ -283,6 +251,7 @@ public class ServiceEvent implements Serializable {
      *
      * @return
      */
+    @XmlElement(name = "operation")
     public String getOperation() {
         return operation;
     }
@@ -301,6 +270,7 @@ public class ServiceEvent implements Serializable {
      *
      * @return
      */
+    @XmlElement(name = "inputs")
     public String getInputs() {
         return inputs;
     }
@@ -319,6 +289,7 @@ public class ServiceEvent implements Serializable {
      *
      * @return
      */
+    @XmlElement(name = "outputs")
     public String getOutputs() {
         return outputs;
     }
@@ -337,6 +308,7 @@ public class ServiceEvent implements Serializable {
      *
      * @return
      */
+    @XmlElement(name = "status")
     public EventStatus getStatus() {
         return status;
     }
@@ -355,6 +327,7 @@ public class ServiceEvent implements Serializable {
      *
      * @return
      */
+    @XmlElement(name = "note")
     public String getNote() {
         return note;
     }

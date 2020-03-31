@@ -29,17 +29,7 @@ import java.util.Date;
  */
 @XmlRootElement(name = "accountCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {"organizationName",
-        "organizationPersonName",
-        "organizationEmail",
-        "organizationPhoneNumber",
-        "organizationAddressLine1",
-        "organizationAddressLine2",
-        "organizationCity",
-        "organizationZipPostCode",
-        "organizationStateProvinceCounty",
-        "organizationCountry",
-        "expirationDate"}, factoryClass = AccountXmlRegistry.class, factoryMethod = "newAccountCreator")
+@XmlType(factoryClass = AccountXmlRegistry.class, factoryMethod = "newAccountCreator")
 public interface AccountCreator extends KapuaNamedEntityCreator<Account> {
 
     /**

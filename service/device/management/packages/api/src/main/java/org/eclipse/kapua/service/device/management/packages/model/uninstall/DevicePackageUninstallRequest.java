@@ -26,13 +26,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlRootElement(name = "uninstallRequest")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {
-        "name",
-        "version",
-        "reboot",
-        "rebootDelay" },
-        factoryClass = DevicePackageXmlRegistry.class,
-        factoryMethod = "newDevicePackageUninstallRequest")
+@XmlType(factoryClass = DevicePackageXmlRegistry.class, factoryMethod = "newDevicePackageUninstallRequest")
 public interface DevicePackageUninstallRequest {
 
     /**

@@ -37,10 +37,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlRootElement(name = "rolePermission")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "roleId",
-        "permission" }, //
-        factoryClass = RolePermissionXmlRegistry.class, //
-        factoryMethod = "newRolePermission")
+@XmlType(factoryClass = RolePermissionXmlRegistry.class, factoryMethod = "newRolePermission")
 public interface RolePermission extends KapuaEntity {
 
     String TYPE = "rolePermission";

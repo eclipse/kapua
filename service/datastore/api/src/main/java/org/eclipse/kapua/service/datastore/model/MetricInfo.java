@@ -31,17 +31,7 @@ import java.util.Date;
  */
 @XmlRootElement(name = "metricInfo")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { //
-        "id", //
-        "scopeId", //
-        "clientId", //
-        "channel", //
-        "name", //
-        "metricType", //
-        "firstMessageId", //
-        "firstMessageOn", //
-        "lastMessageId", //
-        "lastMessageOn" })
+@XmlType
 public interface MetricInfo extends Storable {
 
     /**

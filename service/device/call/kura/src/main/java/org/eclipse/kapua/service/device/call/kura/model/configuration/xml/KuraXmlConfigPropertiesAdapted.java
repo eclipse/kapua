@@ -17,14 +17,13 @@ import javax.xml.bind.annotation.XmlElement;
 
 /**
  * A container for XmlConfigPropertyAdapted organized into an array.
- * 
+ *
  * @since 1.0
- * 
+ *
  */
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class KuraXmlConfigPropertiesAdapted {
 
-    @XmlElement(name = "property")
     private XmlConfigPropertyAdapted[] properties;
 
     /**
@@ -35,16 +34,17 @@ public class KuraXmlConfigPropertiesAdapted {
 
     /**
      * Get the adapted configuration properties array
-     * 
+     *
      * @return
      */
+    @XmlElement(name = "property")
     public XmlConfigPropertyAdapted[] getProperties() {
         return properties;
     }
 
     /**
      * Set the adapted configuration properties array
-     * 
+     *
      * @param properties
      */
     public void setProperties(XmlConfigPropertyAdapted[] properties) {

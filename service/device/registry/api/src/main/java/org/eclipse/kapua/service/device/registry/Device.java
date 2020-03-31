@@ -35,38 +35,7 @@ import java.util.Set;
  */
 @XmlRootElement(name = "device")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {
-        "groupId",
-        "clientId",
-        "connectionId",
-        "connection",
-        "status",
-        "displayName",
-        "lastEventId",
-        "lastEvent",
-        "serialNumber",
-        "modelId",
-        "modelName",
-        "imei",
-        "imsi",
-        "iccid",
-        "biosVersion",
-        "firmwareVersion",
-        "osVersion",
-        "jvmVersion",
-        "osgiFrameworkVersion",
-        "applicationFrameworkVersion",
-        "connectionInterface",
-        "connectionIp",
-        "applicationIdentifiers",
-        "acceptEncoding",
-        "customAttribute1",
-        "customAttribute2",
-        "customAttribute3",
-        "customAttribute4",
-        "customAttribute5",
-        "tagIds"
-}, factoryClass = DeviceXmlRegistry.class, factoryMethod = "newDevice")
+@XmlType(factoryClass = DeviceXmlRegistry.class, factoryMethod = "newDevice")
 public interface Device extends KapuaUpdatableEntity {
 
     String TYPE = "device";

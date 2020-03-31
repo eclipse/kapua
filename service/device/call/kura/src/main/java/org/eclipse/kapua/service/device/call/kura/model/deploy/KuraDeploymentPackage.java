@@ -20,37 +20,32 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * Kura deployment package.
- * 
+ *
  * @since 1.0
  *
  */
 @XmlRootElement(name = "package")
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "name", "version", "bundleInfos" })
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType
 public class KuraDeploymentPackage {
 
-    @XmlElement(name = "name")
     public String name;
-
-    @XmlElement(name = "version")
     public String version;
-
-    @XmlElementWrapper(name = "bundles")
-    @XmlElement(name = "bundle")
     public KuraBundleInfo[] bundleInfos;
 
     /**
      * Get the deployment package name
-     * 
+     *
      * @return
      */
+    @XmlElement(name = "name")
     public String getName() {
         return name;
     }
 
     /**
      * Set the deployment package name
-     * 
+     *
      * @param name
      */
     public void setName(String name) {
@@ -59,16 +54,17 @@ public class KuraDeploymentPackage {
 
     /**
      * Get the deployment package version
-     * 
+     *
      * @return
      */
+    @XmlElement(name = "version")
     public String getVersion() {
         return version;
     }
 
     /**
      * Set the deployment package version
-     * 
+     *
      * @param version
      */
     public void setVersion(String version) {
@@ -77,16 +73,18 @@ public class KuraDeploymentPackage {
 
     /**
      * Get the bundle information array
-     * 
+     *
      * @return
      */
+    @XmlElementWrapper(name = "bundles")
+    @XmlElement(name = "bundle")
     public KuraBundleInfo[] getBundleInfos() {
         return bundleInfos;
     }
 
     /**
      * Set the bundle information array
-     * 
+     *
      * @param bundleInfos
      */
     public void setBundleInfos(KuraBundleInfo[] bundleInfos) {

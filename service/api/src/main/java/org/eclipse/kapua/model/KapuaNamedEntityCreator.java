@@ -43,7 +43,7 @@ import javax.xml.bind.annotation.XmlType;
  * @param <E> {@link KapuaEntity} which this {@link KapuaEntityCreator} is for
  * @since 1.0.0
  */
-@XmlType(propOrder = {"name", "description"})
+@XmlType
 public interface KapuaNamedEntityCreator<E extends KapuaEntity> extends KapuaUpdatableEntityCreator<E> {
 
     /**

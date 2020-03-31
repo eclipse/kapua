@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
  * @since 1.0
  */
 @XmlRootElement(name = "channel")
-@XmlType(propOrder = {"method"}, factoryClass = RequestMessageXmlRegistry.class, factoryMethod = "newRequestChannel")
+@XmlType(factoryClass = RequestMessageXmlRegistry.class, factoryMethod = "newRequestChannel")
 public interface KapuaRequestChannel extends KapuaAppChannel {
 
     /**

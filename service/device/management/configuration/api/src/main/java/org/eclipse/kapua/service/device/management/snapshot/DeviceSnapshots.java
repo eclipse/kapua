@@ -28,7 +28,7 @@ import java.util.List;
  */
 @XmlRootElement(name = "snapshots")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "snapshots" }, factoryClass = DeviceSnapshotXmlRegistry.class, factoryMethod = "newDeviceSnapshots")
+@XmlType(factoryClass = DeviceSnapshotXmlRegistry.class, factoryMethod = "newDeviceSnapshots")
 public interface DeviceSnapshots extends KapuaSerializable {
 
     /**

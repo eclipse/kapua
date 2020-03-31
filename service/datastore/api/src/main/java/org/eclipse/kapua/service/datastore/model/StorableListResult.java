@@ -32,7 +32,7 @@ import java.util.List;
  */
 @XmlRootElement(name = "result")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "limitExceeded", "size", "items", "nextKey", "totalCount" })
+@XmlType
 public interface StorableListResult<E extends Storable> extends KapuaSerializable {
 
     /**

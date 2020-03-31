@@ -32,7 +32,7 @@ import java.util.Map;
  */
 @XmlRootElement(name = "payload")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {"metrics", "body"}, factoryClass = MessageXmlRegistry.class, factoryMethod = "newPayload")
+@XmlType(factoryClass = MessageXmlRegistry.class, factoryMethod = "newPayload")
 public interface KapuaPayload extends Payload {
 
     /**

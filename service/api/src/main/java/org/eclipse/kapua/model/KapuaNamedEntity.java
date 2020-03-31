@@ -43,7 +43,7 @@ import javax.xml.bind.annotation.XmlType;
  *
  * @since 1.0.0
  */
-@XmlType(propOrder = {"name", "description"})
+@XmlType
 public interface KapuaNamedEntity extends KapuaUpdatableEntity {
 
     /**

@@ -19,33 +19,31 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * Kura bundle information.
- * 
+ *
  * @since 1.0
  *
  */
 @XmlRootElement(name = "bundleInfo")
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "name", "version" })
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType
 public class KuraBundleInfo {
 
-    @XmlElement(name = "name")
     public String name;
-
-    @XmlElement(name = "version")
     public String version;
 
     /**
      * Get the bundle name
-     * 
+     *
      * @return
      */
+    @XmlElement(name = "name")
     public String getName() {
         return name;
     }
 
     /**
      * Set the bundle name
-     * 
+     *
      * @param name
      */
     public void setName(String name) {
@@ -54,16 +52,17 @@ public class KuraBundleInfo {
 
     /**
      * Get the bundle version
-     * 
+     *
      * @return
      */
+    @XmlElement(name = "version")
     public String getVersion() {
         return version;
     }
 
     /**
      * Set the bundle version
-     * 
+     *
      * @param version
      */
     public void setVersion(String version) {

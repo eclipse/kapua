@@ -24,8 +24,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlRootElement(name = "snapshot")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "id",
-        "timestamp" }, factoryClass = DeviceSnapshotXmlRegistry.class, factoryMethod = "newDeviceSnapshot")
+@XmlType(factoryClass = DeviceSnapshotXmlRegistry.class, factoryMethod = "newDeviceSnapshot")
 public interface DeviceSnapshot {
 
     /**

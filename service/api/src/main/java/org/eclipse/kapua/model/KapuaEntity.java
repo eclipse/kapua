@@ -29,11 +29,7 @@ import java.util.Date;
  *
  * @since 1.0.0
  */
-@XmlType(propOrder = {
-        "id",
-        "scopeId",
-        "createdOn",
-        "createdBy"})
+@XmlType
 public interface KapuaEntity extends KapuaSerializable {
 
     @XmlTransient

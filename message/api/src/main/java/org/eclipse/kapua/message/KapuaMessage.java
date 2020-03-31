@@ -35,18 +35,7 @@ import java.util.UUID;
  */
 @XmlRootElement(name = "message")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { //
-        "id", //
-        "scopeId", //
-        "deviceId", //
-        "clientId", //
-        "receivedOn", //
-        "sentOn", //
-        "capturedOn", //
-        "position", //
-        "channel", //
-        "payload", //
-}, factoryClass = MessageXmlRegistry.class, factoryMethod = "newKapuaMessage")
+@XmlType(factoryClass = MessageXmlRegistry.class, factoryMethod = "newKapuaMessage")
 @XmlSeeAlso(KapuaDataMessage.class)
 public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> extends Message<C, P> {
 

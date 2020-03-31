@@ -11,6 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 import java.util.Properties;
 
 import org.eclipse.kapua.KapuaException;
@@ -21,6 +27,9 @@ import org.eclipse.kapua.model.KapuaUpdatableEntity;
  *
  * @since 1.0
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType
 public interface ServiceConfig extends KapuaUpdatableEntity {
 
     /**
@@ -40,6 +49,7 @@ public interface ServiceConfig extends KapuaUpdatableEntity {
      *
      * @return
      */
+    @XmlElement(name = "pid")
     public String getPid();
 
     /**
@@ -55,6 +65,7 @@ public interface ServiceConfig extends KapuaUpdatableEntity {
      * @return
      * @throws KapuaException
      */
+    @XmlTransient
     public Properties getConfigurations() throws KapuaException;
 
     /**

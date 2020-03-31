@@ -15,16 +15,16 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class XmlAdaptedNameTypeValueObject extends XmlAdaptedTypeValueObject {
 
-    @XmlElement(name = "name")
     private String name;
 
     public XmlAdaptedNameTypeValueObject() {
         super();
     }
 
+    @XmlElement(name = "name")
     public String getName() {
         return name;
     }

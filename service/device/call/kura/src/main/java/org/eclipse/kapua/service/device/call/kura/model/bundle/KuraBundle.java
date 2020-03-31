@@ -19,37 +19,31 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * Kura bundle definition.
- * 
+ *
  * @since 1.0
  *
  */
 @XmlRootElement(name = "bundle")
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "name", "version", "id", "state" })
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType
 public class KuraBundle {
 
-    @XmlElement(name = "name")
     public String name;
-
-    @XmlElement(name = "version")
     public String version;
-
-    @XmlElement(name = "id")
     public long id;
-
-    @XmlElement(name = "state")
     public String state;
 
     /**
      * Get bundle name
      */
+    @XmlElement(name = "name")
     public String getName() {
         return name;
     }
 
     /**
      * Set bundle name
-     * 
+     *
      * @param name
      */
     public void setName(String name) {
@@ -58,16 +52,17 @@ public class KuraBundle {
 
     /**
      * Get bundle version
-     * 
+     *
      * @return
      */
+    @XmlElement(name = "version")
     public String getVersion() {
         return version;
     }
 
     /**
      * Set bundle version
-     * 
+     *
      * @param version
      */
     public void setVersion(String version) {
@@ -76,16 +71,17 @@ public class KuraBundle {
 
     /**
      * Get bundle identifier
-     * 
+     *
      * @return
      */
+    @XmlElement(name = "id")
     public long getId() {
         return id;
     }
 
     /**
      * Set bundle identifier
-     * 
+     *
      * @param id
      */
     public void setId(long id) {
@@ -94,16 +90,17 @@ public class KuraBundle {
 
     /**
      * Get bundle state
-     * 
+     *
      * @return
      */
+    @XmlElement(name = "state")
     public String getState() {
         return state;
     }
 
     /**
      * Set bundle state
-     * 
+     *
      * @param state
      */
     public void setState(String state) {

@@ -47,9 +47,7 @@ import java.util.Map;
  */
 @XmlRootElement(name = "Option", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(name = "Toption", propOrder = {
-        "any"
-}, factoryClass = MetatypeXmlRegistry.class, factoryMethod = "newKapuaToption")
+@XmlType(name = "Toption", factoryClass = MetatypeXmlRegistry.class, factoryMethod = "newKapuaToption")
 public interface KapuaToption {
 
     /**

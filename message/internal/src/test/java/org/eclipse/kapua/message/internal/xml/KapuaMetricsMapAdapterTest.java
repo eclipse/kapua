@@ -35,15 +35,15 @@ public class KapuaMetricsMapAdapterTest extends Assert {
                     "<payload>" + NEWLINE +
                     "   <metrics>" + NEWLINE +
                     "      <metric>" + NEWLINE +
-                    "         <valueType>string</valueType>" + NEWLINE +
                     "         <value>value1</value>" + NEWLINE +
+                    "         <valueType>string</valueType>" + NEWLINE +
                     "         <name>key1</name>" + NEWLINE +
                     "      </metric>" + NEWLINE +
                     "   </metrics>" + NEWLINE +
                     "</payload>" + NEWLINE;
 
     @Before
-    public void before() throws Exception {
+    public void before() {
         XmlUtil.setContextProvider(new MessageJAXBContextProvider());
     }
 
@@ -64,7 +64,7 @@ public class KapuaMetricsMapAdapterTest extends Assert {
     public void unmarshalWithAdapter() throws Exception {
         KapuaPayload metricsMap = new KapuaPayloadImpl();
         Map<String, Object> metrics = new HashMap<>();
-        metrics.put(String.valueOf("key1"), String.valueOf("value1"));
+        metrics.put("key1", "value1");
         metricsMap.setMetrics(metrics);
 
         KapuaPayload metricsMapResp = XmlUtil.unmarshal(METRICS_XML_STR, KapuaPayload.class);

@@ -34,18 +34,7 @@ import java.util.Date;
  */
 @XmlRootElement(name = "deviceEvent")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { //
-        "deviceId", //
-        "sentOn", //
-        "receivedOn", //
-        "position", //
-        "resource",  //
-        "action", //
-        "responseCode", //
-        "eventMessage" //
-}, //
-        factoryClass = DeviceEventXmlRegistry.class, //
-        factoryMethod = "newDeviceEvent")
+@XmlType(factoryClass = DeviceEventXmlRegistry.class, factoryMethod = "newDeviceEvent")
 public interface DeviceEvent extends KapuaEntity {
 
     String TYPE = "deviceEvent";

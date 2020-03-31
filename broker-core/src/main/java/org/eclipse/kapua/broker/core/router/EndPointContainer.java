@@ -22,9 +22,7 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "endPoints")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {
-        "endPoints"
-})
+@XmlType
 public class EndPointContainer {
 
     private List<EndPoint> endPoints;

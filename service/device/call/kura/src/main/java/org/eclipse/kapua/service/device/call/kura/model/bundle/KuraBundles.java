@@ -18,29 +18,29 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Kura bundles list definition.
- * 
+ *
  * @since 1.0
  *
  */
 @XmlRootElement(name = "bundles")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class KuraBundles {
 
-    @XmlElement(name = "bundle")
     public KuraBundle[] bundles;
 
     /**
      * Get the bundles list
-     * 
+     *
      * @return
      */
+    @XmlElement(name = "bundle")
     public KuraBundle[] getBundles() {
         return bundles;
     }
 
     /**
      * Set the bundles list
-     * 
+     *
      * @param bundles
      */
     public void setBundles(KuraBundle[] bundles) {

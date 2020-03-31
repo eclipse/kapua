@@ -50,16 +50,7 @@ import java.util.Map;
  */
 @XmlRootElement(name = "Designate", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(name = "Tdesignate", propOrder = {
-        "object",
-        "any",
-        "pid",
-        "factoryPid",
-        "bundle",
-        "optional",
-        "merge",
-        "otherAttributes"
-}, factoryClass = MetatypeXmlRegistry.class, factoryMethod = "newKapuaTdesignate")
+@XmlType(name = "Tdesignate", factoryClass = MetatypeXmlRegistry.class, factoryMethod = "newKapuaTdesignate")
 public interface KapuaTdesignate {
 
     /**

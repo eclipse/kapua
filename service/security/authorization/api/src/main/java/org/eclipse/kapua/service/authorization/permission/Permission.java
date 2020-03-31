@@ -34,16 +34,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * @since 1.0.0
  */
 @XmlRootElement(name = "permission")
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { //
-        "domain", //
-        "action", //
-        "targetScopeId", //
-        "groupId", //
-        "forwardable" //
-}, //
-        factoryClass = PermissionXmlRegistry.class, //
-        factoryMethod = "newPermission")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(factoryClass = PermissionXmlRegistry.class, factoryMethod = "newPermission")
 public interface Permission {
 
     String WILDCARD = "*";

@@ -28,9 +28,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlRootElement(name = "metric")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "name",
-        "type",
-        "value" })
+@XmlType
 public interface Metric<T> extends Comparable<T> {
 
     /**

@@ -30,18 +30,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlRootElement(name = "deviceConnection")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {
-        "status",
-        "clientId",
-        "userId",
-        "allowUserChange",
-        "userCouplingMode",
-        "reservedUserId",
-        "protocol",
-        "clientIp",
-        "serverIp" }, //
-        factoryClass = DeviceConnectionXmlRegistry.class, //
-        factoryMethod = "newDeviceConnection")
+@XmlType(factoryClass = DeviceConnectionXmlRegistry.class, factoryMethod = "newDeviceConnection")
 public interface DeviceConnection extends KapuaUpdatableEntity {
 
     String TYPE = "deviceConnection";

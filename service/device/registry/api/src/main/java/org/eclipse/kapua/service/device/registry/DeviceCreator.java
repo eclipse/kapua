@@ -35,36 +35,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlRootElement(name = "deviceCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {
-        "groupId",
-        "clientId",
-        "status",
-        "connectionId",
-        "lastEventId",
-        "displayName",
-        "serialNumber",
-        "modelId",
-        "modelName",
-        "imei",
-        "imsi",
-        "iccid",
-        "biosVersion",
-        "firmwareVersion",
-        "osVersion",
-        "jvmVersion",
-        "osgiFrameworkVersion",
-        "applicationFrameworkVersion",
-        "connectionInterface",
-        "connectionIp",
-        "applicationIdentifiers",
-        "acceptEncoding",
-        "customAttribute1",
-        "customAttribute2",
-        "customAttribute3",
-        "customAttribute4",
-        "customAttribute5"
-}, //
-        factoryClass = DeviceXmlRegistry.class, factoryMethod = "newDeviceCreator")
+@XmlType(factoryClass = DeviceXmlRegistry.class, factoryMethod = "newDeviceCreator")
 public interface DeviceCreator extends KapuaUpdatableEntityCreator<Device> {
 
     /**

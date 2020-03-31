@@ -25,10 +25,7 @@ import java.util.Date;
  */
 @XmlRootElement(name = "devicePackage")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "name",
-        "version",
-        "bundleInfos",
-        "installDate" }, factoryClass = DevicePackageXmlRegistry.class, factoryMethod = "newDevicePackage")
+@XmlType(factoryClass = DevicePackageXmlRegistry.class, factoryMethod = "newDevicePackage")
 public interface DevicePackage {
 
     /**
