@@ -15,7 +15,7 @@
 
     <groupId>org.eclipse.kapua</groupId>
     <artifactId>kapua</artifactId>
-    <version>1.1.4</version>
+    <version>1.1.5-SNAPSHOT</version>
     <name>kapua</name>
 
     <packaging>pom</packaging>
@@ -1823,7 +1823,7 @@
         <url>https://github.com/eclipse/kapua.git</url>
         <connection>scm:git:ssh://git@github.com/eclipse/kapua.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/eclipse/kapua.git</developerConnection>
-      <tag>1.1.4</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <issueManagement>
