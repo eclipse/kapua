@@ -1636,7 +1636,6 @@
         <module>message</module>
         <module>transport</module>
         <module>translator</module>
-        <module>broker-core</module>
         <module>qa</module>
 
         <module>sso</module>
