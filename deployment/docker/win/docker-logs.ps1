@@ -9,6 +9,7 @@
 # Contributors:
 #     Eurotech - initial implementation
 ###############################################################################
+#Requires -Version 7
 
 $script_dir = Split-Path (Get-Variable MyInvocation).Value.MyCommand.Path
 $common_path = Join-Path $script_dir docker-common.ps1
