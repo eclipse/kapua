@@ -115,9 +115,17 @@ public class KapuaLiquibaseClient {
 
         runTimestampsFix = (currentLiquibaseVersion.afterOrMatches(LIQUIBASE_TIMESTAMP_FIX_VERSION) || forceTimestampFix);
 
-        LOG.info("Liquibase Version: {}", currentLiquibaseVersionString);
-        LOG.info("Force timestamp fix: {}", forceTimestampFix);
-        LOG.info("Apply timestamp fix: {}", runTimestampsFix);
+        LOG.info("=================== KapuaLiquibaseClient configuration ===================");
+        LOG.info("|\tLiquibase Version: {}", currentLiquibaseVersionString);
+        LOG.info("|\tDB connection info");
+        LOG.info("|\t\tJDBC URL: {}", jdbcUrl);
+        LOG.info("|\t\tUsername: {}", username);
+        LOG.info("|\t\tPassword: ******");
+        LOG.info("|\t\tSchema:   {}", schema);
+        LOG.info("|\tTimestamp(3) fix info (eclipse/kapua#2889)");
+        LOG.info("|\t\tForce timestamp fix: {}", forceTimestampFix);
+        LOG.info("|\t\tApply timestamp fix: {}", runTimestampsFix);
+        LOG.info("==========================================================================");
     }
 
     /**
@@ -127,8 +135,9 @@ public class KapuaLiquibaseClient {
      */
     public void update() {
         try {
+            LOG.info("Running Liquibase scripts...");
             if (Boolean.parseBoolean(System.getProperty("LIQUIBASE_ENABLED", "true")) || Boolean.parseBoolean(System.getenv("LIQUIBASE_ENABLED"))) {
-                LOG.info("Running Liquibase update with schema: {}", schema);
+
                 try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password)) {
                     File changelogDir = loadChangelogs();
 
@@ -139,10 +148,14 @@ public class KapuaLiquibaseClient {
 
                     executeMasters(connection, schema, changelogDir, contexts);
                 }
+
+                LOG.info("Running Liquibase scripts... DONE!");
+            } else {
+                LOG.info("Running Liquibase scripts... SKIPPED! Liquibase disabled by System property 'LIQUIBASE_ENABLED'...");
             }
         } catch (LiquibaseException | SQLException | IOException e) {
-            LOG.error("Error while running Liquibase scripts: {}", e.getMessage(), e);
-            throw new RuntimeException(e);
+            LOG.error("Running Liquibase scripts... ERROR! Error: {}", e.getMessage(), e);
+            throw new RuntimeException(e); // TODO: throw an appropriate exception!
         }
     }
 
