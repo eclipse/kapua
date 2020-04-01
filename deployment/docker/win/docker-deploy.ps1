@@ -9,7 +9,9 @@
 # Contributors:
 #     Eurotech - initial implementation
 ###############################################################################
-Param (
+#Requires -Version 7
+
+Param(
     [switch]$logs = $false
 )
 
