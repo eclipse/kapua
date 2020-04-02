@@ -64,6 +64,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
 import javax.persistence.Embedded;
 import javax.persistence.EntityExistsException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -273,9 +274,11 @@ public class ServiceDAO {
      * @param name  The {@link KapuaEntity} name of the field from which to search.
      * @param value The value of the field from which to search.
      * @return The {@link KapuaEntity} found, or {@code null} if not found.
+     * @throws      NonUniqueResultException When more than one result is returned
      * @since 1.0.0
      */
-    public static <E extends KapuaEntity> E findByField(@NotNull EntityManager em, @NotNull Class<E> clazz, @NotNull String name, @NotNull String value) {
+    @Nullable
+    public static <E extends KapuaEntity> E findByField(@NotNull EntityManager em, @NotNull Class<E> clazz, @NotNull String name, @NotNull Object value) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<E> criteriaSelectQuery = cb.createQuery(clazz);
 
@@ -297,12 +300,19 @@ public class ServiceDAO {
         query.setParameter(pName.getName(), value);
 
         List<E> result = query.getResultList();
-        E user = null;
-        if (result.size() == 1) {
-            user = result.get(0);
+        E entity;
+        switch (result.size()) {
+            case 0:
+                entity = null;
+                break;
+            case 1:
+                entity = result.get(0);
+                break;
+            default:
+                throw new NonUniqueResultException(String.format("Multiple %s results found for field %s with value %s", clazz.getName(), pName, value.toString()));
         }
 
-        return user;
+        return entity;
     }
 
     /**
