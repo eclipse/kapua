@@ -12,7 +12,7 @@
 #*******************************************************************************
 
 BROKER_ASSEMBLY_DIR="/kapua/assembly/broker";
-BROKER_CORE_DEPENDENCY_DIR="/kapua/broker-core/target/dependency";
+BROKER_CORE_DEPENDENCY_DIR="/kapua/broker/core/target/dependency";
 BROKER_INSTALLATION_DIR="/usr/local/activemq";
 
 VAGRANT_DEPENDENCY_DIR="/kapua/dev-tools/vagrant/target/dependency";
