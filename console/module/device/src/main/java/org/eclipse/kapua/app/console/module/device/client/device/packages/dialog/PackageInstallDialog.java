@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -69,6 +69,7 @@ public class PackageInstallDialog extends TabbedDialog {
 
     private FormPanel advancedOptionsForm;
     private Text advancedInfoText;
+    private CheckBox operationRestartField;
     private KapuaNumberField blockSizeField;
     private KapuaNumberField blockDelayField;
     private KapuaNumberField blockTimeoutField;
@@ -201,6 +202,7 @@ public class PackageInstallDialog extends TabbedDialog {
             operationRebootField.setFieldLabel(DEVICE_MSGS.packageInstallDpDialogOperationReboot());
             operationRebootField.setToolTip(DEVICE_MSGS.packageInstallDpDialogOperationRebootTooltip());
             operationRebootField.setBoxLabel("");
+            operationRebootField.setValue(Boolean.FALSE);
 
             operationRebootField.addListener(Events.Change, new Listener<BaseEvent>() {
 
@@ -249,6 +251,14 @@ public class PackageInstallDialog extends TabbedDialog {
             advancedInfoText.setText(DEVICE_MSGS.packageInstallDpDialogAdvancedTabInfo());
             advancedInfoText.setStyleAttribute("margin-bottom", "5px");
             advancedOptionsForm.add(advancedInfoText);
+
+            operationRestartField = new CheckBox();
+            operationRestartField.setName("restart");
+            operationRestartField.setFieldLabel(DEVICE_MSGS.packageInstallDpDialogOperationRestart());
+            operationRestartField.setToolTip(DEVICE_MSGS.packageInstallDpDialogOperationRestartTooltip());
+            operationRestartField.setBoxLabel("");
+            operationRestartField.setValue(Boolean.FALSE);
+            advancedOptionsForm.add(operationRestartField, formData);
 
             blockSizeField = new KapuaNumberField();
             blockSizeField.setName("installBlockSize");
@@ -367,6 +377,8 @@ public class PackageInstallDialog extends TabbedDialog {
         }
 
         // Advanced info
+        gwtPackageInstallRequest.setRestart(operationRestartField.getValue());
+
         nValue = blockSizeField.getValue();
         if (nValue != null) {
             gwtPackageInstallRequest.setBlockSize(nValue.intValue());

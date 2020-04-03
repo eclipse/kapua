@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -253,12 +253,34 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
     /**
      * Set the is a download package and install flag
      *
-     * @param packageDownloadnstall
+     * @param packageDownloadInstall
      * @since 1.0.0
      */
-    public void setPackageDownloadnstall(Boolean packageDownloadnstall) {
-        if (packageDownloadnstall != null) {
-            getMetrics().put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_INSTALL.getValue(), packageDownloadnstall);
+    public void setPackageDownloadnstall(Boolean packageDownloadInstall) {
+        if (packageDownloadInstall != null) {
+            getMetrics().put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_INSTALL.getValue(), packageDownloadInstall);
+        }
+    }
+
+    /**
+     * Gets whether or not to restart the download from the beginning.
+     *
+     * @return {@code true} if the download must be restarted from the beginning, {@code false} otherwise.
+     * @since 1.2.0
+     */
+    public Boolean getPackageDownloadRestart() {
+        return (Boolean) getMetrics().get(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_RESTART.getValue());
+    }
+
+    /**
+     * Sets whether or not to restart the download from the beginning.
+     *
+     * @param restart {@code true} if the download must be restarted from the beginning, {@code false} otherwise.
+     * @sicne 1.2.0
+     */
+    public void setPackageDownloadRestart(Boolean restart) {
+        if (restart != null) {
+            getMetrics().put(PackageAppProperties.APP_PROPERTY_PACKAGE_DOWNLOAD_RESTART.getValue(), restart);
         }
     }
 

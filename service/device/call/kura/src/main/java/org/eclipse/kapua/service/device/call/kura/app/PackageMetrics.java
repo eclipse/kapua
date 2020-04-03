@@ -119,6 +119,11 @@ public enum PackageMetrics {
     APP_METRIC_PACKAGE_DOWNLOAD_INSTALL_VERIFIER_URI("dp.install.verifier.uri"),
 
     /**
+     * @since 1.2.0
+     */
+    APP_METRIC_PACKAGE_DOWNLOAD_FORCE("dp.download.force"),
+
+    /**
      * @since 1.1.0
      */
     APP_METRIC_PACKAGE_DOWNLOAD_BLOCK_SIZE("dp.download.block.size"),

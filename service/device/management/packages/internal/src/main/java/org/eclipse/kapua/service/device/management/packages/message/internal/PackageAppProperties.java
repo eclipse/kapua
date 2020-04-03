@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -100,6 +100,13 @@ public enum PackageAppProperties implements KapuaAppProperties {
      * @since 1.0.0
      */
     APP_PROPERTY_PACKAGE_DOWNLOAD_PACKAGE_INSTALL("kapua.package.download.install"),
+
+    /**
+     * File download restart
+     *
+     * @since 1.1.0
+     */
+    APP_PROPERTY_PACKAGE_DOWNLOAD_RESTART("kapua.package.download.restart"),
 
     /**
      * File download block size

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -115,6 +115,14 @@ public class GwtPackageInstallRequest extends KapuaBaseModel {
 
     //
     // Advanced
+
+    public void setRestart(Boolean restart) {
+        set("restart", restart);
+    }
+
+    public Boolean getRestart() {
+        return get("restart");
+    }
 
     public void setBlockSize(Integer blockSize) {
         set("blockSize", blockSize);
