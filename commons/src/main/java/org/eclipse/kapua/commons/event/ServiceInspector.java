@@ -75,7 +75,7 @@ public class ServiceInspector {
                         KapuaRuntimeException.internalError(String.format("Invalid method signature: number of parameters %d, expected 1", paramsSize));
                     }
                     Class<?> paramClazz = enhancedMethod.getParameterTypes()[0];
-                    if (enhancedMethod.getParameterTypes()[0].equals(ServiceEvent.class)) {
+                    if (!enhancedMethod.getParameterTypes()[0].equals(ServiceEvent.class)) {
                         KapuaRuntimeException.internalError(String.format("Invalid method signature: type of parameters %s, expected ServiceEvent", paramClazz));
                     }
                 } catch (NoSuchMethodException | SecurityException e1) {
