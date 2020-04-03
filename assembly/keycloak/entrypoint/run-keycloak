@@ -6,7 +6,7 @@ if [ ! -f /opt/jboss/keycloak/standalone/data/first-run ]; then
   echo "Initializing Kapua setup ..."
   echo "   Kapua Console: $KAPUA_CONSOLE_URL"
 
-  /opt/jboss/docker-entrypoint.sh -b localhost &
+  /opt/jboss/tools/docker-entrypoint.sh -b localhost &
 
   while ! curl -sf http://localhost:8080/auth; do
     echo Waiting for keycloak to come up ...
@@ -63,9 +63,20 @@ EOF
     {
         "clientId": "console",
         "name": "Web Console",
-        "publicClient": true
+        "publicClient": true,
+        "protocolMappers": [ {
+           "name": "console",
+           "protocol": "openid-connect",
+           "protocolMapper": "oidc-audience-mapper",
+           "config": {
+              "access.token.claim": "true",
+              "included.custom.audience": "console"
+           }
+        } ]
     }
 EOF
+
+# TODO: how did this worked on openshift without the protocolMappers part?
 
   touch /opt/jboss/keycloak/standalone/data/first-run
 
@@ -77,5 +88,5 @@ EOF
   echo "Keycloak shut down ... commencing normal startup"
 fi
 
-exec /opt/jboss/docker-entrypoint.sh $@
+exec /opt/jboss/tools/docker-entrypoint.sh $@
 exit $?
