@@ -106,6 +106,26 @@ public class JobStepDefinitionServiceImpl
     }
 
     @Override
+    public JobStepDefinition findByName(String name) throws KapuaException {
+        //
+        // Argument Validation
+        ArgumentValidator.notNull(name, "name");
+
+        //
+        // Do find
+        return entityManagerSession.onResult(em -> {
+
+            JobStepDefinition jobStepDefinition = JobStepDefinitionDAO.findByName(em, name);
+            if (jobStepDefinition != null) {
+                //
+                // Check Access
+                authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, KapuaId.ANY));
+            }
+            return jobStepDefinition;
+        });
+    }
+
+    @Override
     public JobStepDefinitionListResult query(KapuaQuery<JobStepDefinition> query) throws KapuaException {
         //
         // Argument Validation
