@@ -16,8 +16,8 @@ $common_path = Join-Path $script_dir docker-common.ps1
 
 . $common_path
 
-Write-Host "Undeploying Eclipse Kapua..."
+Write-Host "Opening Eclipse Kapua logs..."
 
-docker-compose -f (Join-Path $script_dir .. compose docker-compose.yml) down
+docker-compose -f (Join-Path $script_dir .. compose docker-compose.yml) logs -f
 
-Write-Host "Undeploying Eclipse Kapua... DONE!"
+Write-Host "Opening Eclipse Kapua logs... DONE!"
