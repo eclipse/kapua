@@ -60,7 +60,40 @@ public abstract class AbstractKapuaServiceApplication<C extends Configuration> e
     }
 
     @Override
-    protected void runInternal(Context context, C config, Future<Void> runFuture) throws Exception {
+    protected final void initInternal(InitContext context, C config) throws Exception {
+
+    }
+
+    @Override
+    protected final void initInternal(InitContext context, C config, Future<Void> initFuture) throws Exception {
+        Objects.requireNonNull(context, "param: context");
+        Objects.requireNonNull(config, "param: config");
+        Objects.requireNonNull(initFuture, "param: runFuture");
+
+        context.getVertx().executeBlocking(runExecution -> {
+            try {
+                doInit(context, config);
+                runExecution.complete();
+            } catch (Exception e) {
+                runExecution.fail(e);
+            }
+        }, resultHandler -> {
+            if (resultHandler.succeeded()) {
+                initFuture.complete();
+            } else {
+                initFuture.fail(resultHandler.cause());
+            }
+        });
+
+    }
+
+    @Override
+    protected final void runInternal(Context context, C config) throws Exception {
+
+    }
+
+    @Override
+    protected final void runInternal(Context context, C config, Future<Void> runFuture) throws Exception {
         Objects.requireNonNull(context, "param: context");
         Objects.requireNonNull(config, "param: config");
         Objects.requireNonNull(runFuture, "param: runFuture");
@@ -87,7 +120,7 @@ public abstract class AbstractKapuaServiceApplication<C extends Configuration> e
                 registerJacksonModule(jacksonModule);
 
                 // Configure Services
-                buildContext(context, config);
+                doRun(context, config);
                 runExecution.complete();
             } catch (Exception exc) {
                 runExecution.fail(exc);
@@ -102,7 +135,10 @@ public abstract class AbstractKapuaServiceApplication<C extends Configuration> e
         });
     }
 
-    protected abstract void buildContext(Context context, C config) throws Exception;
+    protected void doInit(InitContext context, C config) throws Exception {
+    }
+
+    protected abstract void doRun(Context context, C config) throws Exception;
 
     private void registerJacksonModule(Module jacksonModule) {
         Json.mapper.registerModule(jacksonModule);

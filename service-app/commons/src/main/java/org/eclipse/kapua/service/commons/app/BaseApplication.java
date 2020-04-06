@@ -46,7 +46,7 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
 
     private static Logger logger = LoggerFactory.getLogger(BaseApplication.class);
 
-    private static final class ContextImpl implements Context {
+    private static final class InitContextImpl implements InitContext {
 
         private Vertx vertx;
 
@@ -54,7 +54,7 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
 
         private ServiceVerticleBuilders serviceBuilders;
 
-        private ContextImpl(@NotNull Vertx aVertx, @NotNull HttpMonitorServiceVerticleBuilder aMonitorServiceBuilder, @NotNull ServiceVerticleBuilders someServiceBuilders) {
+        private InitContextImpl(@NotNull Vertx aVertx, @NotNull HttpMonitorServiceVerticleBuilder aMonitorServiceBuilder, @NotNull ServiceVerticleBuilders someServiceBuilders) {
             vertx = aVertx;
             monitorServiceBuilder = aMonitorServiceBuilder;
             serviceBuilders = someServiceBuilders;
@@ -66,26 +66,58 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
         }
 
         @Override
+        public HttpMonitorServiceVerticleBuilder getMonitorServiceVerticleBuilder() {
+            return monitorServiceBuilder;
+        }
+
+        @Override
+        public ServiceVerticleBuilders getServiceVerticleBuilders() {
+            return serviceBuilders;
+        }
+
+        public static InitContext create(Vertx aVertx, HttpMonitorServiceVerticleBuilder aMonitorServiceBuilder, ServiceVerticleBuilders someServiceBuilders) {
+            return new InitContextImpl(aVertx, aMonitorServiceBuilder, someServiceBuilders);
+        }
+    }
+
+    private static final class ContextImpl implements Context {
+
+        private Vertx vertx;
+
+        private InitContext initContext;
+
+        private ContextImpl(@NotNull Vertx aVertx, @NotNull InitContext aInitContext) {
+            vertx = aVertx;
+            initContext = aInitContext;
+        }
+
+        @Override
+        public Vertx getVertx() {
+            return vertx;
+        }
+
+        @Override
         public HttpMonitorServiceContext getMonitorServiceContext() {
-            return monitorServiceBuilder.getContext();
+            return initContext.getMonitorServiceVerticleBuilder().getContext();
         }
 
         @Override
         public <C> C getServiceContext(String name, Class<C> clazz) {
-            return clazz.cast(serviceBuilders.getBuilders().get(name).getContext());
+            return clazz.cast(initContext.getServiceVerticleBuilders().get(name).getContext());
         }
 
-        public static ContextImpl create(@NotNull Vertx aVertx, @NotNull HttpMonitorServiceVerticleBuilder aMonitorServiceBuilder, @NotNull ServiceVerticleBuilders someServiceBuilders) {
+        public static ContextImpl create(@NotNull Vertx aVertx, @NotNull HttpMonitorServiceVerticleBuilder aMonitorServiceBuilder, @NotNull InitContext aInitContext) {
             Objects.requireNonNull(aVertx, "param: aVertx");
             // Objects.requireNonNull(aMonitorServiceBuilder, "param: aMonitorServiceBuilder");
-            Objects.requireNonNull(someServiceBuilders, "param: someServiceBuilders");
-            return new ContextImpl(aVertx, aMonitorServiceBuilder, someServiceBuilders);
+            Objects.requireNonNull(aInitContext, "param: aInitContext");
+            return new ContextImpl(aVertx, aInitContext);
         }
     }
 
     private Vertx vertx;
     private C configuration;
-    private ContextImpl context;
+    private InitContext initContext;
+    private Context context;
     private ServiceVerticles services;
     private HttpMonitorServiceVerticle monitorServiceVerticle;
     private Set<ObjectFactory<ServiceVerticleBuilder<?, ?>>> serviceBuilderFactories = new HashSet<>();
@@ -103,7 +135,7 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
         configuration = aConfig;
     }
 
-    @Autowired
+    @Autowired(required=false)
     public void setServiceBuilderFactories(Set<ObjectFactory<ServiceVerticleBuilder<?, ?>>> aServiceBuilderFactories) {
         Objects.requireNonNull(serviceBuilderFactories, "param: serviceBuilderFactories");
         serviceBuilderFactories.addAll(aServiceBuilderFactories);
@@ -119,12 +151,13 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
         Future.succeededFuture().compose(map -> {
             try {
                 ServiceVerticleBuilders serviceBuilders = new ServiceVerticleBuilders();
-                for (ObjectFactory<ServiceVerticleBuilder<?, ?>> factory : serviceBuilderFactories) {
-                    factory.getObject().register(serviceBuilderRegistry);
+                if (serviceBuilderFactories != null && serviceBuilderFactories.size() > 0) {
+                    for (ObjectFactory<ServiceVerticleBuilder<?, ?>> factory : serviceBuilderFactories) {
+                        factory.getObject().register(serviceBuilderRegistry);
+                    }
                 }
-
                 for (String name : serviceBuilderRegistry.getNames()) {
-                    serviceBuilders.getBuilders().put(name, serviceBuilderRegistry.get(name));
+                    serviceBuilders.put(name, serviceBuilderRegistry.get(name));
                 }
 
                 HttpMonitorServiceVerticleBuilder httpMonitorBuilder = null;
@@ -132,9 +165,17 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
                 if (isMonitoringEnabled(monitorConfig)) {
                     httpMonitorBuilder = HttpMonitorServiceVerticle.builder(monitorConfig);
                 }
-
+                Future<Void> initInternalReq = Future.future();
+                initContext = InitContextImpl.create(vertx, httpMonitorBuilder, serviceBuilders);
+                initInternal(initContext, configuration, initInternalReq);
+                context = ContextImpl.create(vertx, httpMonitorBuilder, initContext);
+                return initInternalReq;
+            } catch (Exception exc) {
+                return Future.failedFuture(exc);
+            }
+        }).compose(map -> {
+            try {
                 Future<Void> runInternalReq = Future.future();
-                context = ContextImpl.create(vertx, httpMonitorBuilder, serviceBuilders);
                 runInternal(context, configuration, runInternalReq);
                 return runInternalReq;
             } catch (Exception exc) {
@@ -143,11 +184,11 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
         }).compose(map -> {
 
             // Create services
-            HttpMonitorServiceVerticleBuilder monitorServiceBuilder = context.monitorServiceBuilder;
-            ServiceVerticleBuilders serviceBuilders = context.serviceBuilders;
+            HttpMonitorServiceVerticleBuilder monitorServiceBuilder = initContext.getMonitorServiceVerticleBuilder();
+            ServiceVerticleBuilders serviceBuilders = initContext.getServiceVerticleBuilders();
             services = new ServiceVerticles();
-            for (String name : serviceBuilders.getBuilders().keySet()) {
-                ServiceVerticle service = context.serviceBuilders.getBuilders().get(name).build();
+            for (String name : serviceBuilders.getNames()) {
+                ServiceVerticle service = serviceBuilders.get(name).build();
                 if (monitorServiceBuilder != null && service instanceof HealthCheckProvider) {
                     monitorServiceBuilder.getContext().addHealthCheckProvider((HealthCheckProvider) service);
                 }
@@ -198,10 +239,32 @@ public class BaseApplication<C extends Configuration> implements ApplicationRunn
         }
     }
 
+    /*
+     * Do not call yourself, override it if you expect that it will take a short time to execute
+     */
+    protected void initInternal(InitContext context, C config) throws Exception {
+    }
+
+    /*
+     * Do not call yourself, override it if you expect that initInternal will take long time to execute
+     */
+    protected void initInternal(InitContext context, C config, Future<Void> initFuture) throws Exception {
+        initInternal(context, config);
+        initFuture.complete();
+    }
+
+    /*
+     * Do not call yourself, override it if you expect that it will take a short time to execute
+     */
     protected void runInternal(Context context, C config) throws Exception {
     }
 
+    /*
+     * Do not call yourself, override it if you expect that runInternal will take long time to execute
+     */
     protected void runInternal(Context context, C config, Future<Void> runFuture) throws Exception {
+        runInternal(context, config);
+        runFuture.complete();
     }
 
     private boolean isMonitoringEnabled(HttpMonitorServiceConfig aMonitorConfig) {

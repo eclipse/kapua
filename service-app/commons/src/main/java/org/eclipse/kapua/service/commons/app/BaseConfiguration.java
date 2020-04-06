@@ -11,14 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons.app;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.eclipse.kapua.service.commons.ServiceVerticleBuilder;
 import org.eclipse.kapua.service.commons.http.HttpMonitorServiceConfig;
-import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 public class BaseConfiguration implements Configuration {
 
@@ -26,8 +20,6 @@ public class BaseConfiguration implements Configuration {
     private long startupTimeout;
     private VertxConfig vertxConfig;
     private HttpMonitorServiceConfig monitorServiceConfig;
-
-    private Set<ObjectFactory<? extends ServiceVerticleBuilder<?, ?>>> serviceBuilderFactories = new HashSet<>();
 
     @Override
     public String getApplicationName() {
@@ -67,11 +59,5 @@ public class BaseConfiguration implements Configuration {
     @Autowired
     public void setHttpMonitorServiceConfig(HttpMonitorServiceConfig aConfig) {
         monitorServiceConfig = aConfig;
-    }
-
-    @Qualifier("services")
-    @Autowired
-    public void setServiceBuilderFactories(Set<ObjectFactory<? extends ServiceVerticleBuilder<?, ?>>> someServiceBuilderFactories) {
-        this.serviceBuilderFactories.addAll(someServiceBuilderFactories);
     }
 }

@@ -11,14 +11,25 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class ServiceVerticleBuilders {
 
     private Map<String, ServiceVerticleBuilder<?, ? extends ServiceVerticle>> builders = new HashMap<>();
 
-    public Map<String, ServiceVerticleBuilder<?, ? extends ServiceVerticle>> getBuilders() {
-        return builders;
+    public Set<String> getNames() {
+        return Collections.unmodifiableSet(builders.keySet());
+    }
+
+    public ServiceVerticleBuilders put(String name, ServiceVerticleBuilder<?, ? extends ServiceVerticle> builder) {
+        builders.put(name, builder);
+        return this;
+    }
+
+    public ServiceVerticleBuilder<?, ? extends ServiceVerticle> get(String name) {
+        return builders.get(name);
     }
 }
