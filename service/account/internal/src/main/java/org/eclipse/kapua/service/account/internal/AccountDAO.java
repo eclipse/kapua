@@ -23,7 +23,7 @@ import org.eclipse.kapua.service.account.AccountListResult;
 
 /**
  * {@link Account} {@link ServiceDAO}
- * 
+ *
  * @since 1.0
  */
 public class AccountDAO {
@@ -33,7 +33,7 @@ public class AccountDAO {
 
     /**
      * Creates and return new Account
-     * 
+     *
      * @param em
      * @param accountCreator
      * @return
@@ -65,7 +65,7 @@ public class AccountDAO {
 
     /**
      * Updates the provided account
-     * 
+     *
      * @param em
      * @param account
      * @return
@@ -95,7 +95,7 @@ public class AccountDAO {
      * @return
      */
     public static Account findByName(EntityManager em, String name) {
-        return ServiceDAO.findByField(em, AccountImpl.class, "name", name);
+        return ServiceDAO.findByField(em, AccountImpl.class, null, "name", name);
     }
 
     /**

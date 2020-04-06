@@ -20,7 +20,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 
 /**
  * Service configuration DAO
- * 
+ *
  * @since 1.0
  *
  */
@@ -28,7 +28,7 @@ public class ServiceConfigDAO extends ServiceDAO {
 
     /**
      * Create and return new service configuration
-     * 
+     *
      * @param em
      * @param serviceConfigCreator
      * @return
@@ -48,7 +48,7 @@ public class ServiceConfigDAO extends ServiceDAO {
 
     /**
      * Update the provided service configuration
-     * 
+     *
      * @param em
      * @param serviceConfig
      * @return
@@ -83,7 +83,7 @@ public class ServiceConfigDAO extends ServiceDAO {
      * @return
      */
     public static ServiceConfig findByName(EntityManager em, String name) {
-        return ServiceDAO.findByField(em, ServiceConfigImpl.class, "name", name);
+        return ServiceDAO.findByField(em, ServiceConfigImpl.class, null, "name", name);
     }
 
     /**

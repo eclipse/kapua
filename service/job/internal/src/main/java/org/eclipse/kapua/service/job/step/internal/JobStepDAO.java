@@ -92,7 +92,7 @@ public class JobStepDAO {
      * @return
      */
     public static JobStep findByName(EntityManager em, String name) {
-        return ServiceDAO.findByField(em, JobStepImpl.class, "name", name);
+        return ServiceDAO.findByField(em, JobStepImpl.class, null, "name", name);
     }
 
     /**

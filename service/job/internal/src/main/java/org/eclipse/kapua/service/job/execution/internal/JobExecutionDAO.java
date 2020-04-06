@@ -92,7 +92,7 @@ public class JobExecutionDAO {
      * @since 1.0.0
      */
     public static JobExecution findByName(EntityManager em, String name) {
-        return ServiceDAO.findByField(em, JobExecutionImpl.class, "name", name);
+        return ServiceDAO.findByField(em, JobExecutionImpl.class, null, "name", name);
     }
 
     /**

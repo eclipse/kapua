@@ -89,7 +89,7 @@ public class UserDAO extends ServiceDAO {
      * @return
      */
     public static User findByName(EntityManager em, String name) {
-        return ServiceDAO.findByField(em, UserImpl.class, "name", name);
+        return ServiceDAO.findByField(em, UserImpl.class, null, "name", name);
     }
 
     /**
@@ -100,7 +100,7 @@ public class UserDAO extends ServiceDAO {
      * @return the user record, may be {@code null}
      */
     public static User findByExternalId(final EntityManager em, final String externalId) {
-        return ServiceDAO.findByField(em, UserImpl.class, "externalId", externalId);
+        return ServiceDAO.findByField(em, UserImpl.class, null, "externalId", externalId);
     }
 
     /**

@@ -87,7 +87,7 @@ public class AccessTokenDAO extends ServiceDAO {
      * @return
      */
     public static AccessToken findByTokenId(EntityManager em, String tokenId) {
-        return ServiceDAO.findByField(em, AccessTokenImpl.class, "tokenId", tokenId);
+        return ServiceDAO.findByField(em, AccessTokenImpl.class, null, "tokenId", tokenId);
     }
 
     /**

@@ -120,7 +120,7 @@ public class JobStepDefinitionDAO {
     }
 
     public static JobStepDefinition findByName(EntityManager em, String name) {
-        return ServiceDAO.findByField(em, JobStepDefinitionImpl.class, KapuaNamedEntityAttributes.NAME, name);
+        return ServiceDAO.findByField(em, JobStepDefinitionImpl.class, null, KapuaNamedEntityAttributes.NAME, name);
     }
 
 }

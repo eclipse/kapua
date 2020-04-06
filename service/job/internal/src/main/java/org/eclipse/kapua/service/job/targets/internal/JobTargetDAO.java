@@ -24,7 +24,7 @@ import org.eclipse.kapua.service.job.targets.JobTargetStatus;
 
 /**
  * JobTarget DAO
- * 
+ *
  * @since 1.0
  *
  */
@@ -35,7 +35,7 @@ public class JobTargetDAO {
 
     /**
      * Creates and return new JobTarget
-     * 
+     *
      * @param em
      * @param jobTargetCreator
      * @return
@@ -57,7 +57,7 @@ public class JobTargetDAO {
 
     /**
      * Updates the provided jobTarget
-     * 
+     *
      * @param em
      * @param jobTarget
      * @return
@@ -92,7 +92,7 @@ public class JobTargetDAO {
      * @return
      */
     public static JobTarget findByName(EntityManager em, String name) {
-        return ServiceDAO.findByField(em, JobTargetImpl.class, "name", name);
+        return ServiceDAO.findByField(em, JobTargetImpl.class, null, "name", name);
     }
 
     /**
