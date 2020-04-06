@@ -60,16 +60,15 @@ public class JobEngineBeanProvider extends AbstractBeanProvider<JobEngineConfigu
     @Bean
     @ConfigurationProperties(prefix = "services.job-engine.http")
     public @Autowired HttpServiceConfig getHttpServiceConfig() {
-        return new HttpServiceConfig();
+        HttpServiceConfig config = new HttpServiceConfig();
+        config.setName(JOB_ENGINE_HTTP_SERVICE_NAME);
+        return config;
     }
 
     @Autowired
     @Bean(JOB_ENGINE_HTTP_SERVICE_BUILDER_BEAN)
     public HttpServiceVerticleBuilder httpServiceBuilder(Vertx aVertx, HttpServiceConfig aConfig, Handler<RoutingContext> authHandler) {
         Objects.requireNonNull(aConfig, "param: aConfig");
-        if (aConfig.getName() == null) {
-            aConfig.setName(JOB_ENGINE_HTTP_SERVICE_NAME);
-        }
         HttpServiceVerticleBuilder builder = HttpServiceVerticle.builder(aConfig);
         builder.getContext().setAuthHandler(authHandler);
         return builder;

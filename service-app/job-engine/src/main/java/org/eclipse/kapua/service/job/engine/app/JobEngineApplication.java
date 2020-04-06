@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.kapua.service.commons.app.AbstractKapuaServiceApplication;
 import org.eclipse.kapua.service.commons.app.Context;
+import org.eclipse.kapua.service.commons.http.HttpServiceConfig;
 import org.eclipse.kapua.service.commons.http.HttpServiceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +47,7 @@ public class JobEngineApplication extends AbstractKapuaServiceApplication<JobEng
         Objects.requireNonNull(config, "param: config");
 
         // Configure Services
-        context.getServiceContext("jobEngineHttpService", HttpServiceContext.class).addController(config.getController());
+        HttpServiceConfig svcConfig = config.getHttpServiceConfig();
+        context.getServiceContext(svcConfig.getName(), HttpServiceContext.class).addController(config.getController());
     }
 }
