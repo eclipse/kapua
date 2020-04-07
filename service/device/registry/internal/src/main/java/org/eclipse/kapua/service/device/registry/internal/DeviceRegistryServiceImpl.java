@@ -77,7 +77,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         DeviceQuery query = new DeviceQueryImpl(deviceCreator.getScopeId());
         query.setPredicate(query.attributePredicate(DeviceAttributes.CLIENT_ID, deviceCreator.getClientId()));
 
-        if (count(query) > 0) {
+        if (count(query, false) > 0) {
             throw new KapuaDuplicateNameException(deviceCreator.getClientId());
         }
 
@@ -107,14 +107,29 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
 
     @Override
     public DeviceListResult query(KapuaQuery<Device> query) throws KapuaException {
-        DeviceValidation.validateQueryPreconditions(query);
+        return query(query, true);
+    }
+
+    private DeviceListResult query(KapuaQuery<Device> query, boolean checkPermission) throws KapuaException {
+        if (checkPermission) {
+            DeviceValidation.validateQueryPreconditionsAndPermission(query);
+        }
+        else {
+            DeviceValidation.validateQueryPreconditions(query);
+        }
 
         return entityManagerSession.onResult(entityManager -> DeviceDAO.query(entityManager, query));
     }
 
     @Override
     public long count(KapuaQuery<Device> query) throws KapuaException {
-        DeviceValidation.validateCountPreconditions(query);
+        return count(query, true);
+    }
+
+    private long count(KapuaQuery<Device> query, boolean checkPermission) throws KapuaException {
+        if (checkPermission) {
+            DeviceValidation.validateCountPreconditions(query);
+        }
 
         return entityManagerSession.onResult(entityManager -> DeviceDAO.count(entityManager, query));
     }
@@ -137,7 +152,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         //
         // Query and parse result
         Device device = null;
-        DeviceListResult result = query(query);
+        DeviceListResult result = query(query, false);
         if (!result.isEmpty()) {
             device = result.getFirstItem();
         }
@@ -151,6 +166,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         if (kapuaEvent == null) {
             //service bus error. Throw some exception?
         }
+        //TODO perform permission check
         LOGGER.info("DeviceRegistryService: received kapua event from {}, operation {}", kapuaEvent.getService(), kapuaEvent.getOperation());
         if ("group".equals(kapuaEvent.getService()) && "delete".equals(kapuaEvent.getOperation())) {
             deleteDeviceByGroupId(kapuaEvent.getScopeId(), kapuaEvent.getEntityId());
@@ -166,7 +182,8 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         DeviceQuery query = deviceFactory.newQuery(scopeId);
         query.setPredicate(query.attributePredicate(DeviceAttributes.GROUP_ID, groupId));
 
-        DeviceListResult devicesToDelete = query(query);
+      //caller method (onKapuaEvent) must perform permission check
+        DeviceListResult devicesToDelete = query(query, false);
 
         for (Device d : devicesToDelete.getItems()) {
             d.setGroupId(null);
@@ -180,7 +197,8 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
 
         DeviceQuery query = deviceFactory.newQuery(accountId);
 
-        DeviceListResult devicesToDelete = query(query);
+        //caller method (onKapuaEvent) must perform permission check
+        DeviceListResult devicesToDelete = query(query, false);
 
         for (Device d : devicesToDelete.getItems()) {
             delete(d.getScopeId(), d.getId());

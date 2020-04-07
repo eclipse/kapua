@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.device.registry.common;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
@@ -168,6 +169,18 @@ public final class DeviceValidation {
      * @param query
      * @throws KapuaException
      */
+    public static void validateQueryPreconditionsAndPermission(KapuaQuery<Device> query) throws KapuaException {
+        validateQueryPreconditions(query);
+
+        authorizationService.checkPermission(permissionFactory.newPermission(DEVICE_DOMAIN, Actions.read, query.getScopeId(), Group.ANY));
+    }
+
+    /**
+     * Validates the device query precondition
+     *
+     * @param query
+     * @throws KapuaException
+     */
     public static void validateQueryPreconditions(KapuaQuery<Device> query) throws KapuaException {
         ArgumentValidator.notNull(query, "query");
         List<String> fetchAttributes = query.getFetchAttributes();
@@ -233,21 +246,24 @@ public final class DeviceValidation {
      * @since 1.0.0
      */
     private static KapuaId findCurrentGroupId(KapuaId scopeId, KapuaId entityId) throws KapuaException {
-        DeviceQuery query = deviceFactory.newQuery(scopeId);
-        query.setPredicate(query.attributePredicate(DeviceAttributes.ENTITY_ID, entityId));
-
-        DeviceListResult results = null;
-        try {
-            results = KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.query(query));
-        } catch (Exception e) {
-            throw KapuaException.internalError(e, "Error while searching groupId");
-        }
-
         KapuaId groupId = null;
-        if (results != null && !results.isEmpty()) {
-            groupId = results.getFirstItem().getGroupId();
-        }
+        KapuaSession kapuaSession = KapuaSecurityUtils.getSession();
+        if (kapuaSession==null || !kapuaSession.isTrustedMode()) {//has any sense checking the null since if kapua session is null, the session is corrupted
+            DeviceQuery query = deviceFactory.newQuery(scopeId);
+            query.setPredicate(query.attributePredicate(DeviceAttributes.ENTITY_ID, entityId));
 
+            DeviceListResult results = null;
+            try {
+                results = KapuaSecurityUtils.doPrivileged(() -> deviceRegistryService.query(query));
+            } catch (Exception e) {
+                throw KapuaException.internalError(e, "Error while searching groupId");
+            }
+
+            if (results != null && !results.isEmpty()) {
+                groupId = results.getFirstItem().getGroupId();
+            }
+
+        }
         return groupId;
     }
 }
