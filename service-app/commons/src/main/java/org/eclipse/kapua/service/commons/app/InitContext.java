@@ -11,16 +11,29 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons.app;
 
+import java.util.Set;
+
+import org.eclipse.kapua.service.commons.ServiceVerticleBuilder;
 import org.eclipse.kapua.service.commons.ServiceVerticleBuilders;
 import org.eclipse.kapua.service.commons.http.HttpMonitorServiceVerticleBuilder;
+import org.springframework.beans.factory.ObjectFactory;
 
 import io.vertx.core.Vertx;
 
-public interface InitContext {
+/**
+ * This class defines the initialization context of a Vertx based application
+ *
+ * @param <C> the configuration class associated with your own Vertx based application
+ */
+public interface InitContext<C extends Configuration> {
 
     public Vertx getVertx();
 
+    public C getConfig();
+
     public HttpMonitorServiceVerticleBuilder getMonitorServiceVerticleBuilder();
+
+    public Set<ObjectFactory<ServiceVerticleBuilder<?, ?>>> getServiceBuilderFactories();
 
     public ServiceVerticleBuilders getServiceVerticleBuilders();
 }

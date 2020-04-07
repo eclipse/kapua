@@ -42,7 +42,7 @@ public class JobEngineApplication extends AbstractKapuaServiceApplication<JobEng
     }
 
     @Override
-    protected void doRun(Context context, JobEngineConfiguration config) throws Exception {
+    protected void runInternal(Context context, JobEngineConfiguration config) throws Exception {
         Objects.requireNonNull(context, "param: context");
         Objects.requireNonNull(config, "param: config");
 

@@ -14,6 +14,8 @@ package org.eclipse.kapua.service.commons.app;
 import java.util.Objects;
 
 import org.eclipse.kapua.service.commons.http.HttpMonitorServiceConfig;
+import org.eclipse.kapua.service.commons.http.HttpMonitorServiceVerticle;
+import org.eclipse.kapua.service.commons.http.HttpMonitorServiceVerticleBuilder;
 import org.eclipse.kapua.service.commons.http.HttpServiceHandlers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,6 +31,13 @@ import io.vertx.core.VertxOptions;
 import io.vertx.ext.dropwizard.DropwizardMetricsOptions;
 import io.vertx.ext.web.RoutingContext;
 
+/**
+ * This class defines the beans used by {@link BaseApplication} and several other classes (e.g. 
+ * {@link BaseConfiguration}). It must be extended by a bean provider class associated with your 
+ * own Vertx based application. 
+ * 
+ * @param <C> the configuration class associated with your own Vertx based application 
+ */
 public abstract class AbstractBeanProvider<C extends Configuration> {
 
     private static final String DEFAULT_AUTH_HANDLER = "defaultAuthHandler";
@@ -50,6 +59,13 @@ public abstract class AbstractBeanProvider<C extends Configuration> {
     @ConfigurationProperties(prefix = "monitoring")
     public HttpMonitorServiceConfig httpMonitoringServiceConfig() {
         return new HttpMonitorServiceConfig();
+    }
+
+    @Autowired
+    @Bean
+    @Qualifier("monitoring")
+    public HttpMonitorServiceVerticleBuilder getHttpMonitoringServiceVerticleBuilder(HttpMonitorServiceConfig config) {
+        return HttpMonitorServiceVerticle.builder(config);
     }
 
     @Bean(DEFAULT_AUTH_HANDLER)
@@ -77,6 +93,11 @@ public abstract class AbstractBeanProvider<C extends Configuration> {
         opts.setMetricsOptions(metrOpts);
         Vertx vertx = Vertx.vertx(opts);
         return vertx;
+    }
+
+    @Bean
+    public InitContext<C> initContext() {
+        return new InitContextImpl<C>();
     }
 
     private String applicationName;

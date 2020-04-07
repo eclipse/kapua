@@ -11,6 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons.app;
 
+/**
+ * This class defines the configurations used to create the Vertx instance 
+ *
+ */
 public class VertxConfig {
 
     private long warningExceptionTime = 10000;

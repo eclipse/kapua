@@ -15,6 +15,10 @@ import org.eclipse.kapua.service.commons.http.HttpMonitorServiceContext;
 
 import io.vertx.core.Vertx;
 
+/**
+ * This class defines the running context of a Vertx based application
+ *
+ */
 public interface Context {
 
     public Vertx getVertx();

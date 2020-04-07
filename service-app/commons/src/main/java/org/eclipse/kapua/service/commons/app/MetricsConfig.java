@@ -11,6 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.commons.app;
 
+/**
+ * This class defines the configuration for the metrics
+ *
+ */
 public class MetricsConfig {
 
     private boolean enable;
