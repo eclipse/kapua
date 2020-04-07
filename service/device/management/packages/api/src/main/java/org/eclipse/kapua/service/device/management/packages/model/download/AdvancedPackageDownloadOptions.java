@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -26,6 +26,22 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = DevicePackageXmlRegistry.class, factoryMethod = "newAdvancedPackageDownloadOptions")
 public interface AdvancedPackageDownloadOptions {
+
+    /**
+     * Gets whether or not to restart the download from the beginning.
+     *
+     * @return {@code true} if the download must be restarted from the beginning, {@code false} otherwise.
+     * @since 1.2.0
+     */
+    Boolean getRestart();
+
+    /**
+     * Sets whether or not to restart the download from the beginning.
+     *
+     * @param restart {@code true} if the download must be restarted from the beginning, {@code false} otherwise.
+     * @sicne 1.2.0
+     */
+    void setRestart(Boolean restart);
 
     /**
      * Gets the size in {@code Byte}s of the blocks to transfer from the URI.

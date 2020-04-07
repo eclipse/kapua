@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,6 +20,7 @@ import org.eclipse.kapua.service.device.management.packages.model.download.Advan
  */
 public class AdvancedPackageDownloadOptionsImpl implements AdvancedPackageDownloadOptions {
 
+    private Boolean restart;
     private Integer blockSize;
     private Integer blockDelay;
     private Integer blockTimeout;
@@ -43,6 +44,7 @@ public class AdvancedPackageDownloadOptionsImpl implements AdvancedPackageDownlo
     public AdvancedPackageDownloadOptionsImpl(AdvancedPackageDownloadOptions advancedPackageDownloadOptions) {
         super();
 
+        setRestart(advancedPackageDownloadOptions.getRestart());
         setBlockSize(advancedPackageDownloadOptions.getBlockSize());
         setBlockDelay(advancedPackageDownloadOptions.getBlockDelay());
         setBlockTimeout(advancedPackageDownloadOptions.getBlockTimeout());
@@ -50,6 +52,15 @@ public class AdvancedPackageDownloadOptionsImpl implements AdvancedPackageDownlo
         setInstallVerifierURI(advancedPackageDownloadOptions.getInstallVerifierURI());
     }
 
+    @Override
+    public Boolean getRestart() {
+        return restart;
+    }
+
+    @Override
+    public void setRestart(Boolean restart) {
+        this.restart = restart;
+    }
 
     @Override
     public Integer getBlockSize() {
