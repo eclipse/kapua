@@ -26,4 +26,6 @@ public class UserAttributes extends KapuaNamedEntityAttributes {
     public static final String PHONE_NUMBER = "phoneNumber";
     public static final String EMAIL = "email";
     public static final String DISPLAY_NAME = "displayName";
+    public static final String EXTERNAL_ID = "externalId";
+
 }

@@ -81,7 +81,7 @@ public class TriggerDefinitionDAO {
     }
 
     public static TriggerDefinition findByName(EntityManager em, String name) {
-        return ServiceDAO.findByField(em, TriggerDefinitionImpl.class, null, KapuaNamedEntityAttributes.NAME, name);
+        return ServiceDAO.findByField(em, TriggerDefinitionImpl.class, KapuaNamedEntityAttributes.NAME, name);
     }
 
     /**

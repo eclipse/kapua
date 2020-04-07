@@ -273,7 +273,26 @@ public class ServiceDAO {
      *
      * @param em      The {@link EntityManager} that holds the transaction.
      * @param clazz   The {@link KapuaEntity} class. This must be the implementing {@code class}.
-     * @param scopeId
+     * @param name    The {@link KapuaEntity} name of the field from which to search.
+     * @param value   The value of the field from which to search.
+     * @return The {@link KapuaEntity} found, or {@code null} if not found.
+     * @throws NonUniqueResultException When more than one result is returned
+     * @since 1.0.0
+     */
+    @Nullable
+    public static <E extends KapuaEntity> E findByField(@NotNull EntityManager em,
+                                                        @NotNull Class<E> clazz,
+                                                        @NotNull String name,
+                                                        @NotNull Object value) {
+        return findByField(em, clazz, null, name, value);
+    }
+
+    /**
+     * Find by fields {@link KapuaEntity} utility method
+     *
+     * @param em      The {@link EntityManager} that holds the transaction.
+     * @param clazz   The {@link KapuaEntity} class. This must be the implementing {@code class}.
+     * @param scopeId The Scope ID in which to look for results.
      * @param name    The {@link KapuaEntity} name of the field from which to search.
      * @param value   The value of the field from which to search.
      * @return The {@link KapuaEntity} found, or {@code null} if not found.

@@ -18,6 +18,7 @@ import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
+import org.eclipse.kapua.service.authentication.token.AccessTokenAttributes;
 import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
 import org.eclipse.kapua.service.authentication.token.AccessTokenListResult;
 
@@ -87,7 +88,7 @@ public class AccessTokenDAO extends ServiceDAO {
      * @return
      */
     public static AccessToken findByTokenId(EntityManager em, String tokenId) {
-        return ServiceDAO.findByField(em, AccessTokenImpl.class, null, "tokenId", tokenId);
+        return ServiceDAO.findByField(em, AccessTokenImpl.class, AccessTokenAttributes.TOKEN_ID, tokenId);
     }
 
     /**
