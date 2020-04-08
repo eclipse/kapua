@@ -39,7 +39,7 @@ public interface AdvancedPackageDownloadOptions {
      * Sets whether or not to restart the download from the beginning.
      *
      * @param restart {@code true} if the download must be restarted from the beginning, {@code false} otherwise.
-     * @sicne 1.2.0
+     * @since 1.2.0
      */
     void setRestart(Boolean restart);
 
