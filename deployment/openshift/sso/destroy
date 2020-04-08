@@ -12,11 +12,24 @@
 ###############################################################################
 
 #
-# This script configures Kapua to make use of SSO using Keycloak
+# This script destroys the Keycloak project
 #
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-OPENSHIFT_SSO_DIR="${SCRIPT_DIR}/../../openshift/sso"
+set -e
 
-eval "$(minishift oc-env)"
-exec "${OPENSHIFT_SSO_DIR}/activate"
+# Commons
+
+. "${BASH_SOURCE%/*}/env"
+. "${BASH_SOURCE%/*}/functions"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+. ${SCRIPT_DIR}/../openshift-common.sh
+
+### Remove Keycloak
+
+echo "Undeploying Keycloak from Openshift"
+
+${OC} login --username=${OPENSHIFT_USER} --password=${OPENSHIFT_PASS} ${OPENSHIFT_LOGIN_OPTS} &>/dev/null
+
+${OC} delete project "${KEYCLOAK_PROJECT_NAME}"
+
+echo "Eclipse Keycloak undeployed from Openshift"

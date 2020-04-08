@@ -1,6 +1,5 @@
-#!/usr/bin/env bash
 ###############################################################################
-# Copyright (c) 2016, 2018 Red Hat Inc and others
+# Copyright (c) 2017, 2020 Red Hat Inc and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -12,10 +11,17 @@
 #     Eurotech
 ###############################################################################
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+FROM jboss/keycloak:7.0.0
 
-export IMAGE_VERSION=${IMAGE_VERSION:=latest}
+COPY run-keycloak /opt/jboss/run-keycloak
 
-# parse ifconfig and take the first available IP address (should work for all *nix systems)
-EXTERNAL_IP=$(ifconfig | grep -E "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v '127.0.0.1' | awk '{ print $2 }' | cut -f2 -d: | head -n1)
-export EXTERNAL_IP
+USER 0
+
+RUN chown -R jboss:0 /opt/jboss && \
+    chmod -R g=u /opt/jboss
+
+USER jboss
+
+VOLUME /opt/jboss/keycloak/standalone/data
+
+ENTRYPOINT ["/opt/jboss/run-keycloak"]

@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+###############################################################################
+# Copyright (c) 2020 Eurotech and/or its affiliates and others
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     Eurotech - initial API and implementation
+###############################################################################
+
+ERROR=0
+DOCKER_ACCOUNT=${DOCKER_ACCOUNT:=kapua}
+IMAGE_VERSION=${IMAGE_VERSION:=latest}
+KEYCLOAK="keycloak"
+TMP_DIR="/tmp/keycloak-container-$(date +%s)"
+
+echo "Creating tmp directory: ${TMP_DIR}..."
+mkdir -p "${TMP_DIR}" || die "Cannot create directory '${TMP_DIR}' where to copy files."
+
+echo "Creating tmp directory... DONE!"
+echo ""
+
+(
+    echo "Exporting Keycloak image..."
+    echo "    ${KEYCLOAK}:${IMAGE_VERSION}"
+    docker save -o "${TMP_DIR}"/${KEYCLOAK} ${DOCKER_ACCOUNT}/${KEYCLOAK}:${IMAGE_VERSION} &> /dev/null ||
+        {
+            echo "    Cannot export image: ${KEYCLOAK}:${IMAGE_VERSION}"
+            echo "    Perhaps it is not present in the local Docker registry?"
+            echo ""
+            exit 1
+        }
+    echo "Exporting Keycloak image... DONE!"
+    echo ""
+
+    eval "$(minishift docker-env)"
+
+    echo "Importing Keycloak image into Minishift..."
+    echo "${KEYCLOAK}:${IMAGE_VERSION}"
+    docker load < "${TMP_DIR}"/${KEYCLOAK} &> /dev/null ||
+        {
+            echo "    Cannot import image: ${KEYCLOAK}:${IMAGE_VERSION}"
+            echo "    Perhaps due to previous errors?"
+            exit 1
+        }
+    echo "Importing Keycloak images into Minishift... DONE!"
+    echo ""
+) ||
+    {
+        ERROR=1;
+        echo "Exporting/Importing Keycloak image... FAILED!"
+        echo "    Perhaps docker images are not present in the local Docker registry?"
+        echo "    Please check running command:"
+        echo "        docker images"
+        echo "    If no '${DOCKER_ACCOUNT}/${KEYCLOAK}*:${IMAGE_VERSION}' image is present, please build it running command:"
+        echo "        mvn clean install -Pkeycloak"
+        echo ""
+    }
+
+echo "Removing tmp directory: ${TMP_DIR}..."
+if [ -d "${TMP_DIR}" ]; then
+    rm -rf "${TMP_DIR}"
+fi
+echo "Removing tmp directory... DONE!"
+
+exit ${ERROR}

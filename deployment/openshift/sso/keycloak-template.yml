@@ -6,12 +6,6 @@ metadata:
   name: eclipse-kapua-keycloak
 
 parameters:
-- name:         GIT_REPO
-  description:     GitHub repository
-  value:           https://github.com/eclipse/kapua
-- name:         GIT_REF
-  description:     GitHub branch/tag/revision
-  value:           develop
 - name:         KAPUA_CONSOLE_URL
   description:     The URL to the Kapua Console
   required:        true
@@ -56,28 +50,6 @@ objects:
   metadata:
     name: keycloak
 
-- kind: BuildConfig
-  apiVersion: v1
-  metadata:
-    name: keycloak-build
-  spec:
-    triggers: 
-      - type: ImageChange
-      - type: ConfigChange
-    source: 
-      type: Git
-      git:
-        uri: ${GIT_REPO}
-        ref: ${GIT_REF}
-      contextDir: deployment/openshift/sso
-    strategy: 
-      type: Docker
-      dockerStrategy:
-    postCommit:
-    output: 
-      to:
-        kind: ImageStreamTag
-        name: keycloak:latest
 
 # DC, Service & route
 
@@ -92,16 +64,6 @@ objects:
       deploymentconfig: keycloak
     strategy:
       type: Recreate
-    triggers:
-      - type: ConfigChange 
-      - type: ImageChange 
-        imageChangeParams:
-          automatic: true
-          containerNames:
-            - keycloak
-          from:
-            kind: ImageStreamTag
-            name: keycloak:latest
     template:
       metadata:
         labels:
@@ -109,8 +71,8 @@ objects:
           deploymentconfig: keycloak
       spec:
         containers:
-        - image: keycloak
-          imagePullPolicy: Always
+        - image: kapua/keycloak:latest
+          imagePullPolicy: Never
           name: keycloak
           ports:
           - containerPort: 8080 
@@ -175,7 +137,7 @@ objects:
 - kind: Route
   apiVersion: v1
   metadata:
-    name: web # Must not contain "console" - Also see: KEYCLOAK-4737
+    name: web # Must not contain "console" - Also see: KEYCLOAK-4737 # TODO: this should have been fixed, check it
     labels:
       app: keycloak
   spec:

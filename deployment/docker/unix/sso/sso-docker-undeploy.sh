@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###############################################################################
-# Copyright (c) 2016, 2019 Red Hat Inc and others
+# Copyright (c) 2016, 2020 Red Hat Inc and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -13,11 +13,11 @@
 ###############################################################################
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-. ${SCRIPT_DIR}/docker-common.sh
+. "${SCRIPT_DIR}/sso-docker-common.sh"
 
-echo "Deploying Eclipse Kapua..."
+echo "Undeploying Eclipse Kapua..."
 
-docker-compose -f ${SCRIPT_DIR}/../../compose/sso/docker-compose.yml up -d
+docker-compose -f ${SCRIPT_DIR}/../../compose/sso/sso-docker-compose.yml down
+rm -R "${SSO_CRT_DIR}"
 
-echo "Deploying Eclipse Kapua... DONE!"
-echo "Run \"docker-compose -f ${SCRIPT_DIR}/../compose/sso/docker-compose.yml logs -f\" for container logs"
+echo "Undeploying Eclipse Kapua... DONE!"
