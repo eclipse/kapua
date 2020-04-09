@@ -82,7 +82,7 @@ public class JobDeviceManagementTriggerManagerServiceImpl implements JobDeviceMa
     static {
         TriggerDefinition deviceConnectTrigger;
         try {
-            deviceConnectTrigger = TRIGGER_DEFINITION_SERVICE.findByName("Device Connect");
+            deviceConnectTrigger = KapuaSecurityUtils.doPrivileged(() -> TRIGGER_DEFINITION_SERVICE.findByName("Device Connect"));
             if (deviceConnectTrigger == null) {
                 throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, "Device Connect");
             }
