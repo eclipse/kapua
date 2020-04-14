@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.transport.message.mqtt;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.eclipse.kapua.transport.message.TransportChannel;
 import org.eclipse.kapua.transport.mqtt.setting.MqttClientSetting;
@@ -30,7 +31,7 @@ public class MqttTopic implements TransportChannel {
      *
      * @since 1.0.0
      */
-    private static final String TOPIC_SEPARATOR = MqttClientSetting.getInstance().getString(MqttClientSettingKeys.TRANSPORT_TOPIC_SEPARATOR);
+    private static final String TOPIC_SEPARATOR = MqttClientSetting.getInstance().getString(MqttClientSettingKeys.TRANSPORT_TOPIC_SEPARATOR, "/");
 
     /**
      * {@link Pattern} used to optimize {@link String#split(String)} of the {@link #topic}
@@ -101,10 +102,21 @@ public class MqttTopic implements TransportChannel {
      * @since 1.0.0
      */
     public String[] getSplittedTopic() {
-        if (getTopic() == null) {
+        if (Strings.isNullOrEmpty(getTopic())) {
             return new String[0];
         }
 
         return SPLIT_PATTERN.split(getTopic());
+    }
+
+    /**
+     * Gets {@link #getTopic()} for a more user-friendly output.
+     *
+     * @return The {@link #getTopic()}
+     * @since 1.2.0
+     */
+    @Override
+    public String toString() {
+        return getTopic();
     }
 }

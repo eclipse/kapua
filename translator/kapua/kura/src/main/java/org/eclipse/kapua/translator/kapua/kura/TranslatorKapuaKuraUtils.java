@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,15 +12,13 @@
 package org.eclipse.kapua.translator.kapua.kura;
 
 import org.eclipse.kapua.message.KapuaPosition;
-import org.eclipse.kapua.service.device.call.message.DevicePosition;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPosition;
 
 /**
- * Messages translator utilities.<br>
- * It provides helpful methods for translate position and response code.
+ * {@link org.eclipse.kapua.translator.Translator} utilities.<br>
+ * It provides helpful methods for translate {@link org.eclipse.kapua.message.Position}.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public final class TranslatorKapuaKuraUtils {
 
@@ -28,16 +26,16 @@ public final class TranslatorKapuaKuraUtils {
     }
 
     /**
-     * Translate {@link DevicePosition} to {@link KapuaPosition}
+     * Translates {@link KapuaPosition} to {@link KuraPosition}
      *
-     * @param kapuaPosition
-     * @return
+     * @param kapuaPosition The {@link KapuaPosition} to translate
+     * @return The translated {@link KuraPosition}
+     * @since 1.0.0
      */
-    public static DevicePosition translate(KapuaPosition kapuaPosition) {
-        DevicePosition kuraPosition = null;
+    public static KuraPosition translate(KapuaPosition kapuaPosition) {
+        KuraPosition kuraPosition = null;
 
         if (kapuaPosition != null) {
-
             kuraPosition = new KuraPosition();
             kuraPosition.setAltitude(kapuaPosition.getAltitude());
             kuraPosition.setHeading(kapuaPosition.getHeading());

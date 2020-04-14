@@ -53,9 +53,9 @@ public class JmsMessage implements TransportMessage<JmsTopic, JmsPayload> {
      * @since 1.0.0
      */
     public JmsMessage(JmsTopic topic, Date receivedOn, JmsPayload payload) {
-        this.topic = topic;
-        this.receivedOn = receivedOn;
-        this.payload = payload;
+        setTopic(topic);
+        setReceivedOn(receivedOn);
+        setPayload(payload);
     }
 
     /**
@@ -122,4 +122,20 @@ public class JmsMessage implements TransportMessage<JmsTopic, JmsPayload> {
         this.payload = payload;
     }
 
+    /**
+     * Gets the {@link JmsMessage} fields concatenated in a user-friendly {@link String}.
+     *
+     * @return The {@link JmsMessage} fields concatenated in a user-friendly {@link String}.
+     * @since 1.2.0
+     */
+    @Override
+    public String toString() {
+        String[] toStringTokens = new String[3];
+
+        toStringTokens[0] = getReceivedOn() != null ? getReceivedOn().toString() : null;
+        toStringTokens[1] = getTopic() != null ? getTopic().toString() : null;
+        toStringTokens[2] = getPayload() != null ? getPayload().toString() : null;
+
+        return String.join(", ", toStringTokens);
+    }
 }

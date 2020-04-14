@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,80 +12,85 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.service.device.call.message.DevicePosition;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseCode;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
 
 /**
- * Messages translator utilities.<br>
- * It provides helpful methods for translate position and response code.
+ * {@link org.eclipse.kapua.translator.Translator} utilities.<br>
+ * It provides helpful methods for translate {@link DevicePosition} and {@link KuraResponseCode}.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public final class TranslatorKuraKapuaUtils {
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final KapuaMessageFactory KAPUA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaMessageFactory.class);
 
     private TranslatorKuraKapuaUtils() {
     }
 
     /**
-     * Translate {@link DevicePosition} to {@link KapuaPosition}
+     * Translates {@link DevicePosition} to {@link KapuaPosition}
      *
-     * @param kuraPosition
-     * @return
+     * @param devicePosition The {@link DevicePosition} to translate.
+     * @return The translated {@link KapuaPosition}.
+     * @since 1.0.0
      */
-    public static KapuaPosition translate(DevicePosition kuraPosition) {
+    public static KapuaPosition translate(DevicePosition devicePosition) {
         KapuaPosition kapuaPosition = null;
 
-        if (kuraPosition != null) {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            KapuaMessageFactory kapuaMessageFactory = locator.getFactory(KapuaMessageFactory.class);
+        if (devicePosition != null) {
+            kapuaPosition = KAPUA_MESSAGE_FACTORY.newPosition();
 
-            kapuaPosition = kapuaMessageFactory.newPosition();
-            kapuaPosition.setAltitude(kuraPosition.getAltitude());
-            kapuaPosition.setHeading(kuraPosition.getHeading());
-            kapuaPosition.setLatitude(kuraPosition.getLatitude());
-            kapuaPosition.setLongitude(kuraPosition.getLongitude());
-            kapuaPosition.setPrecision(kuraPosition.getPrecision());
-            kapuaPosition.setSatellites(kuraPosition.getSatellites());
-            kapuaPosition.setSpeed(kuraPosition.getSpeed());
-            kapuaPosition.setStatus(kuraPosition.getStatus());
-            kapuaPosition.setTimestamp(kuraPosition.getTimestamp());
+            kapuaPosition.setAltitude(devicePosition.getAltitude());
+            kapuaPosition.setHeading(devicePosition.getHeading());
+            kapuaPosition.setLatitude(devicePosition.getLatitude());
+            kapuaPosition.setLongitude(devicePosition.getLongitude());
+            kapuaPosition.setPrecision(devicePosition.getPrecision());
+            kapuaPosition.setSatellites(devicePosition.getSatellites());
+            kapuaPosition.setSpeed(devicePosition.getSpeed());
+            kapuaPosition.setStatus(devicePosition.getStatus());
+            kapuaPosition.setTimestamp(devicePosition.getTimestamp());
         }
 
         return kapuaPosition;
     }
 
     /**
-     * Translate Kura response code to {@link KapuaResponseCode}
+     * Translate {@link KuraResponseCode} to {@link KapuaResponseCode}
      *
-     * @param kuraResponseCode
-     * @return
+     * @param kuraResponseCode The {@link KuraResponseCode} to translate.
+     * @return The translated {@link KapuaResponseCode}
+     * @since 1.0.0
      */
-    public static KapuaResponseCode translate(Integer kuraResponseCode) {
-        KapuaResponseCode responseCode;
+    public static KapuaResponseCode translate(KuraResponseCode kuraResponseCode) throws KapuaException {
         if (kuraResponseCode == null) {
-            responseCode = null;
-        } else {
-            switch (kuraResponseCode) {
-            case 200:
+            return null;
+        }
+
+        KapuaResponseCode responseCode;
+        switch (kuraResponseCode) {
+            case ACCEPTED:
                 responseCode = KapuaResponseCode.ACCEPTED;
                 break;
-            case 400:
+            case BAD_REQUEST:
                 responseCode = KapuaResponseCode.BAD_REQUEST;
                 break;
-            case 404:
+            case NOT_FOUND:
                 responseCode = KapuaResponseCode.NOT_FOUND;
                 break;
-            case 500:
+            case INTERNAL_ERROR:
                 responseCode = KapuaResponseCode.INTERNAL_ERROR;
                 break;
             default:
-                responseCode = null;
-            }
+                throw KapuaException.internalError("Kura Response code not mapped");
         }
-        return responseCode;
 
+        return responseCode;
     }
 }

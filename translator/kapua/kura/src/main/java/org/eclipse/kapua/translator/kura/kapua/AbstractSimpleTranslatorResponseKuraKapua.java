@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Red Hat Inc and others.
+ * Copyright (c) 2017, 2020 Red Hat Inc and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Red Hat Inc - initial API and implementation
+ *     Eurotech
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
@@ -21,9 +22,18 @@ import org.eclipse.kapua.service.device.management.message.response.KapuaRespons
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 import org.eclipse.kapua.service.device.management.request.GenericRequestFactory;
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseMessage;
+import org.eclipse.kapua.translator.exception.InvalidChannelException;
+import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
+/**
+ * {@link org.eclipse.kapua.translator.Translator} {@code abstract} implementation for {@link KuraResponseMessage} to {@link KapuaResponseMessage}
+ *
+ * @since 1.0.0
+ */
 public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends KapuaResponseChannel, TO_P extends KapuaResponsePayload, TO_M extends KapuaResponseMessage<TO_C, TO_P>>
         extends AbstractTranslatorResponseKuraKapua<TO_C, TO_P, TO_M> {
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
     private final Class<TO_M> messageClazz;
 
@@ -33,11 +43,10 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
 
     @Override
     protected TO_M createMessage() throws KapuaException {
+        GenericRequestFactory genericRequestFactory = LOCATOR.getFactory(GenericRequestFactory.class);
 
         try {
             if (this.messageClazz.equals(GenericResponseMessage.class)) {
-                KapuaLocator locator = KapuaLocator.getInstance();
-                GenericRequestFactory genericRequestFactory = locator.getFactory(GenericRequestFactory.class);
                 return this.messageClazz.cast(genericRequestFactory.newResponseMessage());
             } else {
                 return this.messageClazz.newInstance();
@@ -58,8 +67,8 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
     }
 
     @Override
-    protected abstract TO_C translateChannel(KuraResponseChannel kuraChannel) throws KapuaException;
+    protected abstract TO_C translateChannel(KuraResponseChannel kuraChannel) throws InvalidChannelException;
 
     @Override
-    protected abstract TO_P translatePayload(KuraResponsePayload kuraPayload) throws KapuaException;
+    protected abstract TO_P translatePayload(KuraResponsePayload kuraPayload) throws InvalidPayloadException;
 }

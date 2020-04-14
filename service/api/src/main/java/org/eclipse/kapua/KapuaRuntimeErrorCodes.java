@@ -39,7 +39,9 @@ public enum KapuaRuntimeErrorCodes implements KapuaErrorCode {
      * Translator not found
      *
      * @since 1.0.0
+     * @deprecated Since 1.2.0. Moved error to more appropriate {@code kapua-translator-api} module.
      */
+    @Deprecated
     TRANSLATOR_NOT_FOUND,
 
     /**

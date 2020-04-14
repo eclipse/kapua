@@ -16,6 +16,9 @@ import org.eclipse.kapua.service.device.call.kura.KuraMethod;
 import org.eclipse.kapua.service.device.call.message.app.request.DeviceRequestChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.KuraAppChannel;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * {@link DeviceRequestChannel} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  *
@@ -117,4 +120,10 @@ public class KuraRequestChannel extends KuraAppChannel implements DeviceRequestC
         this.requesterClientId = requesterClientId;
     }
 
+    @Override
+    public List<String> getParts() {
+        List<String> parts = super.getParts();
+        parts.addAll(Arrays.asList(getResources()));
+        return parts;
+    }
 }

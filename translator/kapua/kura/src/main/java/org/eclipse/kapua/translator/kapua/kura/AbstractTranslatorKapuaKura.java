@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaChannel;
 import org.eclipse.kapua.message.KapuaMessage;
@@ -23,47 +23,68 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
-import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleRequestMessage;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.translator.Translator;
+import org.eclipse.kapua.translator.exception.InvalidChannelException;
+import org.eclipse.kapua.translator.exception.InvalidMessageException;
+import org.eclipse.kapua.translator.exception.InvalidPayloadException;
+import org.eclipse.kapua.translator.exception.TranslateException;
 
 /**
- * Messages translator implementation from {@link BundleRequestMessage} to {@link KuraRequestMessage}
+ * {@link Translator} abstract implementation from {@link KapuaMessage} to {@link KuraRequestMessage}
  *
  * @since 1.0.0
  */
-public abstract class AbstractTranslatorKapuaKura<FROM_C extends KapuaChannel, FROM_P extends KapuaPayload, FROM_M extends KapuaMessage<FROM_C, FROM_P>>
-        extends Translator<FROM_M, KuraRequestMessage> {
+public abstract class AbstractTranslatorKapuaKura<FROM_C extends KapuaChannel, FROM_P extends KapuaPayload, FROM_M extends KapuaMessage<FROM_C, FROM_P>> extends Translator<FROM_M, KuraRequestMessage> {
+
+    private static final String CONTROL_MESSAGE_CLASSIFIER = SystemSetting.getInstance().getMessageClassifier();
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
+    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
 
     @Override
-    public KuraRequestMessage translate(FROM_M kapuaMessage) throws KapuaException {
-        //
-        // Kura channel
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AccountService accountService = locator.getService(AccountService.class);
-        Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(kapuaMessage.getScopeId()));
+    public KuraRequestMessage translate(FROM_M kapuaMessage) throws TranslateException {
+        try {
+            Account account = KapuaSecurityUtils.doPrivileged(() -> ACCOUNT_SERVICE.find(kapuaMessage.getScopeId()));
 
-        Device device = null;
-        DeviceRegistryService deviceService = locator.getService(DeviceRegistryService.class);
-        if (kapuaMessage.getDeviceId() != null) {
-            device = deviceService.find(kapuaMessage.getScopeId(), kapuaMessage.getDeviceId());
+            Device device = null;
+            if (kapuaMessage.getDeviceId() != null) {
+                device = DEVICE_REGISTRY_SERVICE.find(kapuaMessage.getScopeId(), kapuaMessage.getDeviceId());
+            }
+
+            KuraRequestChannel kuraRequestChannel = translateChannel(kapuaMessage.getChannel());
+            kuraRequestChannel.setScope(account.getName());
+            kuraRequestChannel.setClientId(device != null ? device.getClientId() : kapuaMessage.getClientId());
+
+            //
+            // Kura payload
+            KuraRequestPayload kuraPayload = translatePayload(kapuaMessage.getPayload());
+
+            //
+            // Return Kura Message
+            return new KuraRequestMessage(kuraRequestChannel, kapuaMessage.getReceivedOn(), kuraPayload);
+        } catch (InvalidChannelException | InvalidPayloadException te) {
+            throw te;
+        } catch (Exception e) {
+            throw new InvalidMessageException(e, kapuaMessage);
         }
-        KuraRequestChannel kuraRequestChannel = translateChannel(kapuaMessage.getChannel());
-        kuraRequestChannel.setScope(account.getName());
-        kuraRequestChannel.setClientId(device != null ? device.getClientId() : kapuaMessage.getClientId());
-
-        //
-        // Kura payload
-        KuraRequestPayload kuraPayload = translatePayload(kapuaMessage.getPayload());
-
-        //
-        // Return Kura Message
-        return new KuraRequestMessage(kuraRequestChannel, kapuaMessage.getReceivedOn(), kuraPayload);
     }
 
-    protected abstract KuraRequestChannel translateChannel(FROM_C kapuaChannel) throws KapuaException;
+    /**
+     * Gets the value from {@link SystemSetting#getMessageClassifier()}
+     *
+     * @return The value from {@link SystemSetting#getMessageClassifier()}
+     * @since 1.2.0
+     */
+    protected static String getControlMessageClassifier() {
+        return CONTROL_MESSAGE_CLASSIFIER;
+    }
 
-    protected abstract KuraRequestPayload translatePayload(FROM_P kapuaPayload) throws KapuaException;
+    protected abstract KuraRequestChannel translateChannel(FROM_C kapuaChannel) throws InvalidChannelException;
+
+    protected abstract KuraRequestPayload translatePayload(FROM_P kapuaPayload) throws InvalidPayloadException;
 
 }

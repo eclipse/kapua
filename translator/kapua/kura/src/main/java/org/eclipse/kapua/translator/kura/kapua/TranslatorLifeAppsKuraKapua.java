@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,7 +12,6 @@
 package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
@@ -28,55 +27,62 @@ import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraAppsPayl
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.translator.Translator;
+import org.eclipse.kapua.translator.exception.InvalidChannelException;
+import org.eclipse.kapua.translator.exception.InvalidMessageException;
+import org.eclipse.kapua.translator.exception.InvalidPayloadException;
+import org.eclipse.kapua.translator.exception.TranslateException;
 
 /**
- * Messages translator implementation from {@link KuraAppsMessage} to {@link KapuaAppsMessage}
+ * {@link Translator} implementation from {@link KuraAppsMessage} to {@link KapuaAppsMessage}
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class TranslatorLifeAppsKuraKapua extends Translator<KuraAppsMessage, KapuaAppsMessage> {
 
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
+    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
+
     @Override
-    public KapuaAppsMessage translate(KuraAppsMessage kuraAppsMessage)
-            throws KapuaException {
-        KapuaAppsMessage kapuaAppsMessage = new KapuaAppsMessageImpl();
-        kapuaAppsMessage.setChannel(translate(kuraAppsMessage.getChannel()));
-        kapuaAppsMessage.setPayload(translate(kuraAppsMessage.getPayload()));
+    public KapuaAppsMessage translate(KuraAppsMessage kuraAppsMessage) throws TranslateException {
+        try {
+            KapuaAppsMessage kapuaAppsMessage = new KapuaAppsMessageImpl();
+            kapuaAppsMessage.setChannel(translate(kuraAppsMessage.getChannel()));
+            kapuaAppsMessage.setPayload(translate(kuraAppsMessage.getPayload()));
 
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AccountService accountService = locator.getService(AccountService.class);
-        Account account = accountService.findByName(kuraAppsMessage.getChannel().getScope());
+            Account account = ACCOUNT_SERVICE.findByName(kuraAppsMessage.getChannel().getScope());
+            if (account == null) {
+                throw new KapuaEntityNotFoundException(Account.TYPE, kuraAppsMessage.getChannel().getScope());
+            }
 
-        if (account == null) {
-            throw new KapuaEntityNotFoundException(Account.TYPE, kuraAppsMessage.getChannel().getScope());
+            Device device = DEVICE_REGISTRY_SERVICE.findByClientId(account.getId(), kuraAppsMessage.getChannel().getClientId());
+            if (device == null) {
+                throw new KapuaEntityNotFoundException(Device.class.toString(), kuraAppsMessage.getChannel().getClientId());
+            }
+
+            kapuaAppsMessage.setDeviceId(device.getId());
+            kapuaAppsMessage.setScopeId(account.getId());
+            kapuaAppsMessage.setCapturedOn(kuraAppsMessage.getPayload().getTimestamp());
+            kapuaAppsMessage.setSentOn(kuraAppsMessage.getPayload().getTimestamp());
+            kapuaAppsMessage.setReceivedOn(kuraAppsMessage.getTimestamp());
+            kapuaAppsMessage.setPosition(TranslatorKuraKapuaUtils.translate(kuraAppsMessage.getPayload().getPosition()));
+
+            return kapuaAppsMessage;
+        } catch (InvalidChannelException | InvalidPayloadException te) {
+            throw te;
+        } catch (Exception e) {
+            throw new InvalidMessageException(e, kuraAppsMessage);
         }
-
-        DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
-        Device device = deviceRegistryService.findByClientId(account.getId(), kuraAppsMessage.getChannel().getClientId());
-        if (device == null) {
-            throw new KapuaEntityNotFoundException(Device.class.toString(), kuraAppsMessage.getChannel().getClientId());
-        }
-
-        kapuaAppsMessage.setDeviceId(device.getId());
-        kapuaAppsMessage.setScopeId(account.getId());
-        kapuaAppsMessage.setCapturedOn(kuraAppsMessage.getPayload().getTimestamp());
-        kapuaAppsMessage.setSentOn(kuraAppsMessage.getPayload().getTimestamp());
-        kapuaAppsMessage.setReceivedOn(kuraAppsMessage.getTimestamp());
-        kapuaAppsMessage.setPosition(TranslatorKuraKapuaUtils.translate(kuraAppsMessage.getPayload().getPosition()));
-
-        return kapuaAppsMessage;
     }
 
-    private KapuaAppsChannel translate(KuraAppsChannel kuraAppsChannel)
-            throws KapuaException {
+    private KapuaAppsChannel translate(KuraAppsChannel kuraAppsChannel) {
         KapuaAppsChannel kapuaAppsChannel = new KapuaAppsChannelImpl();
         kapuaAppsChannel.setClientId(kuraAppsChannel.getClientId());
         return kapuaAppsChannel;
     }
 
-    private KapuaAppsPayload translate(KuraAppsPayload kuraAppsPayload)
-            throws KapuaException {
+    private KapuaAppsPayload translate(KuraAppsPayload kuraAppsPayload) {
         return new KapuaAppsPayloadImpl(
                 kuraAppsPayload.getUptime(),
                 kuraAppsPayload.getDisplayName(),
@@ -118,5 +124,4 @@ public class TranslatorLifeAppsKuraKapua extends Translator<KuraAppsMessage, Kap
     public Class<KapuaAppsMessage> getClassTo() {
         return KapuaAppsMessage.class;
     }
-
 }

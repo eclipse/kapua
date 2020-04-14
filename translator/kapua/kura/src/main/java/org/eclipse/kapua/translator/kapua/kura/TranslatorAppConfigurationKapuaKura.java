@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,18 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.Password;
 import org.eclipse.kapua.commons.configuration.metatype.TadImpl;
 import org.eclipse.kapua.commons.configuration.metatype.TiconImpl;
 import org.eclipse.kapua.commons.configuration.metatype.TocdImpl;
 import org.eclipse.kapua.commons.configuration.metatype.ToptionImpl;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
-import org.eclipse.kapua.model.config.metatype.KapuaToption;
 import org.eclipse.kapua.service.device.call.kura.app.ConfigurationMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfiguration;
@@ -33,109 +29,93 @@ import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraReques
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
-import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationAppProperties;
 import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationImpl;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationRequestChannel;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationRequestMessage;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationRequestPayload;
-import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
-import org.eclipse.kapua.translator.exception.TranslatorException;
+import org.eclipse.kapua.translator.exception.InvalidChannelException;
+import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
-import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
- * Messages translator implementation from {@link ConfigurationRequestMessage} to {@link KuraRequestMessage}
+ * {@link org.eclipse.kapua.translator.Translator} implementation from {@link ConfigurationRequestMessage} to {@link KuraRequestMessage}
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapuaKura<ConfigurationRequestChannel, ConfigurationRequestPayload, ConfigurationRequestMessage> {
 
-    private static final String CONTROL_MESSAGE_CLASSIFIER = SystemSetting.getInstance().getMessageClassifier();
-    private static final Map<DeviceConfigurationAppProperties, ConfigurationMetrics> PROPERTIES_DICTIONARY = new HashMap<>();
+    @Override
+    protected KuraRequestChannel translateChannel(ConfigurationRequestChannel kapuaChannel) throws InvalidChannelException {
+        try {
+            KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
+            kuraRequestChannel.setMessageClassification(getControlMessageClassifier());
+            kuraRequestChannel.setAppId(ConfigurationMetrics.APP_ID + "-" + ConfigurationMetrics.APP_VERSION);
+            kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.translate(kapuaChannel.getMethod()));
 
-    static {
-        PROPERTIES_DICTIONARY.put(DeviceConfigurationAppProperties.APP_NAME, ConfigurationMetrics.APP_ID);
-        PROPERTIES_DICTIONARY.put(DeviceConfigurationAppProperties.APP_VERSION, ConfigurationMetrics.APP_VERSION);
+            // Build resources
+            List<String> resources = new ArrayList<>();
+            if (kapuaChannel.getConfigurationId() == null) {
+                resources.add("configurations");
+                String componentId = kapuaChannel.getComponentId();
+                if (componentId != null) {
+                    resources.add(componentId);
+                }
+            } else if (kapuaChannel.getConfigurationId() != null) {
+                resources.add("snapshots");
+
+                String configurationId = kapuaChannel.getConfigurationId();
+                if (configurationId != null) {
+                    resources.add(configurationId);
+                }
+            }
+            kuraRequestChannel.setResources(resources.toArray(new String[0]));
+
+            // Return Kura Channel
+            return kuraRequestChannel;
+        } catch (Exception e) {
+            throw new InvalidChannelException(e, kapuaChannel);
+        }
     }
 
     @Override
-    protected KuraRequestChannel translateChannel(ConfigurationRequestChannel kapuaChannel) throws KapuaException {
-        KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
-        kuraRequestChannel.setMessageClassification(CONTROL_MESSAGE_CLASSIFIER);
+    protected KuraRequestPayload translatePayload(ConfigurationRequestPayload kapuaPayload) throws InvalidPayloadException {
+        try {
+            KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
-        // Build appId
-        StringBuilder appIdSb = new StringBuilder();
-        appIdSb.append(PROPERTIES_DICTIONARY.get(DeviceConfigurationAppProperties.APP_NAME).getValue())
-                .append("-")
-                .append(PROPERTIES_DICTIONARY.get(DeviceConfigurationAppProperties.APP_VERSION).getValue());
+            if (kapuaPayload.hasBody()) {
+                DeviceConfiguration kapuaDeviceConfiguration;
+                try {
+                    kapuaDeviceConfiguration = XmlUtil.unmarshal(new String(kapuaPayload.getBody()), DeviceConfigurationImpl.class);
+                } catch (Exception e) {
+                    throw new InvalidPayloadException(e, kapuaPayload);
+                }
 
-        kuraRequestChannel.setAppId(appIdSb.toString());
-        kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.get(kapuaChannel.getMethod()));
+                KuraDeviceConfiguration kuraDeviceConfiguration = translate(kapuaDeviceConfiguration);
 
-        // Build resources
-        List<String> resources = new ArrayList<>();
-        if (kapuaChannel.getConfigurationId() == null) {
-            resources.add("configurations");
-            String componentId = kapuaChannel.getComponentId();
-            if (componentId != null) {
-                resources.add(componentId);
+                byte[] body;
+                try {
+                    body = XmlUtil.marshal(kuraDeviceConfiguration).getBytes();
+                } catch (Exception e) {
+                    throw new InvalidPayloadException(e, kapuaPayload);
+                }
+
+                kuraRequestPayload.setBody(body);
             }
-        } else if (kapuaChannel.getConfigurationId() != null) {
-            resources.add("snapshots");
 
-            String configurationId = kapuaChannel.getConfigurationId();
-            if (configurationId != null) {
-                resources.add(configurationId);
-            }
+            // Return Kura Payload
+            return kuraRequestPayload;
+        } catch (InvalidPayloadException ipe) {
+            throw ipe;
+        } catch (Exception e) {
+            throw new InvalidPayloadException(e, kapuaPayload);
         }
-        kuraRequestChannel.setResources(resources.toArray(new String[resources.size()]));
-
-        //
-        // Return Kura Channel
-        return kuraRequestChannel;
     }
 
-    @Override
-    protected KuraRequestPayload translatePayload(ConfigurationRequestPayload kapuaPayload) throws KapuaException {
-        KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
-
-        if (kapuaPayload.getBody() != null) {
-            DeviceConfiguration kapuaDeviceConfiguration;
-            try {
-                kapuaDeviceConfiguration = XmlUtil.unmarshal(new String(kapuaPayload.getBody()),
-                        DeviceConfigurationImpl.class);
-            } catch (Exception e) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD,
-                        e,
-                        kapuaPayload.getBody());
-            }
-
-            KuraDeviceConfiguration kuraDeviceConfiguration = translate(kapuaDeviceConfiguration);
-
-            byte[] body;
-            try {
-                body = XmlUtil.marshal(kuraDeviceConfiguration).getBytes();
-            } catch (Exception e) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD,
-                        e,
-                        kapuaPayload.getBody());
-            }
-
-            kuraRequestPayload.setBody(body);
-        }
-
-        //
-        // Return Kura Payload
-        return kuraRequestPayload;
-    }
-
-    private KuraDeviceConfiguration translate(DeviceConfiguration kapuaDeviceConfiguration)
-            throws KapuaException {
+    protected KuraDeviceConfiguration translate(DeviceConfiguration kapuaDeviceConfiguration) {
         KuraDeviceConfiguration kuraDeviceConfiguration = new KuraDeviceConfiguration();
 
         for (DeviceComponentConfiguration kapuaDeviceCompConf : kapuaDeviceConfiguration.getComponentConfigurations()) {
@@ -156,14 +136,14 @@ public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapua
         return kuraDeviceConfiguration;
     }
 
-    private KapuaTocd translate(KapuaTocd kapuaDefinition) {
+    protected KapuaTocd translate(KapuaTocd kapuaDefinition) {
         TocdImpl definition = new TocdImpl();
 
         definition.setId(kapuaDefinition.getId());
         definition.setName(kapuaDefinition.getName());
         definition.setDescription(kapuaDefinition.getDescription());
 
-        for (KapuaTad kapuaAd : kapuaDefinition.getAD()) {
+        kapuaDefinition.getAD().forEach(kapuaAd -> {
             TadImpl ad = new TadImpl();
             ad.setCardinality(kapuaAd.getCardinality());
             ad.setDefault(ad.getDefault());
@@ -175,49 +155,36 @@ public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapua
             ad.setType(kapuaAd.getType());
             ad.setRequired(kapuaAd.isRequired());
 
-            for (KapuaToption kuraToption : kapuaAd.getOption()) {
+            kapuaAd.getOption().forEach(kuraToption -> {
                 ToptionImpl kapuaToption = new ToptionImpl();
-
                 kapuaToption.setLabel(kuraToption.getLabel());
                 kapuaToption.setValue(kuraToption.getValue());
-
                 ad.addOption(kapuaToption);
-            }
+            });
 
-            for (Entry<QName, String> entry : kapuaAd.getOtherAttributes().entrySet()) {
-                ad.putOtherAttribute(entry.getKey(),
-                        entry.getValue());
-            }
+            kapuaAd.getOtherAttributes().forEach(ad::putOtherAttribute); // Such magic!
 
             definition.addAD(ad);
-        }
+        });
 
-        for (KapuaTicon kapuaIcon : kapuaDefinition.getIcon()) {
+        kapuaDefinition.getIcon().forEach(kapuaIcon -> {
             KapuaTicon icon = new TiconImpl();
             icon.setResource(kapuaIcon.getResource());
             icon.setSize(kapuaIcon.getSize());
 
             definition.addIcon(icon);
-        }
+        });
 
-        for (Object kapuaAny : kapuaDefinition.getAny()) {
-            definition.addAny(kapuaAny);
-        }
-
-        for (Entry<QName, String> entry : kapuaDefinition.getOtherAttributes().entrySet()) {
-            definition.putOtherAttribute(entry.getKey(),
-                    entry.getValue());
-        }
+        kapuaDefinition.getAny().forEach(definition::addAny); // Such magic!
+        kapuaDefinition.getOtherAttributes().forEach(definition::putOtherAttribute); // Such magic!
 
         return definition;
     }
 
-    private Map<String, Object> translate(Map<String, Object> kapuaProperties) {
+    protected Map<String, Object> translate(Map<String, Object> kapuaProperties) {
         Map<String, Object> properties = new HashMap<>();
-        for (Entry<String, Object> entry : kapuaProperties.entrySet()) {
-            Object value = entry.getValue();
 
-            //
+        kapuaProperties.forEach((key, value) -> {
             // Special management of Password type field
             if (value instanceof Password) {
                 value = new KuraPassword(((Password) value).getPassword());
@@ -233,11 +200,10 @@ public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapua
                 value = kuraPasswords;
             }
 
-            //
             // Set property
-            properties.put(entry.getKey(),
-                    value);
-        }
+            properties.put(key, value);
+        });
+
         return properties;
     }
 
@@ -250,5 +216,4 @@ public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapua
     public Class<KuraRequestMessage> getClassTo() {
         return KuraRequestMessage.class;
     }
-
 }

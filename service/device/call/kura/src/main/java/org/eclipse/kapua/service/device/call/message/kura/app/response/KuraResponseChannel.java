@@ -14,6 +14,8 @@ package org.eclipse.kapua.service.device.call.message.kura.app.response;
 import org.eclipse.kapua.service.device.call.message.app.response.DeviceResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.KuraAppChannel;
 
+import java.util.List;
+
 /**
  * {@link DeviceResponseChannel} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  *
@@ -66,5 +68,13 @@ public class KuraResponseChannel extends KuraAppChannel implements DeviceRespons
     @Override
     public void setRequestId(String requestId) {
         this.requestId = requestId;
+    }
+
+    @Override
+    public List<String> getParts() {
+        List<String> parts = super.getParts();
+        parts.add(getReplyPart());
+        parts.add(getRequestId());
+        return parts;
     }
 }

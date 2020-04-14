@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,87 +11,153 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.app;
 
+import org.eclipse.kapua.service.device.call.message.DeviceMetrics;
+
 /**
- * Command metrics properties definition.
- * 
- * @since 1.0
+ * Command {@link DeviceMetrics}.
  *
+ * @since 1.0.0
  */
-public enum CommandMetrics {
+public enum CommandMetrics implements DeviceMetrics {
+
     /**
-     * Application identifier
+     * Application identifier.
+     *
+     * @since 1.0.0
      */
     APP_ID("CMD"),
+
     /**
-     * Application version
+     * Application version.
+     *
+     * @since 1.0.0
      */
     APP_VERSION("V1"),
 
     // Request
+
     /**
-     * Command
+     * Command metric name.
+     *
+     * @since 1.0.0
      */
     APP_METRIC_CMD("command.command"),
+
     /**
-     * ARGUMENT
+     * Arguments metric name.
+     *
+     * @since 1.0.0
      */
     APP_METRIC_ARG("command.argument"),
+
     /**
-     * Environment
+     * Environment metric name.
+     *
+     * @since 1.0.0
      */
     APP_METRIC_ENVP("command.environment.pair"),
+
     /**
-     * Working directory
+     * Working directory metric name.
+     *
+     * @since 1.0.0
      */
     APP_METRIC_DIR("command.working.directory"),
+
     /**
-     * Standard input
+     * Standard input metric name.
+     *
+     * @since 1.0.0
      */
     APP_METRIC_STDIN("command.stdin"),
+
     /**
-     * Command timeout
+     * Command timeout metric name.
+     *
+     * @since 1.0.0
      */
     APP_METRIC_TOUT("command.timeout"),
+
     /**
-     * Asynchronous running
+     * Asynchronous running metric name.
+     *
+     * @since 1.0.0
      */
     APP_METRIC_ASYNC("command.run.async"),
+
     /**
-     * Password
+     * Password metric name.
+     *
+     * @since 1.0.0
      */
     APP_METRIC_PASSWORD("command.password"),
 
     // Response
     /**
-     * Standard error
+     * Standard error metric name.
+     *
+     * @since 1.0.0
      */
     APP_METRIC_STDERR("command.stderr"),
+
     /**
-     * Standard output
+     * Standard output metric name.
+     *
+     * @since 1.0.0
      */
     APP_METRIC_STDOUT("command.stdout"),
+
     /**
-     * Command exit code
+     * Command exit code metric name.
+     *
+     * @since 1.0.0
      */
     APP_METRIC_EXIT_CODE("command.exit.code"),
+
     /**
-     * Command timed out flag
+     * Command timed out flag metric name.
+     *
+     * @since 1.0.0
      */
     APP_METRIC_TIMED_OUT("command.timedout"),
     ;
 
-    private String value;
+    /**
+     * The name of the metric.
+     *
+     * @since 1.0.0
+     */
+    private final String name;
 
-    CommandMetrics(String value) {
-        this.value = value;
+    /**
+     * Constructor.
+     *
+     * @param name The name of the metric.
+     * @since 1.0.0
+     */
+    CommandMetrics(String name) {
+        this.name = name;
     }
 
     /**
-     * Get a value property associated to this specific enumeration key.
-     * 
-     * @return
+     * Gets the value property associated to this specific enumeration key.
+     *
+     * @return the value property associated to this specific enumeration key.
+     * @since 1.0.0
+     * @deprecated Since 1.2.0. Renamed to {@link #getName()}.
      */
+    @Deprecated
     public String getValue() {
-        return value;
+        return getName();
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }

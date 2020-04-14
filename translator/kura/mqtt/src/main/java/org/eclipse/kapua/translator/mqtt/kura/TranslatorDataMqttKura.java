@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,63 +12,85 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.mqtt.kura;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.message.internal.MessageException;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataChannel;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataPayload;
 import org.eclipse.kapua.translator.Translator;
+import org.eclipse.kapua.translator.exception.InvalidChannelException;
+import org.eclipse.kapua.translator.exception.InvalidMessageException;
+import org.eclipse.kapua.translator.exception.InvalidPayloadException;
+import org.eclipse.kapua.translator.exception.TranslateException;
+import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
+import org.eclipse.kapua.translator.exception.TranslatorException;
 import org.eclipse.kapua.transport.message.mqtt.MqttMessage;
 import org.eclipse.kapua.transport.message.mqtt.MqttPayload;
 import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
 
 /**
- * Messages translator implementation from {@link org.eclipse.kapua.transport.message.mqtt.MqttMessage} to {@link org.eclipse.kapua.service.device.call.message.kura.KuraMessage}
+ * {@link Translator} implementation from {@link MqttMessage} to {@link KuraDataMessage}
+ *
+ * @since 1.0.0
  */
 public class TranslatorDataMqttKura extends Translator<MqttMessage, KuraDataMessage> {
 
     @Override
-    public KuraDataMessage translate(MqttMessage mqttMessage)
-            throws KapuaException {
-        //
-        // Kura topic
-        KuraDataChannel kuraChannel = translate(mqttMessage.getRequestTopic());
-
-        //
-        // Kura payload
-        KuraDataPayload kuraPayload = translate(mqttMessage.getPayload());
-
-        //
-        // Return Kura message
-        return new KuraDataMessage(kuraChannel,
-                mqttMessage.getTimestamp(),
-                kuraPayload);
-    }
-
-    private KuraDataChannel translate(MqttTopic mqttTopic)
-            throws KapuaException {
-        String[] mqttTopicTokens = mqttTopic.getSplittedTopic();
-
-        //
-        // Return Kura Channel
-        return new KuraDataChannel(mqttTopicTokens[0],
-                mqttTopicTokens[1]);
-    }
-
-    private KuraDataPayload translate(MqttPayload mqttPayload)
-            throws KapuaException {
-        byte[] mqttBody = mqttPayload.getBody();
-
-        KuraDataPayload kuraPayload = new KuraDataPayload();
+    public KuraDataMessage translate(MqttMessage mqttMessage) throws TranslateException {
         try {
-            kuraPayload.readFromByteArray(mqttBody);
-        } catch (MessageException ex) {
-            kuraPayload.setBody(mqttBody);
-        }
+            // Kura topic
+            KuraDataChannel kuraChannel = translate(mqttMessage.getRequestTopic());
 
-        //
-        // Return Kura Payload
-        return kuraPayload;
+            // Kura payload
+            KuraDataPayload kuraPayload = translate(mqttMessage.getPayload());
+
+            // Return Kura message
+            return new KuraDataMessage(kuraChannel, mqttMessage.getTimestamp(), kuraPayload);
+        } catch (InvalidChannelException | InvalidPayloadException te) {
+            throw te;
+        } catch (Exception e) {
+            throw new InvalidMessageException(e, mqttMessage);
+        }
+    }
+
+    private KuraDataChannel translate(MqttTopic mqttTopic) throws InvalidChannelException {
+        try {
+            String[] mqttTopicTokens = mqttTopic.getSplittedTopic();
+
+            if (mqttTopicTokens.length < 2) {
+                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL, null, (Object) mqttTopicTokens);
+            }
+
+            KuraDataChannel kuraDataChannel = new KuraDataChannel(mqttTopicTokens[0], mqttTopicTokens[1]);
+            for (int i = 2; i < mqttTopicTokens.length; i++) {
+                kuraDataChannel.getSemanticParts().add(mqttTopicTokens[i]);
+            }
+
+            // Return Kura Channel
+            return kuraDataChannel;
+        } catch (Exception e) {
+            throw new InvalidChannelException(e, mqttTopic);
+        }
+    }
+
+    private KuraDataPayload translate(MqttPayload mqttPayload) throws InvalidPayloadException {
+        try {
+            KuraDataPayload kuraDataPayload = new KuraDataPayload();
+
+            if (mqttPayload.hasBody()) {
+                byte[] mqttBody = mqttPayload.getBody();
+
+                try {
+                    kuraDataPayload.readFromByteArray(mqttBody);
+                } catch (MessageException ex) {
+                    kuraDataPayload.setBody(mqttBody);
+                }
+            }
+
+            // Return Kura Payload
+            return kuraDataPayload;
+        } catch (Exception e) {
+            throw new InvalidPayloadException(e, mqttPayload);
+        }
     }
 
     @Override
@@ -80,5 +102,4 @@ public class TranslatorDataMqttKura extends Translator<MqttMessage, KuraDataMess
     public Class<KuraDataMessage> getClassTo() {
         return KuraDataMessage.class;
     }
-
 }

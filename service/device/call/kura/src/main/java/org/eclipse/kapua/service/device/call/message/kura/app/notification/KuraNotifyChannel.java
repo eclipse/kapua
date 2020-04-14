@@ -14,6 +14,9 @@ package org.eclipse.kapua.service.device.call.message.kura.app.notification;
 import org.eclipse.kapua.service.device.call.message.app.notification.DeviceNotifyChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.KuraAppChannel;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * {@link DeviceNotifyChannel} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  *
@@ -45,11 +48,22 @@ public class KuraNotifyChannel extends KuraAppChannel implements DeviceNotifyCha
 
     @Override
     public String[] getResources() {
+        if (resources == null) {
+            resources = new String[0];
+        }
+
         return resources;
     }
 
     @Override
     public void setResources(String[] resources) {
         this.resources = resources;
+    }
+
+    @Override
+    public List<String> getParts() {
+        List<String> parts = super.getParts();
+        parts.addAll(Arrays.asList(getResources()));
+        return parts;
     }
 }

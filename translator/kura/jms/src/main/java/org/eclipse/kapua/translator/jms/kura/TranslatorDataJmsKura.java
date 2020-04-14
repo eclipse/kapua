@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,12 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.jms.kura;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.message.internal.MessageException;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataChannel;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataPayload;
 import org.eclipse.kapua.translator.Translator;
+import org.eclipse.kapua.translator.exception.InvalidChannelException;
+import org.eclipse.kapua.translator.exception.InvalidMessageException;
+import org.eclipse.kapua.translator.exception.InvalidPayloadException;
+import org.eclipse.kapua.translator.exception.TranslateException;
+import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
+import org.eclipse.kapua.translator.exception.TranslatorException;
 import org.eclipse.kapua.transport.message.jms.JmsMessage;
 import org.eclipse.kapua.transport.message.jms.JmsPayload;
 import org.eclipse.kapua.transport.message.jms.JmsTopic;
@@ -26,49 +31,64 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Messages translator implementation from {@link org.eclipse.kapua.transport.message.jms.JmsMessage} to {@link org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage}
+ * {@link Translator} implementation from {@link JmsMessage} to {@link KuraDataMessage}
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class TranslatorDataJmsKura extends Translator<JmsMessage, KuraDataMessage> {
 
     @Override
-    public KuraDataMessage translate(JmsMessage jmsMessage)
-            throws KapuaException {
-        KuraDataChannel kuraChannel = translate(jmsMessage.getTopic());
-        KuraDataPayload kuraPayload = translate(jmsMessage.getPayload());
-        return new KuraDataMessage(kuraChannel,
-                jmsMessage.getReceivedOn(),
-                kuraPayload);
-    }
-
-    private KuraDataChannel translate(JmsTopic jmsTopic)
-            throws KapuaException {
-        String[] mqttTopicTokens = jmsTopic.getSplittedTopic();
-        KuraDataChannel kuraDataChannel = new KuraDataChannel();
-        kuraDataChannel.setScope(mqttTopicTokens[0]);
-        kuraDataChannel.setClientId(mqttTopicTokens[1]);
-        List<String> channelPartsList = new LinkedList<>(Arrays.asList(mqttTopicTokens));
-        // remove the first 2 items (do no use sublist since the returned object is not serializable then Camel will throws exception on error handling
-        // channelPartsList.subList(2,mqttTopicTokens.length))
-        channelPartsList.remove(0);
-        channelPartsList.remove(0);
-        kuraDataChannel.setSemanticParts(channelPartsList);
-        return kuraDataChannel;
-    }
-
-    private KuraDataPayload translate(JmsPayload jmsPayload)
-            throws KapuaException {
-        KuraDataPayload kuraPayload = null;
-        if (jmsPayload.getBody() != null) {
-            kuraPayload = new KuraDataPayload();
-            try {
-                kuraPayload.readFromByteArray(jmsPayload.getBody());
-            } catch (MessageException ex) {
-                kuraPayload.setBody(jmsPayload.getBody());
-            }
+    public KuraDataMessage translate(JmsMessage jmsMessage) throws TranslateException {
+        try {
+            KuraDataChannel kuraChannel = translate(jmsMessage.getTopic());
+            KuraDataPayload kuraPayload = translate(jmsMessage.getPayload());
+            return new KuraDataMessage(kuraChannel, jmsMessage.getReceivedOn(), kuraPayload);
+        } catch (InvalidChannelException | InvalidPayloadException te) {
+            throw te;
+        } catch (Exception e) {
+            throw new InvalidMessageException(e, jmsMessage);
         }
-        return kuraPayload;
+    }
+
+    private KuraDataChannel translate(JmsTopic jmsTopic) throws InvalidChannelException {
+        try {
+            String[] topicTokens = jmsTopic.getSplittedTopic();
+            if (topicTokens.length < 2) {
+                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL, null, (Object) topicTokens);
+            }
+
+            KuraDataChannel kuraDataChannel = new KuraDataChannel();
+            kuraDataChannel.setScope(topicTokens[0]);
+            kuraDataChannel.setClientId(topicTokens[1]);
+
+            List<String> channelPartsList = new LinkedList<>(Arrays.asList(topicTokens));
+            // remove the first 2 items (do no use sublist since the returned object is not serializable then Camel will throws exception on error handling
+            // channelPartsList.subList(2,mqttTopicTokens.length))
+            channelPartsList.remove(0);
+            channelPartsList.remove(0);
+            kuraDataChannel.setSemanticParts(channelPartsList);
+
+            return kuraDataChannel;
+        } catch (Exception e) {
+            throw new InvalidChannelException(e, jmsTopic);
+        }
+    }
+
+    private KuraDataPayload translate(JmsPayload jmsPayload) throws InvalidPayloadException {
+        try {
+            KuraDataPayload kuraPayload = new KuraDataPayload();
+            if (jmsPayload.hasBody()) {
+                try {
+                    kuraPayload.readFromByteArray(jmsPayload.getBody());
+                } catch (MessageException me) {
+                    // When reading a payload which is not Kura-protobuf encoded we use that payload as a raw KapuaPayload.body
+                    kuraPayload.setBody(jmsPayload.getBody());
+                }
+            }
+            return kuraPayload;
+        } catch (Exception e) {
+            throw new InvalidPayloadException(e, jmsPayload);
+        }
     }
 
     @Override

@@ -40,9 +40,9 @@ public class AssetResponsePayload extends KapuaResponsePayloadImpl implements Ka
 
     public DeviceAssets getDeviceAssets() throws JAXBException, XMLStreamException, FactoryConfigurationError, SAXException, UnsupportedEncodingException {
         DeviceAssets deviceAssets = DEVICE_ASSET_FACTORY.newAssetListResult();
-        byte[] body = getBody();
-        if (body != null && body.length > 0) {
-            deviceAssets = XmlUtil.unmarshal(new String(body, CHAR_ENCODING), DeviceAssets.class);
+
+        if (hasBody()) {
+            deviceAssets = XmlUtil.unmarshal(new String(getBody(), CHAR_ENCODING), DeviceAssets.class);
         }
 
         return deviceAssets;

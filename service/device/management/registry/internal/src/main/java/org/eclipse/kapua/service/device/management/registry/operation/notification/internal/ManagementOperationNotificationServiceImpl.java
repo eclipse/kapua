@@ -35,12 +35,12 @@ import org.eclipse.kapua.service.device.management.registry.operation.notificati
 @KapuaProvider
 public class ManagementOperationNotificationServiceImpl extends AbstractKapuaService implements ManagementOperationNotificationService {
 
-    private static KapuaLocator locator = KapuaLocator.getInstance();
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
-    private static AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-    private static PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
+    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
-    private static DeviceManagementOperationRegistryService deviceManagementOperationRegistryService = locator.getService(DeviceManagementOperationRegistryService.class);
+    private static final DeviceManagementOperationRegistryService DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE = LOCATOR.getService(DeviceManagementOperationRegistryService.class);
 
     protected ManagementOperationNotificationServiceImpl() {
         super(DeviceManagementOperationEntityManagerFactory.getInstance());
@@ -60,11 +60,11 @@ public class ManagementOperationNotificationServiceImpl extends AbstractKapuaSer
 
         //
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.write, null));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.write, null));
 
         //
         // Check operation existence
-        if (KapuaSecurityUtils.doPrivileged(() -> deviceManagementOperationRegistryService.find(creator.getScopeId(), creator.getOperationId()) == null)) {
+        if (KapuaSecurityUtils.doPrivileged(() -> DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.find(creator.getScopeId(), creator.getOperationId()) == null)) {
             throw new KapuaEntityNotFoundException(DeviceManagementOperation.TYPE, creator.getOperationId());
         }
 
@@ -82,7 +82,7 @@ public class ManagementOperationNotificationServiceImpl extends AbstractKapuaSer
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
@@ -97,7 +97,7 @@ public class ManagementOperationNotificationServiceImpl extends AbstractKapuaSer
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -112,7 +112,7 @@ public class ManagementOperationNotificationServiceImpl extends AbstractKapuaSer
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count
@@ -128,7 +128,7 @@ public class ManagementOperationNotificationServiceImpl extends AbstractKapuaSer
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.delete, null));
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementRegistryDomains.DEVICE_MANAGEMENT_REGISTRY_DOMAIN, Actions.delete, null));
 
         //
         // Do delete
