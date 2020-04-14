@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -41,6 +41,7 @@ public class JobTabTargetsToolbar extends EntityCRUDToolbar<GwtJobTarget> {
     private GwtJob gwtSelectedJob;
 
     private Button jobStartTargetButton;
+    private Button jobRestartTargetButton;
     private Button exportButton;
 
     public JobTabTargetsToolbar(GwtSession currentSession) {
@@ -85,6 +86,17 @@ public class JobTabTargetsToolbar extends EntityCRUDToolbar<GwtJobTarget> {
         jobStartTargetButton.disable();
         addExtraButton(jobStartTargetButton);
 
+        jobRestartTargetButton = new Button(JOB_MSGS.jobRestartTargetButton(), new KapuaIcon(IconSet.REPEAT), new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                JobTargetRestartTargetDialog dialog = new JobTargetRestartTargetDialog(gwtSelectedJob, gridSelectionModel.getSelectedItem());
+                dialog.show();
+            }
+        });
+        jobRestartTargetButton.disable();
+        addExtraButton(jobRestartTargetButton);
+
         exportButton = new Button(JOB_MSGS.exportToCSV(), new KapuaIcon(IconSet.FILE_TEXT_O),
                 new SelectionListener<ButtonEvent>() {
 
@@ -117,6 +129,7 @@ public class JobTabTargetsToolbar extends EntityCRUDToolbar<GwtJobTarget> {
         super.updateButtonEnablement();
 
         jobStartTargetButton.setEnabled(selectedEntity != null && currentSession.hasPermission(JobSessionPermission.execute()));
+        jobRestartTargetButton.setEnabled(selectedEntity != null && currentSession.hasPermission(JobSessionPermission.execute()));
         addEntityButton.setEnabled(selectedEntity != null && currentSession.hasPermission(JobSessionPermission.write()));
         deleteEntityButton
                 .setEnabled(selectedEntity != null && currentSession.hasPermission(JobSessionPermission.delete())
@@ -154,6 +167,9 @@ public class JobTabTargetsToolbar extends EntityCRUDToolbar<GwtJobTarget> {
                     if (jobStartTargetButton != null) {
                         jobStartTargetButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null && currentSession.hasPermission(JobSessionPermission.execute()));
                     }
+                    if (jobRestartTargetButton != null) {
+                        jobRestartTargetButton.setEnabled(gridSelectionModel != null && gridSelectionModel.getSelectedItem() != null && currentSession.hasPermission(JobSessionPermission.execute()));
+                    }
                 }
             });
         } else {
@@ -165,6 +181,9 @@ public class JobTabTargetsToolbar extends EntityCRUDToolbar<GwtJobTarget> {
             }
             if (jobStartTargetButton != null) {
                 jobStartTargetButton.setEnabled(false);
+            }
+            if (jobRestartTargetButton != null) {
+                jobRestartTargetButton.setEnabled(false);
             }
             if (exportButton != null) {
                 exportButton.setEnabled(false);

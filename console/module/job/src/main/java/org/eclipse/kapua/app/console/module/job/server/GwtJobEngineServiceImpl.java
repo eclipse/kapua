@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -33,6 +33,7 @@ import org.eclipse.kapua.service.job.execution.JobExecutionQuery;
 import org.eclipse.kapua.service.job.execution.JobExecutionService;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class GwtJobEngineServiceImpl extends KapuaRemoteServiceServlet implements GwtJobEngineService {
 
@@ -114,11 +115,19 @@ public class GwtJobEngineServiceImpl extends KapuaRemoteServiceServlet implement
 
     @Override
     public void restart(String gwtScopeId, String gwtJobId) throws GwtKapuaException {
+        restart(gwtScopeId, gwtJobId, null);
+    }
+
+    @Override
+    public void restart(String gwtScopeId, String gwtJobId, String gwtJobTargetId) throws GwtKapuaException {
         GwtJobStartOptions gwtJobStartOptions = new GwtJobStartOptions();
         gwtJobStartOptions.setResetStepIndex(true);
         gwtJobStartOptions.setFromStepIndex(0);
-        gwtJobStartOptions.setTargetIdSublist(new ArrayList<String>());
-
+        if (gwtJobTargetId == null) {
+            gwtJobStartOptions.setTargetIdSublist(new ArrayList<String>());
+        } else {
+            gwtJobStartOptions.setTargetIdSublist(Collections.singletonList(gwtJobTargetId));
+        }
         start(gwtScopeId, gwtJobId, gwtJobStartOptions);
     }
 }
