@@ -17,15 +17,20 @@ set -e
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 docker_common() {
-    . ${SCRIPT_DIR}/docker-common.sh
+    #shellcheck source=./docker-common.sh
+    . "${SCRIPT_DIR}"/docker-common.sh
 }
 
 docker_logs() {
-    docker-compose -f ${SCRIPT_DIR}/../compose/docker-compose.yml logs -f
+    docker-compose -f "${SCRIPT_DIR}"/../compose/docker-compose.yml logs -f
 }
 
 docker_common
 
 echo "Opening Eclipse Kapua logs..."
-docker_logs  || { echo "Opening Eclipse Kapua logs... ERROR!"; exit 1; }
+docker_logs  || {
+    echo "Opening Eclipse Kapua logs... ERROR!"
+     exit 1
+}
+
 echo "Opening Eclipse Kapua logs... DONE!"

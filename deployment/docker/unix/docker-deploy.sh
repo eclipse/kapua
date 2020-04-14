@@ -17,46 +17,54 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 docker_common() {
-    . ${SCRIPT_DIR}/docker-common.sh
+    #shellcheck source=./docker-common.sh
+    . "${SCRIPT_DIR}"/docker-common.sh
 }
 
 docker_compose() {
+    declare -a COMPOSE_FILES;
+
     if [[ -n "${KAPUA_BROKER_DEBUG_PORT}" ]]; then
         if [[ "${KAPUA_BROKER_DEBUG_SUSPEND}" == "true" ]]; then
             KAPUA_BROKER_DEBUG_SUSPEND="y"
         else
             KAPUA_BROKER_DEBUG_SUSPEND="n"
         fi
-
-        docker-compose -f ${SCRIPT_DIR}/../compose/docker-compose.yml -f ${SCRIPT_DIR}/../compose/docker-compose.broker-debug.yml up -d
-    else
-        docker-compose -f ${SCRIPT_DIR}/../compose/docker-compose.yml up -d
+        COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.broker-debug.yml")
     fi
+
+    if [[ -n "${KAPUA_ELASTICSEARCH_DATA_DIR}" ]]; then
+        COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.es-storage-dir.yml")
+    fi
+
+    docker-compose -f "${SCRIPT_DIR}/../compose/docker-compose.yml" "${COMPOSE_FILES[@]}" up -d
 }
 
 check_if_docker_logs() {
     if [[ "$1" == '--logs' ]]; then
-        . ${SCRIPT_DIR}/docker-logs.sh
+        #shellcheck source=./docker-logs.sh
+        . "${SCRIPT_DIR}/docker-logs.sh"
     else
         echo "Unrecognised parameter: ${1}"
         print_usage_deploy
     fi
 }
 
-print_usage_deploy(){
-    echo "Usage: $(basename $0) [--logs]" >&2
+print_usage_deploy() {
+    echo "Usage: $(basename "$0") [--logs]" >&2
 }
-
 
 docker_common
 
 echo "Deploying Eclipse Kapua..."
-docker_compose || { echo "Deploying Eclipse Kapua... ERROR!"; exit 1; }
+docker_compose || {
+    echo "Deploying Eclipse Kapua... ERROR!"
+    exit 1
+}
 echo "Deploying Eclipse Kapua... DONE!"
 
 if [[ -z "$1" ]]; then
     echo "Run \"docker-compose -f ${SCRIPT_DIR}/../compose/docker-compose.yml logs -f\" for container logs"
 else
-    check_if_docker_logs $1
+    check_if_docker_logs "$1"
 fi
-

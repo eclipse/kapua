@@ -1,0 +1,6 @@
+version: '3.1'
+
+services:
+  es:
+    volumes:
+      - ${KAPUA_ELASTICSEARCH_DATA_DIR}:/usr/share/elasticsearch/data
