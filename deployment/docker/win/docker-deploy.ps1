@@ -22,6 +22,8 @@ $common_path = Join-Path $script_dir docker-common.ps1
 
 Write-Host "Deploying Eclipse Kapua..."
 
+[String[]]$compose_files = @()
+
 If (Test-Path env:KAPUA_BROKER_DEBUG_PORT)
 {
     If ($env:KAPUA_BROKER_DEBUG_SUSPEND -eq "true")
@@ -32,12 +34,17 @@ If (Test-Path env:KAPUA_BROKER_DEBUG_PORT)
     {
         $env:KAPUA_BROKER_DEBUG_SUSPEND = "n"
     }
-    docker-compose -f (Join-Path $script_dir .. compose docker-compose.yml) -f (Join-Path $script_dir .. compose docker-compose.broker-debug.yml) up -d
+    $compose_files+="-f"
+    $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.broker-debug.yml)
 }
-Else
+
+If (Test-Path env:KAPUA_ELASTICSEARCH_DATA_DIR)
 {
-    docker-compose -f (Join-Path $script_dir .. compose docker-compose.yml) up -d
+    $compose_files+="-f"
+    $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.es-storage-dir.yml)
 }
+
+docker-compose -f $(Join-Path $script_dir .. compose docker-compose.yml) $compose_files up -d
 
 Write-Host "Deploying Eclipse Kapua... DONE!"
 
