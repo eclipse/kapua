@@ -64,6 +64,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
 import javax.persistence.Embedded;
 import javax.persistence.EntityExistsException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -112,6 +113,8 @@ public class ServiceDAO {
 
     private static final String ATTRIBUTE_SEPARATOR = ".";
     private static final String ATTRIBUTE_SEPARATOR_ESCAPED = "\\.";
+
+    private static final String COMPARE_ERROR_MESSAGE = "Trying to compare a non-comparable value";
 
     static {
         KapuaLocator locator = null;
@@ -268,14 +271,40 @@ public class ServiceDAO {
     /**
      * Find by fields {@link KapuaEntity} utility method
      *
-     * @param em    The {@link EntityManager} that holds the transaction.
-     * @param clazz The {@link KapuaEntity} class. This must be the implementing {@code class}.
-     * @param name  The {@link KapuaEntity} name of the field from which to search.
-     * @param value The value of the field from which to search.
+     * @param em      The {@link EntityManager} that holds the transaction.
+     * @param clazz   The {@link KapuaEntity} class. This must be the implementing {@code class}.
+     * @param name    The {@link KapuaEntity} name of the field from which to search.
+     * @param value   The value of the field from which to search.
      * @return The {@link KapuaEntity} found, or {@code null} if not found.
+     * @throws NonUniqueResultException When more than one result is returned
      * @since 1.0.0
      */
-    public static <E extends KapuaEntity> E findByField(@NotNull EntityManager em, @NotNull Class<E> clazz, @NotNull String name, @NotNull String value) {
+    @Nullable
+    public static <E extends KapuaEntity> E findByField(@NotNull EntityManager em,
+                                                        @NotNull Class<E> clazz,
+                                                        @NotNull String name,
+                                                        @NotNull Object value) {
+        return findByField(em, clazz, null, name, value);
+    }
+
+    /**
+     * Find by fields {@link KapuaEntity} utility method
+     *
+     * @param em      The {@link EntityManager} that holds the transaction.
+     * @param clazz   The {@link KapuaEntity} class. This must be the implementing {@code class}.
+     * @param scopeId The Scope ID in which to look for results.
+     * @param name    The {@link KapuaEntity} name of the field from which to search.
+     * @param value   The value of the field from which to search.
+     * @return The {@link KapuaEntity} found, or {@code null} if not found.
+     * @throws NonUniqueResultException When more than one result is returned
+     * @since 1.0.0
+     */
+    @Nullable
+    public static <E extends KapuaEntity> E findByField(@NotNull EntityManager em,
+                                                        @NotNull Class<E> clazz,
+                                                        @Nullable KapuaId scopeId,
+                                                        @NotNull String name,
+                                                        @NotNull Object value) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<E> criteriaSelectQuery = cb.createQuery(clazz);
 
@@ -289,20 +318,43 @@ public class ServiceDAO {
 
         // name
         ParameterExpression<String> pName = cb.parameter(String.class, name);
-        criteriaSelectQuery.where(cb.equal(entityRoot.get(name), pName));
+        Predicate namePredicate = cb.equal(entityRoot.get(name), pName);
 
-        //
-        // QUERY!
+        ParameterExpression<KapuaId> pScopeId = null;
+
+        if (scopeId != null) {
+            pScopeId = cb.parameter(KapuaId.class, KapuaEntityAttributes.SCOPE_ID);
+            Predicate scopeIdPredicate = cb.equal(entityRoot.get(KapuaEntityAttributes.SCOPE_ID), pScopeId);
+
+            Predicate andPredicate = cb.and(namePredicate, scopeIdPredicate);
+            criteriaSelectQuery.where(andPredicate);
+        } else {
+            criteriaSelectQuery.where(namePredicate);
+        }
+
         TypedQuery<E> query = em.createQuery(criteriaSelectQuery);
         query.setParameter(pName.getName(), value);
 
-        List<E> result = query.getResultList();
-        E user = null;
-        if (result.size() == 1) {
-            user = result.get(0);
+        if (pScopeId != null) {
+            query.setParameter(pScopeId.getName(), scopeId);
         }
 
-        return user;
+        //
+        // QUERY!
+        List<E> result = query.getResultList();
+        E entity;
+        switch (result.size()) {
+            case 0:
+                entity = null;
+                break;
+            case 1:
+                entity = result.get(0);
+                break;
+            default:
+                throw new NonUniqueResultException(String.format("Multiple %s results found for field %s with value %s", clazz.getName(), pName, value.toString()));
+        }
+
+        return entity;
     }
 
     /**
@@ -655,7 +707,7 @@ public class ServiceDAO {
                         Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
                         expr = cb.greaterThan(comparableExpression, comparableAttrValue);
                     } else {
-                        throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
+                        throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, COMPARE_ERROR_MESSAGE);
                     }
                     break;
 
@@ -665,7 +717,7 @@ public class ServiceDAO {
                         Comparable comparableAttrValue = (Comparable<?>) attrValue;
                         expr = cb.greaterThanOrEqualTo(comparableExpression, comparableAttrValue);
                     } else {
-                        throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
+                        throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, COMPARE_ERROR_MESSAGE);
                     }
                     break;
 
@@ -675,7 +727,7 @@ public class ServiceDAO {
                         Comparable comparableAttrValue = (Comparable<?>) attrValue;
                         expr = cb.lessThan(comparableExpression, comparableAttrValue);
                     } else {
-                        throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
+                        throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, COMPARE_ERROR_MESSAGE);
                     }
                     break;
                 case LESS_THAN_OR_EQUAL:
@@ -684,7 +736,7 @@ public class ServiceDAO {
                         Comparable comparableAttrValue = (Comparable<?>) attrValue;
                         expr = cb.lessThanOrEqualTo(comparableExpression, comparableAttrValue);
                     } else {
-                        throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, "Trying to compare a non-comparable value");
+                        throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, COMPARE_ERROR_MESSAGE);
                     }
                     break;
 

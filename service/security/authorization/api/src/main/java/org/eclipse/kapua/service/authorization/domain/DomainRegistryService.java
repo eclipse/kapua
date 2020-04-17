@@ -80,4 +80,6 @@ public interface DomainRegistryService extends KapuaEntityService<Domain, Domain
     @Override
     void delete(KapuaId scopeId, KapuaId roleId) throws KapuaException;
 
+    Domain findByName(String domainName) throws KapuaException;
+
 }

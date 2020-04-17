@@ -61,7 +61,6 @@ import org.eclipse.kapua.service.job.step.JobStepListResult;
 import org.eclipse.kapua.service.job.step.JobStepQuery;
 import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
-import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionAttributes;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionCreator;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionQuery;
@@ -633,9 +632,8 @@ public class JobServiceSteps extends TestBase {
         try {
             stepData.remove("JobStepDefinition");
             stepData.remove("CurrentJobStepDefinitionId");
-            JobStepDefinitionQuery query = jobStepDefinitionFactory.newQuery(null);
-            query.setPredicate(query.attributePredicate(JobStepDefinitionAttributes.NAME, name));
-            JobStepDefinition stepDefinition = jobStepDefinitionService.query(query).getFirstItem();
+
+            JobStepDefinition stepDefinition = jobStepDefinitionService.findByName(name);
 
             stepData.put("JobStepDefinition", stepDefinition);
             stepData.put("CurrentJobStepDefinitionId", stepDefinition.getId());
@@ -1619,9 +1617,8 @@ public class JobServiceSteps extends TestBase {
             stepData.remove("JobStepDefinition");
             stepData.remove("CurrentJobStepDefinitionId");
             for (String name : list) {
-                JobStepDefinitionQuery query = jobStepDefinitionFactory.newQuery(null);
-                query.setPredicate(query.attributePredicate(JobStepDefinitionAttributes.NAME, name));
-                JobStepDefinition stepDefinition = jobStepDefinitionService.query(query).getFirstItem();
+                JobStepDefinition stepDefinition = jobStepDefinitionService.findByName(name);
+
                 jobStepDefinitions.add(stepDefinition);
                 stepData.put("JobStepDefinitions", jobStepDefinitions);
                 stepData.put("JobStepDefinition", stepDefinition);

@@ -15,6 +15,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
+import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinition;
@@ -77,6 +78,10 @@ public class TriggerDefinitionDAO {
      */
     public static TriggerDefinition find(EntityManager em, KapuaId scopeId, KapuaId triggerDefinitionId) {
         return ServiceDAO.find(em, TriggerDefinitionImpl.class, scopeId, triggerDefinitionId);
+    }
+
+    public static TriggerDefinition findByName(EntityManager em, String name) {
+        return ServiceDAO.findByField(em, TriggerDefinitionImpl.class, KapuaNamedEntityAttributes.NAME, name);
     }
 
     /**

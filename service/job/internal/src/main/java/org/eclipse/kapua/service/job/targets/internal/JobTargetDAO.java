@@ -15,6 +15,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
+import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.job.targets.JobTarget;
@@ -24,7 +25,7 @@ import org.eclipse.kapua.service.job.targets.JobTargetStatus;
 
 /**
  * JobTarget DAO
- * 
+ *
  * @since 1.0
  *
  */
@@ -35,7 +36,7 @@ public class JobTargetDAO {
 
     /**
      * Creates and return new JobTarget
-     * 
+     *
      * @param em
      * @param jobTargetCreator
      * @return
@@ -57,7 +58,7 @@ public class JobTargetDAO {
 
     /**
      * Updates the provided jobTarget
-     * 
+     *
      * @param em
      * @param jobTarget
      * @return
@@ -92,7 +93,7 @@ public class JobTargetDAO {
      * @return
      */
     public static JobTarget findByName(EntityManager em, String name) {
-        return ServiceDAO.findByField(em, JobTargetImpl.class, "name", name);
+        return ServiceDAO.findByField(em, JobTargetImpl.class, KapuaNamedEntityAttributes.NAME, name);
     }
 
     /**

@@ -15,6 +15,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
+import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.domain.Domain;
@@ -107,4 +108,9 @@ public class DomainDAO extends ServiceDAO {
     public static void delete(EntityManager em, KapuaId scopeId, KapuaId domainId) throws KapuaEntityNotFoundException {
         ServiceDAO.delete(em, DomainImpl.class, scopeId, domainId);
     }
+
+    public static Domain findByName(EntityManager em, String name) {
+        return ServiceDAO.findByField(em, DomainImpl.class, KapuaNamedEntityAttributes.NAME, name);
+    }
+
 }

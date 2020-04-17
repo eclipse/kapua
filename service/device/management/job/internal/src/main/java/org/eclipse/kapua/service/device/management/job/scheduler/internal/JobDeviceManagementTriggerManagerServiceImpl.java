@@ -40,10 +40,6 @@ import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinition;
-import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionAttributes;
-import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory;
-import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionListResult;
-import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionQuery;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +68,6 @@ public class JobDeviceManagementTriggerManagerServiceImpl implements JobDeviceMa
     private static final JobTargetFactory JOB_TARGET_FACTORY = LOCATOR.getFactory(JobTargetFactory.class);
 
     private static final TriggerDefinitionService TRIGGER_DEFINITION_SERVICE = LOCATOR.getService(TriggerDefinitionService.class);
-    private static final TriggerDefinitionFactory TRIGGER_DEFINITION_FACTORY = LOCATOR.getFactory(TriggerDefinitionFactory.class);
 
     private static final TriggerService TRIGGER_SERVICE = LOCATOR.getService(TriggerService.class);
     private static final TriggerFactory TRIGGER_FACTORY = LOCATOR.getFactory(TriggerFactory.class);
@@ -85,18 +80,12 @@ public class JobDeviceManagementTriggerManagerServiceImpl implements JobDeviceMa
      * @since 1.1.0
      */
     static {
-        TriggerDefinition deviceConnectTrigger = null;
+        TriggerDefinition deviceConnectTrigger;
         try {
-            TriggerDefinitionQuery query = TRIGGER_DEFINITION_FACTORY.newQuery(null);
-            query.setPredicate(query.attributePredicate(TriggerDefinitionAttributes.NAME, "Device Connect"));
-
-            TriggerDefinitionListResult triggerDefinitions = KapuaSecurityUtils.doPrivileged(() -> TRIGGER_DEFINITION_SERVICE.query(query));
-
-            if (triggerDefinitions.isEmpty()) {
+            deviceConnectTrigger = KapuaSecurityUtils.doPrivileged(() -> TRIGGER_DEFINITION_SERVICE.findByName("Device Connect"));
+            if (deviceConnectTrigger == null) {
                 throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, "Device Connect");
             }
-
-            deviceConnectTrigger = triggerDefinitions.getFirstItem();
         } catch (Exception e) {
             LOG.error("Error while searching the Trigger Definition named 'Device Connect'", e);
             throw new ExceptionInInitializerError(e);

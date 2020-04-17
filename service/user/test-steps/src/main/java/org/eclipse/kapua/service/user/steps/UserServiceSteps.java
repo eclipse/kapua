@@ -63,11 +63,8 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionAttributes;
-import org.eclipse.kapua.service.authorization.domain.DomainAttributes;
-import org.eclipse.kapua.service.authorization.domain.DomainListResult;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
-import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
@@ -962,10 +959,7 @@ public class UserServiceSteps extends TestBase {
                 if (targetScopeId == null) {
                     targetScopeId = (KapuaEid) account.getId();
                 }
-                DomainQuery domainQuery = domainFactory.newQuery(null);
-                domainQuery.setPredicate(domainQuery.attributePredicate(DomainAttributes.NAME, cucPermission.getDomain()));
-                DomainListResult listResult = domainRegistryService.query(domainQuery);
-                Domain domain = listResult.getFirstItem().getDomain();
+                Domain domain = domainRegistryService.findByName(cucPermission.getDomain()).getDomain();
                 Permission permission = permissionFactory.newPermission(domain,
                         action, targetScopeId);
                 permissions.add(permission);

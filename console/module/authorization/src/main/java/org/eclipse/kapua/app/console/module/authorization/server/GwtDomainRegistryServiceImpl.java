@@ -21,7 +21,6 @@ import org.eclipse.kapua.app.console.module.authorization.shared.util.KapuaGwtAu
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.service.authorization.domain.Domain;
-import org.eclipse.kapua.service.authorization.domain.DomainAttributes;
 import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainListResult;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
@@ -35,21 +34,23 @@ public class GwtDomainRegistryServiceImpl extends KapuaRemoteServiceServlet impl
 
     private static final long serialVersionUID = -699492835893299489L;
 
+    private final KapuaLocator locator = KapuaLocator.getInstance();
+    private final DomainRegistryService domainRegistryService = locator.getService(DomainRegistryService.class);
+    private final DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
+
+
     @Override
     public List<GwtDomain> findAll() throws GwtKapuaException {
         List<GwtDomain> gwtDomainList = new ArrayList<GwtDomain>();
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            DomainRegistryService domainRegistryService = locator.getService(DomainRegistryService.class);
-            DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
             DomainQuery query = domainFactory.newQuery(null);
             DomainListResult list = domainRegistryService.query(query);
 
             for (Domain domain : list.getItems()) {
                 gwtDomainList.add(KapuaGwtAuthorizationModelConverter.convertDomain(domain));
             }
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+        } catch (Exception e) {
+            KapuaExceptionHandler.handle(e);
         }
         Collections.sort(gwtDomainList);
         return gwtDomainList;
@@ -59,23 +60,17 @@ public class GwtDomainRegistryServiceImpl extends KapuaRemoteServiceServlet impl
     public List<GwtAction> findActionsByDomainName(String domainName) throws GwtKapuaException {
         List<GwtAction> gwtActionList = new ArrayList<GwtAction>();
         try {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            DomainRegistryService domainRegistryService = locator.getService(DomainRegistryService.class);
-            DomainFactory domainFactory = locator.getFactory(DomainFactory.class);
+            Domain domain = domainRegistryService.findByName(domainName);
 
-            DomainQuery query = domainFactory.newQuery(null);
-            query.setPredicate(query.attributePredicate(DomainAttributes.NAME, domainName));
-            DomainListResult queryResult = domainRegistryService.query(query);
-
-            if (!queryResult.isEmpty()) {
-                for (Actions action : queryResult.getFirstItem().getActions()) {
+            if (domain != null) {
+                for (Actions action : domain.getActions()) {
                     gwtActionList.add(KapuaGwtAuthorizationModelConverter.convertAction(action));
                 }
                 Collections.sort(gwtActionList);
             }
 
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+        } catch (Exception ex) {
+            KapuaExceptionHandler.handle(ex);
         }
         return gwtActionList;
     }

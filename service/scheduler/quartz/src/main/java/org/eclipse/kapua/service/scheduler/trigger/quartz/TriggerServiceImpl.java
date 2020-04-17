@@ -17,7 +17,6 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
@@ -38,10 +37,7 @@ import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinition;
-import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionAttributes;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory;
-import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionListResult;
-import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionQuery;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
 import org.quartz.Scheduler;
@@ -314,16 +310,13 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     private synchronized TriggerDefinition getTriggerDefinition(String triggerDefinitionName) throws KapuaException {
-        TriggerDefinitionQuery query = triggerDefinitionFactory.newQuery(null);
-        query.setPredicate(query.attributePredicate(TriggerDefinitionAttributes.NAME, triggerDefinitionName));
+        TriggerDefinition triggerDefinition = triggerDefinitionService.findByName(triggerDefinitionName);
 
-        TriggerDefinitionListResult triggerDefinitions = KapuaSecurityUtils.doPrivileged(() -> triggerDefinitionService.query(query));
-
-        if (triggerDefinitions.isEmpty()) {
+        if (triggerDefinition == null) {
             throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, triggerDefinitionName);
         }
 
-        return triggerDefinitions.getFirstItem();
+        return triggerDefinition;
     }
 
     private void adaptTriggerCreator(TriggerCreator triggerCreator) throws KapuaException {

@@ -15,6 +15,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
+import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.account.Account;
@@ -23,7 +24,7 @@ import org.eclipse.kapua.service.account.AccountListResult;
 
 /**
  * {@link Account} {@link ServiceDAO}
- * 
+ *
  * @since 1.0
  */
 public class AccountDAO {
@@ -33,7 +34,7 @@ public class AccountDAO {
 
     /**
      * Creates and return new Account
-     * 
+     *
      * @param em
      * @param accountCreator
      * @return
@@ -65,7 +66,7 @@ public class AccountDAO {
 
     /**
      * Updates the provided account
-     * 
+     *
      * @param em
      * @param account
      * @return
@@ -95,7 +96,7 @@ public class AccountDAO {
      * @return
      */
     public static Account findByName(EntityManager em, String name) {
-        return ServiceDAO.findByField(em, AccountImpl.class, "name", name);
+        return ServiceDAO.findByField(em, AccountImpl.class, KapuaNamedEntityAttributes.NAME, name);
     }
 
     /**
