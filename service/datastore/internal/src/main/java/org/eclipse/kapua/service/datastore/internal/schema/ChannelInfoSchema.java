@@ -75,21 +75,17 @@ public class ChannelInfoSchema {
     /**
      * Create and return the Json representation of the channel info schema
      *
-     * @param allEnable
      * @param sourceEnable
      * @return
      * @throws MappingException
      * @since 1.0.0
      */
-    public static JsonNode getChannelTypeSchema(boolean allEnable, boolean sourceEnable) throws MappingException {
+    public static JsonNode getChannelTypeSchema(boolean sourceEnable) throws MappingException {
 
         ObjectNode channelNode = MappingUtils.newObjectNode();
         {
             ObjectNode sourceChannel = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_ENABLED, sourceEnable) });
             channelNode.set(SchemaKeys.KEY_SOURCE, sourceChannel);
-
-            ObjectNode allChannel = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_ENABLED, allEnable) });
-            channelNode.set(SchemaKeys.KEY_ALL, allChannel);
 
             ObjectNode propertiesNode = MappingUtils.newObjectNode();
             {

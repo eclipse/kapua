@@ -143,21 +143,17 @@ public class MetricInfoSchema {
     /**
      * Create and return the Json representation of the metric info schema
      *
-     * @param allEnable
      * @param sourceEnable
      * @return
      * @throws MappingException
      * @since 1.0.0
      */
-    public static JsonNode getMetricTypeSchema(boolean allEnable, boolean sourceEnable) throws MappingException {
+    public static JsonNode getMetricTypeSchema(boolean sourceEnable) throws MappingException {
 
         ObjectNode metricName = MappingUtils.newObjectNode();
 
         ObjectNode sourceMetric = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_ENABLED, sourceEnable) });
         metricName.set(SchemaKeys.KEY_SOURCE, sourceMetric);
-
-        ObjectNode allMetric = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_ENABLED, allEnable) });
-        metricName.set(SchemaKeys.KEY_ALL, allMetric);
 
         ObjectNode propertiesNode = MappingUtils.newObjectNode();
         {
@@ -172,7 +168,7 @@ public class MetricInfoSchema {
 
             ObjectNode metricMtrNode = MappingUtils.newObjectNode(
                     new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_OBJECT), new KeyValueEntry(SchemaKeys.KEY_ENABLED, true),
-                            new KeyValueEntry(SchemaKeys.KEY_DYNAMIC, false), new KeyValueEntry(SchemaKeys.KEY_INCLUDE_IN_ALL, false) });
+                            new KeyValueEntry(SchemaKeys.KEY_DYNAMIC, false) });
             ObjectNode metricMtrPropertiesNode = MappingUtils.newObjectNode();
             {
                 ObjectNode metricMtrNameNode = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });

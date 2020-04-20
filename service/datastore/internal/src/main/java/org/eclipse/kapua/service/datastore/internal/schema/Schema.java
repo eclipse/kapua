@@ -83,10 +83,9 @@ public class Schema {
                 LOG.info("Data index created: {}", dataIndexName);
             }
 
-            boolean enableAllField = false;
             boolean enableSourceField = true;
 
-            elasticsearchClient.putMapping(new TypeDescriptor(dataIndexName, MessageSchema.MESSAGE_TYPE_NAME), MessageSchema.getMesageTypeSchema(enableAllField, enableSourceField));
+            elasticsearchClient.putMapping(new TypeDescriptor(dataIndexName, MessageSchema.MESSAGE_TYPE_NAME), MessageSchema.getMesageTypeSchema(enableSourceField));
 
             // Check existence of the kapua internal indexes
             String channelRegistryIndexName = DatastoreUtils.getChannelIndexName(scopeId);
@@ -95,7 +94,7 @@ public class Schema {
                 elasticsearchClient.createIndex(channelRegistryIndexName, getMappingSchema(channelRegistryIndexName));
                 LOG.info("Channel Metadata index created: {}", channelRegistryIndexExistsResponse);
 
-                elasticsearchClient.putMapping(new TypeDescriptor(channelRegistryIndexName, ChannelInfoSchema.CHANNEL_TYPE_NAME), ChannelInfoSchema.getChannelTypeSchema(enableAllField, enableSourceField));
+                elasticsearchClient.putMapping(new TypeDescriptor(channelRegistryIndexName, ChannelInfoSchema.CHANNEL_TYPE_NAME), ChannelInfoSchema.getChannelTypeSchema(enableSourceField));
             }
 
             String clientRegistryIndexName = DatastoreUtils.getClientIndexName(scopeId);
@@ -104,7 +103,7 @@ public class Schema {
                 elasticsearchClient.createIndex(clientRegistryIndexName, getMappingSchema(clientRegistryIndexName));
                 LOG.info("Client Metadata index created: {}", clientRegistryIndexExistsResponse);
 
-                elasticsearchClient.putMapping(new TypeDescriptor(clientRegistryIndexName, ClientInfoSchema.CLIENT_TYPE_NAME), ClientInfoSchema.getClientTypeSchema(enableAllField, enableSourceField));
+                elasticsearchClient.putMapping(new TypeDescriptor(clientRegistryIndexName, ClientInfoSchema.CLIENT_TYPE_NAME), ClientInfoSchema.getClientTypeSchema(enableSourceField));
             }
 
             String metricRegistryIndexName = DatastoreUtils.getMetricIndexName(scopeId);
@@ -113,7 +112,7 @@ public class Schema {
                 elasticsearchClient.createIndex(metricRegistryIndexName, getMappingSchema(metricRegistryIndexName));
                 LOG.info("Metric Metadata index created: {}", metricRegistryIndexExistsResponse);
 
-                elasticsearchClient.putMapping(new TypeDescriptor(metricRegistryIndexName, MetricInfoSchema.METRIC_TYPE_NAME), MetricInfoSchema.getMetricTypeSchema(enableAllField, enableSourceField));
+                elasticsearchClient.putMapping(new TypeDescriptor(metricRegistryIndexName, MetricInfoSchema.METRIC_TYPE_NAME), MetricInfoSchema.getMetricTypeSchema(enableSourceField));
             }
 
             currentMetadata = new Metadata(dataIndexName, channelRegistryIndexName, clientRegistryIndexName, metricRegistryIndexName);
