@@ -226,7 +226,15 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Do the find
-        return entityManagerSession.onResult(em -> checkReadAccess(UserDAO.findByName(em, name)));
+        User user = entityManagerSession.onResult(em -> checkReadAccess(UserDAO.findByName(em, name)));
+
+        //
+        // Check Access
+        if (user != null) {
+            authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, user.getScopeId()));
+        }
+
+        return user;
     }
 
     @Override
@@ -237,7 +245,15 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Do the find
-        return entityManagerSession.onResult(em -> checkReadAccess(UserDAO.findByExternalId(em, externalId)));
+        User user = entityManagerSession.onResult(em -> checkReadAccess(UserDAO.findByExternalId(em, externalId)));
+
+        //
+        // Check Access
+        if (user != null) {
+            authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, user.getScopeId()));
+        }
+
+        return user;
     }
 
     @Override
