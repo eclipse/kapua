@@ -72,21 +72,17 @@ public class ClientInfoSchema {
     /**
      * Create and return the Json representation of the client info schema
      *
-     * @param allEnable
      * @param sourceEnable
      * @return
      * @throws MappingException
      * @since 1.0.0
      */
-    public static JsonNode getClientTypeSchema(boolean allEnable, boolean sourceEnable) throws MappingException {
+    public static JsonNode getClientTypeSchema(boolean sourceEnable) throws MappingException {
 
         ObjectNode clientNodeName = MappingUtils.newObjectNode();
         {
             ObjectNode sourceClient = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_ENABLED, sourceEnable) });
             clientNodeName.set(SchemaKeys.KEY_SOURCE, sourceClient);
-
-            ObjectNode allClient = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_ENABLED, allEnable) });
-            clientNodeName.set(SchemaKeys.KEY_ALL, allClient);
 
             ObjectNode propertiesNode = MappingUtils.newObjectNode();
             {

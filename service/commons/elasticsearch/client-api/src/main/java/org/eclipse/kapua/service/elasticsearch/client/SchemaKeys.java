@@ -71,12 +71,6 @@ public class SchemaKeys {
      */
     public static final String SORT_DESCENDING_VALUE = "desc";
     /**
-     * All key
-     *
-     * @since 1.0.0
-     */
-    public static final String KEY_ALL = "_all";
-    /**
      * Format key
      *
      * @since 1.0.0
@@ -112,12 +106,6 @@ public class SchemaKeys {
      * @since 1.0.0
      */
     public static final String KEY_DYNAMIC = "dynamic";
-    /**
-     * Include in all key
-     *
-     * @since 1.0.0
-     */
-    public static final String KEY_INCLUDE_IN_ALL = "include_in_all";
     /**
      * Object binary type
      *

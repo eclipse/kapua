@@ -269,20 +269,16 @@ public class MessageSchema {
     /**
      * Create and return the Json representation of the message schema
      *
-     * @param allEnable
      * @param sourceEnable
      * @return
      * @throws MappingException
      * @since 1.0.0
      */
-    public static JsonNode getMesageTypeSchema(boolean allEnable, boolean sourceEnable) throws MappingException {
+    public static JsonNode getMesageTypeSchema(boolean sourceEnable) throws MappingException {
         ObjectNode messageNode = MappingUtils.newObjectNode();
         {
             ObjectNode sourceMessage = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_ENABLED, sourceEnable) });
             messageNode.set(SchemaKeys.KEY_SOURCE, sourceMessage);
-
-            ObjectNode allMessage = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_ENABLED, allEnable) });
-            messageNode.set(SchemaKeys.KEY_ALL, allMessage);
 
             ObjectNode propertiesNode = MappingUtils.newObjectNode();
             {
@@ -318,7 +314,7 @@ public class MessageSchema {
 
                 ObjectNode positionNode = MappingUtils.newObjectNode(
                         new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_OBJECT), new KeyValueEntry(SchemaKeys.KEY_ENABLED, true),
-                                new KeyValueEntry(SchemaKeys.KEY_DYNAMIC, false), new KeyValueEntry(SchemaKeys.KEY_INCLUDE_IN_ALL, false) });
+                                new KeyValueEntry(SchemaKeys.KEY_DYNAMIC, false)  });
 
                 ObjectNode positionPropertiesNode = MappingUtils.newObjectNode();
                 {
@@ -354,7 +350,7 @@ public class MessageSchema {
 
             ObjectNode messageMetrics = MappingUtils.newObjectNode(
                     new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_OBJECT), new KeyValueEntry(SchemaKeys.KEY_ENABLED, true),
-                            new KeyValueEntry(SchemaKeys.KEY_DYNAMIC, true), new KeyValueEntry(SchemaKeys.KEY_INCLUDE_IN_ALL, false) });
+                            new KeyValueEntry(SchemaKeys.KEY_DYNAMIC, true)  });
             propertiesNode.set(MESSAGE_METRICS, messageMetrics);
 
             ObjectNode messageBody = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_BINARY), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_FALSE) });
