@@ -103,7 +103,7 @@ public class DomainRegistryServiceImpl extends AbstractKapuaService implements D
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> {
+        return entityManagerSession.doAction(em -> {
             Domain domain = DomainDAO.findByName(em, name);
 
             if (domain != null) {

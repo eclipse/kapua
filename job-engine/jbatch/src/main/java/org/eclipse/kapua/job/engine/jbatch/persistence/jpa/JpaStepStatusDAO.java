@@ -39,13 +39,15 @@ public class JpaStepStatusDAO {
         return jpaStepStatus;
     }
 
-    public static void update(EntityManager em, long stepExecutionId, StepStatus stepStatus) {
+    public static JpaStepStatus update(EntityManager em, long stepExecutionId, StepStatus stepStatus) {
         JpaStepStatus jpaStepStatus = find(em, stepExecutionId);
         jpaStepStatus.setObj(stepStatus);
 
         em.merge(jpaStepStatus);
         em.flush();
         em.refresh(jpaStepStatus);
+
+        return jpaStepStatus;
     }
 
     public static JpaStepStatus find(EntityManager em, long jobInstanceId) {
