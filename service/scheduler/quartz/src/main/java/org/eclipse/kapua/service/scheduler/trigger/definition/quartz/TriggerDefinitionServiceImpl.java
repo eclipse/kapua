@@ -123,7 +123,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> {
+        return entityManagerSession.doAction(em -> {
             TriggerDefinition triggerDefinition = TriggerDefinitionDAO.findByName(em, name);
             if (triggerDefinition != null) {
                 //

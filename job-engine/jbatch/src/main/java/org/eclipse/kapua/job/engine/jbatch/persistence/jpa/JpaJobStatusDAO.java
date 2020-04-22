@@ -36,13 +36,15 @@ public class JpaJobStatusDAO {
         return jpaJobStatus;
     }
 
-    public static void update(EntityManager em, long jobInstanceId, JobStatus jobStatus) {
+    public static JpaJobStatus update(EntityManager em, long jobInstanceId, JobStatus jobStatus) {
         JpaJobStatus jpaJobStatus = find(em, jobInstanceId);
         jpaJobStatus.setObj(jobStatus);
 
         em.merge(jpaJobStatus);
         em.flush();
         em.refresh(jpaJobStatus);
+
+        return jpaJobStatus;
     }
 
     public static JpaJobStatus find(EntityManager em, long jobInstanceId) {
