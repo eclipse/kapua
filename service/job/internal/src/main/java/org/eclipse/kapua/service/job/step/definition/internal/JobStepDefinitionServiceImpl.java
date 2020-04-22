@@ -113,7 +113,7 @@ public class JobStepDefinitionServiceImpl
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> {
+        return entityManagerSession.doAction(em -> {
 
             JobStepDefinition jobStepDefinition = JobStepDefinitionDAO.findByName(em, name);
             if (jobStepDefinition != null) {
