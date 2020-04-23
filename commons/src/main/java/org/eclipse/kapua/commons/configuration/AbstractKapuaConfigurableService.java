@@ -20,6 +20,7 @@ import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
@@ -41,6 +42,8 @@ import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
+import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserService;
 
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -312,6 +315,15 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+        UserService userService = locator.getService(UserService.class);
+
+        String rootUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
+        User rootUser = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(rootUserName));
+        if (!KapuaSecurityUtils.getSession().getUserId().equals(rootUser.getId()) && KapuaSecurityUtils.getSession().getScopeId().equals(scopeId)) {
+            // Prevent someone to change his own configurations, unless it's the root user
+            throw KapuaException.internalError("An user cannot change service settings on his own account");
+        }
+
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.write, scopeId));
 
         KapuaTocd ocd = getConfigMetadata(scopeId);
