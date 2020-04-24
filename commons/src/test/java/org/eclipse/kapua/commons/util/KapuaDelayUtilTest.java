@@ -24,7 +24,8 @@ public class KapuaDelayUtilTest extends Assert {
     @Test
     public void testConstructor() throws Exception {
         Constructor<KapuaDelayUtil> kapuaDelayUtilConstructor = KapuaDelayUtil.class.getDeclaredConstructor();
-        kapuaDelayUtilConstructor.setAccessible(false);
+        kapuaDelayUtilConstructor.setAccessible(true);
+        kapuaDelayUtilConstructor.newInstance();
     }
 
     @Test
