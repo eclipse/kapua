@@ -54,7 +54,7 @@ import java.util.Map;
  *
  * @since 1.0.0
  */
-public class TranslatorLifeNotifyKuraKapua extends Translator<KuraNotifyMessage, KapuaNotifyMessage> {
+public class TranslatorAppNotifyKuraKapua extends Translator<KuraNotifyMessage, KapuaNotifyMessage> {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
