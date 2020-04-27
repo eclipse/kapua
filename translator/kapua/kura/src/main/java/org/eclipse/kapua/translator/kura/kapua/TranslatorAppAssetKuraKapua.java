@@ -21,7 +21,6 @@ import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAssetChannelMo
 import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAssets;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
-import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMetrics;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
 import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
@@ -67,19 +66,16 @@ public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorRespons
     }
 
     @Override
-    protected AssetResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws InvalidPayloadException {
+    protected AssetResponsePayload translatePayload(KuraResponsePayload kuraResponsePayload) throws InvalidPayloadException {
         try {
             DeviceAssetFactory deviceAssetFactory = LOCATOR.getFactory(DeviceAssetFactory.class);
 
-            AssetResponsePayload assetResponsePayload = new AssetResponsePayload();
+            AssetResponsePayload assetResponsePayload = TranslatorKuraKapuaUtils.buildBaseResponsePayload(kuraResponsePayload, new AssetResponsePayload());
 
-            assetResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_MESSAGE.getName()));
-            assetResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_STACK.getName()));
-
-            if (kuraPayload.hasBody()) {
+            if (kuraResponsePayload.hasBody()) {
 
                 ObjectMapper mapper = new ObjectMapper();
-                JsonNode jsonNode = mapper.readTree(kuraPayload.getBody());
+                JsonNode jsonNode = mapper.readTree(kuraResponsePayload.getBody());
                 DeviceAssets deviceAssets = deviceAssetFactory.newAssetListResult();
                 KuraAssets kuraAssets = KuraAssets.readJsonNode(jsonNode);
 
@@ -115,7 +111,7 @@ public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorRespons
         } catch (InvalidPayloadException ipe) {
             throw ipe;
         } catch (Exception e) {
-            throw new InvalidPayloadException(e, kuraPayload);
+            throw new InvalidPayloadException(e, kuraResponsePayload);
         }
     }
 }

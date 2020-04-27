@@ -21,7 +21,9 @@ import org.eclipse.kapua.service.device.call.message.DevicePosition;
 import org.eclipse.kapua.service.device.call.message.app.DeviceAppMetrics;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseCode;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
 import org.eclipse.kapua.translator.exception.TranslatorException;
 
@@ -76,6 +78,20 @@ public final class TranslatorKuraKapuaUtils {
         if (!appVersion.getName().equals(appIdTokens[1])) {
             throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_VERSION, null, appIdTokens[1]);
         }
+    }
+
+    /**
+     * Builds the {@link KapuaResponsePayload} with commons property in {@link KuraResponsePayload}
+     *
+     * @param kuraResponsePayload The {@link KuraResponsePayload}.
+     * @param appResponsePayload  The application specific {@link KapuaResponsePayload}.
+     * @param <P>                 The application specific {@link KapuaResponsePayload} type.
+     * @return The built base application specific {@link KapuaResponsePayload}}
+     */
+    public static <P extends KapuaResponsePayload> P buildBaseResponsePayload(KuraResponsePayload kuraResponsePayload, P appResponsePayload) {
+        appResponsePayload.setExceptionMessage(kuraResponsePayload.getExceptionMessage());
+        appResponsePayload.setExceptionStack(kuraResponsePayload.getExceptionStack());
+        return appResponsePayload;
     }
 
     /**

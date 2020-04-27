@@ -53,11 +53,11 @@ public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorRespo
     }
 
     @Override
-    protected CommandResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws InvalidPayloadException {
+    protected CommandResponsePayload translatePayload(KuraResponsePayload kuraResponsePayload) throws InvalidPayloadException {
         try {
-            CommandResponsePayload commandResponsePayload = new CommandResponsePayload();
+            CommandResponsePayload commandResponsePayload = TranslatorKuraKapuaUtils.buildBaseResponsePayload(kuraResponsePayload, new CommandResponsePayload());
 
-            Map<String, Object> metrics = kuraPayload.getMetrics();
+            Map<String, Object> metrics = kuraResponsePayload.getMetrics();
             commandResponsePayload.setStderr((String) metrics.get(CommandMetrics.APP_METRIC_STDERR.getName()));
             commandResponsePayload.setStdout((String) metrics.get(CommandMetrics.APP_METRIC_STDOUT.getName()));
             commandResponsePayload.setExitCode((Integer) metrics.get(CommandMetrics.APP_METRIC_EXIT_CODE.getName()));
@@ -67,13 +67,13 @@ public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorRespo
                 commandResponsePayload.setTimedout(timedout);
             }
 
-            commandResponsePayload.setExceptionMessage(kuraPayload.getExceptionMessage());
-            commandResponsePayload.setExceptionStack(kuraPayload.getExceptionStack());
+            commandResponsePayload.setExceptionMessage(kuraResponsePayload.getExceptionMessage());
+            commandResponsePayload.setExceptionStack(kuraResponsePayload.getExceptionStack());
 
             // Return Kapua Payload
             return commandResponsePayload;
         } catch (Exception e) {
-            throw new InvalidPayloadException(e, kuraPayload);
+            throw new InvalidPayloadException(e, kuraResponsePayload);
         }
     }
 }
