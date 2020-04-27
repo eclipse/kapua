@@ -49,10 +49,7 @@ public class TranslatorAppCommandKapuaKura extends AbstractTranslatorKapuaKura<C
     @Override
     protected KuraRequestChannel translateChannel(CommandRequestChannel kapuaChannel) throws InvalidChannelException {
         try {
-            KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
-            kuraRequestChannel.setMessageClassification(getControlMessageClassifier());
-            kuraRequestChannel.setAppId(CommandMetrics.APP_ID + "-" + CommandMetrics.APP_VERSION);
-            kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.translate(kapuaChannel.getMethod()));
+            KuraRequestChannel kuraRequestChannel = TranslatorKapuaKuraUtils.buildBaseRequestChannel(CommandMetrics.APP_ID, CommandMetrics.APP_VERSION, kapuaChannel.getMethod());
             kuraRequestChannel.setResources(new String[]{"command"});
 
             //
