@@ -34,8 +34,6 @@ import org.eclipse.kapua.service.device.management.asset.message.internal.AssetR
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponsePayload;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
-import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
-import org.eclipse.kapua.translator.exception.TranslatorException;
 
 import java.util.Date;
 
@@ -53,25 +51,9 @@ public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorRespons
     }
 
     @Override
-    protected AssetResponseChannel translateChannel(KuraResponseChannel kuraChannel) throws InvalidChannelException {
+    protected AssetResponseChannel translateChannel(KuraResponseChannel kuraResponseChannel) throws InvalidChannelException {
         try {
-            if (!getControlMessageClassifier().equals(kuraChannel.getMessageClassification())) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER, null, kuraChannel.getMessageClassification());
-            }
-
-            String[] appIdTokens = kuraChannel.getAppId().split("-");
-
-            if (appIdTokens.length < 2) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, (Object) appIdTokens);
-            }
-
-            if (!AssetMetrics.APP_ID.getName().equals(appIdTokens[0])) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, appIdTokens[0]);
-            }
-
-            if (!AssetMetrics.APP_VERSION.getName().equals(appIdTokens[1])) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_VERSION, null, appIdTokens[1]);
-            }
+            TranslatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, AssetMetrics.APP_ID, AssetMetrics.APP_VERSION);
 
             AssetResponseChannel assetResponseChannel = new AssetResponseChannel();
             assetResponseChannel.setAppName(DeviceAssetAppProperties.APP_NAME);
@@ -80,7 +62,7 @@ public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorRespons
             // Return Kapua Channel
             return assetResponseChannel;
         } catch (Exception e) {
-            throw new InvalidChannelException(e, kuraChannel);
+            throw new InvalidChannelException(e, kuraResponseChannel);
         }
     }
 

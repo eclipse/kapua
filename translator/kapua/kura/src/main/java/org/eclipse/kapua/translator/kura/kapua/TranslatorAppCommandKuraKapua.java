@@ -22,8 +22,6 @@ import org.eclipse.kapua.service.device.management.command.message.internal.Comm
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandResponsePayload;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
-import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
-import org.eclipse.kapua.translator.exception.TranslatorException;
 
 import java.util.Map;
 
@@ -39,25 +37,9 @@ public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorRespo
     }
 
     @Override
-    protected CommandResponseChannel translateChannel(KuraResponseChannel kuraChannel) throws InvalidChannelException {
+    protected CommandResponseChannel translateChannel(KuraResponseChannel kuraResponseChannel) throws InvalidChannelException {
         try {
-            if (!getControlMessageClassifier().equals(kuraChannel.getMessageClassification())) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER, null, kuraChannel.getMessageClassification());
-            }
-
-            String[] appIdTokens = kuraChannel.getAppId().split("-");
-
-            if (appIdTokens.length < 2) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, (Object) appIdTokens);
-            }
-
-            if (!CommandMetrics.APP_ID.getName().equals(appIdTokens[0])) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, appIdTokens[0]);
-            }
-
-            if (!CommandMetrics.APP_VERSION.getName().equals(appIdTokens[1])) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_VERSION, null, appIdTokens[1]);
-            }
+            TranslatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, CommandMetrics.APP_ID, CommandMetrics.APP_VERSION);
 
             CommandResponseChannel kapuaChannel = new CommandResponseChannel();
             kapuaChannel.setAppName(CommandAppProperties.APP_NAME);
@@ -66,7 +48,7 @@ public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorRespo
             // Return Kapua Channel
             return kapuaChannel;
         } catch (Exception e) {
-            throw new InvalidChannelException(e, kuraChannel);
+            throw new InvalidChannelException(e, kuraResponseChannel);
         }
     }
 

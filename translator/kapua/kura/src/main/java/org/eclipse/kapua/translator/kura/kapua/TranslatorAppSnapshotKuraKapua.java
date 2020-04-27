@@ -51,25 +51,9 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
     }
 
     @Override
-    protected SnapshotResponseChannel translateChannel(KuraResponseChannel kuraChannel) throws InvalidChannelException {
+    protected SnapshotResponseChannel translateChannel(KuraResponseChannel kuraResponseChannel) throws InvalidChannelException {
         try {
-            if (!getControlMessageClassifier().equals(kuraChannel.getMessageClassification())) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER, null, kuraChannel.getMessageClassification());
-            }
-
-            String[] appIdTokens = kuraChannel.getAppId().split("-");
-
-            if (appIdTokens.length < 2) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, (Object) appIdTokens);
-            }
-
-            if (!SnapshotMetrics.APP_ID.getName().equals(appIdTokens[0])) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, appIdTokens[0]);
-            }
-
-            if (!SnapshotMetrics.APP_VERSION.getName().equals(appIdTokens[1])) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_VERSION, null, appIdTokens[1]);
-            }
+            TranslatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, SnapshotMetrics.APP_ID, SnapshotMetrics.APP_VERSION);
 
             SnapshotResponseChannel snapshotResponseChannel = new SnapshotResponseChannel();
             snapshotResponseChannel.setAppName(DeviceConfigurationAppProperties.APP_NAME);
@@ -78,7 +62,7 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
             // Return Kapua Channel
             return snapshotResponseChannel;
         } catch (Exception e) {
-            throw new InvalidChannelException(e, kuraChannel);
+            throw new InvalidChannelException(e, kuraResponseChannel);
         }
     }
 

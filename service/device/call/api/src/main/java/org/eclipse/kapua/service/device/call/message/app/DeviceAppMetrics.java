@@ -9,16 +9,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
+package org.eclipse.kapua.service.device.call.message.app;
 
-import org.eclipse.kapua.service.device.call.kura.Kura;
-import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
-import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecyclePayload;
+import org.eclipse.kapua.service.device.call.message.DeviceMetrics;
 
 /**
- * {@code abstract} base class for {@link Kura} {@link DeviceLifecyclePayload}
+ * {@link DeviceAppMetrics} definition.
  *
  * @since 1.2.0
  */
-public class AbstractKuraLifecyclePayload extends KuraPayload implements DeviceLifecyclePayload {
+public interface DeviceAppMetrics extends DeviceMetrics {
 }

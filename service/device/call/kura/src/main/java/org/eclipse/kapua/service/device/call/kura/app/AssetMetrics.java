@@ -12,13 +12,14 @@
 package org.eclipse.kapua.service.device.call.kura.app;
 
 import org.eclipse.kapua.service.device.call.message.DeviceMetrics;
+import org.eclipse.kapua.service.device.call.message.app.DeviceAppMetrics;
 
 /**
  * Asset {@link DeviceMetrics}.
  *
  * @since 1.0.0
  */
-public enum AssetMetrics implements DeviceMetrics {
+public enum AssetMetrics implements DeviceAppMetrics {
 
     /**
      * Application identifier.

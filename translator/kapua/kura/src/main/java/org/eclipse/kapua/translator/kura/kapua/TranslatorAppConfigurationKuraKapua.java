@@ -57,25 +57,9 @@ public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslato
     }
 
     @Override
-    protected ConfigurationResponseChannel translateChannel(KuraResponseChannel kuraChannel) throws InvalidChannelException {
+    protected ConfigurationResponseChannel translateChannel(KuraResponseChannel kuraResponseChannel) throws InvalidChannelException {
         try {
-            if (!getControlMessageClassifier().equals(kuraChannel.getMessageClassification())) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER, null, kuraChannel.getMessageClassification());
-            }
-
-            String[] appIdTokens = kuraChannel.getAppId().split("-");
-
-            if (appIdTokens.length < 2) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, (Object) appIdTokens);
-            }
-
-            if (!ConfigurationMetrics.APP_ID.getName().equals(appIdTokens[0])) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, appIdTokens[0]);
-            }
-
-            if (!ConfigurationMetrics.APP_VERSION.getName().equals(appIdTokens[1])) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_VERSION, null, appIdTokens[1]);
-            }
+            TranslatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, ConfigurationMetrics.APP_ID, ConfigurationMetrics.APP_VERSION);
 
             ConfigurationResponseChannel configurationResponseChannel = new ConfigurationResponseChannel();
             configurationResponseChannel.setAppName(DeviceConfigurationAppProperties.APP_NAME);
@@ -84,7 +68,7 @@ public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslato
             // Return Kapua Channel
             return configurationResponseChannel;
         } catch (Exception e) {
-            throw new InvalidChannelException(e, kuraChannel);
+            throw new InvalidChannelException(e, kuraResponseChannel);
         }
     }
 
