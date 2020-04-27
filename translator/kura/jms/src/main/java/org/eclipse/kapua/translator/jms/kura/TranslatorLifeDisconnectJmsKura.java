@@ -15,70 +15,33 @@ import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraDisconne
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraDisconnectMessage;
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraDisconnectPayload;
 import org.eclipse.kapua.translator.Translator;
-import org.eclipse.kapua.translator.exception.InvalidChannelException;
-import org.eclipse.kapua.translator.exception.InvalidMessageException;
-import org.eclipse.kapua.translator.exception.InvalidPayloadException;
-import org.eclipse.kapua.translator.exception.TranslateException;
-import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
-import org.eclipse.kapua.translator.exception.TranslatorException;
 import org.eclipse.kapua.transport.message.jms.JmsMessage;
-import org.eclipse.kapua.transport.message.jms.JmsPayload;
-import org.eclipse.kapua.transport.message.jms.JmsTopic;
+
+import java.util.Date;
 
 /**
  * {@link Translator} implementation from {@link JmsMessage} to {@link KuraDisconnectMessage}
  *
  * @since 1.0.0
  */
-public class TranslatorLifeDisconnectJmsKura extends Translator<JmsMessage, KuraDisconnectMessage> {
+public class TranslatorLifeDisconnectJmsKura extends AbstractTranslatorLifecycleJmsKura<KuraDisconnectChannel, KuraDisconnectPayload, KuraDisconnectMessage> {
 
-    @Override
-    public KuraDisconnectMessage translate(JmsMessage jmsMessage) throws TranslateException {
-        try {
-            return new KuraDisconnectMessage(translate(jmsMessage.getTopic()),
-                    jmsMessage.getReceivedOn(),
-                    translate(jmsMessage.getPayload()));
-        } catch (InvalidChannelException | InvalidPayloadException te) {
-            throw te;
-        } catch (Exception e) {
-            throw new InvalidMessageException(e, jmsMessage);
-        }
-    }
-
-    private KuraDisconnectChannel translate(JmsTopic jmsTopic) throws InvalidChannelException {
-        try {
-            String[] topicTokens = jmsTopic.getSplittedTopic();
-            if (topicTokens.length < 3) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL, null, (Object) topicTokens);
-            }
-
-            return new KuraDisconnectChannel(topicTokens[0], topicTokens[1], topicTokens[2]);
-        } catch (Exception e) {
-            throw new InvalidChannelException(e, jmsTopic);
-        }
-    }
-
-    private KuraDisconnectPayload translate(JmsPayload jmsPayload) throws InvalidPayloadException {
-        try {
-            KuraDisconnectPayload kuraDisconnectPayload = new KuraDisconnectPayload();
-
-            if (jmsPayload.hasBody()) {
-                kuraDisconnectPayload.readFromByteArray(jmsPayload.getBody());
-            }
-
-            return kuraDisconnectPayload;
-        } catch (Exception e) {
-            throw new InvalidPayloadException(e, jmsPayload);
-        }
+    public TranslatorLifeDisconnectJmsKura() {
+        super(KuraDisconnectMessage.class);
     }
 
     @Override
-    public Class<JmsMessage> getClassFrom() {
-        return JmsMessage.class;
+    public KuraDisconnectMessage createLifecycleMessage(KuraDisconnectChannel kuraDisconnectChannel, Date receivedOn, KuraDisconnectPayload kuraDisconnectPayload) {
+        return new KuraDisconnectMessage(kuraDisconnectChannel, receivedOn, kuraDisconnectPayload);
     }
 
     @Override
-    public Class<KuraDisconnectMessage> getClassTo() {
-        return KuraDisconnectMessage.class;
+    public KuraDisconnectPayload createLifecyclePayload() {
+        return new KuraDisconnectPayload();
+    }
+
+    @Override
+    public KuraDisconnectChannel createLifecycleChannel(String messageClassifier, String scopeName, String clientId) {
+        return new KuraDisconnectChannel(messageClassifier, scopeName, clientId);
     }
 }

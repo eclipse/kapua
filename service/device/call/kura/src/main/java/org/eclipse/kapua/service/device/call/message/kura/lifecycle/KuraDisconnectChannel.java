@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
 
-import org.eclipse.kapua.service.device.call.message.kura.KuraChannel;
 import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecycleChannel;
 
 import java.util.List;
@@ -22,7 +21,7 @@ import java.util.List;
  * @see KuraDisconnectMessage
  * @since 1.0.0
  */
-public class KuraDisconnectChannel extends KuraChannel implements DeviceLifecycleChannel {
+public class KuraDisconnectChannel extends AbstractKuraLifecycleChannel implements DeviceLifecycleChannel {
 
     /**
      * Constructor.

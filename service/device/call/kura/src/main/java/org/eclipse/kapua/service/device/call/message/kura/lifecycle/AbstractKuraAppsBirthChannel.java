@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
 
-import org.eclipse.kapua.service.device.call.message.kura.KuraChannel;
 import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecycleChannel;
 
 /**
@@ -21,7 +20,7 @@ import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecycleCh
  *
  * @since 1.0.0
  */
-public class AbstractKuraAppsBirthChannel extends KuraChannel implements DeviceLifecycleChannel {
+public class AbstractKuraAppsBirthChannel extends AbstractKuraLifecycleChannel implements DeviceLifecycleChannel {
 
     /**
      * Constructor.

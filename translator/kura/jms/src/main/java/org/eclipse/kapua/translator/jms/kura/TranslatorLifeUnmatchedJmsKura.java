@@ -13,6 +13,7 @@
 package org.eclipse.kapua.translator.jms.kura;
 
 import org.eclipse.kapua.message.internal.MessageException;
+import org.eclipse.kapua.service.device.call.kura.Kura;
 import org.eclipse.kapua.service.device.call.message.kura.others.KuraUnmatchedChannel;
 import org.eclipse.kapua.service.device.call.message.kura.others.KuraUnmatchedMessage;
 import org.eclipse.kapua.service.device.call.message.kura.others.KuraUnmatchedPayload;
@@ -47,21 +48,39 @@ public class TranslatorLifeUnmatchedJmsKura extends Translator<JmsMessage, KuraU
         }
     }
 
-    private KuraUnmatchedChannel translate(JmsTopic jmsTopic) throws InvalidChannelException {
+    /**
+     * Translates the given {@link JmsTopic} to the {@link KuraUnmatchedChannel} equivalent.
+     *
+     * @param jmsTopic The {@link JmsTopic} to translate.
+     * @return The translated {@link KuraUnmatchedChannel}
+     * @throws InvalidChannelException if translation encounters any error (i.e.: not enough {@link JmsTopic#getSplittedTopic()} tokens.
+     * @since 1.0.0
+     */
+    public KuraUnmatchedChannel translate(JmsTopic jmsTopic) throws InvalidChannelException {
         try {
             String[] topicTokens = jmsTopic.getSplittedTopic();
             if (topicTokens.length < 3) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL, null, (Object) topicTokens);
             }
 
-            // TODO: we are loosing the sematinc parts of this topic
+            // FIXME: we are loosing the sematinc parts of this topic
             return new KuraUnmatchedChannel(topicTokens[0], topicTokens[1], topicTokens[2]);
         } catch (Exception e) {
             throw new InvalidChannelException(e, jmsTopic);
         }
     }
 
-    private KuraUnmatchedPayload translate(JmsPayload jmsPayload) throws InvalidPayloadException {
+    /**
+     * Translates the given {@link JmsPayload} to the {@link KuraUnmatchedPayload} equivalent.
+     * <p>
+     * If {@link JmsPayload#getBody()} is not {@link Kura} protobuf encoded the raw data will be put into {@link KuraUnmatchedPayload#getBody()}
+     *
+     * @param jmsPayload The {@link JmsPayload} to translate.
+     * @return The translated {@link KuraUnmatchedPayload}
+     * @throws InvalidPayloadException if translation encounters any error.
+     * @since 1.0.0
+     */
+    public KuraUnmatchedPayload translate(JmsPayload jmsPayload) throws InvalidPayloadException {
         try {
             KuraUnmatchedPayload kuraUnmatchedPayload = new KuraUnmatchedPayload();
 
@@ -69,7 +88,6 @@ public class TranslatorLifeUnmatchedJmsKura extends Translator<JmsMessage, KuraU
                 try {
                     kuraUnmatchedPayload.readFromByteArray(jmsPayload.getBody());
                 } catch (MessageException me) {
-                    // When reading a payload which is not Kura-protobuf encoded we use that payload as a raw KapuaPayload.body
                     kuraUnmatchedPayload.setBody(jmsPayload.getBody());
                 }
             }

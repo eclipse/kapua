@@ -47,7 +47,15 @@ public class TranslatorDataKuraJms extends Translator<KuraDataMessage, JmsMessag
         }
     }
 
-    private JmsTopic translate(KuraDataChannel kuraDataChannel) throws InvalidChannelException {
+    /**
+     * Translates the given {@link KuraDataChannel} to the {@link JmsTopic} equivalent.
+     *
+     * @param kuraDataChannel The {@link KuraDataChannel} to translate.
+     * @return The translated {@link JmsTopic}
+     * @throws InvalidChannelException if translation encounters any error.
+     * @since 1.0.0
+     */
+    public JmsTopic translate(KuraDataChannel kuraDataChannel) throws InvalidChannelException {
         try {
             List<String> topicTokens = new ArrayList<>();
             topicTokens.add(kuraDataChannel.getScope());
@@ -62,7 +70,15 @@ public class TranslatorDataKuraJms extends Translator<KuraDataMessage, JmsMessag
         }
     }
 
-    private JmsPayload translate(KuraDataPayload kuraDataPayload) throws InvalidPayloadException {
+    /**
+     * Translates the given {@link KuraDataPayload} to the {@link JmsPayload} equivalent.
+     *
+     * @param kuraDataPayload The {@link KuraDataChannel} to translate.
+     * @return The translated {@link JmsPayload}
+     * @throws InvalidPayloadException if translation encounters any error.
+     * @since 1.0.0
+     */
+    public JmsPayload translate(KuraDataPayload kuraDataPayload) throws InvalidPayloadException {
         try {
             return new JmsPayload(kuraDataPayload.toByteArray());
         } catch (Exception e) {

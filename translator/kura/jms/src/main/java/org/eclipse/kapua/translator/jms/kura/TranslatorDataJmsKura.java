@@ -12,6 +12,7 @@
 package org.eclipse.kapua.translator.jms.kura;
 
 import org.eclipse.kapua.message.internal.MessageException;
+import org.eclipse.kapua.service.device.call.kura.Kura;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataChannel;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataPayload;
@@ -25,10 +26,6 @@ import org.eclipse.kapua.translator.exception.TranslatorException;
 import org.eclipse.kapua.transport.message.jms.JmsMessage;
 import org.eclipse.kapua.transport.message.jms.JmsPayload;
 import org.eclipse.kapua.transport.message.jms.JmsTopic;
-
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * {@link Translator} implementation from {@link JmsMessage} to {@link KuraDataMessage}
@@ -50,9 +47,18 @@ public class TranslatorDataJmsKura extends Translator<JmsMessage, KuraDataMessag
         }
     }
 
-    private KuraDataChannel translate(JmsTopic jmsTopic) throws InvalidChannelException {
+    /**
+     * Translates the given {@link JmsTopic} to the {@link KuraDataChannel} equivalent.
+     *
+     * @param jmsTopic The {@link JmsTopic} to translate.
+     * @return The translated {@link KuraDataChannel}
+     * @throws InvalidChannelException if translation encounters any error (i.e.: not enough {@link JmsTopic#getSplittedTopic()} tokens.
+     * @since 1.0.0
+     */
+    public KuraDataChannel translate(JmsTopic jmsTopic) throws InvalidChannelException {
         try {
             String[] topicTokens = jmsTopic.getSplittedTopic();
+
             if (topicTokens.length < 2) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL, null, (Object) topicTokens);
             }
@@ -60,13 +66,9 @@ public class TranslatorDataJmsKura extends Translator<JmsMessage, KuraDataMessag
             KuraDataChannel kuraDataChannel = new KuraDataChannel();
             kuraDataChannel.setScope(topicTokens[0]);
             kuraDataChannel.setClientId(topicTokens[1]);
-
-            List<String> channelPartsList = new LinkedList<>(Arrays.asList(topicTokens));
-            // remove the first 2 items (do no use sublist since the returned object is not serializable then Camel will throws exception on error handling
-            // channelPartsList.subList(2,mqttTopicTokens.length))
-            channelPartsList.remove(0);
-            channelPartsList.remove(0);
-            kuraDataChannel.setSemanticParts(channelPartsList);
+            for (int i = 2; i < topicTokens.length; i++) {
+                kuraDataChannel.getSemanticParts().add(topicTokens[i]);
+            }
 
             return kuraDataChannel;
         } catch (Exception e) {
@@ -74,18 +76,30 @@ public class TranslatorDataJmsKura extends Translator<JmsMessage, KuraDataMessag
         }
     }
 
-    private KuraDataPayload translate(JmsPayload jmsPayload) throws InvalidPayloadException {
+    /**
+     * Translates the given {@link JmsPayload} to the {@link KuraDataPayload} equivalent.
+     * <p>
+     * If {@link JmsPayload#getBody()} is not {@link Kura} protobuf encoded the raw data will be put into {@link KuraDataPayload#getBody()}
+     *
+     * @param jmsPayload The {@link JmsPayload} to translate.
+     * @return The translated {@link KuraDataPayload}
+     * @throws InvalidPayloadException if translation encounters any error.
+     * @since 1.0.0
+     */
+    public KuraDataPayload translate(JmsPayload jmsPayload) throws InvalidPayloadException {
         try {
-            KuraDataPayload kuraPayload = new KuraDataPayload();
+            KuraDataPayload kuraDataPayload = new KuraDataPayload();
+
             if (jmsPayload.hasBody()) {
+                byte[] mqttBody = jmsPayload.getBody();
+
                 try {
-                    kuraPayload.readFromByteArray(jmsPayload.getBody());
-                } catch (MessageException me) {
-                    // When reading a payload which is not Kura-protobuf encoded we use that payload as a raw KapuaPayload.body
-                    kuraPayload.setBody(jmsPayload.getBody());
+                    kuraDataPayload.readFromByteArray(mqttBody);
+                } catch (MessageException ex) {
+                    kuraDataPayload.setBody(mqttBody);
                 }
             }
-            return kuraPayload;
+            return kuraDataPayload;
         } catch (Exception e) {
             throw new InvalidPayloadException(e, jmsPayload);
         }
