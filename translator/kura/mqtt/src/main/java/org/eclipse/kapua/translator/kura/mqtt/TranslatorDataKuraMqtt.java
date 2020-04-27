@@ -53,7 +53,15 @@ public class TranslatorDataKuraMqtt extends Translator<KuraDataMessage, MqttMess
         }
     }
 
-    private MqttTopic translate(KuraDataChannel kuraDataChannel) throws InvalidChannelException {
+    /**
+     * Translates the given {@link KuraDataChannel} to the {@link MqttTopic} equivalent.
+     *
+     * @param kuraDataChannel The {@link KuraDataChannel} to translate.
+     * @return The translated {@link MqttTopic}
+     * @throws InvalidChannelException if translation encounters any error.
+     * @since 1.0.0
+     */
+    public MqttTopic translate(KuraDataChannel kuraDataChannel) throws InvalidChannelException {
         try {
             List<String> topicTokens = new ArrayList<>();
 
@@ -70,7 +78,15 @@ public class TranslatorDataKuraMqtt extends Translator<KuraDataMessage, MqttMess
         }
     }
 
-    private MqttPayload translate(KuraDataPayload kuraDataPayload) throws InvalidPayloadException {
+    /**
+     * Translates the given {@link KuraDataPayload} to the {@link MqttPayload} equivalent.
+     *
+     * @param kuraDataPayload The {@link KuraDataChannel} to translate.
+     * @return The translated {@link MqttPayload}
+     * @throws InvalidPayloadException if translation encounters any error.
+     * @since 1.0.0
+     */
+    public MqttPayload translate(KuraDataPayload kuraDataPayload) throws InvalidPayloadException {
         try {
             return new MqttPayload(kuraDataPayload.toByteArray());
         } catch (Exception e) {
