@@ -20,7 +20,7 @@ import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecycleCh
  *
  * @since 1.0.0
  */
-public class AbstractKuraAppsBirthChannel extends AbstractKuraLifecycleChannel implements DeviceLifecycleChannel {
+public abstract class AbstractKuraAppsBirthChannel extends AbstractKuraLifecycleChannel implements DeviceLifecycleChannel {
 
     /**
      * Constructor.
@@ -34,6 +34,4 @@ public class AbstractKuraAppsBirthChannel extends AbstractKuraLifecycleChannel i
     public AbstractKuraAppsBirthChannel(String messageClassification, String scopeNamespace, String clientId) {
         super(messageClassification, scopeNamespace, clientId);
     }
-
-
 }

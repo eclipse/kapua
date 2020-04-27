@@ -15,12 +15,14 @@ import org.eclipse.kapua.service.device.call.kura.Kura;
 import org.eclipse.kapua.service.device.call.message.kura.KuraChannel;
 import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecycleChannel;
 
+import java.util.List;
+
 /**
  * {@code abstract} base class for {@link Kura} {@link DeviceLifecycleChannel}
  *
  * @since 1.2.0
  */
-public class AbstractKuraLifecycleChannel extends KuraChannel implements DeviceLifecycleChannel {
+public abstract class AbstractKuraLifecycleChannel extends KuraChannel implements DeviceLifecycleChannel {
 
     /**
      * Constructor.
@@ -33,5 +35,12 @@ public class AbstractKuraLifecycleChannel extends KuraChannel implements DeviceL
      */
     public AbstractKuraLifecycleChannel(String messageClassification, String scopeNamespace, String clientId) {
         super(messageClassification, scopeNamespace, clientId);
+    }
+
+    @Override
+    public List<String> getParts() {
+        List<String> parts = super.getParts();
+        parts.add(getPhase());
+        return parts;
     }
 }

@@ -13,8 +13,6 @@ package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
 
 import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecycleChannel;
 
-import java.util.List;
-
 /**
  * {@link DeviceLifecycleChannel} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
  *
@@ -37,9 +35,7 @@ public class KuraDisconnectChannel extends AbstractKuraLifecycleChannel implemen
     }
 
     @Override
-    public List<String> getParts() {
-        List<String> parts = super.getParts();
-        parts.add("DC");
-        return parts;
+    public String getPhase() {
+        return "DC";
     }
 }
