@@ -20,7 +20,6 @@ import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage;
-import org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedMessage;
 import org.eclipse.kapua.service.device.management.job.scheduler.manager.JobDeviceManagementTriggerManagerService;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
 import org.slf4j.Logger;
@@ -48,7 +47,6 @@ public class DeviceMessageListener extends AbstractListener {
     private Counter metricDeviceDisconnectMessage;
     private Counter metricDeviceMissingMessage;
     private Counter metricDeviceAppsMessage;
-    private Counter metricDeviceUnmatchedMessage;
     private Counter metricDeviceErrorMessage;
 
     public DeviceMessageListener() {
@@ -57,7 +55,6 @@ public class DeviceMessageListener extends AbstractListener {
         metricDeviceDisconnectMessage = registerCounter("messages", "dc", "count");
         metricDeviceMissingMessage = registerCounter("messages", "missing", "count");
         metricDeviceAppsMessage = registerCounter("messages", "apps", "count");
-        metricDeviceUnmatchedMessage = registerCounter("messages", "unmatched", "count");
         metricDeviceErrorMessage = registerCounter("messages", "error", "count");
     }
 
@@ -132,16 +129,4 @@ public class DeviceMessageListener extends AbstractListener {
             LOG.error("Error while processing device missing life-cycle event", e);
         }
     }
-
-    /**
-     * Process a unmatched message.
-     *
-     * @param unmatchedMessage The unmatched message to process.
-     * @since 1.0.0
-     */
-    public void processUnmatchedMessage(CamelKapuaMessage<KapuaUnmatchedMessage> unmatchedMessage) {
-        LOG.info("Received unmatched message from device channel: {}", unmatchedMessage.getMessage().getChannel());
-        metricDeviceUnmatchedMessage.inc();
-    }
-
 }

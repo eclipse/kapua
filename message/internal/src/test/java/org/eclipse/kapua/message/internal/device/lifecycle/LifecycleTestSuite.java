@@ -22,7 +22,6 @@ import org.junit.runners.Suite;
         KapuaBirthMessageTest.class,
         KapuaDisconnectMessageTest.class,
         KapuaMissingMessageTest.class,
-        KapuaUnmatchedMessageTest.class
 })
 @Category(JUnitTests.class)
 public class LifecycleTestSuite {
