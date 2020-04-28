@@ -27,6 +27,8 @@
         <module>api</module>
         <module>kapua</module>
         <module>kura</module>
+        <module>test</module>
+        <module>test-steps</module>
     </modules>
 
 </project>
