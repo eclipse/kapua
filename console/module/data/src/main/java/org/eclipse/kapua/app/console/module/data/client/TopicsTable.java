@@ -43,6 +43,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.KapuaTreeGrid;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.data.client.messages.ConsoleDataMessages;
@@ -76,6 +77,7 @@ public class TopicsTable extends LayoutContainer {
                 store.sort("topicName", Style.SortDir.ASC);
                 updateTimestamps(new ArrayList<ModelData>(topics));
                 topicInfoGrid.unmask();
+                topicInfoGrid.getView().scrollToTop();
                 refreshButton.enable();
             }
 
@@ -159,7 +161,7 @@ public class TopicsTable extends LayoutContainer {
         store = new TreeStore<GwtTopic>();
         store.setSortInfo(new SortInfo("topicName", Style.SortDir.ASC));
         dataService.findTopicsTree(currentSession.getSelectedAccountId(), topicsCallback);
-        topicInfoGrid = new TreeGrid<GwtTopic>(store, new ColumnModel(configs));
+        topicInfoGrid = new KapuaTreeGrid<GwtTopic>(store, new ColumnModel(configs));
         topicInfoGrid.getView().setViewConfig(new GridViewConfig() {
             @Override
             public String getRowStyle(ModelData model, int rowIndex, ListStore<ModelData> ds) {
