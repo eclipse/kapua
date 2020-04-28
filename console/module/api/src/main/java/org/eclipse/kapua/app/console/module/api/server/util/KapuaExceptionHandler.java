@@ -30,6 +30,8 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthorizedException;
+import org.eclipse.kapua.service.datastore.client.ClientException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,24 +80,31 @@ public class KapuaExceptionHandler {
         } else if (t instanceof AuthenticationException) {
             throw new GwtKapuaException(GwtKapuaErrorCode.UNAUTHENTICATED, t);
         } else if (t instanceof KapuaRuntimeException && ((KapuaRuntimeException) t).getCode().equals(KapuaErrorCodes.ENTITY_ALREADY_EXISTS) ||
-                   t.getCause() instanceof KapuaRuntimeException && ((KapuaRuntimeException) t.getCause()).getCode().equals(KapuaErrorCodes.ENTITY_ALREADY_EXISTS)) {
+                t.getCause() instanceof KapuaRuntimeException && ((KapuaRuntimeException) t.getCause()).getCode().equals(KapuaErrorCodes.ENTITY_ALREADY_EXISTS)) {
             logger.error("entity already exists", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.ENTITY_ALREADY_EXISTS, t, t.getLocalizedMessage());
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().equals(KapuaErrorCodes.INTERNAL_ERROR) && t.getCause() instanceof ClientException) {
+            logger.error("internal service error", t);
+            if (t.getCause().getCause() != null) {
+                throw new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, t, t.getCause().getCause().getLocalizedMessage());
+            } else {
+                throw new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, t, t.getCause().getLocalizedMessage());
+            }
         } else if (t instanceof KapuaException && ((KapuaException) t).getCode().equals(KapuaErrorCodes.INTERNAL_ERROR)) {
             logger.error("internal service error", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, t, t.getLocalizedMessage());
-        } else if ( t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.END_BEFORE_START_TIME_ERROR.name())) {
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.END_BEFORE_START_TIME_ERROR.name())) {
             logger.error("End before start time error");
             throw new GwtKapuaException(GwtKapuaErrorCode.END_BEFORE_START_TIME_ERROR, t, t.getLocalizedMessage());
-        } else if(t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.PARENT_LIMIT_EXCEEDED_IN_CONFIG.name())) {
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.PARENT_LIMIT_EXCEEDED_IN_CONFIG.name())) {
             logger.warn("Child accounts limitation error", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.PARENT_LIMIT_EXCEEDED_IN_CONFIG, t, t.getLocalizedMessage());
-        } else if(t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.ADMIN_ROLE_DELETED_ERROR.name())) {
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.ADMIN_ROLE_DELETED_ERROR.name())) {
             logger.warn("Admin role delete error.", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.ADMIN_ROLE_DELETED_ERROR, t, t.getLocalizedMessage());
-        } else if(t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.SUBJECT_UNAUTHORIZED.name())) {
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.SUBJECT_UNAUTHORIZED.name())) {
             logger.warn("User unauthorize", t);
-            throw new GwtKapuaException(GwtKapuaErrorCode.SUBJECT_UNAUTHORIZED, t, ((SubjectUnauthorizedException)t).getPermission().toString());
+            throw new GwtKapuaException(GwtKapuaErrorCode.SUBJECT_UNAUTHORIZED, t, ((SubjectUnauthorizedException) t).getPermission().toString());
         } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT.name())) {
             logger.warn("Entity already exist in another account", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT, t, t.getLocalizedMessage());
