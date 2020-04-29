@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,14 +9,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.message.device.lifecycle;
+package org.eclipse.kapua.service.device.call.message.app;
+
+import org.eclipse.kapua.service.device.call.message.DeviceMetrics;
 
 /**
- * {@link KapuaUnmatchedChannel} definition.
+ * {@link DeviceAppMetrics} definition.
  *
- * @since 1.0.0
+ * @since 1.2.0
  */
-public interface KapuaUnmatchedChannel extends KapuaLifecycleChannel {
-
-
+public interface DeviceAppMetrics extends DeviceMetrics {
 }

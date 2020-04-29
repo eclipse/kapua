@@ -13,6 +13,7 @@
 package org.eclipse.kapua.translator.mqtt.kura;
 
 import org.eclipse.kapua.message.internal.MessageException;
+import org.eclipse.kapua.service.device.call.kura.Kura;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataChannel;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataPayload;
@@ -52,17 +53,27 @@ public class TranslatorDataMqttKura extends Translator<MqttMessage, KuraDataMess
         }
     }
 
-    private KuraDataChannel translate(MqttTopic mqttTopic) throws InvalidChannelException {
+    /**
+     * Translates the given {@link MqttTopic} to the {@link KuraDataChannel} equivalent.
+     *
+     * @param mqttTopic The {@link MqttTopic} to translate.
+     * @return The translated {@link KuraDataChannel}
+     * @throws InvalidChannelException if translation encounters any error (i.e.: not enough {@link MqttTopic#getSplittedTopic()} tokens.
+     * @since 1.0.0
+     */
+    public KuraDataChannel translate(MqttTopic mqttTopic) throws InvalidChannelException {
         try {
-            String[] mqttTopicTokens = mqttTopic.getSplittedTopic();
+            String[] topicTokens = mqttTopic.getSplittedTopic();
 
-            if (mqttTopicTokens.length < 2) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL, null, (Object) mqttTopicTokens);
+            if (topicTokens.length < 2) {
+                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL, null, (Object) topicTokens);
             }
 
-            KuraDataChannel kuraDataChannel = new KuraDataChannel(mqttTopicTokens[0], mqttTopicTokens[1]);
-            for (int i = 2; i < mqttTopicTokens.length; i++) {
-                kuraDataChannel.getSemanticParts().add(mqttTopicTokens[i]);
+            KuraDataChannel kuraDataChannel = new KuraDataChannel();
+            kuraDataChannel.setScope(topicTokens[0]);
+            kuraDataChannel.setClientId(topicTokens[1]);
+            for (int i = 2; i < topicTokens.length; i++) {
+                kuraDataChannel.getSemanticParts().add(topicTokens[i]);
             }
 
             // Return Kura Channel
@@ -72,7 +83,17 @@ public class TranslatorDataMqttKura extends Translator<MqttMessage, KuraDataMess
         }
     }
 
-    private KuraDataPayload translate(MqttPayload mqttPayload) throws InvalidPayloadException {
+    /**
+     * Translates the given {@link MqttPayload} to the {@link KuraDataPayload} equivalent.
+     * <p>
+     * If {@link MqttPayload#getBody()} is not {@link Kura} protobuf encoded the raw data will be put into {@link KuraDataPayload#getBody()}
+     *
+     * @param mqttPayload The {@link MqttPayload} to translate.
+     * @return The translated {@link KuraDataPayload}
+     * @throws InvalidPayloadException if translation encounters any error.
+     * @since 1.0.0
+     */
+    public KuraDataPayload translate(MqttPayload mqttPayload) throws InvalidPayloadException {
         try {
             KuraDataPayload kuraDataPayload = new KuraDataPayload();
 

@@ -11,14 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.app;
 
-import org.eclipse.kapua.service.device.call.message.DeviceMetrics;
+import org.eclipse.kapua.service.device.call.message.app.DeviceAppMetrics;
 
 /**
  * Snapshot metrics properties definition.
  *
  * @since 1.0.0
  */
-public enum SnapshotMetrics implements DeviceMetrics {
+public enum SnapshotMetrics implements DeviceAppMetrics {
     /**
      * Application identifier.
      *

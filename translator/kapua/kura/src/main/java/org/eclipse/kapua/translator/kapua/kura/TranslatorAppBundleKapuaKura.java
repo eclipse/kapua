@@ -35,10 +35,7 @@ public class TranslatorAppBundleKapuaKura extends AbstractTranslatorKapuaKura<Bu
     @Override
     protected KuraRequestChannel translateChannel(BundleRequestChannel kapuaChannel) throws InvalidChannelException {
         try {
-            KuraRequestChannel kuraRequestChannel = new KuraRequestChannel();
-            kuraRequestChannel.setMessageClassification(getControlMessageClassifier());
-            kuraRequestChannel.setAppId(BundleMetrics.APP_ID + "-" + BundleMetrics.APP_VERSION);
-            kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.translate(kapuaChannel.getMethod()));
+            KuraRequestChannel kuraRequestChannel = TranslatorKapuaKuraUtils.buildBaseRequestChannel(BundleMetrics.APP_ID, BundleMetrics.APP_VERSION, kapuaChannel.getMethod());
 
             // Build resources
             List<String> resources = new ArrayList<>();

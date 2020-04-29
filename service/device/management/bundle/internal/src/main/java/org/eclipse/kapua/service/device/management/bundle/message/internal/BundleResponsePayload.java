@@ -11,15 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.bundle.message.internal;
 
-import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponsePayloadImpl;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 
 /**
  * Device bundle information response payload.
- * 
+ *
  * @since 1.0
- * 
  */
-public class BundleResponsePayload extends KapuaResponsePayloadImpl implements KapuaPayload {
+public class BundleResponsePayload extends KapuaResponsePayloadImpl implements KapuaResponsePayload {
 
 }

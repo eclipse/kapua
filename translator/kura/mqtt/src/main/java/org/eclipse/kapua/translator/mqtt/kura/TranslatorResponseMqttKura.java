@@ -53,7 +53,15 @@ public class TranslatorResponseMqttKura extends Translator<MqttMessage, KuraResp
         }
     }
 
-    private KuraResponseChannel translate(MqttTopic mqttTopic) throws InvalidChannelException {
+    /**
+     * Translates the given {@link MqttTopic} to the {@link KuraResponseChannel} equivalent.
+     *
+     * @param mqttTopic The {@link MqttTopic} to translate.
+     * @return The translated {@link KuraResponseChannel}
+     * @throws InvalidChannelException if translation encounters any error (i.e.: not enough {@link MqttTopic#getSplittedTopic()} tokens.
+     * @since 1.0.0
+     */
+    public KuraResponseChannel translate(MqttTopic mqttTopic) throws InvalidChannelException {
         try {
             String[] mqttTopicTokens = mqttTopic.getSplittedTopic();
 
@@ -77,7 +85,15 @@ public class TranslatorResponseMqttKura extends Translator<MqttMessage, KuraResp
         }
     }
 
-    private KuraResponsePayload translate(MqttPayload mqttPayload) throws InvalidPayloadException {
+    /**
+     * Translates the given {@link MqttPayload} to the {@link KuraResponsePayload} equivalent.
+     *
+     * @param mqttPayload The {@link MqttPayload} to translate.
+     * @return The translated {@link KuraResponsePayload}
+     * @throws InvalidPayloadException if translation encounters any error.
+     * @since 1.0.0
+     */
+    public KuraResponsePayload translate(MqttPayload mqttPayload) throws InvalidPayloadException {
         try {
             KuraResponsePayload kuraResponsePayload = new KuraResponsePayload();
 
@@ -90,6 +106,16 @@ public class TranslatorResponseMqttKura extends Translator<MqttMessage, KuraResp
         } catch (Exception e) {
             throw new InvalidPayloadException(e, mqttPayload);
         }
+    }
+
+    /**
+     * Returns the {@link SystemSetting#getMessageClassifier()}.
+     *
+     * @return The configured the {@link SystemSetting#getMessageClassifier()}.
+     * @since 1.2.0
+     */
+    public static String getControlMessageClassifier() {
+        return CONTROL_MESSAGE_CLASSIFIER;
     }
 
     @Override

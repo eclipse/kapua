@@ -11,16 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.command.message.internal;
 
-import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponsePayloadImpl;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 
 /**
  * Device command response payload.
- * 
+ *
  * @since 1.0
- * 
  */
-public class CommandResponsePayload extends KapuaResponsePayloadImpl implements KapuaPayload {
+public class CommandResponsePayload extends KapuaResponsePayloadImpl implements KapuaResponsePayload {
 
     /**
      * Standard error application property
@@ -44,7 +43,7 @@ public class CommandResponsePayload extends KapuaResponsePayloadImpl implements 
 
     /**
      * Get the command standard error
-     * 
+     *
      * @return
      */
     public String getStderr() {
@@ -53,7 +52,7 @@ public class CommandResponsePayload extends KapuaResponsePayloadImpl implements 
 
     /**
      * Set the command standard error
-     * 
+     *
      * @param stderr
      */
     public void setStderr(String stderr) {
@@ -62,7 +61,7 @@ public class CommandResponsePayload extends KapuaResponsePayloadImpl implements 
 
     /**
      * Get the command standard output
-     * 
+     *
      * @return
      */
     public String getStdout() {
@@ -71,7 +70,7 @@ public class CommandResponsePayload extends KapuaResponsePayloadImpl implements 
 
     /**
      * Set the command standard output
-     * 
+     *
      * @param stdout
      */
     public void setStdout(String stdout) {
@@ -80,7 +79,7 @@ public class CommandResponsePayload extends KapuaResponsePayloadImpl implements 
 
     /**
      * Get the command exit code
-     * 
+     *
      * @return
      */
     public Integer getExitCode() {
@@ -89,7 +88,7 @@ public class CommandResponsePayload extends KapuaResponsePayloadImpl implements 
 
     /**
      * Get the command exit code
-     * 
+     *
      * @param exitCode
      */
     public void setExitCode(Integer exitCode) {
@@ -98,7 +97,7 @@ public class CommandResponsePayload extends KapuaResponsePayloadImpl implements 
 
     /**
      * Get the command execution timed out flag
-     * 
+     *
      * @return
      */
     public Boolean hasTimedout() {
@@ -107,7 +106,7 @@ public class CommandResponsePayload extends KapuaResponsePayloadImpl implements 
 
     /**
      * Set the command execution timed out flag
-     * 
+     *
      * @param timedout
      */
     public void setTimedout(boolean timedout) {

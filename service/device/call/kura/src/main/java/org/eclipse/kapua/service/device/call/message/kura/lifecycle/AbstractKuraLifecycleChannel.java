@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,15 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
 
+import org.eclipse.kapua.service.device.call.kura.Kura;
+import org.eclipse.kapua.service.device.call.message.kura.KuraChannel;
 import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecycleChannel;
 
+import java.util.List;
+
 /**
- * {@link DeviceLifecycleChannel} {@link org.eclipse.kapua.service.device.call.kura.Kura} implementation.
+ * {@code abstract} base class for {@link Kura} {@link DeviceLifecycleChannel}
  *
- * @see KuraDisconnectMessage
- * @since 1.0.0
+ * @since 1.2.0
  */
-public class KuraDisconnectChannel extends AbstractKuraLifecycleChannel implements DeviceLifecycleChannel {
+public abstract class AbstractKuraLifecycleChannel extends KuraChannel implements DeviceLifecycleChannel {
 
     /**
      * Constructor.
@@ -28,14 +31,16 @@ public class KuraDisconnectChannel extends AbstractKuraLifecycleChannel implemen
      * @param scopeNamespace        The scope namespace.
      * @param clientId              The clientId.
      * @see org.eclipse.kapua.service.device.call.message.DeviceChannel
-     * @since 1.0.0
+     * @since 1.2.0
      */
-    public KuraDisconnectChannel(String messageClassification, String scopeNamespace, String clientId) {
+    public AbstractKuraLifecycleChannel(String messageClassification, String scopeNamespace, String clientId) {
         super(messageClassification, scopeNamespace, clientId);
     }
 
     @Override
-    public String getPhase() {
-        return "DC";
+    public List<String> getParts() {
+        List<String> parts = super.getParts();
+        parts.add(getPhase());
+        return parts;
     }
 }

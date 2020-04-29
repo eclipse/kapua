@@ -21,7 +21,6 @@ import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAssetChannelMo
 import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAssets;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
-import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMetrics;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
 import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
@@ -34,8 +33,6 @@ import org.eclipse.kapua.service.device.management.asset.message.internal.AssetR
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponsePayload;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
-import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
-import org.eclipse.kapua.translator.exception.TranslatorException;
 
 import java.util.Date;
 
@@ -53,25 +50,9 @@ public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorRespons
     }
 
     @Override
-    protected AssetResponseChannel translateChannel(KuraResponseChannel kuraChannel) throws InvalidChannelException {
+    protected AssetResponseChannel translateChannel(KuraResponseChannel kuraResponseChannel) throws InvalidChannelException {
         try {
-            if (!getControlMessageClassifier().equals(kuraChannel.getMessageClassification())) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER, null, kuraChannel.getMessageClassification());
-            }
-
-            String[] appIdTokens = kuraChannel.getAppId().split("-");
-
-            if (appIdTokens.length < 2) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, (Object) appIdTokens);
-            }
-
-            if (!AssetMetrics.APP_ID.getName().equals(appIdTokens[0])) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, appIdTokens[0]);
-            }
-
-            if (!AssetMetrics.APP_VERSION.getName().equals(appIdTokens[1])) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_VERSION, null, appIdTokens[1]);
-            }
+            TranslatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, AssetMetrics.APP_ID, AssetMetrics.APP_VERSION);
 
             AssetResponseChannel assetResponseChannel = new AssetResponseChannel();
             assetResponseChannel.setAppName(DeviceAssetAppProperties.APP_NAME);
@@ -80,24 +61,21 @@ public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorRespons
             // Return Kapua Channel
             return assetResponseChannel;
         } catch (Exception e) {
-            throw new InvalidChannelException(e, kuraChannel);
+            throw new InvalidChannelException(e, kuraResponseChannel);
         }
     }
 
     @Override
-    protected AssetResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws InvalidPayloadException {
+    protected AssetResponsePayload translatePayload(KuraResponsePayload kuraResponsePayload) throws InvalidPayloadException {
         try {
             DeviceAssetFactory deviceAssetFactory = LOCATOR.getFactory(DeviceAssetFactory.class);
 
-            AssetResponsePayload assetResponsePayload = new AssetResponsePayload();
+            AssetResponsePayload assetResponsePayload = TranslatorKuraKapuaUtils.buildBaseResponsePayload(kuraResponsePayload, new AssetResponsePayload());
 
-            assetResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_MESSAGE.getName()));
-            assetResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_STACK.getName()));
-
-            if (kuraPayload.hasBody()) {
+            if (kuraResponsePayload.hasBody()) {
 
                 ObjectMapper mapper = new ObjectMapper();
-                JsonNode jsonNode = mapper.readTree(kuraPayload.getBody());
+                JsonNode jsonNode = mapper.readTree(kuraResponsePayload.getBody());
                 DeviceAssets deviceAssets = deviceAssetFactory.newAssetListResult();
                 KuraAssets kuraAssets = KuraAssets.readJsonNode(jsonNode);
 
@@ -133,7 +111,7 @@ public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorRespons
         } catch (InvalidPayloadException ipe) {
             throw ipe;
         } catch (Exception e) {
-            throw new InvalidPayloadException(e, kuraPayload);
+            throw new InvalidPayloadException(e, kuraResponsePayload);
         }
     }
 }

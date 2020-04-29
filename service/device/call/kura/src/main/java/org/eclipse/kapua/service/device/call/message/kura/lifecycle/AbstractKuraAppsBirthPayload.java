@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
 
-import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
 import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecyclePayload;
 import org.eclipse.kapua.service.device.registry.Device;
 
@@ -22,7 +21,7 @@ import org.eclipse.kapua.service.device.registry.Device;
  *
  * @since 1.0.0
  */
-public class AbstractKuraAppsBirthPayload extends KuraPayload implements DeviceLifecyclePayload {
+public class AbstractKuraAppsBirthPayload extends AbstractKuraLifecyclePayload implements DeviceLifecyclePayload {
 
     /**
      * {@link Device} uptime metric name.

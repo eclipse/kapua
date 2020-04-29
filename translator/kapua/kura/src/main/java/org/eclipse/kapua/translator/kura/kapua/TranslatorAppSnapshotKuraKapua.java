@@ -18,7 +18,6 @@ import org.eclipse.kapua.service.device.call.kura.app.SnapshotMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.snapshot.KuraSnapshotIds;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
-import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMetrics;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
@@ -51,25 +50,9 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
     }
 
     @Override
-    protected SnapshotResponseChannel translateChannel(KuraResponseChannel kuraChannel) throws InvalidChannelException {
+    protected SnapshotResponseChannel translateChannel(KuraResponseChannel kuraResponseChannel) throws InvalidChannelException {
         try {
-            if (!getControlMessageClassifier().equals(kuraChannel.getMessageClassification())) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER, null, kuraChannel.getMessageClassification());
-            }
-
-            String[] appIdTokens = kuraChannel.getAppId().split("-");
-
-            if (appIdTokens.length < 2) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, (Object) appIdTokens);
-            }
-
-            if (!SnapshotMetrics.APP_ID.getName().equals(appIdTokens[0])) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, appIdTokens[0]);
-            }
-
-            if (!SnapshotMetrics.APP_VERSION.getName().equals(appIdTokens[1])) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_VERSION, null, appIdTokens[1]);
-            }
+            TranslatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, SnapshotMetrics.APP_ID, SnapshotMetrics.APP_VERSION);
 
             SnapshotResponseChannel snapshotResponseChannel = new SnapshotResponseChannel();
             snapshotResponseChannel.setAppName(DeviceConfigurationAppProperties.APP_NAME);
@@ -78,28 +61,25 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
             // Return Kapua Channel
             return snapshotResponseChannel;
         } catch (Exception e) {
-            throw new InvalidChannelException(e, kuraChannel);
+            throw new InvalidChannelException(e, kuraResponseChannel);
         }
     }
 
     @Override
-    protected SnapshotResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws InvalidPayloadException {
+    protected SnapshotResponsePayload translatePayload(KuraResponsePayload kuraResponsePayload) throws InvalidPayloadException {
         try {
-            SnapshotResponsePayload snapshotResponsePayload = new SnapshotResponsePayload();
-
-            snapshotResponsePayload.setExceptionMessage((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_MESSAGE.getName()));
-            snapshotResponsePayload.setExceptionStack((String) kuraPayload.getMetrics().get(KuraResponseMetrics.EXCEPTION_STACK.getName()));
+            SnapshotResponsePayload snapshotResponsePayload = TranslatorKuraKapuaUtils.buildBaseResponsePayload(kuraResponsePayload, new SnapshotResponsePayload());
 
             DeviceManagementSetting config = DeviceManagementSetting.getInstance();
             String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
             KuraSnapshotIds snapshotIdResult = null;
-            if (kuraPayload.hasBody()) {
+            if (kuraResponsePayload.hasBody()) {
                 String body = null;
                 try {
-                    body = new String(kuraPayload.getBody(), charEncoding);
+                    body = new String(kuraResponsePayload.getBody(), charEncoding);
                 } catch (Exception e) {
-                    throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, snapshotResponsePayload.getBody());
+                    throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, (Object) snapshotResponsePayload.getBody());
                 }
 
                 try {
@@ -115,7 +95,7 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
         } catch (InvalidPayloadException ipe) {
             throw ipe;
         } catch (Exception e) {
-            throw new InvalidPayloadException(e, kuraPayload);
+            throw new InvalidPayloadException(e, kuraResponsePayload);
         }
     }
 

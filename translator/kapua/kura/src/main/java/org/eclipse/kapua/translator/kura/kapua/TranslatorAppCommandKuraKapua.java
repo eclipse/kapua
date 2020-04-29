@@ -22,8 +22,6 @@ import org.eclipse.kapua.service.device.management.command.message.internal.Comm
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandResponsePayload;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
-import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
-import org.eclipse.kapua.translator.exception.TranslatorException;
 
 import java.util.Map;
 
@@ -39,25 +37,9 @@ public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorRespo
     }
 
     @Override
-    protected CommandResponseChannel translateChannel(KuraResponseChannel kuraChannel) throws InvalidChannelException {
+    protected CommandResponseChannel translateChannel(KuraResponseChannel kuraResponseChannel) throws InvalidChannelException {
         try {
-            if (!getControlMessageClassifier().equals(kuraChannel.getMessageClassification())) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER, null, kuraChannel.getMessageClassification());
-            }
-
-            String[] appIdTokens = kuraChannel.getAppId().split("-");
-
-            if (appIdTokens.length < 2) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, (Object) appIdTokens);
-            }
-
-            if (!CommandMetrics.APP_ID.getName().equals(appIdTokens[0])) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, appIdTokens[0]);
-            }
-
-            if (!CommandMetrics.APP_VERSION.getName().equals(appIdTokens[1])) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_VERSION, null, appIdTokens[1]);
-            }
+            TranslatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, CommandMetrics.APP_ID, CommandMetrics.APP_VERSION);
 
             CommandResponseChannel kapuaChannel = new CommandResponseChannel();
             kapuaChannel.setAppName(CommandAppProperties.APP_NAME);
@@ -66,16 +48,16 @@ public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorRespo
             // Return Kapua Channel
             return kapuaChannel;
         } catch (Exception e) {
-            throw new InvalidChannelException(e, kuraChannel);
+            throw new InvalidChannelException(e, kuraResponseChannel);
         }
     }
 
     @Override
-    protected CommandResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws InvalidPayloadException {
+    protected CommandResponsePayload translatePayload(KuraResponsePayload kuraResponsePayload) throws InvalidPayloadException {
         try {
-            CommandResponsePayload commandResponsePayload = new CommandResponsePayload();
+            CommandResponsePayload commandResponsePayload = TranslatorKuraKapuaUtils.buildBaseResponsePayload(kuraResponsePayload, new CommandResponsePayload());
 
-            Map<String, Object> metrics = kuraPayload.getMetrics();
+            Map<String, Object> metrics = kuraResponsePayload.getMetrics();
             commandResponsePayload.setStderr((String) metrics.get(CommandMetrics.APP_METRIC_STDERR.getName()));
             commandResponsePayload.setStdout((String) metrics.get(CommandMetrics.APP_METRIC_STDOUT.getName()));
             commandResponsePayload.setExitCode((Integer) metrics.get(CommandMetrics.APP_METRIC_EXIT_CODE.getName()));
@@ -85,13 +67,13 @@ public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorRespo
                 commandResponsePayload.setTimedout(timedout);
             }
 
-            commandResponsePayload.setExceptionMessage(kuraPayload.getExceptionMessage());
-            commandResponsePayload.setExceptionStack(kuraPayload.getExceptionStack());
+            commandResponsePayload.setExceptionMessage(kuraResponsePayload.getExceptionMessage());
+            commandResponsePayload.setExceptionStack(kuraResponsePayload.getExceptionStack());
 
             // Return Kapua Payload
             return commandResponsePayload;
         } catch (Exception e) {
-            throw new InvalidPayloadException(e, kuraPayload);
+            throw new InvalidPayloadException(e, kuraResponsePayload);
         }
     }
 }

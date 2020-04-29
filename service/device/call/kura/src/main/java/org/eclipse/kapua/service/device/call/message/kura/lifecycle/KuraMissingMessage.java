@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
 
-import org.eclipse.kapua.service.device.call.message.kura.KuraMessage;
 import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecycleMessage;
 
 import java.util.Date;
@@ -24,7 +23,7 @@ import java.util.Date;
  *
  * @since 1.0.0
  */
-public class KuraMissingMessage extends KuraMessage<KuraMissingChannel, KuraMissingPayload> implements DeviceLifecycleMessage<KuraMissingChannel, KuraMissingPayload> {
+public class KuraMissingMessage extends AbstractKuraLifecycleMessage<KuraMissingChannel, KuraMissingPayload> implements DeviceLifecycleMessage<KuraMissingChannel, KuraMissingPayload> {
 
     /**
      * Constructor.

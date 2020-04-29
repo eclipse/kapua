@@ -115,29 +115,4 @@ public interface KapuaLifecycleMessageFactory extends KapuaObjectFactory {
      * @since 1.1.0
      */
     KapuaMissingPayload newKapuaMissingPayload();
-
-    /**
-     * Creates a new {@link KapuaUnmatchedMessage}
-     *
-     * @return the new {@link KapuaUnmatchedMessage}
-     * @since 1.1.0
-     */
-    KapuaUnmatchedMessage newKapuaUnmatchedMessage();
-
-    /**
-     * Creates a new {@link KapuaUnmatchedChannel}
-     *
-     * @return the new {@link KapuaUnmatchedChannel}
-     * @since 1.1.0
-     */
-    KapuaUnmatchedChannel newKapuaUnmatchedChannel();
-
-    /**
-     * Creates a new {@link KapuaUnmatchedPayload}.
-     *
-     * @return the new {@link KapuaUnmatchedPayload}.
-     * @since 1.1.0
-     */
-    KapuaUnmatchedPayload newKapuaUnmatchedPayload();
-
 }

@@ -14,6 +14,7 @@ package org.eclipse.kapua.translator.kura.mqtt;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
+import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataChannel;
 import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSettingKeys;
 import org.eclipse.kapua.service.device.call.message.kura.setting.DeviceCallSettings;
 import org.eclipse.kapua.translator.Translator;
@@ -59,6 +60,14 @@ public class TranslatorRequestKuraMqtt extends Translator<KuraRequestMessage, Mq
         }
     }
 
+    /**
+     * Translates the given {@link KuraRequestChannel} to the {@link MqttTopic} equivalent.
+     *
+     * @param kuraRequestChannel The {@link KuraDataChannel} to translate.
+     * @return The translated {@link MqttTopic}
+     * @throws InvalidChannelException if translation encounters any error.
+     * @since 1.0.0
+     */
     public MqttTopic translate(KuraRequestChannel kuraRequestChannel) throws InvalidChannelException {
         try {
             List<String> topicTokens = new ArrayList<>();
@@ -81,7 +90,15 @@ public class TranslatorRequestKuraMqtt extends Translator<KuraRequestMessage, Mq
         }
     }
 
-    private MqttTopic generateResponseTopic(KuraRequestChannel kuraRequestChannel) throws InvalidChannelException {
+    /**
+     * Generates the response {@link MqttTopic} for the given {@link KuraRequestChannel}.
+     *
+     * @param kuraRequestChannel The {@link KuraRequestChannel}
+     * @return The response {@link MqttTopic}.
+     * @throws InvalidChannelException if generation encounters any error.
+     * @since 1.0.0
+     */
+    public MqttTopic generateResponseTopic(KuraRequestChannel kuraRequestChannel) throws InvalidChannelException {
         try {
             List<String> topicTokens = new ArrayList<>();
 
@@ -101,7 +118,15 @@ public class TranslatorRequestKuraMqtt extends Translator<KuraRequestMessage, Mq
         }
     }
 
-    private MqttPayload translate(KuraPayload kuraPayload) throws InvalidPayloadException {
+    /**
+     * Translates the given {@link KuraPayload} to the {@link MqttPayload} equivalent.
+     *
+     * @param kuraPayload The {@link KuraDataChannel} to translate.
+     * @return The translated {@link MqttPayload}
+     * @throws InvalidPayloadException if translation encounters any error.
+     * @since 1.0.0
+     */
+    public MqttPayload translate(KuraPayload kuraPayload) throws InvalidPayloadException {
         try {
             return new MqttPayload(kuraPayload.toByteArray());
         } catch (Exception e) {

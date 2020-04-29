@@ -15,71 +15,33 @@ import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraBirthCha
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraBirthMessage;
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraBirthPayload;
 import org.eclipse.kapua.translator.Translator;
-import org.eclipse.kapua.translator.exception.InvalidChannelException;
-import org.eclipse.kapua.translator.exception.InvalidMessageException;
-import org.eclipse.kapua.translator.exception.InvalidPayloadException;
-import org.eclipse.kapua.translator.exception.TranslateException;
-import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
-import org.eclipse.kapua.translator.exception.TranslatorException;
 import org.eclipse.kapua.transport.message.jms.JmsMessage;
-import org.eclipse.kapua.transport.message.jms.JmsPayload;
-import org.eclipse.kapua.transport.message.jms.JmsTopic;
+
+import java.util.Date;
 
 /**
  * {@link Translator} implementation from {@link JmsMessage} to {@link KuraBirthMessage}
  *
  * @since 1.0.0
  */
-public class TranslatorLifeBirthJmsKura extends Translator<JmsMessage, KuraBirthMessage> {
+public class TranslatorLifeBirthJmsKura extends AbstractTranslatorLifecycleJmsKura<KuraBirthChannel, KuraBirthPayload, KuraBirthMessage> {
 
-    @Override
-    public KuraBirthMessage translate(JmsMessage jmsMessage) throws TranslateException {
-        try {
-            return new KuraBirthMessage(translate(jmsMessage.getTopic()),
-                    jmsMessage.getReceivedOn(),
-                    translate(jmsMessage.getPayload()));
-        } catch (InvalidChannelException | InvalidPayloadException te) {
-            throw te;
-        } catch (Exception e) {
-            throw new InvalidMessageException(e, jmsMessage);
-        }
-    }
-
-    private KuraBirthChannel translate(JmsTopic jmsTopic) throws InvalidChannelException {
-        try {
-            String[] topicTokens = jmsTopic.getSplittedTopic();
-            if (topicTokens.length < 3) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL, null, (Object) topicTokens);
-            }
-
-            return new KuraBirthChannel(topicTokens[0], topicTokens[1], topicTokens[2]);
-        } catch (Exception e) {
-            throw new InvalidChannelException(e, jmsTopic);
-        }
-    }
-
-    private KuraBirthPayload translate(JmsPayload jmsPayload) throws InvalidPayloadException {
-        try {
-            KuraBirthPayload kuraBirthPayload = new KuraBirthPayload();
-
-            if (jmsPayload.hasBody()) {
-                kuraBirthPayload.readFromByteArray(jmsPayload.getBody());
-            }
-
-            return kuraBirthPayload;
-        } catch (Exception e) {
-            throw new InvalidPayloadException(e, jmsPayload);
-        }
+    public TranslatorLifeBirthJmsKura() {
+        super(KuraBirthMessage.class);
     }
 
     @Override
-    public Class<JmsMessage> getClassFrom() {
-        return JmsMessage.class;
+    public KuraBirthMessage createLifecycleMessage(KuraBirthChannel kuraBirthChannel, Date receivedOn, KuraBirthPayload kuraBirthPayload) {
+        return new KuraBirthMessage(kuraBirthChannel, receivedOn, kuraBirthPayload);
     }
 
     @Override
-    public Class<KuraBirthMessage> getClassTo() {
-        return KuraBirthMessage.class;
+    public KuraBirthPayload createLifecyclePayload() {
+        return new KuraBirthPayload();
     }
 
+    @Override
+    public KuraBirthChannel createLifecycleChannel(String messageClassifier, String scopeName, String clientId) {
+        return new KuraBirthChannel(messageClassifier, scopeName, clientId);
+    }
 }

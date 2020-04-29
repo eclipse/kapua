@@ -161,7 +161,6 @@ class DefaultConnectorDescriptionProvider implements ConnectorDescriptorProvider
         deviceClass.put(MessageType.DISCONNECT, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraDisconnectMessage.class);
         deviceClass.put(MessageType.MISSING, org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraMissingMessage.class);
         deviceClass.put(MessageType.NOTIFY, KuraNotifyMessage.class);
-        deviceClass.put(MessageType.UNMATCHED, org.eclipse.kapua.service.device.call.message.kura.others.KuraUnmatchedMessage.class);
         deviceClass.put(MessageType.DATA, org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage.class);
 
         Map<MessageType, Class<? extends KapuaMessage<?, ?>>> kapuaClass = new EnumMap<>(MessageType.class);
@@ -170,7 +169,6 @@ class DefaultConnectorDescriptionProvider implements ConnectorDescriptorProvider
         kapuaClass.put(MessageType.DISCONNECT, org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage.class);
         kapuaClass.put(MessageType.MISSING, org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage.class);
         kapuaClass.put(MessageType.NOTIFY, KapuaNotifyMessage.class);
-        kapuaClass.put(MessageType.UNMATCHED, org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedMessage.class);
         kapuaClass.put(MessageType.DATA, org.eclipse.kapua.message.device.data.KapuaDataMessage.class);
 
         return new ConnectorDescriptor(DEFAULT_TRANSPORT_PROTOCOL, deviceClass, kapuaClass);

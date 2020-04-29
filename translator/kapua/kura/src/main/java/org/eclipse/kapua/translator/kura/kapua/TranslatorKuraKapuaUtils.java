@@ -13,12 +13,19 @@
 package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.service.device.call.message.DevicePosition;
+import org.eclipse.kapua.service.device.call.message.app.DeviceAppMetrics;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseCode;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
+import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
+import org.eclipse.kapua.translator.exception.TranslatorException;
 
 /**
  * {@link org.eclipse.kapua.translator.Translator} utilities.<br>
@@ -31,7 +38,60 @@ public final class TranslatorKuraKapuaUtils {
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final KapuaMessageFactory KAPUA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaMessageFactory.class);
 
+    private static final String CONTROL_MESSAGE_CLASSIFIER = SystemSetting.getInstance().getMessageClassifier();
+
     private TranslatorKuraKapuaUtils() {
+    }
+
+    /**
+     * Validates the given {@link KuraResponseChannel}.
+     * <p>
+     * Checks that:
+     * <ul>
+     *     <li>the {@link KuraResponseChannel#getMessageClassification()} matches the configured {@link SystemSetting#getMessageClassifier()}</li>
+     *     <li>the {@link KuraResponseChannel#getAppId()} is formatted as {@code appId-appVersion}</li>
+     *     <li>the {@link KuraResponseChannel#getAppId()} first token matches the given application name</li>
+     *     <li>the {@link KuraResponseChannel#getAppId()} second token matches the given application version</li>
+     * </ul>
+     *
+     * @param kuraResponseChannel the {@link KuraResponseChannel} to check.
+     * @param appName             the application name.
+     * @param appVersion          the application version.
+     * @throws TranslatorException The any of the constraints fails.
+     * @since 1.2.0
+     */
+    public static void validateKuraResponseChannel(KuraResponseChannel kuraResponseChannel, DeviceAppMetrics appName, DeviceAppMetrics appVersion) throws TranslatorException {
+        if (!CONTROL_MESSAGE_CLASSIFIER.equals(kuraResponseChannel.getMessageClassification())) {
+            throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER, null, kuraResponseChannel.getMessageClassification());
+        }
+
+        String[] appIdTokens = kuraResponseChannel.getAppId().split("-");
+
+        if (appIdTokens.length < 2) {
+            throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, (Object) appIdTokens);
+        }
+
+        if (!appName.getName().equals(appIdTokens[0])) {
+            throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, appIdTokens[0]);
+        }
+
+        if (!appVersion.getName().equals(appIdTokens[1])) {
+            throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_VERSION, null, appIdTokens[1]);
+        }
+    }
+
+    /**
+     * Builds the {@link KapuaResponsePayload} with commons property in {@link KuraResponsePayload}
+     *
+     * @param kuraResponsePayload The {@link KuraResponsePayload}.
+     * @param appResponsePayload  The application specific {@link KapuaResponsePayload}.
+     * @param <P>                 The application specific {@link KapuaResponsePayload} type.
+     * @return The built base application specific {@link KapuaResponsePayload}}
+     */
+    public static <P extends KapuaResponsePayload> P buildBaseResponsePayload(KuraResponsePayload kuraResponsePayload, P appResponsePayload) {
+        appResponsePayload.setExceptionMessage(kuraResponsePayload.getExceptionMessage());
+        appResponsePayload.setExceptionStack(kuraResponsePayload.getExceptionStack());
+        return appResponsePayload;
     }
 
     /**

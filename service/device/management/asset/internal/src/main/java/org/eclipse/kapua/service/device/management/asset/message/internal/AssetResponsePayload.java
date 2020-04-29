@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.device.management.asset.message.internal;
 
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponsePayloadImpl;
@@ -32,7 +31,7 @@ import java.io.UnsupportedEncodingException;
  *
  * @since 1.0.0
  */
-public class AssetResponsePayload extends KapuaResponsePayloadImpl implements KapuaPayload {
+public class AssetResponsePayload extends KapuaResponsePayloadImpl implements KapuaResponsePayload {
 
     private static final DeviceAssetFactory DEVICE_ASSET_FACTORY = KapuaLocator.getInstance().getFactory(DeviceAssetFactory.class);
     private static final DeviceManagementSetting CONFIG = DeviceManagementSetting.getInstance();

@@ -12,81 +12,42 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.jms.kura;
 
-import org.eclipse.kapua.message.internal.MessageException;
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraMissingChannel;
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraMissingMessage;
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraMissingPayload;
 import org.eclipse.kapua.translator.Translator;
-import org.eclipse.kapua.translator.exception.InvalidChannelException;
-import org.eclipse.kapua.translator.exception.InvalidMessageException;
-import org.eclipse.kapua.translator.exception.InvalidPayloadException;
-import org.eclipse.kapua.translator.exception.TranslateException;
-import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
-import org.eclipse.kapua.translator.exception.TranslatorException;
 import org.eclipse.kapua.transport.message.jms.JmsMessage;
-import org.eclipse.kapua.transport.message.jms.JmsPayload;
-import org.eclipse.kapua.transport.message.jms.JmsTopic;
+
+import java.util.Date;
 
 /**
  * {@link Translator} implementation from {@link JmsMessage} to {@link KuraMissingMessage}
  *
  * @since 1.0.0
  */
-public class TranslatorLifeMissingJmsKura extends Translator<JmsMessage, KuraMissingMessage> {
+public class TranslatorLifeMissingJmsKura extends AbstractTranslatorLifecycleJmsKura<KuraMissingChannel, KuraMissingPayload, KuraMissingMessage> {
 
-
-    @Override
-    public KuraMissingMessage translate(JmsMessage jmsMessage) throws TranslateException {
-        try {
-            return new KuraMissingMessage(translate(jmsMessage.getTopic()),
-                    jmsMessage.getReceivedOn(),
-                    translate(jmsMessage.getPayload()));
-        } catch (InvalidChannelException | InvalidPayloadException te) {
-            throw te;
-        } catch (Exception e) {
-            throw new InvalidMessageException(e, jmsMessage);
-        }
-    }
-
-    private KuraMissingChannel translate(JmsTopic jmsTopic) throws InvalidChannelException {
-        try {
-            String[] topicTokens = jmsTopic.getSplittedTopic();
-            if (topicTokens.length < 3) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL, null, (Object) topicTokens);
-            }
-
-            return new KuraMissingChannel(topicTokens[0], topicTokens[1], topicTokens[2]);
-        } catch (Exception e) {
-            throw new InvalidChannelException(e, jmsTopic);
-        }
-    }
-
-    private KuraMissingPayload translate(JmsPayload jmsPayload) throws InvalidPayloadException {
-        try {
-            KuraMissingPayload kuraMissingPayload = new KuraMissingPayload();
-
-            if (jmsPayload.hasBody()) {
-                try {
-                    kuraMissingPayload.readFromByteArray(jmsPayload.getBody());
-                } catch (MessageException me) {
-                    // When reading a payload which is not Kura-protobuf encoded we use that payload as a raw KapuaPayload.body
-                    kuraMissingPayload.setBody(jmsPayload.getBody());
-                }
-            }
-
-            return kuraMissingPayload;
-        } catch (Exception e) {
-            throw new InvalidPayloadException(e, jmsPayload);
-        }
+    public TranslatorLifeMissingJmsKura() {
+        super(KuraMissingMessage.class);
     }
 
     @Override
-    public Class<JmsMessage> getClassFrom() {
-        return JmsMessage.class;
+    public KuraMissingMessage createLifecycleMessage(KuraMissingChannel kuraMissingChannel, Date receivedOn, KuraMissingPayload kuraMissingPayload) {
+        return new KuraMissingMessage(kuraMissingChannel, receivedOn, kuraMissingPayload);
     }
 
     @Override
-    public Class<KuraMissingMessage> getClassTo() {
-        return KuraMissingMessage.class;
+    public KuraMissingPayload createLifecyclePayload() {
+        return new KuraMissingPayload();
+    }
+
+    @Override
+    public KuraMissingChannel createLifecycleChannel(String messageClassifier, String scopeName, String clientId) {
+        return new KuraMissingChannel(messageClassifier, scopeName, clientId);
+    }
+
+    @Override
+    public boolean isRawPayloadToBody() {
+        return Boolean.TRUE;
     }
 }

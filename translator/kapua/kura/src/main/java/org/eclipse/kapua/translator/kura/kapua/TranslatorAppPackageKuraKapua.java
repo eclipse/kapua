@@ -23,7 +23,6 @@ import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPac
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseCode;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
-import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMetrics;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
@@ -60,25 +59,9 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
     }
 
     @Override
-    protected PackageResponseChannel translateChannel(KuraResponseChannel kuraChannel) throws InvalidChannelException {
+    protected PackageResponseChannel translateChannel(KuraResponseChannel kuraResponseChannel) throws InvalidChannelException {
         try {
-            if (!getControlMessageClassifier().equals(kuraChannel.getMessageClassification())) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER, null, kuraChannel.getMessageClassification());
-            }
-
-            String[] appIdTokens = kuraChannel.getAppId().split("-");
-
-            if (appIdTokens.length < 2) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, (Object) appIdTokens);
-            }
-
-            if (!PackageMetrics.APP_ID.getName().equals(appIdTokens[0])) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, appIdTokens[0]);
-            }
-
-            if (!PackageMetrics.APP_VERSION.getName().equals(appIdTokens[1])) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_VERSION, null, appIdTokens[1]);
-            }
+            TranslatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, PackageMetrics.APP_ID, PackageMetrics.APP_VERSION);
 
             PackageResponseChannel responseChannel = new PackageResponseChannel();
             responseChannel.setAppName(PackageAppProperties.APP_NAME);
@@ -87,21 +70,18 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
             // Return Kapua Channel
             return responseChannel;
         } catch (Exception e) {
-            throw new InvalidChannelException(e, kuraChannel);
+            throw new InvalidChannelException(e, kuraResponseChannel);
         }
     }
 
     @Override
-    protected PackageResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws InvalidPayloadException {
+    protected PackageResponsePayload translatePayload(KuraResponsePayload kuraResponsePayload) throws InvalidPayloadException {
         try {
-            PackageResponsePayload responsePayload = new PackageResponsePayload();
+            PackageResponsePayload responsePayload = TranslatorKuraKapuaUtils.buildBaseResponsePayload(kuraResponsePayload, new PackageResponsePayload());
 
-            Map<String, Object> metrics = kuraPayload.getMetrics();
-            responsePayload.setExceptionMessage((String) metrics.get(KuraResponseMetrics.EXCEPTION_MESSAGE.getName()));
-            responsePayload.setExceptionStack((String) metrics.get(KuraResponseMetrics.EXCEPTION_STACK.getName()));
+            KuraResponseCode responseCode = kuraResponsePayload.getResponseCode();
 
-            KuraResponseCode responseCode = KuraResponseCode.fromResponseCode((Integer) metrics.get(KuraResponseMetrics.EXIT_CODE.getName()));
-
+            Map<String, Object> metrics = kuraResponsePayload.getMetrics();
             if (!KuraResponseCode.INTERNAL_ERROR.equals(responseCode)) {
                 if (metrics.get(PackageMetrics.APP_METRIC_PACKAGE_OPERATION_ID.getName()) != null) {
                     responsePayload.setPackageDownloadOperationId(new KapuaEid(new BigInteger(metrics.get(PackageMetrics.APP_METRIC_PACKAGE_OPERATION_ID.getName()).toString())));
@@ -134,14 +114,14 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
                 }
 
                 String body;
-                if (kuraPayload.hasBody()) {
+                if (kuraResponsePayload.hasBody()) {
                     DeviceManagementSetting config = DeviceManagementSetting.getInstance();
                     String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
                     try {
-                        body = new String(kuraPayload.getBody(), charEncoding);
+                        body = new String(kuraResponsePayload.getBody(), charEncoding);
                     } catch (Exception e) {
-                        throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, (Object) kuraPayload.getBody());
+                        throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, (Object) kuraResponsePayload.getBody());
                     }
 
                     KuraDeploymentPackages kuraDeploymentPackages = null;
@@ -153,8 +133,8 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
                     translate(responsePayload, charEncoding, kuraDeploymentPackages);
                 }
             } else {
-                if (kuraPayload.hasBody()) {
-                    String errorMessage = new String(kuraPayload.getBody());
+                if (kuraResponsePayload.hasBody()) {
+                    String errorMessage = new String(kuraResponsePayload.getBody());
 
                     responsePayload.setExceptionMessage(errorMessage);
                 }
@@ -165,7 +145,7 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
         } catch (InvalidPayloadException ipe) {
             throw ipe;
         } catch (Exception e) {
-            throw new InvalidPayloadException(e, kuraPayload);
+            throw new InvalidPayloadException(e, kuraResponsePayload);
         }
     }
 

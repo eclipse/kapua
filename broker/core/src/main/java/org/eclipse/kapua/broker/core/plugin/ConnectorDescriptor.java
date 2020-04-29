@@ -12,14 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.message.KapuaMessage;
+import org.eclipse.kapua.service.device.call.message.DeviceMessage;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.message.KapuaMessage;
-import org.eclipse.kapua.service.device.call.message.DeviceMessage;
 
 /**
  * Describes the protocol in terms of message type implementations.<br>
@@ -57,10 +57,6 @@ public class ConnectorDescriptor implements Serializable {
          */
         NOTIFY,
         /**
-         * Unmatched filtering message type
-         */
-        UNMATCHED,
-        /**
          * Data message type
          */
         DATA
@@ -73,11 +69,9 @@ public class ConnectorDescriptor implements Serializable {
 
     /**
      * Constructs a new connector descriptor
-     * 
-     * @param deviceClass
-     *            device level messages implementation classes
-     * @param kapuaClass
-     *            Kapua level messages implementation classes
+     *
+     * @param deviceClass device level messages implementation classes
+     * @param kapuaClass  Kapua level messages implementation classes
      */
     public ConnectorDescriptor(String transportProtocol, Map<MessageType, Class<? extends DeviceMessage<?, ?>>> deviceClass, Map<MessageType, Class<? extends KapuaMessage<?, ?>>> kapuaClass) {
         Objects.requireNonNull(deviceClass);

@@ -20,4 +20,13 @@ import org.eclipse.kapua.service.device.call.message.DeviceChannel;
  */
 public interface DeviceLifecycleChannel extends DeviceChannel {
 
+    /**
+     * Gets the lifecycle phase.
+     * <p>
+     * Lifecycle has many phases that determines different aspects of the application.
+     *
+     * @return The phase.
+     * @since 1.2.0
+     */
+    String getPhase();
 }

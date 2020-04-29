@@ -24,52 +24,52 @@
     <artifactId>kapua-translator-kapua-kura</artifactId>
 
     <dependencies>
-        <!-- Implemented service interfaces -->
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-translator-api</artifactId>
-        </dependency>
 
-        <!-- Required service interfaces -->
         <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-api</artifactId>
-        </dependency>
-        <dependency>
+            <!-- AccountService classes-->
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-account-api</artifactId>
         </dependency>
         <dependency>
+            <!-- KapuaMessage classes-->
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-registry-api</artifactId>
+            <artifactId>kapua-device-api</artifactId>
         </dependency>
-
-        <!-- Internal dependencies -->
         <dependency>
+            <!-- KuraMessage classes-->
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-call-kura</artifactId>
         </dependency>
-
         <dependency>
+            <!-- DeviceRegistryService classes-->
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-commons</artifactId>
+            <artifactId>kapua-device-registry-api</artifactId>
+        </dependency>
+        <dependency>
+            <!-- Implemented service interfaces -->
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-translator-api</artifactId>
         </dependency>
 
         <dependency>
+            <!-- All device management classes-->
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-management-all-internal</artifactId>
         </dependency>
 
         <dependency>
+            <!-- JAXB serialization/deserialization-->
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.moxy</artifactId>
         </dependency>
 
         <dependency>
+            <!-- JSON serialization/deserialization-->
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
         </dependency>
         <dependency>
+            <!-- JSON serialization/deserialization-->
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>

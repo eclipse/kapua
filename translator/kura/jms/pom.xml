@@ -24,18 +24,19 @@
     <artifactId>kapua-translator-kura-jms</artifactId>
 
     <dependencies>
-        <!-- Implemented service interfaces -->
         <dependency>
+            <!-- Implemented service interface -->
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-translator-api</artifactId>
         </dependency>
 
-        <!-- Internal dependencies -->
         <dependency>
+            <!-- Kura messages classes-->
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-call-kura</artifactId>
         </dependency>
         <dependency>
+            <!-- JMS messages classes-->
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-transport-jms</artifactId>
         </dependency>

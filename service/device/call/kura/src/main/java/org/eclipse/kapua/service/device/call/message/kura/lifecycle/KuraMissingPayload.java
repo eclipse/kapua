@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.message.kura.lifecycle;
 
-import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
 import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecyclePayload;
 
 /**
@@ -21,6 +20,6 @@ import org.eclipse.kapua.service.device.call.message.lifecycle.DeviceLifecyclePa
  * @see KuraMissingMessage
  * @since 1.0.0
  */
-public class KuraMissingPayload extends KuraPayload implements DeviceLifecyclePayload {
+public class KuraMissingPayload extends AbstractKuraLifecyclePayload implements DeviceLifecyclePayload {
 
 }

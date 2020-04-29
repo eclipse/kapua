@@ -26,9 +26,6 @@ import org.eclipse.kapua.message.device.lifecycle.KapuaLifecycleMessageFactory;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingPayload;
-import org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedChannel;
-import org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedMessage;
-import org.eclipse.kapua.message.device.lifecycle.KapuaUnmatchedPayload;
 
 /**
  * {@link KapuaMessageFactory} implementation.
@@ -95,20 +92,5 @@ public class KapuaLifecycleMessageFactoryImpl implements KapuaLifecycleMessageFa
     @Override
     public KapuaMissingPayload newKapuaMissingPayload() {
         return new KapuaMissingPayloadImpl();
-    }
-
-    @Override
-    public KapuaUnmatchedMessage newKapuaUnmatchedMessage() {
-        return new KapuaUnmatchedMessageImpl();
-    }
-
-    @Override
-    public KapuaUnmatchedChannel newKapuaUnmatchedChannel() {
-        return new KapuaUnmatchedChannelImpl();
-    }
-
-    @Override
-    public KapuaUnmatchedPayload newKapuaUnmatchedPayload() {
-        return new KapuaUnmatchedPayloadImpl();
     }
 }

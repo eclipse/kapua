@@ -67,18 +67,6 @@ public class ErrorMessageListener extends AbstractListener {
         logError(exchange, message, "LifeCycle");
     }
 
-    /**
-     * Process an error condition for an elaboration of a camel routing unmatched message
-     *
-     * @param exchange
-     * @param message
-     * @throws KapuaException
-     */
-    public void unmatchedMessage(Exchange exchange, Object message) throws KapuaException {
-        metricErrorLifeCycleMessage.inc();
-        logUnmatched(exchange, message, "unmatched");
-    }
-
     private void logError(Exchange exchange, Object message, String serviceName) {
         Throwable t = null;
         // looking at the property filled by the KapuaCamelFilter#bridgeError)
@@ -99,12 +87,4 @@ public class ErrorMessageListener extends AbstractListener {
                 t != null ? t.getMessage() : NO_EXCEPTION_FOUND_MESSAGE);
         LOG.warn("Exception: ", t);
     }
-
-    private void logUnmatched(Exchange exchange, Object message, String serviceName) {
-        LOG.warn("Processing unmatched message for service {}... Message type {} - Endpoint {}",
-                serviceName,
-                (message != null ? message.getClass().getName() : null),
-                exchange.getProperty(CamelConstants.JMS_EXCHANGE_FAILURE_ENDPOINT));
-    }
-
 }
