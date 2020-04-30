@@ -99,10 +99,11 @@ public class JobDeviceManagementOperationDAO {
      * @param em
      * @param scopeId
      * @param jobDeviceManagementOperationId
+     * @return deleted entity
      * @throws KapuaEntityNotFoundException If the {@link JobDeviceManagementOperation} is not found
      * @since 1.1.0
      */
-    public static void delete(EntityManager em, KapuaId scopeId, KapuaId jobDeviceManagementOperationId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, JobDeviceManagementOperationImpl.class, scopeId, jobDeviceManagementOperationId);
+    public static JobDeviceManagementOperation delete(EntityManager em, KapuaId scopeId, KapuaId jobDeviceManagementOperationId) throws KapuaEntityNotFoundException {
+        return ServiceDAO.delete(em, JobDeviceManagementOperationImpl.class, scopeId, jobDeviceManagementOperationId);
     }
 }

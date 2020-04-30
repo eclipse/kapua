@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,7 @@
 package org.eclipse.kapua.commons.configuration;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -40,13 +41,27 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
     private final Class<S> serviceClass;
     private final Class<F> factoryClass;
 
+    /**
+     * @deprecated this constructor will be removed in a next release (may be)
+     */
+    @Deprecated
     protected AbstractKapuaConfigurableResourceLimitedService(
             String pid,
             Domain domain,
             EntityManagerFactory entityManagerFactory,
             Class<S> serviceClass,
             Class<F> factoryClass) {
-        super(pid, domain, entityManagerFactory);
+        this(pid, domain, entityManagerFactory, null, serviceClass, factoryClass);
+    }
+
+    protected AbstractKapuaConfigurableResourceLimitedService(
+            String pid,
+            Domain domain,
+            EntityManagerFactory entityManagerFactory,
+            AbstractEntityCacheFactory abstractCacheFactory,
+            Class<S> serviceClass,
+            Class<F> factoryClass) {
+        super(pid, domain, entityManagerFactory, abstractCacheFactory);
         this.serviceClass = serviceClass;
         this.factoryClass = factoryClass;
     }

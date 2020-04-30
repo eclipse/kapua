@@ -131,10 +131,11 @@ public class AccountDAO {
      * @param em
      * @param scopeId
      * @param accountId
+     * @return The deleted {@link Account}
      * @throws KapuaEntityNotFoundException
      *             If the {@link Account} is not found
      */
-    public static void delete(EntityManager em, KapuaId scopeId, KapuaId accountId) throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, AccountImpl.class, scopeId, accountId);
+    public static Account delete(EntityManager em, KapuaId scopeId, KapuaId accountId) throws KapuaEntityNotFoundException {
+        return ServiceDAO.delete(em, AccountImpl.class, scopeId, accountId);
     }
 }

@@ -91,7 +91,7 @@ public class JobDeviceManagementOperationServiceImpl extends AbstractKapuaConfig
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> JobDeviceManagementOperationDAO.create(em, jobDeviceManagementOperationCreator));
+        return entityManagerSession.doTransactedAction(em -> JobDeviceManagementOperationDAO.create(em, jobDeviceManagementOperationCreator));
     }
 
 
@@ -108,7 +108,7 @@ public class JobDeviceManagementOperationServiceImpl extends AbstractKapuaConfig
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> JobDeviceManagementOperationDAO.find(em, scopeId, jobDeviceManagementOperationId));
+        return entityManagerSession.doAction(em -> JobDeviceManagementOperationDAO.find(em, scopeId, jobDeviceManagementOperationId));
     }
 
     @Override
@@ -123,7 +123,7 @@ public class JobDeviceManagementOperationServiceImpl extends AbstractKapuaConfig
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> JobDeviceManagementOperationDAO.query(em, query));
+        return entityManagerSession.doAction(em -> JobDeviceManagementOperationDAO.query(em, query));
     }
 
     @Override
@@ -138,7 +138,7 @@ public class JobDeviceManagementOperationServiceImpl extends AbstractKapuaConfig
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> JobDeviceManagementOperationDAO.count(em, query));
+        return entityManagerSession.doAction(em -> JobDeviceManagementOperationDAO.count(em, query));
     }
 
     @Override
@@ -160,6 +160,6 @@ public class JobDeviceManagementOperationServiceImpl extends AbstractKapuaConfig
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> JobDeviceManagementOperationDAO.delete(em, scopeId, jobDeviceManagementOperationId));
+        entityManagerSession.doTransactedAction(em -> JobDeviceManagementOperationDAO.delete(em, scopeId, jobDeviceManagementOperationId));
     }
 }

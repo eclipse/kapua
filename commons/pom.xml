@@ -108,6 +108,12 @@
             <artifactId>reflections</artifactId>
         </dependency>
 
+        <!-- Caching dependencies -->
+        <dependency>
+            <groupId>javax.cache</groupId>
+            <artifactId>cache-api</artifactId>
+        </dependency>
+
         <!-- -->
         <!-- Testing dependencies -->
         <dependency>

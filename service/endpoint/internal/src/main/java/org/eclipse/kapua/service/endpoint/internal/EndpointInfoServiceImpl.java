@@ -99,7 +99,7 @@ public class EndpointInfoServiceImpl
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> EndpointInfoDAO.create(em, endpointInfoCreator));
+        return entityManagerSession.doTransactedAction(em -> EndpointInfoDAO.create(em, endpointInfoCreator));
     }
 
     @Override
@@ -133,7 +133,7 @@ public class EndpointInfoServiceImpl
 
         //
         // Do update
-        return entityManagerSession.onTransactedResult(em -> EndpointInfoDAO.update(em, endpointInfo));
+        return entityManagerSession.doTransactedAction(em -> EndpointInfoDAO.update(em, endpointInfo));
     }
 
     @Override
@@ -147,7 +147,7 @@ public class EndpointInfoServiceImpl
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> EndpointInfoDAO.delete(em, scopeId, endpointInfoId));
+        entityManagerSession.doTransactedAction(em -> EndpointInfoDAO.delete(em, scopeId, endpointInfoId));
     }
 
     @Override
@@ -162,7 +162,7 @@ public class EndpointInfoServiceImpl
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> EndpointInfoDAO.find(em, scopeId, endpointInfoId));
+        return entityManagerSession.doAction(em -> EndpointInfoDAO.find(em, scopeId, endpointInfoId));
     }
 
     @Override
@@ -176,7 +176,7 @@ public class EndpointInfoServiceImpl
 
         //
         // Do Query
-        return entityManagerSession.onResult(em -> {
+        return entityManagerSession.doAction(em -> {
             EndpointInfoListResult endpointInfoListResult = EndpointInfoDAO.query(em, query);
 
             if (endpointInfoListResult.isEmpty() && query.getScopeId() != null) {
@@ -219,7 +219,7 @@ public class EndpointInfoServiceImpl
 
         //
         // Do count
-        return entityManagerSession.onResult(em -> {
+        return entityManagerSession.doAction(em -> {
             long endpointInfoCount = EndpointInfoDAO.count(em, query);
 
             if (endpointInfoCount == 0 && query.getScopeId() != null) {

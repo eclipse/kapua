@@ -70,7 +70,7 @@ public class JobStepDefinitionServiceImpl
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> JobStepDefinitionDAO.create(em, creator));
+        return entityManagerSession.doTransactedAction(em -> JobStepDefinitionDAO.create(em, creator));
     }
 
     @Override
@@ -87,7 +87,7 @@ public class JobStepDefinitionServiceImpl
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
-        return entityManagerSession.onTransactedResult(em -> JobStepDefinitionDAO.update(em, jobStepDefinition));
+        return entityManagerSession.doTransactedAction(em -> JobStepDefinitionDAO.update(em, jobStepDefinition));
     }
 
     @Override
@@ -102,7 +102,7 @@ public class JobStepDefinitionServiceImpl
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> JobStepDefinitionDAO.find(em, scopeId, stepDefinitionId));
+        return entityManagerSession.doAction(em -> JobStepDefinitionDAO.find(em, scopeId, stepDefinitionId));
     }
 
     @Override
@@ -113,7 +113,7 @@ public class JobStepDefinitionServiceImpl
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> {
+        return entityManagerSession.doAction(em -> {
 
             JobStepDefinition jobStepDefinition = JobStepDefinitionDAO.findByName(em, name);
             if (jobStepDefinition != null) {
@@ -137,7 +137,7 @@ public class JobStepDefinitionServiceImpl
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> JobStepDefinitionDAO.query(em, query));
+        return entityManagerSession.doAction(em -> JobStepDefinitionDAO.query(em, query));
     }
 
     @Override
@@ -152,7 +152,7 @@ public class JobStepDefinitionServiceImpl
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> JobStepDefinitionDAO.count(em, query));
+        return entityManagerSession.doAction(em -> JobStepDefinitionDAO.count(em, query));
     }
 
     @Override
@@ -168,12 +168,12 @@ public class JobStepDefinitionServiceImpl
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> {
+        entityManagerSession.doTransactedAction(em -> {
             if (JobStepDefinitionDAO.find(em, scopeId, stepDefinitionId) == null) {
                 throw new KapuaEntityNotFoundException(JobStepDefinition.TYPE, stepDefinitionId);
             }
 
-            JobStepDefinitionDAO.delete(em, scopeId, stepDefinitionId);
+            return JobStepDefinitionDAO.delete(em, scopeId, stepDefinitionId);
         });
 
     }

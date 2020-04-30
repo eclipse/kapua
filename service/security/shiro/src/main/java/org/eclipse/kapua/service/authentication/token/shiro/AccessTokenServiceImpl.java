@@ -73,7 +73,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> AccessTokenDAO.create(em, accessTokenCreator));
+        return entityManagerSession.doTransactedAction(em -> AccessTokenDAO.create(em, accessTokenCreator));
     }
 
     @Override
@@ -98,7 +98,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Do update
-        return entityManagerSession.onTransactedResult(em -> AccessTokenDAO.update(em, accessToken));
+        return entityManagerSession.doTransactedAction(em -> AccessTokenDAO.update(em, accessToken));
     }
 
     @Override
@@ -114,7 +114,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> AccessTokenDAO.find(em, scopeId, accessTokenId));
+        return entityManagerSession.doAction(em -> AccessTokenDAO.find(em, scopeId, accessTokenId));
     }
 
     @Override
@@ -129,7 +129,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> AccessTokenDAO.query(em, query));
+        return entityManagerSession.doAction(em -> AccessTokenDAO.query(em, query));
     }
 
     @Override
@@ -144,7 +144,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Do count
-        return entityManagerSession.onResult(em -> AccessTokenDAO.count(em, query));
+        return entityManagerSession.doAction(em -> AccessTokenDAO.count(em, query));
     }
 
     @Override
@@ -166,7 +166,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> AccessTokenDAO.delete(em, scopeId, accessTokenId));
+        entityManagerSession.doTransactedAction(em -> AccessTokenDAO.delete(em, scopeId, accessTokenId));
     }
 
     @Override
@@ -198,7 +198,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Do find
-        AccessToken accessToken = entityManagerSession.onResult(em -> AccessTokenDAO.findByTokenId(em, tokenId));
+        AccessToken accessToken = entityManagerSession.doAction(em -> AccessTokenDAO.findByTokenId(em, tokenId));
 
         //
         // Check Access
@@ -222,7 +222,7 @@ public class AccessTokenServiceImpl extends AbstractKapuaService implements Acce
 
         //
         // Do find
-        entityManagerSession.onTransactedResult(em -> {
+        entityManagerSession.doTransactedAction(em -> {
             AccessToken accessToken = AccessTokenDAO.find(em, scopeId, accessTokenId);
             if (accessToken != null) {
                 accessToken.setInvalidatedOn(new Date());

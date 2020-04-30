@@ -142,7 +142,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Do create
         try {
-            return entityManagerSession.onTransactedInsert(em -> {
+            return entityManagerSession.doTransactedAction(em -> {
 
                 Trigger trigger = TriggerDAO.create(em, triggerCreator);
 
@@ -196,7 +196,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Do update
-        return entityManagerSession.onTransactedResult(em -> TriggerDAO.update(em, trigger));
+        return entityManagerSession.doTransactedAction(em -> TriggerDAO.update(em, trigger));
     }
 
     @Override
@@ -218,8 +218,8 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> {
-            TriggerDAO.delete(em, scopeId, triggerId);
+        entityManagerSession.doTransactedAction(em -> {
+            Trigger trigger = TriggerDAO.delete(em, scopeId, triggerId);
 
             try {
                 SchedulerFactory sf = new StdSchedulerFactory();
@@ -232,6 +232,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
             } catch (SchedulerException se) {
                 throw new RuntimeException(se);
             }
+            return trigger;
         });
     }
 
@@ -248,7 +249,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Do find
-        Trigger trigger = entityManagerSession.onResult(em -> TriggerDAO.find(em, scopeId, triggerId));
+        Trigger trigger = entityManagerSession.doAction(em -> TriggerDAO.find(em, scopeId, triggerId));
         adaptTrigger(trigger);
         return trigger;
     }
@@ -265,7 +266,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Do query
-        TriggerListResult triggers = entityManagerSession.onResult(em -> TriggerDAO.query(em, query));
+        TriggerListResult triggers = entityManagerSession.doAction(em -> TriggerDAO.query(em, query));
 
         for (Trigger trigger : triggers.getItems()) {
             adaptTrigger(trigger);
@@ -286,7 +287,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Do count
-        return entityManagerSession.onResult(em -> TriggerDAO.count(em, query));
+        return entityManagerSession.doAction(em -> TriggerDAO.count(em, query));
     }
 
     //
@@ -356,7 +357,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         if (converted) {
             try {
-                entityManagerSession.onTransactedResult(em -> TriggerDAO.update(em, trigger));
+                entityManagerSession.doTransactedAction(em -> TriggerDAO.update(em, trigger));
             } catch (Exception e) {
                 LOG.warn("Cannot convert Trigger to new format!", e);
             }

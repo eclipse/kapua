@@ -18,6 +18,7 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtilsWithResources;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
+import org.eclipse.kapua.commons.service.internal.cache.KapuaCacheManager;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.h2.tools.Server;
@@ -157,6 +158,7 @@ public class DBHelper {
     public void deleteAll() {
 
         KapuaConfigurableServiceSchemaUtilsWithResources.scriptSession(FULL_SCHEMA_PATH, DELETE_SCRIPT);
+        KapuaCacheManager.invalidateAll();
     }
 
     public void dropAll() throws SQLException {
@@ -170,5 +172,6 @@ public class DBHelper {
         }
 
         this.close();
+        KapuaCacheManager.invalidateAll();
     }
 }

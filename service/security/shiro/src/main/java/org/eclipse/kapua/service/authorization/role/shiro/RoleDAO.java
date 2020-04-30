@@ -105,11 +105,12 @@ public class RoleDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param roleId
+     * @return the deleted {@link Role}
      * @throws KapuaEntityNotFoundException
      *             If {@link Role} is not found.
      */
-    public static void delete(EntityManager em, KapuaId scopeId, KapuaId roleId)
+    public static Role delete(EntityManager em, KapuaId scopeId, KapuaId roleId)
             throws KapuaEntityNotFoundException {
-        ServiceDAO.delete(em, RoleImpl.class, scopeId, roleId);
+        return ServiceDAO.delete(em, RoleImpl.class, scopeId, roleId);
     }
 }

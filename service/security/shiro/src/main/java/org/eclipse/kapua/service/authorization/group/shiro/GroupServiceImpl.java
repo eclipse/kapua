@@ -89,7 +89,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         //
         // Do create
-        return entityManagerSession.onTransactedInsert(em -> GroupDAO.create(em, groupCreator));
+        return entityManagerSession.doTransactedAction(em -> GroupDAO.create(em, groupCreator));
     }
 
     @Override
@@ -127,7 +127,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         //
         // Do update
-        return entityManagerSession.onTransactedResult(em -> GroupDAO.update(em, group));
+        return entityManagerSession.doTransactedAction(em -> GroupDAO.update(em, group));
     }
 
     @Override
@@ -149,7 +149,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         //
         // Do delete
-        entityManagerSession.onTransactedAction(em -> GroupDAO.delete(em, scopeId, groupId));
+        entityManagerSession.doTransactedAction(em -> GroupDAO.delete(em, scopeId, groupId));
     }
 
     @Override
@@ -165,7 +165,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         //
         // Do find
-        return entityManagerSession.onResult(em -> GroupDAO.find(em, scopeId, groupId));
+        return entityManagerSession.doAction(em -> GroupDAO.find(em, scopeId, groupId));
     }
 
     @Override
@@ -180,7 +180,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         //
         // Do query
-        return entityManagerSession.onResult(em -> GroupDAO.query(em, query));
+        return entityManagerSession.doAction(em -> GroupDAO.query(em, query));
     }
 
     @Override
@@ -195,7 +195,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         //
         // Do count
-        return entityManagerSession.onResult(em -> GroupDAO.count(em, query));
+        return entityManagerSession.doAction(em -> GroupDAO.count(em, query));
     }
 
     //@ListenServiceEvent(fromAddress="account")
