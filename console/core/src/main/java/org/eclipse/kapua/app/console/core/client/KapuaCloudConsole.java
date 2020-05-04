@@ -42,7 +42,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.eclipse.kapua.app.console.core.client.messages.ConsoleCoreMessages;
-import org.eclipse.kapua.app.console.core.client.util.Logout;
+import org.eclipse.kapua.app.console.core.client.util.TokenCleaner;
 import org.eclipse.kapua.app.console.core.shared.model.GwtProductInformation;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtJwtCredential;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
@@ -71,6 +71,11 @@ public class KapuaCloudConsole implements EntryPoint {
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private static final ConsoleCoreMessages CORE_MSGS = GWT.create(ConsoleCoreMessages.class);
     private static final Logger logger = Logger.getLogger(KapuaCloudConsole.class.getName());
+
+    // sso parameters
+    public static final String PARAMETER_ACCESS_TOKEN = "access_token";
+    public static final String PARAMETER_ERROR = "error";
+    public static final String PARAMETER_ERROR_DESC = "error_description";
 
     private GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
 
@@ -347,12 +352,20 @@ public class KapuaCloudConsole implements EntryPoint {
         creditLabel.setText(productInformation.getBackgroundCredits());
 
         // Check if coming from SSO login
-        String accessToken = Window.Location.getParameter(Logout.PARAMETER_ACCESS_TOKEN);
+        String accessToken = Window.Location.getParameter(PARAMETER_ACCESS_TOKEN);
 
         if (accessToken != null && !accessToken.isEmpty()) {
             logger.info("Performing SSO login");
             performSsoLogin(viewport, accessToken);
         } else {
+
+            String error = Window.Location.getParameter("error");
+
+            // Check if coming from failed SSO login (the user exists but she does not have the authorizations)
+            if (error !=null && !error.isEmpty() && error.equals("access_denied")) {
+                logger.info("Access denied, SSO login failed");
+                ConsoleInfo.display(CORE_MSGS.loginSsoLoginError(), CORE_MSGS.ssoClientAuthenticationFailed());
+            }
             showLoginDialog(viewport);
         }
     }
@@ -414,12 +427,14 @@ public class KapuaCloudConsole implements EntryPoint {
                 dlg.hide();
                 ConsoleInfo.display(CORE_MSGS.loginError(), caught.getLocalizedMessage());
 
-                Logout.logout();
+                TokenCleaner.cleanToken();
             }
 
             @Override
             public void onSuccess(GwtSession gwtSession) {
                 logger.fine("User: " + gwtSession.getUserId());
+                TokenCleaner.cleanToken();
+
                 dlg.hide();
                 renderMainScreen(viewport, gwtSession);
             }

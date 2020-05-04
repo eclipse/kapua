@@ -21,9 +21,6 @@ import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
 
 import java.util.UUID;
 
-/**
- * This is the security token service, a concrete implementation to fix the XSFR security problem.
- */
 public class GwtSettingsServiceImpl extends RemoteServiceServlet implements GwtSettingsService {
 
     private static final long serialVersionUID = -6876999298300071273L;
