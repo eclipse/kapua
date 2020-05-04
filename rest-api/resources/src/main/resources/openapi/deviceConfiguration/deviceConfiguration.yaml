@@ -22,6 +22,16 @@ components:
       schema:
         $ref: '../openapi.yaml#/components/schemas/kapuaId'
       required: true
+    configurationFormat:
+      name: format
+      in: query
+      description: The format of the configuration.
+      schema:
+        type: string
+        enum:
+          - PLATFORM
+          - DEVICE
+        default: PLATFORM
   schemas:
     attributeDefinition:
       type: object
@@ -216,6 +226,7 @@ components:
           items:
             $ref: '#/components/schemas/componentConfigurationInput'
       example:
+        type: deviceConfiguration
         configuration:
           - id: org.eclipse.kura.wire.graph.WireGraphService
             properties:
@@ -226,3 +237,64 @@ components:
                   type: String
                   value:
                     - org.eclipse.kura.wire.graph.WireGraphService
+    componentConfigurationsInputXml:
+      type: array
+      items:
+        $ref: '#/components/schemas/componentConfigurationInputXml'
+      xml:
+        wrapped: true
+        prefix: esf
+        name: configurations
+        namespace: http://eurotech.com/esf/2.0
+    componentConfigurationInputXml:
+      type: object
+      properties:
+        pid:
+          type: string
+          xml:
+            attribute: true
+        properties:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                xml:
+                  attribute: true
+              array:
+                type: boolean
+                xml:
+                  attribute: true
+              encrypted:
+                type: boolean
+                xml:
+                  attribute: true
+              type:
+                type: string
+                enum:
+                  - String
+                  - Long
+                  - Double
+                  - Float
+                  - Integer
+                  - Byte
+                  - Char
+                  - Boolean
+                  - Short
+                  - Password
+                xml:
+                  attribute: true
+              value:
+                type: string
+                xml:
+                  prefix: esf
+            xml:
+              prefix: esf
+              name: property
+          xml:
+            prefix: esf
+            wrapped: true
+      xml:
+        name: configuration
+        prefix: esf

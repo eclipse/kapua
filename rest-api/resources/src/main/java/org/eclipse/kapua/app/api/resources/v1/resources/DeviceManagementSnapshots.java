@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -19,12 +20,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXBException;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.device.management.ConfigurationFormat;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfigurationUtils;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService;
@@ -104,17 +109,56 @@ public class DeviceManagementSnapshots extends AbstractKapuaResource {
      * @return HTTP 200 if operation has completed successfully.
      * @throws KapuaException
      *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
-     * @since 1.0.0
+     * @since 1.2.0
      */
     @GET
     @Path("{snapshotId}")
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Produces({ MediaType.APPLICATION_JSON })
     public DeviceConfiguration download(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @PathParam("snapshotId") String snapshotId,
             @QueryParam("timeout") Long timeout) throws KapuaException {
         return configurationService.get(scopeId, deviceId, snapshotId, null, timeout);
+    }
+
+    /**
+     * Gets the configuration of a device given the snapshot ID.
+     *
+     * @param scopeId
+     *            The {@link ScopeId} of the {@link Device}.
+     * @param deviceId
+     *            The {@link Device} ID.
+     * @param snapshotId
+     *            the ID of the snapshot to rollback to.
+     * @param timeout
+     *            The timeout of the operation
+     * @param configurationFormat
+     *            The format of the snapshot. Can be DEVICE or PLATFORM
+     * @return HTTP 200 if operation has completed successfully.
+     * @throws KapuaException
+     *             Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @throws JAXBException
+     *             Error when serializing the result
+
+     * @since 1.2.0
+     */
+    @GET
+    @Path("{snapshotId}")
+    @Produces({ MediaType.APPLICATION_XML })
+    public String download(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("deviceId") EntityId deviceId,
+            @PathParam("snapshotId") String snapshotId,
+            @QueryParam("format") @DefaultValue("PLATFORM") ConfigurationFormat configurationFormat,
+            @QueryParam("timeout") Long timeout) throws KapuaException, JAXBException {
+        DeviceConfiguration deviceConfiguration = configurationService.get(scopeId, deviceId, snapshotId, null, timeout);
+
+        if (configurationFormat == ConfigurationFormat.DEVICE) {
+            return XmlUtil.marshal(KuraDeviceConfigurationUtils.toKuraConfiguration(deviceConfiguration));
+        } else {
+            return XmlUtil.marshal(deviceConfiguration);
+        }
     }
 
 }

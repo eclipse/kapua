@@ -102,9 +102,6 @@ public class DeviceConfigSnapshots extends LayoutContainer {
     private Menu downloadMenu;
     private Button rollbackButton;
     private Button uploadButton;
-    private KapuaMenuItem standardUploadMenuItem;
-    private KapuaMenuItem nativeUploadMenuItem;
-    private Menu uploadMenu;
 
     private ListStore<GwtSnapshot> store;
     private Grid<GwtSnapshot> grid;
@@ -184,7 +181,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
 
         downloadMenu = new Menu();
 
-        standardDownloadMenuItem = new StandardSnapshotDownloadMenuItem(new SelectionListener<MenuEvent>() {
+        standardDownloadMenuItem = new PlatformSnapshotDownloadMenuItem(new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent ce) {
                 if (!downloadProcess) {
@@ -199,7 +196,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
             }
         });
 
-        nativeDownloadMenuItem = new NativeSnapshotDownloadMenuItem(new SelectionListener<MenuEvent>() {
+        nativeDownloadMenuItem = new DeviceSnapshotDownloadMenuItem(new SelectionListener<MenuEvent>() {
 
             @Override
             public void componentSelected(MenuEvent ce) {
@@ -221,43 +218,20 @@ public class DeviceConfigSnapshots extends LayoutContainer {
         downloadButton = new SnapshotDownloadButton();
         downloadButton.setMenu(downloadMenu);
 
-        standardUploadMenuItem = new StandardSnapshotUploadMenuItem(new SelectionListener<MenuEvent>() {
+        uploadButton = new SnapshotUploadButton(new SelectionListener<ButtonEvent>() {
 
             @Override
-            public void componentSelected(MenuEvent ce) {
+            public void componentSelected(ButtonEvent ce) {
                 if (!uploadProcess) {
                     uploadProcess = true;
                     uploadButton.setEnabled(false);
 
-                    uploadSnapshot(false);
+                    uploadSnapshot();
 
                     uploadProcess = false;
                 }
             }
         });
-
-        nativeUploadMenuItem = new NativeSnapshotUploadMenuItem(new SelectionListener<MenuEvent>() {
-
-            @Override
-            public void componentSelected(MenuEvent ce) {
-                if (!uploadProcess) {
-                    uploadProcess = true;
-                    uploadButton.setEnabled(false);
-
-                    uploadSnapshot(true);
-
-                    uploadProcess = false;
-                }
-            }
-        });
-
-        uploadMenu = new Menu();
-
-        uploadMenu.add(standardUploadMenuItem);
-        uploadMenu.add(nativeUploadMenuItem);
-
-        uploadButton = new SnapshotUploadButton();
-        uploadButton.setMenu(uploadMenu);
 
         uploadButton.setEnabled(false);
 
@@ -461,7 +435,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
         }
     }
 
-    private void uploadSnapshot(boolean isNative) {
+    private void uploadSnapshot() {
         if (selectedDevice != null) {
             HiddenField<String> accountField = new HiddenField<String>();
             accountField.setName("scopeIdString");
@@ -471,14 +445,9 @@ public class DeviceConfigSnapshots extends LayoutContainer {
             clientIdField.setName("deviceIdString");
             clientIdField.setValue(selectedDevice.getId());
 
-            HiddenField<Boolean> nativeField = new HiddenField<Boolean>();
-            nativeField.setName("native");
-            nativeField.setValue(isNative);
-
             List<HiddenField<?>> hiddenFields = new ArrayList<HiddenField<?>>();
             hiddenFields.add(accountField);
             hiddenFields.add(clientIdField);
-            hiddenFields.add(nativeField);
 
             fileUpload = new FileUploadDialog(SERVLET_URL, hiddenFields);
             fileUpload.addListener(Events.Hide, new Listener<BaseEvent>() {

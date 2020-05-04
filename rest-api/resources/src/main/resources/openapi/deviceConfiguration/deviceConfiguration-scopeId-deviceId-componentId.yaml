@@ -22,6 +22,7 @@ paths:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: '../device/device.yaml#/components/parameters/deviceId'
         - $ref: '../deviceConfiguration/deviceConfiguration.yaml#/components/parameters/componentId'
+        - $ref: './deviceConfiguration.yaml#/components/parameters/configurationFormat'
         - $ref: '../device/device.yaml#/components/parameters/timeout'
       responses:
         200:
@@ -30,33 +31,9 @@ paths:
             application/json:
               schema:
                 $ref: './deviceConfiguration.yaml#/components/schemas/componentConfigurations'
-        401:
-          $ref: '../openapi.yaml#/components/responses/unauthenticated'
-        403:
-          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
-        404:
-          $ref: '../openapi.yaml#/components/responses/entityNotFound'
-        500:
-          $ref: '../openapi.yaml#/components/responses/kapuaError'
-    put:
-      tags:
-        - Device Management - Configuration
-      summary: Update a single Configuration
-      operationId: deviceConfigurationWrite
-      parameters:
-        - $ref: '../openapi.yaml#/components/parameters/scopeId'
-        - $ref: '../device/device.yaml#/components/parameters/deviceId'
-        - $ref: '../deviceConfiguration/deviceConfiguration.yaml#/components/parameters/componentId'
-        - $ref: '../device/device.yaml#/components/parameters/timeout'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: './deviceConfiguration.yaml#/components/schemas/componentConfigurationInput'
-        required: true
-      responses:
-        204:
-          description: The updated Configuration details of a single Service on a single Device
+            application/xml:
+              schema:
+                $ref: './deviceConfiguration.yaml#/components/schemas/componentConfigurationsInputXml'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

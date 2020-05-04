@@ -32,7 +32,7 @@ public class KuraDeviceConfigurationUtils {
     private KuraDeviceConfigurationUtils() { }
 
     //
-    // Kura to Kapua
+    // Kapua to Kura
     public static KuraDeviceConfiguration toKuraConfiguration(DeviceConfiguration kapuaDeviceConfiguration) throws KapuaException {
         return translateKapuaConfiguration(kapuaDeviceConfiguration);
     }
@@ -131,25 +131,30 @@ public class KuraDeviceConfigurationUtils {
     }
 
     //
-    // Kapua to Kura
+    // Kura to Kapua
     public static DeviceConfiguration toDeviceConfiguration(KuraDeviceConfiguration kuraDeviceConfiguration) throws KapuaException {
         DeviceConfigurationFactory deviceConfigurationFactory = KapuaLocator.getInstance().getFactory(DeviceConfigurationFactory.class);
         DeviceConfiguration deviceConfiguration = deviceConfigurationFactory.newConfigurationInstance();
         for (KuraDeviceComponentConfiguration kuraDeviceCompConf : kuraDeviceConfiguration.getConfigurations()) {
-
-            String componentId = kuraDeviceCompConf.getComponentId();
-            DeviceComponentConfiguration deviceComponentConfiguration = deviceConfigurationFactory.newComponentConfigurationInstance(componentId);
-            deviceComponentConfiguration.setProperties(translateKuraComponentConfigurationProperties(kuraDeviceCompConf.getProperties()));
-
-            // Translate also definitions when they are available
-            if (kuraDeviceCompConf.getDefinition() != null) {
-                deviceComponentConfiguration.setDefinition(translateKuraDefinition(kuraDeviceCompConf.getDefinition()));
-            }
-
             // Add to kapua configuration
-            deviceConfiguration.getComponentConfigurations().add(deviceComponentConfiguration);
+            deviceConfiguration.getComponentConfigurations().add(toDeviceComponentConfiguration(kuraDeviceCompConf));
         }
         return deviceConfiguration;
+    }
+
+    public static DeviceComponentConfiguration toDeviceComponentConfiguration(KuraDeviceComponentConfiguration kuraDeviceCompConf) {
+        DeviceConfigurationFactory deviceConfigurationFactory = KapuaLocator.getInstance().getFactory(DeviceConfigurationFactory.class);
+
+        String componentId = kuraDeviceCompConf.getComponentId();
+        DeviceComponentConfiguration deviceComponentConfiguration = deviceConfigurationFactory.newComponentConfigurationInstance(componentId);
+        deviceComponentConfiguration.setProperties(translateKuraComponentConfigurationProperties(kuraDeviceCompConf.getProperties()));
+
+        // Translate also definitions when they are available
+        if (kuraDeviceCompConf.getDefinition() != null) {
+            deviceComponentConfiguration.setDefinition(translateKuraDefinition(kuraDeviceCompConf.getDefinition()));
+        }
+
+        return deviceComponentConfiguration;
     }
 
     private static KapuaTocd translateKuraDefinition(KapuaTocd kuraDefinition) {

@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.UnmarshalException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -91,7 +92,6 @@ public class FileServlet extends KapuaHttpServlet {
             List<FileItem> fileItems = kapuaFormFields.getFileItems();
             String scopeIdString = kapuaFormFields.get("scopeIdString");
             String deviceIdString = kapuaFormFields.get("deviceIdString");
-            boolean isNative = Boolean.parseBoolean(kapuaFormFields.get("native"));
 
             if (scopeIdString == null || scopeIdString.isEmpty()) {
                 throw new IllegalArgumentException("scopeIdString");
@@ -113,10 +113,10 @@ public class FileServlet extends KapuaHttpServlet {
             String xmlConfigurationString = new String(data, "UTF-8");
 
             DeviceConfiguration deviceConfiguration;
-            if (isNative) {
+            try {
                 KuraDeviceConfiguration kuraDeviceConfiguration = XmlUtil.unmarshal(xmlConfigurationString, KuraDeviceConfiguration.class);
                 deviceConfiguration = KuraDeviceConfigurationUtils.toDeviceConfiguration(kuraDeviceConfiguration);
-            } else {
+            } catch (UnmarshalException exception) {
                 deviceConfiguration = XmlUtil.unmarshal(xmlConfigurationString, DeviceConfiguration.class);
             }
             deviceConfigurationManagementService.put(KapuaEid.parseCompactId(scopeIdString),

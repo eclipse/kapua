@@ -19,12 +19,12 @@ import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.google.gwt.core.client.GWT;
 
-public class StandardSnapshotDownloadMenuItem extends KapuaMenuItem {
+public class DeviceSnapshotDownloadMenuItem extends KapuaMenuItem {
 
     private static final ConsoleDeviceMessages MSGS = GWT.create(ConsoleDeviceMessages.class);
 
-    public StandardSnapshotDownloadMenuItem(SelectionListener<MenuEvent> listener) {
-        super(MSGS.standardButtonSnapshotDownload(),
+    public DeviceSnapshotDownloadMenuItem(SelectionListener<MenuEvent> listener) {
+        super(MSGS.buttonDeviceSnapshotDownload(),
                 IconSet.CLOUD_DOWNLOAD,
                 listener);
     }
