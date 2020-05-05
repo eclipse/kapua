@@ -43,9 +43,11 @@ For the available managed placeholders see the CAMEL_ROUTER_PLACEHOLDER enum.
                 </endChainEndPoint>
             </endPoints>
         </endPoint>
+        <!-- BEGIN DATASTORE PERSISTENCE -->
         <simpleEndPoint>
             <regex>.*</regex>
             <endPoint>bean:kapuaDataConverter?method=convertToData,bean:dataStorageMessageProcessor?method=processMessage</endPoint>
         </simpleEndPoint>
+        <!-- END DATASTORE PERSISTENCE -->
     </endPoints>
 </endPoints>
