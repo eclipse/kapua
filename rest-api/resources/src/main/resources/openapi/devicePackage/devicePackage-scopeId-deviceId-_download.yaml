@@ -26,31 +26,38 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                uri:
-                  type: string
-                name:
-                  type: string
-                version:
-                  type: string
-                install:
-                  type: boolean
-                reboot:
-                  type: boolean
-                rebootDelay:
-                  type: integer
-              required:
-                - uri
-                - name
-                - version
-            example:
-              uri: http://download.eclipse.org/kura/releases/4.1.0/org.eclipse.kura.demo.heater_1.0.500.dp
-              name: heater
-              version: 1.0.500
-              install: true
-              reboot: false
-              rebootDelay: 0
+              $ref: './devicePackage.yaml#/components/schemas/devicePackageDownloadRequest'
+            examples:
+              basic:
+                summary: Basic
+                description: A request with basic options
+                value:
+                  uri: https://download.eclipse.org/kura/releases/4.1.0/org.eclipse.kura.demo.heater_1.0.500.dp
+                  name: heater
+                  version: 1.0.500
+                  install: true
+                  reboot: false
+              complete:
+                summary: Complete
+                description: A request with all available options used
+                value:
+                  uri: https://download.eclipse.org/kura/releases/4.1.0/org.eclipse.kura.demo.heater_1.0.500.dp
+                  name: heater
+                  version: 1.0.500
+                  username: username
+                  password: password
+                  fileHash: MD5:0d04154164145cd6b2167fdd457ed28f
+                  fileType: DEPLOYMENT_PACKAGE
+                  install: true
+                  reboot: false
+                  rebootDelay: 0
+                  advancedOptions:
+                    restart: false
+                    blockSize: 128
+                    blockDelay: 0
+                    blockTimeout: 5000
+                    notifyBlockSize: 256
+                    installVerifyURI: https://download.eclipse.org/kura/releases/4.1.0/org.eclipse.kura.demo.heater_1.0.500.verifier.sh
         required: true
       responses:
         204:
