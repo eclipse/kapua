@@ -20,6 +20,10 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.qa.common.MockedLocator;
 import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
+import org.eclipse.kapua.service.account.AccountFactory;
+import org.eclipse.kapua.service.account.AccountService;
+import org.eclipse.kapua.service.account.internal.AccountFactoryImpl;
+import org.eclipse.kapua.service.account.internal.AccountServiceImpl;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -67,6 +71,10 @@ public class CucumberWithPropertiesForTag extends CucumberWithProperties {
                 bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
                 // Set KapuaMetatypeFactory for Metatype configuration
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
+
+                // binding Account related services
+                bind(AccountService.class).toInstance(Mockito.spy(new AccountServiceImpl()));
+                bind(AccountFactory.class).toInstance(Mockito.spy(new AccountFactoryImpl()));
 
                 // Inject actual Tag service related services
                 TagEntityManagerFactory tagEntityManagerFactory = TagEntityManagerFactory.getInstance();
