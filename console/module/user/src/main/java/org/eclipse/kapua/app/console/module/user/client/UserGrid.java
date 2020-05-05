@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -148,6 +148,11 @@ public class UserGrid extends EntityGrid<GwtUser> {
         columnConfig.setAlignment(HorizontalAlignment.CENTER);
         columnConfig.setSortable(false);
         columnConfigs.add(columnConfig);
+
+        if (currentSession.isSsoEnabled()) {
+            columnConfig = new ColumnConfig("userType", USER_MSGS.gridUserColumnHeaderUserType(), 150);
+            columnConfigs.add(columnConfig);
+        }
 
         columnConfig = new ColumnConfig("id", USER_MSGS.gridUserColumnHeaderId(), 100);
         columnConfig.setHidden(true);

@@ -43,6 +43,8 @@ public class KapuaGwtUserModelConverter {
         gwtUser.setPhoneNumber(user.getPhoneNumber());
         gwtUser.setStatus(user.getStatus().toString());
         gwtUser.setExpirationDate(user.getExpirationDate());
+        gwtUser.setUserType(user.getUserType().toString());
+        gwtUser.setExternalId(user.getExternalId());
 
         //
         // Return converted entity

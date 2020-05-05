@@ -45,7 +45,8 @@ public class UserCreatorImpl extends AbstractKapuaNamedEntityCreator<User> imple
      */
     public UserCreatorImpl(KapuaId accountId, String name) {
         super(accountId, name);
-        this.userStatus = UserStatus.ENABLED;
+        setUserStatus(UserStatus.ENABLED);
+        setUserType(UserType.INTERNAL);
     }
 
     public UserCreatorImpl(KapuaId scopeId) {

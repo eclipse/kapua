@@ -35,7 +35,7 @@ Starting the `kapua-console` image with the following command line instead:
     docker run -td --name kapua-console --link sso --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es -p 8080:8080 -e KEYCLOAK_URL=http://$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' sso):8080 -e KAPUA_URL=http://localhost:8080 kapua/kapua-console
 
 You will also need to create a new realm named `kapua` in the Keycloak web UI and create a new client called `console`.
-Assigning `http://localhost:8080/sso/callback` as a valid redirect URI.
+Assigning `http://localhost:8080/*` as a valid redirect URI.
 
 #### Generic Provider
 

@@ -11,7 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso.provider.jwt;
 
-import org.eclipse.kapua.sso.exception.SsoJwtException;
+import org.eclipse.kapua.sso.exception.uri.SsoJwtUriException;
+import org.eclipse.kapua.sso.exception.uri.SsoUriException;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -39,9 +40,9 @@ public final class JsonUtils {
      * @param openIdConfPath the OpendID Connect configuration path.
      * @return an Optional with a {@link URI} corresponding to the given property if everything is fine, otherwise
      * an empty Optional.
-     * @throws SsoJwtException if an {@link IOException} is caught.
+     * @throws SsoUriException if an {@link IOException} is caught.
      */
-    public static Optional<URI> getConfigUri(String property, String openIdConfPath) throws SsoJwtException {
+    public static Optional<URI> getConfigUri(String property, String openIdConfPath) throws SsoUriException {
         final JsonObject jsonObject;
 
         // Read .well-known resource
@@ -49,7 +50,7 @@ public final class JsonUtils {
             // Parse json response
             jsonObject = Json.createReader(stream).readObject();
         } catch (IOException ioe) {
-            throw new SsoJwtException(ioe);
+            throw new SsoJwtUriException(ioe);
         }
 
         // Get property

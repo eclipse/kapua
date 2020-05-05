@@ -93,7 +93,8 @@ public interface GwtUserService extends RemoteService {
     public PagingLoadResult<GwtUser> query(PagingLoadConfig loadConfig, GwtUserQuery gwtUserQuery)
             throws GwtKapuaException;
 
-    public ListLoadResult<GwtGroupedNVPair> getUserDescription(String shortScopeId, String shortUserId) throws GwtKapuaException;
+    public ListLoadResult<GwtGroupedNVPair> getUserDescription(boolean isSsoEnabled, String shortScopeId,
+                                                               String shortUserId) throws GwtKapuaException;
 
     PagingLoadResult<GwtUser> getUsersForRole(PagingLoadConfig pagingLoadConfig, GwtAccessRoleQuery query) throws GwtKapuaException;
 

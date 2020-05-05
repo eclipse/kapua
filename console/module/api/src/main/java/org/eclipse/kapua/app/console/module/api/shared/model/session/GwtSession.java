@@ -28,6 +28,7 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private String version;
     private String buildVersion;
     private String buildNumber;
+    private boolean ssoEnabled;
 
     // User info
     private String accountId;
@@ -42,6 +43,7 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private String userId;
     private String userName;
     private String userDisplayName;
+    private String ssoAccessToken;
 
     private String tokenId;
 
@@ -168,6 +170,14 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
         this.tokenId = tokenId;
     }
 
+    public boolean isSsoEnabled() {
+        return ssoEnabled;
+    }
+
+    public void setSsoEnabled(boolean ssoEnabled) {
+        this.ssoEnabled = ssoEnabled;
+    }
+
     public List<GwtSessionPermission> getSessionPermissions() {
         if (sessionPermissions == null) {
             sessionPermissions = new ArrayList<GwtSessionPermission>();
@@ -284,6 +294,14 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
         }
 
         return false;
+    }
+
+    public String getSsoAccessToken() {
+        return ssoAccessToken;
+    }
+
+    public void setSsoAccessToken(String ssoAccessToken) {
+        this.ssoAccessToken = ssoAccessToken;
     }
 
 }

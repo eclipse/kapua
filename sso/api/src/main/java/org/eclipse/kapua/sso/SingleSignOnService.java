@@ -11,7 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso;
 
-import org.eclipse.kapua.sso.exception.SsoJwtException;
+import org.eclipse.kapua.sso.exception.SsoException;
+import org.eclipse.kapua.sso.exception.jwt.SsoJwtException;
+import org.eclipse.kapua.sso.exception.uri.SsoUriException;
 
 import javax.json.JsonObject;
 import java.net.URI;
@@ -34,8 +36,9 @@ public interface SingleSignOnService {
      * @param state the state parameter used by OpenID to maintain state between the request and the callback.
      * @param redirectUri a URI object representing the redirect URI.
      * @return the login URI in the form of a String.
+     * @throws SsoException if it fails to retrieve the login URI.
      */
-    String getLoginUri(String state, URI redirectUri);
+    String getLoginUri(String state, URI redirectUri) throws SsoUriException;
 
     /**
      * Get the access token.
@@ -45,5 +48,19 @@ public interface SingleSignOnService {
      * @return the access token in the form of a {@link JsonObject}.
      * @throws SsoJwtException if it fails to retrieve the access token.
      */
-    JsonObject getAccessToken(String authCode, URI redirectUri) throws SsoJwtException;
+    JsonObject getAccessToken(String authCode, URI redirectUri) throws SsoException;
+
+    /**
+     * Get the Relying-Party-Initiated logout.
+     * This must be implemented following https://openid.net/specs/openid-connect-session-1_0.html#RPLogout
+     *
+     * @param idTokenHint the ID Token representing the identity of the user that is requesting to log out.
+     * @param postLogoutRedirectUri a URI object representing the destination where the user is redirected after the
+     *                              logout.
+     * @param state the state parameter used by OpenID to maintain state between the logout request and the callback
+     *              to the {@code postLogoutRedirectUris} endpoint.
+     * @return the logout URI in the form of a String.
+     * @throws SsoException if it fails to retrieve the logout URI.
+     */
+    String getLogoutUri(String idTokenHint, URI postLogoutRedirectUri, String state) throws SsoUriException;
 }

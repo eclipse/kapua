@@ -13,9 +13,14 @@
 package org.eclipse.kapua.sso.provider.jwt;
 
 import org.eclipse.kapua.sso.JwtProcessor;
-import org.eclipse.kapua.sso.exception.SsoJwtException;
+import org.eclipse.kapua.sso.exception.SsoException;
+import org.eclipse.kapua.sso.exception.SsoIllegalArgumentException;
+import org.eclipse.kapua.sso.exception.jwt.SsoJwtException;
 import org.eclipse.kapua.sso.provider.setting.SsoSetting;
 import org.eclipse.kapua.sso.provider.setting.SsoSettingKeys;
+import org.eclipse.kapua.sso.exception.jwt.SsoJwtExtractionException;
+import org.eclipse.kapua.sso.exception.jwt.SsoJwtProcessException;
+import org.eclipse.kapua.sso.exception.uri.SsoIllegalUriException;
 import org.jose4j.jwk.HttpsJwks;
 import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.consumer.InvalidJwtException;
@@ -24,7 +29,9 @@ import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.jwt.consumer.JwtContext;
 import org.jose4j.keys.resolvers.HttpsJwksVerificationKeyResolver;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
@@ -39,6 +46,7 @@ import java.util.Optional;
 public abstract class AbstractJwtProcessor implements JwtProcessor {
 
     private static final String JWKS_URI_WELL_KNOWN_KEY = "jwks_uri";
+    private static final String DEFAULT_SSO_OPENID_CONF_PATH = ".well-known/openid-configuration";
     private Map<URI, Processor> processors = new HashMap<>();
     private String[] audiences;
     private String[] expectedIssuers;
@@ -47,10 +55,9 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
     /**
      * Constructs and AbstractJwtProcessor with the given expiration time.
      *
-     * @throws SsoJwtException if the concrete implementation of {@link #getJwtExpectedIssuers()
-     * getJwtExpectedIssuers} method throws such exception.
+     * @throws SsoException if it is not possible to retrieve the jwtAudiences and/or the jwtExpectedIssuers.
      */
-    public AbstractJwtProcessor() throws SsoJwtException {
+    public AbstractJwtProcessor() throws SsoException {
         List<String> audiences = getJwtAudiences();
         List<String> expectedIssuers = getJwtExpectedIssuers();
         this.expectedIssuers = expectedIssuers.toArray(new String[expectedIssuers.size()]);
@@ -85,16 +92,15 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
 
             return URI.create(issuer);
         } catch (InvalidJwtException | MalformedClaimException e) {
-            throw new SsoJwtException(e);
+            throw new SsoJwtExtractionException(e, jwt);
         }
     }
 
     /**
-     *
      * @throws SsoJwtException if the JWT issuer extraction or the JWT Processor lookup fail
      */
     @Override
-    public boolean validate(final String jwt) throws SsoJwtException {
+    public boolean validate(final String jwt) throws SsoException {
         final URI issuer = extractIssuer(jwt);
         return lookupProcessor(issuer)
                 .orElseThrow(() -> new IllegalStateException("Unable to auto-discover JWT endpoint"))
@@ -102,11 +108,10 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
     }
 
     /**
-     *
      * @throws SsoJwtException if the JWT issuer extraction or the JWT Processor lookup fail
      */
     @Override
-    public JwtContext process(final String jwt) throws SsoJwtException {
+    public JwtContext process(final String jwt) throws SsoException {
         final URI issuer = extractIssuer(jwt);
         return lookupProcessor(issuer)
                 .orElseThrow(() -> new IllegalStateException("Unable to auto-discover JWT endpoint"))
@@ -122,32 +127,43 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
      *
      * @param issuer the String representing the JWT Issuer URI.
      * @return a String representing the discovery endpoint.
+     * @throws SsoIllegalArgumentException if the generated OpenID Connect discovery endpoint is a malformed URL.
      */
-    protected abstract String getOpenIdConfPath(final URI issuer);
+    protected String getOpenIdConfPath(final URI issuer) throws SsoIllegalArgumentException {
+        String openIdConfPath = issuer.toString() + "/" +
+                SsoSetting.getInstance().getString(SsoSettingKeys.SSO_OPENID_CONF_PATH, DEFAULT_SSO_OPENID_CONF_PATH);
+        try {
+            new URL(openIdConfPath);
+            return openIdConfPath;
+        } catch (MalformedURLException mue) {
+            throw new SsoIllegalUriException("openIdConfPath", openIdConfPath);
+        }
+    }
 
     /**
      * Retrieve the list of JWT expected issuers.
      *
      * @return the list of String containing the JWT issuers.
-     * @throws SsoJwtException if the JWT issuers cannot be retrieved
+     * @throws SsoException if the JWT issuers cannot be retrieved.
      */
-    protected abstract List<String> getJwtExpectedIssuers() throws SsoJwtException;
+    protected abstract List<String> getJwtExpectedIssuers() throws SsoException;
 
     /**
      * Retrieve the list of JWT audiences.
      *
      * @return the list of String containing the JWT issuers.
+     * @throws SsoException if the JWT audiences cannot be retrieved.
      */
-    protected abstract List<String> getJwtAudiences();
+    protected abstract List<String> getJwtAudiences() throws SsoException;
 
     /**
      * Retrieve a {@link Processor Processor}.
      *
      * @param issuer the URI of a JWT issuer.
      * @return an Optional with a {@link Processor Processor} if everything is fine, otherwise an empty Optional.
-     * @throws SsoJwtException if it fails to retrieve a URI when the processor is null or expired.
+     * @throws SsoException if it fails to retrieve a URI when the processor is null or expired.
      */
-    private Optional<Processor> lookupProcessor(final URI issuer) throws SsoJwtException {
+    private Optional<Processor> lookupProcessor(final URI issuer) throws SsoException {
 
         Processor processor = processors.get(issuer);
 
@@ -182,8 +198,8 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
         /**
          * Processor constructor.
          *
-         * @param jwksUri a URI to retrieve JWKs.
-         * @param audiences a list of JWT audiences.
+         * @param jwksUri         a URI to retrieve JWKs.
+         * @param audiences       a list of JWT audiences.
          * @param expectedIssuers a list of JWT issuers.
          */
         public Processor(final URI jwksUri, String[] audiences, String[] expectedIssuers) {
@@ -209,7 +225,7 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
             try {
                 process(jwt);
                 return true;
-            } catch (SsoJwtException e) {
+            } catch (SsoJwtProcessException e) {
                 return false;
             }
         }
@@ -219,14 +235,14 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
          *
          * @param jwt a JWT in the form of a String.
          * @return a {@link JwtContext} object.
-         * @throws SsoJwtException if an {@link InvalidJwtException} is caught.
+         * @throws SsoJwtProcessException if an {@link InvalidJwtException} is caught.
          */
-        public JwtContext process(final String jwt) throws SsoJwtException {
+        public JwtContext process(final String jwt) throws SsoJwtProcessException {
             try {
                 lastUsed = Instant.now();
                 return consumer.process(jwt);
             } catch (InvalidJwtException ije) {
-                throw new SsoJwtException(ije);
+                throw new SsoJwtProcessException(ije, jwt);
             }
         }
 

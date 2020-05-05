@@ -40,6 +40,7 @@ public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
     private final KapuaTextField<String> nameField;
     private final KapuaTextField<String> phoneNumberField;
     private final SimpleComboBox<GwtUser.GwtUserStatus> statusCombo;
+    private final SimpleComboBox<GwtUser.GwtUserType> userTypeCombo;
     private final KapuaDateField expirationDate;
     private final KapuaTextField<String> emailField;
     private final KapuaTextField<String> displayNameField;
@@ -109,6 +110,34 @@ public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
 
         fieldsPanel.add(statusCombo);
 
+        Label userTypeLabel = new Label(USER_MSGS.filterFieldUserTypeLabel());
+        userTypeCombo = new SimpleComboBox<GwtUser.GwtUserType>();
+        if (currentSession.isSsoEnabled()) {
+
+            userTypeLabel.setWidth(WIDTH);
+            userTypeLabel.setStyleAttribute("margin", "5px");
+
+            fieldsPanel.add(userTypeLabel);
+
+            userTypeCombo.setName("userType");
+            userTypeCombo.setWidth(WIDTH);
+            userTypeCombo.setStyleAttribute("margin-top", "0px");
+            userTypeCombo.setStyleAttribute("margin-left", "5px");
+            userTypeCombo.setStyleAttribute("margin-right", "5px");
+            userTypeCombo.setStyleAttribute("margin-bottom", "10px");
+            userTypeCombo.add(GwtUser.GwtUserType.ANY);
+            userTypeCombo.add(GwtUser.GwtUserType.INTERNAL);
+            userTypeCombo.add(GwtUser.GwtUserType.EXTERNAL);
+            userTypeCombo.setEditable(false);
+            userTypeCombo.setTriggerAction(TriggerAction.ALL);
+            userTypeCombo.setSimpleValue(GwtUser.GwtUserType.ANY);
+
+            fieldsPanel.add(userTypeCombo);
+        } else {
+            userTypeCombo.hide();
+            userTypeCombo.disable();
+        }
+
         Label expirationDateLabel = new Label(USER_MSGS.filterFieldExpirationDate());
         expirationDateLabel.setWidth(WIDTH);
         expirationDateLabel.setStyleAttribute("margin", "5px");
@@ -171,6 +200,10 @@ public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
         phoneNumberField.setValue(null);
         expirationDate.setValue(null);
         emailField.setValue(null);
+        if (currentSession.isSsoEnabled()) {
+            userTypeCombo.setSimpleValue(GwtUser.GwtUserType.ANY);
+        }
+
         GwtUserQuery query = new GwtUserQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
         entityGrid.refresh(query);
@@ -186,7 +219,10 @@ public class UserFilterPanel extends EntityFilterPanel<GwtUser> {
         query.setPhoneNumber(phoneNumberField.getValue());
         query.setExpirationDate(expirationDate.getValue());
         query.setEmail(emailField.getValue());
+        if (currentSession.isSsoEnabled()) {
+            query.setUserType(userTypeCombo.getSimpleValue().toString());
+        }
+
         entityGrid.refresh(query);
     }
-
 }

@@ -223,7 +223,7 @@ Scenario: Update user that doesn't exist
     Create user that is not persisted and than run update statement on that user.
     As user doesn't exist KapuaException should be thrown.
 
-    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "*"
+    Given I expect the exception "KapuaEntityNotFoundException" with the text "The entity of type user with id/name"
     And User that doesn't exist
     When I update nonexistent user
     Then An exception was thrown

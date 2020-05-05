@@ -75,7 +75,7 @@ public class UserImpl extends AbstractKapuaNamedEntity implements User {
      * @since 1.0.0
      */
     public UserImpl() {
-        super();
+        this(null, null);
     }
 
     /**
@@ -85,7 +85,7 @@ public class UserImpl extends AbstractKapuaNamedEntity implements User {
      * @since 1.0.0
      */
     public UserImpl(KapuaId scopeId) {
-        super(scopeId);
+        this(scopeId, null);
     }
 
     /**
@@ -99,6 +99,7 @@ public class UserImpl extends AbstractKapuaNamedEntity implements User {
         super(scopeId, name);
 
         this.status = UserStatus.ENABLED;
+        this.userType = UserType.INTERNAL;
     }
 
     /**

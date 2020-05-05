@@ -16,9 +16,12 @@ import org.eclipse.kapua.app.console.core.server.util.SsoHelper;
 import org.eclipse.kapua.app.console.core.server.util.SsoLocator;
 import org.eclipse.kapua.app.console.core.shared.model.GwtProductInformation;
 import org.eclipse.kapua.app.console.core.shared.service.GwtSettingsService;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
 
+import java.net.URI;
 import java.util.UUID;
 
 public class GwtSettingsServiceImpl extends RemoteServiceServlet implements GwtSettingsService {
@@ -37,8 +40,24 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements GwtS
     }
 
     @Override
-    public String getSsoLoginUri() {
-        return SsoLocator.getLocator(this).getService().getLoginUri(UUID.randomUUID().toString(), SsoHelper.getRedirectUri());
+    public String getSsoLoginUri() throws GwtKapuaException {
+        try {
+            return SsoLocator.getLocator(this).getService().getLoginUri(UUID.randomUUID().toString(), SsoHelper.getRedirectUri());
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+            return null;
+        }
+    }
+
+    @Override
+    public String getSsoLogoutUri(String ssoAccessToken) throws GwtKapuaException {
+        try {
+            return SsoLocator.getLocator(this).getService().getLogoutUri(ssoAccessToken,
+                    URI.create(SsoHelper.getHomeUri()), UUID.randomUUID().toString());
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+            return null;
+        }
     }
 
     @Override
@@ -47,7 +66,12 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements GwtS
     }
 
     @Override
-    public String getHomeUri() {
-        return SETTINGS.getString(ConsoleSettingKeys.SITE_HOME_URI);
+    public String getHomeUri() throws GwtKapuaException {
+        try {
+            return SsoHelper.getHomeUri();
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+            return null;
+        }
     }
 }

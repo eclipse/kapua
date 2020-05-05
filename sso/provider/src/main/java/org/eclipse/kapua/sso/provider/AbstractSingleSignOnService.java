@@ -19,7 +19,11 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.eclipse.kapua.sso.SingleSignOnService;
-import org.eclipse.kapua.sso.exception.SsoJwtException;
+import org.eclipse.kapua.sso.exception.SsoAccessTokenException;
+import org.eclipse.kapua.sso.exception.SsoException;
+import org.eclipse.kapua.sso.exception.uri.SsoLoginUriException;
+import org.eclipse.kapua.sso.exception.uri.SsoLogoutUriException;
+import org.eclipse.kapua.sso.exception.uri.SsoUriException;
 import org.eclipse.kapua.sso.provider.setting.SsoSetting;
 import org.eclipse.kapua.sso.provider.setting.SsoSettingKeys;
 import org.slf4j.Logger;
@@ -32,6 +36,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,17 +65,25 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
      * Get the endpoint URL to the authentication API.
      *
      * @return the URI representing the authentication endpoint in the form of a String.
-     * @throws SsoJwtException if it fails to get the authentication URI.
+     * @throws SsoException if it fails to get the authentication URI.
      */
-    protected abstract String getAuthUri() throws SsoJwtException;
+    protected abstract String getAuthUri() throws SsoException;
 
     /**
      * Get the endpoint URL to the token API.
      *
      * @return the URI representing the token endpoint in the form of a String.
-     * @throws SsoJwtException if it fails to get the token URI.
+     * @throws SsoException if it fails to get the token URI.
      */
-    protected abstract String getTokenUri() throws SsoJwtException;
+    protected abstract String getTokenUri() throws SsoException;
+
+    /**
+     * Get the endpoint URL for logging out.
+     *
+     * @return the URI representing the logout endpoint in the form of a String.
+     * @throws SsoException if it fails to get the logout URI.
+     */
+    protected abstract String getLogoutUri() throws SsoException;
 
     /**
      * Check if the service is enabled.
@@ -101,7 +114,7 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
     }
 
     @Override
-    public String getLoginUri(final String state, final URI redirectUri) {
+    public String getLoginUri(final String state, final URI redirectUri) throws SsoUriException {
         try {
             final URIBuilder uri = new URIBuilder(getAuthUri());
 
@@ -112,18 +125,39 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
             uri.addParameter("redirect_uri", redirectUri.toString());
 
             return uri.toString();
-        } catch (Exception e) {
-            logger.warn("Failed to construct SSO URI", e);
+        } catch (URISyntaxException | SsoException e) {
+            throw new SsoLoginUriException(e);
         }
-        return null;
+    }
+
+    @Override
+    public String getLogoutUri(final String idTokenHint, final URI postLogoutRedirectUri, final String state)
+            throws SsoUriException {
+        try {
+            final URIBuilder uri = new URIBuilder(getLogoutUri());
+
+            if (idTokenHint!=null) { // idTokenHint is recommended
+                uri.addParameter("id_token_hint", idTokenHint);
+            }
+            if (postLogoutRedirectUri!=null) { // post_logout_redirect_uri is optional
+                uri.addParameter("post_logout_redirect_uri", postLogoutRedirectUri.toString());
+            }
+            if (state!=null) { // state is optional
+                uri.addParameter("state", state);
+            }
+
+            return uri.toString();
+        } catch (URISyntaxException | SsoException e) {
+            throw new SsoLogoutUriException(e);
+        }
     }
 
     /**
      *
-     * @throws SsoJwtException if an {@link IOException} is caught or the {@link #getTokenUri} method fails.
+     * @throws SsoAccessTokenException if an {@link IOException} is caught or the {@link #getTokenUri} method fails.
      */
     @Override
-    public JsonObject getAccessToken(final String authCode, final URI redirectUri) throws SsoJwtException {
+    public JsonObject getAccessToken(final String authCode, final URI redirectUri) throws SsoAccessTokenException {
         // FIXME: switch to HttpClient implementation: better performance and connection caching
 
         try {
@@ -163,8 +197,8 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
                 jsonObject = Json.createReader(stream).readObject();
             }
             return jsonObject;
-        } catch (IOException ioe) {
-            throw new SsoJwtException(ioe);
+        } catch (SsoException | IOException e) {
+            throw new SsoAccessTokenException(e);
         }
     }
 

@@ -20,7 +20,7 @@ public final class TokenCleaner {
     }
 
     /**
-     * Clear GWT state and remove SSO token when set
+     * Clear GWT state and remove SSO token when set (invalidates URL parameters)
      */
     public static void cleanToken() {
         final String url = Window.Location.createUrlBuilder()
@@ -28,6 +28,9 @@ public final class TokenCleaner {
                 .removeParameter(KapuaCloudConsole.PARAMETER_ERROR)
                 .removeParameter(KapuaCloudConsole.PARAMETER_ERROR_DESC)
                 .buildString();
+
+        // side note: Window.Location.assign and reload methods force the page to reload
+        // see also here: https://stackoverflow.com/questions/20036194/remove-url-parameters-in-gwt
         Window.Location.assign(url);
     }
 }

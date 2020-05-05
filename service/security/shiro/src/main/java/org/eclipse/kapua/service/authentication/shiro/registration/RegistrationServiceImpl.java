@@ -23,10 +23,12 @@ import org.eclipse.kapua.security.registration.RegistrationProcessor;
 import org.eclipse.kapua.security.registration.RegistrationProcessorProvider;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.registration.RegistrationService;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.shiro.utils.JwtProcessors;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.sso.JwtProcessor;
-import org.eclipse.kapua.sso.exception.SsoJwtException;
+import org.eclipse.kapua.sso.exception.SsoException;
 import org.jose4j.jwt.consumer.JwtContext;
 
 @KapuaProvider
@@ -36,7 +38,9 @@ public class RegistrationServiceImpl implements RegistrationService, AutoCloseab
 
     private final List<RegistrationProcessor> processors = new ArrayList<>();
 
-    public RegistrationServiceImpl() throws SsoJwtException {
+    private static final KapuaAuthenticationSetting SETTING = KapuaAuthenticationSetting.getInstance();
+
+    public RegistrationServiceImpl() throws SsoException {
         jwtProcessor = JwtProcessors.createDefault();
 
         for (RegistrationProcessorProvider provider : ServiceLoader.load(RegistrationProcessorProvider.class)) {
@@ -59,7 +63,13 @@ public class RegistrationServiceImpl implements RegistrationService, AutoCloseab
 
     @Override
     public boolean isAccountCreationEnabled() {
-        return !processors.isEmpty();
+        final String registrationServiceEnabled = SETTING.getString(
+                KapuaAuthenticationSettingKeys.AUTHENTICATION_REGISTRATION_SERVICE_ENABLED, String.valueOf(false));
+        if (registrationServiceEnabled.equals(String.valueOf(false))) {
+            return false;
+        } else {
+            return !processors.isEmpty();
+        }
     }
 
     @Override

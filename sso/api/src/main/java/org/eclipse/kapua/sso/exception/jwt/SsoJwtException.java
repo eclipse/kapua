@@ -9,11 +9,13 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.sso.exception;
+package org.eclipse.kapua.sso.exception.jwt;
 
 import org.eclipse.kapua.KapuaErrorCode;
+import org.eclipse.kapua.sso.exception.SsoException;
 
-public class SsoJwtException extends SsoException {
+public abstract class SsoJwtException extends SsoException {
+
     /**
      * Constructor.
      *
@@ -22,17 +24,6 @@ public class SsoJwtException extends SsoException {
      */
     public SsoJwtException(KapuaErrorCode code) {
         super(code);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param code      The {@link KapuaErrorCode} associated with the {@link Exception}.
-     * @param arguments The arguments associated with the {@link Exception}.
-     * @since 1.2.0
-     */
-    public SsoJwtException(KapuaErrorCode code, Object... arguments) {
-        super(code, arguments);
     }
 
     /**
@@ -46,14 +37,5 @@ public class SsoJwtException extends SsoException {
      */
     public SsoJwtException(KapuaErrorCode code, Throwable cause, Object... arguments) {
         super(code, cause, arguments);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param cause The original {@link Throwable}.
-     */
-    public SsoJwtException(Throwable cause) {
-        super(SsoErrorCodes.JWT_ERROR, cause);
     }
 }

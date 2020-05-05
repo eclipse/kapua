@@ -143,6 +143,7 @@ public class GwtAccessRoleServiceImpl extends KapuaRemoteServiceServlet implemen
                     SortOrder sortOrder = loadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
                     FieldSortCriteria sortCriteria = query.fieldSortCriteria(sortField, sortOrder);
                     query.setSortCriteria(sortCriteria);
+                    query.setAskTotalCount(true);
                     AccessRoleListResult accessRoleList = accessRoleService.query(query);
 
                     totalLegnth = accessRoleList.getTotalCount().intValue();

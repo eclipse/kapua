@@ -11,9 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso.provider.keycloak;
 
+import org.eclipse.kapua.sso.exception.SsoIllegalArgumentException;
 import org.eclipse.kapua.sso.provider.AbstractSingleSignOnService;
-import org.eclipse.kapua.sso.provider.keycloak.setting.KeycloakSsoSetting;
-import org.eclipse.kapua.sso.provider.keycloak.setting.KeycloakSsoSettingKeys;
 import org.eclipse.kapua.sso.provider.setting.SsoSetting;
 
 /**
@@ -21,27 +20,34 @@ import org.eclipse.kapua.sso.provider.setting.SsoSetting;
  */
 public class KeycloakSingleSignOnService extends AbstractSingleSignOnService {
 
-    private KeycloakSsoSetting keycloakSettings;
+    private static final String KEYCLOAK_AUTH_URI_SUFFIX = "/protocol/openid-connect/auth";
+    private static final String KEYCLOAK_TOKEN_URI_SUFFIX = "/protocol/openid-connect/token";
+    private static final String KEYCLOAK_LOGOUT_URI_SUFFIX = "/protocol/openid-connect/logout";
 
     public KeycloakSingleSignOnService() {
-        this(SsoSetting.getInstance(), KeycloakSsoSetting.getInstance());
+        this(SsoSetting.getInstance());
     }
 
-    public KeycloakSingleSignOnService(final SsoSetting ssoSettings, final KeycloakSsoSetting keycloakSettings) {
+    public KeycloakSingleSignOnService(final SsoSetting ssoSettings) {
         super(ssoSettings);
-        this.keycloakSettings = keycloakSettings;
     }
 
     @Override
-    protected String getAuthUri() {
-        return keycloakSettings.getString(KeycloakSsoSettingKeys.KEYCLOAK_URI) + "/auth/realms/" +
-                KeycloakSingleSignOnUtils.getRealm() + "/protocol/openid-connect/auth";
+    protected String getAuthUri() throws SsoIllegalArgumentException {
+        return KeycloakSingleSignOnUtils.getProviderUri() + KeycloakSingleSignOnUtils.KEYCLOAK_URI_COMMON_PART +
+                KeycloakSingleSignOnUtils.getRealm() + KEYCLOAK_AUTH_URI_SUFFIX;
     }
 
     @Override
-    protected String getTokenUri() {
-        return keycloakSettings.getString(KeycloakSsoSettingKeys.KEYCLOAK_URI) + "/auth/realms/" +
-                KeycloakSingleSignOnUtils.getRealm() + "/protocol/openid-connect/token";
+    protected String getTokenUri() throws SsoIllegalArgumentException {
+        return KeycloakSingleSignOnUtils.getProviderUri() + KeycloakSingleSignOnUtils.KEYCLOAK_URI_COMMON_PART +
+                KeycloakSingleSignOnUtils.getRealm() + KEYCLOAK_TOKEN_URI_SUFFIX;
+    }
+
+    @Override
+    protected String getLogoutUri() throws SsoIllegalArgumentException {
+        return KeycloakSingleSignOnUtils.getProviderUri() + KeycloakSingleSignOnUtils.KEYCLOAK_URI_COMMON_PART +
+                KeycloakSingleSignOnUtils.getRealm() + KEYCLOAK_LOGOUT_URI_SUFFIX;
     }
 
 }

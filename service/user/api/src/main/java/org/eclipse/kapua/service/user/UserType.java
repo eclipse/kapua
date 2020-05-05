@@ -16,7 +16,7 @@ package org.eclipse.kapua.service.user;
  */
 public enum UserType {
     /**
-     * Device user type
+     * Device user type (no longer used).
      */
     DEVICE,
 

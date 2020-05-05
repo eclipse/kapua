@@ -27,12 +27,15 @@ import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.eclipse.kapua.app.console.core.client.util.TokenCleaner;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationServiceAsync;
+import org.eclipse.kapua.app.console.core.shared.service.GwtSettingsService;
+import org.eclipse.kapua.app.console.core.shared.service.GwtSettingsServiceAsync;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.permission.AccountSessionPermission;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
@@ -42,7 +45,6 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractView;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.MainViewDescriptor;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaMenuItem;
-import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
@@ -57,6 +59,7 @@ public class NorthView extends LayoutContainer {
     private final GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
     private final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
     private final GwtConsoleServiceAsync gwtConsoleService = GWT.create(GwtConsoleService.class);
+    private final GwtSettingsServiceAsync gwtSettingService = GWT.create(GwtSettingsService.class);
 
     // UI stuff
     private KapuaCloudConsole parent;
@@ -154,20 +157,23 @@ public class NorthView extends LayoutContainer {
                 }
 
                 // Change Password menu item
-                KapuaMenuItem changePassword = new KapuaMenuItem();
-                changePassword.setText(MSGS.changePassword());
-                changePassword.setIcon(IconSet.KEY);
-                changePassword.addSelectionListener(new SelectionListener<MenuEvent>() {
+                //  (only if the current user is an INTERNAL one; note that an INTERNAL user has no ssoAccessToken)
+                if (currentSession.getSsoAccessToken() == null) {
+                    KapuaMenuItem changePassword = new KapuaMenuItem();
+                    changePassword.setText(MSGS.changePassword());
+                    changePassword.setIcon(IconSet.KEY);
+                    changePassword.addSelectionListener(new SelectionListener<MenuEvent>() {
 
-                    @Override
-                    public void componentSelected(MenuEvent ce) {
-                        ChangePasswordDialog changePasswordDialog = new ChangePasswordDialog(currentSession);
-                        changePasswordDialog.show();
-                    }
+                        @Override
+                        public void componentSelected(MenuEvent ce) {
+                            ChangePasswordDialog changePasswordDialog = new ChangePasswordDialog(currentSession);
+                            changePasswordDialog.show();
+                        }
 
-                });
-                userActionMenu.add(changePassword);
-                userActionMenu.add(new SeparatorMenuItem());
+                    });
+                    userActionMenu.add(changePassword);
+                    userActionMenu.add(new SeparatorMenuItem());
+                }
 
                 //
                 // Logout menu item
@@ -187,10 +193,24 @@ public class NorthView extends LayoutContainer {
 
                             @Override
                             public void onSuccess(Void arg0) {
-                                ConsoleInfo.display("Info", "Logged out!");
-                                TokenCleaner.cleanToken();
-                            }
+                                if (currentSession.isSsoEnabled() && currentSession.getSsoAccessToken() != null) {
+                                    gwtSettingService.getSsoLogoutUri(currentSession.getSsoAccessToken(),
+                                            new AsyncCallback<String>() {
 
+                                        @Override
+                                        public void onFailure(Throwable caught) {
+                                            FailureHandler.handle(caught);
+                                        }
+
+                                        @Override
+                                        public void onSuccess(String result) {
+                                            Window.Location.assign(result);
+                                        }
+                                    });
+                                } else {
+                                    TokenCleaner.cleanToken();
+                                }
+                            }
                         });
                     }
 

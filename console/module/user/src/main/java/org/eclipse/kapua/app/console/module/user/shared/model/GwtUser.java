@@ -29,11 +29,36 @@ public class GwtUser extends GwtUpdatableEntityModel implements IsSerializable {
         }
     }
 
+    /**
+     * Mimic the UserType
+     */
+    public enum GwtUserType implements IsSerializable {
+        /**
+         * Internal user type (user credentials from Kapua)
+         */
+        INTERNAL,
+
+        /**
+         * External user type (user credentials from SSO)
+         */
+        EXTERNAL,
+
+        /***
+         * Any is used only for the filter
+         */
+        ANY;
+
+        GwtUserType() {
+        }
+    }
+
     @Override
     @SuppressWarnings({ "unchecked" })
     public <X> X get(String property) {
         if ("statusEnum".equals(property)) {
             return (X) (GwtUserStatus.valueOf(getStatus()));
+        } else if ("userTypeEnum".equals(property)) {
+            return (X) (GwtUserType.valueOf(getUserType()));
         } else if ("expirationDateFormatted".equals(property)) {
             if (getExpirationDate() != null) {
                 return (X) (DateUtils.formatDateTime(getExpirationDate()));
@@ -124,5 +149,29 @@ public class GwtUser extends GwtUpdatableEntityModel implements IsSerializable {
 
     public void setExpirationDate(Date expirationDate) {
         set("expirationDate", expirationDate);
+    }
+
+    public String getUserType() {
+        return (String) get("userType");
+    }
+
+    public GwtUserType getUserTypeEnum() {
+        return (GwtUserType) get("userTypeEnum");
+    }
+
+    public void setUserType(String userType) {
+        set("userType", userType);
+    }
+
+    public String getExternalId() {
+        return (String) get("externalId");
+    }
+
+    public String getUnescapedExternalId() {
+        return (String) getUnescaped("externalId");
+    }
+
+    public void setExternalId(String externalId) {
+        set("externalId", externalId);
     }
 }

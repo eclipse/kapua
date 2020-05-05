@@ -45,7 +45,10 @@ public enum KapuaAuthenticationSettingKeys implements SettingKey {
     AUTHENTICATION_CREDENTIAL_APIKEY_CACHE_TTL("authentication.credential.apiKey.cache.ttl"), //
 
     //event queues
-    AUTHENTICATION_EVENT_ADDRESS("authentication.eventAddress");
+    AUTHENTICATION_EVENT_ADDRESS("authentication.eventAddress"),
+
+    // to enable the registration service
+    AUTHENTICATION_REGISTRATION_SERVICE_ENABLED("authentication.registration.service.enabled");
 
     private String key;
 

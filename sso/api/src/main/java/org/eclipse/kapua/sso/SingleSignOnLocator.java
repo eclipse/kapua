@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso;
 
-import org.eclipse.kapua.sso.exception.SsoJwtException;
+import org.eclipse.kapua.sso.exception.SsoException;
 
 // TODO: currently two naming conventions are used (SingleSignOn and SSO) with the same meaning, adopt only one
 
@@ -32,7 +32,7 @@ public interface SingleSignOnLocator {
      * Retrieve the JwtProcessor.
      *
      * @return a {@link JwtProcessor} object.
-     * @throws SsoJwtException if it fails to retrieve the {@link JwtProcessor}.
+     * @throws SsoException if it fails to retrieve the {@link JwtProcessor}.
      */
-    JwtProcessor getProcessor() throws SsoJwtException;
+    JwtProcessor getProcessor() throws SsoException;
 }

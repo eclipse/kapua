@@ -11,7 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso;
 
-import org.eclipse.kapua.sso.exception.SsoJwtException;
+import org.eclipse.kapua.sso.exception.SsoException;
+import org.eclipse.kapua.sso.exception.jwt.SsoJwtException;
 import org.jose4j.jwt.consumer.JwtContext;
 
 public interface JwtProcessor extends AutoCloseable {
@@ -23,7 +24,7 @@ public interface JwtProcessor extends AutoCloseable {
      * @return <tt>true</tt> if the validation succeeds, <tt>false</tt> otherwise.
      * @throws SsoJwtException if the validation fails.
      */
-    boolean validate(final String jwt) throws SsoJwtException;
+    boolean validate(final String jwt) throws SsoException;
 
     /**
      * Process the JWT and generate a JwtContext object.
@@ -32,5 +33,5 @@ public interface JwtProcessor extends AutoCloseable {
      * @return a JwtContext object.
      * @throws SsoJwtException if JWT processing fails.
      */
-    JwtContext process(final String jwt) throws SsoJwtException;
+    JwtContext process(final String jwt) throws SsoException;
 }

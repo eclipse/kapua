@@ -31,6 +31,10 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
      */
     DUPLICATE_NAME,
     /**
+     * Duplicate externalId
+     */
+    DUPLICATE_EXTERNAL_ID,
+    /**
      * Entity uniqueness in scope
      */
     ENTITY_UNIQUENESS,
@@ -82,6 +86,10 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
      * Entity already exist in another account
      */
     ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT,
+    /**
+     * External Id already exist in another account
+     */
+    EXTERNAL_ID_ALREADY_EXIST_IN_ANOTHER_ACCOUNT,
     /**
      * The device has returned an error when starting bundle
      */

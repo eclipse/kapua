@@ -37,6 +37,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -55,6 +56,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.panel.ContentPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.Years;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityModel;
@@ -76,6 +78,9 @@ public class KapuaCloudConsole implements EntryPoint {
     public static final String PARAMETER_ACCESS_TOKEN = "access_token";
     public static final String PARAMETER_ERROR = "error";
     public static final String PARAMETER_ERROR_DESC = "error_description";
+
+    // time parameters
+    public static final int SSO_FAILURE_WAIT_TIME = 3000;
 
     private GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
 
@@ -402,7 +407,6 @@ public class KapuaCloudConsole implements EntryPoint {
     private void performSsoLogin(final Viewport viewport, String authToken) {
 
         // show wait dialog
-
         final Dialog dlg = new Dialog();
         dlg.setHeading(MSGS.ssoWaitDialog_title());
         dlg.setButtons("");
@@ -418,21 +422,48 @@ public class KapuaCloudConsole implements EntryPoint {
         dlg.center();
 
         // start login process
-
-        GwtJwtCredential credentials = new GwtJwtCredential(authToken);
+        final GwtJwtCredential credentials = new GwtJwtCredential(authToken);
         gwtAuthorizationService.login(credentials, new AsyncCallback<GwtSession>() {
 
             @Override
             public void onFailure(Throwable caught) {
                 dlg.hide();
-                ConsoleInfo.display(CORE_MSGS.loginError(), caught.getLocalizedMessage());
+                logger.info("Sso login failed.");
+                ConsoleInfo.display(CORE_MSGS.loginSsoLoginError(), caught.getLocalizedMessage());
 
-                TokenCleaner.cleanToken();
+                // Invalidating the sso token
+                gwtSettingService.getSsoLogoutUri(credentials.getAccessToken(), new AsyncCallback<String>() {
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        logger.info("Failed to get the token invalidation endpoint.");
+                        FailureHandler.handle(caught);
+                    }
+
+                    @Override
+                    public void onSuccess(final String result) {
+                        logger.info("Waiting for token invalidation.");
+
+                        // this timer is needed to give time to the ConsoleInfo.display method (called above) to show
+                        // the message to the user (otherwise the Window.location.assign would reload the page,
+                        // giving no time to the user to read the message).
+                        Timer timer = new Timer() {
+                            @Override
+                            public void run() {
+                                Window.Location.assign(result);
+                            }
+                        };
+                        timer.schedule(SSO_FAILURE_WAIT_TIME);
+                    }
+                });
             }
 
             @Override
             public void onSuccess(GwtSession gwtSession) {
+                logger.info("Sso login success, now rendering screen.");
                 logger.fine("User: " + gwtSession.getUserId());
+
+                // This is needed to remove the access_token from the URL, however it forces the page reload
                 TokenCleaner.cleanToken();
 
                 dlg.hide();

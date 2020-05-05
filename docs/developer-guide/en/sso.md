@@ -28,11 +28,9 @@ options:
     the "client secret" used when communicating with the OpenID Connect server.
 - **`sso.openid.jwt-processor-timeout` (optional)** : the JwtProcessor expiration time (the default value is 1 hour).
 
-It is also necessary to configure the Web Console what its external endpoint address is.
-Currently this is a required configuration, even if there is no difference between the servers
-endpoint URL and its external URL, even if this may just be `http://localhost:8080`.
+It is also necessary to configure the Web Console external endpoint address.
 
-- **`site.home.uri`** : the URL to the web console, e.g. `http://localhost:8080`
+- **`console.sso.home.uri`** : the URL to the web console, e.g. `http://localhost:8080`
 
 The SSO Login will be available in the form of a dedicated button on the Kapua login page 
 (the button can be enabled through the configuration option `sso.provider`).
@@ -43,6 +41,7 @@ The follow values are specific to your OpenID Connection solution, please use it
 documentation to look up the required values:
 
 - **`sso.generic.openid.server.endpoint.auth`** : the endpoint URL to the authentication API.
+- **`sso.generic.openid.server.endpoint.logout`** : the logout endpoint of the OpenID provider.
 - **`sso.generic.openid.server.endpoint.token`** : the endpoint URL to the token API.
 - **`sso.generic.openid.jwt.audience.allowed`** : the JWT audience.
 - **`sso.generic.openid.jwt.issuer.allowed`** : the base URL to the OpenID server provider.
@@ -63,19 +62,27 @@ For more information see the [Keycloak Documentation](http://www.keycloak.org/do
 In order to enable a user to login through an SSO provider, the user must first be created on the OpenID 
 Connect server (e.g. using Keycloak, on the Keycloak Admin Console). 
 Secondly, the user can be added to Kapua. 
-Currently there are two methods to do this: using the _SimpleRegistrationProcessor_ or using _REST API_.
+Such user differs from a 'normal' one for its type (which is `EXTERNAL`, while a normal user is `INTERNAL`) and for 
+not having any credentials (since his credentials are stored in the OpenID Provider).
+
+Currently there are three methods to register an external user in Kapua: 
+using the _SimpleRegistrationProcessor_ , using _REST API_ or using the _console_.
 
 #### Insert the user through the SimpleRegistrationProcessor module
 
 This module allows one to automatically create the user in Kapua at the first log-in attempt using the SSO.
-If a user with the same name already exists in Kapua, the registration process will fail.
-More precisely, two users are created: one without credentials, representing the SSO user, and one with 
-credentials, representing a gateway user. 
+More precisely, two users are created: an external user without credentials, representing the SSO user, and an internal 
+user with credentials, representing a gateway user. 
 Both users are placed under a new account with the same name of the SSO user.
-Note that the credential for the gateway user is hardcoded in the SimpleRegistrationProcessor code.
+If a user with the same name already exists in Kapua, the registration process will fail, 
+and the user is simply logged in.
 
-In order to avoid using this registration processor, remove `kapua-security-registration-simple` from the 
-root pom dependencies. 
+**WARNING**: The SimpleRegistrationProcessor is intended to be used only as a _Proof-of-Concept_ and should not be 
+used in a real environment.
+For instance, the credentials provided for the gateway user are hardcoded in the SimpleRegistrationProcessor code.
+Note however that the SimpleRegistrationProcessor is disabled by default.
+In order to enable it, the configuration option **`authentication.registration.service.enabled`** should be provided 
+with value `true`.
 
 #### Insert the user through REST API
 
@@ -87,16 +94,33 @@ It is mandatory to provide teh following attributes:
 - **`userType`**: must always be set as **_EXTERNAL_**;
 - **`externalId`**: represents the unique ID on the OpenID Provider.
 
+#### Insert the user through the Console
+
+External users can be inserted through the _Users_ module on the Console. 
+Log in with administrator credentials in order to add a user.
+
+1. Add the new user through the "Add" button.
+2. The Add dialog allows to choose between an "Internal user" and an "External user"; 
+choose the latter in order to add an external one.
+3. Insert the Username and the External Id; all the other fields are optional.
+
+An external user can also be modified through the button "Edit" 
+(please note that the "Username" and "External Id" fields are not modifiable).
+Note that the user has no assigned roles. In order to add a "Role", use the "Assign" button of the "Roles" tab.
+Note also that the external user has no "Credentials" at all, since the credentials are established and stored in 
+the external Provider.
+
+Enabling the sso also allows one to see the User Type and, in case it is an external user, the user External Id in the 
+"Description" tab.
+
 ### Logging out
 
-Currently, logging out from Kapua does not imply logging out from the OpenID provider. 
-This means that, if the OpenID session has not expired yet, the user will be able to login again using the "SSO Login" 
-button without submitting again the credentials. 
-Logging out from the OpenID provider is possible through the provider OpenID logout endpoint.
-
-However, one might require that the user is also logged out from the OpenID provider when he logs out from Kapua.
-This should be implemented in a future improvement, as described by the OpenID Connect specification 
-[here](https://openid.net/specs/openid-connect-session-1_0.html#RPLogout).
+If the SSO is enabled, logging out from Kapua also logs out from the external OpenID provider, invalidating the OpenID 
+Connect session. 
+This is implemented following the OpenID Connect specification for the 
+[Relying Party Logout](https://openid.net/specs/openid-connect-session-1_0.html#RPLogout).
+Note that logging out from the OpenID provider is also possible through the provider OpenID logout endpoint, 
+but the user will remain logged into Kapua until also the logout from Kapua is performed.
 
 ## Keycloak Example (Docker based)
 
@@ -143,7 +167,7 @@ The following properties must be passed (as VM options) in order to set up SSO o
 - `sso.keycloak.realm=kapua` : the Keycloak Realm (we are using the "kapua" realm)
 - `sso.keycloak.uri=http://<Keycloak-IP-address>:9090` : the Keycloak Server URI 
 - `sso.openid.client.id=console` : the OpenID Client ID (the one set on Keycloak)
-- `site.home.uri=http://localhost:8080` : the Kapua web console URI 
+- `console.sso.home.uri=http://localhost:8080` : the Kapua web console URI 
 
 Using docker it is sufficient to provide the following docker environment variables (these ones will automatically set 
 up the configuration properties described above):
@@ -189,7 +213,7 @@ will create the "_admin_" user without the need of the SimpleRegistrationProcess
 
 ### Keycloak logout endpoint
 
-Logging out from the Keycloak provider is possible through the Keycloak logout endpoint: 
+Logging out from the Keycloak provider is also possible through the Keycloak logout endpoint: 
 
 `{sso.keycloak.uri}/auth/realms/{realm_name}/protocol/openid-connect/logout`
 
@@ -200,7 +224,8 @@ In our example the endpoint is the following:
 ## Keycloak Example (OpenShift based)
 
 This project provides a template to bootstrap single sign-on based on [Keycloak](http://keycloak.org).
-The scripts for this are located in the directory `kapua/deployment/openshift/sso`.
+The scripts for this are located in the directory `kapua/deployment/openshift/sso` 
+(please refer to `kapua/deployment/minishift/sso` if you are using Minishift).
 
 Assuming you have already installed Kapua into OpenShift, it is possible to run the script `deploy`, which
 will create a new build and deployment configuration in OpenShift. This is based on the official Keycloak Docker
@@ -210,6 +235,22 @@ image `jboss/keycloak`, adding a few steps for initial provisioning.
 The default setup uses an ephemeral storage. So re-starting the Keycloak pod will delete the configuration unless
 you re-configure the setup with a persistent volume.
 {% endhint %} 
+
+After the build and deployment configuration has been created, the script will also re-configure the Kapua OpenShift 
+project to use the newly created Keycloak instance. This is done by calling the script `activate`. 
+The `activate` script can be called at a later time to re-configure Kapua (e.g. when re-installing Kapua).
+
+Both scripts (`deploy` and `activate`) require both Kapua and Keycloak URLs. 
+Keycloak requires the Kapua web console URL in order to allow request from this source, 
+while Kapua requires the Keycloak URL in order to forward requests to Keyloak.
+The URLs are being constructed from OpenShift routes, which are configured for both Kapua and Keycloak. 
+However this requires that Kapua is set up before Keycloak and that the `activate` script can only be called after 
+the `deploy` script has been successfully run.
+
+Please refer to the [Keycloak Example (Docker based)](#keycloak-example-docker-based) section for the user creation, 
+or follow the next section in order to perfrom email-based user registration.
+
+### Email-server based user registration
 
 For this configuration to work, you will need some existing SMTP server which is capable of sending e-mails.
 This is required so that Keycloak can send user verification and password recovery e-mails. If you don't have
@@ -223,38 +264,11 @@ are using `bash` as shell, this can be done like this:
 
 The following environment variables are being used:
 
-<dl>
-
-<dt>SMTP_HOST (required)</dt>
-<dd>The host name or IP address of the SMTP server</dd>
-
-<dt>SMTP_PORT (optional)</dt>
-<dd>The port number of the SMTP service</dd>
-
-<dt>SMTP_FROM (required)</dt>
-<dd>The sender e-mail used in the e-mail</dd>
-
-<dt>SMTP_USER (required)</dt>
-<dd>The user name used to authenticate with the SMTP server</dd>
-
-<dt>SMTP_PASSWORD (required)</dt>
-<dd>The password used to authenticate with the SMTP server</dd>
-
-<dt>SMTP_ENABLE_SSL (optional)</dt>
-<dd>If SSL should be used instead of STARTTLS</dd>
-
-<dt>KEYCLOAK_ADMIN_PASSWORD (optional)</dt>
-<dd>The password which will be assigned to the Keycloak admin user. The default is to generate a password.</dd>
-
-</dl>
-
-After the build and deployment configuration was creates the script will also re-configure the Kapua OpenShift project
-to use the newly created Keycloak instance. This is done by calling the script `activate`. The `activate` script
-can be called at a later time to re-configure Kapua (e.g. when re-installing Kapua).
-
-Both scripts (`deploy` and `activate`) require both Kapua and Keycloak URLs. Keycloak requires the Kapua web console
-URL in order to allow request from this source, while Kapua requires the Keycloak URL in order to forward requests to Keyloak.
-
-The URLs are being constructed from OpenShift routes, which are configured for both Kapua and Keycloak. However this requires
-that Kapua is set up before Keycloak and that the `activate` script can only be called after the `deploy` script
-has been successfully run.
+- **`SMTP_HOST` (required)** : The host name or IP address of the SMTP server.
+- **`SMTP_PORT` (optional)** : The port number of the SMTP service.
+- **`SMTP_FROM` (required)** : The sender e-mail used in the e-mail.
+- **`SMTP_USER` (required)** : The user name used to authenticate with the SMTP server.
+- **`SMTP_PASSWORD` (required)** : The password used to authenticate with the SMTP server.
+- **`SMTP_ENABLE_SSL` (optional)** : If SSL should be used instead of STARTTLS.
+- **`KEYCLOAK_ADMIN_PASSWORD` (optional)** : The password which will be assigned to the Keycloak admin user. 
+The default is to generate a password.
