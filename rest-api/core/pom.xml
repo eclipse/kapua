@@ -49,7 +49,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-guice</artifactId>
+            <artifactId>kapua-locator-guice</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
