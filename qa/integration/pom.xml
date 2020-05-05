@@ -165,7 +165,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-guice</artifactId>
+            <artifactId>kapua-locator-guice</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>

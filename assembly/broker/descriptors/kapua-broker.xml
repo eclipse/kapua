@@ -256,7 +256,7 @@
                 <include>${pom.groupId}:kapua-device-registry-api</include>
                 <include>${pom.groupId}:kapua-device-registry-internal</include>
                 <include>${pom.groupId}:kapua-foreignkeys</include>
-                <include>${pom.groupId}:kapua-guice</include>
+                <include>${pom.groupId}:kapua-locator-guice</include>
                 <include>${pom.groupId}:kapua-job-api</include>
                 <include>${pom.groupId}:kapua-job-internal</include>
                 <include>${pom.groupId}:kapua-job-engine-api</include>
