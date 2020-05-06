@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,11 +17,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.kapua.service.datastore.client.AbstractDatastoreClient;
 import org.eclipse.kapua.service.datastore.client.ClientErrorCodes;
 import org.eclipse.kapua.service.datastore.client.ClientException;
 import org.eclipse.kapua.service.datastore.client.ClientProvider;
-import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
-import org.eclipse.kapua.service.datastore.client.ClientUndefinedException;
 import org.eclipse.kapua.service.datastore.client.ModelContext;
 import org.eclipse.kapua.service.datastore.client.QueryConverter;
 import org.eclipse.kapua.service.datastore.client.SchemaKeys;
@@ -82,15 +81,15 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * Client implementation based on Elasticsearch transport client.<br>
  * The Elasticsearch client provider is instantiated as singleton by reflection using those provided by {@link ClientSettingsKey#ELASTICSEARCH_CLIENT_PROVIDER}
  *
+ * @deprecated Elasticsearch transport client will be removed in the next releases. Please use the Rest client instead.
+ *
  * @since 1.0
  */
-public class TransportDatastoreClient implements org.eclipse.kapua.service.datastore.client.DatastoreClient {
+@Deprecated
+public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
 
     private static final Logger logger = LoggerFactory.getLogger(TransportDatastoreClient.class);
 
-    private static final String CLIENT_UNDEFINED_MSG = "Elasticsearch client must be not null";
-    private static final String CLIENT_CLEANUP_CANNOT_CLOSE_CLIENT_MSG = "Client instance is null. Cannot close the client!";
-    private static final String CLIENT_CLEANUP_ERROR_MSG = "Cannot cleanup transport datastore driver. Cannot close Elasticsearch client instance";
     private static final String CLIENT_QUERY_PARSING_ERROR_MSG = "Cannot parse query!";
     private static final String CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG = "Cannot delete indexes!";
     private static final String CLIENT_CANNOT_REFRESH_INDEX_ERROR_MSG = "Cannot refresh indexes!";
@@ -100,142 +99,64 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
 
     private static TransportDatastoreClient instance;
 
-    private ClientProvider<Client> esClientProvider;
-
     private ModelContext modelContext;
     private QueryConverter queryConverter;
 
+    static {
+        instance = new TransportDatastoreClient();
+    }
+
     /**
-     * Get the {@link TransportDatastoreClient} instance
+     * Get the singleton {@link TransportDatastoreClient} instance
      *
      * @return
-     * @throws ClientUnavailableException
      */
-    public static TransportDatastoreClient getInstance() throws ClientUnavailableException {
-        if (instance == null) {
-            synchronized (TransportDatastoreClient.class) {
-                if (instance == null) {
-                    instance = new TransportDatastoreClient();
-                }
-            }
-        }
-        else if (instance.getClientProvider() == null) {
-            synchronized (TransportDatastoreClient.class) {
-                if (instance.getClientProvider() == null) {
-                    instance.initClientProvider();
-                }
-            }
-        }
+    public static TransportDatastoreClient getInstance() {
         return instance;
     }
 
     /**
      * Default constructor
      * Initialize the client provider ({@link ClientProvider}) as singleton.
-     * 
-     * @throws ClientUnavailableException
+     *
      */
-    private TransportDatastoreClient() throws ClientUnavailableException {
-        // lazy synchronization
-        if (instance == null) {
-            synchronized (TransportDatastoreClient.class) {
-                if (instance == null) {
-                    if (esClientProvider != null) {
-                        cleanupClient(true);
-                    }
-                    initClientProvider();
-                }
-            }
-        }
-    }
-
-    private void initClientProvider() throws ClientUnavailableException {
-        logger.info("Starting Elasticsearch transport client...");
-        esClientProvider = EsTransportClientProvider.init();
-        logger.info("Starting Elasticsearch transport client... DONE");
-    }
-
-    private ClientProvider<Client> getClientProvider() {
-        return esClientProvider;
+    private TransportDatastoreClient() {
+        super("transport");
     }
 
     @Override
-    public void close() throws ClientUnavailableException {
-        synchronized (TransportDatastoreClient.class) {
-            if (instance != null) {
-                if (esClientProvider != null) {
-                    logger.info("Stopping Elasticsearch transport client...");
-                    // all fine... try to cleanup the client
-                    cleanupClient(false);
-                    logger.info("Stopping Elasticsearch transport client... DONE");
-                } else {
-                    logger.warn("Close method called for a not initialized client!");
-                }
-            } else if (esClientProvider == null) {
-                // something wrong happened in the client lifecycle... try to cleanup and raise exception
-                cleanupClient(true);
-            }
-        }
-    }
-
-    private void cleanupClient(boolean raiseException) throws ClientUnavailableException {
-        Throwable cause = null;
-        try {
-            if (esClientProvider != null && esClientProvider.getClient() != null) {
-                esClientProvider.getClient().close();
-            } else {
-                logger.warn(CLIENT_CLEANUP_CANNOT_CLOSE_CLIENT_MSG);
-            }
-            esClientProvider = null;
-        } catch (Throwable e) {
-            cause = e;
-            logger.error(CLIENT_CLEANUP_ERROR_MSG, e);
-        }
-        if (cause != null) {
-            throw new ClientUnavailableException(CLIENT_CLEANUP_ERROR_MSG, cause);
-        } else if (raiseException) {
-            throw new ClientUnavailableException(CLIENT_CLEANUP_ERROR_MSG);
-        }
-    }
-
-    @Override
-    public void setModelContext(ModelContext modelContext) {
-        this.modelContext = modelContext;
-    }
-
-    @Override
-    public void setQueryConverter(QueryConverter queryConverter) {
-        this.queryConverter = queryConverter;
+    public ClientProvider<Client> getNewInstance() {
+        return EsTransportClientProvider.init();
     }
 
     @Override
     public InsertResponse insert(InsertRequest insertRequest) throws ClientException {
-        checkClient();
+        Client client = getClient();
         Map<String, Object> storableMap = modelContext.marshal(insertRequest.getStorable());
         logger.debug("Insert - converted object: '{}'", storableMap);
         org.elasticsearch.action.index.IndexRequest idxRequest = new org.elasticsearch.action.index.IndexRequest(insertRequest.getTypeDescriptor().getIndex(), insertRequest.getTypeDescriptor().getType()).source(storableMap);
         if (insertRequest.getId() != null) {
             idxRequest.id(insertRequest.getId()).version(1).versionType(VersionType.EXTERNAL);
         }
-        org.elasticsearch.action.index.IndexResponse response = esClientProvider.getClient().index(idxRequest).actionGet(getQueryTimeout());
+        org.elasticsearch.action.index.IndexResponse response = client.index(idxRequest).actionGet(getQueryTimeout());
         return new InsertResponse(response.getId(), insertRequest.getTypeDescriptor());
     }
 
     @Override
     public UpdateResponse upsert(UpdateRequest upsertRequest) throws ClientException {
-        checkClient();
+        Client client = getClient();
         Map<String, Object> storableMap = modelContext.marshal(upsertRequest.getStorable());
         logger.debug("Upsert - converted object: '{}'", storableMap);
         org.elasticsearch.action.index.IndexRequest idxRequest = new org.elasticsearch.action.index.IndexRequest(upsertRequest.getTypeDescriptor().getIndex(), upsertRequest.getTypeDescriptor().getType(), upsertRequest.getId()).source(storableMap);
         org.elasticsearch.action.update.UpdateRequest updateRequest = new org.elasticsearch.action.update.UpdateRequest(upsertRequest.getTypeDescriptor().getIndex(),
                 upsertRequest.getTypeDescriptor().getType(), upsertRequest.getId()).doc(storableMap);
-        org.elasticsearch.action.update.UpdateResponse response = esClientProvider.getClient().update(updateRequest.upsert(idxRequest)).actionGet(getQueryTimeout());
+        org.elasticsearch.action.update.UpdateResponse response = client.update(updateRequest.upsert(idxRequest)).actionGet(getQueryTimeout());
         return new UpdateResponse(response.getId(), upsertRequest.getTypeDescriptor());
     }
 
     @Override
     public BulkUpdateResponse upsert(BulkUpdateRequest bulkUpsertRequest) throws ClientException {
-        checkClient();
+        Client client = getClient();
         BulkRequest bulkRequest = new BulkRequest();
         for (UpdateRequest upsertRequest : bulkUpsertRequest.getRequest()) {
             String type = upsertRequest.getTypeDescriptor().getType();
@@ -249,7 +170,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
             bulkRequest.add(updateRequest);
         }
 
-        BulkResponse bulkResponse = esClientProvider.getClient().bulk(bulkRequest).actionGet(getQueryTimeout());
+        BulkResponse bulkResponse = client.bulk(bulkRequest).actionGet(getQueryTimeout());
 
         BulkUpdateResponse response = new BulkUpdateResponse();
         BulkItemResponse[] itemResponses = bulkResponse.getItems();
@@ -284,7 +205,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
 
     @Override
     public <T> ResultList<T> query(TypeDescriptor typeDescriptor, Object query, Class<T> clazz) throws ClientException {
-        checkClient();
+        Client client = getClient();
         JsonNode queryMap = queryConverter.convertQuery(query);
         Object queryFetchStyle = queryConverter.getFetchStyle(query);
         logger.debug("Query - converted query: '{}'", queryMap);
@@ -292,7 +213,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
         ObjectNode fetchSourceFields = (ObjectNode) queryMap.path(SchemaKeys.KEY_SOURCE);
         String[] includesFields = toIncludedExcludedFields(fetchSourceFields.path(SchemaKeys.KEY_INCLUDES));
         String[] excludesFields = toIncludedExcludedFields(fetchSourceFields.path(SchemaKeys.KEY_EXCLUDES));
-        SearchRequestBuilder searchReqBuilder = esClientProvider.getClient().prepareSearch(typeDescriptor.getIndex());
+        SearchRequestBuilder searchReqBuilder = client.prepareSearch(typeDescriptor.getIndex());
         searchReqBuilder.setTypes(typeDescriptor.getType())
                 .setSource(toSearchSourceBuilder(queryMap))
                 .setFetchSource(includesFields, excludesFields);
@@ -330,10 +251,10 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
 
     @Override
     public long count(TypeDescriptor typeDescriptor, Object query) throws ClientException {
-        checkClient();
+        Client client = getClient();
         // TODO check for fetch none
         JsonNode queryMap = queryConverter.convertQuery(query);
-        SearchRequestBuilder searchReqBuilder = esClientProvider.getClient().prepareSearch(typeDescriptor.getIndex());
+        SearchRequestBuilder searchReqBuilder = client.prepareSearch(typeDescriptor.getIndex());
         SearchHits searchHits = null;
         try {
             SearchResponse response = searchReqBuilder.setTypes(typeDescriptor.getType())
@@ -354,9 +275,9 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
 
     @Override
     public void delete(TypeDescriptor typeDescriptor, String id) throws ClientException {
-        checkClient();
+        Client client = getClient();
         try {
-            esClientProvider.getClient().prepareDelete()
+            client.prepareDelete()
                     .setIndex(typeDescriptor.getIndex())
                     .setType(typeDescriptor.getType())
                     .setId(id)
@@ -370,7 +291,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
 
     @Override
     public void deleteByQuery(TypeDescriptor typeDescriptor, Object query) throws ClientException {
-        checkClient();
+        Client client = getClient();
         JsonNode queryMap = queryConverter.convertQuery(query);
         TimeValue queryTimeout = getQueryTimeout();
         TimeValue scrollTimeout = getScrollTimeout();
@@ -378,7 +299,7 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
         SearchResponse scrollResponse = null;
         try {
             // delete by query API is deprecated, scroll with bulk delete must be used
-            scrollResponse = esClientProvider.getClient().prepareSearch(typeDescriptor.getIndex())
+            scrollResponse = client.prepareSearch(typeDescriptor.getIndex())
                     .setTypes(typeDescriptor.getType())
                     .setFetchSource(false)
                     .addSort(DOC, SortOrder.ASC)
@@ -409,9 +330,9 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
                     bulkRequest.add(delete);
                 }
 
-                esClientProvider.getClient().bulk(bulkRequest).actionGet(queryTimeout);
+                client.bulk(bulkRequest).actionGet(queryTimeout);
 
-                scrollResponse = esClientProvider.getClient().prepareSearchScroll(scrollResponse.getScrollId())
+                scrollResponse = client.prepareSearchScroll(scrollResponse.getScrollId())
                         .setScroll(scrollTimeout)
                         .execute()
                         .actionGet(queryTimeout);
@@ -421,8 +342,8 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
 
     @Override
     public IndexResponse isIndexExists(IndexRequest indexRequest) throws ClientException {
-        checkClient();
-        IndicesExistsResponse response = esClientProvider.getClient().admin().indices()
+        Client client = getClient();
+        IndicesExistsResponse response = client.admin().indices()
                 .exists(new IndicesExistsRequest(indexRequest.getIndex()))
                 .actionGet(getQueryTimeout());
         return new IndexResponse(response.isExists());
@@ -430,9 +351,9 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
 
     @Override
     public IndexResponse findIndexes(IndexRequest indexRequest) throws ClientException {
-        checkClient();
+        Client client = getClient();
         try {
-            GetSettingsResponse response = esClientProvider.getClient().admin().indices().prepareGetSettings(indexRequest.getIndex())
+            GetSettingsResponse response = client.admin().indices().prepareGetSettings(indexRequest.getIndex())
                     .get(getQueryTimeout());
             List<String> list = new ArrayList<>();
             response.getIndexToSettings().keysIt().forEachRemaining(list::add);
@@ -445,8 +366,8 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
 
     @Override
     public void createIndex(String indexName, ObjectNode indexSettings) throws ClientException {
-        checkClient();
-        esClientProvider.getClient().admin()
+        Client client = getClient();
+        client.admin()
                 .indices()
                 .prepareCreate(indexName)
                 .setSettings(indexSettings.toString(), XContentType.JSON)
@@ -456,9 +377,9 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
 
     @Override
     public boolean isMappingExists(TypeDescriptor typeDescriptor) throws ClientException {
-        checkClient();
+        Client client = getClient();
         GetMappingsRequest mappingsRequest = new GetMappingsRequest().indices(typeDescriptor.getIndex());
-        GetMappingsResponse mappingsResponse = esClientProvider.getClient().admin().indices().getMappings(mappingsRequest).actionGet(getQueryTimeout());
+        GetMappingsResponse mappingsResponse = client.admin().indices().getMappings(mappingsRequest).actionGet(getQueryTimeout());
         ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> mappings = mappingsResponse.getMappings();
         ImmutableOpenMap<String, MappingMetaData> map = mappings.get(typeDescriptor.getIndex());
         MappingMetaData metadata = map.get(typeDescriptor.getType());
@@ -467,16 +388,16 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
 
     @Override
     public void putMapping(TypeDescriptor typeDescriptor, JsonNode mapping) throws ClientException {
-        checkClient();
+        Client client = getClient();
         // Check message type mapping
         GetMappingsRequest mappingsRequest = new GetMappingsRequest().indices(typeDescriptor.getIndex());
-        GetMappingsResponse mappingsResponse = esClientProvider.getClient().admin().indices().getMappings(mappingsRequest).actionGet(getQueryTimeout());
+        GetMappingsResponse mappingsResponse = client.admin().indices().getMappings(mappingsRequest).actionGet(getQueryTimeout());
         ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> mappings = mappingsResponse.getMappings();
         ImmutableOpenMap<String, MappingMetaData> map = mappings.get(typeDescriptor.getIndex());
         MappingMetaData metadata = map.get(typeDescriptor.getType());
         if (metadata == null) {
             logger.debug("Put mapping: '{}'", mapping);
-            esClientProvider.getClient().admin().indices().preparePutMapping(typeDescriptor.getIndex()).setType(typeDescriptor.getType()).setSource(mapping.toString(), XContentType.JSON)
+            client.admin().indices().preparePutMapping(typeDescriptor.getIndex()).setType(typeDescriptor.getType()).setSource(mapping.toString(), XContentType.JSON)
                     .execute().actionGet(getQueryTimeout());
             logger.trace("Put mapping - mapping {} created! ", typeDescriptor.getType());
         } else {
@@ -516,10 +437,11 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
 
     @Override
     public void deleteAllIndexes() throws ClientException {
-        final DeleteIndexRequest request = DeleteIndexAction.INSTANCE.newRequestBuilder(esClientProvider.getClient()).request();
+        Client client = getClient();
+        final DeleteIndexRequest request = DeleteIndexAction.INSTANCE.newRequestBuilder(client).request();
         request.indices(INDEXES_ALL);
         try {
-            DeleteIndexResponse deleteResponse = esClientProvider.getClient().admin().indices().delete(request).actionGet(getQueryTimeout());
+            DeleteIndexResponse deleteResponse = client.admin().indices().delete(request).actionGet(getQueryTimeout());
             if (!deleteResponse.isAcknowledged()) {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG);
             }
@@ -530,12 +452,13 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
 
     @Override
     public void deleteIndexes(String... indexes) throws ClientException {
-        final DeleteIndexRequest request = DeleteIndexAction.INSTANCE.newRequestBuilder(esClientProvider.getClient()).request();
+        Client client = getClient();
+        final DeleteIndexRequest request = DeleteIndexAction.INSTANCE.newRequestBuilder(client).request();
         for (String index : indexes) {
             request.indices(index);
             try {
                 logger.debug("Deleting index {}", index);
-                DeleteIndexResponse deleteResponse = esClientProvider.getClient().admin().indices().delete(request).actionGet(getQueryTimeout());
+                DeleteIndexResponse deleteResponse = client.admin().indices().delete(request).actionGet(getQueryTimeout());
                 if (!deleteResponse.isAcknowledged()) {
                     throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG);
                 }
@@ -553,22 +476,17 @@ public class TransportDatastoreClient implements org.eclipse.kapua.service.datas
 
     @Override
     public void refreshAllIndexes() throws ClientException {
-        // final RefreshRequest request = new RefreshRequestBuilder(client, action).request();//DeleteIndexAction.INSTANCE.newRequestBuilder(esClientProvider.getClient()).request();
-        final RefreshRequest request = RefreshAction.INSTANCE.newRequestBuilder(esClientProvider.getClient()).request();
+        Client client = getClient();
+        // final RefreshRequest request = new RefreshRequestBuilder(client, action).request();//DeleteIndexAction.INSTANCE.newRequestBuilder(client).request();
+        final RefreshRequest request = RefreshAction.INSTANCE.newRequestBuilder(client).request();
         request.indices(INDEXES_ALL);
         try {
-            RefreshResponse refreshResponse = esClientProvider.getClient().admin().indices().refresh(request).actionGet(getQueryTimeout());
+            RefreshResponse refreshResponse = client.admin().indices().refresh(request).actionGet(getQueryTimeout());
             if (refreshResponse.getFailedShards() > 0) {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_CANNOT_REFRESH_INDEX_ERROR_MSG);
             }
         } catch (IllegalStateException e) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, CLIENT_CANNOT_REFRESH_INDEX_ERROR_MSG);
-        }
-    }
-
-    private void checkClient() throws ClientUndefinedException {
-        if (esClientProvider.getClient() == null) {
-            throw new ClientUndefinedException(CLIENT_UNDEFINED_MSG);
         }
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -89,7 +89,7 @@ public final class MessageStoreFacade {
 
     private final MessageStoreMediator mediator;
     private final ConfigurationProvider configProvider;
-    private DatastoreClient client;
+    private DatastoreClient<?> client;
 
     /**
      * Constructs the message store facade
