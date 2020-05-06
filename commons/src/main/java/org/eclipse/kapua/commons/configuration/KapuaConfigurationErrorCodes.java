@@ -47,5 +47,9 @@ public enum KapuaConfigurationErrorCodes implements KapuaErrorCode {
     /**
      * Parent limit exceeded in config
      */
-    PARENT_LIMIT_EXCEEDED_IN_CONFIG
+    PARENT_LIMIT_EXCEEDED_IN_CONFIG,
+    /**
+     * The service is not available
+     */
+    SERVICE_UNAVAILABLE
 }

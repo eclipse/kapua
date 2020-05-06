@@ -49,7 +49,7 @@ public class EmptyTocd implements KapuaTocd {
     }
 
     @Override
-    public void setIcon(List<? extends KapuaTicon> icon) {
+    public void setIcon(List<KapuaTicon> icon) {
         // No OP implementation
     }
 
@@ -64,7 +64,7 @@ public class EmptyTocd implements KapuaTocd {
     }
 
     @Override
-    public void setAD(List<? extends KapuaTad> icon) {
+    public void setAD(List<KapuaTad> icon) {
         // No OP implementation
     }
 
