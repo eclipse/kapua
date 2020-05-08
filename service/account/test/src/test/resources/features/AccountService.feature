@@ -161,26 +161,21 @@ Scenario: A newly created account must have some metadata
     Given I create a generic account with name "test_acc_11"
     Then The account has metadata
 
-Scenario: It is possible to change the configuration items
+Scenario: It should not be possible to change the configuration items
     Values of the supported configurationm items must be modifiable.
 
     Given I create a generic account with name "test_acc_11"
+    When I expect the exception "org.eclipse.kapua.KapuaException"
     When I configure "integer" item "maxNumberChildEntities" to "5"
-    Then The config item "maxNumberChildEntities" is set to "5"
-
-Scenario: Unknown configuiration items are silently ignored
-    Unknown items must be ignored. No exception or error must be raised.
-
-    Given I create a generic account with name "test_acc_11"
-    When I add the unknown config item "UnknownItem" with value 10
-    Then The config item "UnknownItem" is missing
+    Then An exception was thrown
+    #Then The config item "maxNumberChildEntities" is set to "5"
 
 Scenario: Setting configuration without mandatory items must raise an error
     Mandatory configuration items must always be set. Trying to set configuration items without
     specifying the mandatory items must raise an error.
 
     Given I create a generic account with name "test_acc_11"
-    And I expect the exception "KapuaConfigurationException" with the text "Required configuration attribute missing"
+    When I expect the exception "org.eclipse.kapua.KapuaException"
     When I configure "integer" item "ArbitraryUnknownItem" to "5"
     Then An exception was thrown
 
@@ -202,30 +197,3 @@ Scenario: Account name must not be mutable
     When I change the account "test_acc" name to "test_acc_new"
     Then An exception was thrown
     And Account "test_acc" exists
-
-Scenario: Account expiration date test - Parent expiration set, child expiration null
-    Given I create a generic account with name "exp-acc"
-    And I set the expiration date to 2018-07-11
-    And I configure "integer" item "maxNumberChildEntities" to "5"
-    And I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument"
-    When I create 1 childs for account with name "exp-acc"
-
-Scenario: Account expiration date test - Parent expiration set, child expiration before father expiration
-    Given An existing account that expires on "2018-07-11" with the name "exp-acc"
-    And I configure "integer" item "maxNumberChildEntities" to "5"
-    When I create 1 childs for account with expiration date "2018-07-10" and name "exp-acc"
-    Then Account "exp-acc" has 1 children
-
-Scenario: Account expiration date test - Parent expiration set, child expiration after father expiration
-    Given An existing account that expires on "2018-07-11" with the name "exp-acc"
-    And I configure "integer" item "maxNumberChildEntities" to "5"
-    And I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument"
-    When I create 1 childs for account with expiration date "2018-07-12" and name "exp-acc"
-    And Account "exp-acc" has 0 children
-
-Scenario: Account expiration date test - Parent and child expiration set, then parent expiration date changed to before child expiration date
-    Given An existing account that expires on "2018-07-11" with the name "exp-acc"
-    And I configure "integer" item "maxNumberChildEntities" to "5"
-    And I create 1 childs for account with expiration date "2018-07-10" and name "exp-acc"
-    And I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument"
-    When I change the expiration date of the account "exp-acc" to "2018-07-09"
