@@ -20,11 +20,12 @@ public final class TokenCleaner {
     }
 
     /**
-     * Clear GWT state and remove SSO token when set (invalidates URL parameters)
+     * Clear GWT state and remove SSO tokens when set (invalidates URL parameters)
      */
     public static void cleanToken() {
         final String url = Window.Location.createUrlBuilder()
                 .removeParameter(KapuaCloudConsole.PARAMETER_ACCESS_TOKEN)
+                .removeParameter(KapuaCloudConsole.PARAMETER_ID_TOKEN)
                 .removeParameter(KapuaCloudConsole.PARAMETER_ERROR)
                 .removeParameter(KapuaCloudConsole.PARAMETER_ERROR_DESC)
                 .buildString();

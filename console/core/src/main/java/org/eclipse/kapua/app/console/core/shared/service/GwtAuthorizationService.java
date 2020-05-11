@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.core.shared.service;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtJwtCredential;
+import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtJwtIdToken;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtLoginCredential;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
@@ -42,7 +43,7 @@ public interface GwtAuthorizationService extends RemoteService {
      * @throws GwtKapuaException If the access token is not valid.
      * @since 1.0.0
      */
-    public GwtSession login(GwtJwtCredential gwtAccessTokenCredentials) throws GwtKapuaException;
+    public GwtSession login(GwtJwtCredential gwtAccessTokenCredentials, GwtJwtIdToken gwtJwtIdToken) throws GwtKapuaException;
 
     /**
      * Return the currently authenticated user or null if no session has been established.

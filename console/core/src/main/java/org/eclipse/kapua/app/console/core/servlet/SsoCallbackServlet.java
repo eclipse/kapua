@@ -66,9 +66,11 @@ public class SsoCallbackServlet extends HttpServlet {
 
             // Get and clean jwks_uri property
             final String accessToken = jsonObject.getString("access_token");
+            final String idToken = jsonObject.getString("id_token");
             try {
                 final URIBuilder redirect = new URIBuilder(homeUri);
                 redirect.addParameter("access_token", accessToken);
+                redirect.addParameter("id_token", idToken);
                 resp.sendRedirect(redirect.toString());
             } catch (final URISyntaxException e) {
                 throw new ServletException("Failed to parse redirect URL " + homeUri + " : " + e.getMessage(), e);

@@ -27,7 +27,7 @@ public interface GwtSettingsService extends RemoteService {
 
     public String getSsoLoginUri() throws GwtKapuaException;
 
-    public String getSsoLogoutUri(String ssoAccessToken) throws GwtKapuaException;
+    public String getSsoLogoutUri(String ssoIdToken) throws GwtKapuaException;
 
     public String getHomeUri() throws GwtKapuaException;
 
