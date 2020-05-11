@@ -22,6 +22,7 @@ import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
+import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
 import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -283,6 +284,9 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     }
 
     protected KapuaTocd getConfigMetadata(KapuaId scopeId, boolean excludeUnavailable) throws KapuaException {
+        if (!isAvailableService()) {
+            throw new KapuaServiceDisabledException(pid);
+        }
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
