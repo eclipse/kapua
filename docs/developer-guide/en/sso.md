@@ -143,11 +143,6 @@ Then, run `docker run -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -p 9090:
 docker container, setting up the "_admin_" user (with "_admin_" as password).
 The Keycloak Server Admin Console will be available at the following URL: _http://<Keycloak-IP-address>:9090/_.
 
-**WARNING**: Please use Keycloak version 9.0.0, since version 9.0.2 (and 9.0.3 too) seems to have issues concerning the logout.
-The logout page will result in a page stating "Session not active".
-See [here](https://keycloak.discourse.group/t/openid-connect-logout-endpoint-results-in-session-not-active-in-keycloak-9-0-2/2142)
-for further details.
-
 #### SSL configuration
 
 The Keycloak provider can be configured to use SSL, which is enabled by setting the 9443 port for the `KEYCLOAK_URL` 

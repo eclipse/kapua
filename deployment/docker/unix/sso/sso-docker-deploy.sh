@@ -17,9 +17,9 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Build the Keycloak image if missing
 if [[ "$(docker images -q ${KEYCLOAK_IMAGE} 2> /dev/null)" == "" ]] ; then
-  cd "${SCRIPT_DIR}/../../../commons/sso/keycloak/"
+  cd "${SCRIPT_DIR}/../../../commons/sso/keycloak/" || exit
   . "./build"
-  :
+  cd "${SCRIPT_DIR}" || exit
 fi
 
 # If the certificate is missing, generate it (self-signed certificate) with a private key too

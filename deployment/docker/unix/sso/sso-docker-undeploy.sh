@@ -18,6 +18,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 echo "Undeploying Eclipse Kapua..."
 
 docker-compose -f ${SCRIPT_DIR}/../../compose/sso/sso-docker-compose.yml down
+docker rmi "kapua/kapua-console:sso"
 rm -R "${SSO_CRT_DIR}"
 
 echo "Undeploying Eclipse Kapua... DONE!"

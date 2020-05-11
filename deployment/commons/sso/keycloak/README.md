@@ -6,8 +6,5 @@ realm and a dedicated client. Launch the `build` shell script in order to build 
 ## About the Keycloak version
 
 **WARNING**: 
-Using Keycloak 7.0.0, since version 7.0.1 does not seem to work properly on OpenShift, 
-even if it has been tested successfully with Docker compose (thus without Openshift) also with version 9.0.0.
-As for Docker, tests with version 9.0.2 were not successful, since the OpenID Connect logout is not working correctly,
-and redirects to a Keycloak page stating “Session not active”, without performing actual logout.
-For more information see [here](https://keycloak.discourse.group/t/openid-connect-logout-endpoint-results-in-session-not-active-in-keycloak-9-0-2/)
+The Dockerfile is using Keycloak 7.0.0, since version 7.0.1 does not seem to work properly on OpenShift. 
+However, if Keycloak is expected to run only in Docker, also newer versions can be used (e.g. 10.0.1).
