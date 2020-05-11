@@ -39,6 +39,7 @@ import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
+import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
@@ -53,6 +54,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.tuple.Triple;
 
 /**
  * Configurable service definition abstract reference implementation.
@@ -65,8 +69,25 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
             SystemSetting.getInstance().getInt(SystemSettingKey.TMETADATA_LOCAL_CACHE_SIZE_MAXIMUM, 100);
     private static final EntityCache PRIVATE_ENTITY_CACHE =
             AbstractKapuaConfigurableServiceCache.getInstance().createCache();
-    private static final LocalCache<String, KapuaTmetadata> KAPUA_TMETADATA_LOCAL_CACHE =
+    /**
+     * This cache is to hold the KapuaTocd that are read from the metatype files.
+     * The key is a {@link Triple} composed by:
+     * <ul>
+     *     <li>The service PID</li>
+     *     <li>The ID of the {@link Account} for the current request</li>
+     *     <li>A {@link Boolean} flag indicating whether unavailable properties are excluded from the AD or not</li>
+     * </ul>
+     */
+    private static final LocalCache<Triple<String, KapuaId, Boolean>, KapuaTocd> KAPUA_TOCD_LOCAL_CACHE =
             new LocalCache<>(SIZEMAX, null);
+    /**
+     * This cache only holds the {@link Boolean} value {@literal True} if the OCD has been already read from the file
+     * at least once, regardless of the value. With this we can know when a read from {@code KAPUA_TOCD_LOCAL_CACHE}
+     * returns {@literal null} becauseof the requested key is not present, and when the key is present but its actual value
+     * is {@literal null}.
+     */
+    private static final LocalCache<Triple<String, KapuaId, Boolean>, Boolean> KAPUA_TOCD_EMPTY_LOCAL_CACHE =
+            new LocalCache<>(SIZEMAX, false);
 
     protected AbstractKapuaConfigurableService(String pid, Domain domain, EntityManagerFactory entityManagerFactory) {
         this(pid, domain, entityManagerFactory, null);
@@ -108,12 +129,19 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
             throws KapuaException {
         if (ocd != null) {
 
-            // build a map of all the attribute definitions
-            Map<String, KapuaTad> attrDefs = new HashMap<>();
-            List<KapuaTad> defs = ocd.getAD();
-            for (KapuaTad def : defs) {
-                attrDefs.put(def.getId(), def);
+            // Get Unavailable Properties
+            List<KapuaTad> unavailableProperties = ocd.getAD().stream().filter(ad -> !isAvailableProperty(ad)).collect(Collectors.toList());
+
+            if (!unavailableProperties.isEmpty()) {
+                // If there's any unavailable property, read current values to overwrite the proposed ones
+                Map<String, Object> originalValues = getConfigValues(scopeId, false);
+                if (originalValues != null) {
+                    unavailableProperties.forEach(unavailableProp -> updatedProps.put(unavailableProp.getId(), originalValues.get(unavailableProp.getId())));
+                }
             }
+
+            // build a map of all the attribute definitions
+            Map<String, KapuaTad> attrDefs = ocd.getAD().stream().collect(Collectors.toMap(KapuaTad::getId, ad -> ad));
 
             // loop over the proposed property values
             // and validate them against the definition
@@ -250,38 +278,66 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     }
 
     @Override
-    public KapuaTocd getConfigMetadata(KapuaId scopeId)
-            throws KapuaException {
+    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
+        return getConfigMetadata(scopeId, true);
+    }
+
+    protected KapuaTocd getConfigMetadata(KapuaId scopeId, boolean excludeUnavailable) throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
-
+        // Keep distinct values for service PID, Scope ID and unavailable properties included/excluded from AD
+        Triple<String, KapuaId, Boolean> cacheKey = Triple.of(pid, scopeId, excludeUnavailable);
         try {
-            KapuaTmetadata metadata = KAPUA_TMETADATA_LOCAL_CACHE.get(pid);
-            if (metadata == null) {
-                metadata = readMetadata(pid);
-                if (metadata != null) {
-                    KAPUA_TMETADATA_LOCAL_CACHE.put(pid, metadata);
+            // Check if the OCD is already in cache, but not in the "empty" cache
+            KapuaTocd tocd = KAPUA_TOCD_LOCAL_CACHE.get(cacheKey);
+            if (tocd == null && !KAPUA_TOCD_EMPTY_LOCAL_CACHE.get(cacheKey)) {
+                // If not, read metadata and process it
+                tocd = processMetadata(readMetadata(pid), excludeUnavailable);
+                // If null, put it in the "empty" ocd cache, else put it in the "standard" cache
+                if (tocd != null) {
+                    // If the value is not null, put it in "standard" cache and remove the entry from the "empty" cache if present
+                    KAPUA_TOCD_LOCAL_CACHE.put(cacheKey, tocd);
+                    KAPUA_TOCD_EMPTY_LOCAL_CACHE.remove(cacheKey);
+                } else {
+                    // If the value is null, just remember we already read it from file at least once
+                    KAPUA_TOCD_EMPTY_LOCAL_CACHE.put(cacheKey, true);
                 }
             }
-            if (metadata != null && metadata.getOCD() != null && !metadata.getOCD().isEmpty()) {
-                for (KapuaTocd ocd : metadata.getOCD()) {
-                    if (ocd.getId() != null && ocd.getId().equals(pid)) {
-                        return ocd;
-                    }
-                }
-            }
-            return null;
+            return tocd;
+        } catch (KapuaConfigurationException e) {
+            throw e;
         } catch (Exception e) {
             throw KapuaException.internalError(e);
         }
     }
 
+    /**
+     * Process metadata to exclude unavailable services and properties
+     *
+     * @param metadata              A {@link KapuaTmetadata} object
+     * @param excludeUnavailable    if {@literal true} exclude unavailable properties from the AD object
+     * @return                      The processed {@link KapuaTocd} object
+     */
+    private KapuaTocd processMetadata(KapuaTmetadata metadata, boolean excludeUnavailable) {
+        if (metadata != null && metadata.getOCD() != null && !metadata.getOCD().isEmpty()) {
+            for (KapuaTocd ocd : metadata.getOCD()) {
+                if (ocd.getId() != null && ocd.getId().equals(pid) && isAvailableService()) {
+                    ocd.getAD().removeIf(ad -> excludeUnavailable && !isAvailableProperty(ad));
+                    return ocd;
+                }
+            }
+        }
+        return null;
+    }
+
     @Override
-    public Map<String, Object> getConfigValues(KapuaId scopeId)
-            throws KapuaException {
+    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
+        return getConfigValues(scopeId, true);
+    }
+
+    protected Map<String, Object> getConfigValues(KapuaId scopeId, boolean excludeUnavailable) throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
@@ -297,15 +353,15 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         query.setPredicate(predicate);
 
         ServiceConfigListResult result = entityManagerSession.doAction(EntityManagerContainer.<ServiceConfigListResult>create().onResultHandler(em -> ServiceDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), query))
-                            .onBeforeHandler(() -> (ServiceConfigListResult) PRIVATE_ENTITY_CACHE.getList(scopeId, pid))
-                            .onAfterHandler((entity) -> PRIVATE_ENTITY_CACHE.putList(scopeId, pid, entity)));
+                .onBeforeHandler(() -> (ServiceConfigListResult) PRIVATE_ENTITY_CACHE.getList(scopeId, pid))
+                .onAfterHandler(entity -> PRIVATE_ENTITY_CACHE.putList(scopeId, pid, entity)));
 
         Properties properties = null;
         if (result != null && !result.isEmpty()) {
             properties = result.getFirstItem().getConfigurations();
         }
 
-        KapuaTocd ocd = getConfigMetadata(scopeId);
+        KapuaTocd ocd = getConfigMetadata(scopeId, excludeUnavailable);
         return ocd == null ? null : toValues(ocd, properties);
     }
 
@@ -326,7 +382,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.write, scopeId));
 
-        KapuaTocd ocd = getConfigMetadata(scopeId);
+        KapuaTocd ocd = getConfigMetadata(scopeId, false);
         validateConfigurations(pid, ocd, values, scopeId, parentId);
 
         ServiceConfigQueryImpl query = new ServiceConfigQueryImpl(scopeId);
@@ -355,4 +411,13 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
             updateConfig(serviceConfig);
         }
     }
+
+    protected boolean isAvailableService() {
+        return true;
+    }
+
+    protected boolean isAvailableProperty(KapuaTad ad) {
+        return true;
+    }
+
 }

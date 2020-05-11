@@ -71,7 +71,7 @@ public interface KapuaTocd {
     @XmlElement(name = "AD", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0", required = true)
     List<KapuaTad> getAD();
 
-    void setAD(List<? extends KapuaTad> icon);
+    void setAD(List<KapuaTad> icon);
 
     /**
      * Gets the value of the icon property.
@@ -90,7 +90,7 @@ public interface KapuaTocd {
     @XmlElement(name = "Icon", namespace = "http://www.osgi.org/xmlns/metatype/v1.2.0")
     List<KapuaTicon> getIcon();
 
-    void setIcon(List<? extends KapuaTicon> icon);
+    void setIcon(List<KapuaTicon> icon);
 
     /**
      * Gets the value of the any property.

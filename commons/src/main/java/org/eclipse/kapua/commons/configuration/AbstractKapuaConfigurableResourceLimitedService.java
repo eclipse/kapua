@@ -108,7 +108,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
         AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
         AccountService accountService = locator.getService(AccountService.class);
 
-        Map<String, Object> finalConfig = configuration == null ? getConfigValues(scopeId) : configuration;
+        Map<String, Object> finalConfig = configuration == null ? getConfigValues(scopeId, false) : configuration;
         boolean allowInfiniteChildEntities = (boolean) finalConfig.get("infiniteChildEntities");
         if (!allowInfiniteChildEntities) {
             return KapuaSecurityUtils.doPrivileged(() -> {
