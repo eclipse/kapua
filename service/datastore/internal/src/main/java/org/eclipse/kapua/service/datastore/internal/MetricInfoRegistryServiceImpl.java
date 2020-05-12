@@ -101,7 +101,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaService implemen
     @Override
     public MetricInfo find(KapuaId scopeId, StorableId id)
             throws KapuaException {
-        if (!isAvailableService()) {
+        if (!isServiceEnabled()) {
             throw new KapuaServiceDisabledException(this.getClass().getName());
         }
 
@@ -125,7 +125,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaService implemen
     @Override
     public MetricInfoListResult query(MetricInfoQuery query)
             throws KapuaException {
-        if (!isAvailableService()) {
+        if (!isServiceEnabled()) {
             throw new KapuaServiceDisabledException(this.getClass().getName());
         }
 
@@ -150,7 +150,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaService implemen
     @Override
     public long count(MetricInfoQuery query)
             throws KapuaException {
-        if (!isAvailableService()) {
+        if (!isServiceEnabled()) {
             throw new KapuaServiceDisabledException(this.getClass().getName());
         }
 
@@ -167,7 +167,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaService implemen
 
     void delete(MetricInfoQuery query)
             throws KapuaException {
-        if (!isAvailableService()) {
+        if (!isServiceEnabled()) {
             throw new KapuaServiceDisabledException(this.getClass().getName());
         }
 
@@ -184,7 +184,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaService implemen
 
     void delete(KapuaId scopeId, StorableId id)
             throws KapuaException {
-        if (!isAvailableService()) {
+        if (!isServiceEnabled()) {
             throw new KapuaServiceDisabledException(this.getClass().getName());
         }
 
@@ -253,7 +253,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaService implemen
     }
 
     @Override
-    protected boolean isAvailableService() {
+    protected boolean isServiceEnabled() {
         return !DatastoreSettings.getInstance().getBoolean(DatastoreSettingKey.DISABLE_DATASTORE, false);
     }
 

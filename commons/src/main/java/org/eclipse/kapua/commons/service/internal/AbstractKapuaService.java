@@ -65,7 +65,7 @@ public class AbstractKapuaService {
         ServiceEventBusManager.getInstance().subscribe(address, clazz.getName(), listener);
     }
 
-    protected boolean isAvailableService() {
+    protected boolean isServiceEnabled() {
         return true;
     }
 

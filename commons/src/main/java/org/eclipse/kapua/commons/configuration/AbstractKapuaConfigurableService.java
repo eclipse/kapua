@@ -76,7 +76,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * <ul>
      *     <li>The service PID</li>
      *     <li>The ID of the {@link Account} for the current request</li>
-     *     <li>A {@link Boolean} flag indicating whether unavailable properties are excluded from the AD or not</li>
+     *     <li>A {@link Boolean} flag indicating whether disabled properties are excluded from the AD or not</li>
      * </ul>
      */
     private static final LocalCache<Triple<String, KapuaId, Boolean>, KapuaTocd> KAPUA_TOCD_LOCAL_CACHE =
@@ -130,14 +130,14 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
             throws KapuaException {
         if (ocd != null) {
 
-            // Get Unavailable Properties
-            List<KapuaTad> unavailableProperties = ocd.getAD().stream().filter(ad -> !isAvailableProperty(ad)).collect(Collectors.toList());
+            // Get Disabled Properties
+            List<KapuaTad> disabledProperties = ocd.getAD().stream().filter(ad -> !isPropertyEnabled(ad)).collect(Collectors.toList());
 
-            if (!unavailableProperties.isEmpty()) {
-                // If there's any unavailable property, read current values to overwrite the proposed ones
+            if (!disabledProperties.isEmpty()) {
+                // If there's any disabled property, read current values to overwrite the proposed ones
                 Map<String, Object> originalValues = getConfigValues(scopeId, false);
                 if (originalValues != null) {
-                    unavailableProperties.forEach(unavailableProp -> updatedProps.put(unavailableProp.getId(), originalValues.get(unavailableProp.getId())));
+                    disabledProperties.forEach(disabledProp -> updatedProps.put(disabledProp.getId(), originalValues.get(disabledProp.getId())));
                 }
             }
 
@@ -283,22 +283,22 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         return getConfigMetadata(scopeId, true);
     }
 
-    protected KapuaTocd getConfigMetadata(KapuaId scopeId, boolean excludeUnavailable) throws KapuaException {
-        if (!isAvailableService()) {
+    protected KapuaTocd getConfigMetadata(KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
+        if (!isServiceEnabled()) {
             throw new KapuaServiceDisabledException(pid);
         }
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
-        // Keep distinct values for service PID, Scope ID and unavailable properties included/excluded from AD
-        Triple<String, KapuaId, Boolean> cacheKey = Triple.of(pid, scopeId, excludeUnavailable);
+        // Keep distinct values for service PID, Scope ID and disabled properties included/excluded from AD
+        Triple<String, KapuaId, Boolean> cacheKey = Triple.of(pid, scopeId, excludeDisabled);
         try {
             // Check if the OCD is already in cache, but not in the "empty" cache
             KapuaTocd tocd = KAPUA_TOCD_LOCAL_CACHE.get(cacheKey);
             if (tocd == null && !KAPUA_TOCD_EMPTY_LOCAL_CACHE.get(cacheKey)) {
                 // If not, read metadata and process it
-                tocd = processMetadata(readMetadata(pid), excludeUnavailable);
+                tocd = processMetadata(readMetadata(pid), excludeDisabled);
                 // If null, put it in the "empty" ocd cache, else put it in the "standard" cache
                 if (tocd != null) {
                     // If the value is not null, put it in "standard" cache and remove the entry from the "empty" cache if present
@@ -318,17 +318,17 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     }
 
     /**
-     * Process metadata to exclude unavailable services and properties
+     * Process metadata to exclude disabled services and properties
      *
      * @param metadata              A {@link KapuaTmetadata} object
-     * @param excludeUnavailable    if {@literal true} exclude unavailable properties from the AD object
+     * @param excludeDisabled    if {@literal true} exclude disabled properties from the AD object
      * @return                      The processed {@link KapuaTocd} object
      */
-    private KapuaTocd processMetadata(KapuaTmetadata metadata, boolean excludeUnavailable) {
+    private KapuaTocd processMetadata(KapuaTmetadata metadata, boolean excludeDisabled) {
         if (metadata != null && metadata.getOCD() != null && !metadata.getOCD().isEmpty()) {
             for (KapuaTocd ocd : metadata.getOCD()) {
-                if (ocd.getId() != null && ocd.getId().equals(pid) && isAvailableService()) {
-                    ocd.getAD().removeIf(ad -> excludeUnavailable && !isAvailableProperty(ad));
+                if (ocd.getId() != null && ocd.getId().equals(pid) && isServiceEnabled()) {
+                    ocd.getAD().removeIf(ad -> excludeDisabled && !isPropertyEnabled(ad));
                     return ocd;
                 }
             }
@@ -341,7 +341,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         return getConfigValues(scopeId, true);
     }
 
-    protected Map<String, Object> getConfigValues(KapuaId scopeId, boolean excludeUnavailable) throws KapuaException {
+    protected Map<String, Object> getConfigValues(KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
@@ -365,7 +365,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
             properties = result.getFirstItem().getConfigurations();
         }
 
-        KapuaTocd ocd = getConfigMetadata(scopeId, excludeUnavailable);
+        KapuaTocd ocd = getConfigMetadata(scopeId, excludeDisabled);
         return ocd == null ? null : toValues(ocd, properties);
     }
 
@@ -416,7 +416,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         }
     }
 
-    protected boolean isAvailableProperty(KapuaTad ad) {
+    protected boolean isPropertyEnabled(KapuaTad ad) {
         return true;
     }
 
