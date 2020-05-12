@@ -44,11 +44,6 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
     protected String aclDataAccCli;
     protected String aclCtrlAccNotify;
 
-    protected static final int BROKER_CONNECT_IDX = 0;
-    protected static final int DEVICE_MANAGE_IDX = 1;
-    protected static final int DATA_VIEW_IDX = 2;
-    protected static final int DATA_MANAGE_IDX = 3;
-
     /**
      * Default constructor
      *
@@ -73,10 +68,8 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
         Context loginNormalUserTimeContext = loginMetric.getNormalUserTime().time();
 
         Context loginCheckAccessTimeContext = loginMetric.getCheckAccessTime().time();
-        boolean[] hasPermissions = checkPermissions(kcc);
+        updatePermissions(kcc);
         loginCheckAccessTimeContext.stop();
-
-        kcc.updatePermissions(hasPermissions);
 
         Context loginFindDeviceConnectionTimeContext = loginMetric.getFindDeviceConnectionTime().time();
         DeviceConnection deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(kcc.getScopeId(), kcc.getClientId()));
@@ -159,14 +152,14 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
         // addConnection checks BROKER_CONNECT_IDX permission before call this method
         // then here user has BROKER_CONNECT_IDX permission and if check isn't needed
         // if (hasPermissions[BROKER_CONNECT_IDX]) {
-        if (kcc.getHasPermissions()[DEVICE_MANAGE_IDX]) {
+        if (kcc.isDeviceManage()) {
             ael.add(createAuthorizationEntry(kcc, Acl.ALL, formatAcl(aclCtrlAcc, kcc)));
         } else {
             ael.add(createAuthorizationEntry(kcc, Acl.ALL, formatAclFull(aclCtrlAccCli, kcc)));
         }
-        if (kcc.getHasPermissions()[DATA_MANAGE_IDX]) {
+        if (kcc.isDataManage()) {
             ael.add(createAuthorizationEntry(kcc, Acl.ALL, formatAcl(aclDataAcc, kcc)));
-        } else if (kcc.getHasPermissions()[DATA_VIEW_IDX]) {
+        } else if (kcc.isDataView()) {
             ael.add(createAuthorizationEntry(kcc, Acl.READ_ADMIN, formatAcl(aclDataAcc, kcc)));
             ael.add(createAuthorizationEntry(kcc, Acl.WRITE, formatAclFull(aclDataAccCli, kcc)));
         } else {
@@ -182,19 +175,18 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
         return ael;
     }
 
-    protected boolean[] checkPermissions(KapuaConnectionContext kcc) throws KapuaException {
+    protected void updatePermissions(KapuaConnectionContext kcc) throws KapuaException {
         List<Permission> permissions = new ArrayList<>();
         permissions.add(permissionFactory.newPermission(BROKER_DOMAIN, Actions.connect, kcc.getScopeId()));
         permissions.add(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.write, kcc.getScopeId()));
         permissions.add(permissionFactory.newPermission(DATASTORE_DOMAIN, Actions.read, kcc.getScopeId()));
         permissions.add(permissionFactory.newPermission(DATASTORE_DOMAIN, Actions.write, kcc.getScopeId()));
-        boolean[] hasPermissions = authorizationService.isPermitted(permissions);
+        permissions.add(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.read, kcc.getScopeId()));
+        kcc.updatePermissions(authorizationService.isPermitted(permissions));
 
-        if (!hasPermissions[BROKER_CONNECT_IDX]) {
+        if (!kcc.isBrokerConnect()) {
             throw new KapuaIllegalAccessException(permissionFactory.newPermission(BROKER_DOMAIN, Actions.connect, kcc.getScopeId()).toString());
         }
-
-        return hasPermissions;
     }
 
     /**
