@@ -416,10 +416,6 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         }
     }
 
-    protected boolean isAvailableService() {
-        return true;
-    }
-
     protected boolean isAvailableProperty(KapuaTad ad) {
         return true;
     }
