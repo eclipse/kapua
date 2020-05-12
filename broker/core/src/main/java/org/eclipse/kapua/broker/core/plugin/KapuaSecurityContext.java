@@ -17,6 +17,7 @@ import java.util.Set;
 
 import org.apache.activemq.security.AuthorizationMap;
 import org.apache.activemq.security.SecurityContext;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.KapuaPrincipal;
@@ -36,10 +37,8 @@ public class KapuaSecurityContext extends SecurityContext {
     private String brokerConnectionId;
 
     private AuthorizationMap authMap;
-    private boolean hasDataView;
-    private boolean hasDataManage;
-    private boolean hasDeviceView;
-    private boolean hasDeviceManage;
+
+    private KapuaConnectionContext kcc;
 
     //flag to help the correct lifecycle handling
     private boolean missing;
@@ -48,6 +47,7 @@ public class KapuaSecurityContext extends SecurityContext {
             AuthorizationMap authMap) {
         super(kcc.getPrincipal().getName());
 
+        this.kcc = kcc;
         this.principal = kcc.getPrincipal();
         this.kapuaSession = KapuaSession.createFrom();
         principals = new HashSet<Principal>();
@@ -57,6 +57,14 @@ public class KapuaSecurityContext extends SecurityContext {
         this.connectionId = kcc.getKapuaConnectionId();
         this.connectorDescriptor = kcc.getConnectorDescriptor();
         this.brokerConnectionId = kcc.getConnectionId();
+    }
+
+    public KapuaPrincipal getKapuaPrincipal() throws KapuaException {
+        return principal;
+    }
+
+    public KapuaConnectionContext getKapuaConnectionContext() {
+        return kcc;
     }
 
     public Principal getMainPrincipal() {
@@ -81,22 +89,6 @@ public class KapuaSecurityContext extends SecurityContext {
 
     public ConnectorDescriptor getConnectorDescriptor() {
         return connectorDescriptor;
-    }
-
-    public boolean hasDataView() {
-        return hasDataView;
-    }
-
-    public boolean hasDataManage() {
-        return hasDataManage;
-    }
-
-    public boolean hasDeviceView() {
-        return hasDeviceView;
-    }
-
-    public boolean hasDeviceManage() {
-        return hasDeviceManage;
     }
 
     public KapuaSession getKapuaSession() {

@@ -37,6 +37,7 @@ public class AdminAuthenticationLogic extends AuthenticationLogic {
 
     @Override
     public List<AuthorizationEntry> connect(KapuaConnectionContext kcc) throws KapuaException {
+        kcc.setAdmin(true);
         return buildAuthorizationMap(kcc);
     }
 

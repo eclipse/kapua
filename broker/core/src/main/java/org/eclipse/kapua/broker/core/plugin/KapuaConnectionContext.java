@@ -33,6 +33,12 @@ public class KapuaConnectionContext {
 
     protected static final Logger logger = LoggerFactory.getLogger(KapuaConnectionContext.class);
 
+    public static final int BROKER_CONNECT_IDX = 0;
+    public static final int DEVICE_MANAGE_IDX = 1;
+    public static final int DATA_VIEW_IDX = 2;
+    public static final int DATA_MANAGE_IDX = 3;
+    public static final int DEVICE_VIEW_IDX = 4;
+
     private String brokerId;
     private KapuaPrincipal principal;
     private String userName;
@@ -49,6 +55,9 @@ public class KapuaConnectionContext {
     private boolean[] hasPermissions;
     private String brokerIpOrHostName;
     private Certificate[] clientCertificates;
+
+    private boolean admin;
+    private boolean provisioning;
 
     //flag to help the correct lifecycle handling
     private boolean missing;
@@ -186,6 +195,42 @@ public class KapuaConnectionContext {
 
     public boolean[] getHasPermissions() {
         return hasPermissions;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
+
+    public boolean isProvisioning() {
+        return provisioning;
+    }
+
+    public void setProvisioning(boolean provisioning) {
+        this.provisioning = provisioning;
+    }
+
+    public boolean isBrokerConnect() {
+        return hasPermissions[BROKER_CONNECT_IDX];
+    }
+
+    public boolean isDeviceView() {
+        return hasPermissions[DEVICE_VIEW_IDX];
+    }
+
+    public boolean isDeviceManage() {
+        return hasPermissions[DEVICE_MANAGE_IDX];
+    }
+
+    public boolean isDataView() {
+        return hasPermissions[DATA_VIEW_IDX];
+    }
+
+    public boolean isDataManage() {
+        return hasPermissions[DATA_MANAGE_IDX];
     }
 
     public String getBrokerIpOrHostName() {
