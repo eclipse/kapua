@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -43,6 +43,7 @@ import org.eclipse.kapua.qa.common.cucumber.CucUser;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
+import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialAttributes;
@@ -75,6 +76,7 @@ import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
 import org.eclipse.kapua.service.user.UserAttributes;
+import org.eclipse.kapua.service.user.UserType;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -479,12 +481,18 @@ public class UserServiceSteps extends TestBase {
                 String displayName = userItem.getDisplayName();
                 String email = userItem.getEmail();
                 String phone = userItem.getPhoneNumber();
+                @SuppressWarnings("unused")
+                UserStatus status = userItem.getStatus();
+                UserType type = userItem.getUserType();
+                String externalId = userItem.getExternalId();
                 Date expirationDate = userItem.getExpirationDate();
-                UserCreator userCreator;
-                if (expirationDate == null) {
-                    userCreator = userCreatorCreator(name, displayName, email, phone, currentAccount);
-                } else {
+                UserCreator userCreator = null;
+                if (expirationDate != null) {
                     userCreator = userCreatorCreator(name, displayName, email, phone, currentAccount, expirationDate);
+                } else if (type != null && externalId != null) {
+                    userCreator = userCreatorCreator(name, displayName, email, phone, currentAccount, type, externalId);
+                } else {
+                    userCreator = userCreatorCreator(name, displayName, email, phone, currentAccount);
                 }
                 User user = userService.create(userCreator);
                 iHaveUsers.add(new ComparableUser(user));
@@ -665,6 +673,17 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
+    @And("^Login using a jwt credential$")
+    public void loginUsingJwtCredential() throws Exception {
+        JwtCredentials jwtCredentials = (JwtCredentials) stepData.get("jwtCredentials");
+        primeException();
+        try {
+            authenticationService.login(jwtCredentials);
+        } catch (KapuaException e) {
+            verifyException(e);
+        }
+    }
+
     @Then("^I try to delete user \"(.*)\"$")
     public void thenDeleteUser(String userName) throws Exception {
 
@@ -817,8 +836,14 @@ public class UserServiceSteps extends TestBase {
                     String phone = userItem.getPhoneNumber();
                     KapuaEid scopeId = (KapuaEid) account.getId();
                     Date expirationDate = userItem.getExpirationDate();
-
-                    UserCreator userCreator = userCreatorCreator(name, displayName, email, phone, scopeId, expirationDate);
+                    UserType type = userItem.getUserType();
+                    String externalId = userItem.getExternalId();
+                    UserCreator userCreator = null;
+                    if (type != null && externalId != null) {
+                        userCreator = userCreatorCreator(name, displayName, email, phone, scopeId, type, externalId);
+                    } else {
+                        userCreator = userCreatorCreator(name, displayName, email, phone, scopeId, expirationDate);
+                    }
                     User user = userService.create(userCreator);
                     users.add(new ComparableUser(user));
                 }
@@ -876,6 +901,14 @@ public class UserServiceSteps extends TestBase {
     private UserCreator userCreatorCreator(String name, String displayName, String email, String phone, KapuaId scopeId, Date expirationDate) {
         UserCreator userCreator = userCreatorCreator(name, displayName, email, phone, scopeId);
         userCreator.setExpirationDate(expirationDate);
+
+        return userCreator;
+    }
+
+    private UserCreator userCreatorCreator(String name, String displayName, String email, String phone, KapuaId scopeId, UserType type, String externalId) {
+        UserCreator userCreator = userCreatorCreator(name, displayName, email, phone, scopeId);
+        userCreator.setUserType(type);
+        userCreator.setExternalId(externalId);
 
         return userCreator;
     }
