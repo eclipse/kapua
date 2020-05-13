@@ -31,6 +31,7 @@ import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -38,7 +39,6 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.certificate.Certificate;
-import org.eclipse.kapua.service.certificate.CertificateAttributes;
 import org.eclipse.kapua.service.certificate.CertificateCreator;
 import org.eclipse.kapua.service.certificate.CertificateDomains;
 import org.eclipse.kapua.service.certificate.CertificateFactory;
@@ -84,7 +84,7 @@ public class CertificateServiceImpl extends AbstractKapuaService implements Cert
         try {
             KapuaSecurityUtils.doPrivileged(() -> {
                 CertificateQuery query = CERTIFICATE_FACTORY.newQuery(KapuaId.ONE);
-                query.setPredicate(new AttributePredicateImpl<>(CertificateAttributes.NAME, certificateName));
+                query.setPredicate(new AttributePredicateImpl<>(KapuaNamedEntityAttributes.NAME, certificateName));
                 query.setIncludeInherited(false);
 
                 CertificateListResult result = query(query);
@@ -151,7 +151,7 @@ public class CertificateServiceImpl extends AbstractKapuaService implements Cert
                                 pw.writeObject(new JcaPKCS8Generator(keyPair.getPrivate(), null));
                             }
 
-                            CertificateCreator creator = CERTIFICATE_FACTORY.newCreator(KapuaSecurityUtils.getSession().getScopeId());
+                            CertificateCreator creator = CERTIFICATE_FACTORY.newCreator(KapuaId.ONE);
                             creator.setName(certificateGenerator.getName());
                             creator.setDescription(certificateGenerator.getDescription());
                             creator.setCertificateUsages(certificateGenerator.getCertificateUsages());
@@ -194,6 +194,8 @@ public class CertificateServiceImpl extends AbstractKapuaService implements Cert
         // Check Access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(CertificateDomains.CERTIFICATE_DOMAIN, Actions.read, query.getScopeId()));
 
+        // In this implementation, certificates are only allowed in root account, so that's where we're going to look
+        query.setScopeId(KapuaId.ONE);
         return entityManagerSession.doAction(em -> CertificateDAO.query(em, query));
     }
 
