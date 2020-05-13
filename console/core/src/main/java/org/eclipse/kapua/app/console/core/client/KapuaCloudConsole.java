@@ -46,6 +46,7 @@ import org.eclipse.kapua.app.console.core.client.messages.ConsoleCoreMessages;
 import org.eclipse.kapua.app.console.core.client.util.TokenCleaner;
 import org.eclipse.kapua.app.console.core.shared.model.GwtProductInformation;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtJwtCredential;
+import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtJwtIdToken;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationServiceAsync;
 import org.eclipse.kapua.app.console.core.shared.service.GwtSettingsService;
@@ -76,6 +77,7 @@ public class KapuaCloudConsole implements EntryPoint {
 
     // sso parameters
     public static final String PARAMETER_ACCESS_TOKEN = "access_token";
+    public static final String PARAMETER_ID_TOKEN = "id_token";
     public static final String PARAMETER_ERROR = "error";
     public static final String PARAMETER_ERROR_DESC = "error_description";
 
@@ -358,10 +360,11 @@ public class KapuaCloudConsole implements EntryPoint {
 
         // Check if coming from SSO login
         String accessToken = Window.Location.getParameter(PARAMETER_ACCESS_TOKEN);
+        String idToken = Window.Location.getParameter(PARAMETER_ID_TOKEN);
 
-        if (accessToken != null && !accessToken.isEmpty()) {
+        if (accessToken != null && !accessToken.isEmpty() && idToken != null && !idToken.isEmpty()) {
             logger.info("Performing SSO login");
-            performSsoLogin(viewport, accessToken);
+            performSsoLogin(viewport, accessToken, idToken);
         } else {
 
             String error = Window.Location.getParameter("error");
@@ -404,7 +407,7 @@ public class KapuaCloudConsole implements EntryPoint {
         loginDialog.show();
     }
 
-    private void performSsoLogin(final Viewport viewport, String authToken) {
+    private void performSsoLogin(final Viewport viewport, String authToken, String idToken) {
 
         // show wait dialog
         final Dialog dlg = new Dialog();
@@ -422,8 +425,9 @@ public class KapuaCloudConsole implements EntryPoint {
         dlg.center();
 
         // start login process
+        final GwtJwtIdToken gwtIdToken = new GwtJwtIdToken(idToken);
         final GwtJwtCredential credentials = new GwtJwtCredential(authToken);
-        gwtAuthorizationService.login(credentials, new AsyncCallback<GwtSession>() {
+        gwtAuthorizationService.login(credentials, gwtIdToken, new AsyncCallback<GwtSession>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -432,17 +436,17 @@ public class KapuaCloudConsole implements EntryPoint {
                 ConsoleInfo.display(CORE_MSGS.loginSsoLoginError(), caught.getLocalizedMessage());
 
                 // Invalidating the sso token
-                gwtSettingService.getSsoLogoutUri(credentials.getAccessToken(), new AsyncCallback<String>() {
+                gwtSettingService.getSsoLogoutUri(gwtIdToken.getIdToken(), new AsyncCallback<String>() {
 
                     @Override
                     public void onFailure(Throwable caught) {
-                        logger.info("Failed to get the token invalidation endpoint.");
+                        logger.info("Failed to get the logout endpoint.");
                         FailureHandler.handle(caught);
                     }
 
                     @Override
                     public void onSuccess(final String result) {
-                        logger.info("Waiting for token invalidation.");
+                        logger.info("Waiting for logout.");
 
                         // this timer is needed to give time to the ConsoleInfo.display method (called above) to show
                         // the message to the user (otherwise the Window.location.assign would reload the page,

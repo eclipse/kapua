@@ -50,9 +50,9 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements GwtS
     }
 
     @Override
-    public String getSsoLogoutUri(String ssoAccessToken) throws GwtKapuaException {
+    public String getSsoLogoutUri(String ssoIdToken) throws GwtKapuaException {
         try {
-            return SsoLocator.getLocator(this).getService().getLogoutUri(ssoAccessToken,
+            return SsoLocator.getLocator(this).getService().getLogoutUri(ssoIdToken,
                     URI.create(SsoHelper.getHomeUri()), UUID.randomUUID().toString());
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);

@@ -213,7 +213,7 @@ will create the "_admin_" user without the need of the SimpleRegistrationProcess
 
 ### Keycloak logout endpoint
 
-Logging out from the Keycloak provider is also possible through the Keycloak logout endpoint: 
+Logging out from the Keycloak provider is possible through the Keycloak OpenID Connect logout endpoint: 
 
 `{sso.keycloak.uri}/auth/realms/{realm_name}/protocol/openid-connect/logout`
 

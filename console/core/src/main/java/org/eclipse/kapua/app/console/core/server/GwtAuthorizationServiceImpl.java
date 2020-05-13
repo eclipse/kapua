@@ -18,6 +18,7 @@ import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.core.server.util.SsoLocator;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtJwtCredential;
+import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtJwtIdToken;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtLoginCredential;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
@@ -118,7 +119,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
     }
 
     @Override
-    public GwtSession login(GwtJwtCredential gwtAccessTokenCredentials) throws GwtKapuaException {
+    public GwtSession login(GwtJwtCredential gwtAccessTokenCredentials, GwtJwtIdToken gwtJwtIdToken) throws GwtKapuaException {
         // VIP
         // keep this here to make sure we initialize the logger.
         // Without the following, console logger may not log anything when deployed into tomcat.
@@ -137,7 +138,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             handleLogin(authenticationService, credentials);
 
             // Get the session infos
-            return establishSession(gwtAccessTokenCredentials);
+            return establishSession(gwtJwtIdToken);
         } catch (Throwable t) {
             logout();
             KapuaExceptionHandler.handle(t);
@@ -222,7 +223,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         return gwtSession;
     }
 
-    private GwtSession establishSession(GwtJwtCredential gwtAccessTokenCredentials) throws KapuaException {
+    private GwtSession establishSession(GwtJwtIdToken gwtJwtIdToken) throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
 
         //
@@ -284,8 +285,8 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         gwtSession.setSelectedAccountPath(gwtAccount.getParentAccountPath());
 
         // Access token
-        if (gwtAccessTokenCredentials!=null) {
-            gwtSession.setSsoAccessToken(gwtAccessTokenCredentials.getAccessToken());
+        if (gwtJwtIdToken!=null) {
+            gwtSession.setSsoIdToken(gwtJwtIdToken.getIdToken());
         }
 
         //
