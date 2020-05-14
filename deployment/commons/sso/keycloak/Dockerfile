@@ -1,6 +1,5 @@
-#!/usr/bin/env bash
 ###############################################################################
-# Copyright (c) 2020 Eurotech and/or its affiliates and others
+# Copyright (c) 2017, 2020 Red Hat Inc and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -8,15 +7,21 @@
 # http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
-#     Eurotech - initial API and implementation
+#     Red Hat Inc - initial API and implementation
+#     Eurotech
 ###############################################################################
 
-#
-# This script configures Kapua to make use of SSO using Keycloak
-#
+FROM jboss/keycloak:7.0.0
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-OPENSHIFT_SSO_DIR="${SCRIPT_DIR}/../../openshift/sso"
+COPY run-keycloak /opt/jboss/run-keycloak
 
-eval "$(minishift oc-env)"
-exec "${OPENSHIFT_SSO_DIR}/activate"
+USER 0
+
+RUN chown -R jboss:0 /opt/jboss && \
+    chmod -R g=u /opt/jboss
+
+USER jboss
+
+VOLUME /opt/jboss/keycloak/standalone/data
+
+ENTRYPOINT ["/opt/jboss/run-keycloak"]

@@ -11,12 +11,6 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 
-#
-# This script configures Kapua to make use of SSO using Keycloak
-#
-
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-OPENSHIFT_SSO_DIR="${SCRIPT_DIR}/../../openshift/sso"
-
-eval "$(minishift oc-env)"
-exec "${OPENSHIFT_SSO_DIR}/activate"
+echo "Building Keycloak docker image..."
+docker build -t keycloak:sso -f ./Dockerfile .
+echo "Building Keycloak docker image... DONE!"

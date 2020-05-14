@@ -128,15 +128,40 @@ We detail here the steps to run an SSO Keycloak provider.
 The example described here makes use of a Keycloak Serve Docker image 
 (see [here](https://hub.docker.com/r/jboss/keycloak/) for more details). 
 
-### Installing the Keycloak Server
+### Installing the Keycloak Server (Docker image)
+
+In order to deploy automatically the Keycloak image, is sufficient to use the `sso-docker-deploy.sh`script inside the 
+`sso` subdirectory of the docker deployment scripts. In such a way the environment is ready to be used without the need
+of furher configuration. 
+
+However, if you want to use a stand alone Keycloak image, please follow the instruction below in order to configure it.
+
+#### Manual installation of the Keycloak server.
 
 In order to download and install the image, run `docker pull jboss/keycloak` on a bash terminal. 
 Then, run `docker run -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -p 9090:8080 jboss/keycloak` to start the 
 docker container, setting up the "_admin_" user (with "_admin_" as password).
 The Keycloak Server Admin Console will be available at the following URL: _http://<Keycloak-IP-address>:9090/_.
 
-### Configuring the Keycloak Server
+#### SSL configuration
 
+The Keycloak provider can be configured to use SSL, which is enabled by setting the 9443 port for the `KEYCLOAK_URL` 
+in the `sso-docker-common.sh` file. A self-signed certificate and a key are produced through `sso-docker-deploy.sh` 
+script and passed via the volume based on the `./certs:/etc/x509/https` directory.
+The script also installs the certificate in the Kapua Console docker image (which is tagged with the 'sso' tag).
+
+**WARNING**: This SSL configuration is intended to be used only for testing purpose and should not be used in a 
+production environment. If you want to use Keycloak in a production environment and provide your own TLS certificate, 
+please refer to the official 
+[Keycloak documentation](https://www.keycloak.org/docs/latest/server_installation/#_setting_up_ssl).
+
+### Manually configuring the Keycloak Server
+
+The Keycloak instance provided with the docker deployment is already configured with a dedicated
+"Kapua" realm and a client when using the script `sso-docker-deploy.sh` in the subdirectory `sso`.
+
+However, if you already have a running Keycloak instance, you can follow the instructions below in order to configure 
+it manually.
 Open the Keycloak Admin Console on your preferred browser and follow the steps below in order to configure it.
 
 1. Create a new realm on Keycloak, call it "_kapua_"
@@ -153,34 +178,44 @@ Open the Keycloak Admin Console on your preferred browser and follow the steps b
     - Mapper Type : "_Audience_"
     - Included Custom Audience : "_console_"
     - Add to access token : _ON_
-4. On the "Scope" tab of the "_console_" client, check that "Full Scope Allowed" is set to _ON_
-5. On the "Client Scopes" menu (see menu on the left) create a new Client Scope, called "_console_"
-6. On the "Roles" menu (on the left) add a new role "_console_"
-7. On the "Realm Settings", under the "Tokens" tab, set "Access Token Lifespan" to 10 minutes (the default time is too 
+4. On the "Realm Settings", under the "Tokens" tab, set "Access Token Lifespan" to 10 minutes (the default time is too 
 short)
 
 ### Configuring Kapua to use SSO with the Keycloak Server
 
-The following properties must be passed (as VM options) in order to set up SSO on Kapua using Keycloak:
+The Kapua console docker image is already configured and deployed in docker without further configuration using the 
+`sso-docker-deploy.sh` script in the subdirectory `sso`.
+
+If you need to configure it manually, the following properties must be passed (as VM options) in order to set up SSO 
+on Kapua using Keycloak (you can login using the default `admin` user with `admin` password):
 
 - `sso.provider=keycloak` : to set Keycloak as sso provider
 - `sso.keycloak.realm=kapua` : the Keycloak Realm (we are using the "kapua" realm)
 - `sso.keycloak.uri=http://<Keycloak-IP-address>:9090` : the Keycloak Server URI 
+    (use `https://<Keycloak-IP-address>:9443` in case TLS is enabled - see below for further details)
 - `sso.openid.client.id=console` : the OpenID Client ID (the one set on Keycloak)
 - `console.sso.home.uri=http://localhost:8080` : the Kapua web console URI 
 
-Using docker it is sufficient to provide the following docker environment variables (these ones will automatically set 
-up the configuration properties described above):
+If you need to start the console docker container alone, it is sufficient to provide the following docker environment 
+variables (these will automatically set up the configuration properties described above):
 
-- `KEYCLOAK_URL=http://<Keycloak-IP-address>:9090` : the Keycloak Server URI
-- `KAPUA_URL=http://localhost:8080` : the Kapua web console URI
+- `KEYCLOAK_URL=http://<Keycloak-IP-address>:9090` : the Keycloak Server URI 
+    (use `https://<Keycloak-IP-address>:9443` in case TLS is enabled - see below for further details)
+- `KAPUA_CONSOLE_URL=http://localhost:8080` : the Kapua web console URI
 
-Note that these two variables can be also set up in the `docker-compose.yaml` file.
-Moreover, even if the Keycloak server is running locally on a docker container, it is recommended to use your machine 
+When using `docker-compose`, these two variables are bound through the `docker-compose.yaml` file.
+Note that even if the Keycloak server is running locally on a docker container, it is recommended to use your machine 
 IP address instead of 'localhost', since this one can be misinterpreted by docker as the 'localhost' of the container 
-in which the Kapua component or Keycloak are running. 
+in which the Kapua component or Keycloak are running (this is automatically done through the `sso-docker-deploy.sh`
+script). 
 
 ### Setting Up a user on the Keycloak server
+
+A test user is already created inside the Keycloak server, with username `sso-user` and password `sso-password`.
+The ID assigned by Keycloak must be used as External ID on the Kapua side (see the next section).
+
+If you want to add a new user, please follow the instructions below (remember to use the `admin` user with `admin`
+password to log in):
 
 1. From the "Users" tab on the left menu, click on "Add user"
 2. Configure the user as follows:
@@ -189,12 +224,15 @@ in which the Kapua component or Keycloak are running.
     - User Enabled : _ON_
 3. Configure the user credentials under the "Credentials" tab
 
-The ID assigned by Keycloak will be used as External ID on the Kapua side.
 Note that the user must have an email set in the OpenID Provider server, otherwise the creation on Kapua through the 
-SimpleRegistrationProcessor will fail. It is also possible to use the "_admin_" user to log in 
+SimpleRegistrationProcessor will fail. It is also possible to use the "_admin_" or the "_sso-user_" the users to log in 
 (remind to add an email address). 
 
 ### Setting Up a user on Kapua
+
+To add a new user in Kapua, it is sufficient to add it through the console as described in the 
+[Insert the user through the Console](#insert-the-user-through-the-console) section.
+If you want to use the SimpleRegistrationProcessor or the REST API, please follow the examples below.
 
 Using the SimpleRegistrationProcessor, the user "_alice_" in Keycloak will generate "_alice_" 
 and "_alice-broker_" in Kapua, in a dedicated "_alice_" account.

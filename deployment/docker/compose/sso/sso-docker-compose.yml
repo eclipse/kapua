@@ -1,0 +1,91 @@
+version: '3.1'
+
+services:
+  db:
+    image: kapua/kapua-sql:${IMAGE_VERSION}
+    ports:
+      - 8181:8181
+      - 3306:3306
+  es:
+    image: elasticsearch:5.4.0
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - cluster.name=kapua-datastore
+      - discovery.type=single-node
+      - transport.host=_site_
+      - transport.ping_schedule=-1
+      - transport.tcp.connect_timeout=30s
+  events-broker:
+    image: kapua/kapua-events-broker:${IMAGE_VERSION}
+    ports:
+      - 5672:5672
+  broker:
+    image: kapua/kapua-broker:${IMAGE_VERSION}
+    ports:
+      - 1883:1883
+      - 8883:8883
+      - 61614:61614
+    depends_on:
+      - db
+      - es
+      - events-broker
+    environment:
+      - KAPUA_DISABLE_SSL
+      - KAPUA_CRT
+      - KAPUA_CA
+      - KAPUA_KEY
+      - KAPUA_KEY_PASSWORD
+      - KAPUA_KEYSTORE
+      - KAPUA_KEYSTORE_PASSWORD
+  kapua-console:
+    image: kapua/kapua-console:sso
+    ports:
+      - 8080:8080
+      - 8443:8443
+    depends_on:
+      - broker
+      - db
+      - es
+      - events-broker
+    environment:
+      - KEYCLOAK_URL
+      - KAPUA_CONSOLE_URL
+      - KAPUA_DISABLE_SSL
+      - KAPUA_CA
+      - KAPUA_CRT
+      - KAPUA_KEY
+      - KAPUA_KEY_PASSWORD
+      - KAPUA_KEYSTORE
+      - KAPUA_KEYSTORE_PASSWORD
+  kapua-api:
+    image: kapua/kapua-api:${IMAGE_VERSION}
+    ports:
+      - 8081:8080
+      - 8444:8443
+    depends_on:
+      - broker
+      - db
+      - es
+      - events-broker
+    environment:
+      - KAPUA_DISABLE_SSL
+      - KAPUA_CA
+      - KAPUA_CRT
+      - KAPUA_KEY
+      - KAPUA_KEY_PASSWORD
+      - KAPUA_KEYSTORE
+      - KAPUA_KEYSTORE_PASSWORD
+  keycloak:
+    image: keycloak:sso
+    ports:
+      - 9090:8080
+      - 9443:8443
+    volumes:
+      - "./certs:/etc/x509/https"
+    environment:
+      - KAPUA_CONSOLE_URL
+      - KEYCLOAK_ADMIN_USER
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin

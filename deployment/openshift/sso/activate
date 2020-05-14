@@ -25,15 +25,15 @@ set -e
 
 # Set Keycloak URL with Kapua
 
-KAPUA_URL="$(kapua_url)"
+KAPUA_CONSOLE_URL="$(kapua_url)"
 KEYCLOAK_URL="$(keycloak_url)"
 
 echo "Configure Kapua for SSO:"
-echo "	Kapua Console URL: ${KAPUA_URL}"
+echo "	Kapua Console URL: ${KAPUA_CONSOLE_URL}"
 echo "	Keycloack URL:     ${KEYCLOAK_URL}"
  
 $OC set env -n "${KAPUA_PROJECT_NAME}" \
    dc/kapua-console \
    "KEYCLOAK_URL=${KEYCLOAK_URL}" \
-   "KAPUA_URL=${KAPUA_URL}" \
+   "KAPUA_CONSOLE_URL=${KAPUA_CONSOLE_URL}" \
    ${KEYCLOAK_CLIENT_SECRET:+KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}}

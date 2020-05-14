@@ -11,29 +11,12 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 
-
 #
-# This deploys the Keycloak image into the Minishift VM.
+# This script removes the Keycloak image from the Minishift VM.
 #
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 OPENSHIFT_SSO_DIR="${SCRIPT_DIR}/../../openshift/sso"
-KEYCLOAK_IMAGE="keycloak:sso"
-
-# Build the Keycloak image if missing
-if [[ "$(docker images -q ${KEYCLOAK_IMAGE} 2> /dev/null)" == "" ]] ; then
-  cd "${SCRIPT_DIR}/../../commons/sso/keycloak/"
-  . "./build"
-  :
-fi
-
-echo "Running Minishift Keycloak Importer script..."
-./keycloak-importer ||
-    {
-        echo "Running Minishift Keycloak Importer script... FAILED!";
-        exit 1;
-    }
-echo "Running Minishift Keycloak Importer script... DONE!"
 
 eval "$(minishift oc-env)"
-exec "${OPENSHIFT_SSO_DIR}/deploy"
+exec "${OPENSHIFT_SSO_DIR}/destroy"

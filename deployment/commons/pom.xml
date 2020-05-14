@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2018 Eurotech and/or its affiliates and others
+    Copyright (c) 2020 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -16,19 +16,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>kapua</artifactId>
+        <artifactId>kapua-deployment</artifactId>
         <groupId>org.eclipse.kapua</groupId>
         <version>1.2.0-SNAPSHOT</version>
     </parent>
 
     <packaging>pom</packaging>
-    <artifactId>kapua-deployment</artifactId>
-
-    <modules>
-        <module>docker</module>
-        <module>minishift</module>
-        <module>openshift</module>
-        <module>commons</module>
-    </modules>
+    <artifactId>kapua-deployment-commons</artifactId>
 
 </project>

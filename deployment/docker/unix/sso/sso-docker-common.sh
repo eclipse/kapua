@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+###############################################################################
+# Copyright (c) 2016, 2020 Red Hat Inc and others
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     Red Hat Inc - initial API and implementation
+#     Eurotech
+###############################################################################
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+export IMAGE_VERSION=${IMAGE_VERSION:=latest}
+export DOCKER_ACCOUNT=${DOCKER_ACCOUNT:=kapua}
+
+# parse ifconfig and take the first available IP address (should work for all *nix systems)
+EXTERNAL_IP=$(ifconfig | grep -E "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v '127.0.0.1' | awk '{ print $2 }' | cut -f2 -d: | head -n1)
+export EXTERNAL_IP
+
+export SSO_CRT_DIR="${SCRIPT_DIR}/../../compose/sso/certs" # certs are created there since Keycloak use a volume based on that directory
+export SSO_CERT_FILE="${SSO_CERT_FILE:=tls.crt}"
+export SSO_KEY_FILE="${SSO_KEY_FILE:=tls.key}"
+
+export SSO_CRT="${SSO_CRT:=${SSO_CRT_DIR}/${SSO_CERT_FILE}}"
+export SSO_KEY="${SSO_KEY:=${SSO_CRT_DIR}/${SSO_KEY_FILE}}"
+
+export KAPUA_CONSOLE_URL="${KAPUA_CONSOLE_URL:=http://${EXTERNAL_IP}:8080}"
+
+export KEYCLOAK_IMAGE=${KEYCLOAK_IMAGE:=keycloak:sso}
+export KEYCLOAK_URL="${KEYCLOAK_URL:=http://${EXTERNAL_IP}:9090}" # use https://${EXTERNAL_IP}:9443} in order to enable TLS
+
+ls -al ${SSO_CRT}

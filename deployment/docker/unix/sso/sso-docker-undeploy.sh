@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###############################################################################
-# Copyright (c) 2020 Eurotech and/or its affiliates and others
+# Copyright (c) 2016, 2020 Red Hat Inc and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -8,15 +8,17 @@
 # http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
-#     Eurotech - initial API and implementation
+#     Red Hat Inc - initial API and implementation
+#     Eurotech
 ###############################################################################
 
-#
-# This script configures Kapua to make use of SSO using Keycloak
-#
-
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-OPENSHIFT_SSO_DIR="${SCRIPT_DIR}/../../openshift/sso"
+. "${SCRIPT_DIR}/sso-docker-common.sh"
 
-eval "$(minishift oc-env)"
-exec "${OPENSHIFT_SSO_DIR}/activate"
+echo "Undeploying Eclipse Kapua..."
+
+docker-compose -f ${SCRIPT_DIR}/../../compose/sso/sso-docker-compose.yml down
+docker rmi "kapua/kapua-console:sso"
+rm -R "${SSO_CRT_DIR}"
+
+echo "Undeploying Eclipse Kapua... DONE!"

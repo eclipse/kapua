@@ -4,10 +4,11 @@ This directory contains a setup for enabling single-sign-on (SSO) with Kapua
 using [Keycloak](http://www.keycloak.org/).
 
 In a nutshell you will need to install Kapua into Minishift and then run the `deploy`script.
-A set of environment variables can be used to provide SMTP settings in order to add new Keycloak users by 
+The Keycloak image is built through the `deploy` script.
+`A set of environment variables can be used to provide SMTP settings in order to add new Keycloak users by 
 sending out registration e-mails.
 
-For more information see the [developer manual](https://download.eclipse.org/kapua/docs/develop/developer-guide/en/sso.html#openshift).
+For more information see the [developer manual](https://download.eclipse.org/kapua/docs/develop/developer-guide/en/sso.html).
 
 ### Accessing Keycloak component
 
