@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.model.query;
 
+import org.eclipse.kapua.KapuaIllegalArgumentException;
+
 /**
  * Query sort behavior
  *
@@ -25,5 +27,14 @@ public enum SortDirection {
     /**
      * Descending
      */
-    DESC
+    DESC;
+
+    public static SortDirection fromString(String value) throws KapuaIllegalArgumentException {
+        String ucValue = value.toUpperCase();
+        try {
+            return valueOf(ucValue);
+        } catch (Exception e) {
+            throw new KapuaIllegalArgumentException("sortDirection", value);
+        }
+    }
 }

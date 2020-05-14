@@ -67,6 +67,15 @@ paths:
           in: query
           schema:
             type: string
+        - description: The sort direction. Can be ascending or descending (default).
+          name: sortDir
+          in: query
+          schema:
+            type: string
+            enum:
+              - ASC
+              - DESC
+            default: DESC
         - $ref: '../openapi.yaml#/components/parameters/limit'
         - $ref: '../openapi.yaml#/components/parameters/offset'
       responses:

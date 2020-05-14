@@ -31,6 +31,7 @@ import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
+import org.eclipse.kapua.service.datastore.model.query.SortDirection;
 import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.eclipse.kapua.service.datastore.model.query.XmlAdaptedSortField;
 
@@ -90,6 +91,7 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
             @QueryParam("metricType") MetricType<V> metricType,
             @QueryParam("metricMin") String metricMinValue,
             @QueryParam("metricMax") String metricMaxValue,
+            @QueryParam("sortDir") @DefaultValue("DESC") SortDirection sortDir,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
 
@@ -104,6 +106,7 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
                 metricType,
                 metricMinValue,
                 metricMaxValue,
+                sortDir,
                 offset,
                 limit);
 
