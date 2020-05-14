@@ -80,6 +80,10 @@ public enum BrokerSettingKey implements SettingKey {
      */
     BROKER_NAME("broker.name"),
     /**
+     * Publish message info if the message size is over the specified threshold
+     */
+    PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD("broker.security.published.message_size.log_threshold"),
+    /**
      * Camel default route configuration file name. (please specify just the name. The file path will be discovered by the class loader)
      * Used by the {@link CamelKapuaDefaultRouter} to load the routing configuration.
      */
