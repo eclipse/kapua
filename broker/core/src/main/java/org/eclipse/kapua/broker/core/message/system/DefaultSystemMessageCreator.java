@@ -13,7 +13,7 @@ package org.eclipse.kapua.broker.core.message.system;
 
 import java.util.Map;
 
-import org.eclipse.kapua.broker.core.plugin.KapuaConnectionContext;
+import org.eclipse.kapua.broker.core.plugin.KapuaSecurityContext;
 
 import com.google.common.base.Splitter;
 
@@ -31,11 +31,11 @@ public class DefaultSystemMessageCreator implements SystemMessageCreator {
     private static final String USERNAME_KEY = "Username";
 
     @Override
-    public String createMessage(SystemMessageType systemMessageType, KapuaConnectionContext kbc) {
+    public String createMessage(SystemMessageType systemMessageType, KapuaSecurityContext kapuaSecurityContext) {
         StringBuilder builder = new StringBuilder();
         builder.append(EVENT_KEY).append(PAIR_SEPARATOR).append(systemMessageType.name());
-        builder.append(FIELD_SEPARATOR).append(DEVICE_ID_KEY).append(PAIR_SEPARATOR).append(kbc.getClientId());
-        builder.append(FIELD_SEPARATOR).append(USERNAME_KEY).append(PAIR_SEPARATOR).append(kbc.getUserName());
+        builder.append(FIELD_SEPARATOR).append(DEVICE_ID_KEY).append(PAIR_SEPARATOR).append(kapuaSecurityContext.getClientId());
+        builder.append(FIELD_SEPARATOR).append(USERNAME_KEY).append(PAIR_SEPARATOR).append(kapuaSecurityContext.getUserName());
         return builder.toString();
     }
 
