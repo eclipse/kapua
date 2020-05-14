@@ -12,7 +12,6 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.DateParam;
@@ -28,15 +27,19 @@ import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.client.model.InsertResponse;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
+import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
+import org.eclipse.kapua.service.datastore.model.query.SortField;
+import org.eclipse.kapua.service.datastore.model.query.SortDirection;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
+
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -48,7 +51,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Path("{scopeId}/data/messages")
 public class DataMessages extends AbstractKapuaResource {
@@ -87,6 +92,7 @@ public class DataMessages extends AbstractKapuaResource {
             @QueryParam("metricType") MetricType<V> metricType, //
             @QueryParam("metricMin") String metricMinValue, //
             @QueryParam("metricMax") String metricMaxValue, //
+            @QueryParam("sortDir") @DefaultValue("DESC") SortDirection sortDir, //
             @QueryParam("offset") @DefaultValue("0") int offset,//
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
 
@@ -115,6 +121,10 @@ public class DataMessages extends AbstractKapuaResource {
         query.setPredicate(andPredicate);
         query.setOffset(offset);
         query.setLimit(limit);
+
+        List<SortField> sort = new ArrayList<>();
+        sort.add(SortField.of(sortDir, MessageSchema.MESSAGE_TIMESTAMP));
+        query.setSortFields(sort);
 
         return query(scopeId, query);
     }
