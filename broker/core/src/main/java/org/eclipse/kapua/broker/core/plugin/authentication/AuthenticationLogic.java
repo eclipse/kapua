@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,7 +14,7 @@ package org.eclipse.kapua.broker.core.plugin.authentication;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.BrokerDomains;
 import org.eclipse.kapua.broker.core.plugin.Acl;
-import org.eclipse.kapua.broker.core.plugin.KapuaConnectionContext;
+import org.eclipse.kapua.broker.core.plugin.KapuaSecurityContext;
 import org.eclipse.kapua.broker.core.plugin.KapuaDuplicateClientIdException;
 import org.eclipse.kapua.broker.core.plugin.metric.ClientMetric;
 import org.eclipse.kapua.broker.core.plugin.metric.LoginMetric;
@@ -88,62 +88,62 @@ public abstract class AuthenticationLogic {
     /**
      * Execute the connect logic returning the authorization list (ACL)
      *
-     * @param kcc
+     * @param kapuaSecurityContext
      * @return
      * @throws KapuaException
      */
-    public abstract List<org.eclipse.kapua.broker.core.plugin.authentication.AuthorizationEntry> connect(KapuaConnectionContext kcc)
+    public abstract List<org.eclipse.kapua.broker.core.plugin.authentication.AuthorizationEntry> connect(KapuaSecurityContext kapuaSecurityContext)
             throws KapuaException;
 
     /**
      * Execute the disconnection logic
      *
-     * @param kcc
+     * @param kapuaSecurityContext
      * @param error
      * @return true send disconnect message (if the disconnection is a clean disconnection)
      * false don't send disconnect message (the disconnection is caused by a stealing link or the device is currently connected to another node)
      */
-    public abstract boolean disconnect(KapuaConnectionContext kcc, Throwable error);
+    public abstract boolean disconnect(KapuaSecurityContext kapuaSecurityContext, Throwable error);
 
     /**
-     * @param kcc
+     * @param kapuaSecurityContext
      * @return
      */
-    protected abstract List<AuthorizationEntry> buildAuthorizationMap(KapuaConnectionContext kcc);
+    protected abstract List<AuthorizationEntry> buildAuthorizationMap(KapuaSecurityContext kapuaSecurityContext);
 
     /**
      * Format the ACL resource based on the pattern and the account name looking into the connection context property
      *
      * @param pattern
-     * @param kcc
+     * @param kapuaSecurityContext
      * @return
      */
-    protected String formatAcl(String pattern, KapuaConnectionContext kcc) {
-        return MessageFormat.format(pattern, kcc.getAccountName());
+    protected String formatAcl(String pattern, KapuaSecurityContext kapuaSecurityContext) {
+        return MessageFormat.format(pattern, kapuaSecurityContext.getAccountName());
     }
 
     /**
      * Format the ACL resource based on the pattern and the account name and client id looking into the connection context property
      *
      * @param pattern
-     * @param kcc
+     * @param kapuaSecurityContext
      * @return
      */
-    protected String formatAclFull(String pattern, KapuaConnectionContext kcc) {
-        return MessageFormat.format(pattern, kcc.getAccountName(), kcc.getClientId());
+    protected String formatAclFull(String pattern, KapuaSecurityContext kapuaSecurityContext) {
+        return MessageFormat.format(pattern, kapuaSecurityContext.getAccountName(), kapuaSecurityContext.getClientId());
     }
 
     /**
      * Create the authorization entry base on the ACL and the resource address
      *
-     * @param kcc
+     * @param kapuaSecurityContext
      * @param acl
      * @param address
      * @return
      */
-    protected AuthorizationEntry createAuthorizationEntry(KapuaConnectionContext kcc, Acl acl, String address) {
+    protected AuthorizationEntry createAuthorizationEntry(KapuaSecurityContext kapuaSecurityContext, Acl acl, String address) {
         AuthorizationEntry entry = new AuthorizationEntry(address, acl);
-        kcc.addAuthDestinationToLog(MessageFormat.format(PERMISSION_LOG,
+        kapuaSecurityContext.addAuthDestinationToLog(MessageFormat.format(PERMISSION_LOG,
                 acl.isRead() ? "r" : "_",
                 acl.isWrite() ? "w" : "_",
                 acl.isAdmin() ? "a" : "_",
@@ -261,25 +261,25 @@ public abstract class AuthenticationLogic {
         }
     }
 
-    protected boolean isStealingLink(KapuaConnectionContext kcc, Throwable error) {
+    protected boolean isStealingLink(KapuaSecurityContext kapuaSecurityContext, Throwable error) {
         boolean stealingLinkDetected = false;
-        if (kcc.getOldConnectionId() != null) {
-            stealingLinkDetected = !kcc.getOldConnectionId().equals(kcc.getConnectionId());
+        if (kapuaSecurityContext.getOldConnectionId() != null) {
+            stealingLinkDetected = !kapuaSecurityContext.getOldConnectionId().equals(kapuaSecurityContext.getConnectionId());
         }
         else {
             logger.error("Cannot find connection id for client id {} on connection map. Correct connection id is {} - IP: {}",
-                    kcc.getClientId(),
-                    kcc.getConnectionId(),
-                    kcc.getClientIp());
+                    kapuaSecurityContext.getClientId(),
+                    kapuaSecurityContext.getConnectionId(),
+                    kapuaSecurityContext.getClientIp());
         }
         if (!stealingLinkDetected && (error instanceof KapuaDuplicateClientIdException || (error!=null && error.getCause() instanceof KapuaDuplicateClientIdException))) {
             stealingLinkDetected = true;
             logger.warn("Detected Stealing link for cliend id {} - account id {} - last connection id was {} - current connection id is {} - IP: {} - No disconnection info will be added!",
-                    kcc.getClientId(),
-                    kcc.getScopeId(),
-                    kcc.getOldConnectionId(),
-                    kcc.getConnectionId(),
-                    kcc.getClientIp());
+                    kapuaSecurityContext.getClientId(),
+                    kapuaSecurityContext.getScopeId(),
+                    kapuaSecurityContext.getOldConnectionId(),
+                    kapuaSecurityContext.getConnectionId(),
+                    kapuaSecurityContext.getClientIp());
         }
         return stealingLinkDetected;
     }

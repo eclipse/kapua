@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,7 +17,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.message.system.DefaultSystemMessageCreator;
 import org.eclipse.kapua.broker.core.message.system.SystemMessageCreator;
 import org.eclipse.kapua.broker.core.message.system.SystemMessageCreator.SystemMessageType;
-import org.eclipse.kapua.broker.core.plugin.KapuaConnectionContext;
+import org.eclipse.kapua.broker.core.plugin.KapuaSecurityContext;
 import org.eclipse.kapua.broker.core.plugin.metric.ClientMetric;
 import org.eclipse.kapua.broker.core.plugin.metric.LoginMetric;
 import org.eclipse.kapua.broker.core.pool.JmsAssistantProducerPool;
@@ -73,56 +73,56 @@ public class DefaultAuthenticator implements Authenticator {
     }
 
     @Override
-    public List<AuthorizationEntry> connect(KapuaConnectionContext kcc)
+    public List<AuthorizationEntry> connect(KapuaSecurityContext kapuaSecurityContext)
             throws KapuaException {
         List<AuthorizationEntry> authorizationEntries = null;
-        if (isAdminUser(kcc)) {
+        if (isAdminUser(kapuaSecurityContext)) {
             loginMetric.getKapuasysTokenAttempt().inc();
-            authorizationEntries = adminAuthenticationLogic.connect(kcc);
+            authorizationEntries = adminAuthenticationLogic.connect(kapuaSecurityContext);
             clientMetric.getConnectedKapuasys().inc();
         } else {
             loginMetric.getNormalUserAttempt().inc();
-            authorizationEntries = userAuthenticationLogic.connect(kcc);
+            authorizationEntries = userAuthenticationLogic.connect(kapuaSecurityContext);
             clientMetric.getConnectedClient().inc();
-            sendConnectMessage(kcc);
+            sendConnectMessage(kapuaSecurityContext);
         }
         return authorizationEntries;
     }
 
     @Override
-    public void disconnect(KapuaConnectionContext kcc, Throwable error) {
-        if (isAdminUser(kcc)) {
+    public void disconnect(KapuaSecurityContext kapuaSecurityContext, Throwable error) {
+        if (isAdminUser(kapuaSecurityContext)) {
             clientMetric.getDisconnectionKapuasys().inc();
-            adminAuthenticationLogic.disconnect(kcc, error);
+            adminAuthenticationLogic.disconnect(kapuaSecurityContext, error);
         } else {
             clientMetric.getDisconnectionClient().inc();
-            if (userAuthenticationLogic.disconnect(kcc, error)) {
-                sendDisconnectMessage(kcc);
+            if (userAuthenticationLogic.disconnect(kapuaSecurityContext, error)) {
+                sendDisconnectMessage(kapuaSecurityContext);
             }
         }
     }
 
     @Override
-    public void sendConnectMessage(KapuaConnectionContext kcc) {
-        sendMessage(kcc, Authenticator.ADDRESS_CONNECT_PATTERN_KEY, SystemMessageType.CONNECT);
+    public void sendConnectMessage(KapuaSecurityContext kapuaSecurityContext) {
+        sendMessage(kapuaSecurityContext, Authenticator.ADDRESS_CONNECT_PATTERN_KEY, SystemMessageType.CONNECT);
     }
 
     @Override
-    public void sendDisconnectMessage(KapuaConnectionContext kcc) {
-        sendMessage(kcc, Authenticator.ADDRESS_DISCONNECT_PATTERN_KEY, SystemMessageType.DISCONNECT);
+    public void sendDisconnectMessage(KapuaSecurityContext kapuaSecurityContext) {
+        sendMessage(kapuaSecurityContext, Authenticator.ADDRESS_DISCONNECT_PATTERN_KEY, SystemMessageType.DISCONNECT);
     }
 
-    private void sendMessage(KapuaConnectionContext kcc, String messageAddressPattern, SystemMessageType systemMessageType) {
+    private void sendMessage(KapuaSecurityContext kapuaSecurityContext, String messageAddressPattern, SystemMessageType systemMessageType) {
         if (systemMessageType != null) {
             Context loginSendLogingUpdateMsgTimeContex = loginMetric.getSendLoginUpdateMsgTime().time();
-            String message = systemMessageCreator.createMessage(systemMessageType, kcc);
+            String message = systemMessageCreator.createMessage(systemMessageType, kapuaSecurityContext);
             JmsAssistantProducerWrapper producerWrapper = null;
             try {
                 producerWrapper = JmsAssistantProducerPool.getIOnstance(DESTINATIONS.NO_DESTINATION).borrowObject();
                 producerWrapper.send(String.format((String) options.get(messageAddressPattern),
-                        SystemSetting.getInstance().getMessageClassifier(), kcc.getAccountName(), kcc.getClientId()),
+                        SystemSetting.getInstance().getMessageClassifier(), kapuaSecurityContext.getAccountName(), kapuaSecurityContext.getClientId()),
                         message,
-                        kcc);
+                        kapuaSecurityContext);
             } catch (Exception e) {
                 logger.error("Exception sending the {} message: {}", systemMessageType.name().toLowerCase(), e.getMessage(), e);
             } finally {
@@ -137,9 +137,9 @@ public class DefaultAuthenticator implements Authenticator {
         }
     }
 
-    protected boolean isAdminUser(KapuaConnectionContext kcc) {
+    protected boolean isAdminUser(KapuaSecurityContext kapuaSecurityContext) {
         String adminUsername = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
-        return kcc.getUserName().equals(adminUsername);
+        return kapuaSecurityContext.getUserName().equals(adminUsername);
     }
 
 }

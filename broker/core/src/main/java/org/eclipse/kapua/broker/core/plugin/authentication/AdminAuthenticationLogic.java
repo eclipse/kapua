@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,7 +17,7 @@ import java.util.Map;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.plugin.Acl;
-import org.eclipse.kapua.broker.core.plugin.KapuaConnectionContext;
+import org.eclipse.kapua.broker.core.plugin.KapuaSecurityContext;
 
 /**
  * Admin profile authentication logic implementation
@@ -36,26 +36,26 @@ public class AdminAuthenticationLogic extends AuthenticationLogic {
     }
 
     @Override
-    public List<AuthorizationEntry> connect(KapuaConnectionContext kcc) throws KapuaException {
-        kcc.setAdmin(true);
-        return buildAuthorizationMap(kcc);
+    public List<AuthorizationEntry> connect(KapuaSecurityContext kapuaSecurityContext) throws KapuaException {
+        kapuaSecurityContext.setAdmin(true);
+        return buildAuthorizationMap(kapuaSecurityContext);
     }
 
     @Override
-    public boolean disconnect(KapuaConnectionContext kcc, Throwable error) {
-        boolean stealingLinkDetected = isStealingLink(kcc, error);
-        logger.debug("Old connection id: {} - new connection id: {} - error: {} - error cause: {}", kcc.getOldConnectionId(), kcc.getConnectionId(), error, (error!=null ? error.getCause() : "null"), error);
+    public boolean disconnect(KapuaSecurityContext kapuaSecurityContext, Throwable error) {
+        boolean stealingLinkDetected = isStealingLink(kapuaSecurityContext, error);
+        logger.debug("Old connection id: {} - new connection id: {} - error: {} - error cause: {}", kapuaSecurityContext.getOldConnectionId(), kapuaSecurityContext.getConnectionId(), error, (error!=null ? error.getCause() : "null"), error);
         if (stealingLinkDetected) {
             loginMetric.getAdminStealingLinkDisconnect().inc();
         }
-        return !stealingLinkDetected && !kcc.isMissing();
+        return !stealingLinkDetected && !kapuaSecurityContext.isMissing();
     }
 
-    protected List<AuthorizationEntry> buildAuthorizationMap(KapuaConnectionContext kcc) {
+    protected List<AuthorizationEntry> buildAuthorizationMap(KapuaSecurityContext kapuaSecurityContext) {
         ArrayList<AuthorizationEntry> ael = new ArrayList<AuthorizationEntry>();
-        ael.add(createAuthorizationEntry(kcc, Acl.ALL, aclHash));
-        ael.add(createAuthorizationEntry(kcc, Acl.WRITE_ADMIN, aclAdvisory));
-        kcc.logAuthDestinationToLog();
+        ael.add(createAuthorizationEntry(kapuaSecurityContext, Acl.ALL, aclHash));
+        ael.add(createAuthorizationEntry(kapuaSecurityContext, Acl.WRITE_ADMIN, aclAdvisory));
+        kapuaSecurityContext.logAuthDestinationToLog();
         return ael;
     }
 
