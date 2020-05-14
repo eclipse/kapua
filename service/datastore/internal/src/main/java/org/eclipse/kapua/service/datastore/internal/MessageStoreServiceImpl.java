@@ -228,4 +228,9 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         authorizationService.checkPermission(permission);
     }
 
+    @Override
+    protected boolean isServiceEnabled() {
+        return !DatastoreSettings.getInstance().getBoolean(DatastoreSettingKey.DISABLE_DATASTORE, false);
+    }
+
 }

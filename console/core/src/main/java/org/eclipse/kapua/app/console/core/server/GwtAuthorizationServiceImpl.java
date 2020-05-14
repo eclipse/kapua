@@ -62,6 +62,8 @@ import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleService;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 
@@ -269,6 +271,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         gwtSession.setBuildVersion(commonsConfig.getString(SystemSettingKey.BUILD_VERSION));
         gwtSession.setBuildNumber(commonsConfig.getString(SystemSettingKey.BUILD_NUMBER));
         gwtSession.setSsoEnabled(SsoLocator.getLocator(this).getService().isEnabled());
+        gwtSession.setDatastoreDisabled(DatastoreSettings.getInstance().getBoolean(DatastoreSettingKey.DISABLE_DATASTORE, false));
 
         // User info
         gwtSession.setUserId(gwtUser.getId());

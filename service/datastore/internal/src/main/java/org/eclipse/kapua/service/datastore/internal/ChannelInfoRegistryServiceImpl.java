@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.datastore.internal;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
+import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -36,6 +37,8 @@ import org.eclipse.kapua.service.datastore.internal.model.query.RangePredicateIm
 import org.eclipse.kapua.service.datastore.internal.model.query.StorableFieldImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
@@ -96,6 +99,10 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaService impleme
     @Override
     public ChannelInfo find(KapuaId scopeId, StorableId id)
             throws KapuaException {
+        if (!isServiceEnabled()) {
+            throw new KapuaServiceDisabledException(this.getClass().getName());
+        }
+
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(id, "id");
 
@@ -115,6 +122,10 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaService impleme
     @Override
     public ChannelInfoListResult query(ChannelInfoQuery query)
             throws KapuaException {
+        if (!isServiceEnabled()) {
+            throw new KapuaServiceDisabledException(this.getClass().getName());
+        }
+
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
@@ -136,6 +147,10 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaService impleme
     @Override
     public long count(ChannelInfoQuery query)
             throws KapuaException {
+        if (!isServiceEnabled()) {
+            throw new KapuaServiceDisabledException(this.getClass().getName());
+        }
+
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
@@ -149,6 +164,10 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaService impleme
 
     void delete(KapuaId scopeId, StorableId id)
             throws KapuaException {
+        if (!isServiceEnabled()) {
+            throw new KapuaServiceDisabledException(this.getClass().getName());
+        }
+
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(id, "id");
 
@@ -162,6 +181,10 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaService impleme
 
     void delete(ChannelInfoQuery query)
             throws KapuaException {
+        if (!isServiceEnabled()) {
+            throw new KapuaServiceDisabledException(this.getClass().getName());
+        }
+
         ArgumentValidator.notNull(query, "query");
         ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
 
@@ -227,5 +250,10 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaService impleme
 
         channelInfo.setLastMessageId(lastPublishedMessageId);
         channelInfo.setLastMessageOn(lastPublishedMessageTimestamp);
+    }
+
+    @Override
+    protected boolean isServiceEnabled() {
+        return !DatastoreSettings.getInstance().getBoolean(DatastoreSettingKey.DISABLE_DATASTORE, false);
     }
 }

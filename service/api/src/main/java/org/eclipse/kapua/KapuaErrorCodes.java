@@ -13,7 +13,7 @@ package org.eclipse.kapua;
 
 /**
  * KapuaErrorCodes holds the enumeration of common error codes for KapuaServices.<br>
- * For each defined enum value, a corresponding message should be defined in the properties bundle named: KapuaExceptionMessagesBundle.properties.
+ * For each defined enum value, a corresponding message should be defined in the properties bundle named: kapua-service-error-messages.properties.
  *
  * @since 1.0
  */
@@ -134,9 +134,12 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
     TRIGGER_NEVER_FIRE,
     ADMIN_ROLE_DELETED_ERROR,
 
-    /**Deleting specific permission is not allowed
-     * 
+    /**
+     * Deleting specific permission is not allowed
      */
-    PERMISSION_DELETE_NOT_ALLOWED
-
+    PERMISSION_DELETE_NOT_ALLOWED,
+    /**
+     * The service has been disabled
+     */
+    SERVICE_DISABLED
 }

@@ -23,7 +23,7 @@ import org.eclipse.kapua.service.KapuaService;
 /**
  * Abstract Kapua service.<br>
  * It handles the {@link EntityManagerFactory} and {@link EntityManagerSession} to avoid to redefine each time in the subclasses.
- * 
+ *
  * @since 1.0
  *
  */
@@ -64,4 +64,9 @@ public class AbstractKapuaService {
     protected void registerEventListener(ServiceEventBusListener listener, String address, Class<? extends KapuaService> clazz) throws ServiceEventBusException {
         ServiceEventBusManager.getInstance().subscribe(address, clazz.getName(), listener);
     }
+
+    protected boolean isServiceEnabled() {
+        return true;
+    }
+
 }

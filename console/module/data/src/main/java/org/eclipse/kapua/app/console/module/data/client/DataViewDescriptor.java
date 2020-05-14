@@ -46,6 +46,6 @@ public class DataViewDescriptor extends AbstractMainViewDescriptor {
 
     @Override
     public Boolean isEnabled(GwtSession currentSession) {
-        return currentSession.hasPermission(DatastoreSessionPermission.read());
+        return !currentSession.isDatastoreDisabled() && currentSession.hasPermission(DatastoreSessionPermission.read());
     }
 }

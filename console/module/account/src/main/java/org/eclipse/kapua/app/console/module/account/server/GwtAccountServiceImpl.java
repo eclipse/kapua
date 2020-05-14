@@ -40,6 +40,7 @@ import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModel
 import org.eclipse.kapua.broker.BrokerDomains;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
 import org.eclipse.kapua.commons.util.ThrowingRunnable;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
@@ -432,6 +433,8 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                     try {
                         tocd = configurableService.getConfigMetadata(GwtKapuaCommonsModelConverter.convertKapuaId(scopeId));
                     } catch (SubjectUnauthorizedException ex) {
+                        continue;
+                    } catch (KapuaServiceDisabledException ex) {
                         continue;
                     }
                     if (tocd != null) {

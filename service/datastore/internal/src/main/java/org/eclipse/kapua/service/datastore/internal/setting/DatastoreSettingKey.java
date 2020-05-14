@@ -16,7 +16,7 @@ import org.eclipse.kapua.commons.setting.SettingKey;
 
 /**
  * Datastore setting keys.
- * 
+ *
  * @since 1.0
  *
  */
@@ -69,7 +69,11 @@ public enum DatastoreSettingKey implements SettingKey {
     /**
      * Elasticsearch index width. Allowed values: "week", "day", "hour"
      */
-    INDEXING_WINDOW_OPTION("datastore.index.window");
+    INDEXING_WINDOW_OPTION("datastore.index.window"),
+    /**
+     * Disables the entire Datastore feature
+     */
+    DISABLE_DATASTORE("datastore.disable");
 
     private String key;
 
