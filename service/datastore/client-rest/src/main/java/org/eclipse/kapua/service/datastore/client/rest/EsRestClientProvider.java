@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,6 +28,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -42,6 +46,8 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.ssl.TrustStrategy;
+import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.setting.AbstractBaseKapuaSetting;
 import org.eclipse.kapua.service.datastore.client.ClientException;
 import org.eclipse.kapua.service.datastore.client.ClientProvider;
@@ -51,6 +57,8 @@ import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.codahale.metrics.Counter;
 
 /**
  * Elasticsearch rest client implementation.<br>
@@ -62,7 +70,8 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
 
     private static final Logger logger = LoggerFactory.getLogger(EsRestClientProvider.class);
 
-    private static final String PROVIDER_NOT_INITIALIZED_MSG = "Provider not configured! please call initi method before use it!";
+    private static final int DEFAULT_WAIT_BETWEEN_EXECUTIONS = 30000;
+    private static final String PROVIDER_NOT_INITIALIZED_MSG = "Provider not configured! please call init method before use it!";
     private static final String PROVIDER_ALREADY_INITIALIZED_MSG = "Provider already initialized! closing it before initialize the new one!";
     private static final String PROVIDER_NO_NODE_CONFIGURED_MSG = "No ElasticSearch nodes are configured";
     private static final String PROVIDER_FAILED_TO_CONFIGURE_MSG = "Failed to configure ElasticSearch rest client";
@@ -76,7 +85,11 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
 
     private static EsRestClientProvider instance;
 
+    private static final int INITIAL_DELAY = 0;
+    public static final int WAIT_BETWEEN_EXECUTIONS = ClientSettings.getInstance().getInt(ClientSettingsKey.RECONNECTION_TASK_WAIT_BETWEEN_EXECUTIONS, DEFAULT_WAIT_BETWEEN_EXECUTIONS);
+    private ScheduledExecutorService executor;
     private RestClient client;
+    private Counter clientReconnectCall;
 
     private static int getDefaultPort() {
         return ClientSettings.getInstance().getInt(ClientSettingsKey.ELASTICSEARCH_PORT, DEFAULT_PORT);
@@ -104,11 +117,15 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
      * @return
      * @throws ClientUnavailableException
      */
-    public static EsRestClientProvider init() throws ClientUnavailableException {
+    public static EsRestClientProvider init() {
         synchronized (EsRestClientProvider.class) {
             logger.info(">>> Initializing ES rest client...");
             closeIfInstanceInitialized();
-            instance = new EsRestClientProvider();
+            try {
+                instance = new EsRestClientProvider();
+            } catch (ClientUnavailableException e) {
+                logger.error(">>> Initializing ES rest client... ERROR: {}", e.getMessage(), e);
+            }
             logger.info(">>> Initializing ES rest client... DONE");
         }
         return instance;
@@ -150,7 +167,7 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
         }
     }
 
-    private static void closeIfInstanceInitialized() throws ClientUnavailableException {
+    private static void closeIfInstanceInitialized() {
         if (instance != null) {
             logger.warn(PROVIDER_ALREADY_INITIALIZED_MSG);
             close();
@@ -160,16 +177,16 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
     /**
      * Close the ES rest client
      * 
-     * @throws ClientUnavailableException
      */
-    public static void close() throws ClientUnavailableException {
+    public static void close() {
         synchronized (EsRestClientProvider.class) {
             if (instance != null) {
                 try {
                     instance.closeClient();
                 } catch (IOException e) {
-                    throw new ClientUnavailableException(PROVIDER_CANNOT_CLOSE_CLIENT_MSG, e);
+                    logger.warn(PROVIDER_CANNOT_CLOSE_CLIENT_MSG, e);
                 }
+                instance = null;
             } else {
                 logger.warn(PROVIDER_CANNOT_CLOSE_CLIENT_MSG);
             }
@@ -177,6 +194,18 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
     }
 
     private void closeClient() throws IOException {
+        if (executor!=null) {
+            executor.shutdown();
+            try {
+                executor.awaitTermination(WAIT_BETWEEN_EXECUTIONS, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                //do nothing
+                Thread.interrupted();
+            }
+            finally {
+                executor.shutdownNow();
+            }
+        }
         if (client != null) {
             try {
                 client.close();
@@ -212,15 +241,40 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
      * @throws ClientUnavailableException
      */
     private EsRestClientProvider(List<InetSocketAddress> addresses) throws ClientUnavailableException {
+        MetricsService metricService = MetricServiceFactory.getInstance();
+        clientReconnectCall = metricService.getCounter("datastore-rest-client", "rest-client", "reconnect_call", "count");
+        executor = Executors.newScheduledThreadPool(1);
         try {
             if (addresses == null || addresses.isEmpty()) {
                 throw new ClientUnavailableException(PROVIDER_NO_NODE_CONFIGURED_MSG);
             }
-            client = getClient(addresses);
+            executor.scheduleWithFixedDelay(() -> {
+                try {
+                    reconnectTask(() -> {
+                        return getClient(addresses);
+                    });
+                }
+                catch (Exception e) {
+                    logger.info(">>> Initializing ES rest client... Error: {}", e.getMessage(), e);
+                }
+            }, INITIAL_DELAY, WAIT_BETWEEN_EXECUTIONS, TimeUnit.MILLISECONDS);
         } catch (Throwable t) {
             throw new ClientUnavailableException(PROVIDER_FAILED_TO_CONFIGURE_MSG, t);
         }
 
+    }
+
+    private void reconnectTask(Callable<RestClient> call) throws Exception {
+        if (client == null) {
+            synchronized (EsRestClientProvider.class) {
+                if (client == null) {
+                    clientReconnectCall.inc();
+                    logger.info(">>> Initializing ES rest client... Client is not connected. Try to connect...");
+                    client = call.call();
+                    logger.info(">>> Initializing ES rest client... Client is not connected. Try to connect... DONE");
+                }
+            }
+        }
     }
 
     @Override
@@ -237,6 +291,10 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
         boolean sslEnabled = settings.getBoolean(ClientSettingsKey.ELASTICSEARCH_SSL_ENABLED, false);
         logger.info("ES Rest Client - SSL {}enabled", (sslEnabled ? "" : "NOT "));
         for (InetSocketAddress address : addresses) {
+            if (address.isUnresolved()) {
+                //try to force the address resolution again
+                address = new InetSocketAddress(address.getHostName(), address.getPort());
+            }
             hosts.add(new HttpHost(address.getAddress(), address.getHostName(), address.getPort(), (sslEnabled ? SCHEMA_SSL : SCHEMA_UNTRUSTED)));
         }
         RestClientBuilder restClientBuilder = RestClient.builder(hosts.toArray(new HttpHost[hosts.size()]));

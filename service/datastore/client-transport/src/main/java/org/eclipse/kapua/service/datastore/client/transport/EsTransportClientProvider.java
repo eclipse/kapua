@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -35,8 +35,11 @@ import org.slf4j.LoggerFactory;
  * Elasticsearch transport client implementation.<br>
  * Instantiate the Elasticsearch transport client.
  *
+ * @deprecated Elasticsearch transport client will be removed in the next releases. Please use the Rest client instead.
+ *
  * @since 1.0
  */
+@Deprecated
 public class EsTransportClientProvider implements ClientProvider<Client> {
 
     private static final Logger logger = LoggerFactory.getLogger(EsTransportClientProvider.class);
@@ -78,13 +81,16 @@ public class EsTransportClientProvider implements ClientProvider<Client> {
      * before initializing the new one.</b>
      * 
      * @return
-     * @throws ClientUnavailableException
      */
-    public static EsTransportClientProvider init() throws ClientUnavailableException {
+    public static EsTransportClientProvider init() {
         synchronized (EsTransportClientProvider.class) {
             logger.info(">>> Initializing ES transport client...");
             closeIfInstanceInitialized();
-            instance = new EsTransportClientProvider();
+            try {
+                instance = new EsTransportClientProvider();
+            } catch (ClientUnavailableException e) {
+                logger.error(">>> Initializing ES transport client... ERROR: {}", e.getMessage(), e);
+            }
             logger.info(">>> Initializing ES transport client... DONE");
         }
         return instance;

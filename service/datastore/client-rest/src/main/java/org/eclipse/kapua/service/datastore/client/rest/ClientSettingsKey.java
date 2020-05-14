@@ -89,7 +89,11 @@ public enum ClientSettingsKey implements SettingKey {
     /**
      * Elastichsearch client trust store password (at the present only the rest client supports it)
      */
-    ELASTICSEARCH_SSL_TRUSTSTORE_PASSWORD("datastore.elasticsearch.ssl.truststore_password");
+    ELASTICSEARCH_SSL_TRUSTSTORE_PASSWORD("datastore.elasticsearch.ssl.truststore_password"),
+    /**
+     * Wait between client reconnection task executions
+     */
+    RECONNECTION_TASK_WAIT_BETWEEN_EXECUTIONS("datastore.elasticsearch.client.reconnection_wait_between_exec");
 
     private String key;
 

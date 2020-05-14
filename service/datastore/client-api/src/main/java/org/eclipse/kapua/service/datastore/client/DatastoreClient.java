@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,6 +13,9 @@ package org.eclipse.kapua.service.datastore.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import java.io.Closeable;
+
 import org.eclipse.kapua.service.datastore.client.model.BulkUpdateRequest;
 import org.eclipse.kapua.service.datastore.client.model.BulkUpdateResponse;
 import org.eclipse.kapua.service.datastore.client.model.IndexRequest;
@@ -30,14 +33,18 @@ import org.eclipse.kapua.service.datastore.client.model.UpdateResponse;
  *
  * @since 1.0
  */
-public interface DatastoreClient {
+public interface DatastoreClient<C extends Closeable> {
 
     /**
-     * Close the underlying client resources (such as datastore client connection)
-     *
-     * @throws ClientException
+     * Initialize the underlying data-store connection
      */
-    void close() throws ClientException;
+    void init();
+
+    /**
+     * Close the underlying data-store connection
+     * @throws ClientUnavailableException
+     */
+    void close() throws ClientUnavailableException;
 
     /**
      * Insert
@@ -191,8 +198,6 @@ public interface DatastoreClient {
      */
     IndexResponse findIndexes(IndexRequest indexRequest) throws ClientException;
 
-    // ModelContext
-
     /**
      * Set the model context
      *
@@ -206,5 +211,4 @@ public interface DatastoreClient {
      * @param queryConverter
      */
     void setQueryConverter(QueryConverter queryConverter);
-
 }
