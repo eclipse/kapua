@@ -25,11 +25,14 @@ public class LoginMetric {
     private Counter invalidUserPassword;
     private Counter invalidClientId;
     private Counter kapuasysTokenAttempt;
+    private Counter internalConnectorAttempt;
+    private Counter internalConnectorConnected;
     private Counter normalUserAttempt;
     private Counter stealingLinkConnect;
     private Counter stealingLinkDisconnect;
     private Counter adminStealingLinkDisconnect;
-    protected Counter remoteStealingLinkDisconnect;
+    private Counter remoteStealingLinkDisconnect;
+    private Counter internalConnectorDisconnected;
     private Timer addConnectionTime;
     private Timer normalUserTime;
     private Timer shiroLoginTime;
@@ -52,6 +55,9 @@ public class LoginMetric {
         invalidUserPassword = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_FAILURE_PASSWORD, SecurityMetrics.METRIC_COUNT);
         invalidClientId = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_FAILURE_CLIENT_ID, SecurityMetrics.METRIC_COUNT);
         kapuasysTokenAttempt = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_KAPUASYS, SecurityMetrics.METRIC_COUNT);
+        internalConnectorAttempt = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_INTERNAL_CONNECTOR, SecurityMetrics.METRIC_COUNT);
+        internalConnectorConnected = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_INTERNAL_CONNECTOR, SecurityMetrics.METRIC_CONNECT, SecurityMetrics.METRIC_COUNT);
+        internalConnectorDisconnected = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_INTERNAL_CONNECTOR, SecurityMetrics.METRIC_DISCONNECT, SecurityMetrics.METRIC_COUNT);
         normalUserAttempt = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_NORMAL, SecurityMetrics.METRIC_COUNT);
         stealingLinkConnect = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_STEALING_LINK, SecurityMetrics.METRIC_CONNECT, SecurityMetrics.METRIC_COUNT);
         stealingLinkDisconnect = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_STEALING_LINK, SecurityMetrics.METRIC_DISCONNECT, SecurityMetrics.METRIC_COUNT);
@@ -89,6 +95,10 @@ public class LoginMetric {
         return kapuasysTokenAttempt;
     }
 
+    public Counter getInternalConnectorAttempt() {
+        return internalConnectorAttempt;
+    }
+
     public Counter getNormalUserAttempt() {
         return normalUserAttempt;
     }
@@ -109,8 +119,12 @@ public class LoginMetric {
         return adminStealingLinkDisconnect;
     }
 
-    public void setAdminStealingLinkDisconnect(Counter adminStealingLinkDisconnect) {
-        this.adminStealingLinkDisconnect = adminStealingLinkDisconnect;
+    public Counter getInternalConnectorConnected() {
+        return internalConnectorConnected;
+    }
+
+    public Counter getInternalConnectorDisconnected() {
+        return internalConnectorDisconnected;
     }
 
     public Timer getAddConnectionTime() {
