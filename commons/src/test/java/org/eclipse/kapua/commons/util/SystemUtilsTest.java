@@ -32,7 +32,7 @@ public class SystemUtilsTest extends Assert {
     @Test
     public void getNodeUriTest() throws Exception {
         try {
-            URI uri = new URI("tcp://localhost:1884");
+            URI uri = new URI("tcp://localhost:1893");
             assertEquals(SystemUtils.getNodeURI(), uri);
         } catch (Exception ex) {
             fail("The URI is incorrect!");
@@ -42,7 +42,7 @@ public class SystemUtilsTest extends Assert {
     @Test
     public void getNodeUriUdpTest() throws Exception {
         try {
-            URI uri = new URI("udp://localhost:1884");
+            URI uri = new URI("udp://localhost:1893");
             assertNotEquals(SystemUtils.getNodeURI(), uri);
         } catch (Exception ex) {
             //expected

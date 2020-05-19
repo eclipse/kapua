@@ -27,6 +27,7 @@ public class SecurityMetrics {
     public static final String METRIC_CONNECTED = "connected";
     public static final String METRIC_DISCONNECT = "disconnect";
     public static final String METRIC_DISCONNECTED = "disconnected";
+    public static final String METRIC_INTERNAL_CONNECTOR = "internal_connector";
     public static final String METRIC_SUCCESS = "success";
     public static final String METRIC_FAILURE = "failure";
     public static final String METRIC_FAILURE_PASSWORD = METRIC_FAILURE + "_password";

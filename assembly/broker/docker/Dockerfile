@@ -41,7 +41,7 @@ ENV ACTIVEMQ_OPTS "-Dcommons.db.schema.update=true \
                    -Dcertificate.jwt.certificate=file:///var/opt/activemq/cert.pem \
                    -Dbroker.ip=broker"
 
-EXPOSE 1883 8883 61614 61615 8161
+EXPOSE 1883 1893 8883 61614 61615 8161
 
 VOLUME /opt/activemq/data
 
