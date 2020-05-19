@@ -78,7 +78,6 @@ public class KapuaFileUtils {
             URL url = getAsURL(filePath);
 
             if (hasHttpScheme(filePath)) {
-                // FIXME:
                 file = File.createTempFile("file-" + System.currentTimeMillis(), ".tmp");
                 FileUtils.copyURLToFile(url, file);
             } else {
