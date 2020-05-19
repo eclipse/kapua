@@ -44,9 +44,11 @@ public class DefaultAuthenticator implements Authenticator {
     protected static final Logger logger = LoggerFactory.getLogger(DefaultAuthenticator.class);
 
     private static final String SYSTEM_MESSAGE_CREATOR_CLASS_NAME;
+    private static final String ADMIN_USERNAME;
 
     static {
         SYSTEM_MESSAGE_CREATOR_CLASS_NAME = BrokerSetting.getInstance().getString(BrokerSettingKey.SYSTEM_MESSAGE_CREATOR_CLASS_NAME);
+        ADMIN_USERNAME = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
     }
 
     private Map<String, Object> options;
@@ -80,7 +82,8 @@ public class DefaultAuthenticator implements Authenticator {
             loginMetric.getKapuasysTokenAttempt().inc();
             authorizationEntries = adminAuthenticationLogic.connect(kapuaSecurityContext);
             clientMetric.getConnectedKapuasys().inc();
-        } else {
+        }
+        else {
             loginMetric.getNormalUserAttempt().inc();
             authorizationEntries = userAuthenticationLogic.connect(kapuaSecurityContext);
             clientMetric.getConnectedClient().inc();
@@ -92,10 +95,11 @@ public class DefaultAuthenticator implements Authenticator {
     @Override
     public void disconnect(KapuaSecurityContext kapuaSecurityContext, Throwable error) {
         if (isAdminUser(kapuaSecurityContext)) {
-            clientMetric.getDisconnectionKapuasys().inc();
+            clientMetric.getDisconnectedKapuasys().inc();
             adminAuthenticationLogic.disconnect(kapuaSecurityContext, error);
-        } else {
-            clientMetric.getDisconnectionClient().inc();
+        }
+        else {
+            clientMetric.getDisconnectedClient().inc();
             if (userAuthenticationLogic.disconnect(kapuaSecurityContext, error)) {
                 sendDisconnectMessage(kapuaSecurityContext);
             }
@@ -138,8 +142,7 @@ public class DefaultAuthenticator implements Authenticator {
     }
 
     protected boolean isAdminUser(KapuaSecurityContext kapuaSecurityContext) {
-        String adminUsername = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
-        return kapuaSecurityContext.getUserName().equals(adminUsername);
+        return kapuaSecurityContext.getUserName().equals(ADMIN_USERNAME);
     }
 
 }

@@ -44,11 +44,11 @@ public class ClientMetric {
         return connectedKapuasys;
     }
 
-    public Counter getDisconnectionClient() {
+    public Counter getDisconnectedClient() {
         return disconnectionClient;
     }
 
-    public Counter getDisconnectionKapuasys() {
+    public Counter getDisconnectedKapuasys() {
         return disconnectionKapuasys;
     }
 

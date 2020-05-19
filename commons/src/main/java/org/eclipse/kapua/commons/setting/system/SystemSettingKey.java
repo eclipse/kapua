@@ -172,9 +172,21 @@ public enum SystemSettingKey implements SettingKey {
      */
     BROKER_HOST("broker.host"),
     /**
-     * Broker port
+     * Broker internal port
      */
-    BROKER_PORT("broker.port"),
+    BROKER_INTERNAL_CONNECTOR_PORT("broker.connector.internal.port"),
+    /**
+     * Broker internal connector name
+     */
+    BROKER_INTERNAL_CONNECTOR_NAME("broker.connector.internal.name"),
+    /**
+     * Internal connector username
+     */
+    BROKER_INTERNAL_CONNECTOR_USERNAME("broker.connector.internal.username"),
+    /**
+     * Internal connector password
+     */
+    BROKER_INTERNAL_CONNECTOR_PASSWORD("broker.connector.internal.password"),
 
     /**
      * Metrics JMX disabled
