@@ -20,11 +20,15 @@ You can access the API using: http://localhost:8081
 **Note**: If you are using Docker on Windows the hostname will most likely not be `localhost` but
 the IP address of your docker instance.
 
-### SSO testing
+### SSO (OpenID Connect) testing
 
 **Note:** This is only a setup for testing SSO support.
 
 #### Keycloak Provider
+
+It is possible to test the sso with a Keycloak image by simply launching the `deploy` scripts located in the `deployment/docker/unix/sso` directory.
+The provided Keycloak instance is already configured with a dedicated realm and client. 
+However, if you prefer to manually run and configure Keycloak, please follow the instruction below.
 
 You can also start a Keycloak instance in addition:
 
@@ -34,8 +38,10 @@ Starting the `kapua-console` image with the following command line instead:
 
     docker run -td --name kapua-console --link sso --link kapua-sql:db --link kapua-broker:broker --link kapua-elasticsearch:es -p 8080:8080 -e KEYCLOAK_URL=http://$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' sso):8080 -e KAPUA_CONSOLE_URL=http://localhost:8080 kapua/kapua-console
 
-You will also need to create a new realm named `kapua` in the Keycloak web UI and create a new client called `console`.
-Assigning `http://localhost:8080/*` as a valid redirect URI.
+You will also need to create a new realm named `kapua` in the Keycloak web UI and create a new client called `console`, 
+assigning `http://localhost:8080/*` as a valid redirect URI.
+
+For further information take a look at the `sso.md` manual located in the `docs/developer-guide/en` directory.
 
 #### Generic Provider
 
