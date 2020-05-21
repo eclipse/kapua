@@ -1,6 +1,6 @@
-# Setup SSO in Minishift for Kapua with Keycloak
+# Setup SSO (OpenID Connect) in Minishift for Kapua with Keycloak
 
-This directory contains a setup for enabling single-sign-on (SSO) with Kapua
+This directory contains a setup for enabling single-sign-on (OpenID Connect) with Kapua
 using [Keycloak](http://www.keycloak.org/).
 
 In a nutshell you will need to install Kapua into Minishift and then run the `deploy`script.
