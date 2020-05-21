@@ -26,11 +26,11 @@ public interface GwtSettingsService extends RemoteService {
 
     public GwtProductInformation getProductInformation();
 
-    public String getSsoLoginUri() throws GwtKapuaException;
+    public String getOpenIDLoginUri() throws GwtKapuaException;
 
-    public String getSsoLogoutUri(String ssoIdToken) throws GwtKapuaException;
+    public String getOpenIDLogoutUri(String idToken) throws GwtKapuaException;
 
     public String getHomeUri() throws GwtKapuaException;
 
-    public boolean getSsoEnabled();
+    public boolean getOpenIDEnabled();
 }

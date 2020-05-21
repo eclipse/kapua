@@ -77,13 +77,13 @@ public class KapuaCloudConsole implements EntryPoint {
     private static final Logger logger = Logger.getLogger(KapuaCloudConsole.class.getName());
 
     // OpenID Connect single sign-on parameters
-    public static final String PARAMETER_ACCESS_TOKEN = "access_token";
-    public static final String PARAMETER_ID_TOKEN = "id_token";
-    public static final String PARAMETER_ERROR = "error";
-    public static final String PARAMETER_ERROR_DESC = "error_description";
+    public static final String OPENID_ACCESS_TOKEN_PARAM = "access_token";
+    public static final String OPENID_ID_TOKEN_PARAM = "id_token";
+    public static final String OPENID_ERROR_PARAM = "error";
+    public static final String OPENID_ERROR_DESC_PARAM = "error_description";
 
     // time parameters
-    public static final int SSO_FAILURE_WAIT_TIME = 3000;
+    public static final int OPENID_FAILURE_WAIT_TIME = 3000;
 
     private GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
 
@@ -360,19 +360,19 @@ public class KapuaCloudConsole implements EntryPoint {
         creditLabel.setText(productInformation.getBackgroundCredits());
 
         // Check if coming from OpenID Connect ssingle sign-on login
-        String accessToken = Window.Location.getParameter(PARAMETER_ACCESS_TOKEN);
-        String idToken = Window.Location.getParameter(PARAMETER_ID_TOKEN);
+        String accessToken = Window.Location.getParameter(OPENID_ACCESS_TOKEN_PARAM);
+        String idToken = Window.Location.getParameter(OPENID_ID_TOKEN_PARAM);
 
         if (accessToken != null && !accessToken.isEmpty() && idToken != null && !idToken.isEmpty()) {
-            logger.info("Performing SSO login");
-            performSsoLogin(viewport, accessToken, idToken);
+            logger.info("Performing OpenID Connect login");
+            performOpenIDLogin(viewport, accessToken, idToken);
         } else {
 
-            String error = Window.Location.getParameter("error");
+            String error = Window.Location.getParameter(OPENID_ERROR_PARAM);
 
-            // Check if coming from failed SSO login (the user exists but she does not have the authorizations)
+            // Check if coming from failed OpenID Connect login (the user exists but she does not have the authorizations)
             if (error != null && !error.isEmpty() && error.equals("access_denied")) {
-                logger.info("Access denied, SSO login failed");
+                logger.info("Access denied, OpenID Connect login failed");
                 ConsoleInfo.display(CORE_MSGS.loginSsoLoginError(), CORE_MSGS.ssoClientAuthenticationFailed());
             }
             showLoginDialog(viewport);
@@ -408,7 +408,7 @@ public class KapuaCloudConsole implements EntryPoint {
         loginDialog.show();
     }
 
-    private void performSsoLogin(final Viewport viewport, String authToken, String idToken) {
+    private void performOpenIDLogin(final Viewport viewport, String authToken, String idToken) {
 
         // show wait dialog
         final Dialog dlg = new Dialog();
@@ -433,13 +433,13 @@ public class KapuaCloudConsole implements EntryPoint {
             @Override
             public void onFailure(Throwable caught) {
                 dlg.hide();
-                logger.info("Sso login failed.");
+                logger.info("OpenID Connect login failed.");
                 ConsoleInfo.display(CORE_MSGS.loginSsoLoginError(), caught.getLocalizedMessage());
 
-                // Invalidating the sso token. We must use the OpenID logout here, since we don't have the KapuSession set yet, so we don't have the
+                // Invalidating the OpenID IdToken. We must use the OpenID logout here, since we don't have the KapuSession set yet, so we don't have the
                 // openIDidToken set inside. This means we cannot realy on the OpenIDLogoutListener to invalidate the OpenID session, instead we must do that
                 // as a 'real' user initiated logout.
-                gwtSettingService.getSsoLogoutUri(gwtIdToken.getIdToken(), new AsyncCallback<String>() {
+                gwtSettingService.getOpenIDLogoutUri(gwtIdToken.getIdToken(), new AsyncCallback<String>() {
 
                     @Override
                     public void onFailure(Throwable caught) {
@@ -461,7 +461,7 @@ public class KapuaCloudConsole implements EntryPoint {
                                     Window.Location.assign(result);
                                 }
                             };
-                            timer.schedule(SSO_FAILURE_WAIT_TIME);
+                            timer.schedule(OPENID_FAILURE_WAIT_TIME);
                         } else {
                             // result is empty, thus the OpenID logout is disabled
                             TokenCleaner.cleanToken();  // removes the access_token from the URL, however it forces the page reload
@@ -472,7 +472,7 @@ public class KapuaCloudConsole implements EntryPoint {
 
             @Override
             public void onSuccess(GwtSession gwtSession) {
-                logger.info("Sso login success, now rendering screen.");
+                logger.info("OpenID login success, now rendering screen.");
                 logger.fine("User: " + gwtSession.getUserId());
 
                 // This is needed to remove tokens from the URL, however it forces the page reload

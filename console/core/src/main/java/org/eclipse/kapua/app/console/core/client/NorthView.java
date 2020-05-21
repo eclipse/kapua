@@ -167,7 +167,7 @@ public class NorthView extends LayoutContainer {
 
                 // Change Password menu item
                 //  (only if the current user is an INTERNAL one; note that an INTERNAL user has no ssoIdToken)
-                if (currentSession.getSsoIdToken() == null) {
+                if (currentSession.getOpenIDIdToken() == null) {
                     KapuaMenuItem changePassword = new KapuaMenuItem();
                     changePassword.setText(MSGS.changePassword());
                     changePassword.setIcon(IconSet.KEY);
@@ -228,8 +228,8 @@ public class NorthView extends LayoutContainer {
 
                             @Override
                             public void onSuccess(Void arg0) {
-                                if (currentSession.isSsoEnabled() && currentSession.getSsoIdToken() != null) {
-                                    gwtSettingService.getSsoLogoutUri(currentSession.getSsoIdToken(), new AsyncCallback<String>() {
+                                if (currentSession.isSsoEnabled() && currentSession.getOpenIDIdToken() != null) {
+                                    gwtSettingService.getOpenIDLogoutUri(currentSession.getOpenIDIdToken(), new AsyncCallback<String>() {
 
                                         @Override
                                         public void onFailure(Throwable caught) {

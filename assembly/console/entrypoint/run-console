@@ -30,7 +30,7 @@ if [ -n "$KEYCLOAK_URL" ] && [ -n "$KAPUA_CONSOLE_URL" ]; then
    JAVA_OPTS="$JAVA_OPTS -Dsso.openid.keycloak.uri=${KEYCLOAK_URL}"
    JAVA_OPTS="$JAVA_OPTS -Dsso.openid.keycloak.realm=${KEYCLOAK_REALM}"
 
-   JAVA_OPTS="$JAVA_OPTS -Dconsole.sso.home.uri=${KAPUA_CONSOLE_URL}"
+   JAVA_OPTS="$JAVA_OPTS -Dconsole.sso.openid.home.uri=${KAPUA_CONSOLE_URL}"
 
 # Check for generic OpenID Connect provider integration
 elif [ -n "${KAPUA_CONSOLE_URL}" ] && [ -n "${OPENID_JWT_ISSUER}" ]; then
@@ -41,7 +41,7 @@ elif [ -n "${KAPUA_CONSOLE_URL}" ] && [ -n "${OPENID_JWT_ISSUER}" ]; then
   JAVA_OPTS="${JAVA_OPTS} -Dsso.openid.provider=generic"
   JAVA_OPTS="${JAVA_OPTS} -Dsso.openid.client.id=${OPENID_CLIENT_ID:-console}"
   test -n "${CLIENT_SECRET}" && JAVA_OPTS="${JAVA_OPTS} -Dsso.openid.client.secret=${CLIENT_SECRET}"
-  JAVA_OPTS="${JAVA_OPTS} -Dconsole.sso.home.uri=${KAPUA_CONSOLE_URL}"
+  JAVA_OPTS="${JAVA_OPTS} -Dconsole.sso.openid.home.uri=${KAPUA_CONSOLE_URL}"
 
   JAVA_OPTS="${JAVA_OPTS} -Dsso.openid.generic.jwt.audience.allowed=${JWT_AUDIENCE:-console}"
   JAVA_OPTS="${JAVA_OPTS} -Dsso.openid.generic.jwt.issuer.allowed=${OPENID_JWT_ISSUER}"

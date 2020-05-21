@@ -42,7 +42,7 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements GwtS
     }
 
     @Override
-    public String getSsoLoginUri() throws GwtKapuaException {
+    public String getOpenIDLoginUri() throws GwtKapuaException {
         try {
             return SsoLocator.getLocator(this).getService().getLoginUri(UUID.randomUUID().toString(), SsoHelper.getRedirectUri());
         } catch (Throwable t) {
@@ -52,15 +52,14 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements GwtS
     }
 
     @Override
-    public String getSsoLogoutUri(String ssoIdToken) throws GwtKapuaException {
+    public String getOpenIDLogoutUri(String idToken) throws GwtKapuaException {
         try {
             if (SETTINGS.getBoolean(ConsoleSettingKeys.SSO_OPENID_USER_LOGOUT_ENABLED, true)) {
-                if (ssoIdToken.isEmpty()) {
-                    throw new KapuaIllegalArgumentException("ssoIdToken", ssoIdToken);
+                if (idToken.isEmpty()) {
+                    throw new KapuaIllegalArgumentException("ssoIdToken", idToken);
                 }
                 return SsoLocator.getLocator(this).getService().getLogoutUri(
-                        ssoIdToken, URI.create(SsoHelper.getHomeUri()), UUID.randomUUID().toString());
-            }
+                        idToken, URI.create(SsoHelper.getHomeUri()), UUID.randomUUID().toString());}
             return "";  // return empty string instead of using a dedicated callback just to check if the logout is enabled
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
@@ -69,7 +68,7 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements GwtS
     }
 
     @Override
-    public boolean getSsoEnabled() {
+    public boolean getOpenIDEnabled() {
         return SsoLocator.getLocator(this).getService().isEnabled();
     }
 

@@ -30,7 +30,7 @@ options:
 
 It is also necessary to configure the Web Console external endpoint address.
 
-- **`console.sso.home.uri`** : the URL to the web console, e.g. `http://localhost:8080`
+- **`console.sso.openid.home.uri`** : the URL to the web console, e.g. `http://localhost:8080`
 
 The SSO Login will be available in the form of a dedicated button on the Kapua login page 
 (the button can be enabled through the configuration option `sso.openid.provider`).
@@ -218,7 +218,7 @@ on Kapua using Keycloak (you can login using the default `admin` user with `admi
 - `sso.openid.keycloak.uri=http://<Keycloak-IP-address>:9090` : the Keycloak Server URI 
     (use `https://<Keycloak-IP-address>:9443` in case TLS is enabled - see below for further details)
 - `sso.openid.client.id=console` : the OpenID Client ID (the one set on Keycloak)
-- `console.sso.home.uri=http://localhost:8080` : the Kapua web console URI 
+- `console.sso.openid.home.uri=http://localhost:8080` : the Kapua web console URI 
 
 If you need to start the console docker container alone, it is sufficient to provide the following docker environment 
 variables (these will automatically set up the configuration properties described above):

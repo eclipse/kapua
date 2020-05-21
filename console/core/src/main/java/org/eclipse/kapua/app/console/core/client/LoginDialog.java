@@ -129,7 +129,7 @@ public class LoginDialog extends Dialog {
 
         add(password);
 
-        gwtSettingService.getSsoEnabled(new AsyncCallback<Boolean>() {
+        gwtSettingService.getOpenIDEnabled(new AsyncCallback<Boolean>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -238,7 +238,7 @@ public class LoginDialog extends Dialog {
     }
 
     protected void doSsoLogin() {
-        gwtSettingService.getSsoLoginUri(new AsyncCallback<String>() {
+        gwtSettingService.getOpenIDLoginUri(new AsyncCallback<String>() {
 
             @Override
             public void onFailure(Throwable caught) {
