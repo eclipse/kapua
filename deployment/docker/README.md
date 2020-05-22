@@ -46,7 +46,7 @@ To stop and remove all containers, simply run:
 ./docker-undeploy.sh
 ```
 
-### Single Sign On
+### Single Sign On (OpenID Connect)
 To enable Single Sign On (SSO), please refer to `deployment/docker/unix/sso/README.md`.
 For more details about the SSO deployment, please check the `docs/developer-guide/en/sso.md` SSO developer guide.
 
