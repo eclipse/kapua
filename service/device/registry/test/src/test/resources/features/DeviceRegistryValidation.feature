@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
+# Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -51,13 +51,6 @@ Scenario: Validate a device creator with a null client ID
     And I create a device from the existing creator
     Then An exception was thrown
 
-Scenario: Validate a regular device
-    Create a regular device object. the update validator should OK it.
-
-    Given A regular device
-    When I update some device parameters
-    Then No exception was thrown
-
 Scenario: Validate a null device
     Create a null device object. The validator should throw an
     exception.
@@ -96,14 +89,6 @@ Scenario: Validate a device search with a null scope ID
     When I search for a device with the remembered ID
     Then An exception was thrown
 
-Scenario: Validate a regular device deletion
-    Validate the parameters for deleting a device. Both ScopeID and DeviceID
-    are not null. The validator should be OK with it.
-
-    Given Scope with ID 15
-    And The device ID 4321
-    When I delete the device with the remembered ID
-    Then No exception was thrown
 
 Scenario: Validate deleting a device with a null device ID
     Validate the parameters for deleting a device. ScopeID is valid, but the DeviceID
@@ -182,9 +167,8 @@ Scenario: Validate a device query with a null Scope ID
     is null. The validator should throw an exception.
 
     Given A query with a null Scope ID
-    And I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I perform the remembered query
-    Then An exception was thrown
+    And No exception was thrown
 
 Scenario: Validate a regular device count
     Validate the parameters for a regulat device count. Neither the query nor the query
@@ -198,15 +182,6 @@ Scenario: Validate a null device count
     Validate a device count with a null query. The validator should throw an exception.
 
     Given A null query
-    And I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
-    When I count the devices based on the remembered query
-    Then An exception was thrown
-
-Scenario: Validate a device count with a null Scope ID
-    Validate a device count with a faulty query. The query is not null, but the query Scope ID is.
-    The validator should throw an exception.
-
-    Given A query with a null Scope ID
     And I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I count the devices based on the remembered query
     Then An exception was thrown
