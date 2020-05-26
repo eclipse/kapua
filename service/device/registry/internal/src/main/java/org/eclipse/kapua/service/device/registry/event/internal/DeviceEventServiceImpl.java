@@ -34,6 +34,8 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFac
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+
 /**
  * {@link DeviceEventService} implementation.
  *
@@ -47,9 +49,12 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
     private static final int MAX_RETRY = 3;
     private static final double MAX_WAIT = 200d;
 
-    private final AuthorizationService authorizationService;
-    private final PermissionFactory permissionFactory;
-    private final DeviceRegistryService deviceRegistryService;
+    @Inject
+    private AuthorizationService authorizationService;
+    @Inject
+    private PermissionFactory permissionFactory;
+    @Inject
+    private DeviceRegistryService deviceRegistryService;
 
     /**
      * Constructor

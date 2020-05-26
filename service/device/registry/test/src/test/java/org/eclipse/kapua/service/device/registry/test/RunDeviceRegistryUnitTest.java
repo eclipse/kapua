@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,7 +17,10 @@ import org.junit.runner.RunWith;
 
 @RunWith(CucumberWithPropertiesForDeviceRegistry.class)
 @CucumberOptions(
-        features = { "classpath:features/DeviceRegistryConnection.feature"
+        features = { "classpath:features/DeviceRegistry.feature",
+                     "classpath:features/DeviceEvent.feature",
+                     "classpath:features/DeviceRegistryConnection.feature",
+                     "classpath:features/DeviceRegistryValidation.feature"
                    },
         glue = { "org.eclipse.kapua.service.device.registry.steps",
                  "org.eclipse.kapua.qa.common"

@@ -596,7 +596,7 @@ public class DeviceRegistrySteps extends TestBase {
 
     }
 
-    @When("^I search for a device with a random ID$")
+    @When("^I search for a device with a nonexisting registry ID$")
     public void findDeviceWithRandomId()
             throws Exception {
 
@@ -694,7 +694,7 @@ public class DeviceRegistrySteps extends TestBase {
         }
     }
 
-    @And("^I extract the first device$")
+    @And("^I extract the device with correct BIOS version$")
     public void getFirstDeviceFromList() {
 
         DeviceListResult deviceList = (DeviceListResult) stepData.get("DeviceList");
@@ -833,7 +833,7 @@ public class DeviceRegistrySteps extends TestBase {
         }
     }
 
-    @When("^I delete a device with random IDs$")
+    @When("^When I delete a device with nonexisting ID$")
     public void deleteDeviceWithRandomIds()
             throws Exception {
 
@@ -871,15 +871,15 @@ public class DeviceRegistrySteps extends TestBase {
         }
     }
 
-    @Then("^It is possible to find the device based on its client ID$")
-    public void findDeviceByRememberedClientId()
+    @Then("^I find the device based on clientID \"([^\"]*)\"$")
+    public void findDeviceByRememberedClientId(String clientID)
             throws Exception {
 
         Device device = (Device) stepData.get("Device");
 
         primeException();
         try {
-            Device tmpDev = deviceRegistryService.findByClientId(getCurrentScopeId(), device.getClientId());
+            Device tmpDev = deviceRegistryService.findByClientId(getCurrentScopeId(), clientID);
             assertEquals(device.getId(), tmpDev.getId());
         } catch (KapuaException ex) {
             verifyException(ex);
@@ -2602,10 +2602,10 @@ public class DeviceRegistrySteps extends TestBase {
     }
 
     @Then("^I find device with clientId \"([^\"]*)\"$")
-    public void iFindDeviceWithClientId(String deviceName) {
+    public void iFindDeviceWithClientId(String clientId) throws KapuaException {
         Device device = (Device) stepData.get("Device");
-
-        assertEquals(device.getClientId(), deviceName);
+        Device tmpDevice = deviceRegistryService.findByClientId(getCurrentScopeId(), clientId);
+        assertNotNull(tmpDevice);
     }
 
     @When("^I search events from devices in account \"([^\"]*)\" and (\\d+) (?:event(?:|s)?|or more event(?:|s)?) (?:is|are) found$")
@@ -2981,6 +2981,70 @@ public class DeviceRegistrySteps extends TestBase {
                                                         tmpQuery.attributePredicate(DeviceAttributes.STATUS, deviceParams.getStatus(), AttributePredicate.Operator.LIKE)));
             devices = deviceRegistryService.query(tmpQuery);
             stepData.put("DeviceList", devices);
+        }
+    }
+
+    @When("^I search for a device with name \"([^\"]*)\"$")
+    public void iSearchForADeviceWithName(String clientID) throws Throwable {
+        try {
+            stepData.remove("Device");
+            primeException();
+            DeviceQuery query = deviceFactory.newQuery(SYS_SCOPE_ID);
+            query.setPredicate(query.attributePredicate(DeviceAttributes.CLIENT_ID, clientID, AttributePredicate.Operator.EQUAL));
+            DeviceListResult queryResult = deviceRegistryService.query(query);
+            Device foundDevice = queryResult.getFirstItem();
+            stepData.put("Device", foundDevice);
+            stepData.put("queryResult", queryResult);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @Given("^I create a device with null clientID$")
+    public void iCreateADeviceWithNullClientID() throws Throwable{
+        DeviceCreator deviceCreator = deviceFactory.newCreator(getCurrentScopeId());
+        deviceCreator.setClientId(null);
+        stepData.put("DeviceCreator", deviceCreator);
+
+        try {
+            primeException();
+            stepData.remove("Device");
+            Device device = deviceRegistryService.create(deviceCreator);
+            stepData.put("Device", device);
+        } catch (Exception ex) {
+            verifyException(ex);
+        }
+    }
+
+    @Given("^I try to create devices with invalid symbols \"([^\"]*)\" in name$")
+    public void iTryToCreateDevicesWithInvalidSymbolsInName(String invalidCharacters) throws Exception {
+        DeviceCreator deviceCreator = deviceFactory.newCreator(getCurrentScopeId());
+        for (int i = 0; i < invalidCharacters.length(); i++) {
+            String deviceName = "deviceName" + invalidCharacters.charAt(i);
+            deviceCreator.setClientId(deviceName);
+            primeException();
+            try {
+                Device device = deviceRegistryService.create(deviceCreator);
+                stepData.put("Device", device);
+                stepData.put("CurrentDeviceId", device.getId());
+            } catch (KapuaException ex) {
+                verifyException(ex);
+            }
+        }
+    }
+
+    @When("^I update the device clientID from \"([^\"]*)\" to \"([^\"]*)\"$")
+    public void iUpdateTheDeviceClientIDToNewClientId(String oldClientId, String newClientId) throws Exception {
+        Device device = (Device) stepData.get("Device");
+        assertEquals(oldClientId, device.getClientId());
+        stepData.put("Text", device.getClientId());
+        device.setClientId(newClientId);
+
+        primeException();
+        try {
+            deviceRegistryService.update(device);
+        } catch (KapuaException ex) {
+            verifyException(ex);
         }
     }
 }
