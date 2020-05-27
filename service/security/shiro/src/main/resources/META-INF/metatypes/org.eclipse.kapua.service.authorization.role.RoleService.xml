@@ -2,19 +2,20 @@
 <!--
     Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
 
-    All rights reserved. This program and the accompanying materials
-    are made available under the terms of the Eclipse Public License v1.0
-    which accompanies this distribution, and is available at
-    http://www.eclipse.org/legal/epl-v10.html
+    All rights reserved. This program and the accompanying materials are made
+    available under the terms of the Eclipse Public License 2.0
+    which is available at https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
 
     Contributors:
         Eurotech
 -->
 <MetaData xmlns="http://www.osgi.org/xmlns/metatype/v1.2.0" localization="en_us">
     <OCD id="org.eclipse.kapua.service.authorization.role.RoleService"
-         name="RoleService" 
+         name="RoleService"
          description="This is the configuration for the kapua RoleService.">
-        
+
         <Icon resource="OSGI-INF/account-service.png" size="32"/>
 
         <AD id="infiniteChildEntities"
@@ -26,18 +27,18 @@
             description="Whether to allow infinite roles for this account or not.">
         </AD>
 
-        <AD id="maxNumberChildEntities"  
+        <AD id="maxNumberChildEntities"
             name="maxNumberChildRoles"
             type="Integer"
-            cardinality="0" 
+            cardinality="0"
             required="true"
-            default="0" 
+            default="0"
             min="0"
             description="Maximum number of roles that are allowed to be created for this account. Valid if infiniteChildRoles set to false.">
         </AD>
 
     </OCD>
-    
+
     <Designate pid="org.eclipse.kapua.service.authorization.role.RoleService">
         <Object ocdref="org.eclipse.kapua.service.authorization.role.RoleService"/>
     </Designate>

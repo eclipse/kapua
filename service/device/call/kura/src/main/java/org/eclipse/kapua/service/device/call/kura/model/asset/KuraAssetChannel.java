@@ -1,10 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Eurotech - initial API and implementation
@@ -23,7 +24,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Kura channel asset definition
- * 
+ *
  * @since 1.0.0
  */
 public class KuraAssetChannel {
@@ -37,9 +38,9 @@ public class KuraAssetChannel {
 
     /**
      * Gets the name of the channel.
-     * 
+     *
      * @return The name of the channel.
-     * 
+     *
      * @since 1.0.0
      */
     public String getName() {
@@ -48,9 +49,9 @@ public class KuraAssetChannel {
 
     /**
      * Sets the name of the channel.
-     * 
+     *
      * @param name
-     * 
+     *
      * @since 1.0.0
      */
     public void setName(String name) {
@@ -59,9 +60,9 @@ public class KuraAssetChannel {
 
     /**
      * Gets the channel mode.
-     * 
+     *
      * @return The channel mode.
-     * 
+     *
      * @since 1.0.0
      */
     public KuraAssetChannelMode getMode() {
@@ -71,10 +72,10 @@ public class KuraAssetChannel {
     /**
      * Sets the channel mode.
      * A {@link KuraAssetChannel} can have modes available from {@link KuraAssetChannelMode}.
-     * 
+     *
      * @param mode
      *            The channel mode to set.
-     * 
+     *
      * @since 1.0.0
      */
     public void setMode(KuraAssetChannelMode mode) {
@@ -84,9 +85,9 @@ public class KuraAssetChannel {
     /**
      * Gets the channel type.
      * This is the type returned by {@link #getValue()}.
-     * 
+     *
      * @return The channel value type.
-     * 
+     *
      * @since 1.0.0
      */
     public Class<?> getType() {
@@ -97,10 +98,10 @@ public class KuraAssetChannel {
      * Sets the channel type.
      * This type must be coherent with the value given to {@link #setValue(Object)}.
      * If not errors will occur during the interaction with the device.
-     * 
+     *
      * @param type
      *            The channel type.
-     * 
+     *
      * @since 1.0.0
      */
     public void setType(Class<?> type) {
@@ -112,9 +113,9 @@ public class KuraAssetChannel {
      * Depending on the {@link KuraAssetChannelMode} this can be a value {@link KuraAssetChannelMode#READ} from the channel or
      * to {@link KuraAssetChannelMode#WRITE} into the channel.
      * This is mutually exclusive with {@link #getError()}
-     * 
+     *
      * @return The value of the channel.
-     * 
+     *
      * @since 1.0.0
      */
     public Object getValue() {
@@ -125,10 +126,10 @@ public class KuraAssetChannel {
      * Sets the value of the channel.
      * Depending on the {@link KuraAssetChannelMode} this can be a value {@link KuraAssetChannelMode#READ} from the channel or
      * to {@link KuraAssetChannelMode#WRITE} into the channel.
-     * 
+     *
      * @param value
      *            The value of the channel to set.
-     * 
+     *
      * @since 1.0.0
      */
     public void setValue(Object value) {
@@ -137,9 +138,9 @@ public class KuraAssetChannel {
 
     /**
      * Gets the timestamp in millisecond of the time when the value was read from the channel.
-     * 
+     *
      * @return The timestamp in millisecond of the time when the value was read from the channel.
-     * 
+     *
      * @since 1.0.0
      */
     public Long getTimestamp() {
@@ -148,10 +149,10 @@ public class KuraAssetChannel {
 
     /**
      * Sets timestamp in millisecond of the time when the value was read from the channel.
-     * 
+     *
      * @param timestamp
      *            The timestamp in millisecond of the time when the value was read from the channel.
-     * 
+     *
      * @since 1.0.0
      */
     public void setTimestamp(Long timestamp) {
@@ -162,9 +163,9 @@ public class KuraAssetChannel {
      * Gets the error message for this channel
      * When reading from or writing to a channel, if any error occurs it will be reported here.
      * This is mutually exclusive with {@link #getValue()}
-     * 
+     *
      * @return The error message, if error has occurred.
-     * 
+     *
      * @since 1.0.0
      */
     public String getError() {
@@ -174,7 +175,7 @@ public class KuraAssetChannel {
     /**
      * Sets the error message for this channel.
      * This must be set if error has occurred during reading from/wrtiting to
-     * 
+     *
      * @param error
      *            The error message.
      */
@@ -184,13 +185,13 @@ public class KuraAssetChannel {
 
     /**
      * Parse a {@link JsonNode} that represent the {@link KuraAssetChannel} object.
-     * 
+     *
      * @param jsonKuraAssetChannel
      *            The {@link JsonNode} to parse
      * @return The parsed {@link KuraAssetChannel} result.
-     * 
+     *
      * @throws KapuaException
-     * 
+     *
      * @since 1.0.0
      */
     public static KuraAssetChannel readJsonNode(JsonNode jsonKuraAssetChannel) throws KapuaException {
@@ -245,7 +246,7 @@ public class KuraAssetChannel {
 
     /**
      * Serialize {@code  this} {@link KuraAssetChannel} into json using the given {@link JsonGenerator}.
-     * 
+     *
      * @param jsonGenerator
      *            The {@link JsonGenerator} to put serialized {@link KuraAssetChannel}.
      * @throws IOException

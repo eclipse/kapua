@@ -1,10 +1,11 @@
 ###############################################################################
 # Copyright (c) 2020 Eurotech and/or its affiliates and others
 #
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# All rights reserved. This program and the accompanying materials are made
+# available under the terms of the Eclipse Public License 2.0
+# which is available at https://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     Eurotech - initial API and implementation
@@ -353,7 +354,7 @@ Scenario: Changing job description to the long one
   When I search for the job in the database
   Then I find a job with description "descriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondedescription"
   And No exception was thrown
-  
+
 # Related to issue 2856
 #Scenario: Changing the job description to the too-long one
 #  Try to edit description on a job with description that has 256 characters.

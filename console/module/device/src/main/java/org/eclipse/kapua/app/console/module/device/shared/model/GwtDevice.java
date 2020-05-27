@@ -1,10 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Eurotech - initial API and implementation
@@ -42,7 +43,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
         APP_PROV_V2("PROV-V2"), //
         APP_PROV_V3("PROV-V3"), //
         APP_VPN_CLIENT("VPNCLIENT-V1"), //
-        APP_CERTIFICATES("CERT-V1"), // 
+        APP_CERTIFICATES("CERT-V1"), //
         APP_ASSET_V1("ASSET-V1");
 
         private final String appId;

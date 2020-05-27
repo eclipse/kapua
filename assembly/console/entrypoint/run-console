@@ -1,12 +1,13 @@
 #!/bin/sh
 ################################################################################
 #    Copyright (c) 2017, 2020 Red Hat Inc and others
-#   
-#    All rights reserved. This program and the accompanying materials
-#    are made available under the terms of the Eclipse Public License v1.0
-#    which accompanies this distribution, and is available at
-#    http://www.eclipse.org/legal/epl-v10.html
-#   
+#
+#    All rights reserved. This program and the accompanying materials are made
+#    available under the terms of the Eclipse Public License 2.0
+#    which is available at https://www.eclipse.org/legal/epl-2.0/
+#
+#    SPDX-License-Identifier: EPL-2.0
+#
 #    Contributors:
 #        Red Hat Inc - initial API and implementation
 #        Eurotech
@@ -20,12 +21,12 @@ if [ -n "$KEYCLOAK_URL" ] && [ -n "$KAPUA_CONSOLE_URL" ]; then
    
    : KEYCLOAK_REALM=${KEYCLOAK_REALM:=kapua}
    : KEYCLOAK_CLIENT_ID=${KEYCLOAK_CLIENT_ID:=console}
-   
+
    JAVA_OPTS="$JAVA_OPTS -Dsso.provider=keycloak"
    JAVA_OPTS="$JAVA_OPTS -Dsso.openid.client.id=${KEYCLOAK_CLIENT_ID}"
-   
+
    test -n "$CLIENT_SECRET" && JAVA_OPTS="$JAVA_OPTS -Dsso.openid.client.secret=${CLIENT_SECRET}"
-   
+
    JAVA_OPTS="$JAVA_OPTS -Dsso.keycloak.uri=${KEYCLOAK_URL}"
    JAVA_OPTS="$JAVA_OPTS -Dsso.keycloak.realm=${KEYCLOAK_REALM}"
 

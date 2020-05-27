@@ -1,10 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2017, 2020 Red Hat Inc and others.
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Red Hat Inc - initial API and implementation
@@ -25,7 +26,7 @@ import java.util.List;
  * <p>
  * Assume the following code:
  * </p>
- * 
+ *
  * <pre><code>
 class MyClass {
 
@@ -45,7 +46,7 @@ public void close () {
  * If something fails during initialization of MyClass then {@code resource1} would not get
  * closed properly. This class can help in solving this scenario by using:
  * </p>
- * 
+ *
  * <pre><code>
 public MyClass ()  {
   try ( Starting s = new Starting() )  {

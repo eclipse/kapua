@@ -1,10 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Eurotech - initial API and implementation
@@ -15,7 +16,7 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
 /**
  * Class that offers access to account settings
- * 
+ *
  * @since 1.0
  *
  */
@@ -23,7 +24,7 @@ public class KapuaAccountSetting extends AbstractKapuaSetting<KapuaAccountSettin
 
     /**
      * Resource file from which source properties.
-     * 
+     *
      */
     private static final String ACCOUNT_CONFIG_RESOURCE = "kapua-account-setting.properties";
 
@@ -31,7 +32,7 @@ public class KapuaAccountSetting extends AbstractKapuaSetting<KapuaAccountSettin
 
     /**
      * Initialize the {@link AbstractKapuaSetting} with the {@link KapuaAccountSettingKeys#ACCOUNT_KEY} value.
-     * 
+     *
      */
     private KapuaAccountSetting() {
         super(ACCOUNT_CONFIG_RESOURCE);
@@ -39,7 +40,7 @@ public class KapuaAccountSetting extends AbstractKapuaSetting<KapuaAccountSettin
 
     /**
      * Gets a singleton instance of {@link KapuaAccountSetting}.
-     * 
+     *
      * @return A singleton instance of KapuaAccountSetting.
      */
     public static KapuaAccountSetting getInstance() {

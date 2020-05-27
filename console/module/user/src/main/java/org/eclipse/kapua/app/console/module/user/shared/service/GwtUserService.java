@@ -1,10 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Eurotech - initial API and implementation
@@ -33,7 +34,7 @@ public interface GwtUserService extends RemoteService {
 
     /**
      * Creates a new user under the account specified in the UserCreator.
-     * 
+     *
      * @param gwtUserCreator
      * @return
      * @throws GwtKapuaException
@@ -43,7 +44,7 @@ public interface GwtUserService extends RemoteService {
 
     /**
      * Updates an User in the database and returns the refreshed/reloaded entity instance.
-     * 
+     *
      * @param gwtUser
      * @return
      * @throws GwtKapuaException
@@ -53,7 +54,7 @@ public interface GwtUserService extends RemoteService {
 
     /**
      * Delete the supplied User.
-     * 
+     *
      * @param gwtUserId
      * @throws GwtKapuaException
      */
@@ -62,33 +63,33 @@ public interface GwtUserService extends RemoteService {
 
     /**
      * Returns an User by its Id or null if an account with such Id does not exist.
-     * 
+     *
      * @param userId
      * @return
      * @throws GwtKapuaException
-     * 
+     *
      */
     public GwtUser find(String accountId, String userId)
             throws GwtKapuaException;
 
     /**
      * Returns the list of all User which belong to an account.
-     * 
+     *
      * @param scopeIdString
      * @return
      * @throws GwtKapuaException
-     * 
+     *
      */
     public ListLoadResult<GwtUser> findAll(String scopeIdString)
             throws GwtKapuaException;
 
     /**
      * Returns the list of all User matching the query.
-     * 
+     *
      * @param gwtUserQuery
      * @return
      * @throws GwtKapuaException
-     * 
+     *
      */
     public PagingLoadResult<GwtUser> query(PagingLoadConfig loadConfig, GwtUserQuery gwtUserQuery)
             throws GwtKapuaException;

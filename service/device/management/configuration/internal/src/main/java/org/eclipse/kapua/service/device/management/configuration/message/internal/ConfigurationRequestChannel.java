@@ -1,10 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Eurotech - initial API and implementation
@@ -15,9 +16,9 @@ import org.eclipse.kapua.service.device.management.commons.message.request.Kapua
 
 /**
  * Device configuration request channel.
- * 
+ *
  * @since 1.0
- * 
+ *
  */
 public class ConfigurationRequestChannel extends KapuaRequestChannelImpl {
 
@@ -26,7 +27,7 @@ public class ConfigurationRequestChannel extends KapuaRequestChannelImpl {
 
     /**
      * Get the device configuration identifier
-     * 
+     *
      * @return
      */
     public String getConfigurationId() {
@@ -35,7 +36,7 @@ public class ConfigurationRequestChannel extends KapuaRequestChannelImpl {
 
     /**
      * Set the device configuration identifier
-     * 
+     *
      * @param configurationId
      */
     public void setConfigurationId(String configurationId) {
@@ -44,7 +45,7 @@ public class ConfigurationRequestChannel extends KapuaRequestChannelImpl {
 
     /**
      * Get the device configuration component identifier
-     * 
+     *
      * @return
      */
     public String getComponentId() {
@@ -53,7 +54,7 @@ public class ConfigurationRequestChannel extends KapuaRequestChannelImpl {
 
     /**
      * Set the device configuration component identifier
-     * 
+     *
      * @param componentId
      */
     public void setComponentId(String componentId) {
