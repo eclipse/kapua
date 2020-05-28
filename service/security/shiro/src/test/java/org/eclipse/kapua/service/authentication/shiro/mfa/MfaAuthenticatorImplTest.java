@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 @Category(JUnitTests.class)
-public class MfaAuthenticatorImplTest extends Assert {
+public class MfaAuthenticatorImplTest {
 
     MfaAuthenticatorImpl mfaAuthenticatorImpl;
     String[] encryptedSecrets, hashedScratchCodes, stringVerificationCodes;
@@ -41,14 +41,14 @@ public class MfaAuthenticatorImplTest extends Assert {
 
     @Test
     public void isEnabledTest() {
-        assertTrue("True expected.", mfaAuthenticatorImpl.isEnabled());
+        Assert.assertTrue("True expected.", mfaAuthenticatorImpl.isEnabled());
     }
 
     @Test
     public void authorizeEncryptedSecretVerificationCodeParametersTest() {
         for (String encryptedSecret : encryptedSecrets) {
             for (int verificationCode : verificationCodes) {
-                assertFalse("False expected.", mfaAuthenticatorImpl.authorize(encryptedSecret, verificationCode));
+                Assert.assertFalse("False expected.", mfaAuthenticatorImpl.authorize(encryptedSecret, verificationCode));
             }
         }
     }
@@ -56,14 +56,14 @@ public class MfaAuthenticatorImplTest extends Assert {
     @Test(expected = NullPointerException.class)
     public void authorizeNullEncryptedSecretVerificationCodeParametersTest() {
         for (int verificationCode : verificationCodes) {
-            assertFalse("False expected.", mfaAuthenticatorImpl.authorize(null, verificationCode));
+            Assert.assertFalse("False expected.", mfaAuthenticatorImpl.authorize(null, verificationCode));
         }
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void authorizeEncryptedSecretNullVerificationCodeParametersTest() {
         for (String encryptedSecret : encryptedSecrets) {
-            assertFalse("False expected.", mfaAuthenticatorImpl.authorize(encryptedSecret, null));
+            Assert.assertFalse("False expected.", mfaAuthenticatorImpl.authorize(encryptedSecret, null));
         }
     }
 
@@ -71,14 +71,14 @@ public class MfaAuthenticatorImplTest extends Assert {
     public void authorizeHasedScratchCodeVerificationCodeParametersFalseTest() {
         for (String hasedScratchCode : hashedScratchCodes) {
             for (String stringVerificationCode : stringVerificationCodes) {
-                assertFalse("False expected.", mfaAuthenticatorImpl.authorize(hasedScratchCode, stringVerificationCode));
+                Assert.assertFalse("False expected.", mfaAuthenticatorImpl.authorize(hasedScratchCode, stringVerificationCode));
             }
         }
     }
 
     @Test
     public void authorizeHasedScratchCodeVerificationCodeParametersTrueTest() {
-        assertTrue("True expected.", mfaAuthenticatorImpl.authorize("$2a$12$2AZYOAvilJyNvG8b6rBDaOSIcM3mKc6iyNQUYIXOF4ZFEAYdzM7Jm", "plainValue"));
+        Assert.assertTrue("True expected.", mfaAuthenticatorImpl.authorize("$2a$12$2AZYOAvilJyNvG8b6rBDaOSIcM3mKc6iyNQUYIXOF4ZFEAYdzM7Jm", "plainValue"));
     }
 
     @Test(expected = NullPointerException.class)
@@ -91,17 +91,17 @@ public class MfaAuthenticatorImplTest extends Assert {
     @Test
     public void authorizeHasedScratchCodeVerificationNullCodeParametersTest() {
         for (String hasedScratchCode : hashedScratchCodes) {
-            assertFalse("False expected.", mfaAuthenticatorImpl.authorize(hasedScratchCode, null));
+            Assert.assertFalse("False expected.", mfaAuthenticatorImpl.authorize(hasedScratchCode, null));
         }
     }
 
     @Test
     public void generateKeyTest() {
-        assertEquals("Expected and actual values should be the same.", 32, mfaAuthenticatorImpl.generateKey().length());
+        Assert.assertEquals("Expected and actual values should be the same.", 32, mfaAuthenticatorImpl.generateKey().length());
     }
 
     @Test
     public void generateCodesTest() {
-        assertEquals("Expected and actual values should be the same.", 5, mfaAuthenticatorImpl.generateCodes().size());
+        Assert.assertEquals("Expected and actual values should be the same.", 5, mfaAuthenticatorImpl.generateCodes().size());
     }
 }

@@ -14,12 +14,13 @@
 package org.eclipse.kapua.service.device.registry.steps;
 
 import cucumber.api.Scenario;
+import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.qa.common.TestBase;
@@ -37,6 +38,8 @@ import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.Assert;
 
+import com.google.inject.Singleton;
+
 import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +47,7 @@ import java.util.Map;
 /**
  * Steps for testing Access Control List functionality on Broker service.
  */
-@ScenarioScoped
+@Singleton
 public class AclSteps extends TestBase {
 
     public static final int BROKER_START_WAIT_MILLIS = 5000;
@@ -52,6 +55,8 @@ public class AclSteps extends TestBase {
     private static final String SYS_USERNAME = "kapua-sys";
 
     private static final String SYS_PASSWORD = "kapua-password";
+
+    protected KapuaLocator locator;
 
     private static final String ACCOUNT = "acme";
     private static final String MAIL = "john@acme.org";
@@ -115,14 +120,12 @@ public class AclSteps extends TestBase {
 
     @Inject
     public AclSteps(StepData stepData) {
-
-        this.stepData = stepData;
+        super(stepData);
     }
 
-    @Before
-    public void aclStepsBefore(Scenario scenario) {
-
-        KapuaLocator locator = KapuaLocator.getInstance();
+    @After(value="@setup")
+    public void setServices() {
+        locator = KapuaLocator.getInstance();
         authenticationService = locator.getService(AuthenticationService.class);
         credentialsFactory = locator.getFactory(CredentialsFactory.class);
         accountService = locator.getService(AccountService.class);
@@ -135,9 +138,12 @@ public class AclSteps extends TestBase {
         clientMqttMessage = new HashMap<>();
         listenerMqttMessage = new HashMap<>();
 
-        this.scenario = scenario;
-
         aclCreator = new AclCreator();
+    }
+
+    @Before(value="@env_docker or @env_embedded_minimal or @env_none", order=10)
+    public void beforeScenarioNone(Scenario scenario) {
+        updateScenario(scenario);
     }
 
     @Given("string \"(.*)\" is published to topic \"(.*)\" with client \"(.*)\"$")

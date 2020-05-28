@@ -38,6 +38,8 @@
 
         <module>broker</module>
         <module>api</module>
+
+        <module>consumer</module>
         <module>job-engine</module>
     </modules>
 

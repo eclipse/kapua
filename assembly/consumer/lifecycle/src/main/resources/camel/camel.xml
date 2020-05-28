@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (c) 2020 Eurotech and/or its affiliates and others
+
+    This program and the accompanying materials are made
+    available under the terms of the Eclipse Public License 2.0
+    which is available at https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<routes xmlns="http://camel.apache.org/schema/spring">
+    <route errorHandlerRef="mainRouteMessageErrorHandler" id="lifecycleRoute">
+        <from uri="amqp:queue://Consumer.kapua-sys:lifecyclelisteners:EXACTLY_ONCE.VirtualTopic.$EDC.>?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=20&amp;maxConcurrentConsumers=50"/>
+        <!--  handling timeout and communication exceptions in a retry queue -->
+        <onException>
+            <exception>org.eclipse.kapua.KapuaException</exception>
+            <redeliveryPolicy maximumRedeliveries="0" logRetryAttempted="true" retryAttemptedLogLevel="WARN"/>
+            <handled>
+                <constant>true</constant>
+            </handled>
+            <bean ref="kapuaCamelFilter" method="bridgeError"/>
+            <to uri="amqp:queue:notProcessableMessage"/>
+        </onException>
+        <pipeline>
+            <bean ref="kapuaCamelFilter" method="bindSession"/>
+            <choice id="choiceForwarded">
+                <when id="notForwarded">
+                    <simple>${header.forwardedMessage} != true</simple>
+                    <choice id="choiceSystenMessageFilter">
+                        <when id="systemMessageFilter">
+                            <simple>${header.originalTopic} regex '^\$EDC\..*'</simple>
+                            <choice id="choiceSystenMessageInnerFilter">
+                                <when id="systemMessageInnerFilter">
+                                    <simple>${header.originalTopic} regex '^\$EDC\.([^\.]+\.){2}MQTT\.[^\.]+$'</simple>
+                                    <choice id="choice">
+                                        <when id="birthLifeCycleMessageFilter">
+                                            <simple>${header.originalTopic} ends with '.BIRTH'</simple>
+                                            <bean ref="kapuaLifeCycleConverter" method="convertToBirth"/>
+                                            <to uri="bean:deviceMessageListener?method=processBirthMessage"/>
+                                        </when>
+                                        <when id="disconnectLifeCycleMessageFilter">
+                                            <simple>${header.originalTopic} ends with '.DC'</simple>
+                                            <bean ref="kapuaLifeCycleConverter" method="convertToDisconnect"/>
+                                            <to uri="bean:deviceMessageListener?method=processDisconnectMessage"/>
+                                        </when>
+                                        <when id="appsLifeCycleMessageFilter">
+                                            <simple>${header.originalTopic} ends with '.APPS'</simple>
+                                            <bean ref="kapuaLifeCycleConverter" method="convertToApps"/>
+                                            <to uri="bean:deviceMessageListener?method=processAppsMessage"/>
+                                        </when>
+                                        <when id="missingLifeCycleMessageFilter">
+                                            <simple>${header.originalTopic} ends with '.LWT'</simple>
+                                            <bean ref="kapuaLifeCycleConverter" method="convertToMissing"/>
+                                            <to uri="bean:deviceMessageListener?method=processMissingMessage"/>
+                                        </when>
+                                    </choice>
+                                </when>
+                                <!-- TODO EXT-CAMEL only for test remove when jobs will be defined in their own container -->
+                                <when id="deviceManagementNotificationLifeCycleMessageFilter">
+                                    <!-- bad pattern only test!!! -->
+                                    <simple>${header.originalTopic} regex '^\$EDC\.([^\.]+\.){2}DEPLOY-V2\.NOTIFY.*'</simple>
+                                    <bean ref="deviceManagementNotificationConverter" method="convertToManagementNotification"/>
+                                    <to uri="bean:deviceManagementNotificationMessageProcessor?method=processMessage"/>
+                                </when>
+                            </choice>
+                        </when>
+                    </choice>
+                </when>
+            </choice>
+        </pipeline>
+    </route>
+    <route id="notProcessableMessage">
+        <from uri="amqp:queue://notProcessableMessage?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
+        <pipeline>
+            <bean ref="kapuaCamelFilter" method="bindSession"/>
+            <to uri="bean:errorMessageListener?method=processMessage"/>
+            <bean ref="kapuaCamelFilter" method="unbindSession"/>
+        </pipeline>
+    </route>
+</routes>

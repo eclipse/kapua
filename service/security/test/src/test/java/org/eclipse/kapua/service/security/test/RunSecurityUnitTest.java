@@ -13,16 +13,18 @@
 package org.eclipse.kapua.service.security.test;
 
 import cucumber.api.CucumberOptions;
-import org.eclipse.kapua.qa.common.cucumber.CucumberProperty;
+import cucumber.api.junit.Cucumber;
+
 import org.junit.runner.RunWith;
 
-@RunWith(CucumberWithPropertiesForSecurity.class)
+@RunWith(Cucumber.class)
 @CucumberOptions(
         features = {"classpath:features/RoleServiceUnitTests.feature",
                     "classpath:features/GroupServiceUnitTests.feature",
                     "classpath:features/CredentialServiceUnitTests.feature"
         },
-        glue = {"org.eclipse.kapua.service.authorization.steps",
+        glue = {"org.eclipse.kapua.service.security.test",
+                "org.eclipse.kapua.service.authorization.steps",
                 "org.eclipse.kapua.service.authentication.steps",
                 "org.eclipse.kapua.qa.common"
         },
@@ -31,9 +33,5 @@ import org.junit.runner.RunWith;
                 "json:target/cucumber.json"},
         strict = true,
         monochrome = true)
-@CucumberProperty(key = "locator.class.impl", value = "org.eclipse.kapua.qa.common.MockedLocator")
-@CucumberProperty(key = "test.type", value = "unit")
-@CucumberProperty(key = "commons.db.schema", value = "kapuadb")
-@CucumberProperty(key = "commons.db.schema.update", value = "true")
 public class RunSecurityUnitTest {
 }

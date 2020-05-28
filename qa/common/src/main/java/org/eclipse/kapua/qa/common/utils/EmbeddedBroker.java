@@ -47,8 +47,6 @@ public class EmbeddedBroker {
 
     private static final int EXTRA_STARTUP_DELAY = Integer.getInteger("org.eclipse.kapua.qa.broker.extraStartupDelay", 0);
 
-    private static final boolean NO_EMBEDDED_SERVERS = Boolean.getBoolean("org.eclipse.kapua.qa.noEmbeddedServers");
-
     private Map<String, List<AutoCloseable>> closables = new HashMap<>();
 
     private static BrokerService broker;
@@ -58,10 +56,6 @@ public class EmbeddedBroker {
 
     @Given("^Start Broker$")
     public void start() {
-
-        if (NO_EMBEDDED_SERVERS) {
-            return;
-        }
         logger.info("Starting new Broker instance");
         try {
             // test if port is already open
@@ -95,10 +89,6 @@ public class EmbeddedBroker {
 
     @Given("^Stop Broker$")
     public void stop() {
-
-        if (NO_EMBEDDED_SERVERS) {
-            return;
-        }
         logger.info("Stopping Broker instance ...");
         try (final Suppressed<RuntimeException> s = Suppressed.withRuntimeException()) {
 

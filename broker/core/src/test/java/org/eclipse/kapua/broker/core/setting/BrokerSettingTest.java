@@ -17,30 +17,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Modifier;
-
 @Category(JUnitTests.class)
-public class BrokerSettingTest extends Assert {
-
-    @Test
-    public void brokerSettingTest() throws Exception {
-        Constructor<BrokerSetting> brokerSetting = BrokerSetting.class.getDeclaredConstructor();
-        assertTrue("True expected.", Modifier.isPrivate(brokerSetting.getModifiers()));
-        brokerSetting.setAccessible(true);
-        brokerSetting.newInstance();
-    }
-
-    @Test
-    public void getInstanceTest() {
-        Object brokerSetting = BrokerSetting.getInstance();
-        assertNotNull("NotNull expected.", brokerSetting);
-        assertTrue("True expected.", brokerSetting instanceof BrokerSetting);
-
-        Object brokerSettingInstanceNotNull = BrokerSetting.getInstance();
-        assertNotNull("NotNull expected.", brokerSettingInstanceNotNull);
-        assertTrue("True expected.", brokerSetting instanceof BrokerSetting);
-    }
+public class BrokerSettingTest {
 
     @Test
     public void resetInstanceTest() {
@@ -49,9 +27,9 @@ public class BrokerSettingTest extends Assert {
             BrokerSetting.resetInstance();
             String brokerInstance2 = BrokerSetting.getInstance().toString();
 
-            assertNotEquals("The two instances should not be the same!", brokerInstance1, brokerInstance2);
+            Assert.assertNotEquals("The two instances should not be the same!", brokerInstance1, brokerInstance2);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 }

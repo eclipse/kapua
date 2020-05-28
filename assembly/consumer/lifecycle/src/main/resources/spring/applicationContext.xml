@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (c) 2020 Eurotech and/or its affiliates and others
+
+    This program and the accompanying materials are made
+    available under the terms of the Eclipse Public License 2.0
+    which is available at https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        Eurotech - initial API and implementation
+        Red Hat Inc
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:camel="http://camel.apache.org/schema/spring"
+        xsi:schemaLocation="
+           http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+           http://camel.apache.org/schema/spring https://camel.apache.org/schema/spring/camel-spring-3.3.0.xsd">
+
+    <!-- Allows us to use system properties as variables in this configuration file -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <!-- no property file now
+        <property name="locations">
+            <value>file:${path}/conf.properties</value>
+        </property>
+    -->
+    </bean>
+
+    <bean id="routesStatus" class="org.eclipse.kapua.consumer.lifecycle.LifecycleRouteHealthIndicator">
+        <property name="camelContext" ref="lifecycleContext"></property>
+        <property name="routeCount" value="2"></property>
+    </bean>
+
+    <bean id="connectionFactory" class="org.apache.qpid.amqp_1_0.jms.impl.ConnectionFactoryImpl" factory-method="createFromURL">
+        <constructor-arg index="0" type="java.lang.String" value="amqp://${BROKER_INTERNAL_USERNAME}:${BROKER_INTERNAL_PASSWORD}@${BROKER_HOST}:${BROKER_PORT}" />
+    </bean>
+    <bean id="cachingConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <property name="targetConnectionFactory" ref="connectionFactory"/>
+        <property name="sessionCacheSize" value="10" /> <!-- it's the maximum number of cached sessions  -->
+    </bean>
+    <bean id="amqp" class="org.apache.camel.component.amqp.AMQPComponent">
+        <property name="connectionFactory" ref="cachingConnectionFactory"/>
+        <property name="cacheLevel" value="2"/>
+    </bean>
+
+    <!-- session filers (to bind Kapua and Shiro thread context) -->
+    <bean id="kapuaCamelFilter" class="org.eclipse.kapua.consumer.commons.converter.KapuaCamelFilter"/>
+
+    <bean id="deviceManagementNotificationConverter" class="org.eclipse.kapua.consumer.lifecycle.converter.DeviceManagementNotificationConverter"/>
+    <bean id="kapuaLifeCycleConverter" class="org.eclipse.kapua.consumer.lifecycle.converter.KapuaLifeCycleConverter"/>
+    <bean id="deviceMessageListener" class="org.eclipse.kapua.consumer.lifecycle.listener.DeviceMessageListener"/>
+    <bean id="deviceManagementNotificationMessageProcessor" class="org.eclipse.kapua.consumer.lifecycle.listener.DeviceManagementNotificationMessageProcessor"/>
+    <bean id="errorMessageListener" class="org.eclipse.kapua.consumer.commons.listener.error.ErrorMessageListener"/>
+
+    <bean id="jaxbContextLoader" class="org.eclipse.kapua.consumer.commons.xml.ConsumerJAXBContextLoader"
+        init-method="init"/>
+
+    <bean id="databaseCheckUpdate" class="org.eclipse.kapua.consumer.commons.DatabaseCheckUpdate"
+        depends-on="jaxbContextLoader"/>
+
+    <camel:camelContext id="lifecycleContext" depends-on="databaseCheckUpdate">
+        <!-- exception/error handler -->
+        <camel:errorHandler id="mainRouteMessageErrorHandler" redeliveryPolicyRef="kapuaRedeliveryPolicy"
+            type="DeadLetterChannel"
+            deadLetterUri="amqp:queue:notProcessableMessage"
+            useOriginalMessage="true">
+        </camel:errorHandler>
+        <camel:errorHandler id="messageErrorHandler" redeliveryPolicyRef="kapuaErrorRedeliveryPolicy"
+            type="DeadLetterChannel"
+            deadLetterUri="amqp:queue:notProcessableMessage"
+            useOriginalMessage="true">
+        </camel:errorHandler>
+        <camel:redeliveryPolicyProfile id="kapuaRedeliveryPolicy" maximumRedeliveries="0" redeliveryDelay="0" retryAttemptedLogLevel="WARN" logRetryAttempted="true"/>
+        <camel:redeliveryPolicyProfile id="kapuaErrorRedeliveryPolicy" maximumRedeliveries="0" redeliveryDelay="0" retryAttemptedLogLevel="WARN" logRetryAttempted="true"/>
+    </camel:camelContext>
+</beans>

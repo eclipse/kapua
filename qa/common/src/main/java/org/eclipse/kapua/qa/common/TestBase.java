@@ -13,9 +13,9 @@
 package org.eclipse.kapua.qa.common;
 
 import cucumber.api.Scenario;
+
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.RandomUtils;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.junit.Assert;
@@ -34,30 +34,14 @@ public class TestBase extends Assert {
     private static final String LAST_ACCOUNT = "LastAccount";
 
     /**
-     * Common locator instance
-     */
-    public KapuaLocator locator;
-
-    /**
      * Inter step data scratchpad.
      */
-    public StepData stepData;
-
-    /**
-     * Common database helper
-     */
-    public DBHelper database;
+    protected StepData stepData;
 
     /**
      * Current scenario scope
      */
-    public Scenario scenario;
-
-    /**
-     * Current test type
-     * Either unit or integration
-     */
-    private String testType;
+    protected Scenario scenario;
 
     /**
      * Random number generator
@@ -72,14 +56,12 @@ public class TestBase extends Assert {
     protected static final int DEFAULT_SCOPE_ID = 42;
     protected static final KapuaId DEFAULT_ID = new KapuaEid(BigInteger.valueOf(DEFAULT_SCOPE_ID));
 
-    public TestBase() {
+    protected TestBase(StepData stepData) {
+        this.stepData = stepData;
+    }
 
-        testType = System.getProperty("test.type");
-        if (testType != null) {
-            testType = testType.trim().toLowerCase();
-        } else {
-            testType = "";
-        }
+    protected void updateScenario(Scenario scenario) {
+        this.scenario = scenario;
     }
 
     public KapuaId getKapuaId() {
@@ -123,14 +105,6 @@ public class TestBase extends Assert {
         } else {
             return SYS_USER_ID;
         }
-    }
-
-    public boolean isUnitTest() {
-        return testType.equals("unit");
-    }
-
-    public boolean isIntegrationTest() {
-        return testType.isEmpty() || testType.equals("integration");
     }
 
     public void primeException() {

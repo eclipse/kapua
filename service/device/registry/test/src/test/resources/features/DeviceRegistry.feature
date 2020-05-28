@@ -10,12 +10,19 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@unit
 @deviceRegistry
 @device
+@env_none
+
 Feature: Device Registry CRUD tests
     The Device registry Service is responsible for CRUD operations for devices in the Kapua
     database.
+
+@setup
+@KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
+Scenario: Initialize test environment
+    Given Init Jaxb Context
+    And Init Security Context
 
     Scenario: Create a single device with null clientID value
         Try to create a single device with ClientID set to NULL.
@@ -221,3 +228,7 @@ Feature: Device Registry CRUD tests
         that the items returned are not null.
 
         Then All device factory functions must return non null values
+
+@teardown
+Scenario: Reset Security Context for all scenarios
+    Given Reset Security Context

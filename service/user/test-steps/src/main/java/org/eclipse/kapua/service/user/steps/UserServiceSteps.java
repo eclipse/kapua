@@ -19,13 +19,10 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
-import org.apache.shiro.SecurityUtils;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.security.KapuaSession;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
@@ -33,10 +30,8 @@ import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
-import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
-import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.qa.common.cucumber.CucConfig;
 import org.eclipse.kapua.qa.common.cucumber.CucCredentials;
 import org.eclipse.kapua.qa.common.cucumber.CucPermission;
@@ -65,12 +60,10 @@ import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionQueryImpl;
-import org.eclipse.kapua.service.authorization.access.AccessPermissionFactory;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionAttributes;
-import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -83,8 +76,8 @@ import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
 import org.eclipse.kapua.service.user.UserAttributes;
 import org.junit.Assert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import com.google.inject.Singleton;
 
 import javax.inject.Inject;
 import java.math.BigInteger;
@@ -104,13 +97,10 @@ import java.util.concurrent.Callable;
 /**
  * Implementation of Gherkin steps used in user test scenarios.
  * <p>
- * MockedLocator is used for Location Service.
  * Mockito is used to mock other services that UserService is dependent on.
  */
-@ScenarioScoped
+@Singleton
 public class UserServiceSteps extends TestBase {
-
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceSteps.class);
 
     private static final String USER_CREATOR = "UserCreator";
     private static final String USER_LIST = "UserList";
@@ -144,29 +134,20 @@ public class UserServiceSteps extends TestBase {
     private CredentialFactory credentialFactory;
     private CredentialsFactory credentialsFactory;
     private AccessPermissionService accessPermissionService;
-    private AccessPermissionFactory accessPermissionFactory;
     private DomainRegistryService domainRegistryService;
-    private DomainFactory domainFactory;
 
     @Inject
-    public UserServiceSteps(StepData stepData, DBHelper dbHelper) {
-
-        this.stepData = stepData;
-        this.database = dbHelper;
+    public UserServiceSteps(StepData stepData) {
+        super(stepData);
     }
 
     // *************************************
     // Definition of Cucumber scenario steps
     // *************************************
 
-    @Before
-    public void beforeScenario(Scenario scenario) {
-
-        this.scenario = scenario;
-        database.setup();
-        stepData.clear();
-
-        locator = KapuaLocator.getInstance();
+    @After(value="@setup")
+    public void setServices() {
+        KapuaLocator locator = KapuaLocator.getInstance();
         userService = locator.getService(UserService.class);
         userFactory = locator.getFactory(UserFactory.class);
         authenticationService = locator.getService(AuthenticationService.class);
@@ -177,39 +158,12 @@ public class UserServiceSteps extends TestBase {
         credentialFactory = locator.getFactory(CredentialFactory.class);
         credentialsFactory = locator.getFactory(CredentialsFactory.class);
         accessPermissionService = locator.getService(AccessPermissionService.class);
-        accessPermissionFactory = locator.getFactory(AccessPermissionFactory.class);
         domainRegistryService = locator.getService(DomainRegistryService.class);
-        domainFactory = locator.getFactory(DomainFactory.class);
-
-        if (isUnitTest()) {
-            // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
-            // All operations on database are performed using system user.
-            // Only for unit tests. Integration tests assume that a real logon is performed.
-            KapuaSession kapuaSession = new KapuaSession(null, SYS_SCOPE_ID, SYS_USER_ID);
-            KapuaSecurityUtils.setSession(kapuaSession);
-        }
-
-        // Setup JAXB context
-        XmlUtil.setContextProvider(new TestJAXBContextProvider());
     }
 
-    @After
-    public void afterScenario() {
-
-        // Clean up the database
-        try {
-            logger.info("Logging out in cleanup");
-            if (isIntegrationTest()) {
-                database.deleteAll();
-                SecurityUtils.getSubject().logout();
-            } else {
-                database.dropAll();
-                database.close();
-            }
-            KapuaSecurityUtils.clearSession();
-        } catch (Exception e) {
-            logger.error("Failed to log out in @After", e);
-        }
+    @Before
+    public void beforeScenario(Scenario scenario) {
+        updateScenario(scenario);
     }
 
     @Given("^User with name \"(.*)\" in scope with id (\\d+)$")
@@ -648,7 +602,6 @@ public class UserServiceSteps extends TestBase {
 
     @When("^I login as user with name \"(.*)\" and password \"(.*)\"$")
     public void loginUser(String userName, String password) throws Exception {
-
         LoginCredentials credentials = credentialsFactory.newUsernamePasswordCredentials(userName, password);
         authenticationService.logout();
 

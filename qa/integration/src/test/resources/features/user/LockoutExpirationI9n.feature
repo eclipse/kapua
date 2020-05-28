@@ -12,16 +12,17 @@
 ###############################################################################
 @user
 @lockoutExpiration
-@integration
+@env_none
 
 Feature: User and Credential expiration abd lockout features
   User Service has expiration value after which user is disabled.
   There is also expiration and status on user's credentials which are also tested.
   Additionally login failures and lockout and lockout resets are tested.
 
+@setup
 Scenario: Init Security Context for all scenarios
-
-  Given Init Security Context
+  Given Init Jaxb Context
+  And Init Security Context
 
 #
 # Credential state
@@ -661,6 +662,6 @@ Scenario: Init Security Context for all scenarios
     Then No exception was thrown
     Then The lockout error counter for user "kapua-a" is 0
 
+@teardown
   Scenario: Reset Security Context for all scenarios
-
     Given Reset Security Context

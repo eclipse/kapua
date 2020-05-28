@@ -11,7 +11,8 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @brokerAcl
-@integration
+@env_docker
+
 Feature: Broker ACL tests
   These tests are validating correct access control rights of broker security.
   User with one or more profile connects to the broker and tries to issue actions such as
@@ -42,17 +43,11 @@ Feature: Broker ACL tests
   ACL_DATA_ACC_CLI = {0}.{1}.>
   ACL_CTRL_ACC_NOTIFY = $EDC.{0}.*.*.NOTIFY.{1}.>
 
-  Scenario: Start datastore for all scenarios
-
-    Given Start Datastore
-
-  Scenario: Start event broker for all scenarios
-
-    Given Start Event Broker
-
-  Scenario: Start broker for all scenarios
-
-    Given Start Broker
+@setup
+  Scenario: Start full docker environment
+    Given Init Jaxb Context
+    And Init Security Context
+    And Start full docker environment
 
 #
 #  Admin
@@ -607,14 +602,6 @@ Feature: Broker ACL tests
       And clients are disconnected
       And Mqtt Device is stoped
 
-  Scenario: Stop broker after all scenarios
-
-    Given Stop Broker
-
-  Scenario: Stop event broker for all scenarios
-
-    Given Stop Event Broker
-
-  Scenario: Stop datastore after all scenarios
-
-    Given Stop Datastore
+@teardown
+  Scenario: Stop full docker environment
+    Given Stop full docker environment

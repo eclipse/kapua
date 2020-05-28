@@ -19,15 +19,10 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.security.KapuaSession;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
-import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.qa.common.cucumber.CucConfig;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
@@ -45,21 +40,19 @@ import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
-import org.apache.shiro.SecurityUtils;
 import org.junit.Assert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import com.google.inject.Singleton;
 
 // Implementation of Gherkin steps used to test miscellaneous Shiro
 // authorization functionality.
 
-@ScenarioScoped
+@Singleton
 public class AuthenticationServiceSteps extends TestBase {
 
-    private static final String LAST_ACCOUNT = "LastAccount";
+    protected KapuaLocator locator;
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationServiceSteps.class);
+    private static final String LAST_ACCOUNT = "LastAccount";
 
     private CredentialService credentialService;
     private CredentialFactory credentialFactory;
@@ -67,61 +60,30 @@ public class AuthenticationServiceSteps extends TestBase {
     private UserFactory userFactory;
 
     @Inject
-    public AuthenticationServiceSteps(StepData stepData, DBHelper dbHelper) {
-        this.stepData = stepData;
-        this.database = dbHelper;
+    public AuthenticationServiceSteps(StepData stepData) {
+        super(stepData);
     }
 
-    // Database setup and tear-down steps
-    @Before
-    public void beforeScenario(Scenario scenario) throws KapuaException {
+    @Before(value="@env_docker or @env_embedded_minimal or @env_none", order=10)
+    public void beforeScenarioNone(Scenario scenario) throws KapuaException {
+        updateScenario(scenario);
+    }
 
-        this.scenario = scenario;
-        database.setup();
-        stepData.clear();
-
+    @After(value="@setup")
+    public void setServices() {
         locator = KapuaLocator.getInstance();
         credentialService = locator.getService(CredentialService.class);
         credentialFactory = locator.getFactory(CredentialFactory.class);
         userService = locator.getService(UserService.class);
         userFactory = locator.getFactory(UserFactory.class);
+    }
 
+    @When("I create default test-user")
+    public void createDefualtUser() throws KapuaException {
         UserCreator userCreator = userFactory.newCreator(KapuaId.ONE, "test-user");
         User user = userService.create(userCreator);
-
-        stepData.put("user", user);
-
-        if (isUnitTest()) {
-            // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
-            // All operations on database are performed using system user.
-            // Only for unit tests. Integration tests assume that a real logon is performed.
-            KapuaSession kapuaSession = new KapuaSession(null, SYS_SCOPE_ID, SYS_USER_ID);
-            KapuaSecurityUtils.setSession(kapuaSession);
-        }
-
-        XmlUtil.setContextProvider(new TestJAXBContextProvider());
+        stepData.put("User", user);
     }
-
-    @After
-    public void afterScenario() {
-
-        // Clean up the database
-        try {
-            logger.info("Logging out in cleanup");
-            if (isIntegrationTest()) {
-                database.deleteAll();
-                SecurityUtils.getSubject().logout();
-            } else {
-                database.dropAll();
-                database.close();
-            }
-            KapuaSecurityUtils.clearSession();
-        } catch (Exception e) {
-            logger.error("Failed to log out in @After", e);
-        }
-    }
-
-    // Cucumber test steps
 
     @When("^I configure the credential service$")
     public void setConfigurationValue(List<CucConfig> cucConfigs)
@@ -217,7 +179,7 @@ public class AuthenticationServiceSteps extends TestBase {
             throws Exception {
         primeException();
 
-        User user = (User) stepData.get("user");
+        User user = (User) stepData.get("User");
         CredentialCreator credentialCreator = credentialFactory.newCreator(user.getScopeId(), user.getId(), CredentialType.PASSWORD, password, CredentialStatus.ENABLED, null);
         try {
             credentialService.create(credentialCreator);

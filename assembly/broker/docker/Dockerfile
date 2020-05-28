@@ -40,11 +40,11 @@ ENV ACTIVEMQ_OPTS "-Dcommons.db.schema.update=true \
                    -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR} \
                    -Dcertificate.jwt.private.key=file:///etc/opt/kapua/key.pk8 \
                    -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem \
-                   -Dbroker.ip=broker \
+                   -Dbroker.ip=message-broker \
                    -Djob.engine.base.url=\${JOB_ENGINE_BASE_ADDR} \
                    -Djob.engine.client.auth.mode=trusted"
 
-EXPOSE 1883 1893 8883 61614 61615 8161
+EXPOSE 1883 1893 5672 8883 61614 61615 8161
 
 VOLUME /opt/activemq/data
 

@@ -19,13 +19,10 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
+
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.KapuaPayload;
@@ -35,13 +32,11 @@ import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.Session;
 import org.eclipse.kapua.qa.common.SimulatedDevice;
 import org.eclipse.kapua.qa.common.SimulatedDeviceApplication;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
-import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.qa.common.With;
 import org.eclipse.kapua.qa.common.cucumber.CucMessageRange;
 import org.eclipse.kapua.qa.common.cucumber.CucMetric;
@@ -110,6 +105,8 @@ import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Singleton;
+
 import javax.inject.Inject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -129,10 +126,10 @@ import java.util.TimeZone;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@ScenarioScoped
+@Singleton
 public class DatastoreSteps extends TestBase {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DatastoreSteps.class);
+    private static final Logger logger = LoggerFactory.getLogger(DatastoreSteps.class);
 
     private static final String MESSAGE_COUNT_RESULT = "messageCountResult";
     private static final String DOUBLE = "double";
@@ -266,6 +263,7 @@ public class DatastoreSteps extends TestBase {
         }
     }
 
+    protected KapuaLocator locator;
     private DeviceRegistryService deviceRegistryService;
 
     private DeviceFactory deviceFactory;
@@ -297,37 +295,28 @@ public class DatastoreSteps extends TestBase {
     private String currentApplication;
 
     @Inject
-    public DatastoreSteps(final SimulatedDevice currentDevice, final Session session, StepData stepData, DBHelper dbHelper) {
-
+    public DatastoreSteps(final SimulatedDevice currentDevice, final Session session, StepData stepData) {
+        super(stepData);
         this.currentDevice = currentDevice;
         this.session = session;
-        this.stepData = stepData;
-        this.database = dbHelper;
     }
 
-    // *************************************
-    // Definition of Cucumber scenario steps
-    // *************************************
-
-    @Before
-    public void beforeScenario(Scenario scenario) throws Exception {
-
-        this.scenario = scenario;
-
+    @After(value="@setup")
+    public void setServices() throws Exception {
+        locator = KapuaLocator.getInstance();
         // Get instance of services used in different scenarios
-        KapuaLocator locator = KapuaLocator.getInstance();
         deviceRegistryService = locator.getService(DeviceRegistryService.class);
         deviceFactory = locator.getFactory(DeviceFactory.class);
         messageStoreService = locator.getService(MessageStoreService.class);
         messageFactory = locator.getFactory(KapuaMessageFactory.class);
+        storableIdFactory = locator.getFactory(StorableIdFactory.class);
+        channelInfoRegistryService = locator.getService(ChannelInfoRegistryService.class);
         elasticsearchClient = DatastoreClientFactory.getInstance().getElasticsearchClient();
         channelInfoFactory = locator.getFactory(ChannelInfoFactory.class);
         clientInfoFactory = locator.getFactory(ClientInfoFactory.class);
         messageStoreFactory = locator.getFactory(MessageStoreFactory.class);
         metricInfoFactory = locator.getFactory(MetricInfoFactory.class);
         datastorePredicateFactory = locator.getFactory(DatastorePredicateFactory.class);
-        storableIdFactory = locator.getFactory(StorableIdFactory.class);
-        channelInfoRegistryService = locator.getService(ChannelInfoRegistryService.class);
         channelInfoRegistryServiceProxy = new ChannelInfoRegistryServiceProxy();
         metricInfoRegistryService = locator.getService(MetricInfoRegistryService.class);
         metricInfoRegistryServiceProxy = new MetricInfoRegistryServiceProxy();
@@ -336,21 +325,25 @@ public class DatastoreSteps extends TestBase {
         messageFactory = locator.getFactory(KapuaMessageFactory.class);
         dataMessageFactory = locator.getFactory(KapuaDataMessageFactory.class);
 
-        // JAXB Context
-        XmlUtil.setContextProvider(new TestJAXBContextProvider());
     }
 
-    @After
-    public void afterScenario() {
+    // *************************************
+    // Definition of Cucumber scenario steps
+    // *************************************
 
-        // Clean up the database
+    @Before
+    public void beforeScenario(Scenario scenario) {
+        updateScenario(scenario);
+
+    }
+
+    @After(value="not (@setup or @teardown)", order=10)
+    public void afterScenario() {
         try {
-            LOGGER.info("Logging out in cleanup");
             deleteIndices();
-            SecurityUtils.getSubject().logout();
-            KapuaSecurityUtils.clearSession();
         } catch (Exception e) {
-            LOGGER.error("Failed to log out in @After", e);
+            //do nothing. The datastore container may be destroyed during shutdown
+            logger.warn("Error while deleting ES indeces: {}", e.getMessage());
         }
     }
 

@@ -12,21 +12,16 @@
 ###############################################################################
 @user
 @userRole
-@integration
+@env_embedded_minimal
 
 Feature: User role service integration tests
 
-Scenario: Init Security Context for all scenarios
-
-  Given Init Security Context
-
-  Scenario: Start datastore for all scenarios
-
-    Given Start Datastore
-
-  Scenario: Start event broker for all scenarios
-
-    Given Start Event Broker
+@setup
+Scenario: Initialize test environment
+    Given Init Jaxb Context
+    And Init Security Context
+    And Start Datastore
+    And Start Event Broker
 
   Scenario: Adding existing roles to user
   Adding several different roles to one user
@@ -1647,29 +1642,8 @@ Scenario: Init Security Context for all scenarios
     And No exception was thrown
     And I logout
 
-  Scenario: Stop broker after all scenarios
-
-    Given Stop Broker
-
-  Scenario: Stop event broker for all scenarios
-
+@teardown
+  Scenario: Stop test environment
     Given Stop Event Broker
-
-  Scenario: Stop datastore after all scenarios
-
-    Given Stop Datastore
-
-  Scenario: Reset Security Context for all scenarios
-
-    Given Reset Security Context
-
-
-
-
-
-
-
-
-
-
-
+    And Stop Datastore
+    And Reset Security Context

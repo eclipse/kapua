@@ -234,8 +234,8 @@
                             <systemPropertyVariables>
                                 <cucumber.options>--tags @integration</cucumber.options>
                                 <groups>'!org.eclipse.kapua.test.junit.JUnitTests'</groups>
+                                <test.type>integration</test.type>
                                 <commons.settings.hotswap>true</commons.settings.hotswap>
-                                <org.eclipse.kapua.qa.noEmbeddedServers>true</org.eclipse.kapua.qa.noEmbeddedServers>
                                 <commons.db.jdbcConnectionUrlResolver>DEFAULT</commons.db.jdbcConnectionUrlResolver>
                                 <commons.db.schema.update>true</commons.db.schema.update>
                                 <commons.db.connection.host>localhost</commons.db.connection.host>

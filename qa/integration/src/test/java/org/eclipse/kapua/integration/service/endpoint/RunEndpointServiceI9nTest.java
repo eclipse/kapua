@@ -13,10 +13,11 @@
 package org.eclipse.kapua.integration.service.endpoint;
 
 import cucumber.api.CucumberOptions;
-import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
+import cucumber.api.junit.Cucumber;
+
 import org.junit.runner.RunWith;
 
-@RunWith(CucumberWithProperties.class)
+@RunWith(Cucumber.class)
 @CucumberOptions(
         features = { "classpath:features/endpoint/EndpointServiceI9n.feature" },
         glue = {

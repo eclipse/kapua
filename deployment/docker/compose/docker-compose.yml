@@ -28,10 +28,10 @@ services:
     ports:
       - 1883:1883
       - 8883:8883
+      - 5682:5672
       - 61614:61614
     depends_on:
       - db
-      - es
       - events-broker
     environment:
       - KAPUA_DISABLE_SSL
@@ -42,6 +42,31 @@ services:
       - KAPUA_KEY_PASSWORD
       - KAPUA_KEYSTORE
       - KAPUA_KEYSTORE_PASSWORD
+      - LOGBACK_LOG_LEVEL
+  consumer-telemetry:
+    image: kapua/kapua-consumer-telemetry:${IMAGE_VERSION}
+    ports:
+      - 8090:8080
+      - 8001:8001
+    depends_on:
+      - db
+      - es
+      - events-broker
+      - broker
+    environment:
+      - BROKER_URL
+      - LOGBACK_LOG_LEVEL
+  consumer-lifecycle:
+    image: kapua/kapua-consumer-lifecycle:${IMAGE_VERSION}
+    ports:
+      - 8091:8080
+      - 8002:8001
+    depends_on:
+      - db
+      - events-broker
+      - broker
+    environment:
+      - BROKER_URL
       - LOGBACK_LOG_LEVEL
   kapua-console:
     image: kapua/kapua-console:${IMAGE_VERSION}

@@ -30,16 +30,10 @@ public class EmbeddedJetty {
 
     private static final Logger logger = LoggerFactory.getLogger(EmbeddedJetty.class);
 
-    private static final boolean NO_EMBEDDED_SERVERS = Boolean.getBoolean("org.eclipse.kapua.qa.noEmbeddedServers");
-
     private static Server jetty;
 
     @Given("^Start Jetty Server on host \"(.*)\" at port \"(.+)\"$")
     public void start(String host, int port) throws Exception {
-
-        if (NO_EMBEDDED_SERVERS) {
-            return;
-        }
         // Switch back to default DB connection resolver
         // as Jetty has its own class loader and has to access in memory DB over TCP
         System.setProperty(SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER.key(), "DEFAULT");
@@ -80,10 +74,6 @@ public class EmbeddedJetty {
 
     @Given("^Stop Jetty Server$")
     public void stop() throws Exception {
-
-        if (NO_EMBEDDED_SERVERS) {
-            return;
-        }
         logger.info("Stopping Jetty " + jetty);
 
         jetty.stop();

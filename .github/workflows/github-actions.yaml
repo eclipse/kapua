@@ -39,6 +39,8 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - run: mvn -B ${BUILD_OPTS} -DskipTests clean install -Pdocker
+      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
@@ -81,6 +83,8 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - run: mvn -B ${BUILD_OPTS} -DskipTests clean install -Pdocker
+      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
@@ -144,6 +148,8 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - run: mvn -B ${BUILD_OPTS} -DskipTests clean install -Pdocker
+      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
@@ -165,6 +171,8 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - run: mvn -B ${BUILD_OPTS} -DskipTests clean install -Pdocker
+      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
@@ -192,6 +200,29 @@ jobs:
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @user" verify
+      - run: bash <(curl -s https://codecov.io/bash)
+  test-userIntegration:
+    needs: build-kapua
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '8'
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - run: mvn -B ${BUILD_OPTS} -DskipTests clean install -Pdocker
+      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - uses: nick-invision/retry@v2.4.0
+        with:
+          timeout_minutes: 30
+          retry_on: error
+          max_attempts: 3
+          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @userIntegration" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-security:
     needs: build-kapua
@@ -235,6 +266,29 @@ jobs:
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @jobs" verify
       - run: bash <(curl -s https://codecov.io/bash)
+  test-jobsIntegration:
+    needs: build-kapua
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '8'
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - run: mvn -B ${BUILD_OPTS} -DskipTests clean install -Pdocker
+      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - uses: nick-invision/retry@v2.4.0
+        with:
+          timeout_minutes: 30
+          retry_on: error
+          max_attempts: 3
+          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @jobsIntegration" verify
+      - run: bash <(curl -s https://codecov.io/bash)
   test-triggerService:
     needs: build-kapua
     runs-on: ubuntu-latest
@@ -255,6 +309,29 @@ jobs:
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @triggerService" verify
+      - run: bash <(curl -s https://codecov.io/bash)
+  test-triggerServiceIntegration:
+    needs: build-kapua
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '8'
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - run: mvn -B ${BUILD_OPTS} -DskipTests clean install -Pdocker
+      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - uses: nick-invision/retry@v2.4.0
+        with:
+          timeout_minutes: 30
+          retry_on: error
+          max_attempts: 3
+          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @triggerServiceIntegration" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-account:
     needs: build-kapua
@@ -312,6 +389,8 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - run: mvn -B ${BUILD_OPTS} -DskipTests clean install -Pdocker
+      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
@@ -333,6 +412,8 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - run: mvn -B ${BUILD_OPTS} -DskipTests clean install -Pdocker
+      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
@@ -354,6 +435,8 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - run: mvn -B ${BUILD_OPTS} -DskipTests clean install -Pdocker
+      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
@@ -375,6 +458,8 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - run: mvn -B ${BUILD_OPTS} -DskipTests clean install -Pdocker
+      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
@@ -396,6 +481,8 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - run: mvn -B ${BUILD_OPTS} -DskipTests clean install -Pdocker
+      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
@@ -417,6 +504,8 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - run: mvn -B ${BUILD_OPTS} -DskipTests clean install -Pdocker
+      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30

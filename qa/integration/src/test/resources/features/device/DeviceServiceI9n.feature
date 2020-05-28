@@ -10,22 +10,18 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@integration
 @deviceRegistry
+@env_docker
 
 Feature: Device Registry Integration
   Device Registy integration test scenarios. These scenarios test higher level device service functionality
   with all services live.
 
-Scenario: Init Security Context for all scenarios
-
-  Given Init Security Context
-
-  Scenario: Set environment variables
-
-    Given System property "commons.settings.hotswap" with value "true"
-    And System property "broker.ip" with value "localhost"
-    And System property "kapua.config.url" with value "null"
+@setup
+  Scenario: Start full docker environment
+    Given Init Jaxb Context
+    And Init Security Context
+    And Start full docker environment
 
   Scenario: Birth message handling from a new device
   A birth message is received. The referenced device does not yet exist and is created on-the-fly. After the
@@ -1533,6 +1529,6 @@ Scenario: Init Security Context for all scenarios
     Then I find 0 devices
     And I logout
 
-  Scenario: Reset Security Context for all scenarios
-
-    Given Reset Security Context
+@teardown
+  Scenario: Stop full docker environment
+    Given Stop full docker environment

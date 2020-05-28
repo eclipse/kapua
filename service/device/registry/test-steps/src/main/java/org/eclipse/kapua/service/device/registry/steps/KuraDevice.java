@@ -194,7 +194,8 @@ public class KuraDevice implements MqttCallback {
                 s.run(subscribedClient::close);
             }
         } catch (Exception e) {
-            LOG.warn("Failed during cleanup of Paho resources!", e);
+            //suppress stacktrace
+            logger.warn("Failed during cleanup of Paho resources. Error: {}", e.getMessage());
         }
     }
 

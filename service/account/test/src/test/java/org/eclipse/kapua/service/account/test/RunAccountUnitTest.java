@@ -13,27 +13,24 @@
 package org.eclipse.kapua.service.account.test;
 
 import cucumber.api.CucumberOptions;
-import org.eclipse.kapua.qa.common.cucumber.CucumberProperty;
+import cucumber.api.junit.Cucumber;
+
 import org.junit.runner.RunWith;
 
-@RunWith(CucumberWithPropertiesForAccount.class)
+@RunWith(Cucumber.class)
 
 @CucumberOptions(
         features = { "classpath:features/AccountService.feature"
                    },
-        glue = { "org.eclipse.kapua.service.account.steps",
-                 "org.eclipse.kapua.qa.common"
+        glue = {"org.eclipse.kapua.service.account.steps",
+                "org.eclipse.kapua.service.account.test",
+                "org.eclipse.kapua.qa.common"
                },
         plugin = { "pretty",
                    "html:target/cucumber",
                    "json:target/cucumber.json" },
         strict = true,
         monochrome = true)
-
-@CucumberProperty(key="locator.class.impl", value="org.eclipse.kapua.qa.common.MockedLocator")
-@CucumberProperty(key="test.type", value="unit")
-@CucumberProperty(key="commons.db.schema", value="kapuadb")
-@CucumberProperty(key="commons.db.schema.update", value="true")
 
 public class RunAccountUnitTest {
 }

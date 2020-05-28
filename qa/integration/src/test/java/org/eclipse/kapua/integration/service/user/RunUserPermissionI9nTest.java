@@ -12,17 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.integration.service.user;
 
-import cucumber.api.CucumberOptions;
-import org.eclipse.kapua.qa.common.cucumber.CucumberProperty;
-import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
 import org.junit.runner.RunWith;
 
+import cucumber.api.CucumberOptions;
+import cucumber.api.junit.Cucumber;
 
-@RunWith(CucumberWithProperties.class)
+@RunWith(Cucumber.class)
 @CucumberOptions(
         features = "classpath:features/user/UserPermissionI9n.feature",
 
         glue = {"org.eclipse.kapua.qa.common",
+                "org.eclipse.kapua.qa.integration.steps",
                 "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.service.authorization.steps",
@@ -39,11 +39,4 @@ import org.junit.runner.RunWith;
         },
         strict = true,
         monochrome = true)
-@CucumberProperty(key = "kapua.config.url", value = "")
-@CucumberProperty(key = "datastore.elasticsearch.provider", value = "org.eclipse.kapua.service.elasticsearch.client.rest.RestElasticsearchClientProvider")
-@CucumberProperty(key = "datastore.elasticsearch.nodes", value = "127.0.0.1:9200")
-@CucumberProperty(key = "org.eclipse.kapua.qa.datastore.extraStartupDelay", value = "5")
-@CucumberProperty(key = "org.eclipse.kapua.qa.broker.extraStartupDelay", value = "5")
-@CucumberProperty(key = "es.set.netty.runtime.available.processors", value = "false")  // see https://github.com/elastic/elasticsearch/issues/25741
-public class RunUserPermissionI9nTest {
-}
+public class RunUserPermissionI9nTest {}

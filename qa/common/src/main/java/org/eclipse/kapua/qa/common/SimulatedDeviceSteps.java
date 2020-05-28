@@ -29,7 +29,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.kura.simulator.GatewayConfiguration;
 import org.eclipse.kapua.kura.simulator.MqttAsyncTransport;
 import org.eclipse.kapua.kura.simulator.Simulator;
@@ -38,7 +37,6 @@ import org.eclipse.kapua.kura.simulator.app.annotated.AnnotatedApplication;
 import org.eclipse.kapua.kura.simulator.app.command.SimpleCommandApplication;
 import org.eclipse.kapua.kura.simulator.app.deploy.SimpleDeployApplication;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.qa.common.utils.EmbeddedBroker;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
@@ -52,6 +50,8 @@ import org.eclipse.kapua.service.device.management.packages.model.DevicePackages
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOperation;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadStatus;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
@@ -59,6 +59,8 @@ import org.eclipse.scada.utils.concurrent.NamedThreadFactory;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.inject.Singleton;
 
 import javax.inject.Inject;
 
@@ -68,10 +70,8 @@ import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
 
-
-@ScenarioScoped
+@Singleton
 public class SimulatedDeviceSteps {
 
     private static final Logger logger = LoggerFactory.getLogger(SimulatedDeviceSteps.class);
@@ -96,8 +96,6 @@ public class SimulatedDeviceSteps {
 
     @Inject
     public SimulatedDeviceSteps(
-            /* dependency */ final EmbeddedBroker broker,
-            /* dependency */ final DBHelper dbHelper,
             final SimulatedDevice currentDevice,
             final Session session) {
 
@@ -107,8 +105,6 @@ public class SimulatedDeviceSteps {
 
     @Before
     public void beforeScenario(final Scenario scenario) throws Exception {
-        XmlUtil.setContextProvider(new TestJAXBContextProvider());
-
         downloadExecutor = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("DownloadSimulator"));
     }
 
@@ -117,7 +113,8 @@ public class SimulatedDeviceSteps {
         try {
             Suppressed.closeAll(closables.values().stream().flatMap(Collection::stream));
         } catch (final Exception e) {
-            logger.warn("Error during closing of resources. This may probably be Paho complaining about already closed connections", e);
+            //suppress stack trace
+            logger.warn("Error during closing of resources. This may probably be Paho complaining about already closed connections: Error: {}", e.getMessage());
         }
         closables.clear();
 
@@ -402,11 +399,14 @@ public class SimulatedDeviceSteps {
 
     private void assertConnectionStatus(final String clientId, final String accountName, final DeviceConnectionStatus expectedState) throws Exception {
         final DeviceConnectionService service = KapuaLocator.getInstance().getService(DeviceConnectionService.class);
-
+        final DeviceRegistryService registry = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
         With.withUserAccount(accountName, account -> {
 
             final DeviceConnection result = service.findByClientId(account.getId(), clientId);
+            final Device device = registry.findByClientId(account.getId(), clientId);
+
             Assert.assertNotNull(result);
+            Assert.assertNotNull(device);
             Assert.assertEquals(clientId, result.getClientId());
             Assert.assertEquals(expectedState, result.getStatus());
         });

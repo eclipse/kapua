@@ -12,12 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.integration.service.user;
 
-import cucumber.api.CucumberOptions;
-import org.eclipse.kapua.qa.common.cucumber.CucumberProperty;
-import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
 import org.junit.runner.RunWith;
 
-@RunWith(CucumberWithProperties.class)
+import cucumber.api.CucumberOptions;
+import cucumber.api.junit.Cucumber;
+
+@RunWith(Cucumber.class)
 @CucumberOptions(
         features = "classpath:features/user/UserCredentialsI9n.feature",
 
@@ -32,9 +32,5 @@ import org.junit.runner.RunWith;
         },
         strict = true,
         monochrome = true)
-@CucumberProperty(key = "kapua.config.url", value = "")
-@CucumberProperty(key = "datastore.elasticsearch.provider", value = "org.eclipse.kapua.service.elasticsearch.client.rest.RestElasticsearchClientProvider")
-@CucumberProperty(key = "org.eclipse.kapua.qa.datastore.extraStartupDelay", value = "5")
-@CucumberProperty(key = "org.eclipse.kapua.qa.broker.extraStartupDelay", value = "5")
 public class RunUserCredentialsI9n {
 }

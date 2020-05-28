@@ -45,11 +45,19 @@ import java.util.Date;
  */
 public class UserPassCredentialsMatcher implements CredentialsMatcher {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final MfaOptionService MFA_OPTION_SERVICE = LOCATOR.getService(MfaOptionService.class);
-    private static final ScratchCodeService SCRATCH_CODE_SERVICE = LOCATOR.getService(ScratchCodeService.class);
-    private static final MfaAuthenticatorServiceLocator MFA_AUTH_SERVICE_LOCATOR = MfaAuthenticatorServiceLocator.getInstance();
-    private static final MfaAuthenticator MFA_AUTHENTICATOR = MFA_AUTH_SERVICE_LOCATOR.getMfaAuthenticator();
+    private KapuaLocator locator;
+    private MfaOptionService mfaOptionService;
+    private ScratchCodeService scratchCodeService;
+    private MfaAuthenticatorServiceLocator mfaAuthServiceLocator;
+    private MfaAuthenticator mfaAuthenticator;
+
+    public UserPassCredentialsMatcher() {
+        locator = KapuaLocator.getInstance();
+        mfaOptionService = locator.getService(MfaOptionService.class);
+        scratchCodeService = locator.getService(ScratchCodeService.class);
+        mfaAuthServiceLocator = MfaAuthenticatorServiceLocator.getInstance();
+        mfaAuthenticator = mfaAuthServiceLocator.getMfaAuthenticator();
+    }
 
     @Override
     public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
@@ -74,7 +82,7 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
         if (tokenUsername.equals(infoUser.getName()) && CredentialType.PASSWORD.equals(infoCredential.getCredentialType()) && BCrypt.checkpw(
                 tokenPassword, infoCredential.getCredentialKey())) {
 
-            if (!MFA_AUTHENTICATOR.isEnabled()) {
+            if (!mfaAuthenticator.isEnabled()) {
                 credentialMatch = true;
                 // FIXME: if true cache token password for authentication performance improvement
             } else {
@@ -82,7 +90,7 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
                 // first check if 2FA is enabled for the current user
                 MfaOption mfaOption;
                 try {
-                    mfaOption = KapuaSecurityUtils.doPrivileged(() -> MFA_OPTION_SERVICE.findByUserId(infoUser.getScopeId(),
+                    mfaOption = KapuaSecurityUtils.doPrivileged(() -> mfaOptionService.findByUserId(infoUser.getScopeId(),
                             infoUser.getId()));
                 } catch (AuthenticationException ae) {
                     throw ae;
@@ -95,7 +103,7 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
                         // do 2fa match
                         boolean isCodeValid;
                         try {
-                            isCodeValid = MFA_AUTHENTICATOR.authorize(mfaOption.getMfaSecretKey(), Integer.parseInt(tokenAuthenticationCode));
+                            isCodeValid = mfaAuthenticator.authorize(mfaOption.getMfaSecretKey(), Integer.parseInt(tokenAuthenticationCode));
                         } catch (AuthenticationException ae) {
                             throw ae;
                         } catch (Exception e) {
@@ -106,7 +114,7 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
                         if (!isCodeValid) {
                             ScratchCodeListResult scratchCodeListResult;
                             try {
-                                scratchCodeListResult = KapuaSecurityUtils.doPrivileged(() -> SCRATCH_CODE_SERVICE.findByMfaOptionId(
+                                scratchCodeListResult = KapuaSecurityUtils.doPrivileged(() -> scratchCodeService.findByMfaOptionId(
                                         mfaOption.getScopeId(), mfaOption.getId()));
                             } catch (AuthenticationException ae) {
                                 throw ae;
@@ -115,10 +123,10 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
                             }
 
                             for (ScratchCode code : scratchCodeListResult.getItems()) {
-                                if (MFA_AUTHENTICATOR.authorize(code.getCode(), tokenAuthenticationCode)) {
+                                if (mfaAuthenticator.authorize(code.getCode(), tokenAuthenticationCode)) {
                                     isCodeValid = true;
                                     try {
-                                        KapuaSecurityUtils.doPrivileged(() -> SCRATCH_CODE_SERVICE.delete(code.getScopeId(), code.getId()));
+                                        KapuaSecurityUtils.doPrivileged(() -> scratchCodeService.delete(code.getScopeId(), code.getId()));
                                     } catch (AuthenticationException ae) {
                                         throw ae;
                                     } catch (Exception e) {
@@ -140,7 +148,7 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
 
                                     // the trust key is expired and must be disabled
                                     try {
-                                        KapuaSecurityUtils.doPrivileged(() -> MFA_OPTION_SERVICE.disableTrust(mfaOption.getScopeId(), mfaOption.getId()));
+                                        KapuaSecurityUtils.doPrivileged(() -> mfaOptionService.disableTrust(mfaOption.getScopeId(), mfaOption.getId()));
                                     } catch (AuthenticationException ae) {
                                         throw ae;
                                     } catch (Exception e) {

@@ -12,14 +12,15 @@
 ###############################################################################
 @account
 @accountFindSelf
-@integration
+@env_none
 
 Feature: Self account find feature
   Finding self accounts require a different logic to be applied to the permission
 
-Scenario: Init Security Context for all scenarios
-
-  Given Init Security Context
+@setup
+Scenario: Initialize test environment
+    Given Init Jaxb Context
+    And Init Security Context
 
   Scenario: Find self account by id
     When I login as user with name "kapua-sys" and password "kapua-password"
@@ -99,6 +100,6 @@ Scenario: Init Security Context for all scenarios
     And I look for my account by name
     Then I am able to read my account info
 
-  Scenario: Reset Security Context for all scenarios
-
-    Given Reset Security Context
+@teardown
+Scenario: Reset Security Context for all scenarios
+  Given Reset Security Context

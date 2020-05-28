@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.integration.steps;
 
-import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -50,11 +49,6 @@ public class RestClientSteps extends Assert {
      * Scenario scoped step data.
      */
     private StepData stepData;
-
-    @Before
-    public void setupJaxb() {
-        XmlUtil.setContextProvider(new RestJAXBContextProvider());
-    }
 
     @Inject
     public RestClientSteps(StepData stepData) {
@@ -170,7 +164,6 @@ public class RestClientSteps extends Assert {
     public void restResponseContainingAccessToken() throws Exception {
 
         String restResponse = (String) stepData.get(REST_RESPONSE);
-        XmlUtil.setContextProvider(new RestJAXBContextProvider());
         AccessToken token = XmlUtil.unmarshalJson(restResponse, AccessToken.class, null);
         assertTrue("Token is null.", token.getTokenId() != null);
         stepData.put(TOKEN_ID, token.getTokenId());

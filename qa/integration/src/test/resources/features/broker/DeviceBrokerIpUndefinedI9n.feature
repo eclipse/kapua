@@ -12,28 +12,18 @@
 ###############################################################################
 @broker
 @deviceBrokerIpUndefined
-@integration
+@env_docker
 
 Feature: Device Broker connection ip not set
   Device Service integration scenarios with running broker service.
 
-  Scenario: Set environment variables
-
-    Given System property "commons.settings.hotswap" with value "true"
+@setup
+  Scenario: Start full docker environment
+    Given Init Jaxb Context
+    And Init Security Context
     And System property "broker.ip" with value "null"
     And System property "kapua.config.url" with value "null"
-
-  Scenario: Start datastore for all scenarios
-
-    Given Start Datastore
-
-  Scenario: Start event broker for all scenarios
-
-    Given Start Event Broker
-
-  Scenario: Start broker for all scenarios
-
-    Given Start Broker
+    And Start full docker environment
 
   Scenario: Send BIRTH message and then DC message while broker ip is NOT set
   Effectively this is connect and disconnect of Kura device.
@@ -46,14 +36,6 @@ Feature: Device Broker connection ip not set
     And Device death message is sent
     And I wait 5 seconds
 
-  Scenario: Stop broker after all scenarios
-
-    Given Stop Broker
-
-  Scenario: Stop event broker for all scenarios
-
-    Given Stop Event Broker
-
-  Scenario: Stop datastore after all scenarios
-
-    Given Stop Datastore
+@teardown
+  Scenario: Stop full docker environment
+    Given Stop full docker environment

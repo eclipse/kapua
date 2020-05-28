@@ -14,11 +14,11 @@
 package org.eclipse.kapua.integration.service.account;
 
 import cucumber.api.CucumberOptions;
-import org.eclipse.kapua.qa.common.cucumber.CucumberProperty;
-import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
+import cucumber.api.junit.Cucumber;
+
 import org.junit.runner.RunWith;
 
-@RunWith(CucumberWithProperties.class)
+@RunWith(Cucumber.class)
 @CucumberOptions(
         features = {
                 "classpath:features/account/AccountService.feature",
@@ -46,17 +46,5 @@ import org.junit.runner.RunWith;
         },
         strict = true,
         monochrome = true)
-
-@CucumberProperty(key = "DOCKER_HOST", value = "")
-@CucumberProperty(key = "DOCKER_CERT_PATH", value = "")
-@CucumberProperty(key = "commons.db.schema.update", value = "")
-@CucumberProperty(key = "commons.db.connection.host", value = "")
-@CucumberProperty(key = "commons.db.connection.port", value = "")
-@CucumberProperty(key = "commons.eventbus.url", value = "")
-@CucumberProperty(key = "broker.ip", value = "")
-@CucumberProperty(key = "certificate.jwt.private.key", value = "")
-@CucumberProperty(key = "certificate.jwt.certificate", value = "")
-@CucumberProperty(key = "datastore.elasticsearch.nodes", value = "")
-@CucumberProperty(key = "datastore.elasticsearch.provider", value = "")
 public class RunAccountServiceI9nTest {
 }

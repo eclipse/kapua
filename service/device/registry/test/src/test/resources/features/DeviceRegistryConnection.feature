@@ -10,13 +10,16 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@unit
 @deviceRegistry
 @deviceConnection
+@env_none
+
 Feature: Device Registry Connection tests
     The Device Registry Connection service is responsible for performing CRUD operations
     regarding device connections on the Kapua database.
 
+@setup
+@KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
 Scenario: Regular connection
     It must be possible to create a device connection entry in the database. The entry
     must match the creator parameters. The connection status must also be

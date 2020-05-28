@@ -11,19 +11,15 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @jobEngineStartOfflineDevice
-@integration
+@env_docker
 
 Feature: JobEngineService tests for starting job with offline device
 
-  Scenario: Set environment variables
-    Given System property "broker.ip" with value "localhost"
-    And System property "commons.db.connection.host" with value "localhost"
-
-  Scenario: Start event broker for all scenarios
-    Given Start Event Broker
-
-  Scenario: Start broker for all scenarios
-    Given Start Broker
+@setup
+  Scenario: Start full docker environment
+    Given Init Jaxb Context
+    And Init Security Context
+    And Start full docker environment
 
     # ***********************************************
     # * Starting a job with one Target and one Step *
@@ -1238,8 +1234,6 @@ Feature: JobEngineService tests for starting job with offline device
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
 
-  Scenario: Stop broker after all scenarios
-    Given Stop Broker
-
-  Scenario: Stop event broker for all scenarios
-    Given Stop Event Broker
+    @teardown
+      Scenario: Stop full docker environment
+        Given Stop full docker environment

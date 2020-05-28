@@ -22,7 +22,7 @@ import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
 @Category(JUnitTests.class)
-public class DefaultBrokerIdResolverTest extends Assert {
+public class DefaultBrokerIdResolverTest {
 
     DefaultBrokerIdResolver defaultBrokerIdResolver;
 
@@ -39,7 +39,7 @@ public class DefaultBrokerIdResolverTest extends Assert {
         for (String id : ids) {
             BrokerId brokerId = new BrokerId(id);
             Mockito.when(brokerFilter.getBrokerId()).thenReturn(brokerId);
-            assertEquals("Expected and actual values should be the same", id, defaultBrokerIdResolver.getBrokerId(brokerFilter));
+            Assert.assertEquals("Expected and actual values should be the same", id, defaultBrokerIdResolver.getBrokerId(brokerFilter));
         }
     }
 

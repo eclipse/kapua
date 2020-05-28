@@ -10,13 +10,19 @@
 # Contributors:
 #     Eurotech
 ###############################################################################
-@unit
 @tag
+@env_none
 
 Feature: Tag Service
   Tag Service is responsible for CRUD operations on Tags. This service is currently
   used to attach tags to Devices, but could be used to tag any kapua entity, like
   User for example.
+
+@setup
+@KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
+  Scenario: Initialize test environment
+    Given Init Jaxb Context
+    And Init Security Context
 
   Scenario: Creating Unique Tag Without Description
   Create a tag with unique name without description. Kapua should not return any error.
@@ -447,3 +453,7 @@ Feature: Tag Service
     And I expect the exception "NullPointerException" with the text "*"
     When I assign tag "Tag1" to device "Device1"
     Then An exception was thrown
+
+@teardown
+  Scenario: Reset Security Context for all scenarios
+    Given Reset Security Context

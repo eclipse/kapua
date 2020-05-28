@@ -17,19 +17,13 @@ import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
-import cucumber.runtime.java.guice.ScenarioScoped;
-import org.apache.shiro.SecurityUtils;
+
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.security.KapuaSession;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
-import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
-import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.qa.common.cucumber.CucTriggerProperty;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
@@ -39,13 +33,14 @@ import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinition;
+
+import com.google.inject.Singleton;
+
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionAttributes;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionQuery;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.text.ParseException;
@@ -55,7 +50,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-@ScenarioScoped
+@Singleton
 public class JobScheduleServiceSteps extends TestBase {
 
     private TriggerFactory triggerFactory;
@@ -79,15 +74,21 @@ public class JobScheduleServiceSteps extends TestBase {
 // * - Authorization Service                                                              *
 // ****************************************************************************************
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JobScheduleServiceSteps.class);
     private static final String KAPUA_ID_CLASS_NAME = "org.eclipse.kapua.model.id.KapuaId";
 
     // Default constructor
     @Inject
-    public JobScheduleServiceSteps(StepData stepData, DBHelper dbHelper) {
+    public JobScheduleServiceSteps(StepData stepData) {
+        super(stepData);
+    }
 
-        this.stepData = stepData;
-        this.database = dbHelper;
+    @After(value="@setup")
+    public void setServices() {
+        KapuaLocator locator = KapuaLocator.getInstance();
+        triggerFactory = locator.getFactory(TriggerFactory.class);
+        triggerService = locator.getService(TriggerService.class);
+        triggerDefinitionFactory = locator.getFactory(TriggerDefinitionFactory.class);
+        triggerDefinitionService = locator.getService(TriggerDefinitionService.class);
     }
 
     // ************************************************************************************
@@ -101,50 +102,8 @@ public class JobScheduleServiceSteps extends TestBase {
     // ************************************************************************************
 
     @Before
-    public void beforeScenario(Scenario scenario) {
-
-        this.scenario = scenario;
-        database.setup();
-        stepData.clear();
-
-        locator = KapuaLocator.getInstance();
-
-        triggerFactory = locator.getFactory(TriggerFactory.class);
-        triggerService = locator.getService(TriggerService.class);
-        triggerDefinitionFactory = locator.getFactory(TriggerDefinitionFactory.class);
-        triggerDefinitionService = locator.getService(TriggerDefinitionService.class);
-
-        if (isUnitTest()) {
-            // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
-            // All operations on database are performed using system user.
-            // Only for unit tests. Integration tests assume that a real logon is performed.
-            KapuaSession kapuaSession = new KapuaSession(null, SYS_SCOPE_ID, SYS_USER_ID);
-            KapuaSecurityUtils.setSession(kapuaSession);
-        }
-
-        // Setup JAXB context
-        XmlUtil.setContextProvider(new TestJAXBContextProvider());
-    }
-
-    @After
-    public void afterScenario() {
-
-        // ************************************************************************************
-        // * Clean up the database                                                            *
-        // ************************************************************************************
-        try {
-            LOGGER.info("Logging out in cleanup");
-            if (isIntegrationTest()) {
-                database.deleteAll();
-                SecurityUtils.getSubject().logout();
-            } else {
-                database.dropAll();
-                database.close();
-            }
-            KapuaSecurityUtils.clearSession();
-        } catch (Exception e) {
-            LOGGER.error("Failed to log out in @After", e);
-        }
+    public void beforeScenarioDockerFull(Scenario scenario) {
+        updateScenario(scenario);
     }
 
     // ************************************************************************************

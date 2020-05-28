@@ -12,27 +12,15 @@
 ###############################################################################
 @broker
 @deviceData
-@integration
+@env_docker
 
 Feature: Device data scenarios
 
-  Scenario: Set environment variables
-
-    Given System property "commons.settings.hotswap" with value "true"
-    And System property "broker.ip" with value "localhost"
-    And System property "kapua.config.url" with value "null"
-
-  Scenario: Start datastore for all scenarios
-
-    Given Start Datastore
-
-  Scenario: Start event broker for all scenarios
-
-    Given Start Event Broker
-
-  Scenario: Start broker for all scenarios
-
-    Given Start Broker
+@setup
+  Scenario: Start docker environment
+    Given Init Jaxb Context
+    And Init Security Context
+    And Start full docker environment
 
   Scenario: Connect to the system and publish some data
 
@@ -43,7 +31,7 @@ Feature: Device data scenarios
 
     When I start the simulator
 
-    Then Device sim-1 for account kapua-sys is registered after 5 seconds
+    Then Device sim-1 for account kapua-sys is registered after 15 seconds
     And I expect the device to report the applications
       | DEPLOY-V2 |
       | CMD-V1    |
@@ -68,26 +56,18 @@ Feature: Device data scenarios
       | key         | type    | value |
       | foo.boolean | BOOLEAN | true  |
 
-    And  I wait 5 seconds
+    And  I wait 10 seconds
     And  I refresh all indices
 
     Then I expect the number of messages for this device to be 5
     And  I expect the latest captured message on channel "my-app-1/my-topic-5/data" to have the metrics
       | key         | type    | value |
       | foo.boolean | BOOLEAN | true  |
-
+    Then Device sim-1 for account kapua-sys is registered after 15 seconds
     When I stop the simulator
     Then Device sim-1 for account kapua-sys is not registered after 5 seconds
     And I delete the messages for this device
 
-  Scenario: Stop broker after all scenarios
-
-    Given Stop Broker
-
-  Scenario: Stop event broker for all scenarios
-
-    Given Stop Event Broker
-
-  Scenario: Stop datastore after all scenarios
-
-    Given Stop Datastore
+@teardown
+  Scenario: Stop docker environment
+    Given Stop full docker environment

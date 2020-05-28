@@ -26,37 +26,35 @@
     <dependencies>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-broker-api</artifactId>
+            <artifactId>kapua-broker-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-consumer-commons</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-commons</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-message-api</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-service-api</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-account-api</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-shiro</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-authentication-api</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -65,7 +63,6 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-datastore-api</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -75,22 +72,18 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-call-kura</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-management-job-api</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-management-registry-api</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-registry-api</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -100,38 +93,31 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-user-api</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-tag-api</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-translator-api</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-transport-api</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-transport-jms</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-api</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-commons</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -159,23 +145,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- camel -->
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-core</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-jms</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <!-- elasticsearch -->
-        <dependency>
-            <groupId>org.elasticsearch</groupId>
-            <artifactId>elasticsearch</artifactId>
-            <scope>provided</scope>
-        </dependency>
 
         <!-- misc -->
         <dependency>
@@ -186,12 +155,10 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <!-- Testing -->
@@ -223,6 +190,56 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <!-- job dependencies -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-job-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-job-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-job-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-job-engine-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-scheduler-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-scheduler-quartz</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-command-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-asset-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-bundle-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-configuration-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-packages-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-job-engine-commons</artifactId>
         </dependency>
     </dependencies>
     <build>

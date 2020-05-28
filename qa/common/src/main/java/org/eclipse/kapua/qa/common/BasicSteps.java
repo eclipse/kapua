@@ -9,29 +9,45 @@
  *
  * Contributors:
  *     Red Hat Inc - initial API and implementation
+ *     Eurotech
  *******************************************************************************/
 package org.eclipse.kapua.qa.common;
 
+import cucumber.api.Scenario;
+import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
+
+import org.apache.shiro.SecurityUtils;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreElasticsearchClientSettings;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreElasticsearchClientSettingsKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.inject.Singleton;
 
 import javax.inject.Inject;
 import java.time.Duration;
 import java.util.Date;
 
-@ScenarioScoped
+@Singleton
 public class BasicSteps extends TestBase {
 
     private static final Logger logger = LoggerFactory.getLogger(BasicSteps.class);
 
     private static final double WAIT_MULTIPLIER = Double.parseDouble(System.getProperty("org.eclipse.kapua.qa.waitMultiplier", "1.0"));
+
+    private static final String KAPUA_CUSTOM_PROPERTIES = "@KapuaProperties(\"";
+    private static final int KAPUA_CUSTOM_PROPERTIES_SIZE = KAPUA_CUSTOM_PROPERTIES.length();
 
     private static final String LAST_ACCOUNT_ID = "LastAccountId";
     private static final String LAST_USER_ID = "LastUserId";
@@ -40,14 +56,78 @@ public class BasicSteps extends TestBase {
     private static final String ASSERT_ERROR_NAME = "AssertErrorName";
     private static final String ASSERT_ERROR_CAUGHT = "AssertErrorCaught";
 
-    /**
-     * Scenario scoped step data.
-     */
-    private StepData stepData;
+    private DBHelper database;
 
     @Inject
-    public BasicSteps(StepData stepData) {
-        this.stepData = stepData;
+    public BasicSteps(StepData stepData, DBHelper database) {
+        super(stepData);
+        this.database = database;
+    }
+
+    @Before(value="@setup and @env_docker", order=0)
+    public void initParametersDocker(Scenario scenario) {
+        logger.info("=====> Init parameters for docker environment...");
+        setProperties(scenario, "kapuadb", "true", "localhost", "3306", "DEFAULT", "org.h2.Driver",
+            "jdbc:h2:tcp", "certificates/jwt/test.key", "certificates/jwt/test.cert", "localhost", "MODE=MySQL");
+        logger.info("=====> Init parameters for docker environment... DONE");
+    }
+
+    @Before(value="@setup and (@env_embedded_minimal or @env_none)", order=0)
+    public void initParametersEmbedded(Scenario scenario) {
+        logger.info("=====> Init parameters for embedded environment...");
+        setProperties(scenario, "kapuadb", "true", "", "", "H2", "org.h2.Driver", "jdbc:h2:mem:",
+            "certificates/jwt/test.key", "certificates/jwt/test.cert", "localhost", null);
+        logger.info("=====> Init parameters for embedded environment... DONE");
+    }
+
+    private void setProperties(Scenario scenario, String schema, String updateSchema,
+            String dbHost, String dbPort, String dbConnResolver, String dbDriver, String jdbcConnection,
+            String jwtKey, String jwtCertificate, String brokerIp, String additionalOptions) {
+        SystemSetting.resetInstance();
+        System.setProperty(SystemSettingKey.DB_SCHEMA.key(), schema);
+        System.setProperty(SystemSettingKey.DB_SCHEMA_UPDATE.key(), updateSchema);
+        System.setProperty(SystemSettingKey.DB_CONNECTION_HOST.key(), dbHost);
+        System.setProperty(SystemSettingKey.DB_CONNECTION_PORT.key(), dbPort);
+        System.setProperty(SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER.key(), dbConnResolver);
+        System.setProperty(SystemSettingKey.DB_JDBC_DRIVER.key(), dbDriver);
+        System.setProperty(SystemSettingKey.DB_CONNECTION_SCHEME.key(), jdbcConnection);
+        if (additionalOptions!=null) {
+            System.setProperty(SystemSettingKey.DB_CONNECTION_ADDITIONAL_OPTIONS.key(), additionalOptions);
+        }
+        System.setProperty("certificate.jwt.private.key", jwtKey);
+        System.setProperty("certificate.jwt.certificate", jwtCertificate);
+        System.setProperty("broker.ip", brokerIp);
+        setSpecificProperties(scenario);
+        logParameters();
+        KapuaLocator.clearInstance();
+    }
+
+    private void logParameters() {
+        logger.info("===============================================");
+        logger.info("{}: {}", SystemSettingKey.DB_SCHEMA.key(), SystemSetting.getInstance().getString(SystemSettingKey.DB_SCHEMA));
+        logger.info("{}: {}", SystemSettingKey.DB_SCHEMA_UPDATE.key(), SystemSetting.getInstance().getString(SystemSettingKey.DB_SCHEMA_UPDATE));
+        logger.info("{}: {}", SystemSettingKey.DB_CONNECTION_HOST.key(), SystemSetting.getInstance().getString(SystemSettingKey.DB_CONNECTION_HOST));
+        logger.info("{}: {}", SystemSettingKey.DB_CONNECTION_PORT.key(), SystemSetting.getInstance().getString(SystemSettingKey.DB_CONNECTION_PORT));
+        logger.info("{}: {}", SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER.key(), SystemSetting.getInstance().getString(SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER));
+        logger.info("{}: {}", SystemSettingKey.DB_JDBC_DRIVER.key(), SystemSetting.getInstance().getString(SystemSettingKey.DB_JDBC_DRIVER));
+        logger.info("{}: {}", SystemSettingKey.DB_CONNECTION_SCHEME.key(), SystemSetting.getInstance().getString(SystemSettingKey.DB_CONNECTION_SCHEME));
+        logger.info("Rest: datastore.elasticsearch.node: {}", DatastoreElasticsearchClientSettings.getInstance().getString(DatastoreElasticsearchClientSettingsKey.NODES));
+        logger.info("Rest: datastore.elasticsearch.port: {}", DatastoreElasticsearchClientSettings.getInstance().getString(DatastoreElasticsearchClientSettingsKey.PORT));
+        logger.info("===============================================");
+    }
+
+    private void setSpecificProperties(Scenario scenario) {
+        String[] scenarioTags = scenario.getSourceTagNames().toArray(new String[]{});
+        for (String str : scenarioTags) {
+            if (str.startsWith(KAPUA_CUSTOM_PROPERTIES)) {
+                String properties = str.substring(KAPUA_CUSTOM_PROPERTIES_SIZE, str.lastIndexOf("\""));
+                String[] splittedProperties = properties.split("\\,");
+                for (String property : splittedProperties) {
+                    String[] splittedProperty = property.split("=");
+                    System.setProperty(splittedProperty[0], splittedProperty[1]);
+                }
+            }
+        }
     }
 
     @Before
@@ -55,6 +135,72 @@ public class BasicSteps extends TestBase {
         if (WAIT_MULTIPLIER != 1.0d) {
             logger.info("Wait multiplier active: {}", WAIT_MULTIPLIER);
         }
+    }
+
+    @Before(value="@env_docker and not (@setup or @teardown)", order=0)
+    public void beforeScenarioDockerFull(Scenario scenario) {
+        beforeCommon(scenario);
+    }
+
+    @Before(value="@env_embedded_minimal and not (@setup or @teardown)", order=0)
+    public void beforeScenarioEmbeddedMinimal(Scenario scenario) {
+        beforeCommon(scenario);
+        beforeNoDocker();
+    }
+
+    @Before(value="@env_none and not (@setup or @teardown)", order=0)
+    public void beforeScenarioNone(Scenario scenario) {
+        beforeCommon(scenario);
+        beforeNoDocker();
+    }
+
+    @After(value="@env_docker and not (@setup or @teardown)", order=0)
+    public void afterScenarioDockerFull(Scenario scenario) {
+        afterScenarioDocker(scenario);
+    }
+
+    @After(value="@env_embedded_minimal and not (@setup or @teardown)", order=0)
+    public void afterScenarioEmbeddedMinimal(Scenario scenario) {
+        afterScenarioNoDocker(scenario);
+    }
+
+    @After(value="@env_none and not (@setup or @teardown)", order=0)
+    public void afterScenarioNone(Scenario scenario) {
+        afterScenarioNoDocker(scenario);
+    }
+
+    protected void beforeCommon(Scenario scenario) {
+        this.scenario = scenario;
+        stepData.clear();
+    }
+
+    protected void beforeNoDocker() {
+        database.setup();
+        // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
+        // All operations on database are performed using system user.
+        // Only for unit tests. Integration tests assume that a real logon is performed.
+        KapuaSession kapuaSession = new KapuaSession(null, SYS_SCOPE_ID, SYS_USER_ID);
+        KapuaSecurityUtils.setSession(kapuaSession);
+    }
+
+    protected void afterScenarioDocker(Scenario scenario) {
+        logger.info("Database cleanup...");
+        database.deleteAll();
+        logger.info("Database cleanup... DONE");
+        SecurityUtils.getSubject().logout();
+        KapuaSecurityUtils.clearSession();
+    }
+
+    protected void afterScenarioNoDocker(Scenario scenario) {
+        logger.info("Database drop...");
+        try {
+            database.dropAll();
+            logger.info("Database drop... DONE");
+            database.close();
+        } catch (Exception e) {
+            logger.error("Failed execute @After", e);
+        }
+        KapuaSecurityUtils.clearSession();
     }
 
     @Given("A placeholder step")

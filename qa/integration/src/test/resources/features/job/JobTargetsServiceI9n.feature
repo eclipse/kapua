@@ -12,14 +12,15 @@
 ###############################################################################
 @jobs
 @jobTargetService
-@integration
+@env_none
 
 Feature: Job Target service CRUD tests
     The Job service is responsible for maintaining a list of job targets.
 
+@setup
 Scenario: Init Security Context for all scenarios
-
-  Given Init Security Context
+  Given Init Jaxb Context
+  And Init Security Context
 
 Scenario: Regular target creation
 
@@ -172,6 +173,6 @@ Scenario: Job target factory sanity checks
 
     When I test the sanity of the job target factory
 
-Scenario: Reset Security Context for all scenarios
-
+@teardown
+  Scenario: Reset Security Context for all scenarios
     Given Reset Security Context

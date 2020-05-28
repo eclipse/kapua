@@ -51,18 +51,6 @@
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoService</api>
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoFactory</api>
 
-        <api>org.eclipse.kapua.service.datastore.ClientInfoRegistryService</api>
-        <api>org.eclipse.kapua.service.datastore.ClientInfoFactory</api>
-        <api>org.eclipse.kapua.service.datastore.ChannelInfoRegistryService</api>
-        <api>org.eclipse.kapua.service.datastore.ChannelInfoFactory</api>
-        <api>org.eclipse.kapua.service.datastore.MessageStoreService</api>
-        <api>org.eclipse.kapua.service.datastore.MessageStoreFactory</api>
-        <api>org.eclipse.kapua.service.datastore.MetricInfoRegistryService</api>
-        <api>org.eclipse.kapua.service.datastore.MetricInfoFactory</api>
-        <api>org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredicateFactory</api>
-
-        <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
-
         <api>org.eclipse.kapua.service.device.call.DeviceCallFactory</api>
         <api>org.eclipse.kapua.service.device.call.DeviceMessageFactory</api>
 

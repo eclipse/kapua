@@ -10,11 +10,18 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@unit
 @account
+@env_none
+
 Feature: User Account Service
     The User Account Service is responsible for CRUD operations for user accounts in the Kapua
     database.
+
+@setup
+@KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
+Scenario: Initialize test environment
+    Given Init Jaxb Context
+    And Init Security Context
 
 Scenario: Handle account creation
     Create a test account and check whether it was created correctly.
@@ -198,3 +205,7 @@ Scenario: Account name must not be mutable
     When I change the account "test_acc" name to "test_acc_new"
     Then An exception was thrown
     And Account "test_acc" exists
+
+@teardown
+Scenario: Reset Security Context for all scenarios
+  Given Reset Security Context

@@ -10,13 +10,19 @@
 # Contributors:
 #     Eurotech
 ###############################################################################
-@unit
 @translator
+@env_none
 
 Feature: Translator Service
   The Translator Service is responsible for messaging operations between Kura and Kapua.
 
   #KapuaTranslatorApi
+
+@setup
+@KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
+  Scenario: Initialize test environment
+    Given Init Jaxb Context
+    And Init Security Context
 
   Scenario: Translating "CommandRequestMessage" to "KuraRequestMessage"
   Trying to make translation from CommandRequestMessage to KuraRequestMessage.
@@ -320,4 +326,8 @@ Feature: Translator Service
     Given I create kura data message with channel with scope "kapua-sys", client id "rpione3" and payload with body and metrics
     Then I expect the exception "InvalidMessageException" with the text "Invalid message: null"
     When I try to translate invalid kura data message to jms message
+
+@teardown
+  Scenario: Reset Security Context for all scenarios
+    Given Reset Security Context
     And An exception was thrown
