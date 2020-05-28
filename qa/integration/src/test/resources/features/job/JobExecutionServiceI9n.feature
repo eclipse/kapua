@@ -12,14 +12,15 @@
 ###############################################################################
 @jobs
 @jobExecutionService
-@integration
+@env_none
 
 Feature: Job Execution service CRUD tests
     The Job service is responsible for maintaining the status of the target step executions.
 
+@setup
 Scenario: Init Security Context for all scenarios
-
-  Given Init Security Context
+  Given Init Jaxb Context
+  And Init Security Context
 
 Scenario: Regular job execution creation
 
@@ -185,6 +186,6 @@ Scenario: Job execution factory sanity checks
 
     And I test the sanity of the job execution factory
 
-Scenario: Reset Security Context for all scenarios
-
+@teardown
+  Scenario: Reset Security Context for all scenarios
     Given Reset Security Context

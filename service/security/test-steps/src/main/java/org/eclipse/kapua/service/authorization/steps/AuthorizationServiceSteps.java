@@ -19,22 +19,17 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
-import org.apache.shiro.SecurityUtils;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.security.KapuaSession;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
-import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.TestDomain;
-import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.qa.common.cucumber.CucUser;
 import org.eclipse.kapua.qa.common.cucumber.CucRolePermission;
 import org.eclipse.kapua.qa.common.cucumber.CucDomain;
@@ -91,10 +86,9 @@ import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import com.google.inject.Singleton;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -107,7 +101,7 @@ import java.util.Set;
 // Implementation of Gherkin steps used to test miscellaneous Shiro
 // authorization functionality.
 
-@ScenarioScoped
+@Singleton
 public class AuthorizationServiceSteps extends TestBase {
 
     private static final String ACCESS_INFO = "AccessInfo";
@@ -143,7 +137,6 @@ public class AuthorizationServiceSteps extends TestBase {
     private static final String ROLE_PERMISSIONS = "RolePermissions";
     private static final String ROLE_PERMISSION_FOUND = "RolePermissionFound";
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthorizationServiceSteps.class);
     private static final TestDomain TEST_DOMAIN = new TestDomain();
 
     // Various Authorization service references
@@ -163,24 +156,15 @@ public class AuthorizationServiceSteps extends TestBase {
     private RolePermissionService rolePermissionService;
     private RolePermissionFactory rolePermissionFactory;
     private UserService userService;
-    private UserFactory userFactory;
 
     @Inject
-    public AuthorizationServiceSteps(StepData stepData, DBHelper dbHelper) {
-
-        this.stepData = stepData;
-        this.database = dbHelper;
+    public AuthorizationServiceSteps(StepData stepData) {
+        super(stepData);
     }
 
-    // Database setup and tear-down steps
-    @Before
-    public void beforeScenario(Scenario scenario) {
-
-        this.scenario = scenario;
-        database.setup();
-        stepData.clear();
-
-        locator = KapuaLocator.getInstance();
+    @After(value="@setup")
+    public void setServices() {
+        KapuaLocator locator = KapuaLocator.getInstance();
         accessInfoService = locator.getService(AccessInfoService.class);
         accessInfoFactory = locator.getFactory(AccessInfoFactory.class);
         accessPermissionService = locator.getService(AccessPermissionService.class);
@@ -196,40 +180,13 @@ public class AuthorizationServiceSteps extends TestBase {
         rolePermissionService = locator.getService(RolePermissionService.class);
         rolePermissionFactory = locator.getFactory(RolePermissionFactory.class);
         permissionFactory = locator.getFactory(PermissionFactory.class);
-        userFactory = locator.getFactory(UserFactory.class);
         userService = locator.getService(UserService.class);
-
-        if (isUnitTest()) {
-            // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
-            // All operations on database are performed using system user.
-            // Only for unit tests. Integration tests assume that a real logon is performed.
-            KapuaSession kapuaSession = new KapuaSession(null, SYS_SCOPE_ID, SYS_USER_ID);
-            KapuaSecurityUtils.setSession(kapuaSession);
-        }
-
-        XmlUtil.setContextProvider(new TestJAXBContextProvider());
     }
 
-    @After
-    public void afterScenario() {
-
-        // Clean up the database
-        try {
-            logger.info("Logging out in cleanup");
-            if (isIntegrationTest()) {
-                database.deleteAll();
-                SecurityUtils.getSubject().logout();
-            } else {
-                database.dropAll();
-                database.close();
-            }
-            KapuaSecurityUtils.clearSession();
-        } catch (Exception e) {
-            logger.error("Failed to log out in @After", e);
-        }
+    @Before
+    public void beforeScenarioDockerFull(Scenario scenario) {
+        updateScenario(scenario);
     }
-
-    // Cucumber test steps
 
     @When("^I configure the role service$")
     public void setConfigurationValue(List<CucConfig> cucConfigs)

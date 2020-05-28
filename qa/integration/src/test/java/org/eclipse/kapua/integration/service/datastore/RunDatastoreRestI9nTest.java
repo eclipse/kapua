@@ -13,11 +13,11 @@
 package org.eclipse.kapua.integration.service.datastore;
 
 import cucumber.api.CucumberOptions;
-import org.eclipse.kapua.qa.common.cucumber.CucumberProperty;
-import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
+import cucumber.api.junit.Cucumber;
+
 import org.junit.runner.RunWith;
 
-@RunWith(CucumberWithProperties.class)
+@RunWith(Cucumber.class)
 @CucumberOptions(
         features = "classpath:features/datastore/Datastore.feature",
         glue = {"org.eclipse.kapua.qa.common",
@@ -32,15 +32,5 @@ import org.junit.runner.RunWith;
                 "json:target/DatastoreRestI9n_cucumber.json"},
         strict = true,
         monochrome = true)
-@CucumberProperty(key = "broker.ip", value = "localhost")
-@CucumberProperty(key = "commons.db.schema", value = "kapuadb")
-@CucumberProperty(key = "commons.settings.hotswap", value = "true")
-@CucumberProperty(key = "commons.settings.hotswap", value = "true")
-@CucumberProperty(key = "datastore.elasticsearch.nodes", value = "127.0.0.1")
-@CucumberProperty(key = "datastore.elasticsearch.provider", value = "org.eclipse.kapua.service.elasticsearch.client.rest.RestElasticsearchClientProvider")
-@CucumberProperty(key = "datastore.index.prefix", value = "")
-@CucumberProperty(key = "kapua.config.url", value = "")
-@CucumberProperty(key = "org.eclipse.kapua.qa.broker.extraStartupDelay", value = "23")
-@CucumberProperty(key = "org.eclipse.kapua.qa.datastore.extraStartupDelay", value = "25")
 public class RunDatastoreRestI9nTest {
 }

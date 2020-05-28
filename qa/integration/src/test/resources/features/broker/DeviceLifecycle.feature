@@ -1,3 +1,4 @@
+
 ###############################################################################
 # Copyright (c) 2017, 2021 Eurotech and/or its affiliates and others
 #
@@ -12,27 +13,15 @@
 ###############################################################################
 @broker
 @deviceLifecycle
-@integration
+@env_docker
 
 Feature: Device lifecycle scenarios
 
-  Scenario: Set environment variables
-
-    Given System property "commons.settings.hotswap" with value "true"
-    And System property "broker.ip" with value "localhost"
-    And System property "kapua.config.url" with value "null"
-
-  Scenario: Start datastore for all scenarios
-
-    Given Start Datastore
-
-  Scenario: Start event broker for all scenarios
-
-    Given Start Event Broker
-
-  Scenario: Start broker for all scenarios
-
-    Given Start Broker
+@setup
+  Scenario: Start docker environment
+    Given Init Jaxb Context
+    And Init Security Context
+    And Start full docker environment
 
 Scenario: Starting and stopping the simulator should create a device entry and properly set its status
   This starts and stops a simulator instance and checks if the connection state
@@ -43,7 +32,7 @@ Scenario: Starting and stopping the simulator should create a device entry and p
     And My credentials are username "kapua-sys" and password "kapua-password"
 
   When I start the simulator
-  Then Device sim-1 for account kapua-sys is registered after 5 seconds
+  Then Device sim-1 for account kapua-sys is registered after 15 seconds
   And The device should report simulator device information
   And I expect the device to report the applications
     | DEPLOY-V2 |
@@ -71,7 +60,7 @@ Scenario: Installing a package
     And My credentials are username "kapua-sys" and password "kapua-password"
 
   When I start the simulator
-  Then Device sim-1 for account kapua-sys is registered after 5 seconds
+  Then Device sim-1 for account kapua-sys is registered after 15 seconds
 
   When I fetch the package states
   Then There must be no installed packages
@@ -84,14 +73,6 @@ Scenario: Installing a package
   When I fetch the package states
   Then Package "foo.bar" with version 1.2.3 is installed and has 10 mock bundles
 
-  Scenario: Stop broker after all scenarios
-
-    Given Stop Broker
-
-  Scenario: Stop event broker for all scenarios
-
-    Given Stop Event Broker
-
-  Scenario: Stop datastore after all scenarios
-
-    Given Stop Datastore
+@teardown
+  Scenario: Stop docker environment
+    Given Stop full docker environment

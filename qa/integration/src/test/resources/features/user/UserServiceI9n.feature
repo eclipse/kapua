@@ -12,18 +12,16 @@
 ###############################################################################
 @user
 @userService
-@integration
+@env_embedded_minimal
 
 Feature: User Service Integration
   User Service integration scenarios
 
-Scenario: Init Security Context for all scenarios
-
-  Given Init Security Context
-
-  Scenario: Start event broker for all scenarios
-
-    Given Start Event Broker
+@setup
+Scenario: Initialize test environment
+    Given Init Jaxb Context
+    And Init Security Context
+    And Start Event Broker
 
   Scenario: Deleting user in account that is lower in hierarchy
   Using user A in in different scope than user B, try to delete user B. Scope of user A is one
@@ -214,10 +212,7 @@ Scenario: Init Security Context for all scenarios
     Then An exception was thrown
     And I logout
 
-  Scenario: Stop event broker for all scenarios
-
+@teardown
+  Scenario: Stop test environment
     Given Stop Event Broker
-
-  Scenario: Reset Security Context for all scenarios
-
-    Given Reset Security Context
+    And Reset Security Context

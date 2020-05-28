@@ -15,7 +15,7 @@ package org.eclipse.kapua.broker.core.plugin;
 import org.apache.activemq.broker.Broker;
 import org.apache.activemq.broker.BrokerFilter;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.core.ServiceModuleBundle;
+import org.eclipse.kapua.consumer.commons.application.KapuaApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * ActiveMQ application filter plugin implementation (application context lifecycle filter).<br>
  * <br>
  * <p>
- * Filter to startup/shutdown proprly the application context.<br>
+ * Filter to startup/shutdown properly the application context.<br>
  * <br>
  * <p>
  * This filter is added inside ActiveMQ filter chain plugin by {@link org.eclipse.kapua.broker.core.KapuaBrokerApplicationPlugin}
@@ -34,25 +34,18 @@ public class KapuaApplicationBrokerFilter extends BrokerFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(KapuaApplicationBrokerFilter.class);
 
-    // The following line must be done before any invocation of KapuaLocator.getInstance()
-    private static ServiceModuleBundle application;
+    private static KapuaApplication kapuaApplication;
 
     public KapuaApplicationBrokerFilter(Broker next) throws KapuaException {
         super(next);
+        kapuaApplication = new KapuaApplication();
     }
 
     @Override
     public void start()
             throws Exception {
         logger.info(">>> Application broker filter: calling start...");
-        synchronized (KapuaApplicationBrokerFilter.class) {
-            if (application == null) {
-                application = new ServiceModuleBundle() {
-
-                };
-            }
-            application.startup();
-        }
+        kapuaApplication.init();
         super.start();
         logger.info(">>> Application broker filter: calling start... DONE");
     }
@@ -62,11 +55,7 @@ public class KapuaApplicationBrokerFilter extends BrokerFilter {
             throws Exception {
         logger.info(">>> Application broker filter: calling stop...");
         super.stop();
-        synchronized (KapuaApplicationBrokerFilter.class) {
-            if (application != null) {
-                application.shutdown();
-            }
-        }
+        kapuaApplication.destroy();
         logger.info(">>> Application broker filter: calling stop... DONE");
     }
 

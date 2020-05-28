@@ -13,13 +13,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.integration.service.authorization;
 
-import org.eclipse.kapua.qa.common.cucumber.CucumberProperty;
-import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
 import org.junit.runner.RunWith;
 
 import cucumber.api.CucumberOptions;
+import cucumber.api.junit.Cucumber;
 
-@RunWith(CucumberWithProperties.class)
+@RunWith(Cucumber.class)
 @CucumberOptions(
         features = { "classpath:features/authorization/AccessInfoService.feature",
                      "classpath:features/authorization/DomainService.feature",
@@ -39,7 +38,4 @@ import cucumber.api.CucumberOptions;
                  },
         strict = true,
         monochrome = true)
-@CucumberProperty(key="test.type", value="integration")
-@CucumberProperty(key="commons.db.schema", value="kapuadb")
-@CucumberProperty(key="commons.db.schema.update", value="true")
 public class RunAuthorizationServiceI9nTest {}

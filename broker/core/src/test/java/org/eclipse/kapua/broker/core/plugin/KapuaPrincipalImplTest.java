@@ -25,7 +25,7 @@ import org.junit.experimental.categories.Category;
 import java.math.BigInteger;
 
 @Category(JUnitTests.class)
-public class KapuaPrincipalImplTest extends Assert {
+public class KapuaPrincipalImplTest {
 
     AccessToken accessToken1;
     AccessToken accessToken2;
@@ -52,12 +52,12 @@ public class KapuaPrincipalImplTest extends Assert {
             for (String id : clientId) {
                 for (String ip : clientIp) {
                     KapuaPrincipalImpl kapuaPrincipal = new KapuaPrincipalImpl(accessToken1, name, id, ip);
-                    assertEquals("Expected and actual values should be the same.", name, kapuaPrincipal.getName());
-                    assertEquals("Expected and actual values should be the same.", "token id", kapuaPrincipal.getTokenId());
-                    assertEquals("Expected and actual values should be the same.", KapuaId.ONE, kapuaPrincipal.getUserId());
-                    assertEquals("Expected and actual values should be the same.", KapuaId.ONE, kapuaPrincipal.getAccountId());
-                    assertEquals("Expected and actual values should be the same.", id, kapuaPrincipal.getClientId());
-                    assertEquals("Expected and actual values should be the same.", ip, kapuaPrincipal.getClientIp());
+                    Assert.assertEquals("Expected and actual values should be the same.", name, kapuaPrincipal.getName());
+                    Assert.assertEquals("Expected and actual values should be the same.", "token id", kapuaPrincipal.getTokenId());
+                    Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, kapuaPrincipal.getUserId());
+                    Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, kapuaPrincipal.getAccountId());
+                    Assert.assertEquals("Expected and actual values should be the same.", id, kapuaPrincipal.getClientId());
+                    Assert.assertEquals("Expected and actual values should be the same.", ip, kapuaPrincipal.getClientIp());
                 }
             }
         }
@@ -77,45 +77,45 @@ public class KapuaPrincipalImplTest extends Assert {
     @Test
     public void hasCodeNullAccountIdTest() {
         KapuaPrincipalImpl kapuaPrincipal = new KapuaPrincipalImpl(accessToken1, "username", "clientId", "192.168.1.1");
-        assertEquals("Expected and actual values should be the same.", -265712489, kapuaPrincipal.hashCode());
+        Assert.assertEquals("Expected and actual values should be the same.", -265712489, kapuaPrincipal.hashCode());
     }
 
     @Test
     public void hasCodeNullAccountIdNullNameIdTest() {
         KapuaPrincipalImpl kapuaPrincipal = new KapuaPrincipalImpl(accessToken1, null, "clientId", "192.168.1.1");
-        assertEquals("Expected and actual values should be the same.", 961, kapuaPrincipal.hashCode());
+        Assert.assertEquals("Expected and actual values should be the same.", 961, kapuaPrincipal.hashCode());
     }
 
     @Test
     public void hasCodeNullNameIdTest() {
         accessToken1.setScopeId(new KapuaIdImpl(BigInteger.TEN));
         KapuaPrincipalImpl kapuaPrincipal = new KapuaPrincipalImpl(accessToken1, null, "clientId", "192.168.1.1");
-        assertEquals("Expected and actual values should be the same.", 2232, kapuaPrincipal.hashCode());
+        Assert.assertEquals("Expected and actual values should be the same.", 2232, kapuaPrincipal.hashCode());
     }
 
     @Test
     public void hasCodeTest() {
         accessToken1.setScopeId(new KapuaIdImpl(BigInteger.TEN));
         KapuaPrincipalImpl kapuaPrincipal = new KapuaPrincipalImpl(accessToken1, "username", "clientId", "192.168.1.1");
-        assertEquals("Expected and actual values should be the same.", -265711218, kapuaPrincipal.hashCode());
+        Assert.assertEquals("Expected and actual values should be the same.", -265711218, kapuaPrincipal.hashCode());
     }
 
     @Test
     public void equalsSameObjectTest() {
         KapuaPrincipalImpl kapuaPrincipal = new KapuaPrincipalImpl(accessToken1, "username", "client1", "clientIp");
-        assertTrue("True expected.", kapuaPrincipal.equals(kapuaPrincipal));
+        Assert.assertTrue("True expected.", kapuaPrincipal.equals(kapuaPrincipal));
     }
 
     @Test
     public void equalsNullTest() {
         KapuaPrincipalImpl kapuaPrincipal = new KapuaPrincipalImpl(accessToken1, "username", "client1", "clientIp");
-        assertFalse("False expected.", kapuaPrincipal.equals(null));
+        Assert.assertFalse("False expected.", kapuaPrincipal.equals(null));
     }
 
     @Test
     public void equalsDifferentClassTest() {
         KapuaPrincipalImpl kapuaPrincipal = new KapuaPrincipalImpl(accessToken1, "username", "client1", "clientIp");
-        assertFalse("False expected.", kapuaPrincipal.equals(new Object()));
+        Assert.assertFalse("False expected.", kapuaPrincipal.equals(new Object()));
     }
 
     @Test
@@ -123,14 +123,14 @@ public class KapuaPrincipalImplTest extends Assert {
         KapuaPrincipalImpl kapuaPrincipal1 = new KapuaPrincipalImpl(accessToken1, "username1", "client1", "192.168.1.1");
         accessToken2.setScopeId(KapuaId.ONE);
         KapuaPrincipalImpl kapuaPrincipal2 = new KapuaPrincipalImpl(accessToken2, "username2", "client2", "192.168.1.2");
-        assertFalse("False expected.", kapuaPrincipal1.equals(kapuaPrincipal2));
+        Assert.assertFalse("False expected.", kapuaPrincipal1.equals(kapuaPrincipal2));
     }
 
     @Test
     public void equalsNullAccountIdsTest() {
         KapuaPrincipalImpl kapuaPrincipal1 = new KapuaPrincipalImpl(accessToken1, "username1", "client1", "192.168.1.1");
         KapuaPrincipalImpl kapuaPrincipal2 = new KapuaPrincipalImpl(accessToken2, "username2", "client2", "192.168.1.2");
-        assertFalse("False expected.", kapuaPrincipal1.equals(kapuaPrincipal2));
+        Assert.assertFalse("False expected.", kapuaPrincipal1.equals(kapuaPrincipal2));
     }
 
     @Test
@@ -139,7 +139,7 @@ public class KapuaPrincipalImplTest extends Assert {
         accessToken2.setScopeId(new KapuaIdImpl(BigInteger.TEN));
         KapuaPrincipalImpl kapuaPrincipal1 = new KapuaPrincipalImpl(accessToken1, "username1", "client1", "192.168.1.1");
         KapuaPrincipalImpl kapuaPrincipal2 = new KapuaPrincipalImpl(accessToken2, "username2", "client2", "192.168.1.2");
-        assertFalse("False expected.", kapuaPrincipal1.equals(kapuaPrincipal2));
+        Assert.assertFalse("False expected.", kapuaPrincipal1.equals(kapuaPrincipal2));
     }
 
     @Test
@@ -148,34 +148,34 @@ public class KapuaPrincipalImplTest extends Assert {
         accessToken2.setScopeId(new KapuaIdImpl(BigInteger.ONE));
         KapuaPrincipalImpl kapuaPrincipal1 = new KapuaPrincipalImpl(accessToken1, "username1", "client1", "192.168.1.1");
         KapuaPrincipalImpl kapuaPrincipal2 = new KapuaPrincipalImpl(accessToken2, "username2", "client2", "192.168.1.2");
-        assertFalse("False expected.", kapuaPrincipal1.equals(kapuaPrincipal2));
+        Assert.assertFalse("False expected.", kapuaPrincipal1.equals(kapuaPrincipal2));
     }
 
     @Test
     public void equalsNullNameTest() {
         KapuaPrincipalImpl kapuaPrincipal1 = new KapuaPrincipalImpl(accessToken1, null, "client1", "192.168.1.1");
         KapuaPrincipalImpl kapuaPrincipal2 = new KapuaPrincipalImpl(accessToken2, "username2", "client2", "192.168.1.2");
-        assertFalse("False expected.", kapuaPrincipal1.equals(kapuaPrincipal2));
+        Assert.assertFalse("False expected.", kapuaPrincipal1.equals(kapuaPrincipal2));
     }
 
     @Test
     public void equalsDifferentNamesTest() {
         KapuaPrincipalImpl kapuaPrincipal1 = new KapuaPrincipalImpl(accessToken1, "username1", "client1", "192.168.1.1");
         KapuaPrincipalImpl kapuaPrincipal2 = new KapuaPrincipalImpl(accessToken2, "username2", "client2", "192.168.1.2");
-        assertFalse("False expected.", kapuaPrincipal1.equals(kapuaPrincipal2));
+        Assert.assertFalse("False expected.", kapuaPrincipal1.equals(kapuaPrincipal2));
     }
 
     @Test
     public void equalsNullNamesTest() {
         KapuaPrincipalImpl kapuaPrincipal1 = new KapuaPrincipalImpl(accessToken1, null, "client1", "192.168.1.1");
         KapuaPrincipalImpl kapuaPrincipal2 = new KapuaPrincipalImpl(accessToken2, null, "client2", "192.168.1.2");
-        assertTrue("True expected.", kapuaPrincipal1.equals(kapuaPrincipal2));
+        Assert.assertTrue("True expected.", kapuaPrincipal1.equals(kapuaPrincipal2));
     }
 
     @Test
     public void equalsSameNamesTest() {
         KapuaPrincipalImpl kapuaPrincipal1 = new KapuaPrincipalImpl(accessToken1, "username1", "client1", "192.168.1.1");
         KapuaPrincipalImpl kapuaPrincipal2 = new KapuaPrincipalImpl(accessToken2, "username1", "client2", "192.168.1.2");
-        assertTrue("True expected.", kapuaPrincipal1.equals(kapuaPrincipal2));
+        Assert.assertTrue("True expected.", kapuaPrincipal1.equals(kapuaPrincipal2));
     }
 }

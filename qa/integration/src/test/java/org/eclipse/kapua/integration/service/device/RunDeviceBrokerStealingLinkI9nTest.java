@@ -13,14 +13,15 @@
 package org.eclipse.kapua.integration.service.device;
 
 import cucumber.api.CucumberOptions;
-import org.eclipse.kapua.qa.common.cucumber.CucumberProperty;
-import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
+import cucumber.api.junit.Cucumber;
+
 import org.junit.runner.RunWith;
 
-@RunWith(CucumberWithProperties.class)
+@RunWith(Cucumber.class)
 @CucumberOptions(
         features = {"classpath:features/broker/DeviceBrokerStealingLinkI9n.feature"},
         glue = {"org.eclipse.kapua.qa.common",
+                "org.eclipse.kapua.qa.integration.steps",
                 "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.service.tag.steps",
@@ -32,6 +33,4 @@ import org.junit.runner.RunWith;
                  },
         strict = true,
         monochrome = true )
-@CucumberProperty(key="broker.ip", value="localhost")
-@CucumberProperty(key="kapua.config.url", value="")
 public class RunDeviceBrokerStealingLinkI9nTest {}

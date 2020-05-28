@@ -50,10 +50,5 @@ if [ "${KAPUA_DISABLE_SSL}" == "false" ]; then
     export ACTIVEMQ_SSL_OPTS
 fi
 
-if [ "${KAPUA_DISABLE_DATASTORE:-false}" == "true" ]; then
-  sed -i '/BEGIN DATASTORE PERSISTENCE/,/END DATASTORE PERSISTENCE/d' /opt/activemq/conf/camel.xml
-  sed -i '/BEGIN DATASTORE PERSISTENCE/,/END DATASTORE PERSISTENCE/d' /opt/activemq/conf/camel-routes.xml
-fi
-
 # Run broker
 /opt/activemq/bin/activemq console

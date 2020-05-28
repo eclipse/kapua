@@ -12,17 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.integration.service.device;
 
-import org.eclipse.kapua.qa.common.cucumber.CucumberProperty;
-import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
 import org.junit.runner.RunWith;
 
 import cucumber.api.CucumberOptions;
+import cucumber.api.junit.Cucumber;
 
-@RunWith(CucumberWithProperties.class)
+@RunWith(Cucumber.class)
 @CucumberOptions(
         features = {"classpath:features/device/DeviceServiceI9n.feature"
                    },
         glue = {"org.eclipse.kapua.qa.common",
+                "org.eclipse.kapua.qa.integration.steps",
                 "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.service.tag.steps",
@@ -34,5 +34,4 @@ import cucumber.api.CucumberOptions;
                  },
         strict = true,
         monochrome = true )
-@CucumberProperty(key="kapua.config.url", value="")
 public class RunDeviceI9nTest {}

@@ -50,4 +50,5 @@ public interface Domain {
      * @since 1.0.0
      */
     boolean getGroupable();
+
 }

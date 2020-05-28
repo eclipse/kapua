@@ -13,15 +13,16 @@
 package org.eclipse.kapua.integration.service.device;
 
 import cucumber.api.CucumberOptions;
-import org.eclipse.kapua.qa.common.cucumber.CucumberProperty;
-import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
+import cucumber.api.junit.Cucumber;
+
 import org.junit.runner.RunWith;
 
-@RunWith(CucumberWithProperties.class)
+@RunWith(Cucumber.class)
 @CucumberOptions(
         features = {"classpath:features/broker/acl/BrokerACLI9n.feature"
         },
         glue = {"org.eclipse.kapua.qa.common",
+                "org.eclipse.kapua.qa.integration.steps",
                 "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.service.tag.steps",
@@ -32,19 +33,6 @@ import org.junit.runner.RunWith;
                 "json:target/BrokerACLI9n_cucumber.json"
         },
         strict = true,
-        monochrome = true)
-
-@CucumberProperty(key = "DOCKER_HOST", value = "")
-@CucumberProperty(key = "DOCKER_CERT_PATH", value = "")
-@CucumberProperty(key = "commons.db.schema.update", value = "")
-@CucumberProperty(key = "commons.db.connection.host", value = "")
-@CucumberProperty(key = "commons.db.connection.port", value = "")
-@CucumberProperty(key = "commons.eventbus.url", value = "")
-@CucumberProperty(key = "certificate.jwt.private.key", value = "")
-@CucumberProperty(key = "certificate.jwt.certificate", value = "")
-@CucumberProperty(key = "datastore.elasticsearch.nodes", value = "")
-@CucumberProperty(key = "datastore.elasticsearch.provider", value = "")
-@CucumberProperty(key = "kapua.config.url", value = "")
-@CucumberProperty(key = "org.eclipse.kapua.qa.broker.extraStartupDelay", value = "3")
+        monochrome = true )
 public class RunBrokerACLI9nTest {
 }

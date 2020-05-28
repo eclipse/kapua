@@ -14,27 +14,27 @@
 package org.eclipse.kapua.integration.service.device;
 
 import cucumber.api.CucumberOptions;
-import org.eclipse.kapua.qa.common.cucumber.CucumberProperty;
-import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
+import cucumber.api.junit.Cucumber;
+
 import org.junit.runner.RunWith;
 
-@RunWith(CucumberWithProperties.class)
+@RunWith(Cucumber.class)
 @CucumberOptions(
         features = {"classpath:features/broker/DeviceData.feature"},
         glue = {"org.eclipse.kapua.qa.common",
+                "org.eclipse.kapua.qa.integration.steps",
                 "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.service.tag.steps",
                 "org.eclipse.kapua.service.datastore.steps",
                 "org.eclipse.kapua.service.device.registry.steps"
-        },
+               },
         plugin = {"pretty",
-                "html:target/cucumber/DeviceDataI9n",
-                "json:target/DeviceDataI9n_cucumber.json"
-        },
+                  "html:target/cucumber/DockerBroker",
+                  "json:target/DockerBroker_cucumber.json",
+                  "html:target/cucumber/DeviceDataI9n",
+                  "json:target/DeviceDataI9n_cucumber.json"
+                 },
         strict = true,
-        monochrome = true)
-@CucumberProperty(key = "datastore.elasticsearch.nodes", value = "127.0.0.1")
-@CucumberProperty(key = "kapua.config.url", value = "")
-public class RunDeviceDataI9nTest {
-}
+        monochrome = true )
+public class RunDeviceDataI9nTest {}

@@ -77,8 +77,12 @@ public class BirthCertificateBuilder {
 
                 // now add the result
 
-                metrics.put("connection_interface", String.join(",", interfaces));
-                metrics.put("connection_ip", String.join(",", addresses));
+                //limit the field length
+                String connectionInterface = String.join(",", interfaces);
+                String connectionAddress = String.join(",", addresses);
+
+                metrics.put("connection_interface", connectionInterface.length()>255 ? connectionInterface.substring(0, 255) : connectionInterface);
+                metrics.put("connection_ip", connectionAddress.length()>64 ? connectionAddress.substring(0, 64) : connectionAddress);
             }
         } catch (final Exception e) {
         }

@@ -179,10 +179,10 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
     protected void updatePermissions(KapuaSecurityContext kapuaSecurityContext) throws KapuaException {
         List<Permission> permissions = new ArrayList<>();
         permissions.add(permissionFactory.newPermission(BROKER_DOMAIN, Actions.connect, kapuaSecurityContext.getScopeId()));
+        permissions.add(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.read, kapuaSecurityContext.getScopeId()));
         permissions.add(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.write, kapuaSecurityContext.getScopeId()));
         permissions.add(permissionFactory.newPermission(DATASTORE_DOMAIN, Actions.read, kapuaSecurityContext.getScopeId()));
         permissions.add(permissionFactory.newPermission(DATASTORE_DOMAIN, Actions.write, kapuaSecurityContext.getScopeId()));
-        permissions.add(permissionFactory.newPermission(DEVICE_MANAGEMENT_DOMAIN, Actions.read, kapuaSecurityContext.getScopeId()));
         kapuaSecurityContext.updatePermissions(authorizationService.isPermitted(permissions));
 
         if (!kapuaSecurityContext.isBrokerConnect()) {

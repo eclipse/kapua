@@ -13,6 +13,8 @@
 package org.eclipse.kapua.service.device.registry.steps;
 
 import com.google.common.collect.Lists;
+import com.google.inject.Singleton;
+
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -20,13 +22,10 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
-import org.apache.shiro.SecurityUtils;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.security.KapuaSession;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.KapuaPosition;
@@ -47,11 +46,9 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
-import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.TestDomain;
-import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.qa.common.cucumber.CucConfig;
 import org.eclipse.kapua.qa.common.cucumber.CucConnection;
 import org.eclipse.kapua.qa.common.cucumber.CucDevice;
@@ -107,8 +104,6 @@ import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserService;
 import org.junit.Assert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.math.BigInteger;
@@ -129,10 +124,8 @@ import java.util.Vector;
  * services that the Device Registry services dependent on. Dependent services are: -
  * Authorization Service -
  */
-@ScenarioScoped
+@Singleton
 public class DeviceRegistrySteps extends TestBase {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DeviceRegistrySteps.class);
 
     private static final String TEST_DEVICE_NAME = "test_name";
     private static final String TEST_BIOS_VERSION_1 = "bios_version_1";
@@ -206,10 +199,8 @@ public class DeviceRegistrySteps extends TestBase {
 
     // Default constructor
     @Inject
-    public DeviceRegistrySteps(StepData stepData, DBHelper dbHelper) {
-
-        this.stepData = stepData;
-        this.database = dbHelper;
+    public DeviceRegistrySteps(StepData stepData) {
+        super(stepData);
     }
 
     // ************************************************************************************
@@ -222,14 +213,14 @@ public class DeviceRegistrySteps extends TestBase {
     // * Setup and tear-down steps                                                        *
     // ************************************************************************************
 
-    @Before
-    public void beforeScenario(Scenario scenario) {
+    @Before(value="@env_docker or @env_embedded_minimal or @env_none", order=10)
+    public void beforeScenarioNone(Scenario scenario) {
+        updateScenario(scenario);
+    }
 
-        this.scenario = scenario;
-        database.setup();
-        stepData.clear();
-
-        locator = KapuaLocator.getInstance();
+    @After(value="@setup")
+    public void setServices() {
+        KapuaLocator locator = KapuaLocator.getInstance();
         deviceRegistryService = locator.getService(DeviceRegistryService.class);
         deviceFactory = locator.getFactory(DeviceFactory.class);
 
@@ -257,36 +248,6 @@ public class DeviceRegistrySteps extends TestBase {
         groupFactory = locator.getFactory(GroupFactory.class);
 
         aclCreator = new AclCreator();
-
-        if (isUnitTest()) {
-            // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
-            // All operations on database are performed using system user.
-            // Only for unit tests. Integration tests assume that a real logon is performed.
-            KapuaSession kapuaSession = new KapuaSession(null, SYS_SCOPE_ID, SYS_USER_ID);
-            KapuaSecurityUtils.setSession(kapuaSession);
-        }
-
-        // Setup JAXB context
-        XmlUtil.setContextProvider(new TestJAXBContextProvider());
-    }
-
-    @After
-    public void afterScenario() {
-
-        // Clean up the database
-        try {
-            LOGGER.info("Logging out in cleanup");
-            if (isIntegrationTest()) {
-                database.deleteAll();
-                SecurityUtils.getSubject().logout();
-            } else {
-                database.dropAll();
-                database.close();
-            }
-            KapuaSecurityUtils.clearSession();
-        } catch (Exception e) {
-            LOGGER.error("Failed to log out in @After", e);
-        }
     }
 
     // ************************************************************************************
@@ -2664,8 +2625,8 @@ public class DeviceRegistrySteps extends TestBase {
         }
     }
 
-    @And("^I asign tag to device$")
-    public void iAsignTagToDevice() throws Exception {
+    @And("^I assign tag to device$")
+    public void iAssignTagToDevice() throws Exception {
         Tag tag = (Tag) stepData.get("tag");
         Device device = (Device) stepData.get("Device");
         try {
@@ -2869,7 +2830,7 @@ public class DeviceRegistrySteps extends TestBase {
     }
 
     @Given("^Tag \"([^\"]*)\" is not assigned to device \"([^\"]*)\"$")
-    public void tagWithNameIsNotAsignedToDevice(String tagName, String deviceName) throws Throwable {
+    public void tagWithNameIsNotAssignedToDevice(String tagName, String deviceName) throws Throwable {
         try {
             DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
             tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, deviceName, AttributePredicate.Operator.EQUAL));

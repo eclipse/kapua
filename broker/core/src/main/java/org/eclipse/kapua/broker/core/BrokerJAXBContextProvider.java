@@ -27,10 +27,6 @@ import org.eclipse.kapua.app.api.core.exception.model.JobRunningExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobStartingExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobStoppingExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.ThrowableInfo;
-import org.eclipse.kapua.broker.core.router.EndChainEndPoint;
-import org.eclipse.kapua.broker.core.router.EndPointContainer;
-import org.eclipse.kapua.broker.core.router.ParentEndPoint;
-import org.eclipse.kapua.broker.core.router.SimpleEndPoint;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
@@ -38,6 +34,7 @@ import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreXmlRegistry;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.event.ServiceEvent;
+import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTdesignate;
@@ -47,6 +44,24 @@ import org.eclipse.kapua.model.config.metatype.KapuaTobject;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.config.metatype.KapuaToption;
 import org.eclipse.kapua.model.config.metatype.MetatypeXmlRegistry;
+import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundle;
+import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundles;
+import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceComponentConfiguration;
+import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfiguration;
+import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraBundleInfo;
+import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
+import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackages;
+import org.eclipse.kapua.service.device.call.kura.model.snapshot.KuraSnapshotIds;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
+import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
+import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
+import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
+import org.eclipse.kapua.service.device.management.packages.model.DevicePackage;
+import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
+import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
+import org.eclipse.kapua.service.job.Job;
+import org.eclipse.kapua.service.job.JobListResult;
+import org.eclipse.kapua.service.job.JobXmlRegistry;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.slf4j.Logger;
@@ -59,7 +74,7 @@ import java.util.Map;
 
 public class BrokerJAXBContextProvider implements JAXBContextProvider {
 
-    private static Logger logger = LoggerFactory.getLogger(BrokerJAXBContextProvider.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BrokerJAXBContextProvider.class);
 
     private JAXBContext context;
 
@@ -79,10 +94,6 @@ public class BrokerJAXBContextProvider implements JAXBContextProvider {
                     KapuaTdesignate.class,
                     KapuaTobject.class,
                     MetatypeXmlRegistry.class,
-                    EndPointContainer.class,
-                    SimpleEndPoint.class,
-                    ParentEndPoint.class,
-                    EndChainEndPoint.class,
 
                     // KapuaEvent
                     ServiceEvent.class,
@@ -91,6 +102,29 @@ public class BrokerJAXBContextProvider implements JAXBContextProvider {
                     EventStoreRecordQuery.class,
                     EventStoreXmlRegistry.class,
 
+                    //TODO EXT-CAMEL only for test remove when jobs will be defined in their own container
+                    // Jobs
+                    Job.class,
+                    JobListResult.class,
+                    JobXmlRegistry.class,
+                    JobTargetSublist.class,
+                    DeviceCommandInput.class,
+                    DeviceCommandOutput.class,
+
+                    KuraDeviceComponentConfiguration.class,
+                    KuraDeviceConfiguration.class,
+                    KuraDeploymentPackage.class,
+                    KuraDeploymentPackages.class,
+                    KuraBundle.class,
+                    KuraBundles.class,
+                    KuraBundleInfo.class,
+                    KuraSnapshotIds.class,
+
+                    DeviceAssets.class,
+                    DeviceConfiguration.class,
+                    DevicePackages.class,
+                    DevicePackage.class,
+                    DevicePackageDownloadRequest.class,
                     // Job Engine
                     JobStartOptions.class,
 
@@ -114,9 +148,9 @@ public class BrokerJAXBContextProvider implements JAXBContextProvider {
             };
             try {
                 context = JAXBContextFactory.createContext(classes, properties);
-                logger.debug("Broker JAXB context initialized!");
-            } catch (JAXBException jaxbException) {
-                throw KapuaException.internalError(jaxbException, "Error creating JAXBContext!");
+                LOG.debug("Default JAXB context initialized!");
+            } catch (JAXBContext e) {
+                throw KapuaException.internalError(e, "Error creating JAXBContext!");
             }
         }
         return context;

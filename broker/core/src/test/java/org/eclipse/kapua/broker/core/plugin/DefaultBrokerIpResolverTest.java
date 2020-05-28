@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Category(JUnitTests.class)
-public class DefaultBrokerIpResolverTest extends Assert {
+public class DefaultBrokerIpResolverTest {
 
     private static final String BROKER_IP_PROP_KEY = "broker.ip";
 
@@ -33,7 +33,7 @@ public class DefaultBrokerIpResolverTest extends Assert {
 
         Tests.runWithProperties(properties, () -> {
             DefaultBrokerIpResolver defaultBrokerIpResolver = new DefaultBrokerIpResolver();
-            assertEquals("Expected and actual values should be the same", "192.168.33.10", defaultBrokerIpResolver.getBrokerIpOrHostName());
+            Assert.assertEquals("Expected and actual values should be the same", "192.168.33.10", defaultBrokerIpResolver.getBrokerIpOrHostName());
         });
     }
 

@@ -34,11 +34,9 @@ import org.eclipse.kapua.qa.common.Suppressed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
+import com.google.inject.Singleton;
 
-import cucumber.runtime.java.guice.ScenarioScoped;
-
-@ScenarioScoped
+@Singleton
 public class EmbeddedEventBroker {
 
     private static final Logger logger = LoggerFactory.getLogger(EmbeddedEventBroker.class);
@@ -48,30 +46,18 @@ public class EmbeddedEventBroker {
 
     private static final int EXTRA_STARTUP_DELAY = Integer.getInteger("org.eclipse.kapua.qa.broker.extraStartupDelay", 0);
 
-    private static final boolean NO_EMBEDDED_SERVERS = Boolean.getBoolean("org.eclipse.kapua.qa.noEmbeddedServers");
-
     private static Map<String, List<AutoCloseable>> closables = new HashMap<>();
 
     private DBHelper database;
 
     private static EmbeddedJMS jmsServer;
 
-    @Inject
-    public EmbeddedEventBroker(final DBHelper database) {
-        this.database = database;
-    }
-
     @Given("^Start Event Broker$")
     public void start() {
-
-        if (NO_EMBEDDED_SERVERS) {
-            return;
-        }
         //set a default value if not set
         if (StringUtils.isEmpty(System.getProperty(SystemSettingKey.EVENT_BUS_URL.key()))) {
             System.setProperty(SystemSettingKey.EVENT_BUS_URL.key(), "amqp://127.0.0.1:5672");
         }
-        database.setup();
 
         logger.info("Starting new instance of Event Broker");
         try {
@@ -101,10 +87,6 @@ public class EmbeddedEventBroker {
 
     @Given("^Stop Event Broker$")
     public void stop() {
-
-        if (NO_EMBEDDED_SERVERS) {
-            return;
-        }
         logger.info("Stopping Event Broker instance ...");
         try (final Suppressed<RuntimeException> s = Suppressed.withRuntimeException()) {
             // close all resources

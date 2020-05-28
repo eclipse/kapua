@@ -34,6 +34,7 @@ public class InitShiro {
 
     @Given("^Init Security Context$")
     public void start() throws IOException {
+        logger.info("Init shiro security manager...");
         try {
             SecurityManager securityManager = SecurityUtils.getSecurityManager();
             logger.info("Found Shiro security manager {}", securityManager);
@@ -47,13 +48,15 @@ public class InitShiro {
             }
             SecurityManager securityManager = new IniSecurityManagerFactory(shiroIni).getInstance();
             SecurityUtils.setSecurityManager(securityManager);
-            logger.info("Init shiro security manager... DONE");
         }
+        logger.info("Init shiro security manager... DONE");
     }
 
     @Given("^Reset Security Context$")
     public void stop() {
+        logger.info("Reset shiro security manager...");
         SecurityUtils.setSecurityManager(null);
+        logger.info("Reset shiro security manager... DONE");
     }
 
 }
