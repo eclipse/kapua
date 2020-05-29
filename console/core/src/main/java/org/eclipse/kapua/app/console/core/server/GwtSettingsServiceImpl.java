@@ -12,6 +12,7 @@
 package org.eclipse.kapua.app.console.core.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.app.console.core.server.util.SsoHelper;
 import org.eclipse.kapua.app.console.core.server.util.SsoLocator;
 import org.eclipse.kapua.app.console.core.shared.model.GwtProductInformation;
@@ -53,8 +54,11 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements GwtS
     public String getSsoLogoutUri(String ssoIdToken) throws GwtKapuaException {
         try {
             if (SETTINGS.getBoolean(ConsoleSettingKeys.SSO_OPENID_LOGOUT_ENABLED, true)) {
-                return SsoLocator.getLocator(this).getService().getLogoutUri(ssoIdToken,
-                        URI.create(SsoHelper.getHomeUri()), UUID.randomUUID().toString());
+                if (ssoIdToken.isEmpty()) {
+                    throw new KapuaIllegalArgumentException("ssoIdToken", ssoIdToken);
+                }
+                return SsoLocator.getLocator(this).getService().getLogoutUri(
+                        ssoIdToken, URI.create(SsoHelper.getHomeUri()), UUID.randomUUID().toString());
             }
             return "";  // return empty string instead of using a dedicated callback just to check if the logout is enabled
         } catch (Throwable t) {

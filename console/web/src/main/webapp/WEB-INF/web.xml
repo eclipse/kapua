@@ -28,6 +28,10 @@
         <listener-class>org.eclipse.kapua.app.console.core.server.util.SsoLocatorListener</listener-class>
     </listener>
 
+    <listener>
+        <listener-class>org.eclipse.kapua.app.console.core.server.util.OpenIDLogoutListener</listener-class>
+    </listener>
+
     <filter>
         <filter-name>ShiroFilter</filter-name>
         <filter-class>org.eclipse.kapua.app.console.core.filter.KapuaWebFilter</filter-class>

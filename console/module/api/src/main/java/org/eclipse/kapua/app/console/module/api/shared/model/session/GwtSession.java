@@ -44,7 +44,6 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private String userId;
     private String userName;
     private String userDisplayName;
-    private String ssoAccessToken;
     private String ssoIdToken;
 
     private String tokenId;
