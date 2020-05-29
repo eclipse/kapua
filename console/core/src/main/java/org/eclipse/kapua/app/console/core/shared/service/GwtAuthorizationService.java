@@ -36,9 +36,11 @@ public interface GwtAuthorizationService extends RemoteService {
     public GwtSession login(GwtLoginCredential gwtLoginCredentials) throws GwtKapuaException;
 
     /**
-     * Logins a session based on the given access token. If the access token is correct a session is established and returned
+     * Logins a session based on the given access token. If the access token is correct a session is established and returned.
+     * An id token is also passed for identity information about the user.
      *
-     * @param gwtAccessTokenCredentials The access token to authenticate
+     * @param gwtAccessTokenCredentials The access token to authenticate.
+     * @param gwtJwtIdToken The id token which identifies the user.
      * @return The session info established.
      * @throws GwtKapuaException If the access token is not valid.
      * @since 1.0.0

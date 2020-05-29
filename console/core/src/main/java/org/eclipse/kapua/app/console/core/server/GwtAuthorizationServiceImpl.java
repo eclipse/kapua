@@ -16,6 +16,7 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 import org.eclipse.kapua.app.console.core.server.util.SsoLocator;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtJwtCredential;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtJwtIdToken;
@@ -140,6 +141,10 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             handleLogin(authenticationService, credentials);
 
             // Get the session infos
+            if (gwtJwtIdToken == null || gwtJwtIdToken.getIdToken().isEmpty()) {
+                // in this specific case the gwtJwtIdToken cannot be empty
+                throw new KapuaIllegalNullArgumentException("gwtJwtIdToken");
+            }
             return establishSession(gwtJwtIdToken);
         } catch (Throwable t) {
             logout();
@@ -287,11 +292,13 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         gwtSession.setAccountPath(gwtAccount.getParentAccountPath());
         gwtSession.setSelectedAccountPath(gwtAccount.getParentAccountPath());
 
-        // Access token
+        // Setting Id token
         if (gwtJwtIdToken!=null) {
             gwtSession.setSsoIdToken(gwtJwtIdToken.getIdToken());
         }
 
+        //TODO: As Alberto said, I can remove this.
+        //  However, I have to check that this is actually possible, since the establishSession method uses the token id
         //
         // Saving session data in session
         Subject currentUser = SecurityUtils.getSubject();

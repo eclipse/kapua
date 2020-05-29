@@ -194,8 +194,7 @@ public class NorthView extends LayoutContainer {
                             @Override
                             public void onSuccess(Void arg0) {
                                 if (currentSession.isSsoEnabled() && currentSession.getSsoIdToken() != null) {
-                                    gwtSettingService.getSsoLogoutUri(currentSession.getSsoIdToken(),
-                                            new AsyncCallback<String>() {
+                                    gwtSettingService.getSsoLogoutUri(currentSession.getSsoIdToken(), new AsyncCallback<String>() {
 
                                                 @Override
                                                 public void onFailure(Throwable caught) {
