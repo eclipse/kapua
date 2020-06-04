@@ -197,16 +197,21 @@ public class NorthView extends LayoutContainer {
                                     gwtSettingService.getSsoLogoutUri(currentSession.getSsoIdToken(),
                                             new AsyncCallback<String>() {
 
-                                        @Override
-                                        public void onFailure(Throwable caught) {
-                                            FailureHandler.handle(caught);
-                                        }
+                                                @Override
+                                                public void onFailure(Throwable caught) {
+                                                    FailureHandler.handle(caught);
+                                                }
 
-                                        @Override
-                                        public void onSuccess(String result) {
-                                            Window.Location.assign(result);
-                                        }
-                                    });
+                                                @Override
+                                                public void onSuccess(String result) {
+                                                    if (!result.isEmpty()) {
+                                                        Window.Location.assign(result);
+                                                    } else {
+                                                        // result is empty, thus the OpenID logout is disabled
+                                                        TokenCleaner.cleanToken();
+                                                    }
+                                                }
+                                            });
                                 } else {
                                     TokenCleaner.cleanToken();
                                 }
