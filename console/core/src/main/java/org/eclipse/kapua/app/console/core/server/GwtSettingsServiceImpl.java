@@ -52,8 +52,11 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements GwtS
     @Override
     public String getSsoLogoutUri(String ssoIdToken) throws GwtKapuaException {
         try {
-            return SsoLocator.getLocator(this).getService().getLogoutUri(ssoIdToken,
-                    URI.create(SsoHelper.getHomeUri()), UUID.randomUUID().toString());
+            if (SETTINGS.getBoolean(ConsoleSettingKeys.SSO_OPENID_LOGOUT_ENABLED, true)) {
+                return SsoLocator.getLocator(this).getService().getLogoutUri(ssoIdToken,
+                        URI.create(SsoHelper.getHomeUri()), UUID.randomUUID().toString());
+            }
+            return "";  // return empty string instead of using a dedicated callback just to check if the logout is enabled
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
             return null;
