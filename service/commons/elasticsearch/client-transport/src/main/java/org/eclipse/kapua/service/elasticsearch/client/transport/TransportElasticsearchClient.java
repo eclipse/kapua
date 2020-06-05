@@ -36,7 +36,6 @@ import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexAction;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequest;
@@ -52,6 +51,7 @@ import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
@@ -446,7 +446,7 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
         final DeleteIndexRequest request = DeleteIndexAction.INSTANCE.newRequestBuilder(client).request();
         request.indices(INDEXES_ALL);
         try {
-            DeleteIndexResponse deleteResponse = client.admin().indices().delete(request).actionGet(getQueryTimeout());
+            AcknowledgedResponse deleteResponse = client.admin().indices().delete(request).actionGet(getQueryTimeout());
             if (!deleteResponse.isAcknowledged()) {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG);
             }
@@ -462,7 +462,7 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
             request.indices(index);
             try {
                 LOG.debug("Deleting index {}", index);
-                DeleteIndexResponse deleteResponse = getClient().admin().indices().delete(request).actionGet(getQueryTimeout());
+                AcknowledgedResponse deleteResponse = getClient().admin().indices().delete(request).actionGet(getQueryTimeout());
                 if (!deleteResponse.isAcknowledged()) {
                     throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG);
                 }
