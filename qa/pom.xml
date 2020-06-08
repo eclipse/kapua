@@ -11,13 +11,12 @@
         Eurotech - initial API and implementation
         Red Hat Inc
  -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.eclipse.kapua</groupId>
         <artifactId>kapua</artifactId>
-        <version>1.2.0-SNAPSHOT</version>
+        <version>1.2.0</version>
     </parent>
 
     <packaging>pom</packaging>
@@ -80,7 +79,7 @@
                             <images>
                                 <image>
                                     <alias>db</alias>
-                                    <name>kapua/kapua-sql:1.2.0-SNAPSHOT</name>
+                                    <name>kapua/kapua-sql:1.2.0</name>
                                     <run>
                                         <ports>
                                             <port>8181:8181</port>
@@ -115,7 +114,7 @@
                                 </image>
                                 <image>
                                     <alias>events-broker</alias>
-                                    <name>kapua/kapua-events-broker:1.2.0-SNAPSHOT</name>
+                                    <name>kapua/kapua-events-broker:1.2.0</name>
                                     <run>
                                         <ports>
                                             <port>5672:5672</port>
@@ -128,7 +127,7 @@
                                 </image>
                                 <image>
                                     <alias>broker</alias>
-                                    <name>kapua/kapua-broker:1.2.0-SNAPSHOT</name>
+                                    <name>kapua/kapua-broker:1.2.0</name>
                                     <run>
                                         <ports>
                                             <port>1883:1883</port>
@@ -153,7 +152,7 @@
                                 </image>
                                 <image>
                                     <alias>kapua-console</alias>
-                                    <name>kapua/kapua-console:1.2.0-SNAPSHOT</name>
+                                    <name>kapua/kapua-console:1.2.0</name>
                                     <run>
                                         <ports>
                                             <port>8080:8080</port>
@@ -179,7 +178,7 @@
                                 </image>
                                 <image>
                                     <alias>kapua-api</alias>
-                                    <name>kapua/kapua-api:1.2.0-SNAPSHOT</name>
+                                    <name>kapua/kapua-api:1.2.0</name>
                                     <run>
                                         <ports>
                                             <port>8081:8080</port>
