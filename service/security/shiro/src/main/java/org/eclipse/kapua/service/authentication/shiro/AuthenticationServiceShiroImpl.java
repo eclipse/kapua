@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -113,6 +113,11 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
     @Override
     public AccessToken login(LoginCredentials loginCredentials) throws KapuaException {
+        return login(loginCredentials, null);
+    }
+
+    @Override
+    public AccessToken login(LoginCredentials loginCredentials, String openIDidToken) throws KapuaException {
 
         checkCurrentSubjectNotAuthenticated();
 
@@ -147,7 +152,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             accessToken = createAccessToken(shiroSession);
 
             // Establish session
-            establishSession(shiroSubject, accessToken);
+            establishSession(shiroSubject, accessToken, openIDidToken);
 
             // Set some logging
             MDC.put(KapuaSecurityUtils.MDC_USER_ID, accessToken.getUserId().toCompactId());
@@ -185,7 +190,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             AccessToken accessToken = findAccessToken((String) shiroAuthenticationToken.getCredentials());
 
             // Enstablish session
-            establishSession(currentUser, accessToken);
+            establishSession(currentUser, accessToken, null);
 
             // Set some logging
             Subject shiroSubject = SecurityUtils.getSubject();
@@ -458,8 +463,8 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         return accessToken;
     }
 
-    private void establishSession(Subject subject, AccessToken accessToken) {
-        KapuaSession kapuaSession = new KapuaSession(accessToken, accessToken.getScopeId(), accessToken.getUserId());
+    private void establishSession(Subject subject, AccessToken accessToken, String openIDidToken) {
+        KapuaSession kapuaSession = new KapuaSession(accessToken, accessToken.getScopeId(), accessToken.getUserId(), openIDidToken);
         KapuaSecurityUtils.setSession(kapuaSession);
         subject.getSession().setAttribute(KapuaSession.KAPUA_SESSION_KEY, kapuaSession);
     }

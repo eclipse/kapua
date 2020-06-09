@@ -11,10 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.server.util;
 
-import org.eclipse.kapua.app.console.core.server.GwtAuthorizationServiceImpl;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.commons.security.KapuaSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,37 +41,31 @@ public class OpenIDLogoutListener implements HttpSessionListener {
 
     /**
      * Handles the session invalidation by triggering the invalidation on the OpenID Connect Provider for the current user.
-     * Only used when the session on the Kapua Console is unexpectedly invalidated or the session timeout is expired (the normal logout follows a different
-     * path).
+     * Only used when the session on the Kapua Console is unexpectedly invalidated or when the session timeout is expired (the normal logout follows a
+     * different path).
      *
      * @param httpSessionEvent
      */
     @Override
     public void sessionDestroyed(HttpSessionEvent httpSessionEvent) {
         HttpSession session = httpSessionEvent.getSession();
-        GwtSession gwtSession = (GwtSession) session.getAttribute(GwtAuthorizationServiceImpl.SESSION_CURRENT);
-
-        // TODO: are you sure that you don't need the shiro session? Is the Gwt one sufficient?
-        //Subject shiroSubject = SecurityUtils.getSubject();
-        //KapuaSession kapuaSession = (KapuaSession) shiroSubject.getSession().getAttribute(KapuaSession.KAPUA_SESSION_KEY);
+        KapuaSession kapuaSession = (KapuaSession) session.getAttribute(KapuaSession.KAPUA_SESSION_KEY);
 
         // perform the OpenID Logout only if it is enabled
-        if (ConsoleSetting.getInstance().getBoolean(ConsoleSettingKeys.SSO_OPENID_LOGOUT_ENABLED, true)) {
-            if (gwtSession != null && gwtSession.getSsoIdToken() != null) {
+        if (ConsoleSetting.getInstance().getBoolean(ConsoleSettingKeys.SSO_OPENID_SESSION_LISTENER_LOGOUT_ENABLED, true)) {
+            if (kapuaSession != null && kapuaSession.getOpenIDidToken() != null && !kapuaSession.isUserInitiatedLogout()) {
                 try {
                     String logoutUri = SsoLocator.getLocator(httpSessionEvent.getSession().getServletContext()).getService().getLogoutUri(
-                            gwtSession.getSsoIdToken(), URI.create(SsoHelper.getHomeUri()), UUID.randomUUID().toString());
-                    if (!logoutUri.isEmpty()) {
-                        URL url = new URL(logoutUri);
-                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                        conn.setRequestMethod("GET");
-                        conn.setRequestProperty("Content-Type", "application/json");
-                        conn.setDoOutput(true);
+                            kapuaSession.getOpenIDidToken(), URI.create(SsoHelper.getHomeUri()), UUID.randomUUID().toString());
+                    URL url = new URL(logoutUri);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("GET");
+                    conn.setRequestProperty("Content-Type", "application/json");
+                    conn.setDoOutput(true);
 
-                        int httpRespCode = conn.getResponseCode();
-                        if (httpRespCode == 200) {
-                            BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-                        }
+                    int httpRespCode = conn.getResponseCode();
+                    if (httpRespCode == 200) {
+                        BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
                     }
                 } catch (Exception e) {
                     // It is not possible to throw exceptions in the HttpSessionListener, so I log them

@@ -435,7 +435,9 @@ public class KapuaCloudConsole implements EntryPoint {
                 logger.info("Sso login failed.");
                 ConsoleInfo.display(CORE_MSGS.loginSsoLoginError(), caught.getLocalizedMessage());
 
-                // Invalidating the sso token
+                // Invalidating the sso token. We must use the OpenID logout here, since we don't have the KapuSession set yet, so we don't have the
+                // openIDidToken set inside. This means we cannot realy on the OpenIDLogoutListener to invalidate the OpenID session, instead we must do that
+                // as a 'real' user initiated logout.
                 gwtSettingService.getSsoLogoutUri(gwtIdToken.getIdToken(), new AsyncCallback<String>() {
 
                     @Override
@@ -472,7 +474,7 @@ public class KapuaCloudConsole implements EntryPoint {
                 logger.info("Sso login success, now rendering screen.");
                 logger.fine("User: " + gwtSession.getUserId());
 
-                // This is needed to remove the access_token from the URL, however it forces the page reload
+                // This is needed to remove tokens from the URL, however it forces the page reload
                 TokenCleaner.cleanToken();
 
                 dlg.hide();

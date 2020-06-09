@@ -53,7 +53,7 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements GwtS
     @Override
     public String getSsoLogoutUri(String ssoIdToken) throws GwtKapuaException {
         try {
-            if (SETTINGS.getBoolean(ConsoleSettingKeys.SSO_OPENID_LOGOUT_ENABLED, true)) {
+            if (SETTINGS.getBoolean(ConsoleSettingKeys.SSO_OPENID_USER_LOGOUT_ENABLED, true)) {
                 if (ssoIdToken.isEmpty()) {
                     throw new KapuaIllegalArgumentException("ssoIdToken", ssoIdToken);
                 }
