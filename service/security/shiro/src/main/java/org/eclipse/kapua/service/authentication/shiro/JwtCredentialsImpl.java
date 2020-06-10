@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,9 +19,11 @@ public class JwtCredentialsImpl implements JwtCredentials, AuthenticationToken {
     private static final long serialVersionUID = -5920944517814926028L;
 
     private String jwt;
+    private String idToken;
 
-    public JwtCredentialsImpl(String jwt) {
+    public JwtCredentialsImpl(String jwt, String idToken) {
         setJwt(jwt);
+        setIdToken(idToken);
     }
 
     @Override
@@ -32,6 +34,16 @@ public class JwtCredentialsImpl implements JwtCredentials, AuthenticationToken {
     @Override
     public void setJwt(String jwt) {
         this.jwt = jwt;
+    }
+
+    @Override
+    public String getIdToken() {
+        return idToken;
+    }
+
+    @Override
+    public void setIdToken(String idToken) {
+        this.idToken = idToken;
     }
 
     @Override

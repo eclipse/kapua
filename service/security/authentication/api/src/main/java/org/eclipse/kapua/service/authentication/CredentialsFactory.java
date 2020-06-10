@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -49,9 +49,10 @@ public interface CredentialsFactory extends KapuaObjectFactory {
      * Creates a new {@link JwtCredentials} instance based on provided Json Web Token
      *
      * @param jwt
+     * @param idToken the OpenID Connect idToken, used for the logout
      * @return
      */
-    JwtCredentials newJwtCredentials(String jwt);
+    JwtCredentials newJwtCredentials(String jwt, String idToken);
 
     /**
      * Creates a new {@link AccessTokenCredentials} instance based on provided tokenId

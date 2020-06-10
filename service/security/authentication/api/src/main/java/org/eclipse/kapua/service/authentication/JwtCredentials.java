@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlRootElement(name = "jwtCredentials")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "jwt" }, factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newJwtCredentials")
+@XmlType(propOrder = { "jwt", "idToken" }, factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newJwtCredentials")
 public interface JwtCredentials extends LoginCredentials {
 
     /**
@@ -41,4 +41,19 @@ public interface JwtCredentials extends LoginCredentials {
      * @param jwt
      */
     void setJwt(String jwt);
+
+    /**
+     * Gets the OpenID Connect idToken
+     *
+     * @return
+     */
+    @XmlElement(name = "idToken")
+    String getIdToken();
+
+    /**
+     * Set the OpenID Connect idToken
+     *
+     * @param idToken
+     */
+    void setIdToken(String idToken);
 }
