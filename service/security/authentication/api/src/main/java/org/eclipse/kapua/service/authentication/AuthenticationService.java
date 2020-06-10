@@ -35,16 +35,6 @@ public interface AuthenticationService extends KapuaService {
     AccessToken login(LoginCredentials loginCredentials) throws KapuaException;
 
     /**
-     * Login the provided user login credentials on the system (if the credentials are valid)
-     *
-     * @param loginCredentials
-     * @param openIDidToken the idToken obtained with an OpenID Connect login, contains user information, used for the logout
-     * @return
-     * @throws KapuaException an exception is thrown if the credentials are not found on the system, are expired or are disabled
-     */
-    AccessToken login(LoginCredentials loginCredentials, String openIDidToken) throws KapuaException;
-
-    /**
      * FIXME: add javadoc
      *
      * @param sessionCredentials

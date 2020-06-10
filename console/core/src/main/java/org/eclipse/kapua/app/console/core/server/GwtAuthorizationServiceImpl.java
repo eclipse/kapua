@@ -135,7 +135,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             KapuaLocator locator = KapuaLocator.getInstance();
             AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
             CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
-            JwtCredentials credentials = credentialsFactory.newJwtCredentials(gwtAccessTokenCredentials.getAccessToken());
+            JwtCredentials credentials = credentialsFactory.newJwtCredentials(gwtAccessTokenCredentials.getAccessToken(), gwtJwtIdToken.getIdToken());
 
             // Get the session infos
             if (gwtJwtIdToken == null || gwtJwtIdToken.getIdToken().isEmpty()) {
@@ -144,7 +144,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             }
 
             // Login
-            handleLogin(authenticationService, credentials, gwtJwtIdToken.getIdToken());
+            handleLogin(authenticationService, credentials);
             return establishSession();
         } catch (Throwable t) {
             internalLogout();
@@ -153,9 +153,9 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         return null;
     }
 
-    private void handleLogin(AuthenticationService authenticationService, JwtCredentials credentials, String openIDidToken) throws KapuaException {
+    private void handleLogin(AuthenticationService authenticationService, JwtCredentials credentials) throws KapuaException {
         try {
-            authenticationService.login(credentials, openIDidToken);
+            authenticationService.login(credentials);
         } catch (KapuaAuthenticationException e) {
             logger.debug("First level login attempt failed", e);
             handleLoginError(authenticationService, credentials, e);

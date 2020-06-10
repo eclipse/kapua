@@ -113,17 +113,13 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
     @Override
     public AccessToken login(LoginCredentials loginCredentials) throws KapuaException {
-        return login(loginCredentials, null);
-    }
-
-    @Override
-    public AccessToken login(LoginCredentials loginCredentials, String openIDidToken) throws KapuaException {
 
         checkCurrentSubjectNotAuthenticated();
 
         //
         // Parse login credentials
         AuthenticationToken shiroAuthenticationToken;
+        String openIDidToken = null;
         if (loginCredentials instanceof UsernamePasswordCredentialsImpl) {
             UsernamePasswordCredentialsImpl usernamePasswordCredentials = (UsernamePasswordCredentialsImpl) loginCredentials;
 
@@ -131,7 +127,9 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         } else if (loginCredentials instanceof ApiKeyCredentialsImpl) {
             shiroAuthenticationToken = new ApiKeyCredentialsImpl(((ApiKeyCredentialsImpl) loginCredentials).getApiKey());
         } else if (loginCredentials instanceof JwtCredentialsImpl) {
-            shiroAuthenticationToken = new JwtCredentialsImpl(((JwtCredentialsImpl) loginCredentials).getJwt());
+            shiroAuthenticationToken = new JwtCredentialsImpl(((JwtCredentialsImpl) loginCredentials).getJwt(),
+                    ((JwtCredentialsImpl) loginCredentials).getIdToken());
+            openIDidToken = ((JwtCredentialsImpl) loginCredentials).getIdToken();
         } else {
             throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED);
         }
