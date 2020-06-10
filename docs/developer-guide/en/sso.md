@@ -1,13 +1,11 @@
 # Single sign-on (SSO)
 
-This section describes the single sign-on integration of Eclipse Kapua.
-Our single sign-on solution is based on the [OpenID Connect](https://openid.net/connect/) identity layer, 
-on top of the [OAuth 2.0](https://oauth.net/2/) authorization framework. 
-In this document we first describe how to enable SSO on Kapua. 
-In a second step, we present two examples based on the Keycloak Authentication Server, using Docker and OpenShift.
+This section describes the single sign-on integration of Eclipse Kapua. Our single sign-on solution is based on the 
+[OpenID Connect](https://openid.net/connect/) identity layer, on top of the [OAuth 2.0](https://oauth.net/2/) authorization framework. 
+Please note that the OpenID Connect provider is unique for the same Kapua instance, thus it is common to all the accounts in the instance.
 
-**WARNING**: The current SSO implementation is intended as a _Proof-of-Concept_ and should not be used in a production 
-environment.
+In this document we first describe how to enable SSO on Kapua. In a second step we present two examples based on the Keycloak Authentication Server, 
+using Docker and OpenShift.
 
 ## Enabling single sign-on
 
