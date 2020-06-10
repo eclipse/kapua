@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -39,6 +39,7 @@ public enum ConsoleSettingKeys implements SettingKey {
 
     SSO_REDIRECT_URI("console.sso.redirect.uri"), //
     SSO_CONSOLE_HOME_URI("console.sso.home.uri"), //
+    SSO_OPENID_LOGOUT_ENABLED("console.sso.openid.logout.enabled"), //
 
     EXPORT_MAX_PAGES("console.export.max.pages"),
     EXPORT_MAX_PAGE_SIZE("console.export.max.pagesize");

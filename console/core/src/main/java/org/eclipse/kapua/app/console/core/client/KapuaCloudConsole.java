@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -370,7 +370,7 @@ public class KapuaCloudConsole implements EntryPoint {
             String error = Window.Location.getParameter("error");
 
             // Check if coming from failed SSO login (the user exists but she does not have the authorizations)
-            if (error !=null && !error.isEmpty() && error.equals("access_denied")) {
+            if (error != null && !error.isEmpty() && error.equals("access_denied")) {
                 logger.info("Access denied, SSO login failed");
                 ConsoleInfo.display(CORE_MSGS.loginSsoLoginError(), CORE_MSGS.ssoClientAuthenticationFailed());
             }
@@ -446,18 +446,23 @@ public class KapuaCloudConsole implements EntryPoint {
 
                     @Override
                     public void onSuccess(final String result) {
-                        logger.info("Waiting for logout.");
+                        if (!result.isEmpty()) {
+                            logger.info("Waiting for logout.");
 
-                        // this timer is needed to give time to the ConsoleInfo.display method (called above) to show
-                        // the message to the user (otherwise the Window.location.assign would reload the page,
-                        // giving no time to the user to read the message).
-                        Timer timer = new Timer() {
-                            @Override
-                            public void run() {
-                                Window.Location.assign(result);
-                            }
-                        };
-                        timer.schedule(SSO_FAILURE_WAIT_TIME);
+                            // this timer is needed to give time to the ConsoleInfo.display method (called above) to show
+                            // the message to the user (otherwise the Window.location.assign would reload the page,
+                            // giving no time to the user to read the message).
+                            Timer timer = new Timer() {
+                                @Override
+                                public void run() {
+                                    Window.Location.assign(result);
+                                }
+                            };
+                            timer.schedule(SSO_FAILURE_WAIT_TIME);
+                        } else {
+                            // result is empty, thus the OpenID logout is disabled
+                            TokenCleaner.cleanToken();  // removes the access_token from the URL, however it forces the page reload
+                        }
                     }
                 });
             }

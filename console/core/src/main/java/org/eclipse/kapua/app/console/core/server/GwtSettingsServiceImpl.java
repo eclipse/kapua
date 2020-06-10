@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -52,8 +52,11 @@ public class GwtSettingsServiceImpl extends RemoteServiceServlet implements GwtS
     @Override
     public String getSsoLogoutUri(String ssoIdToken) throws GwtKapuaException {
         try {
-            return SsoLocator.getLocator(this).getService().getLogoutUri(ssoIdToken,
-                    URI.create(SsoHelper.getHomeUri()), UUID.randomUUID().toString());
+            if (SETTINGS.getBoolean(ConsoleSettingKeys.SSO_OPENID_LOGOUT_ENABLED, true)) {
+                return SsoLocator.getLocator(this).getService().getLogoutUri(ssoIdToken,
+                        URI.create(SsoHelper.getHomeUri()), UUID.randomUUID().toString());
+            }
+            return "";  // return empty string instead of using a dedicated callback just to check if the logout is enabled
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
             return null;
