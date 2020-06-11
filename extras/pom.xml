@@ -25,6 +25,7 @@
 
     <modules>
         <module>foreignkeys</module>
+        <module>es-migrator</module>
     </modules>
 
 </project>
