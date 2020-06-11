@@ -15,8 +15,6 @@ import org.eclipse.kapua.service.elasticsearch.client.model.InsertRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
 
 import javax.validation.constraints.NotNull;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 /**
  * {@link RestElasticsearchClient} resource paths.
@@ -57,8 +55,8 @@ public class ElasticsearchResourcePaths {
     /**
      * @since 1.0.0
      */
-    public static String id(@NotNull TypeDescriptor typeDescriptor, @NotNull String id) throws UnsupportedEncodingException {
-        return String.format("/%s/%s/%s", typeDescriptor.getIndex(), typeDescriptor.getType(), URLEncoder.encode(id, "UTF-8"));
+    public static String id(@NotNull TypeDescriptor typeDescriptor, @NotNull String id) {
+        return String.format("/%s/%s/%s", typeDescriptor.getIndex(), typeDescriptor.getType(), id);
     }
 
     /**
@@ -110,7 +108,8 @@ public class ElasticsearchResourcePaths {
     /**
      * @since 1.0.0
      */
-    public static String upsert(@NotNull TypeDescriptor typeDescriptor, @NotNull String id) throws UnsupportedEncodingException {
-        return String.format("/%s/%s/%s/_update", typeDescriptor.getIndex(), typeDescriptor.getType(), URLEncoder.encode(id, "UTF-8"));
+    public static String upsert(@NotNull TypeDescriptor typeDescriptor, @NotNull String id) {
+        return String.format("/%s/%s/%s/_update", typeDescriptor.getIndex(), typeDescriptor.getType(), id);
     }
+
 }

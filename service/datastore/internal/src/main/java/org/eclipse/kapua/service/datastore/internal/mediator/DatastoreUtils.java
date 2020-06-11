@@ -137,7 +137,7 @@ public class DatastoreUtils {
 
         // ES 5.2 FIX
         // return Base64.encodeBytes(hashCode);
-        return Base64.getEncoder().encodeToString(hashCode);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(hashCode);
     }
 
     private static String normalizeIndexName(String name) {
