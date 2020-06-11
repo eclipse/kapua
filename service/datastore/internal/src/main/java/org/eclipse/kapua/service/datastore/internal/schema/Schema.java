@@ -179,12 +179,10 @@ public class Schema {
         }
         // metrics mapping container (to be added to message mapping)
         ObjectNode typeNode = MappingUtils.newObjectNode(); // root
-        ObjectNode messageNode = MappingUtils.newObjectNode(); // message
         ObjectNode typePropertiesNode = MappingUtils.newObjectNode(); // properties
         ObjectNode metricsNode = MappingUtils.newObjectNode(); // metrics
         ObjectNode metricsPropertiesNode = MappingUtils.newObjectNode(); // properties (metric properties)
-        typeNode.set(SchemaKeys.FIELD_NAME_MESSAGE, messageNode);
-        messageNode.set(SchemaKeys.FIELD_NAME_PROPERTIES, typePropertiesNode);
+        typeNode.set(SchemaKeys.FIELD_NAME_PROPERTIES, typePropertiesNode);
         typePropertiesNode.set(SchemaKeys.FIELD_NAME_METRICS, metricsNode);
         metricsNode.set(SchemaKeys.FIELD_NAME_PROPERTIES, metricsPropertiesNode);
 

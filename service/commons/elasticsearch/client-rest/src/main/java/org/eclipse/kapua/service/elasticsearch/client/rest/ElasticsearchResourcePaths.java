@@ -42,7 +42,7 @@ public class ElasticsearchResourcePaths {
      * @since 1.0.0
      */
     public static String deleteByQuery(@NotNull TypeDescriptor typeDescriptor) {
-        return String.format("/%s/%s/_delete_by_query", typeDescriptor.getIndex(), typeDescriptor.getType());
+        return String.format("/%s/_delete_by_query", typeDescriptor.getIndex());
     }
 
     /**
@@ -56,7 +56,7 @@ public class ElasticsearchResourcePaths {
      * @since 1.0.0
      */
     public static String id(@NotNull TypeDescriptor typeDescriptor, @NotNull String id) {
-        return String.format("/%s/%s/%s", typeDescriptor.getIndex(), typeDescriptor.getType(), id);
+        return String.format("/%s/_doc/%s", typeDescriptor.getIndex(), id);
     }
 
     /**
@@ -81,14 +81,14 @@ public class ElasticsearchResourcePaths {
      * @since 1.0.0
      */
     public static String mapping(@NotNull TypeDescriptor typeDescriptor) {
-        return String.format("/%s/_mapping/%s", typeDescriptor.getIndex(), typeDescriptor.getType());
+        return String.format("/%s/_mapping?include_type_name=false", typeDescriptor.getIndex());
     }
 
     /**
      * @since 1.0.0
      */
     public static String search(@NotNull TypeDescriptor typeDescriptor) {
-        return String.format("/%s/%s/_search", typeDescriptor.getIndex(), typeDescriptor.getType());
+        return String.format("/%s/_search", typeDescriptor.getIndex());
     }
 
     /**
@@ -102,14 +102,14 @@ public class ElasticsearchResourcePaths {
      * @since 1.0.0
      */
     public static String type(@NotNull TypeDescriptor typeDescriptor) {
-        return String.format("/%s/%s", typeDescriptor.getIndex(), typeDescriptor.getType());
+        return String.format("/%s/_doc", typeDescriptor.getIndex());
     }
 
     /**
      * @since 1.0.0
      */
     public static String upsert(@NotNull TypeDescriptor typeDescriptor, @NotNull String id) {
-        return String.format("/%s/%s/%s/_update", typeDescriptor.getIndex(), typeDescriptor.getType(), id);
+        return String.format("/%s/_doc/%s/_update", typeDescriptor.getIndex(), id);
     }
 
 }

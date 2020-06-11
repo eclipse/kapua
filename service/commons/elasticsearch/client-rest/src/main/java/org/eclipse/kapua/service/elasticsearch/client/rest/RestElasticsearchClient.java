@@ -195,7 +195,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
             bulkOperation.append("{ \"update\": {\"_id\": \"")
                     .append(upsertRequest.getId())
                     .append("\", \"_type\": \"")
-                    .append(upsertRequest.getTypeDescriptor().getType())
+                    .append("_doc")
                     .append("\", \"_index\": \"")
                     .append(upsertRequest.getTypeDescriptor().getIndex())
                     .append("\"}\n");
@@ -453,7 +453,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                         getClient()
                                 .performRequest(
                                         ElasticsearchKeywords.ACTION_PUT,
-                                        ElasticsearchResourcePaths.index(indexName),
+                                        ElasticsearchResourcePaths.index(indexName) + "?include_type_name=false",
                                         Collections.emptyMap(),
                                         ApplicationJsonEntityBuilder.buildFrom(json),
                                         new ContentTypeApplicationJsonHeader()),

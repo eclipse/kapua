@@ -82,13 +82,6 @@ public interface PredicateConstants {
     String TERM_KEY = "term";
 
     /**
-     * Type term.
-     *
-     * @since 1.0.0
-     */
-    String TYPE_KEY = "type";
-
-    /**
      * Values term.
      *
      * @since 1.0.0
