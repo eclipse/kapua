@@ -150,10 +150,10 @@ public class MetricInfoSchema {
      */
     public static JsonNode getMetricTypeSchema(boolean sourceEnable) throws MappingException {
 
-        ObjectNode metricName = MappingUtils.newObjectNode();
+        ObjectNode metricNode = MappingUtils.newObjectNode();
 
         ObjectNode sourceMetric = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_ENABLED, sourceEnable) });
-        metricName.set(SchemaKeys.KEY_SOURCE, sourceMetric);
+        metricNode.set(SchemaKeys.KEY_SOURCE, sourceMetric);
 
         ObjectNode propertiesNode = MappingUtils.newObjectNode();
         {
@@ -190,11 +190,9 @@ public class MetricInfoSchema {
 
             propertiesNode.set(METRIC_MTR, metricMtrNode);
         }
-        metricName.set(SchemaKeys.FIELD_NAME_PROPERTIES, propertiesNode);
+        metricNode.set(SchemaKeys.FIELD_NAME_PROPERTIES, propertiesNode);
 
-        ObjectNode rootNode = MappingUtils.newObjectNode();
-        rootNode.set(METRIC_TYPE_NAME, metricName);
-        return rootNode;
+        return metricNode;
     }
 
 }

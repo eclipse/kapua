@@ -81,8 +81,8 @@ public class ChannelInfoSchema {
      * @since 1.0.0
      */
     public static JsonNode getChannelTypeSchema(boolean sourceEnable) throws MappingException {
-
         ObjectNode channelNode = MappingUtils.newObjectNode();
+
         {
             ObjectNode sourceChannel = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_ENABLED, sourceEnable) });
             channelNode.set(SchemaKeys.KEY_SOURCE, sourceChannel);
@@ -106,10 +106,7 @@ public class ChannelInfoSchema {
             }
             channelNode.set(SchemaKeys.FIELD_NAME_PROPERTIES, propertiesNode);
         }
-
-        ObjectNode rootNode = MappingUtils.newObjectNode();
-        rootNode.set(CHANNEL_TYPE_NAME, channelNode);
-        return rootNode;
+        return channelNode;
     }
 
 }

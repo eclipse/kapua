@@ -80,10 +80,10 @@ public class ClientInfoSchema {
      */
     public static JsonNode getClientTypeSchema(boolean sourceEnable) throws MappingException {
 
-        ObjectNode clientNodeName = MappingUtils.newObjectNode();
+        ObjectNode clientNode = MappingUtils.newObjectNode();
         {
             ObjectNode sourceClient = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_ENABLED, sourceEnable) });
-            clientNodeName.set(SchemaKeys.KEY_SOURCE, sourceClient);
+            clientNode.set(SchemaKeys.KEY_SOURCE, sourceClient);
 
             ObjectNode propertiesNode = MappingUtils.newObjectNode();
             {
@@ -99,12 +99,10 @@ public class ClientInfoSchema {
                 ObjectNode clientMessageId = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
                 propertiesNode.set(CLIENT_MESSAGE_ID, clientMessageId);
             }
-            clientNodeName.set(SchemaKeys.FIELD_NAME_PROPERTIES, propertiesNode);
+            clientNode.set(SchemaKeys.FIELD_NAME_PROPERTIES, propertiesNode);
         }
 
-        ObjectNode rootNode = MappingUtils.newObjectNode();
-        rootNode.set(CLIENT_TYPE_NAME, clientNodeName);
-        return rootNode;
+        return clientNode;
     }
 
 }
