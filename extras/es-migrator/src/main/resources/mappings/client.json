@@ -1,0 +1,17 @@
+{
+  "properties": {
+    "client_id": {
+      "type": "keyword"
+    },
+    "message_id": {
+      "type": "keyword"
+    },
+    "scope_id": {
+      "type": "keyword"
+    },
+    "timestamp": {
+      "type": "date",
+      "format": "8uuuu-MM-dd'T'HH:mm:ss.SSSX"
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "properties": {
+    "channel": {
+      "type": "keyword"
+    },
+    "client_id": {
+      "type": "keyword"
+    },
+    "metric": {
+      "dynamic": false,
+      "properties": {
+        "message_id": {
+          "type": "keyword"
+        },
+        "name": {
+          "type": "keyword"
+        },
+        "timestamp": {
+          "type": "date",
+          "format": "8uuuu-MM-dd'T'HH:mm:ss.SSSX"
+        },
+        "type": {
+          "type": "keyword"
+        },
+        "value": {
+          "type": "keyword"
+        }
+      }
+    },
+    "scope_id": {
+      "type": "keyword"
+    }
+  }
+}
+
