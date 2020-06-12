@@ -11,15 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.schema;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.elasticsearch.client.SchemaKeys;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
 import org.eclipse.kapua.service.storable.model.utils.MappingUtils;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * {@link MetricInfo} schema definition.
@@ -179,7 +178,7 @@ public class MetricInfoSchema {
                 ObjectNode metricMtrValueNode = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
                 metricMtrPropertiesNode.set(METRIC_MTR_VALUE, metricMtrValueNode);
 
-                ObjectNode metricMtrTimestampNode = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
+                ObjectNode metricMtrTimestampNode = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, SchemaKeys.FIELD_NAME_PROPERTIES) });
                 metricMtrPropertiesNode.set(METRIC_MTR_TIMESTAMP, metricMtrTimestampNode);
 
                 ObjectNode metricMtrMsgIdNode = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });

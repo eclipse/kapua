@@ -91,6 +91,8 @@ public class DatastoreUtils {
     public static final String INDEXING_WINDOW_OPTION_DAY = "day";
     public static final String INDEXING_WINDOW_OPTION_HOUR = "hour";
 
+    public static final String DATASTORE_DATE_FORMAT = "8" + KapuaDateUtils.ISO_DATE_PATTERN; // example 2017-01-24T11:22:10.999Z
+
     private static final DateTimeFormatter DATA_INDEX_FORMATTER_WEEK = new DateTimeFormatterBuilder()
             .parseDefaulting(WeekFields.ISO.dayOfWeek(), 1)
             .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
@@ -626,7 +628,7 @@ public class DatastoreUtils {
                     convertedValue = KapuaDateUtils.parseDate((String) value);
                 } catch (ParseException e) {
                     throw new IllegalArgumentException(
-                            String.format("Type [%s] cannot be converted to Date. Allowed format [%s] - Value to convert [%s]!", getValueClass(value), KapuaDateUtils.ISO_DATE_PATTERN,
+                            String.format("Type [%s] cannot be converted to Date. Allowed format [%s] - Value to convert [%s]!", getValueClass(value), DATASTORE_DATE_FORMAT,
                                     value));
                 }
             } else {

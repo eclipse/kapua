@@ -11,15 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.schema;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import org.eclipse.kapua.commons.util.KapuaDateUtils;
+import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.elasticsearch.client.SchemaKeys;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
 import org.eclipse.kapua.service.storable.model.utils.MappingUtils;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * {@link ChannelInfo} schema definition.
@@ -97,7 +97,7 @@ public class ChannelInfoSchema {
                 ObjectNode channelName = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
                 propertiesNode.set(CHANNEL_NAME, channelName);
 
-                ObjectNode channelTimestamp = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
+                ObjectNode channelTimestamp = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, DatastoreUtils.DATASTORE_DATE_FORMAT) });
                 propertiesNode.set(CHANNEL_TIMESTAMP, channelTimestamp);
 
                 ObjectNode channelMessageId = MappingUtils.newObjectNode(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
