@@ -18,6 +18,7 @@ import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.event.ServiceEventBusListener;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 
 /**
@@ -65,7 +66,7 @@ public class AbstractKapuaService {
         ServiceEventBusManager.getInstance().subscribe(address, clazz.getName(), listener);
     }
 
-    protected boolean isServiceEnabled() {
+    protected boolean isServiceEnabled(KapuaId scopeId) {
         return true;
     }
 
