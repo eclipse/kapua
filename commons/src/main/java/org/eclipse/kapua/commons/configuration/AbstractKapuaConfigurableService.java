@@ -131,7 +131,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         if (ocd != null) {
 
             // Get Disabled Properties
-            List<KapuaTad> disabledProperties = ocd.getAD().stream().filter(ad -> !isPropertyEnabled(ad)).collect(Collectors.toList());
+            List<KapuaTad> disabledProperties = ocd.getAD().stream().filter(ad -> !isPropertyEnabled(ad, scopeId)).collect(Collectors.toList());
 
             if (!disabledProperties.isEmpty()) {
                 // If there's any disabled property, read current values to overwrite the proposed ones
@@ -284,7 +284,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     }
 
     protected KapuaTocd getConfigMetadata(KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
-        if (!isServiceEnabled()) {
+        if (!isServiceEnabled(scopeId)) {
             throw new KapuaServiceDisabledException(pid);
         }
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -298,7 +298,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
             KapuaTocd tocd = KAPUA_TOCD_LOCAL_CACHE.get(cacheKey);
             if (tocd == null && !KAPUA_TOCD_EMPTY_LOCAL_CACHE.get(cacheKey)) {
                 // If not, read metadata and process it
-                tocd = processMetadata(readMetadata(pid), excludeDisabled);
+                tocd = processMetadata(readMetadata(pid), scopeId, excludeDisabled);
                 // If null, put it in the "empty" ocd cache, else put it in the "standard" cache
                 if (tocd != null) {
                     // If the value is not null, put it in "standard" cache and remove the entry from the "empty" cache if present
@@ -324,11 +324,11 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @param excludeDisabled    if {@literal true} exclude disabled properties from the AD object
      * @return                      The processed {@link KapuaTocd} object
      */
-    private KapuaTocd processMetadata(KapuaTmetadata metadata, boolean excludeDisabled) {
+    private KapuaTocd processMetadata(KapuaTmetadata metadata, KapuaId scopeId, boolean excludeDisabled) {
         if (metadata != null && metadata.getOCD() != null && !metadata.getOCD().isEmpty()) {
             for (KapuaTocd ocd : metadata.getOCD()) {
-                if (ocd.getId() != null && ocd.getId().equals(pid) && isServiceEnabled()) {
-                    ocd.getAD().removeIf(ad -> excludeDisabled && !isPropertyEnabled(ad));
+                if (ocd.getId() != null && ocd.getId().equals(pid) && isServiceEnabled(scopeId)) {
+                    ocd.getAD().removeIf(ad -> excludeDisabled && !isPropertyEnabled(ad, scopeId));
                     return ocd;
                 }
             }
@@ -416,7 +416,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         }
     }
 
-    protected boolean isPropertyEnabled(KapuaTad ad) {
+    protected boolean isPropertyEnabled(KapuaTad ad, KapuaId scopeId) {
         return true;
     }
 
