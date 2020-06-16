@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -101,7 +101,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaService implemen
     @Override
     public MetricInfo find(KapuaId scopeId, StorableId id)
             throws KapuaException {
-        if (!isServiceEnabled()) {
+        if (!isServiceEnabled(scopeId)) {
             throw new KapuaServiceDisabledException(this.getClass().getName());
         }
 
@@ -125,7 +125,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaService implemen
     @Override
     public MetricInfoListResult query(MetricInfoQuery query)
             throws KapuaException {
-        if (!isServiceEnabled()) {
+        if (!isServiceEnabled(query.getScopeId())) {
             throw new KapuaServiceDisabledException(this.getClass().getName());
         }
 
@@ -150,7 +150,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaService implemen
     @Override
     public long count(MetricInfoQuery query)
             throws KapuaException {
-        if (!isServiceEnabled()) {
+        if (!isServiceEnabled(query.getScopeId())) {
             throw new KapuaServiceDisabledException(this.getClass().getName());
         }
 
@@ -167,7 +167,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaService implemen
 
     void delete(MetricInfoQuery query)
             throws KapuaException {
-        if (!isServiceEnabled()) {
+        if (!isServiceEnabled(query.getScopeId())) {
             throw new KapuaServiceDisabledException(this.getClass().getName());
         }
 
@@ -184,7 +184,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaService implemen
 
     void delete(KapuaId scopeId, StorableId id)
             throws KapuaException {
-        if (!isServiceEnabled()) {
+        if (!isServiceEnabled(scopeId)) {
             throw new KapuaServiceDisabledException(this.getClass().getName());
         }
 
@@ -253,7 +253,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaService implemen
     }
 
     @Override
-    protected boolean isServiceEnabled() {
+    protected boolean isServiceEnabled(KapuaId scopeId) {
         return !DatastoreSettings.getInstance().getBoolean(DatastoreSettingKey.DISABLE_DATASTORE, false);
     }
 

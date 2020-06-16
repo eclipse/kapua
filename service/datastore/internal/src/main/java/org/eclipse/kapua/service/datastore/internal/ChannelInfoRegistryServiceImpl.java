@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -99,7 +99,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaService impleme
     @Override
     public ChannelInfo find(KapuaId scopeId, StorableId id)
             throws KapuaException {
-        if (!isServiceEnabled()) {
+        if (!isServiceEnabled(scopeId)) {
             throw new KapuaServiceDisabledException(this.getClass().getName());
         }
 
@@ -122,7 +122,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaService impleme
     @Override
     public ChannelInfoListResult query(ChannelInfoQuery query)
             throws KapuaException {
-        if (!isServiceEnabled()) {
+        if (!isServiceEnabled(query.getScopeId())) {
             throw new KapuaServiceDisabledException(this.getClass().getName());
         }
 
@@ -147,7 +147,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaService impleme
     @Override
     public long count(ChannelInfoQuery query)
             throws KapuaException {
-        if (!isServiceEnabled()) {
+        if (!isServiceEnabled(query.getScopeId())) {
             throw new KapuaServiceDisabledException(this.getClass().getName());
         }
 
@@ -164,7 +164,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaService impleme
 
     void delete(KapuaId scopeId, StorableId id)
             throws KapuaException {
-        if (!isServiceEnabled()) {
+        if (!isServiceEnabled(scopeId)) {
             throw new KapuaServiceDisabledException(this.getClass().getName());
         }
 
@@ -181,7 +181,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaService impleme
 
     void delete(ChannelInfoQuery query)
             throws KapuaException {
-        if (!isServiceEnabled()) {
+        if (!isServiceEnabled(query.getScopeId())) {
             throw new KapuaServiceDisabledException(this.getClass().getName());
         }
 
@@ -253,7 +253,8 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaService impleme
     }
 
     @Override
-    protected boolean isServiceEnabled() {
+    protected boolean isServiceEnabled(KapuaId scopeId) {
         return !DatastoreSettings.getInstance().getBoolean(DatastoreSettingKey.DISABLE_DATASTORE, false);
     }
+
 }
