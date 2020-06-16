@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,6 +19,7 @@ import org.eclipse.kapua.broker.core.router.ParentEndPoint;
 import org.eclipse.kapua.broker.core.router.SimpleEndPoint;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
+import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTdesignate;
@@ -83,6 +84,7 @@ public class TestJAXBContextProvider implements JAXBContextProvider {
             if (context == null) {
                 context = JAXBContextFactory.createContext(new Class<?>[]{
                         // General
+                        ServiceEvent.class,
                         KapuaTmetadata.class,
                         KapuaTocd.class,
                         KapuaTad.class,
