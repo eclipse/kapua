@@ -39,7 +39,8 @@ public enum ConsoleSettingKeys implements SettingKey {
 
     SSO_REDIRECT_URI("console.sso.redirect.uri"), //
     SSO_CONSOLE_HOME_URI("console.sso.home.uri"), //
-    SSO_OPENID_LOGOUT_ENABLED("console.sso.openid.logout.enabled"), //
+    SSO_OPENID_USER_LOGOUT_ENABLED("console.sso.openid.user.logout.enabled"), //
+    SSO_OPENID_SESSION_LISTENER_LOGOUT_ENABLED("console.sso.openid.session_listener.logout.enabled"),  //
 
     EXPORT_MAX_PAGES("console.export.max.pages"),
     EXPORT_MAX_PAGE_SIZE("console.export.max.pagesize");

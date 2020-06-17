@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -44,7 +44,6 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private String userId;
     private String userName;
     private String userDisplayName;
-    private String ssoAccessToken;
     private String ssoIdToken;
 
     private String tokenId;

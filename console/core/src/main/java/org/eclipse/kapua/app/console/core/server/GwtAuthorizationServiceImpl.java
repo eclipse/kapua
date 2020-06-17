@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,6 +16,7 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 import org.eclipse.kapua.app.console.core.server.util.SsoLocator;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtJwtCredential;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtJwtIdToken;
@@ -112,9 +113,9 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             authenticationService.login(credentials);
 
             // Get the session infos
-            return establishSession(null);
+            return establishSession();
         } catch (Throwable t) {
-            logout();
+            internalLogout();
             KapuaExceptionHandler.handle(t);
         }
         return null;
@@ -134,15 +135,19 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             KapuaLocator locator = KapuaLocator.getInstance();
             AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
             CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
-            JwtCredentials credentials = credentialsFactory.newJwtCredentials(gwtAccessTokenCredentials.getAccessToken());
+            JwtCredentials credentials = credentialsFactory.newJwtCredentials(gwtAccessTokenCredentials.getAccessToken(), gwtJwtIdToken.getIdToken());
+
+            // Get the session infos
+            if (gwtJwtIdToken == null || gwtJwtIdToken.getIdToken().isEmpty()) {
+                // in this specific case the gwtJwtIdToken cannot be empty
+                throw new KapuaIllegalNullArgumentException("gwtJwtIdToken");
+            }
 
             // Login
             handleLogin(authenticationService, credentials);
-
-            // Get the session infos
-            return establishSession(gwtJwtIdToken);
+            return establishSession();
         } catch (Throwable t) {
-            logout();
+            internalLogout();
             KapuaExceptionHandler.handle(t);
         }
         return null;
@@ -211,7 +216,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
                 // get the session
                 if (gwtSession == null) {
-                    gwtSession = establishSession(null);
+                    gwtSession = establishSession();
                 } else {
                     User user = userService.findByName(username);
                     gwtSession.setUserId(user.getId().toCompactId());
@@ -225,7 +230,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         return gwtSession;
     }
 
-    private GwtSession establishSession(GwtJwtIdToken gwtJwtIdToken) throws KapuaException {
+    private GwtSession establishSession() throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
 
         //
@@ -287,16 +292,8 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         gwtSession.setAccountPath(gwtAccount.getParentAccountPath());
         gwtSession.setSelectedAccountPath(gwtAccount.getParentAccountPath());
 
-        // Access token
-        if (gwtJwtIdToken!=null) {
-            gwtSession.setSsoIdToken(gwtJwtIdToken.getIdToken());
-        }
-
-        //
-        // Saving session data in session
-        Subject currentUser = SecurityUtils.getSubject();
-        Session session = currentUser.getSession();
-        session.setAttribute(SESSION_CURRENT, gwtSession);
+        // Setting Id token
+        gwtSession.setSsoIdToken(kapuaSession.getOpenIDidToken());
 
         //
         // Load permissions
@@ -340,6 +337,24 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
     @Override
     public void logout()
             throws GwtKapuaException {
+        try {
+
+            // Setting user initiated
+            Subject shiroSubject = SecurityUtils.getSubject();
+            KapuaSession kapuaSession = (KapuaSession) shiroSubject.getSession().getAttribute(KapuaSession.KAPUA_SESSION_KEY);
+            kapuaSession.setUserInitiatedLogout(true);
+
+            // Actual logout
+            internalLogout();
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+        }
+    }
+
+    /**
+     * Internal logout, also used in case of exceptions.
+     */
+    private void internalLogout() throws GwtKapuaException {
         try {
             // Logout
             KapuaLocator locator = KapuaLocator.getInstance();

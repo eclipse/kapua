@@ -1,13 +1,11 @@
 # Single sign-on (SSO)
 
-This section describes the single sign-on integration of Eclipse Kapua.
-Our single sign-on solution is based on the [OpenID Connect](https://openid.net/connect/) identity layer, 
-on top of the [OAuth 2.0](https://oauth.net/2/) authorization framework. 
-In this document we first describe how to enable SSO on Kapua. 
-In a second step, we present two examples based on the Keycloak Authentication Server, using Docker and OpenShift.
+This section describes the single sign-on integration of Eclipse Kapua. Our single sign-on solution is based on the 
+[OpenID Connect](https://openid.net/connect/) identity layer, on top of the [OAuth 2.0](https://oauth.net/2/) authorization framework. 
+Please note that the OpenID Connect provider is unique for the same Kapua instance, thus it is common to all the accounts in the instance.
 
-**WARNING**: The current SSO implementation is intended as a _Proof-of-Concept_ and should not be used in a production 
-environment.
+In this document we first describe how to enable SSO on Kapua. In a second step we present two examples based on the Keycloak Authentication Server, 
+using Docker and OpenShift.
 
 ## Enabling single sign-on
 
@@ -122,9 +120,10 @@ This is implemented following the OpenID Connect specification for the
 Note that logging out from the OpenID provider is also possible through the provider OpenID logout endpoint, 
 but the user will remain logged into Kapua until also the logout from Kapua is performed.
 
-The OpenID Connect logout can be disabled by setting the `console.sso.openid.logout.enabled` property to `false` (this property is always set 
-to `true` by default). Be careful if you choose to disable the OpenID logout, since this will allow the user to login again into the Kapua Console without 
-the need to provide any credentials.
+The OpenID Connect logout can be disabled by setting the `console.sso.openid.user.logout.enabled` and `console.sso.openid.session_listener.logout.enabled` 
+properties to `false` (these properties are always set to `true` by default). The first property allows disabling the user-initiated logout, while the 
+second one allows disabling the `HttpSessionListener` managed logout (see class `OpenIDLogoutListener`), which is triggered at session invalidation. Be careful 
+if you choose to disable the OpenID logout, since this will allow the user to login again into the Kapua Console without the need to provide any credentials.
 
 ## Keycloak Example (Docker based)
 
