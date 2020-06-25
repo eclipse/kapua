@@ -36,7 +36,8 @@ ENV JAVA_OPTS "-Dcommons.db.schema.update=true \
                -Ddatastore.client.class=\${DATASTORE_CLIENT} \
                -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR} \
                -Dcertificate.jwt.private.key=file:///var/opt/jetty/key.pk8 \
-               -Dcertificate.jwt.certificate=file:///var/opt/jetty/cert.pem"
+               -Dcertificate.jwt.certificate=file:///var/opt/jetty/cert.pem \
+               -Ddatastore.disable=\${KAPUA_DISABLE_DATASTORE:-false}"
 
 USER 0
 
