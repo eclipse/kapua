@@ -179,10 +179,7 @@
             <groupId>org.elasticsearch.plugin</groupId>
             <artifactId>transport-netty4-client</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-        </dependency>
+
         <!-- misc -->
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
