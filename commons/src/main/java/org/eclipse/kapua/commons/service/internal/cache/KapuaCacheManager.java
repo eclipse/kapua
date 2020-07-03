@@ -11,8 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.internal.cache;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaErrorCodes;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.setting.KapuaSettingException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
@@ -20,8 +23,11 @@ import org.eclipse.kapua.commons.util.KapuaFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.codahale.metrics.Counter;
+
 import javax.cache.Cache;
 import javax.cache.CacheException;
+import javax.cache.CacheManager;
 import javax.cache.Caching;
 import javax.cache.configuration.Factory;
 import javax.cache.configuration.MutableConfiguration;
@@ -49,6 +55,9 @@ public class KapuaCacheManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KapuaCacheManager.class);
 
+    private static final String MODULE_NAME = "cache";
+    private static final String COMPONENT_NAME = "manager";
+
     private static final SystemSetting SYSTEM_SETTING = SystemSetting.getInstance();
     private static final String CACHING_PROVIDER_CLASS_NAME = SYSTEM_SETTING.getString(SystemSettingKey.CACHING_PROVIDER);
     private static final String DEFAULT_CACHING_PROVIDER_CLASS_NAME = "org.eclipse.kapua.commons.service.internal.cache.dummy.CachingProvider";
@@ -56,6 +65,19 @@ public class KapuaCacheManager {
     private static final String EXPIRY_POLICY = SYSTEM_SETTING.getString(SystemSettingKey.JCACHE_EXPIRY_POLICY, ExpiryPolicy.MODIFIED.name());
     private static final Map<String, Cache<Serializable, Serializable>> CACHE_MAP = new ConcurrentHashMap<>();
     private static final URI CACHE_CONFIG_URI = getCacheConfig();
+
+    private static CacheManager cacheManager;
+    private static Integer cacheStatus = new Integer(0);
+    private static Counter registeredCache;
+
+    static {
+        try {
+            MetricServiceFactory.getInstance().registerGauge(() -> cacheStatus, MODULE_NAME, COMPONENT_NAME, "cache_status");
+            registeredCache = MetricServiceFactory.getInstance().getCounter(MODULE_NAME, COMPONENT_NAME, "available_cache_count");
+        } catch (KapuaException e) {
+            LOGGER.error("Error registering cache status metrics! Error: {}", e.getMessage(), e);
+        }
+    }
 
     private KapuaCacheManager() {
     }
@@ -97,27 +119,10 @@ public class KapuaCacheManager {
             synchronized (CACHE_MAP) {
                 cache = CACHE_MAP.get(cacheName);
                 if (cache == null) {
-                    Factory expiryPolicyFactory;
-                    if (ExpiryPolicy.TOUCHED.name().equals(EXPIRY_POLICY)) {
-                        expiryPolicyFactory = TouchedExpiryPolicy.factoryOf(new Duration(TimeUnit.SECONDS, TTL));
-                    } else {
-                        expiryPolicyFactory = ModifiedExpiryPolicy.factoryOf(new Duration(TimeUnit.SECONDS, TTL));
-                    }
-                    MutableConfiguration<Serializable, Serializable> config = new MutableConfiguration<>();
-                    config.setExpiryPolicyFactory(expiryPolicyFactory);
-                    CachingProvider cachingProvider;
-                    if (CACHING_PROVIDER_CLASS_NAME != null && CACHING_PROVIDER_CLASS_NAME.trim().length() > 0) {
-                        cachingProvider = Caching.getCachingProvider(CACHING_PROVIDER_CLASS_NAME);
-                    } else {
-                        try {
-                            cachingProvider = Caching.getCachingProvider();
-                        } catch (CacheException e) {
-                            LOGGER.warn("Error while loading the CachingProvider... Loading the default one ({}).", DEFAULT_CACHING_PROVIDER_CLASS_NAME);
-                            cachingProvider = Caching.getCachingProvider(DEFAULT_CACHING_PROVIDER_CLASS_NAME);
-                        }
-                    }
-                    cache = cachingProvider.getCacheManager(CACHE_CONFIG_URI, null).createCache(cacheName, config);
+                    checkCacheManager();
+                    cache = cacheManager.createCache(cacheName, initConfig());
                     CACHE_MAP.put(cacheName, cache);
+                    registeredCache.inc();
                     LOGGER.info("Created cache: {} - Expiry Policy: {} - TTL: {}", cacheName, EXPIRY_POLICY, TTL);
                 }
             }
@@ -125,11 +130,63 @@ public class KapuaCacheManager {
         return cache;
     }
 
+
+    private static void checkCacheManager() {
+        //called by synchronized section so no concurrency issues can arise
+        if (cacheManager == null) {
+            CachingProvider cachingProvider;
+            try {
+                if (!StringUtils.isEmpty(CACHING_PROVIDER_CLASS_NAME)) {
+                    cachingProvider = Caching.getCachingProvider(CACHING_PROVIDER_CLASS_NAME);
+                } else {
+                    cachingProvider = Caching.getCachingProvider();
+                }
+                //set the default cache flag
+                cacheStatus = 1;
+            } catch (CacheException e) {
+                //set the "default cache" flag (already done by initDefualtCacheProvider)
+                LOGGER.warn("Error while loading the CachingProvider... Loading the default one ({}).", DEFAULT_CACHING_PROVIDER_CLASS_NAME);
+                cachingProvider = initDefualtCacheProvider();
+            }
+            try {
+                cacheManager = cachingProvider.getCacheManager(CACHE_CONFIG_URI, null);
+            }
+            catch (Exception e) {
+                //anyway set the "default cache" flag (already done by initDefualtCacheProvider)
+                //second fallback
+                LOGGER.warn("Error while loading the CacheManager... Switching to CachingProvider default ({}). Error: {}", DEFAULT_CACHING_PROVIDER_CLASS_NAME, e.getMessage(), e);
+                cachingProvider = initDefualtCacheProvider();
+                cacheManager = cachingProvider.getCacheManager(CACHE_CONFIG_URI, null);
+            }
+        }
+    }
+
+    private static CachingProvider initDefualtCacheProvider() {
+        //set the default cache flag
+        cacheStatus = -1;
+        return Caching.getCachingProvider(DEFAULT_CACHING_PROVIDER_CLASS_NAME);
+    }
+
+    private static MutableConfiguration<Serializable, Serializable> initConfig() {
+        Factory expiryPolicyFactory;
+        if (ExpiryPolicy.TOUCHED.name().equals(EXPIRY_POLICY)) {
+            expiryPolicyFactory = TouchedExpiryPolicy.factoryOf(new Duration(TimeUnit.SECONDS, TTL));
+        } else {
+            expiryPolicyFactory = ModifiedExpiryPolicy.factoryOf(new Duration(TimeUnit.SECONDS, TTL));
+        }
+        MutableConfiguration<Serializable, Serializable> config = new MutableConfiguration<>();
+        config.setExpiryPolicyFactory(expiryPolicyFactory);
+        return config;
+    }
+
     /**
      * Utility method to cleanup the whole cache.
      */
     public static void invalidateAll() {
-        CACHE_MAP.forEach((cacheKey, cache) -> cache.clear());
+        CACHE_MAP.forEach((cacheKey, cache) -> {
+            cache.clear();
+            registeredCache.dec();
+        });
     }
 
 }
