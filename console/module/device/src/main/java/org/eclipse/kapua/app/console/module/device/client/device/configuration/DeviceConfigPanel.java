@@ -68,6 +68,9 @@ public class DeviceConfigPanel extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
+    private static final int TEXT_FIELD_MAX_LENGTH = 1024;
+    private static final int TEXT_AREA_MAX_LENGTH = 2097152;
+
     private GwtConfigComponent configComponent;
     private FormPanel actionFormPanel;
     private FieldSet actionFieldSet;
@@ -428,25 +431,12 @@ public class DeviceConfigPanel extends LayoutContainer {
     private Field<?> paintTextConfigParameter(GwtConfigParameter param, Validator validator) {
 
         TextField<String> field = createTextFieldOrArea(param);
-        field.setName(param.getId());
-        field.setValue((String) param.getValue());
-        field.setAllowBlank(true);
-        field.setFieldLabel(param.getName());
-        field.addPlugin(dirtyPlugin);
-        if (param.getId().equals("WireGraph")) {
-            field.setMaxLength(1000000);
-        }
-        if (param.getId().equals("brokerXml")) {
-            field.setMaxLength(1000000);
-        }
-        if (param.getId().equals("users")) {
-            field.setMaxLength(1000000);
-        }
 
-        if (param.isRequired()) {
-            field.setAllowBlank(false);
-            field.setFieldLabel("* " + param.getName());
-        }
+        field.setName(param.getId());
+        field.setValue(param.getValue());
+        field.setAllowBlank(!param.isRequired());
+        field.setFieldLabel((param.isRequired() ? "* " : "") + param.getName());
+        field.addPlugin(dirtyPlugin);
 
         applyDescription(param, field);
 
@@ -459,12 +449,24 @@ public class DeviceConfigPanel extends LayoutContainer {
             field.setValue(param.getValue());
             field.setOriginalValue(param.getValue());
         }
+
         if (validator instanceof CharValidator) {
             field.setMaxLength(1);
             field.setValidator(validator);
-        }
-        if (validator instanceof StringValidator && !param.getId().equals("WireGraph") && !param.getId().equals("brokerXml") && !param.getId().equals("users")) {
-            field.setValidator(validator);
+        } else if (validator instanceof StringValidator) {
+
+            if (field instanceof KapuaTextField) {
+                field.setMaxLength(TEXT_FIELD_MAX_LENGTH);
+                field.setValidator(validator);
+            } else {
+                field.setMaxLength(TEXT_AREA_MAX_LENGTH);
+                field.setValidator(
+                        new StringValidator(
+                                param.getMin(),
+                                param.getMax() != null ? param.getMax() : String.valueOf(TEXT_AREA_MAX_LENGTH)
+                        )
+                );
+            }
         }
         field.setLabelStyle("word-break:break-all");
         return field;
@@ -473,7 +475,7 @@ public class DeviceConfigPanel extends LayoutContainer {
     private Field<?> paintPasswordConfigParameter(GwtConfigParameter param) {
         TextField<String> field = new KapuaTextField<String>();
         field.setName(param.getId());
-        field.setValue((String) param.getValue());
+        field.setValue(param.getValue());
         field.setAllowBlank(true);
         field.setPassword(true);
         field.setFieldLabel(param.getName());
@@ -1042,7 +1044,7 @@ public class DeviceConfigPanel extends LayoutContainer {
     private static class StringValidator implements Validator {
 
         private int minValue;
-        private int maxValue = 255;
+        private int maxValue = TEXT_FIELD_MAX_LENGTH;
 
         public StringValidator(String minValue, String maxValue) {
             if (minValue != null) {
