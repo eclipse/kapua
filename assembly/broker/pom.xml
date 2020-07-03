@@ -242,8 +242,7 @@
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
-            <artifactId>netty-transport-native-epoll</artifactId>
-            <!-- used both by qpid and elasticsearch -->
+            <artifactId>netty-all</artifactId>
         </dependency>
 
         <dependency>
