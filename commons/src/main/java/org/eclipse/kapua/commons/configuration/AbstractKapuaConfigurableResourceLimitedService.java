@@ -128,8 +128,11 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
                 long childCount = 0;
                 for (Account childAccount : childAccounts.getItems()) {
                     Map<String, Object> childConfigValues = getConfigValues(childAccount);
-                    int maxChildChildAccounts = (int) childConfigValues.get("maxNumberChildEntities");
-                    childCount += maxChildChildAccounts;
+                    // maxNumberChildEntities can be null if such property is disabled via the
+                    // isPropertyEnabled() method in the service implementation. In such case,
+                    // it makes sense to treat the service as it had 0 available entities
+                    Integer maxNumberChildEntities = (Integer) childConfigValues.get("maxNumberChildEntities");
+                    childCount += maxNumberChildEntities != null ? maxNumberChildEntities : 0;
                 }
 
                 // Max allowed for this account
