@@ -37,7 +37,8 @@ ENV JAVA_OPTS "-Dcommons.db.schema.update=true \
                -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR} \
                -Dcertificate.jwt.private.key=file:///var/opt/jetty/key.pk8 \
                -Dcertificate.jwt.certificate=file:///var/opt/jetty/cert.pem \
-               -Ddatastore.disable=\${KAPUA_DISABLE_DATASTORE:-false}"
+               -Ddatastore.disable=\${KAPUA_DISABLE_DATASTORE:-false} \
+               -Djavax.xml.bind.context.factory=org.eclipse.persistence.jaxb.JAXBContextFactory"
 
 USER 0
 
