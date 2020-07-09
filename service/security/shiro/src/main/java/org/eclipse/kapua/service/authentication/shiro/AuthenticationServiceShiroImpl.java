@@ -24,6 +24,8 @@ import org.eclipse.kapua.commons.util.KapuaDelayUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.SessionCredentials;
@@ -34,8 +36,10 @@ import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
+import org.eclipse.kapua.service.authentication.token.AccessTokenAttributes;
 import org.eclipse.kapua.service.authentication.token.AccessTokenCreator;
 import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
+import org.eclipse.kapua.service.authentication.token.AccessTokenQuery;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 import org.eclipse.kapua.service.authentication.token.LoginInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
@@ -290,7 +294,15 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
                 accessToken = kapuaSession.getAccessToken();
 
                 if (accessToken == null) {
-                    accessToken = accessTokenService.findByTokenId(tokenId);
+                    AccessTokenQuery accessTokenQuery = accessTokenFactory.newQuery(null);
+                    AndPredicate andPredicate = accessTokenQuery.andPredicate(
+                            accessTokenQuery.attributePredicate(AccessTokenAttributes.EXPIRES_ON, new java.sql.Timestamp(new Date().getTime()), Operator.GREATER_THAN_OR_EQUAL),
+                            accessTokenQuery.attributePredicate(AccessTokenAttributes.INVALIDATED_ON, null, Operator.IS_NULL),
+                            accessTokenQuery.attributePredicate(AccessTokenAttributes.TOKEN_ID, tokenId)
+                    );
+                    accessTokenQuery.setPredicate(andPredicate);
+                    accessTokenQuery.setLimit(1);
+                    accessToken = accessTokenService.query(accessTokenQuery).getFirstItem();
                 }
             }
         } finally {
