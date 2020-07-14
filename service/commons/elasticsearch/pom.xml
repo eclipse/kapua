@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-    Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
+    Copyright (c) 2020 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -10,35 +10,20 @@
     Contributors:
         Eurotech - initial API and implementation
  -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
+        <artifactId>kapua-service-commons</artifactId>
         <groupId>org.eclipse.kapua</groupId>
-        <artifactId>kapua</artifactId>
         <version>1.3.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kapua-service</artifactId>
+    <artifactId>kapua-service-commons-elasticsearch</artifactId>
     <packaging>pom</packaging>
 
     <modules>
-        <module>api</module>
-
-        <module>commons</module>
-
-        <module>account</module>
-        <module>datastore</module>
-        <module>device</module>
-        <module>endpoint</module>
-        <module>job</module>
-        <module>scheduler</module>
-        <module>security</module>
-        <module>stream</module>
-        <module>tag</module>
-        <module>user</module>
-
+        <module>client-api</module>
     </modules>
-
 </project>
