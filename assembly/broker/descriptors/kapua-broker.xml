@@ -229,9 +229,6 @@
                 <include>${pom.groupId}:kapua-broker-core</include>
                 <include>${pom.groupId}:kapua-commons</include>
                 <include>${pom.groupId}:kapua-datastore-api</include>
-                <include>${pom.groupId}:kapua-datastore-client-api</include>
-                <include>${pom.groupId}:kapua-datastore-client-rest</include>
-                <include>${pom.groupId}:kapua-datastore-client-transport</include>
                 <include>${pom.groupId}:kapua-datastore-internal</include>
                 <include>${pom.groupId}:kapua-device-api</include>
                 <include>${pom.groupId}:kapua-device-call-api</include>
@@ -272,6 +269,9 @@
                 <include>${pom.groupId}:kapua-security-certificate-internal</include>
                 <include>${pom.groupId}:kapua-security-shiro</include>
                 <include>${pom.groupId}:kapua-service-api</include>
+                <include>${pom.groupId}:kapua-service-elasticsearch-client-api</include>
+                <include>${pom.groupId}:kapua-service-elasticsearch-client-rest</include>
+                <include>${pom.groupId}:kapua-service-elasticsearch-client-transport</include>
                 <include>${pom.groupId}:kapua-tag-api</include>
                 <include>${pom.groupId}:kapua-tag-internal</include>
                 <include>${pom.groupId}:kapua-translator-api</include>

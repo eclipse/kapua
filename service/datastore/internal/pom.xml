@@ -12,7 +12,8 @@
         Red Hat Inc
  -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -27,17 +28,15 @@
         <!-- Implemented service interfaces -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-account-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-datastore-api</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-authorization-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-account-api</artifactId>
         </dependency>
 
         <!-- Internal dependencies -->
@@ -53,25 +52,25 @@
 
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-locator-guice</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-datastore-client-api</artifactId>
+            <artifactId>kapua-service-elasticsearch-client-api</artifactId>
         </dependency>
 
         <!-- External dependencies -->
-
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+        <!-- -->
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-locator-guice</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

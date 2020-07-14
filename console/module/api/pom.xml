@@ -24,15 +24,23 @@
     <artifactId>kapua-console-module-api</artifactId>
 
     <dependencies>
-        <!-- Internal dependencies -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+        </dependency>
+
         <dependency>
             <!-- Required for exception management on login -->
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-shiro</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-service-elasticsearch-client-api</artifactId>
+        </dependency>
 
+        <!-- -->
         <!-- Testing dependencies -->
-        <!-- This module contains some test!-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -42,14 +50,6 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-qa-markers</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-datastore-client-api</artifactId>
         </dependency>
     </dependencies>
 

@@ -73,16 +73,6 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-datastore-client-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-datastore-client-transport</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-call-kura</artifactId>
             <scope>provided</scope>
         </dependency>
@@ -99,6 +89,16 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-registry-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-service-elasticsearch-client-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-service-elasticsearch-client-transport</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

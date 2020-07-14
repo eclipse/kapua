@@ -61,14 +61,6 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-datastore-client-transport</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-datastore-client-rest</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-shiro</artifactId>
         </dependency>
         <dependency>
@@ -134,6 +126,14 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-security-certificate-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-service-elasticsearch-client-transport</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-service-elasticsearch-client-rest</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
