@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources.model.data;
 
-import org.eclipse.kapua.service.datastore.client.model.ResultList;
 import org.eclipse.kapua.service.datastore.internal.model.query.AbstractStorableListResult;
+import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 
 public class JsonMessageListResult extends AbstractStorableListResult<JsonDatastoreMessage> {
 

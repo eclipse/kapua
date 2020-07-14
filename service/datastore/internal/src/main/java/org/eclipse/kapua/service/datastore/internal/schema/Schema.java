@@ -12,17 +12,9 @@
 package org.eclipse.kapua.service.datastore.internal.schema;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.datastore.client.ClientException;
-import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
-import org.eclipse.kapua.service.datastore.client.DatastoreClient;
-import org.eclipse.kapua.service.datastore.client.SchemaKeys;
-import org.eclipse.kapua.service.datastore.client.model.IndexRequest;
-import org.eclipse.kapua.service.datastore.client.model.IndexResponse;
-import org.eclipse.kapua.service.datastore.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.datastore.internal.DatastoreCacheManager;
 import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreErrorCodes;
@@ -30,7 +22,13 @@ import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.mediator.Metric;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
-
+import org.eclipse.kapua.service.elasticsearch.client.DatastoreClient;
+import org.eclipse.kapua.service.elasticsearch.client.SchemaKeys;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
+import org.eclipse.kapua.service.elasticsearch.client.model.IndexRequest;
+import org.eclipse.kapua.service.elasticsearch.client.model.IndexResponse;
+import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -173,7 +171,7 @@ public class Schema {
         ObjectNode metricMapping;
         for (Entry<String, Metric> esMetric : esMetrics.entrySet()) {
             Metric metric = esMetric.getValue();
-            metricMapping = SchemaUtil.getField(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_DYNAMIC, SchemaKeys.VALUE_TRUE) });
+            metricMapping = SchemaUtil.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_DYNAMIC, SchemaKeys.VALUE_TRUE)});
 
             ObjectNode matricMappingPropertiesNode = SchemaUtil.getObjectNode(); // properties (inside metric name)
             ObjectNode valueMappingNode;
@@ -181,14 +179,14 @@ public class Schema {
             switch (metric.getType()) {
                 case SchemaKeys.TYPE_STRING:
                     valueMappingNode = SchemaUtil
-                            .getField(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE) });
+                            .getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
                     break;
                 case SchemaKeys.TYPE_DATE:
                     valueMappingNode = SchemaUtil.getField(
-                            new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN) });
+                            new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN)});
                     break;
                 default:
-                    valueMappingNode = SchemaUtil.getField(new KeyValueEntry[]{ new KeyValueEntry(SchemaKeys.KEY_TYPE, metric.getType()) });
+                    valueMappingNode = SchemaUtil.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, metric.getType())});
                     break;
             }
 
@@ -227,7 +225,7 @@ public class Schema {
         ObjectNode refreshIntervaleNode = SchemaUtil.getField(new KeyValueEntry[]{
                 new KeyValueEntry(SchemaKeys.KEY_REFRESH_INTERVAL, idxRefreshInterval),
                 new KeyValueEntry(SchemaKeys.KEY_SHARD_NUMBER, idxShardNumber),
-                new KeyValueEntry(SchemaKeys.KEY_REPLICA_NUMBER, idxReplicaNumber) });
+                new KeyValueEntry(SchemaKeys.KEY_REPLICA_NUMBER, idxReplicaNumber)});
 
         rootNode.set(SchemaKeys.KEY_INDEX, refreshIntervaleNode);
         LOG.info("Creating index for '{}' - refresh: '{}' - shards: '{}' replicas: '{}': ", idxName, idxRefreshInterval, idxShardNumber, idxReplicaNumber);

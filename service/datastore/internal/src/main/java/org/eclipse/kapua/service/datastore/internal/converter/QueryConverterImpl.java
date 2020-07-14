@@ -11,23 +11,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.converter;
 
-import java.util.List;
-
-import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
-import org.eclipse.kapua.service.datastore.client.QueryConverter;
-import org.eclipse.kapua.service.datastore.client.QueryMappingException;
-import org.eclipse.kapua.service.datastore.client.SchemaKeys;
-import org.eclipse.kapua.service.datastore.internal.AbstractStorableQuery;
-import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
-import org.eclipse.kapua.service.datastore.model.query.SortField;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.eclipse.kapua.service.datastore.internal.AbstractStorableQuery;
+import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
+import org.eclipse.kapua.service.datastore.model.query.SortField;
+import org.eclipse.kapua.service.elasticsearch.client.QueryConverter;
+import org.eclipse.kapua.service.elasticsearch.client.SchemaKeys;
+import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.QueryMappingException;
+
+import java.util.List;
 
 /**
  * Query converter implementation
- * 
+ *
  * @since 1.0
  */
 public class QueryConverterImpl implements QueryConverter {

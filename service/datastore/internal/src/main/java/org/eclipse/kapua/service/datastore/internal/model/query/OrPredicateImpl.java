@@ -11,17 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.query.OrPredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
+import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Implementation of query "or" aggregation
@@ -30,7 +29,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class OrPredicateImpl implements OrPredicate {
 
-    private List<StorablePredicate> predicates = new ArrayList<StorablePredicate>();
+    private List<StorablePredicate> predicates = new ArrayList<>();
 
     /**
      * Default constructor

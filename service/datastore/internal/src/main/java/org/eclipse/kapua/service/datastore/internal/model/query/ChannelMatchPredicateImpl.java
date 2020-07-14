@@ -11,19 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
-import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.schema.KeyValueEntry;
 import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
 
 /**
  * Implementation of query predicate for matching the channel value
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class ChannelMatchPredicateImpl implements ChannelMatchPredicate {
 
@@ -32,9 +30,8 @@ public class ChannelMatchPredicateImpl implements ChannelMatchPredicate {
 
     /**
      * Construct a channel match predicate for the given expression. The field name is {@link MessageField#CHANNEL}
-     * 
-     * @param expression
-     *            the channel expression (may use wildcard)
+     *
+     * @param expression the channel expression (may use wildcard)
      */
     public ChannelMatchPredicateImpl(String expression) {
         this.field = MessageField.CHANNEL.field();
@@ -43,11 +40,9 @@ public class ChannelMatchPredicateImpl implements ChannelMatchPredicate {
 
     /**
      * Construct a channel match predicate for the given expression
-     * 
-     * @param field
-     *            the field name
-     * @param expression
-     *            the channel expression (may use wildcard)
+     *
+     * @param field      the field name
+     * @param expression the channel expression (may use wildcard)
      */
     public ChannelMatchPredicateImpl(String field, String expression) {
         this.field = field;
@@ -62,7 +57,7 @@ public class ChannelMatchPredicateImpl implements ChannelMatchPredicate {
     @Override
     public ObjectNode toSerializedMap() throws DatamodelMappingException {
         ObjectNode rootNode = SchemaUtil.getObjectNode();
-        ObjectNode expressionNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(field.toString(), (String) expression) });
+        ObjectNode expressionNode = SchemaUtil.getField(new KeyValueEntry[]{new KeyValueEntry(field.toString(), (String) expression)});
         rootNode.set(PredicateConstants.PREFIX_KEY, expressionNode);
         return rootNode;
     }

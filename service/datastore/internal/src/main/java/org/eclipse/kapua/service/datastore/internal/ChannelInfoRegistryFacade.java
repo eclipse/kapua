@@ -14,15 +14,6 @@ package org.eclipse.kapua.service.datastore.internal;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.datastore.client.ClientException;
-import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
-import org.eclipse.kapua.service.datastore.client.DatastoreClient;
-import org.eclipse.kapua.service.datastore.client.ClientErrorCodes;
-import org.eclipse.kapua.service.datastore.client.ClientErrorMessages;
-import org.eclipse.kapua.service.datastore.client.QueryMappingException;
-import org.eclipse.kapua.service.datastore.client.model.TypeDescriptor;
-import org.eclipse.kapua.service.datastore.client.model.UpdateRequest;
-import org.eclipse.kapua.service.datastore.client.model.UpdateResponse;
 import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoRegistryMediator;
@@ -39,12 +30,21 @@ import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
+import org.eclipse.kapua.service.elasticsearch.client.DatastoreClient;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientErrorCodes;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientErrorMessages;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.QueryMappingException;
+import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
+import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
+import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Channel information registry facade
- *
+ * 
  * @since 1.0.0
  */
 public class ChannelInfoRegistryFacade {
@@ -61,11 +61,10 @@ public class ChannelInfoRegistryFacade {
 
     /**
      * Constructs the channel info registry facade
-     *
+     * 
      * @param configProvider
      * @param mediator
      * @throws ClientUnavailableException
-     *
      * @since 1.0.0
      */
     public ChannelInfoRegistryFacade(ConfigurationProvider configProvider, ChannelInfoRegistryMediator mediator) throws ClientUnavailableException {
@@ -76,7 +75,7 @@ public class ChannelInfoRegistryFacade {
 
     /**
      * Update the channel information after a message store operation
-     *
+     * 
      * @param channelInfo
      * @return
      * @throws KapuaIllegalArgumentException
@@ -133,7 +132,7 @@ public class ChannelInfoRegistryFacade {
      * Delete channel information by identifier.<br>
      * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
      * It just deletes the channel info registry entry by id without checking the consistency of the others registries or the message store.</b>
-     *
+     * 
      * @param scopeId
      * @param id
      * @throws KapuaIllegalArgumentException
@@ -167,7 +166,7 @@ public class ChannelInfoRegistryFacade {
 
     /**
      * Find channel information by identifier
-     *
+     * 
      * @param scopeId
      * @param id
      * @return
@@ -197,7 +196,7 @@ public class ChannelInfoRegistryFacade {
 
     /**
      * Find channels informations matching the given query
-     *
+     * 
      * @param query
      * @return
      * @throws KapuaIllegalArgumentException
@@ -228,7 +227,7 @@ public class ChannelInfoRegistryFacade {
 
     /**
      * Get channels informations count matching the given query
-     *
+     * 
      * @param query
      * @return
      * @throws KapuaIllegalArgumentException
@@ -261,7 +260,7 @@ public class ChannelInfoRegistryFacade {
      * Delete channels informations count matching the given query.<br>
      * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
      * It just deletes the channel info registry entries that matching the query without checking the consistency of the others registries or the message store.</b>
-     *
+     * 
      * @param query
      * @throws KapuaIllegalArgumentException
      * @throws QueryMappingException

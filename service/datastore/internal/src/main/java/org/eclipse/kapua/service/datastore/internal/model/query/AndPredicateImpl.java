@@ -13,10 +13,10 @@ package org.eclipse.kapua.service.datastore.internal.model.query;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
 import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
+import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class AndPredicateImpl implements AndPredicate {
 
-    private List<StorablePredicate> predicates = new ArrayList<StorablePredicate>();
+    private List<StorablePredicate> predicates = new ArrayList<>();
 
     /**
      * Default constructor

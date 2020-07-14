@@ -24,7 +24,6 @@ import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
-import org.eclipse.kapua.service.datastore.client.model.InsertResponse;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
@@ -33,13 +32,13 @@ import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
-import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.eclipse.kapua.service.datastore.model.query.SortDirection;
+import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
-
+import org.eclipse.kapua.service.elasticsearch.client.model.InsertResponse;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -80,21 +79,21 @@ public class DataMessages extends AbstractKapuaResource {
      */
 
     @GET
-    @Produces({ MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_XML})
     public <V extends Comparable<V>> MessageListResult simpleQuery(  //
-            @PathParam("scopeId") ScopeId scopeId,//
-            @QueryParam("clientId") String clientId, //
-            @QueryParam("channel") String channel,
-            @QueryParam("strictChannel") boolean strictChannel,
-            @QueryParam("startDate") DateParam startDateParam,
-            @QueryParam("endDate") DateParam endDateParam,
-            @QueryParam("metricName") String metricName, //
-            @QueryParam("metricType") MetricType<V> metricType, //
-            @QueryParam("metricMin") String metricMinValue, //
-            @QueryParam("metricMax") String metricMaxValue, //
-            @QueryParam("sortDir") @DefaultValue("DESC") SortDirection sortDir, //
-            @QueryParam("offset") @DefaultValue("0") int offset,//
-            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
+                                                                     @PathParam("scopeId") ScopeId scopeId,//
+                                                                     @QueryParam("clientId") String clientId, //
+                                                                     @QueryParam("channel") String channel,
+                                                                     @QueryParam("strictChannel") boolean strictChannel,
+                                                                     @QueryParam("startDate") DateParam startDateParam,
+                                                                     @QueryParam("endDate") DateParam endDateParam,
+                                                                     @QueryParam("metricName") String metricName, //
+                                                                     @QueryParam("metricType") MetricType<V> metricType, //
+                                                                     @QueryParam("metricMin") String metricMinValue, //
+                                                                     @QueryParam("metricMax") String metricMaxValue, //
+                                                                     @QueryParam("sortDir") @DefaultValue("DESC") SortDirection sortDir, //
+                                                                     @QueryParam("offset") @DefaultValue("0") int offset,//
+                                                                     @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
 
         AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
         if (!Strings.isNullOrEmpty(clientId)) {
@@ -160,11 +159,11 @@ public class DataMessages extends AbstractKapuaResource {
      * @return an {@link InsertResponse} object encapsulating the response from
      * the datastore
      * @throws KapuaException Whenever something bad happens. See specific
-     *                   {@link KapuaService} exceptions.
+     *                        {@link KapuaService} exceptions.
      */
     @POST
-    @Consumes({ MediaType.APPLICATION_XML })
-    @Produces({ MediaType.APPLICATION_XML })
+    @Consumes({MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_XML})
 
     public Response storeMessage(
             @PathParam("scopeId") ScopeId scopeId,//
@@ -184,12 +183,12 @@ public class DataMessages extends AbstractKapuaResource {
      */
     @POST
     @Path("_query")
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_XML })
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
 
     public MessageListResult query( //
-            @PathParam("scopeId") ScopeId scopeId, //
-            MessageQuery query) throws KapuaException {
+                                    @PathParam("scopeId") ScopeId scopeId, //
+                                    MessageQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         return MESSAGE_STORE_SERVICE.query(query);
@@ -206,12 +205,12 @@ public class DataMessages extends AbstractKapuaResource {
      */
     @POST
     @Path("_count")
-    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 
     public CountResult count( //
-            @PathParam("scopeId") ScopeId scopeId, //
-            MessageQuery query) throws KapuaException {
+                              @PathParam("scopeId") ScopeId scopeId, //
+                              MessageQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
         return new CountResult(MESSAGE_STORE_SERVICE.count(query));
@@ -227,11 +226,11 @@ public class DataMessages extends AbstractKapuaResource {
      */
     @GET
     @Path("{datastoreMessageId}")
-    @Produces({ MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_XML})
 
     public DatastoreMessage find( //
-            @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("datastoreMessageId") StorableEntityId datastoreMessageId) throws KapuaException {
+                                  @PathParam("scopeId") ScopeId scopeId,
+                                  @PathParam("datastoreMessageId") StorableEntityId datastoreMessageId) throws KapuaException {
         DatastoreMessage datastoreMessage = MESSAGE_STORE_SERVICE.find(scopeId, datastoreMessageId, StorableFetchStyle.SOURCE_FULL);
 
         return returnNotNullEntity(datastoreMessage);

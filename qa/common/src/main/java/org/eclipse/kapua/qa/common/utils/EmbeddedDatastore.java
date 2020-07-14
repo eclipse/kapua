@@ -12,15 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.common.utils;
 
-import java.io.IOException;
-import java.time.Duration;
-
 import cucumber.api.java.en.Given;
-import org.eclipse.kapua.service.datastore.client.embedded.EsEmbeddedEngine;
+import cucumber.runtime.java.guice.ScenarioScoped;
+import org.eclipse.kapua.service.elasticsearch.server.embedded.EsEmbeddedEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cucumber.runtime.java.guice.ScenarioScoped;
+import java.io.IOException;
+import java.time.Duration;
 
 /**
  * Singleton for managing datastore creation and deletion inside Gherkin scenarios.

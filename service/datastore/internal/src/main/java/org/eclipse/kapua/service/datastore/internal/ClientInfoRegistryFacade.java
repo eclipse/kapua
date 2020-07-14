@@ -14,15 +14,6 @@ package org.eclipse.kapua.service.datastore.internal;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.datastore.client.ClientException;
-import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
-import org.eclipse.kapua.service.datastore.client.DatastoreClient;
-import org.eclipse.kapua.service.datastore.client.ClientErrorCodes;
-import org.eclipse.kapua.service.datastore.client.ClientErrorMessages;
-import org.eclipse.kapua.service.datastore.client.QueryMappingException;
-import org.eclipse.kapua.service.datastore.client.model.TypeDescriptor;
-import org.eclipse.kapua.service.datastore.client.model.UpdateRequest;
-import org.eclipse.kapua.service.datastore.client.model.UpdateResponse;
 import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoRegistryMediator;
@@ -39,12 +30,21 @@ import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
+import org.eclipse.kapua.service.elasticsearch.client.DatastoreClient;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientErrorCodes;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientErrorMessages;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.QueryMappingException;
+import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
+import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
+import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Client information registry facade
- *
+ * 
  * @since 1.0.0
  */
 public class ClientInfoRegistryFacade {
@@ -61,11 +61,10 @@ public class ClientInfoRegistryFacade {
 
     /**
      * Constructs the client info registry facade
-     *
+     * 
      * @param configProvider
      * @param mediator
      * @throws ClientUnavailableException
-     *
      * @since 1.0.0
      */
     public ClientInfoRegistryFacade(ConfigurationProvider configProvider, ClientInfoRegistryMediator mediator) throws ClientUnavailableException {
@@ -76,13 +75,12 @@ public class ClientInfoRegistryFacade {
 
     /**
      * Update the client information after a message store operation
-     *
+     * 
      * @param clientInfo
      * @return
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
      * @throws ClientException
-     *
      * @since 1.0.0
      */
     public StorableId upstore(ClientInfo clientInfo)
@@ -133,7 +131,7 @@ public class ClientInfoRegistryFacade {
      * Delete client information by identifier.<br>
      * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
      * It just deletes the client info registry entry by id without checking the consistency of the others registries or the message store.</b>
-     *
+     * 
      * @param scopeId
      * @param id
      * @throws KapuaIllegalArgumentException
@@ -161,7 +159,7 @@ public class ClientInfoRegistryFacade {
 
     /**
      * Find client information by identifier
-     *
+     * 
      * @param scopeId
      * @param id
      * @return
@@ -191,7 +189,7 @@ public class ClientInfoRegistryFacade {
 
     /**
      * Find clients informations matching the given query
-     *
+     * 
      * @param query
      * @return
      * @throws KapuaIllegalArgumentException
@@ -222,7 +220,7 @@ public class ClientInfoRegistryFacade {
 
     /**
      * Get clients informations count matching the given query
-     *
+     * 
      * @param query
      * @return
      * @throws KapuaIllegalArgumentException
@@ -255,7 +253,7 @@ public class ClientInfoRegistryFacade {
      * Delete clients informations count matching the given query.<br>
      * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
      * It just deletes the client info registry entries that matching the query without checking the consistency of the others registries or the message store.</b>
-     *
+     * 
      * @param query
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException

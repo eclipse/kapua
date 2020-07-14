@@ -11,17 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.test.junit.clientTransport;
 
-import java.net.UnknownHostException;
-
-import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
-
 import org.assertj.core.api.Assertions;
-import org.eclipse.kapua.service.datastore.client.transport.EsTransportClientProvider;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
+import org.eclipse.kapua.service.elasticsearch.client.transport.EsTransportClientProvider;
 import org.elasticsearch.client.transport.TransportClient;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import java.net.UnknownHostException;
 
 @Ignore
 @Category(JUnitTests.class)
