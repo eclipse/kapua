@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.realm;
 
+import java.util.Date;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
@@ -21,22 +23,26 @@ import org.apache.shiro.authc.ExpiredCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.realm.AuthenticatingRealm;
 import org.apache.shiro.subject.Subject;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.shiro.AccessTokenCredentialsImpl;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.ExpiredAccountException;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
+import org.eclipse.kapua.service.authentication.token.AccessTokenAttributes;
+import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
+import org.eclipse.kapua.service.authentication.token.AccessTokenQuery;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
-
-import java.util.Date;
 
 /**
  * {@link AccessTokenCredentials} based {@link AuthenticatingRealm} implementation.
@@ -53,6 +59,7 @@ public class AccessTokenAuthenticatingRealm extends AuthenticatingRealm {
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
     private static final AccessTokenService ACCESS_TOKEN_SERVICE = LOCATOR.getService(AccessTokenService.class);
+    private static final AccessTokenFactory ACCESS_TOKEN_FACTORY = LOCATOR.getFactory(AccessTokenFactory.class);
     private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
     private static final UserService USER_SERVICE = LOCATOR.getService(UserService.class);
 
@@ -76,11 +83,20 @@ public class AccessTokenAuthenticatingRealm extends AuthenticatingRealm {
         AccessTokenCredentialsImpl token = (AccessTokenCredentialsImpl) authenticationToken;
         String tokenTokenId = token.getTokenId();
 
+        Date now = new Date();
         //
         // Find accessToken
         final AccessToken accessToken;
         try {
-            accessToken = KapuaSecurityUtils.doPrivileged(() -> ACCESS_TOKEN_SERVICE.findByTokenId(tokenTokenId));
+            AccessTokenQuery accessTokenQuery = ACCESS_TOKEN_FACTORY.newQuery(null);
+            AndPredicate andPredicate = accessTokenQuery.andPredicate(
+                    accessTokenQuery.attributePredicate(AccessTokenAttributes.EXPIRES_ON, new java.sql.Timestamp(now.getTime()), Operator.GREATER_THAN_OR_EQUAL),
+                    accessTokenQuery.attributePredicate(AccessTokenAttributes.INVALIDATED_ON, null, Operator.IS_NULL),
+                    accessTokenQuery.attributePredicate(AccessTokenAttributes.TOKEN_ID, tokenTokenId)
+            );
+            accessTokenQuery.setPredicate(andPredicate);
+            accessTokenQuery.setLimit(1);
+            accessToken = KapuaSecurityUtils.doPrivileged(() -> ACCESS_TOKEN_SERVICE.query(accessTokenQuery).getFirstItem());
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {
@@ -93,8 +109,8 @@ public class AccessTokenAuthenticatingRealm extends AuthenticatingRealm {
         }
 
         // Check validity
-        if ((accessToken.getExpiresOn() != null && accessToken.getExpiresOn().before(new Date())) ||
-                (accessToken.getInvalidatedOn() != null && accessToken.getInvalidatedOn().before(new Date()))) {
+        if ((accessToken.getExpiresOn() != null && accessToken.getExpiresOn().before(now)) ||
+                (accessToken.getInvalidatedOn() != null && accessToken.getInvalidatedOn().before(now))) {
             throw new ExpiredCredentialsException();
         }
 
@@ -120,7 +136,7 @@ public class AccessTokenAuthenticatingRealm extends AuthenticatingRealm {
         }
 
         // Check if expired
-        if (user.getExpirationDate() != null && !user.getExpirationDate().after(new Date())) {
+        if (user.getExpirationDate() != null && !user.getExpirationDate().after(now)) {
             throw new ExpiredCredentialsException();
         }
 
@@ -141,7 +157,7 @@ public class AccessTokenAuthenticatingRealm extends AuthenticatingRealm {
         }
 
         // Check account expired
-        if (account.getExpirationDate() != null && !account.getExpirationDate().after(new Date())) {
+        if (account.getExpirationDate() != null && !account.getExpirationDate().after(now)) {
             throw new ExpiredAccountException(account.getExpirationDate());
         }
 
