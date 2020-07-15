@@ -1,0 +1,510 @@
+{
+	"info": {
+		"_postman_id": "90847948-be9c-41c5-b13c-0564b836422e",
+		"name": "kapua-api-tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login - Username and password",
+			"item": [
+				{
+					"name": "Login with correct username and password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "16102ddb-cc37-4410-978e-ad5da17accf1",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Body matches string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"type\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"id\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"scopeId\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"createdOn\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"createdBy\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"modifiedOn\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"modifiedBy\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"optlock\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"tokenId\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"userId\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"expiresOn\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"refreshToken\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"refreshExpiresOn\");\r",
+									"\r",
+									"});\r",
+									"\r",
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.globals.set(\"jwttoken\", jsonData.tokenId);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"kapua-sys\",\r\n  \"password\": \"kapua-password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/v1/authentication/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"v1",
+								"authentication",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login with wrong username and password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2c6db04b-146e-4e21-86a6-52c6460c56c3",
+								"exec": [
+									"pm.test(\"Status code is 500\", function () {\r",
+									"    pm.response.to.have.status(500);\r",
+									"});\r",
+									"pm.test(\"Body matches string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"type\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"httpErrorCode\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"message\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"kapuaErrorCode\");\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json(); \r",
+									"\r",
+									"    pm.test(\"Verify type\", function () { \r",
+									"        pm.expect(jsonData.type).is.to.equal(\"exceptionInfo\"); \r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"Verify httpErrorCode\", function () { \r",
+									"        pm.expect(jsonData.httpErrorCode).is.to.equal(500); \r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"Verify message\", function () { \r",
+									"        pm.expect(jsonData.message).is.to.equal(\"An internal error occurred: org.apache.shiro.ShiroException: Error while find user!.\"); \r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"Verify kapuaErrorCode\", function () { \r",
+									"        pm.expect(jsonData.kapuaErrorCode).is.to.equal(\"INTERNAL_ERROR\"); \r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"strictSSL": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"message\": \"string\",\r\n  \"kapuaErrorCode\": \"string\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/v1/authentication/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"v1",
+								"authentication",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login with correct username and wrong password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e3f06466-34ab-421f-a0ed-66b1b7ac1c92",
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"kapua-sys\",\r\n  \"password\": \"wrong-password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/v1/authentication/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"v1",
+								"authentication",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login with wrong username and correct password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b89edcba-14b3-4bb1-93b9-045ec4ac8921",
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"kapua-username\",\r\n  \"password\": \"kapua-password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/v1/authentication/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"v1",
+								"authentication",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login with empty username and correct password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "80d32002-659c-4144-ac6d-914631acd9b7",
+								"exec": [
+									"pm.test(\"Status code is 500\", function () {\r",
+									"    pm.response.to.have.status(500);\r",
+									"});\r",
+									"pm.test(\"Body matches string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"type\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"httpErrorCode\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"message\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"kapuaErrorCode\");\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json(); \r",
+									"\r",
+									"    pm.test(\"Verify type\", function () { \r",
+									"        pm.expect(jsonData.type).is.to.equal(\"exceptionInfo\"); \r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"Verify httpErrorCode\", function () { \r",
+									"        pm.expect(jsonData.httpErrorCode).is.to.equal(500); \r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"Verify message\", function () { \r",
+									"        pm.expect(jsonData.message).is.to.equal(\"An internal error occurred: org.apache.shiro.ShiroException: Error while find user!.\"); \r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"Verify kapuaErrorCode\", function () { \r",
+									"        pm.expect(jsonData.kapuaErrorCode).is.to.equal(\"INTERNAL_ERROR\"); \r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"\",\r\n  \"password\": \"kapua-password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/v1/authentication/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"v1",
+								"authentication",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login with correct username and empty password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f6f16bc6-eab4-45f3-a6e9-f2e5cc33dd90",
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"kapua-sys\",\r\n  \"password\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/v1/authentication/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"v1",
+								"authentication",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login with empty username and password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4efd4479-6b9a-4e0e-a531-959bb59d78d6",
+								"exec": [
+									"pm.test(\"Status code is 500\", function () {\r",
+									"    pm.response.to.have.status(500);\r",
+									"});\r",
+									"pm.test(\"Body matches string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"type\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"httpErrorCode\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"message\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"kapuaErrorCode\");\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json(); \r",
+									"\r",
+									"    pm.test(\"Verify type\", function () { \r",
+									"        pm.expect(jsonData.type).is.to.equal(\"exceptionInfo\"); \r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"Verify httpErrorCode\", function () { \r",
+									"        pm.expect(jsonData.httpErrorCode).is.to.equal(500); \r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"Verify message\", function () { \r",
+									"        pm.expect(jsonData.message).is.to.equal(\"An internal error occurred: org.apache.shiro.ShiroException: Error while find user!.\"); \r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"Verify kapuaErrorCode\", function () { \r",
+									"        pm.expect(jsonData.kapuaErrorCode).is.to.equal(\"INTERNAL_ERROR\"); \r",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"\",\r\n  \"password\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/v1/authentication/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"v1",
+								"authentication",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwttoken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/v1/authentication/logout",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"v1",
+								"authentication",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "95f728bc-5cd2-4dff-ab74-1d9c3a947514",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "a443a496-b4fe-4ee4-a1d9-267fe349e248",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL3d3dy5lY2xpcHNlLm9yZy9rYXB1YSIsImlhdCI6MTU5NDIxMjgzMSwiZXhwIjoxNTk0MjE0NjMxLCJzdWIiOiJBUSIsInNJZCI6IkFRIn0.fre_rsuvan7MqPo1sAfcGxR9sxVCedT_KPi-sm2VijunOItXNSDVFW1dtzGHzyIZwWyXk6LxuV5YS5eVfKfDyz_HrNBfN-w4Mt-cMV4uSTyDPMRLzqCCavKwd_Un8P14h1PmJ0VkqX45xAdkOlxNUydbofkfZkY9vCnvYfppjfJHR4TdfE4zeTOKsa1CbyIH6_b1SE06ke8TPZfTqIGQIP8LyGpIACn80tBSoIVLJgpB5-XBOydx5e0T4ejZej9Cp9ajweOewSJUUoEqw4WGq0duHz76MLbmT4GsGB1wU31O_uVpNIzEtyjk7w2KepZXf2bO9xpNcrYYhg8kK9orPIyfTu2uvontBingZQkskToGPv4aWA5V2GxpBstvHqgzGfbV9IgZe6O4GWJqGYZtWrMBzwX-MdnjZfnVZgriONdpCPL7iUu6fS3rEV_K9iSl6H_PXm4127ErZyupIsUqjOK13PrYYqRHtLJdMM4JJVS2UsWpXRAzw29Dvdbnyh97EtftU2CYOXMttoGTw_0IdbilkedF1unYaOQqmjnxBaM3-nCH6aYhvEWT4TAbGPLzbRm9UaMgXa2h1PN-Urg89gZKJf3RBcjZaOAJo3yetrX-EZiENkTr6jVfDG6FPN8bnC9dPthWvzCh7R8qXNZKLXYlPXMXCfDVcF8s6huEGWE",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "644908d8-421f-4c66-9726-76a151522bab",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "42ae9b46-d55f-4da8-9f20-8bd80a9ea366",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
