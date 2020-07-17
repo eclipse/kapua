@@ -9,6 +9,7 @@
 
     Contributors:
         Eurotech - initial API and implementation
+        alva.huang - alva@izhiju.cn
  -->
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
