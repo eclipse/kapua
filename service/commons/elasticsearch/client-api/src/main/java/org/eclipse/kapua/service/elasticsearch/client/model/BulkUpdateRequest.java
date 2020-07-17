@@ -15,43 +15,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Bulk update request container
+ * Bulk update request definition.
+ * <p>
+ * It bundles a {@link List} of {@link UpdateRequest}
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class BulkUpdateRequest {
 
     List<UpdateRequest> requestList;
 
     /**
-     * Default constructor
+     * Adds an {@link UpdateRequest} to the {@link List}.
+     *
+     * @param updateRequest The {@link UpdateRequest} to add.
+     * @since 1.0.0
      */
-    public BulkUpdateRequest() {
-        requestList = new ArrayList<>();
+    public void add(UpdateRequest updateRequest) {
+        getRequest().add(updateRequest);
     }
 
     /**
-     * Add an update request to the bulk request
+     * Gets the {@link List} of {@link UpdateRequest}s.
      *
-     * @param request
-     */
-    public void add(UpdateRequest request) {
-        requestList.add(request);
-    }
-
-    /**
-     * Get the update request list
-     *
-     * @return
+     * @return The {@link List} of {@link UpdateRequest}s.
+     * @since 1.0.0
      */
     public List<UpdateRequest> getRequest() {
+        if (requestList == null) {
+            requestList = new ArrayList<>();
+        }
+
         return requestList;
     }
 
     /**
-     * Set the update request list
+     * Sets the {@link List} of {@link UpdateRequest}s.
      *
-     * @param requestList
+     * @param requestList The {@link List} of {@link UpdateRequest}s.
+     * @since 1.0.0
      */
     public void setRequest(List<UpdateRequest> requestList) {
         this.requestList = requestList;

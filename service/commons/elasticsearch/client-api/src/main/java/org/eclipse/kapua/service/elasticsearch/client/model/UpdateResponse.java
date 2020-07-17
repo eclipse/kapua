@@ -13,26 +13,32 @@
 package org.eclipse.kapua.service.elasticsearch.client.model;
 
 /**
- * Update response
+ * Update {@link Response} definition.
+ *
+ * @since 1.0.0
  */
 public class UpdateResponse extends Response {
 
-    private static final long serialVersionUID = 1L;
-
     /**
-     * Result description
+     * The result description.
+     *
+     * @since 1.0.0
      */
     private String description;
+
     /**
-     * Update exception
+     * The update exception, if occurred.
+     *
+     * @since 1.0.0
      */
-    private Throwable t;
+    private Exception exception;
 
     /**
      * Positive result constructor (result true)
      *
-     * @param id
-     * @param typeDescriptor
+     * @param id             The id of the result.
+     * @param typeDescriptor The {@link TypeDescriptor}.
+     * @since 1.0.0
      */
     public UpdateResponse(String id, TypeDescriptor typeDescriptor) {
         super(id, typeDescriptor);
@@ -42,9 +48,10 @@ public class UpdateResponse extends Response {
     /**
      * Negative result constructor (result false)
      *
-     * @param id
-     * @param typeDescriptor
-     * @param description
+     * @param id             The id of the result.
+     * @param typeDescriptor The {@link TypeDescriptor}
+     * @param description    The result description of the failure.
+     * @since 1.0.0
      */
     public UpdateResponse(String id, TypeDescriptor typeDescriptor, String description) {
         this(id, typeDescriptor);
@@ -53,39 +60,43 @@ public class UpdateResponse extends Response {
     }
 
     /**
-     * Get the update description (may be an error condition)
+     * Gets the result description.
      *
-     * @return
+     * @return The result description.
+     * @since 1.0.0
      */
     public String getDescription() {
         return description;
     }
 
     /**
-     * Set the update description (may be an error condition)
+     * Sets the result description.
      *
-     * @param description
+     * @param description The result description.
+     * @since 1.0.0
      */
     public void setDescription(String description) {
         this.description = description;
     }
 
     /**
-     * Get the throwable (if an error occurred)
+     * Gets the update exception, if occurred.
      *
-     * @return
+     * @return The update exception, if occurred.
+     * @since 1.3.0
      */
-    public Throwable getT() {
-        return t;
+    public Throwable getException() {
+        return exception;
     }
 
     /**
-     * Set the throwable (if an error occurred)
+     * Sets the update exception, if occurred.
      *
-     * @param t
+     * @param exception The update exception, if occurred.
+     * @since 1.3.0
      */
-    public void setT(Throwable t) {
-        this.t = t;
+    public void setException(Exception exception) {
+        this.exception = exception;
     }
 
 }

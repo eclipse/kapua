@@ -11,8 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.exception;
 
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
+
 /**
- * {@link ClientException} to throw when {@link org.eclipse.kapua.service.elasticsearch.client.DatastoreClient} is not defined.
+ * {@link ClientException} to throw when {@link ElasticsearchClient} is not defined.
  *
  * @since 1.0.0
  */

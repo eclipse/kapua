@@ -25,7 +25,7 @@ import org.apache.http.ssl.TrustStrategy;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.setting.AbstractBaseKapuaSetting;
-import org.eclipse.kapua.service.elasticsearch.client.ClientProvider;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 import org.eclipse.kapua.service.elasticsearch.client.rest.ssl.SkipCertificateCheckTrustStrategy;
@@ -64,7 +64,7 @@ import java.util.stream.Stream;
  *
  * @since 1.0
  */
-public class EsRestClientProvider implements ClientProvider<RestClient> {
+public class EsRestClientProvider implements ElasticsearchClientProvider<RestClient> {
 
     private static final Logger logger = LoggerFactory.getLogger(EsRestClientProvider.class);
 

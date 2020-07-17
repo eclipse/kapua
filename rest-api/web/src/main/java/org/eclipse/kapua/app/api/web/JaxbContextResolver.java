@@ -182,7 +182,6 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventXmlRegistry;
-import org.eclipse.kapua.service.elasticsearch.client.model.InsertResponse;
 import org.eclipse.kapua.service.endpoint.EndpointInfo;
 import org.eclipse.kapua.service.endpoint.EndpointInfoCreator;
 import org.eclipse.kapua.service.endpoint.EndpointInfoListResult;
@@ -308,7 +307,6 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
 
                     DatastoreMessage.class,
                     DatastoreMessageXmlRegistry.class,
-                    InsertResponse.class,
                     StorableEntityId.class,
                     StorableId.class,
                     SortField.class,

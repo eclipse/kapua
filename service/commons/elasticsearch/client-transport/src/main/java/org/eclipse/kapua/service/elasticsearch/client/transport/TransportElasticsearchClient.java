@@ -15,8 +15,8 @@ package org.eclipse.kapua.service.elasticsearch.client.transport;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.eclipse.kapua.service.elasticsearch.client.AbstractDatastoreClient;
-import org.eclipse.kapua.service.elasticsearch.client.ClientProvider;
+import org.eclipse.kapua.service.elasticsearch.client.AbstractElasticsearchClient;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.ModelContext;
 import org.eclipse.kapua.service.elasticsearch.client.QueryConverter;
 import org.eclipse.kapua.service.elasticsearch.client.SchemaKeys;
@@ -77,16 +77,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Client implementation based on Elasticsearch transport client.<br>
+ * Client implementation based on Elasticsearch transport client.
+ * <p>
  * The Elasticsearch client provider is instantiated as singleton by reflection using those provided by {@link ClientSettingsKey#ELASTICSEARCH_CLIENT_PROVIDER}
  *
  * @since 1.0.0
  * @deprecated Since 1.0.0. Elasticsearch transport client will be removed in the next releases. Please use the Rest client instead.
  */
 @Deprecated
-public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
+public class TransportElasticsearchClient extends AbstractElasticsearchClient<Client> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TransportDatastoreClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TransportElasticsearchClient.class);
 
     private static final String CLIENT_QUERY_PARSING_ERROR_MSG = "Cannot parse query!";
     private static final String CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG = "Cannot delete indexes!";
@@ -97,36 +98,36 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
     private static final String INDEXES_ALL = "_all";
     private static final String DOC = "_doc";
 
-    private static TransportDatastoreClient instance;
+    private static TransportElasticsearchClient instance;
 
     private ModelContext modelContext;
     private QueryConverter queryConverter;
 
     static {
-        instance = new TransportDatastoreClient();
+        instance = new TransportElasticsearchClient();
     }
 
     /**
-     * Gets the singleton {@link TransportDatastoreClient} instance
+     * Gets the singleton {@link TransportElasticsearchClient} instance
      *
-     * @return The singleton {@link TransportDatastoreClient} instance.
+     * @return The singleton {@link TransportElasticsearchClient} instance.
      * @since 1.0.0
      */
-    public static TransportDatastoreClient getInstance() {
+    public static TransportElasticsearchClient getInstance() {
         return instance;
     }
 
     /**
-     * Initialize the {@link ClientProvider} as singleton.
+     * Initialize the {@link ElasticsearchClientProvider} as singleton.
      *
      * @since 1.0.0
      */
-    private TransportDatastoreClient() {
+    private TransportElasticsearchClient() {
         super("transport");
     }
 
     @Override
-    public ClientProvider<Client> getNewInstance() {
+    public ElasticsearchClientProvider<Client> getNewInstance() {
         return EsTransportClientProvider.init();
     }
 

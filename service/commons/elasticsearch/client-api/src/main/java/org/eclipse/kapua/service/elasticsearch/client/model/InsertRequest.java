@@ -12,21 +12,21 @@
 package org.eclipse.kapua.service.elasticsearch.client.model;
 
 /**
- * Insert request
+ * Insert {@link Request} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class InsertRequest extends Request {
 
     /**
-     * Defualt constructor
+     * Constructor.
      *
-     * @param id             object identifier
-     * @param typeDescriptor index/type descriptor
-     * @param storable       object to insert
+     * @param id             The Object identifier.
+     * @param typeDescriptor The {@link TypeDescriptor}.
+     * @param storable       The Object to insert.
+     * @since 1.0.0
      */
     public InsertRequest(String id, TypeDescriptor typeDescriptor, Object storable) {
         super(id, typeDescriptor, storable);
     }
-
 }

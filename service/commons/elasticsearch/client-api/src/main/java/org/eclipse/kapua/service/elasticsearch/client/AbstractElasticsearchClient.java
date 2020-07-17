@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client;
 
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUndefinedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,48 +18,45 @@ import org.slf4j.LoggerFactory;
 import java.io.Closeable;
 
 /**
- * Datastore client definition. It defines the methods (crud and utilities) to be exposed to the caller.<br>
- * The datastore client implementation should provide a static init method and a static getInstance method that return the already initialized client instance.
+ * Elasticsearch client base implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
-public abstract class AbstractDatastoreClient<C extends Closeable> implements DatastoreClient<C> {
+public abstract class AbstractElasticsearchClient<C extends Closeable> implements ElasticsearchClient<C> {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractDatastoreClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractElasticsearchClient.class);
 
-    private static final String CLIENT_CLEANUP_ERROR_MSG = "Cannot cleanup rest datastore driver. Cannot close Elasticsearch client instance";
+    private static final String CLIENT_CLEANUP_ERROR_MSG = "Cannot cleanup REST Elasticsearch driver. Cannot close Elasticsearch client instance";
 
     protected String clientType;
-    protected ClientProvider<C> esClientProvider;
+    protected ElasticsearchClientProvider<C> elasticsearchClientProvider;
     protected ModelContext modelContext;
     protected QueryConverter queryConverter;
 
-    protected AbstractDatastoreClient(String clientType) {
+    protected AbstractElasticsearchClient(String clientType) {
         this.clientType = clientType;
         init();
     }
 
-    protected abstract ClientProvider<C> getNewInstance();
-
     @Override
     public void init() {
-        synchronized (AbstractDatastoreClient.class) {
+        synchronized (AbstractElasticsearchClient.class) {
             logger.info("Starting Elasticsearch {} client...", clientType);
-            esClientProvider = getNewInstance();
+            elasticsearchClientProvider = getNewInstance();
             logger.info("Starting Elasticsearch {} client... DONE", clientType);
         }
     }
 
     @Override
-    public void close() throws ClientUnavailableException {
-        synchronized (AbstractDatastoreClient.class) {
-            if (esClientProvider != null) {
+    public void close() {
+        synchronized (AbstractElasticsearchClient.class) {
+            if (elasticsearchClientProvider != null) {
                 logger.info("Stopping Elasticsearch {} client...", clientType);
                 // all fine... try to cleanup the client
                 try {
                     getClient().close();
-                    esClientProvider = null;
-                } catch (Throwable e) {
+                    elasticsearchClientProvider = null;
+                } catch (Exception e) {
                     logger.error(CLIENT_CLEANUP_ERROR_MSG, e);
                 }
                 logger.info("Stopping Elasticsearch {} client... DONE", clientType);
@@ -70,29 +66,37 @@ public abstract class AbstractDatastoreClient<C extends Closeable> implements Da
         }
     }
 
+    /**
+     * Creates a new {@link ElasticsearchClientProvider}.
+     * <p>
+     * The instance returned must be used a singleton.
+     *
+     * @return A new {@link ElasticsearchClientProvider}.
+     * @since 1.0.0
+     */
+    protected abstract ElasticsearchClientProvider<C> getNewInstance();
+
+    /**
+     * Gets the client from the {@link ElasticsearchClientProvider}.
+     * <p>
+     * It invokes {@link ElasticsearchClientProvider#getClient()} after {@code null} checking.
+     *
+     * @return The client from the {@link ElasticsearchClientProvider}.
+     * @throws ClientUndefinedException if {@link ElasticsearchClientProvider} has not being initialized.
+     */
     protected C getClient() throws ClientUndefinedException {
-        if (esClientProvider != null) {
-            return esClientProvider.getClient();
+        if (elasticsearchClientProvider != null) {
+            return elasticsearchClientProvider.getClient();
         }
 
         throw new ClientUndefinedException();
     }
 
-    /**
-     * Set the model context
-     *
-     * @param modelContext
-     */
     @Override
     public void setModelContext(ModelContext modelContext) {
         this.modelContext = modelContext;
     }
 
-    /**
-     * Set the query converter
-     *
-     * @param queryConverter
-     */
     @Override
     public void setQueryConverter(QueryConverter queryConverter) {
         this.queryConverter = queryConverter;

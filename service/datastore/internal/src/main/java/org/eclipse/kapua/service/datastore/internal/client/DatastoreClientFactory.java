@@ -15,7 +15,7 @@ import org.eclipse.kapua.service.datastore.internal.converter.ModelContextImpl;
 import org.eclipse.kapua.service.datastore.internal.converter.QueryConverterImpl;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
-import org.eclipse.kapua.service.elasticsearch.client.DatastoreClient;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 
@@ -46,16 +46,16 @@ public class DatastoreClientFactory {
      * The implementation is specified by {@link DatastoreSettingKey#CONFIG_CLIENT_CLASS}.
      *
      * @return An Elasticsearch client.
-     * @throws ClientInitializationException if error occurs if the {@link DatastoreClient} cannot be initialized
+     * @throws ClientInitializationException if error occurs if the {@link ElasticsearchClient} cannot be initialized
      */
-    public static DatastoreClient getInstance() throws ClientInitializationException {
+    public static ElasticsearchClient getInstance() throws ClientInitializationException {
         //lazy synchronization
         if (instance == null) {
             synchronized (DatastoreClientFactory.class) {
                 if (instance == null) {
                     Class<DatastoreClient> datastoreClientInstance;
                     try {
-                        datastoreClientInstance = (Class<DatastoreClient>) Class.forName(CLIENT_CLASS_NAME);
+                        datastoreClientInstance = (Class<ElasticsearchClient>) Class.forName(CLIENT_CLASS_NAME);
                     } catch (ClassNotFoundException e) {
                         throw new ClientInitializationException(e, CLIENT_CLASS_NAME);
                     }
@@ -68,7 +68,7 @@ public class DatastoreClientFactory {
                         // instance = datastoreClientinstance.newInstance();
 
                         Method getInstanceMethod = datastoreClientInstance.getMethod("getInstance", new Class[0]);
-                        instance = (DatastoreClient) getInstanceMethod.invoke(null, new Object[0]);
+                        instance = (ElasticsearchClient) getInstanceMethod.invoke(null, new Object[0]);
                         instance.setModelContext(new ModelContextImpl());
                         instance.setQueryConverter(new QueryConverterImpl());
                     } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {

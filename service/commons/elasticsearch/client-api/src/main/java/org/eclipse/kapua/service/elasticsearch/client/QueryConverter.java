@@ -16,33 +16,39 @@ import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMapping
 import org.eclipse.kapua.service.elasticsearch.client.exception.QueryMappingException;
 
 /**
- * Query converter definition. This object is responsible for translating datastore query model to client query.
+ * Query converter definition.
+ * <p>
+ * This object is responsible for translating datastore query model to client query.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface QueryConverter {
 
     /**
      * Query fetch style key
+     *
+     * @since 1.0.0
      */
     String QUERY_FETCH_STYLE_KEY = "query_fetch_style";
 
     /**
-     * Convert the datastore query to the client query
+     * Converts the Elasticsearch query to the client query
      *
-     * @param query
-     * @return
-     * @throws QueryMappingException
-     * @throws DatamodelMappingException
+     * @param query The queyr to convert.
+     * @return The converted query.
+     * @throws QueryMappingException     if query mappings are not correst.
+     * @throws DatamodelMappingException if model mappings are not correct.
+     * @since 1.0.0
      */
     JsonNode convertQuery(Object query) throws QueryMappingException, DatamodelMappingException;
 
     /**
-     * Get the query fetch style
+     * Gets the query fetch style
      *
-     * @param query
-     * @return
-     * @throws QueryMappingException
+     * @param query The query fetch style
+     * @return The query fetch style
+     * @throws QueryMappingException if query mappings are not correst.
+     * @since 1.0.0
      */
     Object getFetchStyle(Object query) throws QueryMappingException;
 

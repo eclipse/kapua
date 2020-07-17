@@ -11,8 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.exception;
 
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
+
 /**
- * {@link ClientException} to throw when che {@link org.eclipse.kapua.service.elasticsearch.client.DatastoreClient} is not available
+ * {@link ClientException} to throw when che {@link ElasticsearchClient} is not available
  *
  * @since 1.0.0
  */

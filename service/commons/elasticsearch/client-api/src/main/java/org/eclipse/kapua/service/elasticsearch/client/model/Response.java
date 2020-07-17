@@ -15,27 +15,37 @@ package org.eclipse.kapua.service.elasticsearch.client.model;
 import org.eclipse.kapua.KapuaSerializable;
 
 /**
- * Base response object
+ * Base response definition
  */
 public abstract class Response implements KapuaSerializable {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * Record id (it should set by the datastore client component)
+     *
+     * @since 1.0.0
      */
     private String id;
+
     /**
-     * Schema and index name
+     * The {@link TypeDescriptor}.
+     *
+     * @since 1.0.0
      */
     private TypeDescriptor typeDescriptor;
+
+    /**
+     * The result of the {@link Response}
+     *
+     * @since 1.0.0
+     */
     private boolean result;
 
     /**
-     * Default constructor
+     * Constructor.
      *
-     * @param id
-     * @param typeDescriptor index/type descriptor
+     * @param id             the record id.
+     * @param typeDescriptor The {@link TypeDescriptor}
+     * @since 1.0.0
      */
     protected Response(String id, TypeDescriptor typeDescriptor) {
         this.id = id;
@@ -43,54 +53,60 @@ public abstract class Response implements KapuaSerializable {
     }
 
     /**
-     * Get the object id (the subject of the operation)
+     * Gets the object id (the subject of the operation).
      *
-     * @return
+     * @return The object id (the subject of the operation).
+     * @since 1.0.0
      */
     public String getId() {
         return id;
     }
 
     /**
-     * Set the object id (the subject of the operation)
+     * Sets the object id (the subject of the operation).
      *
-     * @param id
+     * @param id The object id (the subject of the operation).
+     * @since 1.0.0
      */
     public void setId(String id) {
         this.id = id;
     }
 
     /**
-     * Get the type descriptor
+     * Gets the {@link TypeDescriptor}.
      *
-     * @return
+     * @return The {@link TypeDescriptor}.
+     * @since 1.0.0
      */
     public TypeDescriptor getTypeDescriptor() {
         return typeDescriptor;
     }
 
     /**
-     * Set the type descriptor
+     * Sets the {@link TypeDescriptor}.
      *
-     * @param typeDescriptor
+     * @param typeDescriptor The {@link TypeDescriptor}.
+     * @since 1.0.0
      */
     public void setTypeDescriptor(TypeDescriptor typeDescriptor) {
         this.typeDescriptor = typeDescriptor;
     }
 
     /**
-     * Get the result condition
+     * Gets the result condition.
      *
-     * @return
+     * @return The result condition.
+     * @since 1.0.0
      */
     public boolean isResult() {
         return result;
     }
 
     /**
-     * Set the result condition
+     * Sets the result condition.
      *
-     * @param result
+     * @param result The result condition.
+     * @since 1.0.0
      */
     public void setResult(boolean result) {
         this.result = result;

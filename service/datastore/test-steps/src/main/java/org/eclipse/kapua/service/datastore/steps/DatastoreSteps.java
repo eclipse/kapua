@@ -99,7 +99,7 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
-import org.eclipse.kapua.service.elasticsearch.client.DatastoreClient;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.elasticsearch.client.model.IndexRequest;
@@ -267,7 +267,7 @@ public class DatastoreSteps extends TestBase {
 
     private DeviceFactory deviceFactory;
 
-    private DatastoreClient datastoreClient;
+    private ElasticsearchClient elasticsearchClient;
 
     private DatastoreObjectFactory datastoreObjectFactory;
     private StorablePredicateFactory storablePredicateFactory;
@@ -314,7 +314,7 @@ public class DatastoreSteps extends TestBase {
         deviceFactory = locator.getFactory(DeviceFactory.class);
         messageStoreService = locator.getService(MessageStoreService.class);
         messageFactory = locator.getFactory(KapuaMessageFactory.class);
-        datastoreClient = DatastoreClientFactory.getInstance();
+        elasticsearchClient = DatastoreClientFactory.getInstance();
         storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
         datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
         storableIdFactory = locator.getFactory(StorableIdFactory.class);
@@ -1744,7 +1744,7 @@ public class DatastoreSteps extends TestBase {
         try {
             String[] indexes = DatastoreUtils.convertToDataIndexes(getDataIndexesByAccount(getCurrentScopeId()), KapuaDateUtils.parseDate(fromDate).toInstant(),
                     KapuaDateUtils.parseDate(toDate).toInstant());
-            datastoreClient.deleteIndexes(indexes);
+            elasticsearchClient.deleteIndexes(indexes);
         } catch (Exception ex) {
             verifyException(ex);
         }
@@ -2425,7 +2425,7 @@ public class DatastoreSteps extends TestBase {
     }
 
     private String[] getDataIndexesByAccount(KapuaId scopeId) throws ClientException {
-        return datastoreClient.findIndexes(new IndexRequest(scopeId.toStringId() + "-*")).getIndexes();
+        return elasticsearchClient.findIndexes(new IndexRequest(scopeId.toStringId() + "-*")).getIndexes();
     }
 
     private void setDatastoreIndexingWindowOption(String windowOption) {

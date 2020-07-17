@@ -13,7 +13,7 @@
 package org.eclipse.kapua.service.elasticsearch.client.transport;
 
 import org.eclipse.kapua.commons.setting.AbstractBaseKapuaSetting;
-import org.eclipse.kapua.service.elasticsearch.client.ClientProvider;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
@@ -32,14 +32,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Elasticsearch transport client implementation.<br>
+ * Elasticsearch transport {@link ElasticsearchClientProvider}.
+ * <p>
  * Instantiate the Elasticsearch transport client.
  *
  * @since 1.0.0
  * @deprecated Since 1.0.0. Elasticsearch transport client will be removed in the next releases. Please use the Rest client instead.
  */
 @Deprecated
-public class EsTransportClientProvider implements ClientProvider<Client> {
+public class EsTransportClientProvider implements ElasticsearchClientProvider<Client> {
 
     private static final Logger logger = LoggerFactory.getLogger(EsTransportClientProvider.class);
 

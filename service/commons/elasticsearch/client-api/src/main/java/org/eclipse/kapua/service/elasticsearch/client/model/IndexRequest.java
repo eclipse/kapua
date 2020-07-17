@@ -12,30 +12,41 @@
 package org.eclipse.kapua.service.elasticsearch.client.model;
 
 /**
- * Index find request
+ * Index request definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class IndexRequest {
 
     private String index;
 
     /**
-     * Default constructor
+     * Constructor.
      *
-     * @param index
+     * @param index The index name.
+     * @since 1.0.0
      */
     public IndexRequest(String index) {
         this.index = index;
     }
 
     /**
-     * Get the index name
+     * Gets the index name.
      *
-     * @return
+     * @return The index name.
+     * @since 1.0.0
      */
     public String getIndex() {
         return index;
     }
 
+    /**
+     * Sets the index name.
+     *
+     * @param index The index name.
+     * @since 1.3.0
+     */
+    public void setIndex(String index) {
+        this.index = index;
+    }
 }

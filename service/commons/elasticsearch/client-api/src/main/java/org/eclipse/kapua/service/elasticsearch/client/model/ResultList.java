@@ -15,9 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Query result list
+ * Query result list definition.
  *
- * @param <T> result list object type
+ * @param <T> {@link ResultList} object type.
+ * @since 1.0.0
  */
 public class ResultList<T> {
 
@@ -25,9 +26,10 @@ public class ResultList<T> {
     private long totalCount;
 
     /**
-     * Default constructor
+     * Constructor.
      *
-     * @param totalCount
+     * @param totalCount The total count of matched objects.
+     * @since 1.0.0
      */
     public ResultList(long totalCount) {
         result = new ArrayList<>();
@@ -35,27 +37,30 @@ public class ResultList<T> {
     }
 
     /**
-     * Add object to the result list
+     * Adds a object to the {@link ResultList}.
      *
-     * @param object
+     * @param object The object to add to the {@link ResultList}.
+     * @since 1.0.0
      */
     public void add(T object) {
         result.add(object);
     }
 
     /**
-     * Get the result list
+     * Gets the {@link List} of results.
      *
-     * @return
+     * @return The {@link List} of results.
+     * @since 1.0.0
      */
     public List<T> getResult() {
         return result;
     }
 
     /**
-     * Get the object total count (objects that matching the search criteria)
+     * Gets the total count of matched objects.
      *
-     * @return
+     * @return The total count of matched objects.
+     * @since 1.0.0
      */
     public long getTotalCount() {
         return totalCount;

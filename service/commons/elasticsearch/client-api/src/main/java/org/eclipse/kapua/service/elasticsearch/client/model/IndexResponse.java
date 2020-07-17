@@ -12,9 +12,9 @@
 package org.eclipse.kapua.service.elasticsearch.client.model;
 
 /**
- * Index find response
+ * Index response definitin.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class IndexResponse {
 
@@ -22,27 +22,41 @@ public class IndexResponse {
     private String[] indexes;
 
     /**
-     * Default constructor
+     * Constructor.
      *
-     * @param indexExists
+     * @param indexExists Whether or not the index esists.
+     * @since 1.0.0
      */
     public IndexResponse(boolean indexExists) {
         this.indexExists = indexExists;
     }
 
+    /**
+     * Constructor.
+     *
+     * @param indexes The index names.
+     * @since 1.0.0
+     */
     public IndexResponse(String[] indexes) {
         this.indexes = indexes;
     }
 
     /**
-     * Get the index exists
+     * Gets whether or not the index esists.
      *
-     * @return
+     * @return {@code true} if index exists, {@code false} otherwise.
+     * @since 1.0.0
      */
     public boolean isIndexExists() {
         return indexExists;
     }
 
+    /**
+     * Gets the index names.
+     *
+     * @return The index names.
+     * @since 1.0.0
+     */
     public String[] getIndexes() {
         return indexes;
     }

@@ -17,6 +17,7 @@ import java.util.Map;
 
 /**
  * Model context definition.
+ * <p>
  * This object is responsible for translating document model objects from/to client objects
  *
  * @since 1.0.0
@@ -38,22 +39,22 @@ public interface ModelContext {
     String DATASTORE_ID_KEY = "datastore_id";
 
     /**
-     * Convert the serialized object (from client domain) to the specific Elasticsearch object.
+     * Converts the serialized object (from client domain) to the specific Elasticsearch object.
      *
-     * @param clazz            datastore object type
-     * @param serializedObject
-     * @return
-     * @throws DatamodelMappingException
+     * @param clazz            The client object type
+     * @param serializedObject The serialized objetc as {@link Map}
+     * @return The object
+     * @throws DatamodelMappingException if there are error in resource mapping.
      * @since 1.0.0
      */
     <T> T unmarshal(Class<T> clazz, Map<String, Object> serializedObject) throws DatamodelMappingException;
 
     /**
-     * Convert the Elasticsearch object to the client object
+     * Converts the Elasticsearch object to the client object
      *
-     * @param object
-     * @return
-     * @throws DatamodelMappingException
+     * @param object The object to convert.
+     * @return The converted object as a {@link Map}
+     * @throws DatamodelMappingException if there are error in resource mapping.
      * @since 1.0.0
      */
     Map<String, Object> marshal(Object object) throws DatamodelMappingException;

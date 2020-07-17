@@ -12,28 +12,28 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.model;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlType;
-
 /**
- * Insert response
+ * Insert {@link Response} definition.
+ *
+ * @since 1.0.0
  */
-@XmlType(name = "insertResponse")
-@XmlAccessorType(XmlAccessType.PROPERTY)
 public class InsertResponse extends Response {
 
-    private static final long serialVersionUID = 1L;
-
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     public InsertResponse() {
         super(null, null);
     }
 
     /**
-     * Default constructor
+     * Constructor.
      *
-     * @param id             the inserted record id
-     * @param typeDescriptor index/type descriptor
+     * @param id             Ihe inserted record id
+     * @param typeDescriptor The {@link TypeDescriptor}.
+     * @since 1.0.0
      */
     public InsertResponse(String id, TypeDescriptor typeDescriptor) {
         super(id, typeDescriptor);

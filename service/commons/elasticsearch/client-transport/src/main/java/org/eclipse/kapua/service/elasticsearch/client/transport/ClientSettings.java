@@ -16,7 +16,7 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 /**
  * Datastore settings implementation
  *
- * @since 1.0
+ * @since 1.0.0
  * @deprecated Since 1.0.0. Elasticsearch transport client will be removed in the next releases. Please use the Rest client instead.
  */
 @Deprecated

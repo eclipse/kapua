@@ -27,8 +27,8 @@ import org.apache.http.util.EntityUtils;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.RandomUtils;
-import org.eclipse.kapua.service.elasticsearch.client.AbstractDatastoreClient;
-import org.eclipse.kapua.service.elasticsearch.client.ClientProvider;
+import org.eclipse.kapua.service.elasticsearch.client.AbstractElasticsearchClient;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.ModelContext;
 import org.eclipse.kapua.service.elasticsearch.client.QueryConverter;
 import org.eclipse.kapua.service.elasticsearch.client.SchemaKeys;
@@ -70,9 +70,9 @@ import java.util.concurrent.TimeoutException;
  *
  * @since 1.0.0
  */
-public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
+public class RestElasticsearchClient extends AbstractElasticsearchClient<RestClient> {
 
-    private static final Logger logger = LoggerFactory.getLogger(RestDatastoreClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(RestElasticsearchClient.class);
 
     private static final String GET_ACTION = "GET";
     private static final String DELETE_ACTION = "DELETE";
@@ -111,7 +111,7 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
     private static final int MAX_RETRY_ATTEMPT = ClientSettings.getInstance().getInt(ClientSettingsKey.ELASTICSEARCH_REST_TIMEOUT_MAX_RETRY, 3);
     private static final long MAX_RETRY_WAIT_TIME = ClientSettings.getInstance().getLong(ClientSettingsKey.ELASTICSEARCH_REST_TIMEOUT_MAX_WAIT, 2500);
 
-    private static RestDatastoreClient instance;
+    private static RestElasticsearchClient instance;
 
     private Counter restCallRuntimeExecCount;
     private Counter timeoutRetryCount;
@@ -120,25 +120,25 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
     static {
         MAPPER = new ObjectMapper();
         MAPPER.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        instance = new RestDatastoreClient();
+        instance = new RestElasticsearchClient();
     }
 
     /**
-     * Get the singleton {@link RestDatastoreClient} instance.
+     * Get the singleton {@link RestElasticsearchClient} instance.
      *
-     * @return The singleton {@link RestDatastoreClient} instance
+     * @return The singleton {@link RestElasticsearchClient} instance
      * @since 1.0.0
      */
-    public static RestDatastoreClient getInstance() {
+    public static RestElasticsearchClient getInstance() {
         return instance;
     }
 
     /**
-     * Initialize the client provider ({@link ClientProvider}) as singleton.
+     * Initialize the client provider ({@link ElasticsearchClientProvider}) as singleton.
      *
      * @since 1.0.0
      */
-    private RestDatastoreClient() {
+    private RestElasticsearchClient() {
         super("rest");
         MetricsService metricService = MetricServiceFactory.getInstance();
         restCallRuntimeExecCount = metricService.getCounter(DatastoreRestClientMetrics.METRIC_MODULE_NAME, DatastoreRestClientMetrics.METRIC_COMPONENT_NAME, DatastoreRestClientMetrics.METRIC_RUNTIME_EXEC, DatastoreRestClientMetrics.METRIC_COUNT);
@@ -147,7 +147,7 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
     }
 
     @Override
-    public ClientProvider<RestClient> getNewInstance() {
+    public ElasticsearchClientProvider<RestClient> getNewInstance() {
         return EsRestClientProvider.init();
     }
 

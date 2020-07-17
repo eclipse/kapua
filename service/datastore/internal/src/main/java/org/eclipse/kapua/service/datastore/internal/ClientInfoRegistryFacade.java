@@ -30,7 +30,7 @@ import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
-import org.eclipse.kapua.service.elasticsearch.client.DatastoreClient;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
@@ -52,7 +52,7 @@ public class ClientInfoRegistryFacade {
     private final ClientInfoRegistryMediator mediator;
     private final ConfigurationProvider configProvider;
     private final Object metadataUpdateSync = new Object();
-    private DatastoreClient client;
+    private ElasticsearchClient client;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";

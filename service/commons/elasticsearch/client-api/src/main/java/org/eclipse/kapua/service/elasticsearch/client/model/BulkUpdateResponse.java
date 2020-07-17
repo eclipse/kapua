@@ -15,43 +15,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Bulk update response container
+ * Bulk update response definition.
+ * <p>
+ * It bundles a {@link List} of {@link UpdateRequest}
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class BulkUpdateResponse {
 
     List<UpdateResponse> responseList;
 
     /**
-     * Default constructor
-     */
-    public BulkUpdateResponse() {
-        responseList = new ArrayList<>();
-    }
-
-    /**
-     * Add an update response to the bulk request
+     * Adds an {@link UpdateResponse} to the {@link List}
      *
-     * @param response
+     * @param response The {@link UpdateResponse} to add.
+     * @since 1.0.0
      */
     public void add(UpdateResponse response) {
-        responseList.add(response);
+        getResponse().add(response);
     }
 
     /**
-     * Get the update response list
+     * Gets the {@link List} of {@link UpdateResponse}s.
      *
-     * @return
+     * @return The {@link List} of {@link UpdateResponse}s.
+     * @since 1.0.0
      */
     public List<UpdateResponse> getResponse() {
+        if (responseList == null) {
+            responseList = new ArrayList<>();
+        }
+
         return responseList;
     }
 
     /**
-     * Set the update response list
+     * Sets the {@link List} of {@link UpdateResponse}s.
      *
-     * @param responseList
+     * @param responseList The {@link List} of {@link UpdateResponse}s.
+     * @since 1.0.0
      */
     public void setResponse(List<UpdateResponse> responseList) {
         this.responseList = responseList;

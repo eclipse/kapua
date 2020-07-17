@@ -11,8 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.exception;
 
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
+
 /**
- * {@link ClientException} to throw when {@link org.eclipse.kapua.service.elasticsearch.client.DatastoreClient} fails to initialize
+ * {@link ClientException} to throw when {@link ElasticsearchClient} fails to initialize
  *
  * @since 1.3.0
  */

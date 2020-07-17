@@ -21,7 +21,7 @@ import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.mediator.Metric;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
-import org.eclipse.kapua.service.elasticsearch.client.DatastoreClient;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
 import org.eclipse.kapua.service.elasticsearch.client.SchemaKeys;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientErrorCodes;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
@@ -77,28 +77,28 @@ public class Schema {
         LOG.debug("Before entering updating metadata");
         synchronized (Schema.class) {
             LOG.debug("Entered updating metadata");
-            DatastoreClient datastoreClient = DatastoreClientFactory.getInstance();
+            ElasticsearchClient elasticsearchClient = DatastoreClientFactory.getInstance();
             // Check existence of the data index
-            IndexResponse dataIndexExistsResponse = datastoreClient.isIndexExists(new IndexRequest(dataIndexName));
+            IndexResponse dataIndexExistsResponse = elasticsearchClient.isIndexExists(new IndexRequest(dataIndexName));
             if (!dataIndexExistsResponse.isIndexExists()) {
-                datastoreClient.createIndex(dataIndexName, getMappingSchema(dataIndexName));
+                elasticsearchClient.createIndex(dataIndexName, getMappingSchema(dataIndexName));
                 LOG.info("Data index created: {}", dataIndexName);
             }
 
             boolean enableAllField = false;
             boolean enableSourceField = true;
 
-            datastoreClient.putMapping(new TypeDescriptor(dataIndexName, MessageSchema.MESSAGE_TYPE_NAME), MessageSchema.getMesageTypeSchema(enableAllField, enableSourceField));
+            elasticsearchClient.putMapping(new TypeDescriptor(dataIndexName, MessageSchema.MESSAGE_TYPE_NAME), MessageSchema.getMesageTypeSchema(enableAllField, enableSourceField));
             // Check existence of the kapua internal index
             String registryIndexName = DatastoreUtils.getRegistryIndexName(scopeId);
-            IndexResponse registryIndexExistsResponse = datastoreClient.isIndexExists(new IndexRequest(registryIndexName));
+            IndexResponse registryIndexExistsResponse = elasticsearchClient.isIndexExists(new IndexRequest(registryIndexName));
             if (!registryIndexExistsResponse.isIndexExists()) {
-                datastoreClient.createIndex(registryIndexName, getMappingSchema(registryIndexName));
+                elasticsearchClient.createIndex(registryIndexName, getMappingSchema(registryIndexName));
                 LOG.info("Metadata index created: {}", registryIndexExistsResponse);
 
-                datastoreClient.putMapping(new TypeDescriptor(registryIndexName, ChannelInfoSchema.CHANNEL_TYPE_NAME), ChannelInfoSchema.getChannelTypeSchema(enableAllField, enableSourceField));
-                datastoreClient.putMapping(new TypeDescriptor(registryIndexName, MetricInfoSchema.METRIC_TYPE_NAME), MetricInfoSchema.getMetricTypeSchema(enableAllField, enableSourceField));
-                datastoreClient.putMapping(new TypeDescriptor(registryIndexName, ClientInfoSchema.CLIENT_TYPE_NAME), ClientInfoSchema.getClientTypeSchema(enableAllField, enableSourceField));
+                elasticsearchClient.putMapping(new TypeDescriptor(registryIndexName, ChannelInfoSchema.CHANNEL_TYPE_NAME), ChannelInfoSchema.getChannelTypeSchema(enableAllField, enableSourceField));
+                elasticsearchClient.putMapping(new TypeDescriptor(registryIndexName, MetricInfoSchema.METRIC_TYPE_NAME), MetricInfoSchema.getMetricTypeSchema(enableAllField, enableSourceField));
+                elasticsearchClient.putMapping(new TypeDescriptor(registryIndexName, ClientInfoSchema.CLIENT_TYPE_NAME), ClientInfoSchema.getClientTypeSchema(enableAllField, enableSourceField));
             }
 
             currentMetadata = new Metadata(dataIndexName, registryIndexName);

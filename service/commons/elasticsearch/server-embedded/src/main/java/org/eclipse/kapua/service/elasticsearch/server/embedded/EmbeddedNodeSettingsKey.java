@@ -14,37 +14,50 @@ package org.eclipse.kapua.service.elasticsearch.server.embedded;
 import org.eclipse.kapua.commons.setting.SettingKey;
 
 /**
- * Datastore ES embedded node embedded node setting keys.
+ * Elastisearch embedded node embedded node {@link SettingKey}s.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public enum EmbeddedNodeSettingsKey implements SettingKey {
 
     /**
-     * Elasticsearch cluster name
+     * Elasticsearch cluster name.
+     *
+     * @since 1.0.0
      */
     ELASTICSEARCH_CLUSTER("datastore.elasticsearch.cluster"),
     /**
-     * Elasticsearch transport node
+     * Elasticsearch transport node.
+     *
+     * @since 1.0.0
      */
     ELASTICSEARCH_TRANSPORT_NODE("datastore.elasticsearch.transport.node"),
     /**
-     * Elasticsearch transport port
+     * Elasticsearch transport port.
      */
     ELASTICSEARCH_TRANSPORT_PORT("datastore.elasticsearch.transport.port"),
     /**
-     * Elasticsearch rest node
+     * Elasticsearch rest node.
+     *
+     * @since 1.0.0
      */
     ELASTICSEARCH_REST_NODE("datastore.elasticsearch.rest.node"),
     /**
-     * Elasticsearch rest port
+     * Elasticsearch rest port.
+     *
+     * @since 1.0.0
      */
     ELASTICSEARCH_REST_PORT("datastore.elasticsearch.rest.port");
 
-
     private String key;
 
-    private EmbeddedNodeSettingsKey(String key) {
+    /**
+     * Constructor.
+     *
+     * @param key The key value for the {@link SettingKey}.
+     * @since 1.0.0
+     */
+    EmbeddedNodeSettingsKey(String key) {
         this.key = key;
     }
 

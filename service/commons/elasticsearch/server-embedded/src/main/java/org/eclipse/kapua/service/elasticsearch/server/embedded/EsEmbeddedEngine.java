@@ -30,10 +30,12 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * Elasticsearch embedded node engine. To be used for test purpose.<br>
+ * Elasticsearch embedded node engine.
+ * <p>
  * This class will start an Elasticsearch node bounds the transport connector to the port 9300 and rest to the port 9200 on 127.0.0.1.
+ * To be used for test purpose.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class EsEmbeddedEngine {
 

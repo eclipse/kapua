@@ -12,19 +12,19 @@
 package org.eclipse.kapua.service.elasticsearch.client.model;
 
 /**
- * Update request
+ * Update {@link Request} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class UpdateRequest extends Request {
 
-
     /**
-     * Defualt constructor
+     * Constructor.
      *
-     * @param id             object identifier
-     * @param typeDescriptor index/type descriptor
-     * @param storable       object to insert
+     * @param id             The Object identifier.
+     * @param typeDescriptor The {@link TypeDescriptor}.
+     * @param storable       The Object to update.
+     * @since 1.0.0
      */
     public UpdateRequest(String id, TypeDescriptor typeDescriptor, Object storable) {
         super(id, typeDescriptor, storable);

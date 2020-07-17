@@ -12,30 +12,37 @@
 package org.eclipse.kapua.service.elasticsearch.client.model;
 
 /**
- * Base request object
+ * Base request definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public abstract class Request {
 
     /**
-     * Object identifier
+     * The Object identifier
+     *
+     * @since 1.0.0
      */
     private String id;
+
     /**
-     * index/type descriptor
+     * The {@link TypeDescriptor}.
+     *
+     * @since 1.0.0
      */
     private TypeDescriptor typeDescriptor;
+
     /**
-     * Object to be stored
+     * The Object of the {@link Request}
      */
     private Object storable;
 
     /**
-     * Default constructor
+     * Constructor.
      *
-     * @param typeDescriptor index/type descriptor
-     * @param storable
+     * @param typeDescriptor The {@link TypeDescriptor}.
+     * @param storable       the objetc of the request
+     * @since 1.0.0
      */
     protected Request(String id, TypeDescriptor typeDescriptor, Object storable) {
         this.id = id;
@@ -44,54 +51,60 @@ public abstract class Request {
     }
 
     /**
-     * Get the object id
+     * Gets the object id.
      *
-     * @return
+     * @return The object id.
+     * @since 1.0.0
      */
     public String getId() {
         return id;
     }
 
     /**
-     * Set the object id
+     * Sets the object id.
      *
-     * @param id
+     * @param id The object id.
+     * @since 1.0.0
      */
     public void setId(String id) {
         this.id = id;
     }
 
     /**
-     * Get the type descriptor
+     * Gets the {@link TypeDescriptor}.
      *
-     * @return
+     * @return The {@link TypeDescriptor}.
+     * @since 1.0.0
      */
     public TypeDescriptor getTypeDescriptor() {
         return typeDescriptor;
     }
 
     /**
-     * Set the type descriptor
+     * Sets the {@link TypeDescriptor}.
      *
-     * @param typeDescriptor
+     * @param typeDescriptor The {@link TypeDescriptor}.
+     * @since 1.0.0
      */
     public void setTypeDescriptor(TypeDescriptor typeDescriptor) {
         this.typeDescriptor = typeDescriptor;
     }
 
     /**
-     * Get the storable object (Object to be inserted/updated)
+     * Gets the object of the request.
      *
-     * @return
+     * @return The object of the request.
+     * @since 1.0.0
      */
     public Object getStorable() {
         return storable;
     }
 
     /**
-     * Set the storable object (Object to be inserted/updated)
+     * Sets the object of the request.
      *
-     * @param storable
+     * @param storable The object of the request.
+     * @since 1.0.0
      */
     public void setStorable(Object storable) {
         this.storable = storable;

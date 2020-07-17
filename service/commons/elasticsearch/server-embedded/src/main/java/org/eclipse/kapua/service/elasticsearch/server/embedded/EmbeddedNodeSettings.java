@@ -14,9 +14,9 @@ package org.eclipse.kapua.service.elasticsearch.server.embedded;
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
 /**
- * Datastore ES embedded node settings implementation
+ * Elasticsearch embedded {@link AbstractKapuaSetting}.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class EmbeddedNodeSettings extends AbstractKapuaSetting<EmbeddedNodeSettingsKey> {
 
