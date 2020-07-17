@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,22 +12,29 @@
 package org.eclipse.kapua.service.elasticsearch.client.exception;
 
 /**
- * Query mapping exception.
- * <p>
- * This exception is raised if some error occurred when mapping a query
+ * {@link ClientException} to throw when something really bad happens.
  *
- * @since 1.0.0
+ * @since 1.3.0
  */
-public class QueryMappingException extends ClientException {
-
-    private static final long serialVersionUID = 5211237236391747299L;
+public class ClientInternalError extends ClientException {
 
     /**
      * Constructor.
      *
      * @since 1.3.0
      */
-    public QueryMappingException() {
-        super(ClientErrorCodes.QUERY_MAPPING_EXCEPTION);
+    public ClientInternalError() {
+        super(ClientErrorCodes.INTERNAL_ERROR);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param cause The root {@link Throwable} of this {@link ClientInternalError}.
+     * @since 1.3.0
+     */
+    public ClientInternalError(Throwable cause) {
+        super(ClientErrorCodes.INTERNAL_ERROR, cause);
     }
 }

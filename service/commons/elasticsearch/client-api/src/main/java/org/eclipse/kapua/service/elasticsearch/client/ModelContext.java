@@ -16,37 +16,45 @@ import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMapping
 import java.util.Map;
 
 /**
- * Model context definition. This object is responsible for translating datastore model objects from/to client objects
+ * Model context definition.
+ * This object is responsible for translating document model objects from/to client objects
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface ModelContext {
 
     /**
      * Type descriptor key
+     *
+     * @since 1.0.0
      */
     String TYPE_DESCRIPTOR_KEY = "type_descriptor";
+
     /**
      * Datastore object id descriptor key
+     *
+     * @since 1.0.0
      */
     String DATASTORE_ID_KEY = "datastore_id";
 
     /**
-     * Convert the serialized object (from client domain) to the specific datastore object.
+     * Convert the serialized object (from client domain) to the specific Elasticsearch object.
      *
      * @param clazz            datastore object type
      * @param serializedObject
      * @return
      * @throws DatamodelMappingException
+     * @since 1.0.0
      */
     <T> T unmarshal(Class<T> clazz, Map<String, Object> serializedObject) throws DatamodelMappingException;
 
     /**
-     * Convert the datastore object to the client object
+     * Convert the Elasticsearch object to the client object
      *
      * @param object
      * @return
      * @throws DatamodelMappingException
+     * @since 1.0.0
      */
     Map<String, Object> marshal(Object object) throws DatamodelMappingException;
 

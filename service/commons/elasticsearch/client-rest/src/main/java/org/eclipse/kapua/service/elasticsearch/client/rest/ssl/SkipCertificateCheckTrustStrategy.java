@@ -20,7 +20,7 @@ import java.security.cert.X509Certificate;
  * {@link TrustStrategy} implementation to trust all the certificates.<br>
  * <b>Unsafe option to be used to skip server side certificate validation.</b>
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class SkipCertificateCheckTrustStrategy implements TrustStrategy {
 

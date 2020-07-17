@@ -31,11 +31,9 @@ import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.elasticsearch.client.DatastoreClient;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientErrorCodes;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientErrorMessages;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
-import org.eclipse.kapua.service.elasticsearch.client.exception.QueryMappingException;
 import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
@@ -44,12 +42,12 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Client information registry facade
- * 
+ *
  * @since 1.0.0
  */
 public class ClientInfoRegistryFacade {
 
-    private static final Logger logger = LoggerFactory.getLogger(ClientInfoRegistryFacade.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ClientInfoRegistryFacade.class);
 
     private final ClientInfoRegistryMediator mediator;
     private final ConfigurationProvider configProvider;
@@ -61,21 +59,21 @@ public class ClientInfoRegistryFacade {
 
     /**
      * Constructs the client info registry facade
-     * 
+     *
      * @param configProvider
      * @param mediator
      * @throws ClientUnavailableException
      * @since 1.0.0
      */
-    public ClientInfoRegistryFacade(ConfigurationProvider configProvider, ClientInfoRegistryMediator mediator) throws ClientUnavailableException {
+    public ClientInfoRegistryFacade(ConfigurationProvider configProvider, ClientInfoRegistryMediator mediator) throws ClientInitializationException {
         this.configProvider = configProvider;
         this.mediator = mediator;
-        client = DatastoreClientFactory.getInstance();
+        this.client = DatastoreClientFactory.getInstance();
     }
 
     /**
      * Update the client information after a message store operation
-     * 
+     *
      * @param clientInfo
      * @return
      * @throws KapuaIllegalArgumentException
@@ -83,9 +81,7 @@ public class ClientInfoRegistryFacade {
      * @throws ClientException
      * @since 1.0.0
      */
-    public StorableId upstore(ClientInfo clientInfo)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException, ClientException {
+    public StorableId upstore(ClientInfo clientInfo) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
         ArgumentValidator.notNull(clientInfo, "clientInfo");
         ArgumentValidator.notNull(clientInfo.getScopeId(), "clientInfo.scopeId");
         ArgumentValidator.notNull(clientInfo.getFirstMessageId(), "clientInfo.firstPublishedMessageId");
@@ -112,14 +108,9 @@ public class ClientInfoRegistryFacade {
                         UpdateRequest request = new UpdateRequest(clientInfo.getId().toString(), new TypeDescriptor(kapuaIndexName, ClientInfoSchema.CLIENT_TYPE_NAME), clientInfo);
                         response = client.upsert(request);
 
-                        if (!clientInfoId.equals(response.getId())) {
-                            // this condition shouldn't happens
-                            throw new ClientException(ClientErrorCodes.ACTION_ERROR, String.format(ClientErrorMessages.CRUD_INTERNAL_ERROR, "ClientInfoRegistry - upstore"));
+                        LOG.debug("Upsert on asset successfully executed [{}.{}, {} - {}]", kapuaIndexName, ClientInfoSchema.CLIENT_TYPE_NAME, response.getId(), response.getId());
                         }
-                        logger.debug(String.format("Upsert on asset succesfully executed [%s.%s, %s]", kapuaIndexName,
-                                ClientInfoSchema.CLIENT_TYPE_NAME, response.getId()));
-                        // Update cache if asset update is completed successfully
-                    }
+                    // Update cache if client update is completed successfully
                     DatastoreCacheManager.getInstance().getClientsCache().put(clientInfo.getClientId(), true);
                 }
             }
@@ -131,16 +122,14 @@ public class ClientInfoRegistryFacade {
      * Delete client information by identifier.<br>
      * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
      * It just deletes the client info registry entry by id without checking the consistency of the others registries or the message store.</b>
-     * 
+     *
      * @param scopeId
      * @param id
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
      * @throws ClientException
      */
-    public void delete(KapuaId scopeId, StorableId id)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException, ClientException {
+    public void delete(KapuaId scopeId, StorableId id) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(id, "id");
 
@@ -148,7 +137,7 @@ public class ClientInfoRegistryFacade {
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
-            logger.debug("Storage not enabled for account {}, return", scopeId);
+            LOG.debug("Storage not enabled for account {}, return", scopeId);
             return;
         }
 
@@ -159,20 +148,15 @@ public class ClientInfoRegistryFacade {
 
     /**
      * Find client information by identifier
-     * 
+     *
      * @param scopeId
      * @param id
      * @return
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
-     * @throws QueryMappingException
      * @throws ClientException
      */
-    public ClientInfo find(KapuaId scopeId, StorableId id)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException,
-            QueryMappingException,
-            ClientException {
+    public ClientInfo find(KapuaId scopeId, StorableId id) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(id, "id");
 
@@ -189,19 +173,14 @@ public class ClientInfoRegistryFacade {
 
     /**
      * Find clients informations matching the given query
-     * 
+     *
      * @param query
      * @return
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
-     * @throws QueryMappingException
      * @throws ClientException
      */
-    public ClientInfoListResult query(ClientInfoQuery query)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException,
-            QueryMappingException,
-            ClientException {
+    public ClientInfoListResult query(ClientInfoQuery query) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
         ArgumentValidator.notNull(query, QUERY);
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
@@ -209,7 +188,7 @@ public class ClientInfoRegistryFacade {
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
-            logger.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
+            LOG.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
             return new ClientInfoListResultImpl();
         }
 
@@ -220,19 +199,14 @@ public class ClientInfoRegistryFacade {
 
     /**
      * Get clients informations count matching the given query
-     * 
+     *
      * @param query
      * @return
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
-     * @throws QueryMappingException
      * @throws ClientException
      */
-    public long count(ClientInfoQuery query)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException,
-            QueryMappingException,
-            ClientException {
+    public long count(ClientInfoQuery query) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
         ArgumentValidator.notNull(query, QUERY);
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
@@ -240,7 +214,7 @@ public class ClientInfoRegistryFacade {
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
-            logger.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
+            LOG.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
             return 0;
         }
 
@@ -253,18 +227,13 @@ public class ClientInfoRegistryFacade {
      * Delete clients informations count matching the given query.<br>
      * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
      * It just deletes the client info registry entries that matching the query without checking the consistency of the others registries or the message store.</b>
-     * 
+     *
      * @param query
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
-     * @throws QueryMappingException
      * @throws ClientException
      */
-    public void delete(ClientInfoQuery query)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException,
-            QueryMappingException,
-            ClientException {
+    public void delete(ClientInfoQuery query) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
         ArgumentValidator.notNull(query, QUERY);
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
@@ -272,7 +241,7 @@ public class ClientInfoRegistryFacade {
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
-            logger.debug("Storage not enabled for account {}, skipping delete", query.getScopeId());
+            LOG.debug("Storage not enabled for account {}, skipping delete", query.getScopeId());
             return;
         }
 

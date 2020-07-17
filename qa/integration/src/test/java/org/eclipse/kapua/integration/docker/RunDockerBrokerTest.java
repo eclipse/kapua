@@ -21,7 +21,7 @@ import org.junit.runner.RunWith;
         glue = {"org.eclipse.kapua.qa.common",
                 "org.eclipse.kapua.qa.integration.steps"
         },
-        plugin = { "pretty",
+        plugin = {"pretty",
                 "html:target/cucumber/DockerBroker",
                 "json:target/DockerBroker_cucumber.json"
         },
@@ -33,7 +33,7 @@ import org.junit.runner.RunWith;
 //@CucumberProperty(key="commons.db.connection.port", value= "3306")
 //@CucumberProperty(key="datastore.elasticsearch.nodes", value= "es")
 //@CucumberProperty(key="datastore.elasticsearch.port", value= "9200")
-//@CucumberProperty(key="datastore.client.class", value= "org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient")
+//@CucumberProperty(key="datastore.client.class", value= "org.eclipse.kapua.service.elasticsearch.client.rest.RestDatastoreClient")
 //@CucumberProperty(key="commons.eventbus.url", value= "failover:(amqp://events-broker:5672)?jms.sendTimeout=1000")
 //@CucumberProperty(key="certificate.jwt.private.key", value= "file:///var/opt/activemq/key.pk8")
 //@CucumberProperty(key="certificate.jwt.certificate", value= "file:///var/opt/activemq/cert.pem")

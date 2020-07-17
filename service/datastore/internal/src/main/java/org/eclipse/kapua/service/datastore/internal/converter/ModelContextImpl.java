@@ -12,8 +12,6 @@
 package org.eclipse.kapua.service.datastore.internal.converter;
 
 import com.fasterxml.jackson.core.Base64Variants;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.message.KapuaPayload;
@@ -43,7 +41,6 @@ import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMapping
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.Date;
@@ -61,17 +58,15 @@ public class ModelContextImpl implements ModelContext {
 
     private static final Logger logger = LoggerFactory.getLogger(ModelContextImpl.class);
 
-    private static final String CONVERSION_ERROR_MSG = "Data conversion error";
-    private static final String DATE_CONVERSION_ERROR_MSG = "Date conversion error";
     private static final String UNSUPPORTED_OBJECT_TYPE_ERROR_MSG = "The conversion of object [%s] is not supported!";
-    private static final String UNMARSHAL_INVALID_PARAMETERS_ERROR_MSG = "Object and/or object type cannot be null!";
     private static final String MARSHAL_INVALID_PARAMETERS_ERROR_MSG = "Object and/or object type cannot be null!";
 
     @Override
     public <T> T unmarshal(Class<T> clazz, Map<String, Object> serializedObject) throws DatamodelMappingException {
         if (clazz == null || serializedObject == null) {
-            throw new DatamodelMappingException(UNMARSHAL_INVALID_PARAMETERS_ERROR_MSG);
+            throw new DatamodelMappingException("Object and/or object type cannot be null");
         }
+
         try {
             if (DatastoreMessage.class.isAssignableFrom(clazz)) {
                 return (T) unmarshalDatastoreMessage(serializedObject);
@@ -82,10 +77,11 @@ public class ModelContextImpl implements ModelContext {
             } else if (ChannelInfo.class.isAssignableFrom(clazz)) {
                 return (T) unmarshalChannelInfo(serializedObject);
             }
-        } catch (IOException | ParseException e) {
-            throw new DatamodelMappingException(CONVERSION_ERROR_MSG, e);
+        } catch (ParseException e) {
+            throw new DatamodelMappingException(e, "Data conversion error");
         }
-        throw new DatamodelMappingException(String.format(UNSUPPORTED_OBJECT_TYPE_ERROR_MSG, clazz.getName()));
+
+        throw new DatamodelMappingException(String.format(UNSUPPORTED_OBJECT_TYPE_ERROR_MSG, clazz.getName())); // FIXME: create specific exception and remove String.format
     }
 
     @Override
@@ -93,6 +89,7 @@ public class ModelContextImpl implements ModelContext {
         if (object == null) {
             throw new DatamodelMappingException(MARSHAL_INVALID_PARAMETERS_ERROR_MSG);
         }
+
         try {
             if (object instanceof DatastoreMessage) {
                 return marshalDatastoreMessage((DatastoreMessage) object);
@@ -107,18 +104,21 @@ public class ModelContextImpl implements ModelContext {
                 return marshalMetricInfo((MetricInfo) object);
             }
         } catch (ParseException e) {
-            throw new DatamodelMappingException(DATE_CONVERSION_ERROR_MSG, e);
+            throw new DatamodelMappingException(e, "Date conversion error");
         }
-        throw new DatamodelMappingException(String.format(UNSUPPORTED_OBJECT_TYPE_ERROR_MSG, object.getClass().getName()));
+
+        throw new DatamodelMappingException(String.format(UNSUPPORTED_OBJECT_TYPE_ERROR_MSG, object.getClass().getName())); // FIXME: create specific exception and remove String.format
     }
 
-    /*
+    /**
+     * Unmarshals the {@link DatastoreMessage}.
      *
-     * unmarshal section
-     *
+     * @param messageMap The {@link DatastoreMessage}.
+     * @throws ParseException
+     * @since 1.0.0
      */
-    private DatastoreMessage unmarshalDatastoreMessage(Map<String, Object> messageMap)
-            throws DatamodelMappingException, JsonParseException, JsonMappingException, IOException, ParseException {
+    private DatastoreMessage unmarshalDatastoreMessage(Map<String, Object> messageMap) throws ParseException {
+
         StorableFetchStyle fetchStyle = getStorableFetchStyle(messageMap);
         DatastoreMessageImpl message = new DatastoreMessageImpl();
         String id = (String) messageMap.get(ModelContext.DATASTORE_ID_KEY);
@@ -135,6 +135,7 @@ public class ModelContextImpl implements ModelContext {
         if (deviceIdStr != null) {
             deviceId = new KapuaEid(new BigInteger(deviceIdStr));
         }
+
         message.setDeviceId(deviceId);
         String clientId = (String) messageMap.get(MessageSchema.MESSAGE_CLIENT_ID);
         message.setClientId(clientId);
@@ -144,7 +145,7 @@ public class ModelContextImpl implements ModelContext {
         message.setChannel(dataChannel);
 
         String timestamp = (String) messageMap.get(MessageSchema.MESSAGE_TIMESTAMP);
-        message.setTimestamp((Date) (timestamp == null ? null : KapuaDateUtils.parseDate((String) timestamp)));
+        message.setTimestamp(timestamp == null ? null : KapuaDateUtils.parseDate(timestamp));
 
         // stop the mapping if only fields are requested
         if (fetchStyle.equals(StorableFetchStyle.FIELDS)) {
@@ -156,7 +157,8 @@ public class ModelContextImpl implements ModelContext {
 
         KapuaDataPayloadImpl payload = new KapuaDataPayloadImpl();
         Map<String, Object> positionMap = (Map<String, Object>) messageMap.get(MessageSchema.MESSAGE_POSITION);
-        KapuaPositionImpl position = null;
+
+        KapuaPositionImpl position;
         if (positionMap != null) {
             Map<String, Object> locationMap = (Map<String, Object>) positionMap.get(MessageSchema.MESSAGE_POS_LOCATION);
 
@@ -195,6 +197,7 @@ public class ModelContextImpl implements ModelContext {
             position.setTimestamp(KapuaDateUtils.parseDate((String) obj));
             message.setPosition(position);
         }
+
         Object capturedOnFld = messageMap.get(MessageSchema.MESSAGE_CAPTURED_ON);
         message.setCapturedOn(KapuaDateUtils.parseDate((String) capturedOnFld));
         Object sentOnFld = messageMap.get(MessageSchema.MESSAGE_SENT_ON);
@@ -225,18 +228,16 @@ public class ModelContextImpl implements ModelContext {
             byte[] body = Base64Variants.getDefaultVariant().decode((String) messageMap.get(MessageSchema.MESSAGE_BODY));
             payload.setBody(body);
         }
-        if (payload != null) {
-            message.setPayload(payload);
-        }
+
+        message.setPayload(payload);
+
         return message;
     }
 
-    private MetricInfo unmarshalMetricInfo(Map<String, Object> metricInfoMap)
-            throws DatamodelMappingException, JsonParseException, JsonMappingException, IOException, ParseException {
+    private MetricInfo unmarshalMetricInfo(Map<String, Object> metricInfoMap) throws ParseException {
         KapuaId scopeId = new KapuaEid(new BigInteger((String) metricInfoMap.get(MetricInfoSchema.METRIC_SCOPE_ID)));
-        MetricInfo metricInfo = new MetricInfoImpl(scopeId);
         String id = (String) metricInfoMap.get(ModelContext.DATASTORE_ID_KEY);
-        metricInfo.setId(new StorableIdImpl(id));
+
         Map<String, Object> metricMap = (Map<String, Object>) metricInfoMap.get(MetricInfoSchema.METRIC_MTR);
         String name = (String) metricMap.get(MetricInfoSchema.METRIC_MTR_NAME);
         String type = (String) metricMap.get(MetricInfoSchema.METRIC_MTR_TYPE);
@@ -244,47 +245,58 @@ public class ModelContextImpl implements ModelContext {
         String lastMsgId = (String) metricMap.get(MetricInfoSchema.METRIC_MTR_MSG_ID);
         String clientId = (String) metricInfoMap.get(MetricInfoSchema.METRIC_CLIENT_ID);
         String channel = (String) metricInfoMap.get(MetricInfoSchema.METRIC_CHANNEL);
+        String metricName = DatastoreUtils.restoreMetricName(name);
+        Date timestamp = KapuaDateUtils.parseDate(lastMsgTimestamp);
+
+        MetricInfo metricInfo = new MetricInfoImpl(scopeId);
+        metricInfo.setId(new StorableIdImpl(id));
         metricInfo.setClientId(clientId);
         metricInfo.setChannel(channel);
         metricInfo.setFirstMessageId(new StorableIdImpl(lastMsgId));
-        String metricName = DatastoreUtils.restoreMetricName(name);
         metricInfo.setName(metricName);
-        Date timestamp = KapuaDateUtils.parseDate(lastMsgTimestamp);
         metricInfo.setFirstMessageOn(timestamp);
         metricInfo.setMetricType(DatastoreUtils.convertToKapuaType(type));
+
         return metricInfo;
     }
 
-    private ChannelInfo unmarshalChannelInfo(Map<String, Object> channelInfoMap)
-            throws DatamodelMappingException, JsonParseException, JsonMappingException, IOException, ParseException {
+    private ChannelInfo unmarshalChannelInfo(Map<String, Object> channelInfoMap) throws ParseException {
         KapuaId scopeId = new KapuaEid(new BigInteger((String) channelInfoMap.get(ChannelInfoSchema.CHANNEL_SCOPE_ID)));
-        ChannelInfo channelInfo = new ChannelInfoImpl(scopeId);
         String id = (String) channelInfoMap.get(ModelContext.DATASTORE_ID_KEY);
+
+        ChannelInfo channelInfo = new ChannelInfoImpl(scopeId);
         channelInfo.setId(new StorableIdImpl(id));
         channelInfo.setClientId((String) channelInfoMap.get(ChannelInfoSchema.CHANNEL_CLIENT_ID));
         channelInfo.setName((String) channelInfoMap.get(ChannelInfoSchema.CHANNEL_NAME));
         channelInfo.setFirstMessageId(new StorableIdImpl((String) channelInfoMap.get(ChannelInfoSchema.CHANNEL_MESSAGE_ID)));
         channelInfo.setFirstMessageOn(KapuaDateUtils.parseDate((String) channelInfoMap.get(ChannelInfoSchema.CHANNEL_TIMESTAMP)));
+
         return channelInfo;
     }
 
-    private ClientInfo unmarshalClientInfo(Map<String, Object> clientInfoMap)
-            throws DatamodelMappingException, JsonParseException, JsonMappingException, IOException, ParseException {
+    private ClientInfo unmarshalClientInfo(Map<String, Object> clientInfoMap) throws ParseException {
         KapuaId scopeId = new KapuaEid(new BigInteger((String) clientInfoMap.get(ClientInfoSchema.CLIENT_SCOPE_ID)));
-        ClientInfo clientInfo = new ClientInfoImpl(scopeId);
         String id = (String) clientInfoMap.get(ModelContext.DATASTORE_ID_KEY);
+
+        ClientInfo clientInfo = new ClientInfoImpl(scopeId);
         clientInfo.setId(new StorableIdImpl(id));
         clientInfo.setClientId((String) clientInfoMap.get(ClientInfoSchema.CLIENT_ID));
         clientInfo.setFirstMessageId(new StorableIdImpl((String) clientInfoMap.get(ClientInfoSchema.CLIENT_MESSAGE_ID)));
         clientInfo.setFirstMessageOn(KapuaDateUtils.parseDate((String) clientInfoMap.get(ClientInfoSchema.CLIENT_TIMESTAMP)));
+
         return clientInfo;
     }
 
-    /*
+    /**
+     * Marshals the {@link DatastoreMessage}.
      *
-     * marshal section
+     * @param message The {@link DatastoreMessage}.
+     * @throws ParseException
+     * @since 1.0.0
      */
     private Map<String, Object> marshalDatastoreMessage(DatastoreMessage message) throws ParseException {
+        //
+        // Message
         Map<String, Object> unmarshalledMessage = new HashMap<>();
         String scopeId = message.getScopeId().toStringId();
         String deviceIdStr = message.getDeviceId() == null ? null : message.getDeviceId().toStringId();
@@ -293,15 +305,20 @@ public class ModelContextImpl implements ModelContext {
         }
         unmarshalledMessage.put(MessageSchema.MESSAGE_TIMESTAMP, KapuaDateUtils.formatDate(message.getTimestamp()));
         unmarshalledMessage.put(MessageSchema.MESSAGE_RECEIVED_ON, KapuaDateUtils.formatDate(message.getReceivedOn()));
-        unmarshalledMessage.put(MessageSchema.MESSAGE_IP_ADDRESS, "127.0.0.1");// TODO
+        unmarshalledMessage.put(MessageSchema.MESSAGE_IP_ADDRESS, "127.0.0.1"); // FIXME: support this or remove?
         unmarshalledMessage.put(MessageSchema.MESSAGE_SCOPE_ID, scopeId);
         unmarshalledMessage.put(MessageSchema.MESSAGE_DEVICE_ID, deviceIdStr);
         unmarshalledMessage.put(MessageSchema.MESSAGE_CLIENT_ID, message.getClientId());
+
+        //
+        // Channel
         unmarshalledMessage.put(MessageSchema.MESSAGE_CHANNEL, message.getChannel().toString());
         unmarshalledMessage.put(MessageSchema.MESSAGE_CHANNEL_PARTS, message.getChannel().getSemanticParts());
         unmarshalledMessage.put(MessageSchema.MESSAGE_CAPTURED_ON, KapuaDateUtils.formatDate(message.getCapturedOn()));
         unmarshalledMessage.put(MessageSchema.MESSAGE_SENT_ON, KapuaDateUtils.formatDate(message.getSentOn()));
 
+        //
+        // Position
         KapuaPosition kapuaPosition = message.getPosition();
         if (kapuaPosition != null) {
             Map<String, Object> location = null;
@@ -321,6 +338,9 @@ public class ModelContextImpl implements ModelContext {
             position.put(MessageSchema.MESSAGE_POS_STATUS, kapuaPosition.getStatus());
             unmarshalledMessage.put(MessageSchema.MESSAGE_POSITION, position);
         }
+
+        //
+        // Payload
         KapuaPayload payload = message.getPayload();
         if (payload == null) {
             return unmarshalledMessage;
@@ -335,17 +355,18 @@ public class ModelContextImpl implements ModelContext {
                 // Sanitize field names: '.' is not allowed
                 String metricName = DatastoreUtils.normalizeMetricName(kapuaMetricName);
                 String clientMetricType = DatastoreUtils.getClientMetricFromType(metricValue.getClass());
-                String clientMetricTypeAcronim = DatastoreUtils.getClientMetricFromAcronym(clientMetricType);
+                String clientMetricTypeAcronym = DatastoreUtils.getClientMetricFromAcronym(clientMetricType);
                 Map<String, Object> field = new HashMap<>();
-                if (DatastoreUtils.isDateMetric(clientMetricTypeAcronim) && metricValue instanceof Date) {
-                    field.put(clientMetricTypeAcronim, KapuaDateUtils.formatDate((Date) metricValue));
+                if (DatastoreUtils.isDateMetric(clientMetricTypeAcronym) && metricValue instanceof Date) {
+                    field.put(clientMetricTypeAcronym, KapuaDateUtils.formatDate((Date) metricValue));
                 } else {
-                    field.put(clientMetricTypeAcronim, metricValue);
+                    field.put(clientMetricTypeAcronym, metricValue);
                 }
                 metrics.put(metricName, field);
             }
             unmarshalledMessage.put(MessageSchema.MESSAGE_METRICS, metrics);
         }
+
         return unmarshalledMessage;
     }
 
@@ -355,6 +376,7 @@ public class ModelContextImpl implements ModelContext {
         unmarshalledClientInfo.put(ClientInfoSchema.CLIENT_MESSAGE_ID, clientInfo.getFirstMessageId().toString());
         unmarshalledClientInfo.put(ClientInfoSchema.CLIENT_TIMESTAMP, KapuaDateUtils.formatDate(clientInfo.getFirstMessageOn()));
         unmarshalledClientInfo.put(ClientInfoSchema.CLIENT_SCOPE_ID, clientInfo.getScopeId().toStringId());
+
         return unmarshalledClientInfo;
     }
 
@@ -365,6 +387,7 @@ public class ModelContextImpl implements ModelContext {
         unmarshalledChannelInfo.put(ChannelInfoSchema.CHANNEL_CLIENT_ID, channelInfo.getClientId());
         unmarshalledChannelInfo.put(ChannelInfoSchema.CHANNEL_SCOPE_ID, channelInfo.getScopeId().toStringId());
         unmarshalledChannelInfo.put(ChannelInfoSchema.CHANNEL_MESSAGE_ID, channelInfo.getFirstMessageId().toString());
+
         return unmarshalledChannelInfo;
     }
 
@@ -373,12 +396,14 @@ public class ModelContextImpl implements ModelContext {
         unmarshalledMetricInfo.put(MetricInfoSchema.METRIC_SCOPE_ID, metricInfo.getScopeId().toStringId());
         unmarshalledMetricInfo.put(MetricInfoSchema.METRIC_CLIENT_ID, metricInfo.getClientId());
         unmarshalledMetricInfo.put(MetricInfoSchema.METRIC_CHANNEL, metricInfo.getChannel());
+
         Map<String, Object> unmarshalledMetricValue = new HashMap<>();
         unmarshalledMetricValue.put(MetricInfoSchema.METRIC_MTR_NAME, metricInfo.getName());
         unmarshalledMetricValue.put(MetricInfoSchema.METRIC_MTR_TYPE, DatastoreUtils.convertToClientMetricType(metricInfo.getMetricType()));
         unmarshalledMetricValue.put(MetricInfoSchema.METRIC_MTR_TIMESTAMP, KapuaDateUtils.formatDate(metricInfo.getFirstMessageOn()));
         unmarshalledMetricValue.put(MetricInfoSchema.METRIC_MTR_MSG_ID, metricInfo.getFirstMessageId().toString());
         unmarshalledMetricInfo.put(MetricInfoSchema.METRIC_MTR, unmarshalledMetricValue);
+
         return unmarshalledMetricInfo;
     }
 
@@ -387,9 +412,8 @@ public class ModelContextImpl implements ModelContext {
         if (storableFetchStyle instanceof StorableFetchStyle) {
             return (StorableFetchStyle) storableFetchStyle;
         } else {
-            logger.warn("Wrong storable fetch style object instance!", (storableFetchStyle != null ? storableFetchStyle.getClass() : "null"));
+            logger.warn("Wrong storable fetch style object instance! This cannot be parsed: {}", (storableFetchStyle != null ? storableFetchStyle.getClass() : "null"));
             return StorableFetchStyle.FIELDS;
         }
     }
-
 }

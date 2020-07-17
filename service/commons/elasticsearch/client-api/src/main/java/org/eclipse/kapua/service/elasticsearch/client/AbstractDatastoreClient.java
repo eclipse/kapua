@@ -28,7 +28,6 @@ public abstract class AbstractDatastoreClient<C extends Closeable> implements Da
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractDatastoreClient.class);
 
-    private static final String CLIENT_UNDEFINED_MSG = "Elasticsearch client must be not null";
     private static final String CLIENT_CLEANUP_ERROR_MSG = "Cannot cleanup rest datastore driver. Cannot close Elasticsearch client instance";
 
     protected String clientType;
@@ -75,7 +74,8 @@ public abstract class AbstractDatastoreClient<C extends Closeable> implements Da
         if (esClientProvider != null) {
             return esClientProvider.getClient();
         }
-        throw new ClientUndefinedException(CLIENT_UNDEFINED_MSG);
+
+        throw new ClientUndefinedException();
     }
 
     /**

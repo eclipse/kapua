@@ -22,7 +22,7 @@ Feature: Datastore tests
     And System property "datastore.index.prefix" with value "null"
     And System property "kapua.config.url" with value "null"
     And System property "broker.ip" with value "192.168.33.10"
-    And System property "datastore.client.class" with value "org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient"
+    And System property "datastore.client.class" with value "org.eclipse.kapua.service.elasticsearch.client.rest.RestDatastoreClient"
 
   Scenario: Start datastore for all scenarios
 
@@ -191,7 +191,7 @@ Feature: Datastore tests
     And I configure the device registry service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities |  10   |
+      | integer | maxNumberChildEntities | 10    |
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |

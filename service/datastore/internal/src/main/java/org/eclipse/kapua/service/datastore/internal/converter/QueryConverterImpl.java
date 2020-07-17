@@ -34,8 +34,9 @@ public class QueryConverterImpl implements QueryConverter {
     @Override
     public JsonNode convertQuery(Object query) throws QueryMappingException, DatamodelMappingException {
         if (!(query instanceof AbstractStorableQuery<?>)) {
-            throw new QueryMappingException("Wrong query type! Only AbstractStorableQuery can be converted!");
+            throw new QueryMappingException();
         }
+
         ObjectNode rootNode = SchemaUtil.getObjectNode();
         AbstractStorableQuery<?> storableQuery = (AbstractStorableQuery<?>) query;
         // includes/excludes
@@ -71,7 +72,7 @@ public class QueryConverterImpl implements QueryConverter {
     @Override
     public Object getFetchStyle(Object query) throws QueryMappingException {
         if (!(query instanceof AbstractStorableQuery<?>)) {
-            throw new QueryMappingException("Wrong query type! Only AbstractStorableQuery can be converted!");
+            throw new QueryMappingException();
         }
         return ((AbstractStorableQuery<?>) query).getFetchStyle();
     }

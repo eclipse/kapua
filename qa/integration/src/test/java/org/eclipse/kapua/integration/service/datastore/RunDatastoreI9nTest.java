@@ -25,16 +25,16 @@ import org.junit.runner.RunWith;
                 "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.service.device.registry.steps"},
         plugin = {"pretty",
-                  "html:target/cucumber/DatastoreTransportI9n",
-                  "json:target/DatastoreTransportI9n_cucumber.json"},
+                "html:target/cucumber/DatastoreTransportI9n",
+                "json:target/DatastoreTransportI9n_cucumber.json"},
         strict = true,
         monochrome = true)
-@CucumberProperty(key="datastore.client.class", value="org.eclipse.kapua.service.datastore.client.transport.TransportDatastoreClient")
-@CucumberProperty(key="org.eclipse.kapua.qa.datastore.extraStartupDelay", value="5")
-@CucumberProperty(key="broker.ip", value="192.168.33.10")
-@CucumberProperty(key="kapua.config.url", value="")
-@CucumberProperty(key="org.eclipse.kapua.qa.broker.extraStartupDelay", value="3")
-@CucumberProperty(key="datastore.index.prefix", value="")
-@CucumberProperty(key="commons.settings.hotswap", value="true")
+@CucumberProperty(key = "datastore.client.class", value = "org.eclipse.kapua.service.elasticsearch.client.transport.TransportDatastoreClient")
+@CucumberProperty(key = "org.eclipse.kapua.qa.datastore.extraStartupDelay", value = "5")
+@CucumberProperty(key = "broker.ip", value = "192.168.33.10")
+@CucumberProperty(key = "kapua.config.url", value = "")
+@CucumberProperty(key = "org.eclipse.kapua.qa.broker.extraStartupDelay", value = "3")
+@CucumberProperty(key = "datastore.index.prefix", value = "")
+@CucumberProperty(key = "commons.settings.hotswap", value = "true")
 public class RunDatastoreI9nTest {
 }

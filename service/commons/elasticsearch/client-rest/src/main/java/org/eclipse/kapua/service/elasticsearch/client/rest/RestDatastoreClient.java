@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.elasticsearch.client.rest;
 
 import com.codahale.metrics.Counter;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -23,7 +24,6 @@ import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
-import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.RandomUtils;
@@ -32,9 +32,11 @@ import org.eclipse.kapua.service.elasticsearch.client.ClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.ModelContext;
 import org.eclipse.kapua.service.elasticsearch.client.QueryConverter;
 import org.eclipse.kapua.service.elasticsearch.client.SchemaKeys;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientActionResponseException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientCommunicationException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientErrorCodes;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInternalError;
 import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateResponse;
 import org.eclipse.kapua.service.elasticsearch.client.model.IndexRequest;
@@ -62,10 +64,11 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Client implementation based on Elasticsearch rest client.<br>
+ * Client implementation based on Elasticsearch rest client.
+ * <p>
  * The Elasticsearch client provider is instantiated as singleton.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
 
@@ -102,6 +105,7 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
     private static final String CLIENT_COMMUNICATION_TIMEOUT_MSG = "Elasticsearch client timeout";
     private static final String CLIENT_GENERIC_ERROR_MSG = "Generic client error";
     private static final String QUERY_CONVERTED_QUERY = "Query - converted query: '{}'";
+    private static final String COUNT_CONVERTED_QUERY = "Count - converted query: '{}'";
 
     private static final Random RANDOM = RandomUtils.getInstance();
     private static final int MAX_RETRY_ATTEMPT = ClientSettings.getInstance().getInt(ClientSettingsKey.ELASTICSEARCH_REST_TIMEOUT_MAX_RETRY, 3);
@@ -120,17 +124,19 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
     }
 
     /**
-     * Get the singleton {@link RestDatastoreClient} instance
+     * Get the singleton {@link RestDatastoreClient} instance.
      *
-     * @return
+     * @return The singleton {@link RestDatastoreClient} instance
+     * @since 1.0.0
      */
     public static RestDatastoreClient getInstance() {
         return instance;
     }
 
     /**
-     * Default constructor
      * Initialize the client provider ({@link ClientProvider}) as singleton.
+     *
+     * @since 1.0.0
      */
     private RestDatastoreClient() {
         super("rest");
@@ -153,9 +159,10 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
         String json;
         try {
             json = MAPPER.writeValueAsString(storableMap);
-        } catch (IOException e) {
+        } catch (JsonProcessingException e) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR, e);
         }
+
         Response insertResponse = restCallTimeoutHandler(() -> client.performRequest(
                 POST_ACTION,
                 getInsertTypePath(insertRequest),
@@ -170,13 +177,13 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
             } catch (IOException e) {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, e);
             }
+
             String id = responseNode.get(KEY_DOC_ID).asText();
             String index = responseNode.get(KEY_DOC_INDEX).asText();
             String type = responseNode.get(KEY_DOC_TYPE).asText();
             return new InsertResponse(id, new TypeDescriptor(index, type));
         } else {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR,
-                    (insertResponse != null && insertResponse.getStatusLine() != null) ? insertResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
+            throw buildExceptionFromUnsuccessfulResponse("Insert", insertResponse);
         }
     }
 
@@ -191,15 +198,17 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
         String json;
         try {
             json = MAPPER.writeValueAsString(updateRequestMap);
-        } catch (IOException e) {
+        } catch (JsonProcessingException e) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR, e);
         }
+
         Response updateResponse = restCallTimeoutHandler(() -> client.performRequest(
                 POST_ACTION,
                 getUpsertPath(updateRequest.getTypeDescriptor(), updateRequest.getId()),
                 Collections.emptyMap(),
                 EntityBuilder.create().setText(json).setContentType(ContentType.APPLICATION_JSON).build(),
                 new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), updateRequest.getTypeDescriptor().getIndex(), "UPSERT");
+
         if (isRequestSuccessful(updateResponse)) {
             JsonNode responseNode;
             try {
@@ -212,8 +221,7 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
             String type = responseNode.get(KEY_DOC_TYPE).asText();
             return new UpdateResponse(id, new TypeDescriptor(index, type));
         } else {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR,
-                    (updateResponse != null && updateResponse.getStatusLine() != null) ? updateResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
+            throw buildExceptionFromUnsuccessfulResponse("Update", updateResponse);
         }
     }
 
@@ -254,6 +262,7 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
             } catch (IOException e) {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, e);
             }
+
             ArrayNode items = (ArrayNode) responseNode.get(KEY_ITEMS);
             for (JsonNode item : items) {
                 JsonNode jsonNode = item.get(KEY_UPDATE);
@@ -284,8 +293,7 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
             }
             return bulkResponse;
         } else {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR,
-                    (updateResponse != null && updateResponse.getStatusLine() != null) ? updateResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
+            throw buildExceptionFromUnsuccessfulResponse("Upsert", updateResponse);
         }
     }
 
@@ -313,6 +321,7 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
                 Collections.emptyMap(),
                 EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).setContentType(ContentType.APPLICATION_JSON).build(),
                 new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "QUERY");
+
         if (isRequestSuccessful(queryResponse)) {
             JsonNode responseNode;
             try {
@@ -327,9 +336,9 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
             }
             resultsNode = ((ArrayNode) hitsNode.get(KEY_HITS));
         } else if (queryResponse != null) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR,
-                    (queryResponse.getStatusLine() != null) ? queryResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
+            throw buildExceptionFromUnsuccessfulResponse("Query", queryResponse);
         }
+
         ResultList<T> resultList = new ResultList<>(totalCount);
         if (resultsNode != null && resultsNode.size() > 0) {
             for (JsonNode result : resultsNode) {
@@ -340,6 +349,7 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
                 object.put(ModelContext.TYPE_DESCRIPTOR_KEY, new TypeDescriptor(index, type));
                 object.put(ModelContext.DATASTORE_ID_KEY, id);
                 object.put(QueryConverter.QUERY_FETCH_STYLE_KEY, queryFetchStyle);
+
                 resultList.add(modelContext.unmarshal(clazz, object));
             }
         }
@@ -350,7 +360,7 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
     public long count(TypeDescriptor typeDescriptor, Object query) throws ClientException {
         RestClient client = getClient();
         JsonNode queryMap = queryConverter.convertQuery(query);
-        logger.debug(QUERY_CONVERTED_QUERY, queryMap);
+        logger.debug(COUNT_CONVERTED_QUERY, queryMap);
         long totalCount = 0;
         Response queryResponse = restCallTimeoutHandler(() -> client.performRequest(
                 GET_ACTION,
@@ -371,9 +381,9 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_HITS_MAX_VALUE_EXCEEDED);
             }
         } else if (queryResponse != null) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR,
-                    (queryResponse.getStatusLine() != null) ? queryResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
+            throw buildExceptionFromUnsuccessfulResponse("Count", queryResponse);
         }
+
         return totalCount;
     }
 
@@ -385,9 +395,9 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
                 DELETE_ACTION,
                 getIdPath(typeDescriptor, id),
                 Collections.emptyMap()), typeDescriptor.getIndex(), DELETE_ACTION);
+
         if (deleteResponse != null && !isRequestSuccessful(deleteResponse)) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR,
-                    (deleteResponse.getStatusLine() != null) ? deleteResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
+            throw buildExceptionFromUnsuccessfulResponse("Delete", deleteResponse);
         }
     }
 
@@ -402,9 +412,9 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
                 Collections.emptyMap(),
                 EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).setContentType(ContentType.APPLICATION_JSON).build(),
                 new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "DELETE BY QUERY");
+
         if (deleteResponse != null && !isRequestSuccessful(deleteResponse)) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR,
-                    (deleteResponse.getStatusLine() != null) ? deleteResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
+            throw buildExceptionFromUnsuccessfulResponse("Delete by query", deleteResponse);
         }
     }
 
@@ -416,6 +426,7 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
                 HEAD_ACTION,
                 getIndexPath(indexRequest.getIndex()),
                 Collections.emptyMap()), indexRequest.getIndex(), "INDEX EXIST");
+
         if (isIndexExistsResponse != null && isIndexExistsResponse.getStatusLine() != null) {
             if (isIndexExistsResponse.getStatusLine().getStatusCode() == 200) {
                 return new IndexResponse(true);
@@ -423,8 +434,8 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
                 return new IndexResponse(false);
             }
         }
-        throw new ClientException(ClientErrorCodes.ACTION_ERROR,
-                (isIndexExistsResponse != null && isIndexExistsResponse.getStatusLine() != null) ? isIndexExistsResponse.getStatusLine().getReasonPhrase() : "");
+
+        throw buildExceptionFromUnsuccessfulResponse("Index exists", isIndexExistsResponse);
     }
 
     @Override
@@ -435,19 +446,20 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
                 GET_ACTION,
                 getFindIndexPath(indexRequest.getIndex()),
                 Collections.singletonMap("pretty", "true")), indexRequest.getIndex(), "INDEX EXIST");
+
         if (isIndexExistsResponse != null && isIndexExistsResponse.getStatusLine() != null) {
             if (isIndexExistsResponse.getStatusLine().getStatusCode() == 200) {
                 try {
                     return new IndexResponse(EntityUtils.toString(isIndexExistsResponse.getEntity()).split("\n"));
                 } catch (ParseException | IOException e) {
-                    throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_CANNOT_PARSE_INDEX_RESPONSE_ERROR_MSG, e);
+                    throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, "Cannot convert the indexes list");
                 }
             } else if (isIndexExistsResponse.getStatusLine().getStatusCode() == 404) {
                 return new IndexResponse(null);
             }
         }
-        throw new ClientException(ClientErrorCodes.ACTION_ERROR,
-                (isIndexExistsResponse != null && isIndexExistsResponse.getStatusLine() != null) ? isIndexExistsResponse.getStatusLine().getReasonPhrase() : "");
+
+        throw buildExceptionFromUnsuccessfulResponse("Find indexes", isIndexExistsResponse);
     }
 
     @Override
@@ -463,9 +475,9 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
                     new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString()));
             return response;
         }, indexName, "CREATE INDEX");
+
         if (!isRequestSuccessful(createIndexResponse)) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR,
-                    (createIndexResponse != null && createIndexResponse.getStatusLine() != null) ? createIndexResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
+            throw buildExceptionFromUnsuccessfulResponse("Create index", createIndexResponse);
         }
     }
 
@@ -477,6 +489,7 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
                 GET_ACTION,
                 getMappingPath(typeDescriptor),
                 Collections.emptyMap()), typeDescriptor.getIndex(), "MAPPING EXIST");
+
         if (isMappingExistsResponse != null && isMappingExistsResponse.getStatusLine() != null) {
             if (isMappingExistsResponse.getStatusLine().getStatusCode() == 200) {
                 return true;
@@ -484,8 +497,8 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
                 return false;
             }
         }
-        throw new ClientException(ClientErrorCodes.ACTION_ERROR,
-                (isMappingExistsResponse != null && isMappingExistsResponse.getStatusLine() != null) ? isMappingExistsResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
+
+        throw buildExceptionFromUnsuccessfulResponse("Mapping exists", isMappingExistsResponse);
     }
 
     @Override
@@ -498,9 +511,9 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
                 Collections.emptyMap(),
                 EntityBuilder.create().setText(MAPPER.writeValueAsString(mapping)).setContentType(ContentType.APPLICATION_JSON).build(),
                 new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "PUT MAPPING");
+
         if (!isRequestSuccessful(createMappingResponse)) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR,
-                    (createMappingResponse != null && createMappingResponse.getStatusLine() != null) ? createMappingResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
+            throw buildExceptionFromUnsuccessfulResponse("Create mapping", createMappingResponse);
         }
     }
 
@@ -512,9 +525,9 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
                 POST_ACTION,
                 getRefreshAllIndexesPath(),
                 Collections.emptyMap()), INDEX_ALL, "REFRESH INDEX");
+
         if (!isRequestSuccessful(refreshIndexResponse)) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR,
-                    (refreshIndexResponse != null && refreshIndexResponse.getStatusLine() != null) ? refreshIndexResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
+            throw buildExceptionFromUnsuccessfulResponse("Refresh all indexes", refreshIndexResponse);
         }
     }
 
@@ -526,9 +539,9 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
                 DELETE_ACTION,
                 getIndexPath("_all"),
                 Collections.emptyMap()), INDEX_ALL, "DELETE INDEX");
+
         if (!isRequestSuccessful(deleteIndexResponse)) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR,
-                    (deleteIndexResponse != null && deleteIndexResponse.getStatusLine() != null) ? deleteIndexResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
+            throw buildExceptionFromUnsuccessfulResponse("Delete all indexes", deleteIndexResponse);
         }
     }
 
@@ -551,8 +564,7 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
             if (deleteIndexResponse == null) {
                 logger.debug("Deleting index {} : index does not exist", index);
             } else if (!isRequestSuccessful(deleteIndexResponse)) {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR,
-                        (deleteIndexResponse.getStatusLine() != null) ? deleteIndexResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
+                throw buildExceptionFromUnsuccessfulResponse("Delete indexes", deleteIndexResponse);
             }
             logger.debug("Deleting index {} DONE", index);
         }
@@ -594,10 +606,11 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
         } catch (IOException e) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR, e);
         } catch (Exception e) {
-            throw new ClientException(KapuaErrorCodes.SEVERE_INTERNAL_ERROR);
+            throw new ClientInternalError(e);
         }
         timeoutRetryLimitReachedCount.inc();
-        throw new ClientCommunicationException(CLIENT_COMMUNICATION_TIMEOUT_MSG, null);
+
+        throw new ClientCommunicationException();
     }
 
     private boolean isRequestSuccessful(Response response) {
@@ -610,6 +623,25 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
 
     private boolean isRequestSuccessful(int responseCode) {
         return (200 <= responseCode && responseCode <= 299);
+    }
+
+    /**
+     * Builds a {@link ClientActionResponseException} from the {@link Response} tring to get the reason from it.
+     *
+     * @param action   The action that was performed
+     * @param response The {@link Response} from Elasticsearch
+     * @return The {@link ClientActionResponseException} to throw.
+     * @since 1.3.0
+     */
+    private ClientException buildExceptionFromUnsuccessfulResponse(String action, Response response) {
+        String reason;
+        if (response != null && response.getStatusLine() != null) {
+            reason = response.getStatusLine().getReasonPhrase();
+        } else {
+            reason = "Unknown. Cannot get the reason from Response";
+        }
+
+        return new ClientActionResponseException(action, reason);
     }
 
     private String getRefreshAllIndexesPath() {

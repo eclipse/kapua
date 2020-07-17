@@ -12,17 +12,18 @@
 package org.eclipse.kapua.service.elasticsearch.client;
 
 /**
- * Datastore client wrapper definition.
+ * {@link DatastoreClient} wrapper definition.
  *
- * @param <C> client type
- * @since 1.0
+ * @param <C> {@link DatastoreClient} type
+ * @since 1.0.0
  */
 public interface ClientProvider<C> {
 
     /**
-     * Get a client instance
+     * Gets an intialized {@link DatastoreClient} instance.
      *
-     * @return
+     * @return An intialized {@link DatastoreClient} instance.
+     * @since 1.0.0
      */
     C getClient();
 }

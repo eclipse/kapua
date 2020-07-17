@@ -68,13 +68,9 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
 
     private static final Logger logger = LoggerFactory.getLogger(EsRestClientProvider.class);
 
+    private static final String PROVIDER_CANNOT_CLOSE_CLIENT_MSG = "Cannot close ElasticSearch REST client. Client is already closed or not initialized";
+    private static final String CLIENT_UNDEFINED_MSG = "Elasticsearch client is null";
     private static final int DEFAULT_WAIT_BETWEEN_EXECUTIONS = 30000;
-    private static final String PROVIDER_NOT_INITIALIZED_MSG = "Provider not configured! please call init method before use it!";
-    private static final String PROVIDER_ALREADY_INITIALIZED_MSG = "Provider already initialized! closing it before initialize the new one!";
-    private static final String PROVIDER_NO_NODE_CONFIGURED_MSG = "No ElasticSearch nodes are configured";
-    private static final String PROVIDER_FAILED_TO_CONFIGURE_MSG = "Failed to configure ElasticSearch rest client";
-    private static final String PROVIDER_FAILED_TO_CONFIGURE_SSL_MSG = "Failed to configure ElasticSearch ssl rest client layer";
-    private static final String PROVIDER_CANNOT_CLOSE_CLIENT_MSG = "Cannot close ElasticSearch rest client. Client is already stopped or not initialized!";
     private static final String INITIALIZING_ES_REST_CLIENT = ">>> Initializing ES rest client...";
     private static final String INITIALIZING_ES_REST_CLIENT_DONE = ">>> Initializing ES rest client... DONE";
 
@@ -103,7 +99,7 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
      */
     public static EsRestClientProvider getInstance() throws ClientUnavailableException {
         if (instance == null) {
-            throw new ClientUnavailableException(PROVIDER_NOT_INITIALIZED_MSG);
+            throw new ClientUnavailableException(CLIENT_UNDEFINED_MSG);
         }
         return instance;
     }
@@ -167,7 +163,7 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
 
     private static void closeIfInstanceInitialized() {
         if (instance != null) {
-            logger.warn(PROVIDER_ALREADY_INITIALIZED_MSG);
+            logger.warn("Provider already initialized! Close it before initialize the new one");
             close();
         }
     }
@@ -240,10 +236,12 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
         MetricsService metricService = MetricServiceFactory.getInstance();
         clientReconnectCall = metricService.getCounter("datastore-rest-client", "rest-client", "reconnect_call", "count");
         executor = Executors.newScheduledThreadPool(1);
+
         try {
             if (addresses == null || addresses.isEmpty()) {
-                throw new ClientUnavailableException(PROVIDER_NO_NODE_CONFIGURED_MSG);
+                throw new ClientUnavailableException("No Elasticsearch nodes are configured");
             }
+
             executor.scheduleWithFixedDelay(() -> {
                 try {
                     reconnectTask(() -> {
@@ -253,10 +251,9 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
                     logger.info(">>> Initializing ES rest client... Error: {}", e.getMessage(), e);
                 }
             }, INITIAL_DELAY, WAIT_BETWEEN_EXECUTIONS, TimeUnit.MILLISECONDS);
-        } catch (Throwable t) {
-            throw new ClientUnavailableException(PROVIDER_FAILED_TO_CONFIGURE_MSG, t);
+        } catch (Exception e) {
+            throw new ClientUnavailableException(e, "Failed to configure Elasticsearch REST client");
         }
-
     }
 
     private void reconnectTask(Callable<RestClient> call) throws Exception {
@@ -279,8 +276,9 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
 
     static RestClient getClient(List<InetSocketAddress> addresses) throws ClientUnavailableException {
         if (addresses == null || addresses.isEmpty()) {
-            throw new ClientUnavailableException(PROVIDER_NO_NODE_CONFIGURED_MSG);
+            throw new ClientUnavailableException("No Elasticsearch nodes are configured");
         }
+
         ClientSettings settings = ClientSettings.getInstance();
         List<HttpHost> hosts = new ArrayList<>();
         boolean sslEnabled = settings.getBoolean(ClientSettingsKey.ELASTICSEARCH_SSL_ENABLED, false);
@@ -292,7 +290,7 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
             }
             hosts.add(new HttpHost(address.getAddress(), address.getHostName(), address.getPort(), (sslEnabled ? SCHEMA_SSL : SCHEMA_UNTRUSTED)));
         }
-        RestClientBuilder restClientBuilder = RestClient.builder(hosts.toArray(new HttpHost[hosts.size()]));
+        RestClientBuilder restClientBuilder = RestClient.builder(hosts.toArray(new HttpHost[0]));
         if (sslEnabled) {
             try {
                 SSLContextBuilder sslBuilder = SSLContexts.custom();
@@ -302,7 +300,7 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
                 final SSLContext sslContext = sslBuilder.build();
                 restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setSSLContext(sslContext));
             } catch (KeyStoreException | NoSuchAlgorithmException | KeyManagementException | UnrecoverableKeyException e) {
-                throw new ClientUnavailableException(PROVIDER_FAILED_TO_CONFIGURE_SSL_MSG, e);
+                throw new ClientUnavailableException(e, "Failed to configure ElasticSearch REST client SSL layer");
             }
         }
 
@@ -314,8 +312,7 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
             restClientBuilder.setHttpClientConfigCallback((httpClientBuilder) -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider));
         }
 
-        return restClientBuilder
-                .build();
+        return restClientBuilder.build();
     }
 
     static void initKeyStore(SSLContextBuilder sslBuilder) throws UnrecoverableKeyException, ClientUnavailableException, NoSuchAlgorithmException, KeyStoreException {
@@ -332,7 +329,7 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
         boolean trustServerCertificate = ClientSettings.getInstance().getBoolean(ClientSettingsKey.ELASTICSEARCH_SSL_TRUST_SERVER_CERTIFICATE, false);
         String truststorePath = ClientSettings.getInstance().getString(ClientSettingsKey.ELASTICSEARCH_SSL_TRUSTSTORE_PATH);
         String truststorePassword = ClientSettings.getInstance().getString(ClientSettingsKey.ELASTICSEARCH_SSL_TRUSTSTORE_PASSWORD);
-        logger.info("ES Rest Client - SSL trust server certificate {}enabled", (trustServerCertificate ? "" : "NOT "));
+        logger.info("ES Rest Client - SSL trust server certificate: {}", (trustServerCertificate ? "Enabled" : "Disabled"));
         logger.info("ES Rest Client - Truststore path: {}", (StringUtils.isEmpty(truststorePath) ? "none" : truststorePath));
         // set the truststore
         // truststore 3 available options:
@@ -358,7 +355,7 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
             keystore.load(is, keystorePassword.toCharArray());
             return keystore;
         } catch (IOException | KeyStoreException | CertificateException | NoSuchAlgorithmException e) {
-            throw new ClientUnavailableException(PROVIDER_FAILED_TO_CONFIGURE_SSL_MSG, e);
+            throw new ClientUnavailableException(e, "Failed to configure ElasticSearch REST client SSL layer");
         } finally {
             if (is != null) {
                 try {
@@ -367,17 +364,6 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
                     logger.warn("Cannot close the keystore file {}!", keystorePath, e);
                 }
             }
-        }
-    }
-
-    static RestClient createClient(final AbstractBaseKapuaSetting<ClientSettingsKey> settings) throws ClientUnavailableException {
-        try {
-            final List<InetSocketAddress> addresses = parseAddresses(settings);
-            return getClient(addresses);
-        } catch (final ClientUnavailableException e) {
-            throw e;
-        } catch (final Exception e) {
-            throw new ClientUnavailableException(PROVIDER_FAILED_TO_CONFIGURE_MSG, e);
         }
     }
 

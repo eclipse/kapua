@@ -31,11 +31,9 @@ import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 import org.eclipse.kapua.service.elasticsearch.client.DatastoreClient;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientErrorCodes;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientErrorMessages;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
-import org.eclipse.kapua.service.elasticsearch.client.exception.QueryMappingException;
 import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateResponse;
 import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
@@ -52,7 +50,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MetricInfoRegistryFacade {
 
-    private static final Logger logger = LoggerFactory.getLogger(MetricInfoRegistryFacade.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MetricInfoRegistryFacade.class);
 
     private final MetricInfoRegistryMediator mediator;
     private final ConfigurationProvider configProvider;
@@ -70,10 +68,10 @@ public class MetricInfoRegistryFacade {
      * @throws ClientUnavailableException
      * @since 1.0.0
      */
-    public MetricInfoRegistryFacade(ConfigurationProvider configProvider, MetricInfoRegistryMediator mediator) throws ClientUnavailableException {
+    public MetricInfoRegistryFacade(ConfigurationProvider configProvider, MetricInfoRegistryMediator mediator) throws ClientInitializationException {
         this.configProvider = configProvider;
         this.mediator = mediator;
-        client = DatastoreClientFactory.getInstance();
+        this.client = DatastoreClientFactory.getInstance();
     }
 
     /**
@@ -85,9 +83,7 @@ public class MetricInfoRegistryFacade {
      * @throws ConfigurationException
      * @throws ClientException
      */
-    public StorableId upstore(MetricInfo metricInfo)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException, ClientException {
+    public StorableId upstore(MetricInfo metricInfo) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
         ArgumentValidator.notNull(metricInfo, "metricInfo");
         ArgumentValidator.notNull(metricInfo.getScopeId(), "metricInfo.scopeId");
         ArgumentValidator.notNull(metricInfo.getFirstMessageId(), "metricInfoCreator.firstPublishedMessageId");
@@ -96,7 +92,7 @@ public class MetricInfoRegistryFacade {
         String metricInfoId = MetricInfoField.getOrDeriveId(metricInfo.getId(), metricInfo);
         StorableId storableId = new StorableIdImpl(metricInfoId);
 
-        UpdateResponse response = null;
+        UpdateResponse response;
         // Store channel. Look up channel in the cache, and cache it if it doesn't exist
         if (!DatastoreCacheManager.getInstance().getMetricsCache().get(metricInfoId)) {
             // fix #REPLACE_ISSUE_NUMBER
@@ -108,14 +104,9 @@ public class MetricInfoRegistryFacade {
                 UpdateRequest request = new UpdateRequest(metricInfo.getId().toString(), new TypeDescriptor(metadata.getRegistryIndexName(), MetricInfoSchema.METRIC_TYPE_NAME), metricInfo);
                 response = client.upsert(request);
 
-                if (!metricInfoId.equals(response.getId())) {
-                    // this condition shouldn't happens
-                    throw new ClientException(ClientErrorCodes.ACTION_ERROR, String.format(ClientErrorMessages.CRUD_INTERNAL_ERROR, "MetricInfoRegistry - upstore"));
+                LOG.debug("Upsert on metric successfully executed [{}.{}, {} - {}]", kapuaIndexName, MetricInfoSchema.METRIC_TYPE_NAME, metricInfoId, response.getId());
                 }
-                logger.debug(String.format("Upsert on metric succesfully executed [%s.%s, %s]",
-                        kapuaIndexName, MetricInfoSchema.METRIC_TYPE_NAME, metricInfoId));
-                // Update cache if channel update is completed successfully
-            }
+            // Update cache if metric update is completed successfully
             DatastoreCacheManager.getInstance().getMetricsCache().put(metricInfoId, true);
         }
         return storableId;
@@ -152,7 +143,12 @@ public class MetricInfoRegistryFacade {
                 performUpdate = true;
                 Metadata metadata = mediator.getMetadata(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
                 bulkRequest.add(
-                        new UpdateRequest(metricInfo.getId().toString(), new TypeDescriptor(metadata.getRegistryIndexName(), MetricInfoSchema.METRIC_TYPE_NAME), metricInfo));
+                        new UpdateRequest(
+                                metricInfo.getId().toString(),
+                                new TypeDescriptor(metadata.getRegistryIndexName(),
+                                        MetricInfoSchema.METRIC_TYPE_NAME),
+                                metricInfo)
+                );
             }
         }
 
@@ -162,27 +158,26 @@ public class MetricInfoRegistryFacade {
             try {
                 upsertResponse = client.upsert(bulkRequest);
             } catch (ClientException e) {
-                logger.trace(String.format("Upsert failed [%s]", e.getMessage()));
+                LOG.trace("Upsert failed {}", e.getMessage());
                 throw e;
             }
 
             if (upsertResponse != null) {
-                if (upsertResponse.getResponse().size() <= 0) {
+                if (upsertResponse.getResponse().isEmpty()) {
                     return upsertResponse;
                 }
+
                 for (UpdateResponse response : upsertResponse.getResponse()) {
                     String index = response.getTypeDescriptor().getIndex();
                     String type = response.getTypeDescriptor().getType();
                     String id = response.getId();
-                    logger.debug(String.format("Upsert on channel metric succesfully executed [%s.%s, %s]",
-                            index, type, id));
+                    LOG.debug("Upsert on channel metric successfully executed [{}.{}, {}]", index, type, id);
 
                     if (id == null || DatastoreCacheManager.getInstance().getMetricsCache().get(id)) {
                         continue;
                     }
 
-                    // Update cache if channel metric update is completed
-                    // successfully
+                    // Update cache if channel metric update is completed successfully
                     DatastoreCacheManager.getInstance().getMetricsCache().put(id, true);
                 }
             }
@@ -201,10 +196,7 @@ public class MetricInfoRegistryFacade {
      * @throws ConfigurationException
      * @throws ClientException
      */
-    public void delete(KapuaId scopeId, StorableId id)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException,
-            ClientException {
+    public void delete(KapuaId scopeId, StorableId id) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(id, "id");
 
@@ -212,7 +204,7 @@ public class MetricInfoRegistryFacade {
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
-            logger.debug("Storage not enabled for account {}, return", scopeId);
+            LOG.debug("Storage not enabled for account {}, return", scopeId);
             return;
         }
 
@@ -229,14 +221,9 @@ public class MetricInfoRegistryFacade {
      * @return
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
-     * @throws QueryMappingException
      * @throws ClientException
      */
-    public MetricInfo find(KapuaId scopeId, StorableId id)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException,
-            QueryMappingException,
-            ClientException {
+    public MetricInfo find(KapuaId scopeId, StorableId id) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(id, "id");
 
@@ -258,14 +245,9 @@ public class MetricInfoRegistryFacade {
      * @return
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
-     * @throws QueryMappingException
      * @throws ClientException
      */
-    public MetricInfoListResult query(MetricInfoQuery query)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException,
-            QueryMappingException,
-            ClientException {
+    public MetricInfoListResult query(MetricInfoQuery query) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
         ArgumentValidator.notNull(query, QUERY);
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
@@ -273,7 +255,7 @@ public class MetricInfoRegistryFacade {
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
-            logger.debug(STORAGE_NOT_ENABLED, query.getScopeId());
+            LOG.debug(STORAGE_NOT_ENABLED, query.getScopeId());
             return new MetricInfoListResultImpl();
         }
 
@@ -290,14 +272,9 @@ public class MetricInfoRegistryFacade {
      * @return
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
-     * @throws QueryMappingException
      * @throws ClientException
      */
-    public long count(MetricInfoQuery query)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException,
-            QueryMappingException,
-            ClientException {
+    public long count(MetricInfoQuery query) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
         ArgumentValidator.notNull(query, QUERY);
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
@@ -305,7 +282,7 @@ public class MetricInfoRegistryFacade {
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
-            logger.debug(STORAGE_NOT_ENABLED, query.getScopeId());
+            LOG.debug(STORAGE_NOT_ENABLED, query.getScopeId());
             return 0;
         }
 
@@ -322,14 +299,9 @@ public class MetricInfoRegistryFacade {
      * @param query
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
-     * @throws QueryMappingException
      * @throws ClientException
      */
-    public void delete(MetricInfoQuery query)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException,
-            QueryMappingException,
-            ClientException {
+    public void delete(MetricInfoQuery query) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
         ArgumentValidator.notNull(query, QUERY);
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
@@ -337,7 +309,7 @@ public class MetricInfoRegistryFacade {
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
-            logger.debug(STORAGE_NOT_ENABLED, query.getScopeId());
+            LOG.debug(STORAGE_NOT_ENABLED, query.getScopeId());
         }
 
         String indexName = SchemaUtil.getKapuaIndexName(query.getScopeId());

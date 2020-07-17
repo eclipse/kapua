@@ -12,31 +12,20 @@
 package org.eclipse.kapua.service.elasticsearch.client.exception;
 
 /**
- * Client undefined exception
+ * {@link ClientException} to throw when {@link org.eclipse.kapua.service.elasticsearch.client.DatastoreClient} is not defined.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class ClientUndefinedException extends ClientException {
 
     private static final long serialVersionUID = 2211521053876589804L;
 
     /**
-     * Construct the exception with the provided message
+     * Constructor.
      *
-     * @param message
+     * @since 1.3.0
      */
-    public ClientUndefinedException(String message) {
-        super(ClientErrorCodes.CLIENT_UNDEFINED, message);
+    public ClientUndefinedException() {
+        super(ClientErrorCodes.CLIENT_UNDEFINED);
     }
-
-    /**
-     * Construct the exception with the provided message and throwable
-     *
-     * @param message
-     * @param t
-     */
-    public ClientUndefinedException(String message, Throwable t) {
-        super(ClientErrorCodes.CLIENT_UNDEFINED, t, message);
-    }
-
 }

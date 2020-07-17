@@ -20,7 +20,7 @@ ENV BROKER_PORT 1883
 
 ENV DATASTORE_ADDR es
 ENV DATASTORE_PORT 9200
-ENV DATASTORE_CLIENT org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient
+ENV DATASTORE_CLIENT org.eclipse.kapua.service.elasticsearch.client.rest.RestDatastoreClient
 
 ENV SQL_DB_ADDR db
 ENV SQL_DB_PORT 3306

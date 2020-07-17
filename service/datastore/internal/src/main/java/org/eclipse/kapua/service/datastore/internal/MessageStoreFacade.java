@@ -57,6 +57,7 @@ import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.elasticsearch.client.DatastoreClient;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.QueryMappingException;
 import org.eclipse.kapua.service.elasticsearch.client.model.IndexRequest;
@@ -101,10 +102,11 @@ public final class MessageStoreFacade {
      * @throws ClientUnavailableException
      * @since 1.0.0
      */
-    public MessageStoreFacade(ConfigurationProvider confProvider, MessageStoreMediator mediator) throws ClientUnavailableException {
-        configProvider = confProvider;
+    public MessageStoreFacade(ConfigurationProvider confProvider, MessageStoreMediator mediator) throws ClientInitializationException {
+        this.configProvider = confProvider;
         this.mediator = mediator;
-        client = DatastoreClientFactory.getInstance();
+        this.client = DatastoreClientFactory.getInstance();
+
         MetricsService metricService = MetricServiceFactory.getInstance();
         metricMessagesAlreadyInTheDatastoreCount = metricService.getCounter(DataStoreDriverMetrics.METRIC_MODULE_NAME, DataStoreDriverMetrics.METRIC_COMPONENT_NAME, DataStoreDriverMetrics.METRIC_STORE, DataStoreDriverMetrics.METRIC_MESSAGES, DataStoreDriverMetrics.METRIC_ALREADY_IN_THE_DATASTORE, DataStoreDriverMetrics.METRIC_COUNT);
     }

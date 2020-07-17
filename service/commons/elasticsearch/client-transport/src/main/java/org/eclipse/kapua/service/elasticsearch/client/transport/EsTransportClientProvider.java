@@ -35,16 +35,16 @@ import java.util.stream.Stream;
  * Elasticsearch transport client implementation.<br>
  * Instantiate the Elasticsearch transport client.
  *
- * @since 1.0
- * @deprecated Elasticsearch transport client will be removed in the next releases. Please use the Rest client instead.
+ * @since 1.0.0
+ * @deprecated Since 1.0.0. Elasticsearch transport client will be removed in the next releases. Please use the Rest client instead.
  */
 @Deprecated
 public class EsTransportClientProvider implements ClientProvider<Client> {
 
     private static final Logger logger = LoggerFactory.getLogger(EsTransportClientProvider.class);
 
-    private static final String PROVIDER_NOT_INITIALIZED_MSG = "Provider not configured! please call initi method before use it!";
-    private static final String PROVIDER_ALREADY_INITIALIZED_MSG = "Provider already initialized! closing it before initialize the new one!";
+    private static final String PROVIDER_NOT_INITIALIZED_MSG = "Provider not configured! Please call init method before use it!";
+    private static final String PROVIDER_ALREADY_INITIALIZED_MSG = "Provider already initialized! Closing it before initialize the new one!";
     private static final String PROVIDER_NO_NODE_CONFIGURED_MSG = "No ElasticSearch nodes are configured";
     private static final String PROVIDER_FAILED_TO_CONFIGURE_MSG = "Failed to configure ElasticSearch transport";
     private static final String PROVIDER_CANNOT_CLOSE_CLIENT_MSG = "Cannot close ElasticSearch client. Client is already stopped or not initialized!";
@@ -201,7 +201,7 @@ public class EsTransportClientProvider implements ClientProvider<Client> {
             // TransportClient client = TransportClient.builder().settings(settings).build();
             // addresses.stream().map(InetSocketTransportAddress::new).forEachOrdered(client::addTransportAddress);
         } catch (Throwable t) {
-            throw new ClientUnavailableException(PROVIDER_FAILED_TO_CONFIGURE_MSG, t);
+            throw new ClientUnavailableException(t, PROVIDER_FAILED_TO_CONFIGURE_MSG);
         }
 
     }
@@ -210,35 +210,6 @@ public class EsTransportClientProvider implements ClientProvider<Client> {
     public TransportClient getClient() {
         return client;
     }
-
-    // static TransportClient getClient(List<InetSocketAddress> addresses, String clustername) throws ClientUnavailableException, UnknownHostException {
-    // if (addresses == null || addresses.isEmpty()) {
-    // throw new ClientUnavailableException(PROVIDER_NO_NODE_CONFIGURED_MSG);
-    // }
-    //
-    // Settings settings = Settings.builder().put(KEY_ES_CLUSTER_NAME, clustername).build();
-    // TransportClient client = new PreBuiltTransportClient(settings);
-    // addresses.stream().map(InetSocketTransportAddress::new).forEachOrdered(client::addTransportAddress);
-    //
-    // // ES 2.3.4 version
-    // // Settings settings = Settings.settingsBuilder().put("cluster.name", clustername).build();
-    // // TransportClient client = TransportClient.builder().settings(settings).build();
-    // // addresses.stream().map(InetSocketTransportAddress::new).forEachOrdered(client::addTransportAddress);
-    //
-    // return client;
-    // }
-    //
-    // static TransportClient createClient(final AbstractBaseKapuaSetting<ClientSettingsKey> settings) throws ClientUnavailableException {
-    // try {
-    // final List<InetSocketAddress> addresses = parseAddresses(settings);
-    // return getClient(addresses, settings.getString(ClientSettingsKey.ELASTICSEARCH_CLUSTER));
-    // } catch (final ClientUnavailableException e) {
-    // throw e;
-    // } catch (final Exception e) {
-    // e.printStackTrace();
-    // throw new ClientUnavailableException(PROVIDER_FAILED_TO_CONFIGURE_MSG, e);
-    // }
-    // }
 
     static List<InetSocketAddress> parseAddresses(AbstractBaseKapuaSetting<ClientSettingsKey> settings) throws ClientUnavailableException {
 

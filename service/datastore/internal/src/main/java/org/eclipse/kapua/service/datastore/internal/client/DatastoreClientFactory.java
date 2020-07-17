@@ -17,7 +17,7 @@ import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.elasticsearch.client.DatastoreClient;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -30,7 +30,6 @@ import java.lang.reflect.Method;
  */
 public class DatastoreClientFactory {
 
-    private static final String CANNOT_LOAD_CLIENT_ERROR_MSG = "Cannot load the provided client class name [%s]. Check the configuration.";
     private static final String CLIENT_CLASS_NAME;
     private static DatastoreClient instance;
 
@@ -43,12 +42,13 @@ public class DatastoreClientFactory {
     }
 
     /**
-     * Return the client instance. The implementation is specified by {@link DatastoreSettingKey#CONFIG_CLIENT_CLASS}.
+     * Gets the Elasticsearch client instance.
+     * The implementation is specified by {@link DatastoreSettingKey#CONFIG_CLIENT_CLASS}.
      *
-     * @return The {@link DatastoreClient} instance
-     * @throws ClientUnavailableException
+     * @return An Elasticsearch client.
+     * @throws ClientInitializationException if error occurs if the {@link DatastoreClient} cannot be initialized
      */
-    public static DatastoreClient getInstance() throws ClientUnavailableException {
+    public static DatastoreClient getInstance() throws ClientInitializationException {
         //lazy synchronization
         if (instance == null) {
             synchronized (DatastoreClientFactory.class) {
@@ -57,8 +57,9 @@ public class DatastoreClientFactory {
                     try {
                         datastoreClientInstance = (Class<DatastoreClient>) Class.forName(CLIENT_CLASS_NAME);
                     } catch (ClassNotFoundException e) {
-                        throw new ClientUnavailableException(String.format(CANNOT_LOAD_CLIENT_ERROR_MSG, CLIENT_CLASS_NAME), e);
+                        throw new ClientInitializationException(e, CLIENT_CLASS_NAME);
                     }
+
                     try {
                         // this is a cleaner way to instatiate the client
                         // return INSTANCE.getConstructor(ModelContext.class, QueryConverter.class).newInstance(new ModelContextImpl(), new QueryConverterImpl());
@@ -71,7 +72,7 @@ public class DatastoreClientFactory {
                         instance.setModelContext(new ModelContextImpl());
                         instance.setQueryConverter(new QueryConverterImpl());
                     } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                        throw new ClientUnavailableException(String.format(CANNOT_LOAD_CLIENT_ERROR_MSG, CLIENT_CLASS_NAME), e);
+                        throw new ClientInitializationException(e, CLIENT_CLASS_NAME);
                     }
                 }
             }
@@ -80,7 +81,7 @@ public class DatastoreClientFactory {
     }
 
     /**
-     * Close the client instance
+     * Closes the client instance
      *
      * @throws ClientException
      */

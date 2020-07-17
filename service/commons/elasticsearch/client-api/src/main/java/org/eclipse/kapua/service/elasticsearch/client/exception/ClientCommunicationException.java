@@ -14,20 +14,18 @@ package org.eclipse.kapua.service.elasticsearch.client.exception;
 /**
  * Client communication exception (timeout, no node available ...)
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class ClientCommunicationException extends ClientException {
 
     private static final long serialVersionUID = 1599649533697887868L;
 
     /**
-     * Construct the exception with the provided throwable
+     * Constructor.
      *
-     * @param message
-     * @param t
+     * @since 1.3.0
      */
-    public ClientCommunicationException(String message, Throwable t) {
-        super(ClientErrorCodes.COMMUNICATION_ERROR, t);
+    public ClientCommunicationException() {
+        super(ClientErrorCodes.COMMUNICATION_ERROR);
     }
-
 }

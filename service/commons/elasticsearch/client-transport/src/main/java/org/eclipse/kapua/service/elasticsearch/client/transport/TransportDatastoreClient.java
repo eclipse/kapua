@@ -80,13 +80,13 @@ import java.util.Map;
  * Client implementation based on Elasticsearch transport client.<br>
  * The Elasticsearch client provider is instantiated as singleton by reflection using those provided by {@link ClientSettingsKey#ELASTICSEARCH_CLIENT_PROVIDER}
  *
- * @since 1.0
- * @deprecated Elasticsearch transport client will be removed in the next releases. Please use the Rest client instead.
+ * @since 1.0.0
+ * @deprecated Since 1.0.0. Elasticsearch transport client will be removed in the next releases. Please use the Rest client instead.
  */
 @Deprecated
 public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
 
-    private static final Logger logger = LoggerFactory.getLogger(TransportDatastoreClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TransportDatastoreClient.class);
 
     private static final String CLIENT_QUERY_PARSING_ERROR_MSG = "Cannot parse query!";
     private static final String CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG = "Cannot delete indexes!";
@@ -107,17 +107,19 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
     }
 
     /**
-     * Get the singleton {@link TransportDatastoreClient} instance
+     * Gets the singleton {@link TransportDatastoreClient} instance
      *
-     * @return
+     * @return The singleton {@link TransportDatastoreClient} instance.
+     * @since 1.0.0
      */
     public static TransportDatastoreClient getInstance() {
         return instance;
     }
 
     /**
-     * Default constructor
-     * Initialize the client provider ({@link ClientProvider}) as singleton.
+     * Initialize the {@link ClientProvider} as singleton.
+     *
+     * @since 1.0.0
      */
     private TransportDatastoreClient() {
         super("transport");
@@ -132,12 +134,13 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
     public InsertResponse insert(InsertRequest insertRequest) throws ClientException {
         Client client = getClient();
         Map<String, Object> storableMap = modelContext.marshal(insertRequest.getStorable());
-        logger.debug("Insert - converted object: '{}'", storableMap);
+        LOG.debug("Insert - converted object: '{}'", storableMap);
         org.elasticsearch.action.index.IndexRequest idxRequest = new org.elasticsearch.action.index.IndexRequest(insertRequest.getTypeDescriptor().getIndex(), insertRequest.getTypeDescriptor().getType()).source(storableMap);
         if (insertRequest.getId() != null) {
             idxRequest.id(insertRequest.getId()).version(1).versionType(VersionType.EXTERNAL);
         }
         org.elasticsearch.action.index.IndexResponse response = client.index(idxRequest).actionGet(getQueryTimeout());
+
         return new InsertResponse(response.getId(), insertRequest.getTypeDescriptor());
     }
 
@@ -145,11 +148,12 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
     public UpdateResponse upsert(UpdateRequest upsertRequest) throws ClientException {
         Client client = getClient();
         Map<String, Object> storableMap = modelContext.marshal(upsertRequest.getStorable());
-        logger.debug("Upsert - converted object: '{}'", storableMap);
+        LOG.debug("Upsert - converted object: '{}'", storableMap);
         org.elasticsearch.action.index.IndexRequest idxRequest = new org.elasticsearch.action.index.IndexRequest(upsertRequest.getTypeDescriptor().getIndex(), upsertRequest.getTypeDescriptor().getType(), upsertRequest.getId()).source(storableMap);
         org.elasticsearch.action.update.UpdateRequest updateRequest = new org.elasticsearch.action.update.UpdateRequest(upsertRequest.getTypeDescriptor().getIndex(),
                 upsertRequest.getTypeDescriptor().getType(), upsertRequest.getId()).doc(storableMap);
         org.elasticsearch.action.update.UpdateResponse response = client.update(updateRequest.upsert(idxRequest)).actionGet(getQueryTimeout());
+
         return new UpdateResponse(response.getId(), upsertRequest.getTypeDescriptor());
     }
 
@@ -162,7 +166,7 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
             String index = upsertRequest.getTypeDescriptor().getIndex();
             String id = upsertRequest.getId();
             Map<String, Object> mappedObject = modelContext.marshal(upsertRequest.getStorable());
-            logger.debug("Upsert - converted object: '{}'", mappedObject);
+            LOG.debug("Upsert - converted object: '{}'", mappedObject);
             org.elasticsearch.action.index.IndexRequest idxRequest = new org.elasticsearch.action.index.IndexRequest(index, type, id).source(mappedObject);
             org.elasticsearch.action.update.UpdateRequest updateRequest = new org.elasticsearch.action.update.UpdateRequest(index, type, id).doc(mappedObject);
             updateRequest.upsert(idxRequest);
@@ -181,14 +185,15 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
                 if (bulkItemResponse.isFailed()) {
                     String failureMessage = bulkItemResponse.getFailureMessage();
                     response.add(new UpdateResponse(metricId, new TypeDescriptor(indexName, typeName), failureMessage));
-                    logger.info("Upsert failed [{}, {}, {}]", indexName, typeName, failureMessage);
+                    LOG.info("Upsert failed [{}, {}, {}]", indexName, typeName, failureMessage);
                     continue;
                 }
                 metricId = ((org.elasticsearch.action.update.UpdateResponse) bulkItemResponse.getResponse()).getId();
                 response.add(new UpdateResponse(metricId, new TypeDescriptor(indexName, typeName)));
-                logger.debug("Upsert on channel metric succesfully executed [{}.{}, {}]", indexName, typeName, metricId);
+                LOG.debug("Upsert on channel metric succesfully executed [{}.{}, {}]", indexName, typeName, metricId);
             }
         }
+
         return response;
     }
 
@@ -207,7 +212,7 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
         Client client = getClient();
         JsonNode queryMap = queryConverter.convertQuery(query);
         Object queryFetchStyle = queryConverter.getFetchStyle(query);
-        logger.debug("Query - converted query: '{}'", queryMap);
+        LOG.debug("Query - converted query: '{}'", queryMap);
         SearchResponse response = null;
         ObjectNode fetchSourceFields = (ObjectNode) queryMap.path(SchemaKeys.KEY_SOURCE);
         String[] includesFields = toIncludedExcludedFields(fetchSourceFields.path(SchemaKeys.KEY_INCLUDES));
@@ -216,8 +221,7 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
         searchReqBuilder.setTypes(typeDescriptor.getType())
                 .setSource(toSearchSourceBuilder(queryMap))
                 .setFetchSource(includesFields, excludesFields);
-        // unused since sort fields are already included in the search query mapping
-        // ArrayNode sortFields = (ArrayNode) queryMap.path(QueryConverter.SORT_KEY);
+
         SearchHit[] searchHits = null;
         long totalCount = 0;
         try {
@@ -227,12 +231,12 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
             searchHits = response.getHits().getHits();
             totalCount = response.getHits().getTotalHits();
             if (totalCount > Integer.MAX_VALUE) {
-                throw new RuntimeException("Total hits exceeds integer max value");
+                throw new ClientException(ClientErrorCodes.ACTION_ERROR, "Total hits exceeds integer max value");
             }
         } catch (IndexNotFoundException infe) {
-            logger.warn(CANNOT_FIND_INDEX, typeDescriptor.getIndex());
+            LOG.warn(CANNOT_FIND_INDEX, typeDescriptor.getIndex());
         } catch (SearchPhaseExecutionException spee) {
-            logger.warn(GENERIC_SEARCH_ERROR, spee.getMessage(), spee);
+            LOG.warn(GENERIC_SEARCH_ERROR, spee.getMessage(), spee);
         }
 
         ResultList<T> result = new ResultList<>(totalCount);
@@ -262,9 +266,9 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
                     .actionGet(getQueryTimeout());
             searchHits = response.getHits();
         } catch (IndexNotFoundException infe) {
-            logger.warn(CANNOT_FIND_INDEX, typeDescriptor.getIndex());
+            LOG.warn(CANNOT_FIND_INDEX, typeDescriptor.getIndex());
         } catch (SearchPhaseExecutionException spee) {
-            logger.warn(GENERIC_SEARCH_ERROR, spee.getMessage(), spee);
+            LOG.warn(GENERIC_SEARCH_ERROR, spee.getMessage(), spee);
         }
         if (searchHits == null) {
             return 0;
@@ -282,9 +286,9 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
                     .setId(id)
                     .get(getQueryTimeout());
         } catch (InvalidIndexNameException iine) {
-            logger.warn("Index '{}' not valid", typeDescriptor.getIndex(), iine);
+            LOG.warn("Index '{}' not valid", typeDescriptor.getIndex(), iine);
         } catch (IndexNotFoundException infe) {
-            logger.warn(CANNOT_FIND_INDEX, typeDescriptor.getIndex(), infe);
+            LOG.warn(CANNOT_FIND_INDEX, typeDescriptor.getIndex(), infe);
         }
     }
 
@@ -307,9 +311,9 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
                     .setSource(toSearchSourceBuilder(queryMap))
                     .get(queryTimeout);
         } catch (IndexNotFoundException infe) {
-            logger.warn(CANNOT_FIND_INDEX, typeDescriptor.getIndex());
+            LOG.warn(CANNOT_FIND_INDEX, typeDescriptor.getIndex());
         } catch (SearchPhaseExecutionException spee) {
-            logger.warn(GENERIC_SEARCH_ERROR, spee.getMessage(), spee);
+            LOG.warn(GENERIC_SEARCH_ERROR, spee.getMessage(), spee);
         }
 
         if (scrollResponse != null) {
@@ -345,6 +349,7 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
         IndicesExistsResponse response = client.admin().indices()
                 .exists(new IndicesExistsRequest(indexRequest.getIndex()))
                 .actionGet(getQueryTimeout());
+
         return new IndexResponse(response.isExists());
     }
 
@@ -356,7 +361,8 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
                     .get(getQueryTimeout());
             List<String> list = new ArrayList<>();
             response.getIndexToSettings().keysIt().forEachRemaining(list::add);
-            return new IndexResponse(list.toArray(new String[list.size()]));
+
+            return new IndexResponse(list.toArray(new String[0]));
         } catch (IndexNotFoundException e) {
             return new IndexResponse(new String[0]);
         }
@@ -381,25 +387,27 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
         ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> mappings = mappingsResponse.getMappings();
         ImmutableOpenMap<String, MappingMetaData> map = mappings.get(typeDescriptor.getIndex());
         MappingMetaData metadata = map.get(typeDescriptor.getType());
+
         return metadata != null;
     }
 
     @Override
     public void putMapping(TypeDescriptor typeDescriptor, JsonNode mapping) throws ClientException {
+
+        if (!isMappingExists(typeDescriptor)) {
+            LOG.debug("Put mapping: '{}'", mapping);
         Client client = getClient();
-        // Check message type mapping
-        GetMappingsRequest mappingsRequest = new GetMappingsRequest().indices(typeDescriptor.getIndex());
-        GetMappingsResponse mappingsResponse = client.admin().indices().getMappings(mappingsRequest).actionGet(getQueryTimeout());
-        ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> mappings = mappingsResponse.getMappings();
-        ImmutableOpenMap<String, MappingMetaData> map = mappings.get(typeDescriptor.getIndex());
-        MappingMetaData metadata = map.get(typeDescriptor.getType());
-        if (metadata == null) {
-            logger.debug("Put mapping: '{}'", mapping);
-            client.admin().indices().preparePutMapping(typeDescriptor.getIndex()).setType(typeDescriptor.getType()).setSource(mapping.toString(), XContentType.JSON)
-                    .execute().actionGet(getQueryTimeout());
-            logger.trace("Put mapping - mapping {} created! ", typeDescriptor.getType());
+
+            client.admin()
+                    .indices()
+                    .preparePutMapping(typeDescriptor.getIndex())
+                    .setType(typeDescriptor.getType())
+                    .setSource(mapping.toString(), XContentType.JSON)
+                    .execute()
+                    .actionGet(getQueryTimeout());
+            LOG.trace("Put mapping - mapping {} created! ", typeDescriptor.getType());
         } else {
-            logger.trace("Put mapping - mapping {} already exists! ", typeDescriptor.getType());
+            LOG.trace("Put mapping - mapping {} already exists! ", typeDescriptor.getType());
         }
     }
 
@@ -426,10 +434,11 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
             XContentParser parser = XContentFactory.xContent(XContentType.JSON)
                     .createParser(new NamedXContentRegistry(searchModule.getNamedXContents()), content);
             searchSourceBuilder.parseXContent(new QueryParseContext(parser));
-            logger.debug("Search builder: {}", searchSourceBuilder);
+            LOG.debug("Search builder: {}", searchSourceBuilder);
+
             return searchSourceBuilder;
-        } catch (Throwable t) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR, t, CLIENT_QUERY_PARSING_ERROR_MSG);
+        } catch (Exception e) {
+            throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, CLIENT_QUERY_PARSING_ERROR_MSG);
         }
     }
 
@@ -451,22 +460,23 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
     @Override
     public void deleteIndexes(String... indexes) throws ClientException {
         Client client = getClient();
-        final DeleteIndexRequest request = DeleteIndexAction.INSTANCE.newRequestBuilder(client).request();
+
+        DeleteIndexRequest request = DeleteIndexAction.INSTANCE.newRequestBuilder(client).request();
         for (String index : indexes) {
             request.indices(index);
             try {
-                logger.debug("Deleting index {}", index);
+                LOG.debug("Deleting index {}", index);
                 DeleteIndexResponse deleteResponse = client.admin().indices().delete(request).actionGet(getQueryTimeout());
                 if (!deleteResponse.isAcknowledged()) {
                     throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG);
                 }
-                logger.debug("Deleting index {} DONE", index);
+                LOG.debug("Deleting index {} DONE", index);
             } catch (IllegalStateException e) {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG);
             } catch (IndexNotFoundException e) {
                 // do nothing it's not an error
                 // switch the log level to debug?
-                logger.debug("Deleting index {} : index does not exist!", index);
+                LOG.debug("Deleting index {} : index does not exist!", index);
             }
         }
 
@@ -475,9 +485,10 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
     @Override
     public void refreshAllIndexes() throws ClientException {
         Client client = getClient();
-        // final RefreshRequest request = new RefreshRequestBuilder(client, action).request();//DeleteIndexAction.INSTANCE.newRequestBuilder(client).request();
-        final RefreshRequest request = RefreshAction.INSTANCE.newRequestBuilder(client).request();
+
+        RefreshRequest request = RefreshAction.INSTANCE.newRequestBuilder(client).request();
         request.indices(INDEXES_ALL);
+
         try {
             RefreshResponse refreshResponse = client.admin().indices().refresh(request).actionGet(getQueryTimeout());
             if (refreshResponse.getFailedShards() > 0) {
@@ -489,21 +500,22 @@ public class TransportDatastoreClient extends AbstractDatastoreClient<Client> {
     }
 
     /**
-     * Get the scroll timeout (default value)
+     * Gets the scroll timeout (default value).
      *
-     * @return
+     * @return The scroll timeout (default value)
+     * @since 1.0.0
      */
     public TimeValue getScrollTimeout() {
         return TimeValue.timeValueMillis(ClientSettings.getInstance().getLong(ClientSettingsKey.SCROLL_TIMEOUT, 60000));
     }
 
     /**
-     * Get the query timeout
+     * Gets the query timeout.
      *
-     * @return
+     * @return The query timeout
+     * @since 1.0.0
      */
     public TimeValue getQueryTimeout() {
         return TimeValue.timeValueMillis(ClientSettings.getInstance().getLong(ClientSettingsKey.QUERY_TIMEOUT, 15000));
     }
-
 }

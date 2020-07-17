@@ -32,12 +32,14 @@ import java.io.Closeable;
  * Datastore client definition. It defines the methods (crud and utilities) to be exposed to the caller.<br>
  * The datastore client implementation should provide a static init method and a static getInstance method that return the already initialized client instance.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface DatastoreClient<C extends Closeable> {
 
     /**
      * Initialize the underlying data-store connection
+     *
+     * @since 1.0.0
      */
     void init();
 
@@ -45,6 +47,7 @@ public interface DatastoreClient<C extends Closeable> {
      * Close the underlying data-store connection
      *
      * @throws ClientUnavailableException
+     * @since 1.0.0
      */
     void close() throws ClientUnavailableException;
 
@@ -54,6 +57,7 @@ public interface DatastoreClient<C extends Closeable> {
      * @param insertRequest
      * @return
      * @throws ClientException
+     * @since 1.0.0
      */
     InsertResponse insert(InsertRequest insertRequest) throws ClientException;
 
@@ -72,6 +76,7 @@ public interface DatastoreClient<C extends Closeable> {
      * @param bulkUpdateRequest
      * @return
      * @throws ClientException
+     * @since 1.0.0
      */
     BulkUpdateResponse upsert(BulkUpdateRequest bulkUpdateRequest) throws ClientException;
 
@@ -83,6 +88,7 @@ public interface DatastoreClient<C extends Closeable> {
      * @param clazz
      * @return
      * @throws ClientException
+     * @since 1.0.0
      */
     <T> T find(TypeDescriptor typeDescriptor, Object query, Class<T> clazz) throws ClientException;
 
@@ -94,6 +100,7 @@ public interface DatastoreClient<C extends Closeable> {
      * @param clazz
      * @return
      * @throws ClientException
+     * @since 1.0.0
      */
     <T> ResultList<T> query(TypeDescriptor typeDescriptor, Object query, Class<T> clazz) throws ClientException;
 
@@ -122,6 +129,7 @@ public interface DatastoreClient<C extends Closeable> {
      * @param typeDescriptor
      * @param query
      * @throws ClientException
+     * @since 1.0.0
      */
     void deleteByQuery(TypeDescriptor typeDescriptor, Object query) throws ClientException;
 
@@ -133,6 +141,7 @@ public interface DatastoreClient<C extends Closeable> {
      * @param indexRequest
      * @return
      * @throws ClientException
+     * @since 1.0.0
      */
     IndexResponse isIndexExists(IndexRequest indexRequest) throws ClientException;
 
@@ -142,6 +151,7 @@ public interface DatastoreClient<C extends Closeable> {
      * @param indexName
      * @param indexSettings
      * @throws ClientException
+     * @since 1.0.0
      */
     void createIndex(String indexName, ObjectNode indexSettings) throws ClientException;
 
@@ -151,6 +161,7 @@ public interface DatastoreClient<C extends Closeable> {
      * @param typeDescriptor
      * @return
      * @throws ClientException
+     * @since 1.0.0
      */
     boolean isMappingExists(TypeDescriptor typeDescriptor) throws ClientException;
 
@@ -167,15 +178,20 @@ public interface DatastoreClient<C extends Closeable> {
      * Force the datastore to refresh the indexes.
      *
      * @throws ClientException
+     * @since 1.0.0
      */
     void refreshAllIndexes() throws ClientException;
 
     /**
-     * Delete all indexes.<br>
-     * <b>WARNING!<br>
-     * This call will erase the whole database!<br>
+     * Delete all indexes.
+     *
+     * <b>
+     * WARNING!
+     * This call will erase the whole database!
      * Be careful using it! :)
      * </b>
+     *
+     * @since 1.0.0
      */
     void deleteAllIndexes() throws ClientException;
 
@@ -188,6 +204,7 @@ public interface DatastoreClient<C extends Closeable> {
      *
      * @param indexes
      * @throws ClientException
+     * @since 1.0.0
      */
     void deleteIndexes(String... indexes) throws ClientException;
 
@@ -197,6 +214,7 @@ public interface DatastoreClient<C extends Closeable> {
      * @param indexRequest
      * @return
      * @throws ClientException
+     * @since 1.0.0
      */
     IndexResponse findIndexes(IndexRequest indexRequest) throws ClientException;
 
@@ -204,6 +222,7 @@ public interface DatastoreClient<C extends Closeable> {
      * Set the model context
      *
      * @param modelContext
+     * @since 1.0.0
      */
     void setModelContext(ModelContext modelContext);
 
@@ -211,6 +230,7 @@ public interface DatastoreClient<C extends Closeable> {
      * Set the query converter
      *
      * @param queryConverter
+     * @since 1.0.0
      */
     void setQueryConverter(QueryConverter queryConverter);
 }

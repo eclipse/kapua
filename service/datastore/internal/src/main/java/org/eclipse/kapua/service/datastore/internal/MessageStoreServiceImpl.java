@@ -44,7 +44,7 @@ import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientCommunicationException;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 
 import java.util.UUID;
 
@@ -80,9 +80,9 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     /**
      * Default constructor
      *
-     * @throws ClientUnavailableException
+     * @throws ClientInitializationException
      */
-    public MessageStoreServiceImpl() throws ClientUnavailableException {
+    public MessageStoreServiceImpl() throws ClientInitializationException {
         super(MessageStoreService.class.getName(), DatastoreDomains.DATASTORE_DOMAIN, DatastoreEntityManagerFactory.getInstance());
         ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(this, accountService);
         messageStoreFacade = new MessageStoreFacade(configurationProvider, DatastoreMediator.getInstance());

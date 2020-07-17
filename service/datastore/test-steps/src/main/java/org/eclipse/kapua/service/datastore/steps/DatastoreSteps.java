@@ -101,7 +101,7 @@ import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.elasticsearch.client.DatastoreClient;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.elasticsearch.client.model.IndexRequest;
 import org.junit.Assert;
 import org.slf4j.Logger;
@@ -304,7 +304,7 @@ public class DatastoreSteps extends TestBase {
     // *************************************
 
     @Before
-    public void beforeScenario(Scenario scenario) throws ClientUnavailableException {
+    public void beforeScenario(Scenario scenario) throws ClientInitializationException {
 
         this.scenario = scenario;
 

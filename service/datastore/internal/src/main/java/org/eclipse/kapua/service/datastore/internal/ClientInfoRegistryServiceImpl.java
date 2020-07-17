@@ -50,6 +50,7 @@ import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +84,7 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaService implemen
      *
      * @throws ClientUnavailableException
      */
-    public ClientInfoRegistryServiceImpl() throws ClientUnavailableException {
+    public ClientInfoRegistryServiceImpl() throws ClientInitializationException {
         super(DatastoreEntityManagerFactory.getInstance());
 
         KapuaLocator locator = KapuaLocator.getInstance();

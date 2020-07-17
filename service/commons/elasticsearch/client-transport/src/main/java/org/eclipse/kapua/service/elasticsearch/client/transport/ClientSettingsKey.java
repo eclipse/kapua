@@ -17,7 +17,9 @@ import org.eclipse.kapua.commons.setting.SettingKey;
  * Datastore Elasticsearch transport client setting keys.
  *
  * @since 1.0
+ * @deprecated Since 1.0.0. Elasticsearch transport client will be removed in the next releases. Please use the Rest client instead.
  */
+@Deprecated
 public enum ClientSettingsKey implements SettingKey {
 
     /**

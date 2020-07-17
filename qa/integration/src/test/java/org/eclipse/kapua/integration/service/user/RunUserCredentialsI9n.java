@@ -10,11 +10,11 @@
  *     Eurotech - initial API and implementation
  *******************************************************************************/
 package org.eclipse.kapua.integration.service.user;
+
+import cucumber.api.CucumberOptions;
 import org.eclipse.kapua.qa.common.cucumber.CucumberProperty;
 import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
 import org.junit.runner.RunWith;
-
-import cucumber.api.CucumberOptions;
 
 @RunWith(CucumberWithProperties.class)
 @CucumberOptions(
@@ -31,9 +31,9 @@ import cucumber.api.CucumberOptions;
         },
         strict = true,
         monochrome = true)
-@CucumberProperty(key="kapua.config.url", value="")
-@CucumberProperty(key="datastore.client.class", value="org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient")
-@CucumberProperty(key="org.eclipse.kapua.qa.datastore.extraStartupDelay", value="5")
-@CucumberProperty(key="org.eclipse.kapua.qa.broker.extraStartupDelay", value="5")
+@CucumberProperty(key = "kapua.config.url", value = "")
+@CucumberProperty(key = "datastore.client.class", value = "org.eclipse.kapua.service.elasticsearch.client.rest.RestDatastoreClient")
+@CucumberProperty(key = "org.eclipse.kapua.qa.datastore.extraStartupDelay", value = "5")
+@CucumberProperty(key = "org.eclipse.kapua.qa.broker.extraStartupDelay", value = "5")
 public class RunUserCredentialsI9n {
 }

@@ -12,31 +12,48 @@
 package org.eclipse.kapua.service.elasticsearch.client.exception;
 
 /**
- * Client unavailable exception
+ * {@link ClientException} to throw when che {@link org.eclipse.kapua.service.elasticsearch.client.DatastoreClient} is not available
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class ClientUnavailableException extends ClientException {
 
     private static final long serialVersionUID = 2211521053876589804L;
 
+    private final String reason;
+
     /**
-     * Construct the exception with the provided message
+     * Constructor.
      *
-     * @param message
+     * @param reason The reason of the {@link ClientUnavailableException}.
+     * @since 1.3.0
      */
-    public ClientUnavailableException(String message) {
-        super(ClientErrorCodes.CLIENT_UNAVAILABLE, message);
+    public ClientUnavailableException(String reason) {
+        super(ClientErrorCodes.CLIENT_UNAVAILABLE, null, reason);
+
+        this.reason = reason;
     }
 
     /**
-     * Construct the exception with the provided message and throwable
+     * Constructor.
      *
-     * @param message
-     * @param t
+     * @param cause  The root {@link Throwable} of this {@link ClientUnavailableException}.
+     * @param reason The reason of the {@link ClientUnavailableException}.
+     * @since 1.3.0
      */
-    public ClientUnavailableException(String message, Throwable t) {
-        super(ClientErrorCodes.CLIENT_UNAVAILABLE, t, message);
+    public ClientUnavailableException(Throwable cause, String reason) {
+        super(ClientErrorCodes.CLIENT_UNAVAILABLE, cause, reason);
+
+        this.reason = reason;
     }
 
+    /**
+     * Gets the reason of the {@link ClientUnavailableException}.
+     *
+     * @return The reason of the {@link ClientUnavailableException}.
+     * @since 1.3.0
+     */
+    public String getReason() {
+        return reason;
+    }
 }

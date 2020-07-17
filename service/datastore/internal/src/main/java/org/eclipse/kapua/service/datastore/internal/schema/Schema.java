@@ -17,13 +17,13 @@ import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.DatastoreCacheManager;
 import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
-import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreErrorCodes;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.mediator.Metric;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.elasticsearch.client.DatastoreClient;
 import org.eclipse.kapua.service.elasticsearch.client.SchemaKeys;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientErrorCodes;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
 import org.eclipse.kapua.service.elasticsearch.client.model.IndexRequest;
@@ -66,7 +66,7 @@ public class Schema {
             String indexingWindowOption = DatastoreSettings.getInstance().getString(DatastoreSettingKey.INDEXING_WINDOW_OPTION, DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK);
             dataIndexName = DatastoreUtils.getDataIndexName(scopeId, time, indexingWindowOption);
         } catch (KapuaException kaex) {
-            throw new ClientException(DatastoreErrorCodes.CONFIGURATION_ERROR, "Error while generating index name", kaex);
+            throw new ClientException(ClientErrorCodes.INTERNAL_ERROR, kaex, "Error while generating index name");
         }
 
         Metadata currentMetadata = DatastoreCacheManager.getInstance().getMetadataCache().get(dataIndexName);
@@ -82,7 +82,7 @@ public class Schema {
             IndexResponse dataIndexExistsResponse = datastoreClient.isIndexExists(new IndexRequest(dataIndexName));
             if (!dataIndexExistsResponse.isIndexExists()) {
                 datastoreClient.createIndex(dataIndexName, getMappingSchema(dataIndexName));
-                LOG.info("Data index created: " + dataIndexName);
+                LOG.info("Data index created: {}", dataIndexName);
             }
 
             boolean enableAllField = false;
@@ -94,7 +94,7 @@ public class Schema {
             IndexResponse registryIndexExistsResponse = datastoreClient.isIndexExists(new IndexRequest(registryIndexName));
             if (!registryIndexExistsResponse.isIndexExists()) {
                 datastoreClient.createIndex(registryIndexName, getMappingSchema(registryIndexName));
-                LOG.info("Metadata index created: " + registryIndexExistsResponse);
+                LOG.info("Metadata index created: {}", registryIndexExistsResponse);
 
                 datastoreClient.putMapping(new TypeDescriptor(registryIndexName, ChannelInfoSchema.CHANNEL_TYPE_NAME), ChannelInfoSchema.getChannelTypeSchema(enableAllField, enableSourceField));
                 datastoreClient.putMapping(new TypeDescriptor(registryIndexName, MetricInfoSchema.METRIC_TYPE_NAME), MetricInfoSchema.getMetricTypeSchema(enableAllField, enableSourceField));
@@ -132,7 +132,7 @@ public class Schema {
             String indexingWindowOption = DatastoreSettings.getInstance().getString(DatastoreSettingKey.INDEXING_WINDOW_OPTION, DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK);
             newIndex = DatastoreUtils.getDataIndexName(scopeId, time, indexingWindowOption);
         } catch (KapuaException kaex) {
-            throw new ClientException(DatastoreErrorCodes.CONFIGURATION_ERROR, "Error while generating index name", kaex);
+            throw new ClientException(ClientErrorCodes.INTERNAL_ERROR, kaex, "Error while generating index name");
         }
         Metadata currentMetadata = DatastoreCacheManager.getInstance().getMetadataCache().get(newIndex);
 
@@ -148,7 +148,7 @@ public class Schema {
             metricsMapping = getNewMessageMappingsBuilder(diffs);
         }
 
-        LOG.trace("Sending dynamic message mappings: " + metricsMapping);
+        LOG.trace("Sending dynamic message mappings: {}", metricsMapping);
         DatastoreClientFactory.getInstance().putMapping(new TypeDescriptor(currentMetadata.getDataIndexName(), MessageSchema.MESSAGE_TYPE_NAME), metricsMapping);
     }
 

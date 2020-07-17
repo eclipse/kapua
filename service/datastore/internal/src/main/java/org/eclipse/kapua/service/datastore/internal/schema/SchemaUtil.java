@@ -134,16 +134,14 @@ public class SchemaUtil {
             node.set(name, FACTORY.numberNode((Float) value));
         } else if (value instanceof byte[]) {
             node.set(name, FACTORY.binaryNode((byte[]) value));
-        } else if (value instanceof byte[]) {
-            node.set(name, FACTORY.binaryNode((byte[]) value));
         } else if (value instanceof Date) {
             try {
                 node.set(name, FACTORY.textNode(KapuaDateUtils.formatDate((Date) value)));
             } catch (ParseException e) {
-                throw new DatamodelMappingException(String.format(NOT_VALID_OBJECT_TYPE_ERROR_MSG, value), e);
+                throw new DatamodelMappingException(e, String.format(NOT_VALID_OBJECT_TYPE_ERROR_MSG, value));
             }
         } else if (value instanceof StorableId) {
-            node.set(name, FACTORY.textNode(((StorableId) value).toString()));
+            node.set(name, FACTORY.textNode(value.toString()));
         } else {
             throw new DatamodelMappingException(String.format(UNSUPPORTED_OBJECT_TYPE_ERROR_MSG, value != null ? value.getClass() : "null"));
         }

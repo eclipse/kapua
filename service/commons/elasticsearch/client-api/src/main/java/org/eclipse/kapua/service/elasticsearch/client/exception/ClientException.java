@@ -11,67 +11,66 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.exception;
 
-import org.eclipse.kapua.KapuaErrorCode;
 import org.eclipse.kapua.KapuaException;
 
 /**
  * Generic client exception
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class ClientException extends KapuaException {
 
     private static final long serialVersionUID = 2393001020208113850L;
 
+    private static final String ELASTICSEARCH_CLIENT_ERROR_MESSAGES = "elasticsearch-client-error-messages";
+
     /**
      * Construct the exception with the provided error code
      *
-     * @param code
+     * @param code The {@link ClientErrorCodes}
+     * @since 1.0.0
      */
-    public ClientException(KapuaErrorCode code) {
+    public ClientException(ClientErrorCodes code) {
         super(code);
     }
 
     /**
-     * Construct the exception with the provided code and message
+     * Constructor.
      *
-     * @param code
-     * @param message
+     * @param code      The {@link ClientErrorCodes}
+     * @param arguments Additional argument associated with the {@link ClientException}.
+     * @since 1.0.0
      */
-    public ClientException(KapuaErrorCode code, String message) {
-        super(code, message);
+    public ClientException(ClientErrorCodes code, Object... arguments) {
+        super(code, arguments);
     }
 
     /**
-     * Construct the exception with the provided code and message
+     * Constructor.
      *
-     * @param code
-     * @param message
-     * @param t
+     * @param code      The {@link ClientErrorCodes}
+     * @param cause     The root {@link Throwable} of this {@link ClientException}.
+     * @param arguments Additional argument associated with the {@link ClientException}.
+     * @since 1.0.0
      */
-    public ClientException(KapuaErrorCode code, String message, Throwable t) {
-        super(code, message, t);
+    public ClientException(ClientErrorCodes code, Throwable cause, Object... arguments) {
+        super(code, cause, arguments);
     }
 
-    /**
-     * Construct the exception with the provided code, throwable and message
-     *
-     * @param code
-     * @param t
-     * @param message
-     */
-    public ClientException(KapuaErrorCode code, Throwable t, String message) {
-        super(code, t, message);
-    }
 
     /**
      * Construct the exception with the provided code, throwable and message
      *
-     * @param code
-     * @param t
+     * @param code  The {@link ClientErrorCodes}
+     * @param cause The root {@link Throwable} of this {@link ClientException}.
+     * @since 1.0.0
      */
-    public ClientException(KapuaErrorCode code, Throwable t) {
-        super(code, t);
+    public ClientException(ClientErrorCodes code, Throwable cause) {
+        super(code, cause);
     }
 
+    @Override
+    protected String getKapuaErrorMessagesBundle() {
+        return ELASTICSEARCH_CLIENT_ERROR_MESSAGES;
+    }
 }
