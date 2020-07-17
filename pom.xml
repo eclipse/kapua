@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+    Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
 
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
@@ -45,7 +45,7 @@
         <compress-lzf.version>1.0.3</compress-lzf.version>
         <cucumber.version>1.2.4</cucumber.version>
         <dropwizard-metrics.version>3.2.2</dropwizard-metrics.version>
-        <eclipselink.version>2.6.3</eclipselink.version>
+        <eclipselink.version>2.7.7</eclipselink.version>
         <elasticsearch.version>2.3.4</elasticsearch.version>
         <findbugs.version>2.0.1</findbugs.version>
         <gson.version>2.7</gson.version>
@@ -1290,6 +1290,11 @@
             <dependency>
                 <groupId>org.eclipse.persistence</groupId>
                 <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
+                <version>${eclipselink.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.persistence</groupId>
+                <artifactId>org.eclipse.persistence.extension</artifactId>
                 <version>${eclipselink.version}</version>
             </dependency>
             <dependency>
