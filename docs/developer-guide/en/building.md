@@ -13,7 +13,7 @@ resources of Kapua with the following command in the root of the Git repository:
 
     mvn clean install -f external/pom.xml
 
-Than you can run the Kapua full build issuing the command:
+Then you can run the Kapua full build issuing the command:
 
     mvn clean install
 
@@ -77,8 +77,8 @@ Kapua is running CI builds against two public environments:
 
 Please be sure that both environments are "green" (i.e. all tests pass) after you commit any changes into `develop` branch.
 
-We also use CI server sponsored by [Red Hat](https://www.redhat.com/en) to automatically push latest Docker images to 
-[Kapua DockerHub account](https://hub.docker.com/r/kapua/). Red Hat CI server checks for code changes every 15 minutes and pushes updated version
+We also use CI server sponsored by [Red Hat](https://www.redhat.com/en) to automatically push the latest Docker images to 
+[Kapua DockerHub account](https://hub.docker.com/r/kapua/). Red Hat CI server checks for code changes every 15 minutes and pushes updated versions
 of images if needed.
 
 ## Docker images
