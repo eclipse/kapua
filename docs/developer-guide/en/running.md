@@ -37,24 +37,24 @@ To stop Kapua, run
 
 ## OpenShift
 
-OpenShift is a PaaS (Platform As A Service) platform based on Kubernetes. Kapua support deployments into [OpenShift Origin](https://www.openshift.org),
+OpenShift is a PaaS (Platform As A Service) platform based on Kubernetes. Kapua supports deployments into [OpenShift Origin](https://www.openshift.org),
 which is an open source community project. Origin sources, can be found [here](https://www.openshift.org/). We support Kapua on OpenShift Origin **1.4.1**.
 
 Currently we support running OpenShift only on Linux OS. If you would like to run Kapua on Mac OS or on Windows for development purposes, please install Linux
-(for example Fedora 25) into virtual machine (for example VirtualBox) and install OpenShift there.
+(for example Fedora 25) into a virtual machine (for example VirtualBox) and install OpenShift there.
 
 ### Starting OpenShift cluster
 
 For running Kapua on an OpenShift you need to
-have OpenShift cluster installed and started in a first place. You can install it by yourself or rely on the script we provides:
+have OpenShift cluster installed and started in the first place. You can install it by yourself or rely on the script we provides:
 
     sudo kapua/deployment/openshift/openshift-start.sh
 
-If you are running your OpenShift cluster for a first time, execute the following initialized script as well:
+If you are running your OpenShift cluster for the first time, execute the following initialized script as well:
 
     kapua/deployment/openshift/openshift-initialize.sh
 
-Initialization script is responsible for logging you into a cluster and creating new OpenShift project for Kapua.
+Initialization script is responsible for logging you into a cluster and creating a new OpenShift project for Kapua.
 
 If your Openshift cluster is not on the localhost, set the `OPENSHIFT_HOST` environment variable. For example, something like
 
