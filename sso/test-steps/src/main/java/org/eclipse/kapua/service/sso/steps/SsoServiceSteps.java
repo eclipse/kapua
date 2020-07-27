@@ -125,7 +125,6 @@ public class SsoServiceSteps extends TestBase {
         System.setProperty("sso.keycloak.realm", "kapua");
         System.setProperty("sso.openid.client.id", "console");
         System.setProperty("sso.provider", "keycloak");
-        System.setProperty("authentication.registration.service.enabled", "true");
     }
 
     @And("^Set environment variables for generic provider$")
@@ -141,6 +140,7 @@ public class SsoServiceSteps extends TestBase {
     public void configureTheSso() throws Exception {
         primeException();
         try {
+            System.setProperty("authentication.registration.service.enabled", "true");
             JwtCredentials credentials = (JwtCredentials) stepData.get("jwtCredentials");
             RegistrationServiceImpl registrationService = new RegistrationServiceImpl();
             registrationService.createAccount(credentials);
