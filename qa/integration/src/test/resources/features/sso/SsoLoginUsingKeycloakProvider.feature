@@ -27,7 +27,7 @@ Feature: Sso Login using Keycloak Provider
 
   Scenario: Create external user using the the SimpleRegistrationProcessor
   Create a user using keycloak
-  Login using jwt credentials
+  Login using jwt credentials with SimpleRegistrationProcessor
   Check if user exists
 
     Then Get access token for user with username "test-user" and password "TestPassword123#"
@@ -71,7 +71,7 @@ Feature: Sso Login using Keycloak Provider
       | test-user | test-user@co.co | EXTERNAL | 5698d2ff-d26e-45bf-92df-c3e88da58dad |
 
   Scenario: Using normal login using Keycloak credentials
-  Create user using keycloak
+  Create user using keycloak and login using SimpleRegistrationProcessor
   Login as external user using normal login method
   Exception should be thrown
 
@@ -105,10 +105,8 @@ Feature: Sso Login using Keycloak Provider
       | name      | password          | enabled |
       | test-user | ToManySecrets123# | true    |
     Then I logout
-    Then Get access token for user with username "test-user" and password "TestPassword123#"
-    And Create a jwt credential using the access token
-    Given I expect the exception "KapuaException" with the text "*"
-    When Configure the SSO service
+    Given I expect the exception "NullPointerException" with the text "*"
+    Then Get access token for user with username "test-user" and password "ToManySecrets123#"
     Then An exception was thrown
 
   Scenario: Add user with fake externalId
@@ -136,7 +134,7 @@ Feature: Sso Login using Keycloak Provider
     Then An exception was thrown
 
   Scenario: Logging out and logging back in with SSO
-  Login as external user, logout
+  Login as external user using SimpleRegistrationProcessor, logout
   Login again, no exception should be thrown
 
     Then Get access token for user with username "test-user" and password "TestPassword123#"
@@ -148,7 +146,7 @@ Feature: Sso Login using Keycloak Provider
     Then No exception was thrown
 
   Scenario: Login using normal login after logging out with SSO
-  Login as external user, logout
+  Login as external user using SimpleRegistrationProcessor, logout
   Login again, this time with normal login method, exception should be thrown
 
     Then Get access token for user with username "test-user" and password "TestPassword123#"
