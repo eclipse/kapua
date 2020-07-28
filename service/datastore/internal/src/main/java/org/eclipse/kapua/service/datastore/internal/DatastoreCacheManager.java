@@ -13,13 +13,13 @@ package org.eclipse.kapua.service.datastore.internal;
 
 import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.service.datastore.internal.schema.Metadata;
-import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 
 /**
  * Datastore cache manager.<br>
  * It keeps informations about channels, metrics and clients to speed up the store operation and avoid time consuming unnecessary operations.
- * 
+ *
  * @since 1.0.0
  */
 public class DatastoreCacheManager {
@@ -33,9 +33,9 @@ public class DatastoreCacheManager {
 
     private DatastoreCacheManager() {
         DatastoreSettings config = DatastoreSettings.getInstance();
-        int expireAfter = config.getInt(DatastoreSettingKey.CONFIG_CACHE_LOCAL_EXPIRE_AFTER);
-        int sizeMax = config.getInt(DatastoreSettingKey.CONFIG_CACHE_LOCAL_SIZE_MAXIMUM);
-        int sizeMaxMetadata = config.getInt(DatastoreSettingKey.CONFIG_CACHE_METADATA_LOCAL_SIZE_MAXIMUM);
+        int expireAfter = config.getInt(DatastoreSettingsKey.CONFIG_CACHE_LOCAL_EXPIRE_AFTER);
+        int sizeMax = config.getInt(DatastoreSettingsKey.CONFIG_CACHE_LOCAL_SIZE_MAXIMUM);
+        int sizeMaxMetadata = config.getInt(DatastoreSettingsKey.CONFIG_CACHE_METADATA_LOCAL_SIZE_MAXIMUM);
 
         // TODO set expiration to happen frequently because the reset cache method will not get
         // called from service clients any more
@@ -47,9 +47,8 @@ public class DatastoreCacheManager {
 
     /**
      * Get the cache manager instance
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public static DatastoreCacheManager getInstance() {
@@ -58,9 +57,8 @@ public class DatastoreCacheManager {
 
     /**
      * Get the channels informations cache
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public LocalCache<String, Boolean> getChannelsCache() {
@@ -69,9 +67,8 @@ public class DatastoreCacheManager {
 
     /**
      * Get the metrics informations cache
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public LocalCache<String, Boolean> getMetricsCache() {
@@ -80,9 +77,8 @@ public class DatastoreCacheManager {
 
     /**
      * Get the clients informations cache
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public LocalCache<String, Boolean> getClientsCache() {
@@ -91,9 +87,8 @@ public class DatastoreCacheManager {
 
     /**
      * Get the metadata informations cache
-     * 
+     *
      * @return
-     * 
      * @since 1.0.0
      */
     public LocalCache<String, Metadata> getMetadataCache() {

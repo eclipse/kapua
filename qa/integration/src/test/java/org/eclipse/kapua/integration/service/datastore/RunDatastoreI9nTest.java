@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
                 "json:target/DatastoreTransportI9n_cucumber.json"},
         strict = true,
         monochrome = true)
-@CucumberProperty(key = "datastore.client.class", value = "org.eclipse.kapua.service.elasticsearch.client.transport.TransportElasticsearchClient")
+@CucumberProperty(key = "datastore.elasticsearch.provider", value = "org.eclipse.kapua.service.elasticsearch.client.transport.TransportElasticsearchClientProvider")
 @CucumberProperty(key = "org.eclipse.kapua.qa.datastore.extraStartupDelay", value = "5")
 @CucumberProperty(key = "broker.ip", value = "192.168.33.10")
 @CucumberProperty(key = "kapua.config.url", value = "")

@@ -54,7 +54,6 @@ public class MetricInfoRegistryFacade {
 
     private final MetricInfoRegistryMediator mediator;
     private final ConfigurationProvider configProvider;
-    private ElasticsearchClient client;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
@@ -71,7 +70,6 @@ public class MetricInfoRegistryFacade {
     public MetricInfoRegistryFacade(ConfigurationProvider configProvider, MetricInfoRegistryMediator mediator) throws ClientInitializationException {
         this.configProvider = configProvider;
         this.mediator = mediator;
-        this.client = DatastoreClientFactory.getInstance();
     }
 
     /**
@@ -102,7 +100,7 @@ public class MetricInfoRegistryFacade {
                 String kapuaIndexName = metadata.getRegistryIndexName();
 
                 UpdateRequest request = new UpdateRequest(metricInfo.getId().toString(), new TypeDescriptor(metadata.getRegistryIndexName(), MetricInfoSchema.METRIC_TYPE_NAME), metricInfo);
-                response = client.upsert(request);
+                response = getElasticsearchClient().upsert(request);
 
                 LOG.debug("Upsert on metric successfully executed [{}.{}, {} - {}]", kapuaIndexName, MetricInfoSchema.METRIC_TYPE_NAME, metricInfoId, response.getId());
                 }
@@ -156,7 +154,7 @@ public class MetricInfoRegistryFacade {
         if (performUpdate) {
             // execute the upstore
             try {
-                upsertResponse = client.upsert(bulkRequest);
+                upsertResponse = getElasticsearchClient().upsert(bulkRequest);
             } catch (ClientException e) {
                 LOG.trace("Upsert failed {}", e.getMessage());
                 throw e;
@@ -210,7 +208,7 @@ public class MetricInfoRegistryFacade {
 
         String indexName = SchemaUtil.getKapuaIndexName(scopeId);
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MetricInfoSchema.METRIC_TYPE_NAME);
-        client.delete(typeDescriptor, id.toString());
+        getElasticsearchClient().delete(typeDescriptor, id.toString());
     }
 
     /**
@@ -261,7 +259,7 @@ public class MetricInfoRegistryFacade {
 
         String indexNme = SchemaUtil.getKapuaIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexNme, MetricInfoSchema.METRIC_TYPE_NAME);
-        ResultList<MetricInfo> result = client.query(typeDescriptor, query, MetricInfo.class);
+        ResultList<MetricInfo> result = getElasticsearchClient().query(typeDescriptor, query, MetricInfo.class);
         return new MetricInfoListResultImpl(result);
     }
 
@@ -288,7 +286,7 @@ public class MetricInfoRegistryFacade {
 
         String indexName = SchemaUtil.getKapuaIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MetricInfoSchema.METRIC_TYPE_NAME);
-        return client.count(typeDescriptor, query);
+        return getElasticsearchClient().count(typeDescriptor, query);
     }
 
     /**
@@ -314,6 +312,10 @@ public class MetricInfoRegistryFacade {
 
         String indexName = SchemaUtil.getKapuaIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MetricInfoSchema.METRIC_TYPE_NAME);
-        client.deleteByQuery(typeDescriptor, query);
+        getElasticsearchClient().deleteByQuery(typeDescriptor, query);
+    }
+
+    private ElasticsearchClient<?> getElasticsearchClient() throws ClientInitializationException {
+        return DatastoreClientFactory.getElasticsearchClient();
     }
 }

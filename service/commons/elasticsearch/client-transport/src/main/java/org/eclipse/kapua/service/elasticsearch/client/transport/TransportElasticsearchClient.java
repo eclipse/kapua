@@ -15,8 +15,8 @@ package org.eclipse.kapua.service.elasticsearch.client.transport;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.MoreObjects;
 import org.eclipse.kapua.service.elasticsearch.client.AbstractElasticsearchClient;
-import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.ModelContext;
 import org.eclipse.kapua.service.elasticsearch.client.QueryConverter;
 import org.eclipse.kapua.service.elasticsearch.client.SchemaKeys;
@@ -98,27 +98,9 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
     private static final String INDEXES_ALL = "_all";
     private static final String DOC = "_doc";
 
-    private static TransportElasticsearchClient instance;
-
-    private ModelContext modelContext;
-    private QueryConverter queryConverter;
-
-    static {
-        instance = new TransportElasticsearchClient();
-    }
 
     /**
-     * Gets the singleton {@link TransportElasticsearchClient} instance
-     *
-     * @return The singleton {@link TransportElasticsearchClient} instance.
-     * @since 1.0.0
-     */
-    public static TransportElasticsearchClient getInstance() {
-        return instance;
-    }
-
-    /**
-     * Initialize the {@link ElasticsearchClientProvider} as singleton.
+     * Constructor.
      *
      * @since 1.0.0
      */
@@ -126,55 +108,73 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
         super("transport");
     }
 
+
     @Override
-    public ElasticsearchClientProvider<Client> getNewInstance() {
-        return EsTransportClientProvider.init();
+    public void init() {
+        if (getClientConfiguration() == null) {
+
+        }
+        if (getModelContext() == null) {
+
+    }
+        if (getModelConverter() == null) {
+
+        }
+    }
+
+    @Override
+    public void close() {
+        // No resources to close
     }
 
     @Override
     public InsertResponse insert(InsertRequest insertRequest) throws ClientException {
-        Client client = getClient();
-        Map<String, Object> storableMap = modelContext.marshal(insertRequest.getStorable());
+        Map<String, Object> storableMap = getModelContext().marshal(insertRequest.getStorable());
         LOG.debug("Insert - converted object: '{}'", storableMap);
+
         org.elasticsearch.action.index.IndexRequest idxRequest = new org.elasticsearch.action.index.IndexRequest(insertRequest.getTypeDescriptor().getIndex(), insertRequest.getTypeDescriptor().getType()).source(storableMap);
         if (insertRequest.getId() != null) {
             idxRequest.id(insertRequest.getId()).version(1).versionType(VersionType.EXTERNAL);
         }
-        org.elasticsearch.action.index.IndexResponse response = client.index(idxRequest).actionGet(getQueryTimeout());
+        org.elasticsearch.action.index.IndexResponse response = getClient().index(idxRequest).actionGet(getQueryTimeout());
 
         return new InsertResponse(response.getId(), insertRequest.getTypeDescriptor());
     }
 
     @Override
     public UpdateResponse upsert(UpdateRequest upsertRequest) throws ClientException {
-        Client client = getClient();
-        Map<String, Object> storableMap = modelContext.marshal(upsertRequest.getStorable());
+        Map<String, Object> storableMap = getModelContext().marshal(upsertRequest.getStorable());
         LOG.debug("Upsert - converted object: '{}'", storableMap);
+
         org.elasticsearch.action.index.IndexRequest idxRequest = new org.elasticsearch.action.index.IndexRequest(upsertRequest.getTypeDescriptor().getIndex(), upsertRequest.getTypeDescriptor().getType(), upsertRequest.getId()).source(storableMap);
-        org.elasticsearch.action.update.UpdateRequest updateRequest = new org.elasticsearch.action.update.UpdateRequest(upsertRequest.getTypeDescriptor().getIndex(),
-                upsertRequest.getTypeDescriptor().getType(), upsertRequest.getId()).doc(storableMap);
-        org.elasticsearch.action.update.UpdateResponse response = client.update(updateRequest.upsert(idxRequest)).actionGet(getQueryTimeout());
+        org.elasticsearch.action.update.UpdateRequest updateRequest =
+                new org.elasticsearch.action.update.UpdateRequest(
+                        upsertRequest.getTypeDescriptor().getIndex(),
+                        upsertRequest.getTypeDescriptor().getType(),
+                        upsertRequest.getId()).doc(storableMap);
+        org.elasticsearch.action.update.UpdateResponse response = getClient().update(updateRequest.upsert(idxRequest)).actionGet(getQueryTimeout());
 
         return new UpdateResponse(response.getId(), upsertRequest.getTypeDescriptor());
     }
 
     @Override
     public BulkUpdateResponse upsert(BulkUpdateRequest bulkUpsertRequest) throws ClientException {
-        Client client = getClient();
         BulkRequest bulkRequest = new BulkRequest();
         for (UpdateRequest upsertRequest : bulkUpsertRequest.getRequest()) {
             String type = upsertRequest.getTypeDescriptor().getType();
             String index = upsertRequest.getTypeDescriptor().getIndex();
             String id = upsertRequest.getId();
-            Map<String, Object> mappedObject = modelContext.marshal(upsertRequest.getStorable());
+
+            Map<String, Object> mappedObject = getModelContext().marshal(upsertRequest.getStorable());
             LOG.debug("Upsert - converted object: '{}'", mappedObject);
+
             org.elasticsearch.action.index.IndexRequest idxRequest = new org.elasticsearch.action.index.IndexRequest(index, type, id).source(mappedObject);
             org.elasticsearch.action.update.UpdateRequest updateRequest = new org.elasticsearch.action.update.UpdateRequest(index, type, id).doc(mappedObject);
             updateRequest.upsert(idxRequest);
             bulkRequest.add(updateRequest);
         }
 
-        BulkResponse bulkResponse = client.bulk(bulkRequest).actionGet(getQueryTimeout());
+        BulkResponse bulkResponse = getClient().bulk(bulkRequest).actionGet(getQueryTimeout());
 
         BulkUpdateResponse response = new BulkUpdateResponse();
         BulkItemResponse[] itemResponses = bulkResponse.getItems();
@@ -201,30 +201,27 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
     @Override
     public <T> T find(TypeDescriptor typeDescriptor, Object query, Class<T> clazz) throws ClientException {
         ResultList<T> result = query(typeDescriptor, query, clazz);
-        if (result.getTotalCount() == 0) {
-            return null;
-        } else {
-            return result.getResult().get(0);
+
+        return result.getResult().isEmpty() ? null : result.getResult().get(0);
         }
-    }
 
     @Override
     public <T> ResultList<T> query(TypeDescriptor typeDescriptor, Object query, Class<T> clazz) throws ClientException {
-        Client client = getClient();
-        JsonNode queryMap = queryConverter.convertQuery(query);
-        Object queryFetchStyle = queryConverter.getFetchStyle(query);
+        JsonNode queryMap = getModelConverter().convertQuery(query);
+        Object queryFetchStyle = getModelConverter().getFetchStyle(query);
         LOG.debug("Query - converted query: '{}'", queryMap);
-        SearchResponse response = null;
+
         ObjectNode fetchSourceFields = (ObjectNode) queryMap.path(SchemaKeys.KEY_SOURCE);
         String[] includesFields = toIncludedExcludedFields(fetchSourceFields.path(SchemaKeys.KEY_INCLUDES));
         String[] excludesFields = toIncludedExcludedFields(fetchSourceFields.path(SchemaKeys.KEY_EXCLUDES));
-        SearchRequestBuilder searchReqBuilder = client.prepareSearch(typeDescriptor.getIndex());
+        SearchRequestBuilder searchReqBuilder = getClient().prepareSearch(typeDescriptor.getIndex());
         searchReqBuilder.setTypes(typeDescriptor.getType())
                 .setSource(toSearchSourceBuilder(queryMap))
                 .setFetchSource(includesFields, excludesFields);
 
         SearchHit[] searchHits = null;
         long totalCount = 0;
+        SearchResponse response;
         try {
             response = searchReqBuilder
                     .execute()
@@ -245,20 +242,20 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
             for (SearchHit searchHit : searchHits) {
                 Map<String, Object> object = searchHit.getSource();
                 object.put(ModelContext.TYPE_DESCRIPTOR_KEY, new TypeDescriptor(searchHit.getIndex(), searchHit.getType()));
-                object.put(ModelContext.DATASTORE_ID_KEY, searchHit.getId());
+                object.put(getModelContext().getIdKeyName(), searchHit.getId());
                 object.put(QueryConverter.QUERY_FETCH_STYLE_KEY, queryFetchStyle);
-                result.add(modelContext.unmarshal(clazz, object));
+                result.add(getModelContext().unmarshal(clazz, object));
             }
         }
+
         return result;
     }
 
     @Override
     public long count(TypeDescriptor typeDescriptor, Object query) throws ClientException {
-        Client client = getClient();
         // TODO check for fetch none
-        JsonNode queryMap = queryConverter.convertQuery(query);
-        SearchRequestBuilder searchReqBuilder = client.prepareSearch(typeDescriptor.getIndex());
+        JsonNode queryMap = getModelConverter().convertQuery(query);
+        SearchRequestBuilder searchReqBuilder = getClient().prepareSearch(typeDescriptor.getIndex());
         SearchHits searchHits = null;
         try {
             SearchResponse response = searchReqBuilder.setTypes(typeDescriptor.getType())
@@ -271,17 +268,18 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
         } catch (SearchPhaseExecutionException spee) {
             LOG.warn(GENERIC_SEARCH_ERROR, spee.getMessage(), spee);
         }
+
         if (searchHits == null) {
             return 0;
         }
+
         return searchHits.getTotalHits();
     }
 
     @Override
     public void delete(TypeDescriptor typeDescriptor, String id) throws ClientException {
-        Client client = getClient();
         try {
-            client.prepareDelete()
+            getClient().prepareDelete()
                     .setIndex(typeDescriptor.getIndex())
                     .setType(typeDescriptor.getType())
                     .setId(id)
@@ -295,15 +293,15 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
 
     @Override
     public void deleteByQuery(TypeDescriptor typeDescriptor, Object query) throws ClientException {
-        Client client = getClient();
-        JsonNode queryMap = queryConverter.convertQuery(query);
+        JsonNode queryMap = getModelConverter().convertQuery(query);
         TimeValue queryTimeout = getQueryTimeout();
         TimeValue scrollTimeout = getScrollTimeout();
 
         SearchResponse scrollResponse = null;
         try {
             // delete by query API is deprecated, scroll with bulk delete must be used
-            scrollResponse = client.prepareSearch(typeDescriptor.getIndex())
+            scrollResponse = getClient()
+                    .prepareSearch(typeDescriptor.getIndex())
                     .setTypes(typeDescriptor.getType())
                     .setFetchSource(false)
                     .addSort(DOC, SortOrder.ASC)
@@ -334,9 +332,9 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
                     bulkRequest.add(delete);
                 }
 
-                client.bulk(bulkRequest).actionGet(queryTimeout);
+                getClient().bulk(bulkRequest).actionGet(queryTimeout);
 
-                scrollResponse = client.prepareSearchScroll(scrollResponse.getScrollId())
+                scrollResponse = getClient().prepareSearchScroll(scrollResponse.getScrollId())
                         .setScroll(scrollTimeout)
                         .execute()
                         .actionGet(queryTimeout);
@@ -345,9 +343,8 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
     }
 
     @Override
-    public IndexResponse isIndexExists(IndexRequest indexRequest) throws ClientException {
-        Client client = getClient();
-        IndicesExistsResponse response = client.admin().indices()
+    public IndexResponse isIndexExists(IndexRequest indexRequest) {
+        IndicesExistsResponse response = getClient().admin().indices()
                 .exists(new IndicesExistsRequest(indexRequest.getIndex()))
                 .actionGet(getQueryTimeout());
 
@@ -355,10 +352,13 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
     }
 
     @Override
-    public IndexResponse findIndexes(IndexRequest indexRequest) throws ClientException {
-        Client client = getClient();
+    public IndexResponse findIndexes(IndexRequest indexRequest) {
         try {
-            GetSettingsResponse response = client.admin().indices().prepareGetSettings(indexRequest.getIndex())
+            GetSettingsResponse response =
+                    getClient()
+                            .admin()
+                            .indices()
+                            .prepareGetSettings(indexRequest.getIndex())
                     .get(getQueryTimeout());
             List<String> list = new ArrayList<>();
             response.getIndexToSettings().keysIt().forEachRemaining(list::add);
@@ -370,9 +370,8 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
     }
 
     @Override
-    public void createIndex(String indexName, ObjectNode indexSettings) throws ClientException {
-        Client client = getClient();
-        client.admin()
+    public void createIndex(String indexName, ObjectNode indexSettings) {
+        getClient().admin()
                 .indices()
                 .prepareCreate(indexName)
                 .setSettings(indexSettings.toString(), XContentType.JSON)
@@ -381,10 +380,9 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
     }
 
     @Override
-    public boolean isMappingExists(TypeDescriptor typeDescriptor) throws ClientException {
-        Client client = getClient();
+    public boolean isMappingExists(TypeDescriptor typeDescriptor) {
         GetMappingsRequest mappingsRequest = new GetMappingsRequest().indices(typeDescriptor.getIndex());
-        GetMappingsResponse mappingsResponse = client.admin().indices().getMappings(mappingsRequest).actionGet(getQueryTimeout());
+        GetMappingsResponse mappingsResponse = getClient().admin().indices().getMappings(mappingsRequest).actionGet(getQueryTimeout());
         ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> mappings = mappingsResponse.getMappings();
         ImmutableOpenMap<String, MappingMetaData> map = mappings.get(typeDescriptor.getIndex());
         MappingMetaData metadata = map.get(typeDescriptor.getType());
@@ -393,13 +391,12 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
     }
 
     @Override
-    public void putMapping(TypeDescriptor typeDescriptor, JsonNode mapping) throws ClientException {
+    public void putMapping(TypeDescriptor typeDescriptor, JsonNode mapping) {
 
         if (!isMappingExists(typeDescriptor)) {
             LOG.debug("Put mapping: '{}'", mapping);
-        Client client = getClient();
 
-            client.admin()
+            getClient().admin()
                     .indices()
                     .preparePutMapping(typeDescriptor.getIndex())
                     .setType(typeDescriptor.getType())
@@ -460,14 +457,12 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
 
     @Override
     public void deleteIndexes(String... indexes) throws ClientException {
-        Client client = getClient();
-
-        DeleteIndexRequest request = DeleteIndexAction.INSTANCE.newRequestBuilder(client).request();
+        DeleteIndexRequest request = DeleteIndexAction.INSTANCE.newRequestBuilder(getClient()).request();
         for (String index : indexes) {
             request.indices(index);
             try {
                 LOG.debug("Deleting index {}", index);
-                DeleteIndexResponse deleteResponse = client.admin().indices().delete(request).actionGet(getQueryTimeout());
+                DeleteIndexResponse deleteResponse = getClient().admin().indices().delete(request).actionGet(getQueryTimeout());
                 if (!deleteResponse.isAcknowledged()) {
                     throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG);
                 }
@@ -485,13 +480,12 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
 
     @Override
     public void refreshAllIndexes() throws ClientException {
-        Client client = getClient();
 
-        RefreshRequest request = RefreshAction.INSTANCE.newRequestBuilder(client).request();
+        RefreshRequest request = RefreshAction.INSTANCE.newRequestBuilder(getClient()).request();
         request.indices(INDEXES_ALL);
 
         try {
-            RefreshResponse refreshResponse = client.admin().indices().refresh(request).actionGet(getQueryTimeout());
+            RefreshResponse refreshResponse = getClient().admin().indices().refresh(request).actionGet(getQueryTimeout());
             if (refreshResponse.getFailedShards() > 0) {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_CANNOT_REFRESH_INDEX_ERROR_MSG);
             }
@@ -501,22 +495,22 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
     }
 
     /**
-     * Gets the scroll timeout (default value).
-     *
-     * @return The scroll timeout (default value)
-     * @since 1.0.0
-     */
-    public TimeValue getScrollTimeout() {
-        return TimeValue.timeValueMillis(ClientSettings.getInstance().getLong(ClientSettingsKey.SCROLL_TIMEOUT, 60000));
-    }
-
-    /**
      * Gets the query timeout.
      *
      * @return The query timeout
      * @since 1.0.0
      */
     public TimeValue getQueryTimeout() {
-        return TimeValue.timeValueMillis(ClientSettings.getInstance().getLong(ClientSettingsKey.QUERY_TIMEOUT, 15000));
+        return new TimeValue(MoreObjects.firstNonNull(getClientConfiguration().getRequestConfiguration().getQueryTimeout(), 15000));
+    }
+
+    /**
+     * Gets the scroll timeout (default value).
+     *
+     * @return The scroll timeout (default value)
+     * @since 1.0.0
+     */
+    public TimeValue getScrollTimeout() {
+        return new TimeValue(MoreObjects.firstNonNull(getClientConfiguration().getRequestConfiguration().getScrollTimeout(), 60000));
     }
 }

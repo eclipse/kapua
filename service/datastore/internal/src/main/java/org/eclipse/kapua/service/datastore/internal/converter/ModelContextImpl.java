@@ -62,6 +62,11 @@ public class ModelContextImpl implements ModelContext {
     private static final String MARSHAL_INVALID_PARAMETERS_ERROR_MSG = "Object and/or object type cannot be null!";
 
     @Override
+    public String getIdKeyName() {
+        return "datastore_id";
+    }
+
+    @Override
     public <T> T unmarshal(Class<T> clazz, Map<String, Object> serializedObject) throws DatamodelMappingException {
         if (clazz == null || serializedObject == null) {
             throw new DatamodelMappingException("Object and/or object type cannot be null");
@@ -121,7 +126,7 @@ public class ModelContextImpl implements ModelContext {
 
         StorableFetchStyle fetchStyle = getStorableFetchStyle(messageMap);
         DatastoreMessageImpl message = new DatastoreMessageImpl();
-        String id = (String) messageMap.get(ModelContext.DATASTORE_ID_KEY);
+        String id = (String) messageMap.get(getIdKeyName());
         message.setDatastoreId(new StorableIdImpl(id));
         String messageId = (String) messageMap.get(MessageSchema.MESSAGE_ID);
         if (messageId != null) {
@@ -236,7 +241,7 @@ public class ModelContextImpl implements ModelContext {
 
     private MetricInfo unmarshalMetricInfo(Map<String, Object> metricInfoMap) throws ParseException {
         KapuaId scopeId = new KapuaEid(new BigInteger((String) metricInfoMap.get(MetricInfoSchema.METRIC_SCOPE_ID)));
-        String id = (String) metricInfoMap.get(ModelContext.DATASTORE_ID_KEY);
+        String id = (String) metricInfoMap.get(getIdKeyName());
 
         Map<String, Object> metricMap = (Map<String, Object>) metricInfoMap.get(MetricInfoSchema.METRIC_MTR);
         String name = (String) metricMap.get(MetricInfoSchema.METRIC_MTR_NAME);
@@ -262,7 +267,7 @@ public class ModelContextImpl implements ModelContext {
 
     private ChannelInfo unmarshalChannelInfo(Map<String, Object> channelInfoMap) throws ParseException {
         KapuaId scopeId = new KapuaEid(new BigInteger((String) channelInfoMap.get(ChannelInfoSchema.CHANNEL_SCOPE_ID)));
-        String id = (String) channelInfoMap.get(ModelContext.DATASTORE_ID_KEY);
+        String id = (String) channelInfoMap.get(getIdKeyName());
 
         ChannelInfo channelInfo = new ChannelInfoImpl(scopeId);
         channelInfo.setId(new StorableIdImpl(id));
@@ -276,7 +281,7 @@ public class ModelContextImpl implements ModelContext {
 
     private ClientInfo unmarshalClientInfo(Map<String, Object> clientInfoMap) throws ParseException {
         KapuaId scopeId = new KapuaEid(new BigInteger((String) clientInfoMap.get(ClientInfoSchema.CLIENT_SCOPE_ID)));
-        String id = (String) clientInfoMap.get(ModelContext.DATASTORE_ID_KEY);
+        String id = (String) clientInfoMap.get(getIdKeyName());
 
         ClientInfo clientInfo = new ClientInfoImpl(scopeId);
         clientInfo.setId(new StorableIdImpl(id));

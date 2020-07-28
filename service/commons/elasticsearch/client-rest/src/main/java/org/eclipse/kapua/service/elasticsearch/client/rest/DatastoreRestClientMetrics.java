@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.client.rest;
+package org.eclipse.kapua.service.elasticsearch.client.rest;
 
 public class DatastoreRestClientMetrics {
 

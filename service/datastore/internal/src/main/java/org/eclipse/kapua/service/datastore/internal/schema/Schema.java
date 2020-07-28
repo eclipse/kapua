@@ -19,8 +19,8 @@ import org.eclipse.kapua.service.datastore.internal.DatastoreCacheManager;
 import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.mediator.Metric;
-import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
 import org.eclipse.kapua.service.elasticsearch.client.SchemaKeys;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientErrorCodes;
@@ -63,7 +63,7 @@ public class Schema {
             throws ClientException {
         String dataIndexName;
         try {
-            String indexingWindowOption = DatastoreSettings.getInstance().getString(DatastoreSettingKey.INDEXING_WINDOW_OPTION, DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK);
+            String indexingWindowOption = DatastoreSettings.getInstance().getString(DatastoreSettingsKey.INDEXING_WINDOW_OPTION, DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK);
             dataIndexName = DatastoreUtils.getDataIndexName(scopeId, time, indexingWindowOption);
         } catch (KapuaException kaex) {
             throw new ClientException(ClientErrorCodes.INTERNAL_ERROR, kaex, "Error while generating index name");
@@ -77,7 +77,7 @@ public class Schema {
         LOG.debug("Before entering updating metadata");
         synchronized (Schema.class) {
             LOG.debug("Entered updating metadata");
-            ElasticsearchClient elasticsearchClient = DatastoreClientFactory.getInstance();
+            ElasticsearchClient elasticsearchClient = DatastoreClientFactory.getInstance().getElasticsearchClient();
             // Check existence of the data index
             IndexResponse dataIndexExistsResponse = elasticsearchClient.isIndexExists(new IndexRequest(dataIndexName));
             if (!dataIndexExistsResponse.isIndexExists()) {
@@ -129,7 +129,7 @@ public class Schema {
         }
         String newIndex;
         try {
-            String indexingWindowOption = DatastoreSettings.getInstance().getString(DatastoreSettingKey.INDEXING_WINDOW_OPTION, DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK);
+            String indexingWindowOption = DatastoreSettings.getInstance().getString(DatastoreSettingsKey.INDEXING_WINDOW_OPTION, DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK);
             newIndex = DatastoreUtils.getDataIndexName(scopeId, time, indexingWindowOption);
         } catch (KapuaException kaex) {
             throw new ClientException(ClientErrorCodes.INTERNAL_ERROR, kaex, "Error while generating index name");
@@ -149,7 +149,7 @@ public class Schema {
         }
 
         LOG.trace("Sending dynamic message mappings: {}", metricsMapping);
-        DatastoreClientFactory.getInstance().putMapping(new TypeDescriptor(currentMetadata.getDataIndexName(), MessageSchema.MESSAGE_TYPE_NAME), metricsMapping);
+        DatastoreClientFactory.getInstance().getElasticsearchClient().putMapping(new TypeDescriptor(currentMetadata.getDataIndexName(), MessageSchema.MESSAGE_TYPE_NAME), metricsMapping);
     }
 
     private ObjectNode getNewMessageMappingsBuilder(Map<String, Metric> esMetrics) throws DatamodelMappingException {
@@ -217,17 +217,17 @@ public class Schema {
     }
 
     private ObjectNode getMappingSchema(String idxName) throws DatamodelMappingException {
-        String idxRefreshInterval = String.format("%ss", DatastoreSettings.getInstance().getLong(DatastoreSettingKey.INDEX_REFRESH_INTERVAL));
-        Integer idxShardNumber = DatastoreSettings.getInstance().getInt(DatastoreSettingKey.INDEX_SHARD_NUMBER, 1);
-        Integer idxReplicaNumber = DatastoreSettings.getInstance().getInt(DatastoreSettingKey.INDEX_REPLICA_NUMBER, 0);
+        String idxRefreshInterval = String.format("%ss", DatastoreSettings.getInstance().getLong(DatastoreSettingsKey.INDEX_REFRESH_INTERVAL));
+        Integer idxShardNumber = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.INDEX_SHARD_NUMBER, 1);
+        Integer idxReplicaNumber = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.INDEX_REPLICA_NUMBER, 0);
 
         ObjectNode rootNode = SchemaUtil.getObjectNode();
-        ObjectNode refreshIntervaleNode = SchemaUtil.getField(new KeyValueEntry[]{
+        ObjectNode refreshIntervalNode = SchemaUtil.getField(new KeyValueEntry[]{
                 new KeyValueEntry(SchemaKeys.KEY_REFRESH_INTERVAL, idxRefreshInterval),
                 new KeyValueEntry(SchemaKeys.KEY_SHARD_NUMBER, idxShardNumber),
                 new KeyValueEntry(SchemaKeys.KEY_REPLICA_NUMBER, idxReplicaNumber)});
 
-        rootNode.set(SchemaKeys.KEY_INDEX, refreshIntervaleNode);
+        rootNode.set(SchemaKeys.KEY_INDEX, refreshIntervalNode);
         LOG.info("Creating index for '{}' - refresh: '{}' - shards: '{}' replicas: '{}': ", idxName, idxRefreshInterval, idxShardNumber, idxReplicaNumber);
         return rootNode;
     }

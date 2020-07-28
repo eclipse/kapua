@@ -11,30 +11,26 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.test.junit.clientTransport;
 
-import org.assertj.core.api.Assertions;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
-import org.eclipse.kapua.service.elasticsearch.client.transport.EsTransportClientProvider;
-import org.elasticsearch.client.transport.TransportClient;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import java.net.UnknownHostException;
 
 @Ignore
 @Category(JUnitTests.class)
 public class EsClientTest {
 
     @Test
-    public void elascticSearchClientShouldDefaultToLocalhost() throws UnknownHostException, ClientUnavailableException {
-        // When
-        EsTransportClientProvider.init();
-        TransportClient client = EsTransportClientProvider.getInstance().getClient();
-
-        // Then
-        String host = client.listedNodes().get(0).getHostAddress();
-        Assertions.assertThat(host).isEqualTo("127.0.0.1");
+    public void elascticSearchClientShouldDefaultToLocalhost() throws ClientInitializationException {
+//        // When
+//        TransportElasticsearchClientProvider transportElasticsearchClientProvider = new TransportElasticsearchClientProvider();
+//        transportElasticsearchClientProvider.init();
+//        Client client = transportElasticsearchClientProvider.getElasticsearchClient().getClient();
+//
+//        // Then
+//        String host = client.settings().listedNodes().get(0).getHostAddress();
+//        Assertions.assertThat(host).isEqualTo("127.0.0.1");
     }
 
 }

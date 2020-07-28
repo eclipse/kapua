@@ -30,7 +30,7 @@ import org.junit.runner.RunWith;
                 "classpath:features/account/AccountTagService.feature",
                 "classpath:features/account/AccountUserService.feature",
                 "classpath:features/account/AccountCredentialService.feature"
-                },
+        },
         glue = {"org.eclipse.kapua.qa.common",
                 "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps",
@@ -50,9 +50,9 @@ import org.junit.runner.RunWith;
 @CucumberProperty(key = "commons.db.schema.update", value = "")
 @CucumberProperty(key = "commons.db.connection.host", value = "")
 @CucumberProperty(key = "commons.db.connection.port", value = "")
-@CucumberProperty(key = "datastore.elasticsearch.nodes", value = "")
+@CucumberProperty(key = "datastore.elasticsearch.node", value = "")
 @CucumberProperty(key = "datastore.elasticsearch.port", value = "")
-@CucumberProperty(key = "datastore.client.class", value = "")
+@CucumberProperty(key = "datastore.elasticsearch.provider", value = "")
 @CucumberProperty(key = "commons.eventbus.url", value = "")
 @CucumberProperty(key = "certificate.jwt.private.key", value = "")
 @CucumberProperty(key = "certificate.jwt.certificate", value = "")

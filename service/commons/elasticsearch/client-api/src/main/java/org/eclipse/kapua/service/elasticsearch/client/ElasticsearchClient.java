@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.elasticsearch.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientConfiguration;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateRequest;
@@ -44,6 +45,74 @@ public interface ElasticsearchClient<C extends Closeable> {
      * @since 1.0.0
      */
     void init();
+
+    /**
+     * Gets the org.elasticsearch.Client.
+     *
+     * @return The org.elasticsearch.Client.
+     * @since 1.3.0
+     */
+    C getClient();
+
+    /**
+     * Sets the org.elasticsearch.Client to use with {@link ElasticsearchClient}.
+     *
+     * @param client The org.elasticsearch.Client
+     * @return Itself, to chain invocations.
+     * @since 1.3.0
+     */
+    ElasticsearchClient<C> withClient(C client);
+
+    /**
+     * Gets the {@link ElasticsearchClientConfiguration}.
+     *
+     * @return The {@link ElasticsearchClientConfiguration}.
+     * @since 1.3.0
+     */
+    ElasticsearchClientConfiguration getClientConfiguration();
+
+    /**
+     * Sets the {@link ElasticsearchClientConfiguration} to use with the {@link ElasticsearchClient}.
+     *
+     * @param clientConfiguration The {@link ElasticsearchClientConfiguration}.
+     * @return Itself, to chain invocations.
+     * @since 1.3.0
+     */
+    ElasticsearchClient<C> withClientConfiguration(ElasticsearchClientConfiguration clientConfiguration);
+
+    /**
+     * Gets the {@link ModelContext}
+     *
+     * @return The {@link ModelContext}
+     * @since 1.3.0
+     */
+    ModelContext getModelContext();
+
+    /**
+     * Sets the {@link ModelContext}.
+     *
+     * @param modelContext The {@link ModelContext}.
+     * @return Itself, to chain invocations.
+     * @since 1.3.0
+     */
+    ElasticsearchClient<C> withModelContext(ModelContext modelContext);
+
+    /**
+     * Gets the {@link QueryConverter}
+     *
+     * @return The {@link QueryConverter}
+     * @since 1.3.0
+     */
+    QueryConverter getModelConverter();
+
+    /**
+     * Sets the {@link QueryConverter}.
+     *
+     * @param modelConverter The {@link QueryConverter}.
+     * @return Itself, to chain invocations.
+     * @since 1.3.0
+     */
+    ElasticsearchClient<C> withModelConverter(QueryConverter modelConverter);
 
     /**
      * Closes the underlying Elasticsearch connection.
@@ -230,20 +299,4 @@ public interface ElasticsearchClient<C extends Closeable> {
      * @since 1.0.0
      */
     IndexResponse findIndexes(IndexRequest indexRequest) throws ClientException;
-
-    /**
-     * Sets the {@link ModelContext}.
-     *
-     * @param modelContext The {@link ModelContext}.
-     * @since 1.0.0
-     */
-    void setModelContext(ModelContext modelContext);
-
-    /**
-     * Sets the {@link QueryConverter}.
-     *
-     * @param queryConverter The {@link QueryConverter}.
-     * @since 1.0.0
-     */
-    void setQueryConverter(QueryConverter queryConverter);
 }

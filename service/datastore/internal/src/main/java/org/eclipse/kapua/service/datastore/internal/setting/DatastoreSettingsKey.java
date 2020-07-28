@@ -18,14 +18,9 @@ import org.eclipse.kapua.commons.setting.SettingKey;
  * Datastore setting keys.
  *
  * @since 1.0
- *
  */
-public enum DatastoreSettingKey implements SettingKey {
+public enum DatastoreSettingsKey implements SettingKey {
 
-    /**
-     * Client class implementation name
-     */
-    CONFIG_CLIENT_CLASS("datastore.client.class"),
     /**
      * Local cache expire time
      */
@@ -77,7 +72,7 @@ public enum DatastoreSettingKey implements SettingKey {
 
     private String key;
 
-    private DatastoreSettingKey(String key) {
+    private DatastoreSettingsKey(String key) {
         this.key = key;
     }
 

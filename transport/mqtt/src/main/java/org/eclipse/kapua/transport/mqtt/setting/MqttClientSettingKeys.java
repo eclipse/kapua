@@ -79,7 +79,7 @@ public enum MqttClientSettingKeys implements SettingKey {
      * @param key The value mapped by this {@link Enum} value
      * @since 1.0.0
      */
-    private MqttClientSettingKeys(String key) {
+    MqttClientSettingKeys(String key) {
         this.key = key;
     }
 

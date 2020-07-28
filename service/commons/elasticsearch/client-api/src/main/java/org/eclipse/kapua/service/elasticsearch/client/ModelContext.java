@@ -32,13 +32,6 @@ public interface ModelContext {
     String TYPE_DESCRIPTOR_KEY = "type_descriptor";
 
     /**
-     * Datastore object id descriptor key
-     *
-     * @since 1.0.0
-     */
-    String DATASTORE_ID_KEY = "datastore_id";
-
-    /**
      * Converts the serialized object (from client domain) to the specific Elasticsearch object.
      *
      * @param clazz            The client object type
@@ -58,5 +51,13 @@ public interface ModelContext {
      * @since 1.0.0
      */
     Map<String, Object> marshal(Object object) throws DatamodelMappingException;
+
+    /**
+     * Gets the key name of the id field.
+     *
+     * @return The key name of the id field.
+     * @since 1.3.0
+     */
+    String getIdKeyName();
 
 }

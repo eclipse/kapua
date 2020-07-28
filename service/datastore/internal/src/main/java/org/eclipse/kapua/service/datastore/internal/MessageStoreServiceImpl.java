@@ -36,8 +36,8 @@ import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationExcept
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreCommunicationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
-import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.StorableId;
@@ -73,7 +73,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     protected final AccountService accountService = LOCATOR.getService(AccountService.class);
     protected final AuthorizationService authorizationService = LOCATOR.getService(AuthorizationService.class);
     protected final PermissionFactory permissionFactory = LOCATOR.getFactory(PermissionFactory.class);
-    protected static final Integer MAX_ENTRIES_ON_DELETE = DatastoreSettings.getInstance().getInt(DatastoreSettingKey.CONFIG_MAX_ENTRIES_ON_DELETE);
+    protected static final Integer MAX_ENTRIES_ON_DELETE = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.CONFIG_MAX_ENTRIES_ON_DELETE);
 
     protected final MessageStoreFacade messageStoreFacade;
 
@@ -227,7 +227,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
 
     @Override
     protected boolean isServiceEnabled(KapuaId scopeId) {
-        return !DatastoreSettings.getInstance().getBoolean(DatastoreSettingKey.DISABLE_DATASTORE, false);
+        return !DatastoreSettings.getInstance().getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false);
     }
 
 }

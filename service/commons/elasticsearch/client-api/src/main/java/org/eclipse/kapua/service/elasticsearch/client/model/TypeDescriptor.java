@@ -22,6 +22,14 @@ public class TypeDescriptor {
     private String type;
 
     /**
+     * Empty constructor required by JAXB.
+     *
+     * @since 1.0.0
+     */
+    public TypeDescriptor() {
+    }
+
+    /**
      * Constuctor.
      *
      * @param index The index of this {@link #getType()}

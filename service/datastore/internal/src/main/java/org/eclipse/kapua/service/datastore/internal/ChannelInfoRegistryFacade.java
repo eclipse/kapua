@@ -51,7 +51,6 @@ public class ChannelInfoRegistryFacade {
     private final ChannelInfoRegistryMediator mediator;
     private final ConfigurationProvider configProvider;
     private final Object metadataUpdateSync = new Object();
-    private ElasticsearchClient client;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
@@ -64,10 +63,9 @@ public class ChannelInfoRegistryFacade {
      * @throws ClientInitializationException
      * @since 1.0.0
      */
-    public ChannelInfoRegistryFacade(ConfigurationProvider configProvider, ChannelInfoRegistryMediator mediator) throws ClientInitializationException {
+    public ChannelInfoRegistryFacade(ConfigurationProvider configProvider, ChannelInfoRegistryMediator mediator) {
         this.configProvider = configProvider;
         this.mediator = mediator;
-        this.client = DatastoreClientFactory.getInstance();
     }
 
     /**
@@ -104,7 +102,7 @@ public class ChannelInfoRegistryFacade {
                         String registryIndexName = metadata.getRegistryIndexName();
 
                         UpdateRequest request = new UpdateRequest(channelInfo.getId().toString(), new TypeDescriptor(metadata.getRegistryIndexName(), ChannelInfoSchema.CHANNEL_TYPE_NAME), channelInfo);
-                        response = client.upsert(request);
+                        response = getElasticsearchClient().upsert(request);
 
                         LOG.debug("Upsert on channel successfully executed [{}.{}, {} - {}]", registryIndexName, ChannelInfoSchema.CHANNEL_TYPE_NAME, channelInfoId, response.getId());
                         }
@@ -145,7 +143,7 @@ public class ChannelInfoRegistryFacade {
         if (channelInfo != null) {
             mediator.onBeforeChannelInfoDelete(channelInfo);
             TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);
-            client.delete(typeDescriptor, id.toString());
+            getElasticsearchClient().delete(typeDescriptor, id.toString());
         }
     }
 
@@ -197,7 +195,7 @@ public class ChannelInfoRegistryFacade {
 
         String indexName = SchemaUtil.getKapuaIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);
-        return new ChannelInfoListResultImpl(client.query(typeDescriptor, query, ChannelInfo.class));
+        return new ChannelInfoListResultImpl(getElasticsearchClient().query(typeDescriptor, query, ChannelInfo.class));
     }
 
     /**
@@ -223,7 +221,7 @@ public class ChannelInfoRegistryFacade {
 
         String indexName = SchemaUtil.getKapuaIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);
-        return client.count(typeDescriptor, query);
+        return getElasticsearchClient().count(typeDescriptor, query);
     }
 
     /**
@@ -257,7 +255,10 @@ public class ChannelInfoRegistryFacade {
         }
 
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);
-        client.deleteByQuery(typeDescriptor, query);
+        getElasticsearchClient().deleteByQuery(typeDescriptor, query);
     }
 
+    private ElasticsearchClient<?> getElasticsearchClient() throws ClientInitializationException {
+        return DatastoreClientFactory.getElasticsearchClient();
+    }
 }

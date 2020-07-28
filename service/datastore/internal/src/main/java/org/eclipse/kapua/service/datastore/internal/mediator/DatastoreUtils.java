@@ -12,23 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.mediator;
 
-import javax.validation.constraints.NotNull;
-
 import com.google.common.hash.Hashing;
-
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
-//import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-//import org.eclipse.kapua.service.datastore.MessageStoreService;
-import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
-
-import org.apache.commons.lang3.StringUtils;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.constraints.NotNull;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.time.Instant;
@@ -253,7 +248,7 @@ public class DatastoreUtils {
      */
     public static String getDataIndexName(KapuaId scopeId) {
         final StringBuilder sb = new StringBuilder();
-        final String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingKey.INDEX_PREFIX);
+        final String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingsKey.INDEX_PREFIX);
         if (StringUtils.isNotEmpty(prefix)) {
             sb.append(prefix).append("-");
         }
@@ -271,7 +266,7 @@ public class DatastoreUtils {
      */
     public static String getDataIndexName(KapuaId scopeId, long timestamp, String indexingWindowOption) throws KapuaException {
         final StringBuilder sb = new StringBuilder();
-        final String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingKey.INDEX_PREFIX);
+        final String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingsKey.INDEX_PREFIX);
         if (StringUtils.isNotEmpty(prefix)) {
             sb.append(prefix).append("-");
         }
@@ -303,7 +298,7 @@ public class DatastoreUtils {
      */
     public static String getRegistryIndexName(KapuaId scopeId) {
         final StringBuilder sb = new StringBuilder();
-        final String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingKey.INDEX_PREFIX);
+        final String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingsKey.INDEX_PREFIX);
         if (StringUtils.isNotEmpty(prefix)) {
             sb.append(prefix).append("-");
         }

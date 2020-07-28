@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
         },
         strict = true,
         monochrome = true)
-@CucumberProperty(key = "datastore.client.class", value = "org.eclipse.kapua.service.elasticsearch.client.rest.RestElasticsearchClient")
+@CucumberProperty(key = "datastore.elasticsearch.provider", value = "org.eclipse.kapua.service.elasticsearch.client.rest.RestElasticsearchClientProvider")
 @CucumberProperty(key = "org.eclipse.kapua.qa.datastore.extraStartupDelay", value = "1")
 @CucumberProperty(key = "org.eclipse.kapua.qa.broker.extraStartupDelay", value = "1")
 public class RunTenantSEI9nTest {

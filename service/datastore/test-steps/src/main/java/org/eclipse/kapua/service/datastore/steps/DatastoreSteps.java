@@ -71,7 +71,7 @@ import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.ClientInfoSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.MetricInfoSchema;
-import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
@@ -314,7 +314,7 @@ public class DatastoreSteps extends TestBase {
         deviceFactory = locator.getFactory(DeviceFactory.class);
         messageStoreService = locator.getService(MessageStoreService.class);
         messageFactory = locator.getFactory(KapuaMessageFactory.class);
-        elasticsearchClient = DatastoreClientFactory.getInstance();
+        elasticsearchClient = DatastoreClientFactory.getInstance().getElasticsearchClient();
         storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
         datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
         storableIdFactory = locator.getFactory(StorableIdFactory.class);
@@ -2429,7 +2429,7 @@ public class DatastoreSteps extends TestBase {
     }
 
     private void setDatastoreIndexingWindowOption(String windowOption) {
-        System.setProperty(DatastoreSettingKey.INDEXING_WINDOW_OPTION.key(), windowOption.trim().toLowerCase());
+        System.setProperty(DatastoreSettingsKey.INDEXING_WINDOW_OPTION.key(), windowOption.trim().toLowerCase());
     }
 
     /**

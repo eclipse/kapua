@@ -52,7 +52,6 @@ public class ClientInfoRegistryFacade {
     private final ClientInfoRegistryMediator mediator;
     private final ConfigurationProvider configProvider;
     private final Object metadataUpdateSync = new Object();
-    private ElasticsearchClient client;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
@@ -68,7 +67,6 @@ public class ClientInfoRegistryFacade {
     public ClientInfoRegistryFacade(ConfigurationProvider configProvider, ClientInfoRegistryMediator mediator) throws ClientInitializationException {
         this.configProvider = configProvider;
         this.mediator = mediator;
-        this.client = DatastoreClientFactory.getInstance();
     }
 
     /**
@@ -106,7 +104,7 @@ public class ClientInfoRegistryFacade {
                         String kapuaIndexName = metadata.getRegistryIndexName();
 
                         UpdateRequest request = new UpdateRequest(clientInfo.getId().toString(), new TypeDescriptor(kapuaIndexName, ClientInfoSchema.CLIENT_TYPE_NAME), clientInfo);
-                        response = client.upsert(request);
+                        response = getElasticsearchClient().upsert(request);
 
                         LOG.debug("Upsert on asset successfully executed [{}.{}, {} - {}]", kapuaIndexName, ClientInfoSchema.CLIENT_TYPE_NAME, response.getId(), response.getId());
                         }
@@ -143,7 +141,7 @@ public class ClientInfoRegistryFacade {
 
         String indexName = SchemaUtil.getKapuaIndexName(scopeId);
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ClientInfoSchema.CLIENT_TYPE_NAME);
-        client.delete(typeDescriptor, id.toString());
+        getElasticsearchClient().delete(typeDescriptor, id.toString());
     }
 
     /**
@@ -194,7 +192,7 @@ public class ClientInfoRegistryFacade {
 
         String indexName = SchemaUtil.getKapuaIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ClientInfoSchema.CLIENT_TYPE_NAME);
-        return new ClientInfoListResultImpl(client.query(typeDescriptor, query, ClientInfo.class));
+        return new ClientInfoListResultImpl(getElasticsearchClient().query(typeDescriptor, query, ClientInfo.class));
     }
 
     /**
@@ -220,7 +218,7 @@ public class ClientInfoRegistryFacade {
 
         String dataIndexName = SchemaUtil.getKapuaIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(dataIndexName, ClientInfoSchema.CLIENT_TYPE_NAME);
-        return client.count(typeDescriptor, query);
+        return getElasticsearchClient().count(typeDescriptor, query);
     }
 
     /**
@@ -247,7 +245,10 @@ public class ClientInfoRegistryFacade {
 
         String indexName = SchemaUtil.getKapuaIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ClientInfoSchema.CLIENT_TYPE_NAME);
-        client.deleteByQuery(typeDescriptor, query);
+        getElasticsearchClient().deleteByQuery(typeDescriptor, query);
     }
 
+    private ElasticsearchClient<?> getElasticsearchClient() throws ClientInitializationException {
+        return DatastoreClientFactory.getElasticsearchClient();
+    }
 }

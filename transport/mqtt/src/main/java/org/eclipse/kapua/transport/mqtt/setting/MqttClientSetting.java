@@ -22,21 +22,21 @@ public class MqttClientSetting extends AbstractKapuaSetting<MqttClientSettingKey
 
     /**
      * Resource file from which source properties.
-     * 
+     *
      * @since 1.0.0
      */
     private static final String MQTT_CLIENT_CONFIG_RESOURCE = "mqtt-client-setting.properties";
 
     /**
      * Singleton instance of this {@link Class}.
-     * 
+     *
      * @since 1.0.0
      */
     private static final MqttClientSetting INSTANCE = new MqttClientSetting();
 
     /**
      * Initialize the {@link AbstractKapuaSetting} with the {@link MqttClientSetting#MQTT_CLIENT_CONFIG_RESOURCE} value.
-     * 
+     *
      * @since 1.0.0
      */
     private MqttClientSetting() {
@@ -45,8 +45,8 @@ public class MqttClientSetting extends AbstractKapuaSetting<MqttClientSettingKey
 
     /**
      * Gets a singleton instance of {@link MqttClientSetting}.
-     * 
-     * @return A singleton instance of JmsClientSetting.
+     *
+     * @return A singleton instance of {@link MqttClientSetting}.
      * @since 1.0.0
      */
     public static MqttClientSetting getInstance() {

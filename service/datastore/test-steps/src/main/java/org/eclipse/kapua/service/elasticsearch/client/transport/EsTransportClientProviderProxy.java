@@ -11,11 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.transport;
 
-import org.eclipse.kapua.commons.setting.AbstractBaseKapuaSetting;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
-
 import java.net.InetSocketAddress;
-import java.util.List;
 
 /*******************************************************************************
  * This proxy class is only used to access the otherwise package-restricted
@@ -31,10 +27,12 @@ public class EsTransportClientProviderProxy {
     }
 
     public static InetSocketAddress parseAddress(String node) {
-        return EsTransportClientProvider.parseAddress(node);
+        String[] nodeParts = node.split(":");
+
+        return new InetSocketAddress(nodeParts[0], nodeParts.length == 2 ? Integer.parseInt(nodeParts[1]) : 9200);
     }
 
-    public static List<InetSocketAddress> parseAddresses(AbstractBaseKapuaSetting<ClientSettingsKey> settings) throws ClientUnavailableException {
-        return EsTransportClientProvider.parseAddresses(settings);
-    }
+//    public static List<InetSocketAddress> parseAddresses(AbstractBaseKapuaSetting<DatastoreElasticsearchClientSettingsKey> settings) throws ClientUnavailableException {
+//        return TransportElasticsearchClientProvider.parseAddresses(settings);
+//    }
 }
