@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -40,7 +40,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-//@Path("{scopeId}/devices/{deviceId}/operations/{operationId}/notifications")
+@Path("{scopeId}/devices/{deviceId}/operations/{operationId}/notifications")
 public class DeviceManagementOperationNotifications extends AbstractKapuaResource {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
