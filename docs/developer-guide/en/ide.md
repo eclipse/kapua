@@ -42,7 +42,7 @@ to re-use this. You can run the same instance with multiple workspaces.
 
 ### Install additional plugins
 
-There are a set of plugins for the Eclipse IDE which help in the development
+There is a set of plugins for the Eclipse IDE which help in the development
 process. And while they are not required, it is recommended to install them
 in order to simplify the development process.
 
@@ -66,7 +66,7 @@ Eclipse IDE window:
 
 <dt>EclEmma</dt>
 <dl>
-<p>EclEmma is a plugin which can analyze code coverage when running unit tests.</p>
+<p>EclEmma is a plugin that can analyze code coverage when running unit tests.</p>
 <p><a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=264" class="drag" title="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client"><img class="img-responsive" src="https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.png" alt="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client" /></a></p>
 <dl>
 
@@ -80,7 +80,7 @@ will show those errors already in the IDE once the file is saved.</p>
 <dt>YEdit</dt>
 <dl>
 <p>
-YEdit is a YAML editor for Eclipse. It can help editing the different YAML files which Kapua uses.
+YEdit is a YAML editor for Eclipse. It can help to edit the different YAML files which Kapua uses.
 </p>
 <p><a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=949" class="drag" title="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client"><img class="img-responsive" src="https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.png" alt="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client" /></a></p>
 <dl>
