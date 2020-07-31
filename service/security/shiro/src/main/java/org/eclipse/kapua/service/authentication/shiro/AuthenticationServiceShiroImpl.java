@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.authentication.shiro;
 import java.util.Date;
 import java.util.UUID;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
@@ -131,9 +132,11 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         } else if (loginCredentials instanceof ApiKeyCredentialsImpl) {
             shiroAuthenticationToken = new ApiKeyCredentialsImpl(((ApiKeyCredentialsImpl) loginCredentials).getApiKey());
         } else if (loginCredentials instanceof JwtCredentialsImpl) {
-            shiroAuthenticationToken = new JwtCredentialsImpl(((JwtCredentialsImpl) loginCredentials).getJwt(),
-                    ((JwtCredentialsImpl) loginCredentials).getIdToken());
             openIDidToken = ((JwtCredentialsImpl) loginCredentials).getIdToken();
+            if (Strings.isNullOrEmpty(openIDidToken)) {
+                throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS);
+            }
+            shiroAuthenticationToken = new JwtCredentialsImpl(((JwtCredentialsImpl) loginCredentials).getJwt(), openIDidToken);
         } else {
             throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED);
         }
