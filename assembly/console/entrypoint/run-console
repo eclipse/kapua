@@ -42,14 +42,12 @@ if [ -n "$KAPUA_CONSOLE_URL" ] && [ -n "$OPENID_JWT_ISSUER" ] && [ -n "$OPENID_A
    echo "  Token Endpoint: $OPENID_TOKEN_ENDPOINT"
 
    : OPENID_CLIENT_ID=${OPENID_CLIENT_ID:=console}
-   : JWT_AUDIENCE=${JWT_AUDIENCE:=console}
 
    JAVA_OPTS="$JAVA_OPTS -Dsso.provider=generic"
    JAVA_OPTS="$JAVA_OPTS -Dsso.openid.client.id=${OPENID_CLIENT_ID}"
    test -n "$CLIENT_SECRET" && JAVA_OPTS="$JAVA_OPTS -Dsso.openid.client.secret=${CLIENT_SECRET}"
    JAVA_OPTS="$JAVA_OPTS -Dconsole.sso.home.uri=${KAPUA_CONSOLE_URL}"
 
-   JAVA_OPTS="$JAVA_OPTS -Dsso.generic.openid.jwt.audience.allowed=${JWT_AUDIENCE}"
    JAVA_OPTS="$JAVA_OPTS -Dsso.generic.openid.jwt.issuer.allowed=${OPENID_JWT_ISSUER}"
    JAVA_OPTS="$JAVA_OPTS -Dsso.generic.openid.server.endpoint.auth=${OPENID_AUTH_ENDPOINT}"
    JAVA_OPTS="$JAVA_OPTS -Dsso.generic.openid.server.endpoint.logout=${OPENID_LOGOUT_ENDPOINT}"

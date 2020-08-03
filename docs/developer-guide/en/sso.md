@@ -20,8 +20,11 @@ The current default providers are:
 Each provider will require additional configuration options. But there is a set of common configuration
 options:
 
-- **`sso.openid.client.id`** : 
-    the "client id" used when communicating with the OpenID Connect server.
+- **`sso.openid.client.id`** : the "client id" used when communicating with the OpenID Connect server. 
+    According to the official OpenID Connect specification (see [here](https://openid.net/specs/openid-connect-core-1_0.html#IDToken),
+    the token containa a list of audiences (described by the `aud` claim). 
+    When the token is received, we need to validate that the audience contains the `client_id` corresponding to the Kapua Console. 
+    Only one  `client_id` corresponds to the Kapua Console (if multiple client_ids are present in the audience, they correspond to other clients).
 - **`sso.openid.client.secret` (optional)** : 
     the "client secret" used when communicating with the OpenID Connect server.
 - **`sso.openid.jwt-processor-timeout` (optional)** : the JwtProcessor expiration time (the default value is 1 hour).
@@ -41,7 +44,6 @@ documentation to look up the required values:
 - **`sso.generic.openid.server.endpoint.auth`** : the endpoint URL to the authentication API.
 - **`sso.generic.openid.server.endpoint.logout`** : the logout endpoint of the OpenID provider.
 - **`sso.generic.openid.server.endpoint.token`** : the endpoint URL to the token API.
-- **`sso.generic.openid.jwt.audience.allowed`** : the JWT audience.
 - **`sso.generic.openid.jwt.issuer.allowed`** : the base URL to the OpenID server provider.
 
 ### Keycloak provider

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Red Hat Inc and others
+ * Copyright (c) 2017, 2020 Red Hat Inc and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -18,7 +18,6 @@ public enum GenericSsoSettingKeys implements SettingKey {
     SSO_OPENID_SERVER_ENDPOINT_AUTH("sso.generic.openid.server.endpoint.auth"), //
     SSO_OPENID_SERVER_ENDPOINT_TOKEN("sso.generic.openid.server.endpoint.token"), //
     SSO_OPENID_SERVER_ENDPOINT_LOGOUT("sso.generic.openid.server.endpoint.logout"),
-    SSO_OPENID_JWT_AUDIENCE_ALLOWED("sso.generic.openid.jwt.audience.allowed"),
     SSO_OPENID_JWT_ISSUER_ALLOWED("sso.generic.openid.jwt.issuer.allowed"),
     ;
 
