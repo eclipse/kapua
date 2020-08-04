@@ -35,14 +35,19 @@ The SSO Login will be available in the form of a dedicated button on the Kapua l
 
 ### Generic provider
 
-The following values are specific to your OpenID Connection solution, please use its
-documentation to look up the required values:
+The generic provider configuration values are retrieved through the `well-known` OpenID configuration document provided by the OpenID Provider 
+(see the official [OpenID Connect Discovery specification](https://openid.net/specs/openid-connect-discovery-1_0.html) for further information).
+The `issuer` is the only required parameter. However, custom parameters can be added through the following properties, and are used in case the automatic 
+configuration through the `well-known` document fails.
+The required values are specific to your OpenID Connect solution, please use its documentation to look up the required values:
 
-- **`sso.generic.openid.server.endpoint.auth`** : the endpoint URL to the authentication API.
-- **`sso.generic.openid.server.endpoint.logout`** : the logout endpoint of the OpenID provider.
-- **`sso.generic.openid.server.endpoint.token`** : the endpoint URL to the token API.
-- **`sso.generic.openid.jwt.audience.allowed`** : the JWT audience.
 - **`sso.generic.openid.jwt.issuer.allowed`** : the base URL to the OpenID server provider.
+- **`sso.generic.openid.jwt.audience.allowed`** : the JWT audience.
+- **`sso.generic.openid.server.endpoint.auth` (optional)** : the endpoint URL to the authentication API.
+- **`sso.generic.openid.server.endpoint.logout`(optional)** : the logout endpoint of the OpenID provider.
+- **`sso.generic.openid.server.endpoint.token` (optional)** : the endpoint URL to the token API.
+- **`sso.generic.openid.conf.wellknown.path` (optional)** : to provide a custom OpenID well-known suffix (the default one is `/.well-known/openid-configuration` 
+and it's attached as suffix to the issuer).
 
 ### Keycloak provider
 
