@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.eclipse.kapua.commons.model.query.predicate.AbstractMatchPredicate;
@@ -20,13 +19,12 @@ public class DeviceMatchPredicate<T> extends AbstractMatchPredicate<T> {
 
     /**
      * Constructor.
-     * <p>
      *
      * @param matchTerm
-     * @since 1.2.0
+     * @since 1.3.0
      */
     public DeviceMatchPredicate(T matchTerm) {
-        this.attributeNames = new ArrayList<>(Arrays.asList(
+        this.attributeNames = Arrays.asList(
                 DeviceAttributes.CLIENT_ID,
                 DeviceAttributes.DISPLAY_NAME,
                 DeviceAttributes.SERIAL_NUMBER,
@@ -39,7 +37,7 @@ public class DeviceMatchPredicate<T> extends AbstractMatchPredicate<T> {
                 DeviceAttributes.OSGI_FRAMEWORK_VERSION,
                 DeviceAttributes.APPLICATION_FRAMEWORK_VERSION,
                 DeviceAttributes.CONNECTION_INTERFACE,
-                DeviceAttributes.CONNECTION_IP)
+                DeviceAttributes.CONNECTION_IP
         );
         this.matchTerm = matchTerm;
     }

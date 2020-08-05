@@ -18,7 +18,7 @@ import org.eclipse.kapua.model.query.predicate.MatchPredicate;
 /**
  * {@link MatchPredicate} implementation.
  *
- * @since 1.2.0
+ * @since 1.3.0
  */
 public class AbstractMatchPredicate<T> implements MatchPredicate<T> {
 

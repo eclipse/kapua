@@ -15,7 +15,7 @@ package org.eclipse.kapua.model.query.predicate;
  * {@link AttributePredicate} definition.
  *
  * @param <T> Attribute value type.
- * @since 1.0.0
+ * @since 1.3.0
  */
 public interface AttributePredicate<T> extends QueryPredicate {
 
@@ -24,51 +24,51 @@ public interface AttributePredicate<T> extends QueryPredicate {
      * <p>
      * Determines how the values of the result set are compared with the given {@link AttributePredicate#getAttributeValue()}
      *
-     * @since 1.0.0
+     * @since 1.3.0
      */
     enum Operator {
         /**
-         * {@link #EQUAL} {@link Operator}
+         * {@literal #EQUAL} {@link Operator}
          * <p>
          * Matches results with the same value.
          *
-         * @since 1.0.0
+         * @since 1.3.0
          */
         EQUAL,
 
         /**
-         * {@link #NOT_EQUAL} {@link Operator}
+         * {@literal #NOT_EQUAL} {@link Operator}
          * <p>
          * Matches results with not the same value.
          *
-         * @since 1.0.0
+         * @since 1.3.0
          */
         NOT_EQUAL,
 
         /**
-         * {@link #IS_NULL} {@link Operator}
+         * {@literal #IS_NULL} {@link Operator}
          * <p>
          * Matches results with value {@code null}.
          *
-         * @since 1.0.0
+         * @since 1.3.0
          */
         IS_NULL,
         /**
-         * {@link #NOT_NULL} {@link Operator}
+         * {@literal #NOT_NULL} {@link Operator}
          * <p>
          * Matches results with value NOT {@code null}.
          *
-         * @since 1.0.0
+         * @since 1.3.0
          */
         NOT_NULL,
 
         /**
-         * {@link #STARTS_WITH} {@link Operator}
+         * {@literal #STARTS_WITH} {@link Operator}
          * <p>
          * Matches results with value that starts with the given value.
          * To be used with {@link String} {@link org.eclipse.kapua.model.KapuaEntityAttributes}.
          *
-         * @since 1.0.0
+         * @since 1.3.0
          */
         STARTS_WITH,
 
@@ -78,19 +78,19 @@ public interface AttributePredicate<T> extends QueryPredicate {
          * Matches results with value that starts with the given value, case insensitive.
          * To be used with {@link String} {@link org.eclipse.kapua.model.KapuaEntityAttributes}.
          *
-         * @since 1.2.0
+         * @since 1.3.0
          */
         STARTS_WITH_IGNORE_CASE,
 
         /**
-         * {@link #LIKE} {@link Operator}
+         * {@literal #LIKE} {@link Operator}
          * <p>
          * Matches results with value that are like (in SQL fashion) the given value.
          * To be used with {@link String} {@link org.eclipse.kapua.model.KapuaEntityAttributes}.
          * <p>
          * If you want to match only the beginning of the {@link String} please consider using {@link #STARTS_WITH}.
          *
-         * @since 1.0.0
+         * @since 1.3.0
          */
         LIKE,
 
@@ -102,44 +102,47 @@ public interface AttributePredicate<T> extends QueryPredicate {
          * <p>
          * If you want to match only the beginning of the {@link String} please consider using {@link #STARTS_WITH_IGNORE_CASE}.
          *
-         * @since 1.2.0
+         * @since 1.3.0
          */
         LIKE_IGNORE_CASE,
 
         /**
-         * {@link #GREATER_THAN} {@link Operator}
+         * {@literal #GREATER_THAN} {@link Operator}
          * <p>
          * Matches result with value that is greater but not equal.
          * To be used with {@link Comparable} types.
          *
-         * @since 1.0.0
+         * @since 1.3.0
          */
         GREATER_THAN,
+
         /**
-         * {@link #GREATER_THAN_OR_EQUAL} {@link Operator}
+         * {@literal #GREATER_THAN_OR_EQUAL} {@link Operator}
          * <p>
          * Matches result with value that is greater or equal.
          * To be used with {@link Comparable} types.
          *
-         * @since 1.0.0
+         * @since 1.3.0
          */
         GREATER_THAN_OR_EQUAL,
+
         /**
-         * {@link #LESS_THAN} {@link Operator}
+         * {@literal #LESS_THAN} {@link Operator}
          * <p>
          * Matches result with value that is less but not equal.
          * To be used with {@link Comparable} types.
          *
-         * @since 1.0.0
+         * @since 1.3.0
          */
         LESS_THAN,
+
         /**
-         * {@link #LESS_THAN_OR_EQUAL} {@link Operator}
+         * {@literal #LESS_THAN_OR_EQUAL} {@link Operator}
          * <p>
          * Matches result with value that is less or equal.
          * To be used with {@link Comparable} types.
          *
-         * @since 1.0.0
+         * @since 1.3.0
          */
         LESS_THAN_OR_EQUAL
     }
@@ -148,7 +151,7 @@ public interface AttributePredicate<T> extends QueryPredicate {
      * Gets the name of the {@link org.eclipse.kapua.model.KapuaEntityAttributes} to compare.
      *
      * @return The name name of the {@link org.eclipse.kapua.model.KapuaEntityAttributes} to compare.
-     * @since 1.0.0
+     * @since 1.3.0
      */
     String getAttributeName();
 
@@ -156,7 +159,7 @@ public interface AttributePredicate<T> extends QueryPredicate {
      * Gets the value to compare the results.
      *
      * @return The value to compare the results.
-     * @since 1.0.0
+     * @since 1.3.0
      */
     T getAttributeValue();
 
@@ -164,7 +167,7 @@ public interface AttributePredicate<T> extends QueryPredicate {
      * Get the {@link Operator} used to compare results.
      *
      * @return The {@link Operator} used to compare results.
-     * @since 1.0.0
+     * @since 1.3.0
      */
     Operator getOperator();
 }

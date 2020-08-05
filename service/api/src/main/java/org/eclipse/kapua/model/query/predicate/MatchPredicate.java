@@ -17,7 +17,7 @@ import java.util.List;
  * {@link MatchPredicate} definition.
  *
  * @param <T> Attribute value type.
- * @since 1.2.0
+ * @since 1.3.0
  */
 public interface MatchPredicate<T> extends QueryPredicate {
 
@@ -25,7 +25,7 @@ public interface MatchPredicate<T> extends QueryPredicate {
      * Gets the name of the {@link org.eclipse.kapua.model.KapuaEntityAttributes} to compare.
      *
      * @return The name name of the {@link org.eclipse.kapua.model.KapuaEntityAttributes} to compare.
-     * @since 1.0.0
+     * @since 1.3.0
      */
     List<String> getAttributeNames();
 
@@ -33,7 +33,7 @@ public interface MatchPredicate<T> extends QueryPredicate {
      * Gets the value to compare the results.
      *
      * @return The value to compare the results.
-     * @since 1.0.0
+     * @since 1.3.0
      */
     T getMatchTerm();
 
