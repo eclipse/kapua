@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,6 +17,7 @@ import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceAttributes;
+import org.eclipse.kapua.service.device.registry.DeviceMatchPredicate;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 
 /**
@@ -44,4 +45,10 @@ public class DeviceQueryImpl extends AbstractKapuaQuery<Device> implements Devic
         this();
         setScopeId(scopeId);
     }
+
+    @Override
+    public <T> DeviceMatchPredicate<T> matchPredicate(T matchTerm) {
+        return new DeviceMatchPredicate<>(matchTerm);
+    }
+
 }

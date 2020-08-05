@@ -18,5 +18,6 @@
         logicalFilePath="KapuaDB/changelog-device-1.3.0.xml">
 
     <include relativeToChangelogFile="true" file="./device_event-index_received_on.xml"/>
+    <include relativeToChangelogFile="true" file="./device-match-indexes.xml"/>
 
 </databaseChangeLog>

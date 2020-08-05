@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,7 +15,7 @@ import org.eclipse.kapua.model.KapuaUpdatableEntityAttributes;
 
 /**
  * {@link DeviceQuery} predicates.
- * 
+ *
  * @since 1.0.0
  */
 public class DeviceAttributes extends KapuaUpdatableEntityAttributes {
@@ -65,6 +65,11 @@ public class DeviceAttributes extends KapuaUpdatableEntityAttributes {
     public static final String CONNECTION_CLIENT_ID = CONNECTION + ".clientId";
 
     /**
+     * Connection Client IP
+     */
+    public static final String CLIENT_IP = CONNECTION + ".clientIp";
+
+    /**
      * Last event
      */
     public static final String LAST_EVENT = "lastEvent";
@@ -99,6 +104,10 @@ public class DeviceAttributes extends KapuaUpdatableEntityAttributes {
      * Model identifier
      */
     public static final String MODEL_ID = "modelId";
+    /**
+     * Model name
+     */
+    public static final String MODEL_NAME = "modelName";
     /**
      * Bios version
      */
@@ -159,7 +168,6 @@ public class DeviceAttributes extends KapuaUpdatableEntityAttributes {
      * Gps latitude
      */
     public static final String GPS_LATITUDE = "gpsLatitude";
-
     /**
      * Device status
      */
@@ -172,4 +180,12 @@ public class DeviceAttributes extends KapuaUpdatableEntityAttributes {
      * Preferred user identifier
      */
     public static final String PREFERRED_USER_ID = "preferredUserId";
+    /**
+     * Connection Interface
+     */
+    public static final String CONNECTION_INTERFACE = "connectionInterface";
+    /**
+     * Connection IP
+     */
+    public static final String CONNECTION_IP = "connectionIp";
 }
