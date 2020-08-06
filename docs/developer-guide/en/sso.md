@@ -35,7 +35,7 @@ The SSO Login will be available in the form of a dedicated button on the Kapua l
 
 ### Generic provider
 
-The follow values are specific to your OpenID Connection solution, please use its
+The following values are specific to your OpenID Connection solution, please use its
 documentation to look up the required values:
 
 - **`sso.generic.openid.server.endpoint.auth`** : the endpoint URL to the authentication API.
@@ -49,7 +49,7 @@ documentation to look up the required values:
 The Keycloak provider can be configured using the following configuration parameters:
 
 - **`sso.keycloak.uri`** : the base URL to the Keycloak server.
-- **`sso.keycloak.realm`** : the name of they realm to use.
+- **`sso.keycloak.realm`** : the name of the realm to use.
 
 Note that the _auth_ and _token_ endpoints are automatically computed by the Keycloak provider.
 
@@ -86,7 +86,7 @@ with value `true`.
 
 After getting the session token using an authentication REST API, a user can be inserted using  
 [userCreate](https://www.eclipse.org/kapua/docs/api/index.html?version=1.0.0#/Users/userCreate).
-It is mandatory to provide teh following attributes: 
+It is mandatory to provide the following attributes: 
 - **`scopeId`**: the scope id to which the user will belong in Kapua;
 - **`name`**: represents the name in the OpenID Provider;
 - **`userType`**: must always be set as **_EXTERNAL_**;
@@ -128,14 +128,14 @@ if you choose to disable the OpenID logout, since this will allow the user to lo
 ## Keycloak Example (Docker based)
 
 We detail here the steps to run an SSO Keycloak provider.
-The example described here makes use of a Keycloak Serve Docker image 
+The example described here makes use of a Keycloak Server Docker image 
 (see [here](https://hub.docker.com/r/jboss/keycloak/) for more details). 
 
 ### Installing the Keycloak Server (Docker image)
 
 In order to deploy automatically the Keycloak image, is sufficient to use the `sso-docker-deploy.sh`script inside the 
 `sso` subdirectory of the docker deployment scripts. In such a way the environment is ready to be used without the need
-of furher configuration. 
+for further configuration. 
 
 However, if you want to use a stand alone Keycloak image, please follow the instruction below in order to configure it.
 
@@ -153,7 +153,7 @@ in the `sso-docker-common.sh` file. A self-signed certificate and a key are prod
 script and passed via the volume based on the `./certs:/etc/x509/https` directory.
 The script also installs the certificate in the Kapua Console docker image (which is tagged with the 'sso' tag).
 
-**WARNING**: This SSL configuration is intended to be used only for testing purpose and should not be used in a 
+**WARNING**: This SSL configuration is intended to be used only for testing purposes and should not be used in a 
 production environment. If you want to use Keycloak in a production environment and provide your own TLS certificate, 
 please refer to the official 
 [Keycloak documentation](https://www.keycloak.org/docs/latest/server_installation/#_setting_up_ssl).
@@ -282,14 +282,14 @@ project to use the newly created Keycloak instance. This is done by calling the 
 The `activate` script can be called at a later time to re-configure Kapua (e.g. when re-installing Kapua).
 
 Both scripts (`deploy` and `activate`) require both Kapua and Keycloak URLs. 
-Keycloak requires the Kapua web console URL in order to allow request from this source, 
-while Kapua requires the Keycloak URL in order to forward requests to Keyloak.
+Keycloak requires the Kapua web console URL in order to allow requests from this source, 
+while Kapua requires the Keycloak URL in order to forward requests to Keycloak.
 The URLs are being constructed from OpenShift routes, which are configured for both Kapua and Keycloak. 
 However this requires that Kapua is set up before Keycloak and that the `activate` script can only be called after 
 the `deploy` script has been successfully run.
 
 Please refer to the [Keycloak Example (Docker based)](#keycloak-example-docker-based) section for the user creation, 
-or follow the next section in order to perfrom email-based user registration.
+or follow the next section in order to perform email-based user registration.
 
 ### Email-server based user registration
 
@@ -298,7 +298,7 @@ This is required so that Keycloak can send user verification and password recove
 and local SMTP server it is also possible to use some cloud based service like Mailgun, SendGrid or any other
 provider.
 
-The deployment is triggered by running the `deploy` script with a set of environment variables. Assuming your
+The deployment is triggered by running the `deploy` script with a set of environment variables. Assuming you
 are using `bash` as shell, this can be done like this:
 
     SMTP_HOST=smtp.server.org SMTP_USER=user SMTP_PASSWORD=secret SMTP_FROM=sender@my.domain ./deploy
