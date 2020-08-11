@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2017, 2020 Red Hat Inc and others
  *
- * All rights reserved. This program and the accompanying materials are made
+ * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
@@ -60,7 +60,7 @@ public class ResourceUtilsTest extends Assert {
         String expectedString = "###############################################################################\n" +
                 "# Copyright (c) 2016, 2020 Red Hat and/or its affiliates and others\n" +
                 "#\n" +
-                "# All rights reserved. This program and the accompanying materials are made\n" +
+                "# This program and the accompanying materials are made\n" +
                 "# available under the terms of the Eclipse Public License 2.0\n" +
                 "# which is available at https://www.eclipse.org/legal/epl-2.0/\n" +
                 "#\n" +
