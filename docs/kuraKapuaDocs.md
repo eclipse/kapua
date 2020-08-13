@@ -1,8 +1,8 @@
 # Kura - Kapua connection
 
-This is a short introduction into how locally connect Kura and Kapua. Although some of the info bellow can already be found on Kapua github project and Kura guides, this document contains everything needed for the connection. If you have any questions post them on [Eclipse Community Forums](https://www.eclipse.org/forums/index.php/f/340/), [Gitter chat room](https://gitter.im/eclipse/kapua) or join our [mailing list](https://dev.eclipse.org/mailman/listinfo/kapua-dev). In case you find any issues, [report them](https://github.com/eclipse/kapua/issues). Also if you want to contribute, [this is the place to start!](https://github.com/eclipse/kapua).
+This is a short introduction to locally connect Kura and Kapua. Although some of the info below can already be found on Kapua github project and Kura guides, this document contains everything needed for the connection. If you have any questions post them on [Eclipse Community Forums](https://www.eclipse.org/forums/index.php/f/340/), [Gitter chat room](https://gitter.im/eclipse/kapua) or join our [mailing list](https://dev.eclipse.org/mailman/listinfo/kapua-dev). In case you find any issues, [report them](https://github.com/eclipse/kapua/issues). Also if you want to contribute, [this is the place to start!](https://github.com/eclipse/kapua).
 
-## Usefull links
+## Useful links
 
  - [Kapua quick start guide](https://github.com/eclipse/kapua/blob/develop/README.md)
  - [Kapua User Manual](http://download.eclipse.org/kapua/docs/develop/user-manual/en/)
@@ -58,7 +58,7 @@ e097f77f1758        kapua/kapua-sql       "/home/kapua/run-h2"     4 hours ago  
 785efe9976cf        kapua/kapua-events-broker:latest   "/run-artemis"           About an hour ago   Up About an hour    0.0.0.0:5672->5672/tcp                                                 compose_events-broker_1   410kB (virtual 130MB)
 ```
 
-6. Kapua can be stopped by executing script: 
+6. Kapua can be stopped by executing the script: 
 
 ```
 ./docker-undeploy.sh
@@ -84,7 +84,7 @@ kapua-password
 
 ### Adding Account and User
 
-Now you can login into Kapua, but we still need to create an Account and a User. This section has for steps. First one is creating a child account. 
+Now you can login to Kapua, but we still need to create an Account and a User. This section has four steps. The first one is creating a child account. 
 
 While logged in as kapua-sys click **Child Accounts** and **Add** a user named User123.
 
@@ -144,10 +144,10 @@ After that go to **Permissions** tab and click **Add**, select **ALL** in every 
 
 Now we have everything we need to connect Kura to Kapua.  
 
-## Downloading and cofiguring Kura
+## Downloading and configuring Kura
 
-Second part of this guide describes how to configure Raspberry Pi, but you can also use BBB (BeagleBone Black) or Intel Edison [as described on Kura download page](http://www.eclipse.org/kura/downloads.php?).
-Because there already exists guide for [installing Kura on Raspberry Pi](https://eclipse.github.io/kura/intro/raspberry-pi-quick-start.html) we will not repeat the procedure here. When you finish, come back and follow procedure bellow. In this example wi will assume that Raspberry Pi has IP: 192.168.1.11 and our PC 192.168.1.10.
+The second part of this guide describes how to configure Raspberry Pi, but you can also use BBB (BeagleBone Black) or Intel Edison [as described on Kura download page](http://www.eclipse.org/kura/downloads.php?).
+Because there already exists a guide for [installing Kura on Raspberry Pi](https://eclipse.github.io/kura/intro/raspberry-pi-quick-start.html) we will not repeat the procedure here. When you finish, come back and follow the procedure below. In this example we will assume that Raspberry Pi has IP: 192.168.1.11 and our PC 192.168.1.10.
 
 1. Connect Raspberry Pi and local PC to the same network
 2. On PC open browser and enter Raspberry's IP (which can be obtained with **ifconifg** command in Terminal of Raspberry Pi)
@@ -181,7 +181,7 @@ Click **+** right from **search** box. Under **Factory** select **org.eclipse.ku
 
 Example publisher should automatically start sending data to [Kapua](http://localhost:8080/), which can be verified in kura.log file or in Kapua itself (kura.log file is in on Raspberry Pi in /var/log folder).
 
-If everything done correctly data should be transmitted to Kapua and accumulated in **data/metrics**. 
+If everything is done correctly data should be transmitted to Kapua and accumulated in **data/metrics**. 
 
 
 
