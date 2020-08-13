@@ -17,7 +17,6 @@ import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceAttributes;
-import org.eclipse.kapua.service.device.registry.DeviceMatchPredicate;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 
 /**
@@ -47,8 +46,8 @@ public class DeviceQueryImpl extends AbstractKapuaQuery<Device> implements Devic
     }
 
     @Override
-    public <T> DeviceMatchPredicate<T> matchPredicate(T matchTerm) {
-        return new DeviceMatchPredicate<>(matchTerm);
+    public <T> DeviceMatchPredicateImpl<T> matchPredicate(T matchTerm) {
+        return new DeviceMatchPredicateImpl<>(matchTerm);
     }
 
 }
