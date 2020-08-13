@@ -28,4 +28,6 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 @XmlType(factoryClass = UserXmlRegistry.class, factoryMethod = "newQuery")
 public interface UserQuery extends KapuaQuery<User> {
 
+    <T> UserMatchPredicate<T> matchPredicate(T matchTerm);
+
 }

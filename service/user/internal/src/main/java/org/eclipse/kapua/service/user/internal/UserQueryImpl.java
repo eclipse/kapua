@@ -39,4 +39,10 @@ public class UserQueryImpl extends AbstractKapuaQuery<User> implements UserQuery
         this();
         setScopeId(scopeId);
     }
+
+    @Override
+    public <T> UserMatchPredicateImpl<T> matchPredicate(T matchTerm) {
+        return new UserMatchPredicateImpl<>(matchTerm);
+    }
+
 }
