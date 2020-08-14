@@ -372,6 +372,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
                 toolBar.enable();
                 installButton.setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.write()));
                 uninstallButton.disable();
+                logButton.disable();
             } else {
                 toolBar.disable();
             }
@@ -406,6 +407,10 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
     public Button getInstallButton() {
         return installButton;
+    }
+
+    public Button getLogButton() {
+        return logButton;
     }
 
     private void showUninstallButton() {
