@@ -316,9 +316,22 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
     }
 
     @Override
+    public AccessToken findRefreshableAccessToken(String tokenId) throws KapuaException {
+        AccessTokenQuery accessTokenQuery = accessTokenFactory.newQuery(null);
+        AndPredicate andPredicate = accessTokenQuery.andPredicate(
+                accessTokenQuery.attributePredicate(AccessTokenAttributes.REFRESH_EXPIRES_ON, new java.sql.Timestamp(new Date().getTime()), Operator.GREATER_THAN_OR_EQUAL),
+                accessTokenQuery.attributePredicate(AccessTokenAttributes.INVALIDATED_ON, null, Operator.IS_NULL),
+                accessTokenQuery.attributePredicate(AccessTokenAttributes.TOKEN_ID, tokenId)
+        );
+        accessTokenQuery.setPredicate(andPredicate);
+        accessTokenQuery.setLimit(1);
+        return accessTokenService.query(accessTokenQuery).getFirstItem();
+    }
+
+    @Override
     public AccessToken refreshAccessToken(String tokenId, String refreshToken) throws KapuaException {
         Date now = new Date();
-        AccessToken expiredAccessToken = KapuaSecurityUtils.doPrivileged(() -> findAccessToken(tokenId));
+        AccessToken expiredAccessToken = KapuaSecurityUtils.doPrivileged(() -> findRefreshableAccessToken(tokenId));
         if (expiredAccessToken == null ||
                 expiredAccessToken.getInvalidatedOn() != null && now.after(expiredAccessToken.getInvalidatedOn()) ||
                 !expiredAccessToken.getRefreshToken().equals(refreshToken) ||

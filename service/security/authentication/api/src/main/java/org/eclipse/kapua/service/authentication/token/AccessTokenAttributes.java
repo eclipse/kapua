@@ -24,5 +24,6 @@ public class AccessTokenAttributes extends KapuaUpdatableEntityAttributes {
     public static final String USER_ID = "userId";
     public static final String EXPIRES_ON = "expiresOn";
     public static final String INVALIDATED_ON = "invalidatedOn";
+    public static final String REFRESH_EXPIRES_ON = "refreshExpiresOn";
 
 }
