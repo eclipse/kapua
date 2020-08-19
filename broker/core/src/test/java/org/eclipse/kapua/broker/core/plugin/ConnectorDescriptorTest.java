@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Category(JUnitTests.class)
-public class ConnectorDescriptorTest {
+public class ConnectorDescriptorTest extends Assert {
 
     private static final String BROKER_IP_RESOLVER_CLASS_NAME;
 
@@ -56,27 +56,37 @@ public class ConnectorDescriptorTest {
      * A simple test to get a default descriptor
      */
     @Test
-    public void testNonNull() {
+    public void nonNullProviderTest() {
         ConnectorDescriptorProvider provider = ConnectorDescriptorProviders.getInstance();
-        Assert.assertNotNull(provider);
+        assertNotNull(provider);
     }
 
     /**
      * A simple test to get a descriptor
      */
     @Test
-    public void testDefault1a() {
+    public void defaultDescriptorFromProviderTest() {
         ConnectorDescriptorProvider provider = ConnectorDescriptorProviders.getInstance();
         ConnectorDescriptor descriptor = provider.getDescriptor("foo");
-        Assert.assertNotNull(descriptor);
+        assertNotNull(descriptor);
     }
 
     /**
      * A simple test to get a descriptor
      */
     @Test
-    public void testDefault1b() {
-        Assert.assertNotNull(ConnectorDescriptorProviders.getDescriptor("foo"));
+    public void getDescriptorFromProvidersClassTest() {
+        assertNotNull(ConnectorDescriptorProviders.getDescriptor("foo"));
+    }
+
+    /**
+     * Test for getTransportProtocol
+     */
+    @Test
+    public void getTransportProtocolTest() {
+        ConnectorDescriptorProvider provider = ConnectorDescriptorProviders.getInstance();
+        ConnectorDescriptor descriptor = provider.getDescriptor("foo");
+        assertEquals("MQTT", descriptor.getTransportProtocol());
     }
 
     /**
@@ -86,7 +96,7 @@ public class ConnectorDescriptorTest {
      * </p>
      */
     @Test
-    public void testDefault2() {
+    public void defaultProviderWithDisabledDefaultDescriptorTest() {
         final Map<String, String> properties = new HashMap<>();
         properties.put(BrokerSettingKey.DISABLE_DEFAULT_CONNECTOR_DESCRIPTOR.key(), "true");
 
@@ -101,7 +111,7 @@ public class ConnectorDescriptorTest {
      * Use a default provider, configuring a file which does not exist
      */
     @Test(expected = Exception.class)
-    public void testDefault3() {
+    public void defaultProviderWithNonExistingFileTest() {
         final Map<String, String> properties = new HashMap<>();
         properties.put(BrokerSettingKey.CONFIGURATION_URI.key(), "file:src/test/resources/does-not-exist.properties");
 
@@ -112,7 +122,7 @@ public class ConnectorDescriptorTest {
      * Use a default provider, configuring a file which does exist, but allow default fallback
      */
     @Test
-    public void testDefault4() {
+    public void defaultProviderAllowingDefaultFallbackTest() {
         final Map<String, String> properties = new HashMap<>();
         properties.put(BrokerSettingKey.CONFIGURATION_URI.key(), "file:src/test/resources/conector.descriptor/1.properties");
 
@@ -127,7 +137,7 @@ public class ConnectorDescriptorTest {
      * Use a default provider, configuring an empty file, disabling default
      */
     @Test
-    public void testDefault5() {
+    public void defaultProviderWithEmptyFileTest() {
         final Map<String, String> properties = new HashMap<>();
         properties.put(BrokerSettingKey.DISABLE_DEFAULT_CONNECTOR_DESCRIPTOR.key(), "true");
         properties.put(BrokerSettingKey.CONFIGURATION_URI.key(), "file:src/test/resources/conector.descriptor/1.properties");
@@ -143,7 +153,7 @@ public class ConnectorDescriptorTest {
      * Use a default provider, configuring a non-empty configuration
      */
     @Test
-    public void testDefault6() throws Exception {
+    public void defaultProviderUsingNonEmptyConfigurationTest() throws Exception {
         final Map<String, String> properties = new HashMap<>();
         properties.put(BrokerSettingKey.DISABLE_DEFAULT_CONNECTOR_DESCRIPTOR.key(), "true");
         properties.put(BrokerSettingKey.CONFIGURATION_URI.key(), "file:src/test/resources/conector.descriptor/2.properties");
@@ -167,7 +177,7 @@ public class ConnectorDescriptorTest {
      * Use a default provider, configuring a non-empty, invalid configuration
      */
     @Test(expected = Exception.class)
-    public void testDefault7() {
+    public void defaultProviderWithInvalidConfigurationTest() {
         final Map<String, String> properties = new HashMap<>();
         properties.put(BrokerSettingKey.DISABLE_DEFAULT_CONNECTOR_DESCRIPTOR.key(), "true");
         properties.put(BrokerSettingKey.CONFIGURATION_URI.key(), "file:src/test/resources/conector.descriptor/3.properties");
@@ -179,7 +189,7 @@ public class ConnectorDescriptorTest {
      * Empty configuration URL
      */
     @Test
-    public void testConfig1() {
+    public void emptyConfigurationUrlTest() {
         final Map<String, String> properties = new HashMap<>();
         properties.put(BrokerSettingKey.CONFIGURATION_URI.key(), "");
 
