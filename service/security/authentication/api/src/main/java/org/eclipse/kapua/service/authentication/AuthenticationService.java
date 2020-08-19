@@ -50,13 +50,24 @@ public interface AuthenticationService extends KapuaService {
     void logout() throws KapuaException;
 
     /**
-     * Return the {@link AccessToken} identified by the provided token identifier
+     * Return the {@link AccessToken} identified by the provided token identifier. Expired {@link AccessToken}s are
+     * excluded.
      *
-     * @param tokenId
-     * @return
+     * @param tokenId           The ID of the {@link AccessToken}
+     * @return                  The desired {@link AccessToken} object
      * @throws KapuaException if no {@link AccessToken} is found for that token identifier
      */
     AccessToken findAccessToken(String tokenId) throws KapuaException;
+
+    /**
+     * Return a Refreshable {@link AccessToken} identified by the provided token identifier. A Refreshable token may be
+     * already expired or not, but its Refresh Token is still valid
+     *
+     * @param tokenId               The ID of the {@link AccessToken}
+     * @return                      The desired {@link AccessToken} object
+     * @throws KapuaException if no {@link AccessToken} is found for that token identifier
+     */
+    AccessToken findRefreshableAccessToken(String tokenId) throws KapuaException;
 
     AccessToken refreshAccessToken(String tokenId, String refreshToken) throws KapuaException;
 

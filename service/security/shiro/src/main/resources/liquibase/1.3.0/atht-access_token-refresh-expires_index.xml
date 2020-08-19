@@ -15,9 +15,12 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
-        logicalFilePath="KapuaDB/changelog-authentication-1.3.0.xml">
+        logicalFilePath="KapuaDB/atht-access_token-refresh-expires_index.xml">
 
-    <include relativeToChangelogFile="true" file="./atht-access_token-expires_index.xml"/>
-    <include relativeToChangelogFile="true" file="./atht-access_token-refresh-expires_index.xml"/>
+    <changeSet id="changelog-access_token-1.3.0_refresh-expires_index" author="eurotech">
+        <createIndex tableName="atht_access_token" indexName="idx_atht_access_token_refresh_expires_on">
+            <column name="refresh_expires_on" />
+        </createIndex>
+    </changeSet>
 
 </databaseChangeLog>
