@@ -47,6 +47,22 @@ The required values are specific to your OpenID Connect solution, please use its
 - **`sso.generic.openid.server.endpoint.logout`(optional)** : the logout endpoint of the OpenID provider.
 - **`sso.generic.openid.server.endpoint.token` (optional)** : the endpoint URL to the token API.
 
+#### Note about 'client id' and 'audience' values
+
+Properties `sso.openid.client.id` and `sso.generic.openid.jwt.audience.allowed` (the second property is used only for the `generic` provider) 
+basically represent the same value.
+More precisely, `sso.openid.client.id` is used as parameter in the requests to the OpenID Provider, while `sso.generic.openid.jwt.audience.allowed` is used by 
+the `JwtProcessor` in order to validate the token received from the OpenID Provider. These two should correspond to the same `clientId`.
+
+According to the official OpenID Connect specification (see [here](https://openid.net/specs/openid-connect-core-1_0.html#IDToken) and 
+[here](https://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation)), the `audience` contains a list of allowed `client_id`. 
+The token can contain a list of audiences (described by the `aud` claim). 
+When the token is received, we need to validate that the audience contains the `client_id` corresponding to the Kapua Console. 
+Only one `client_id` corresponds to the Kapua Console (if multiple client_ids are present in the audience, they correspond to other clients).
+
+However, some OpenID Provider implementations are using different values between clientId and audience, thus the only way to make them work is to use two 
+different values for these properties (also, please note that the `generic-provider` should be the most 'permissive' provider). 
+
 ### Keycloak provider
 
 The Keycloak provider can be configured using the following configuration parameters:
