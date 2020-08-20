@@ -22,14 +22,61 @@ paths:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: '../device/device.yaml#/components/parameters/deviceId'
         - $ref: './deviceSnapshot.yaml#/components/parameters/snapshotId'
+        - $ref: '../deviceConfiguration/deviceConfiguration.yaml#/components/parameters/configurationFormat'
         - $ref: '../device/device.yaml#/components/parameters/timeout'
+
       responses:
         200:
           description: The list of the Configurations related to the given Snapshot on a single Device
           content:
             application/json:
               schema:
-                $ref: '../deviceConfiguration/deviceConfiguration.yaml#/components/schemas/componentConfigurations'
+                $ref: '../deviceConfiguration/deviceConfiguration.yaml#/components/schemas/componentConfigurationsInput'
+            application/xml:
+              schema:
+                $ref: '../deviceConfiguration/deviceConfiguration.yaml#/components/schemas/componentConfigurationsInputXml'
+              # Somehow SwaggerUI cannot render examples defined in schema if media type is application/xml
+              example: |
+                <?xml version="1.0" encoding="UTF-8"?>
+                <esf:configurations xmlns:esf="http://eurotech.com/esf/2.0" xmlns:ns0="http://www.osgi.org/xmlns/metatype/v1.2.0" xmlns:ocd="http://www.osgi.org/xmlns/metatype/v1.2.0">
+                  <esf:configuration pid="org.eclipse.kura.clock.ClockService">
+                    <esf:properties>
+                      <esf:property name="clock.ntp.host" array="false" encrypted="false" type="String">
+                        <esf:value>2.pool.ntp.org</esf:value>
+                      </esf:property>
+                      <esf:property name="clock.ntp.port" array="false" encrypted="false" type="Integer">
+                        <esf:value>123</esf:value>
+                      </esf:property>
+                      <esf:property name="clock.provider" array="false" encrypted="false" type="String">
+                        <esf:value>java-ntp</esf:value>
+                      </esf:property>
+                      <esf:property name="clock.ntp.max-retry" array="false" encrypted="false" type="Integer">
+                        <esf:value>0</esf:value>
+                      </esf:property>
+                      <esf:property name="clock.ntp.refresh-interval" array="false" encrypted="false" type="Integer">
+                        <esf:value>3600</esf:value>
+                      </esf:property>
+                      <esf:property name="clock.set.hwclock" array="false" encrypted="false" type="Boolean">
+                        <esf:value>true</esf:value>
+                      </esf:property>
+                      <esf:property name="clock.ntp.timeout" array="false" encrypted="false" type="Integer">
+                        <esf:value>10000</esf:value>
+                      </esf:property>
+                      <esf:property name="enabled" array="false" encrypted="false" type="Boolean">
+                        <esf:value>true</esf:value>
+                      </esf:property>
+                      <esf:property name="clock.ntp.retry.interval" array="false" encrypted="false" type="Integer">
+                        <esf:value>5</esf:value>
+                      </esf:property>
+                      <esf:property name="kura.service.pid" array="false" encrypted="false" type="String">
+                        <esf:value>org.eclipse.kura.clock.ClockService</esf:value>
+                      </esf:property>
+                      <esf:property name="service.pid" array="false" encrypted="false" type="String">
+                        <esf:value>org.eclipse.kura.clock.ClockService</esf:value>
+                      </esf:property>
+                    </esf:properties>
+                  </esf:configuration>
+                </esf:configurations>
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

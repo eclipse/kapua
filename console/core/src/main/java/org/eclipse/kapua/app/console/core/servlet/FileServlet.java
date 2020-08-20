@@ -23,11 +23,15 @@ import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.core.shared.model.KapuaFormFields;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfiguration;
+import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfigurationUtils;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandFactory;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandManagementService;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
+import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService;
 
 import org.apache.commons.io.IOUtils;
@@ -37,6 +41,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.UnmarshalException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -107,9 +112,16 @@ public class FileServlet extends KapuaHttpServlet {
             byte[] data = fileItem.get();
             String xmlConfigurationString = new String(data, "UTF-8");
 
+            DeviceConfiguration deviceConfiguration;
+            try {
+                KuraDeviceConfiguration kuraDeviceConfiguration = XmlUtil.unmarshal(xmlConfigurationString, KuraDeviceConfiguration.class);
+                deviceConfiguration = KuraDeviceConfigurationUtils.toDeviceConfiguration(kuraDeviceConfiguration);
+            } catch (UnmarshalException exception) {
+                deviceConfiguration = XmlUtil.unmarshal(xmlConfigurationString, DeviceConfiguration.class);
+            }
             deviceConfigurationManagementService.put(KapuaEid.parseCompactId(scopeIdString),
                     KapuaEid.parseCompactId(deviceIdString),
-                    xmlConfigurationString,
+                    deviceConfiguration,
                     null);
 
         } catch (IllegalArgumentException iae) {

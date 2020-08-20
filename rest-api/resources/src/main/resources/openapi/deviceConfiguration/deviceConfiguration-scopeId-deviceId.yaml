@@ -21,6 +21,7 @@ paths:
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: './deviceConfiguration.yaml#/components/parameters/configurationFormat'
         - $ref: '../device/device.yaml#/components/parameters/timeout'
       responses:
         200:
@@ -29,6 +30,9 @@ paths:
             application/json:
               schema:
                 $ref: './deviceConfiguration.yaml#/components/schemas/componentConfigurations'
+            application/xml:
+              schema:
+                $ref: './deviceConfiguration.yaml#/components/schemas/componentConfigurationsInputXml'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
@@ -51,6 +55,9 @@ paths:
           application/json:
             schema:
               $ref: './deviceConfiguration.yaml#/components/schemas/componentConfigurationsInput'
+          application/xml:
+            schema:
+              $ref: './deviceConfiguration.yaml#/components/schemas/componentConfigurationsInputXml'
         required: true
       responses:
         204:

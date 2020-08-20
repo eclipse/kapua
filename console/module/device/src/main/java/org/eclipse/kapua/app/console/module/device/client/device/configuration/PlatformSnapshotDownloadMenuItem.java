@@ -12,19 +12,20 @@
 package org.eclipse.kapua.app.console.module.device.client.device.configuration;
 
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaMenuItem;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 
+import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.google.gwt.core.client.GWT;
 
-public class SnapshotDownloadButton extends Button {
+public class PlatformSnapshotDownloadMenuItem extends KapuaMenuItem {
 
     private static final ConsoleDeviceMessages MSGS = GWT.create(ConsoleDeviceMessages.class);
 
-    public SnapshotDownloadButton() {
-        super(MSGS.buttonSnapshotDownload(),
-                new KapuaIcon(IconSet.CLOUD_DOWNLOAD));
+    public PlatformSnapshotDownloadMenuItem(SelectionListener<MenuEvent> listener) {
+        super(MSGS.buttonPlatformSnapshotDownload(),
+                IconSet.CLOUD_DOWNLOAD,
+                listener);
     }
-
 }
