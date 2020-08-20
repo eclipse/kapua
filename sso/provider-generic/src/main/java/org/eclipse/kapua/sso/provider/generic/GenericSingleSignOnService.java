@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Red Hat Inc - initial API and implementation
+ *     Eurotech
  *******************************************************************************/
 package org.eclipse.kapua.sso.provider.generic;
 
@@ -17,7 +18,7 @@ import org.eclipse.kapua.sso.exception.uri.SsoIllegalUriException;
 import org.eclipse.kapua.sso.provider.AbstractSingleSignOnService;
 import org.eclipse.kapua.sso.provider.generic.setting.GenericSsoSetting;
 import org.eclipse.kapua.sso.provider.generic.setting.GenericSsoSettingKeys;
-import org.eclipse.kapua.sso.provider.jwt.JsonUtils;
+import org.eclipse.kapua.sso.provider.SingleSignOnUtils;
 import org.eclipse.kapua.sso.provider.setting.SsoSetting;
 
 import java.net.URI;
@@ -31,7 +32,6 @@ public class GenericSingleSignOnService extends AbstractSingleSignOnService {
     private static final String AUTH_WELL_KNOWN_KEY = "authorization_endpoint";
     private static final String LOGOUT_WELL_KNOWN_KEY = "end_session_endpoint";
     private static final String TOKEN_WELL_KNOWN_KEY = "token_endpoint";
-    private static final String SSO_DEFAULT_OPENID_CONF_WELLKNOWN_PATH = "/.well-known/openid-configuration";
 
     private final GenericSsoSetting genericSettings;
 
@@ -47,7 +47,7 @@ public class GenericSingleSignOnService extends AbstractSingleSignOnService {
     @Override
     protected String getAuthUri() throws SsoException {
         try {
-            final Optional<URI> uri = JsonUtils.getConfigUri(AUTH_WELL_KNOWN_KEY, getOpenIdConfPath());
+            final Optional<URI> uri = SingleSignOnUtils.getConfigUri(AUTH_WELL_KNOWN_KEY, getOpenIdConfPath());
             if (uri.isPresent()) {
                 return uri.get().toString();
             } else {
@@ -65,7 +65,7 @@ public class GenericSingleSignOnService extends AbstractSingleSignOnService {
     @Override
     protected String getTokenUri() throws SsoException {
         try {
-            final Optional<URI> uri = JsonUtils.getConfigUri(TOKEN_WELL_KNOWN_KEY, getOpenIdConfPath());
+            final Optional<URI> uri = SingleSignOnUtils.getConfigUri(TOKEN_WELL_KNOWN_KEY, getOpenIdConfPath());
             if (uri.isPresent()) {
                 return uri.get().toString();
             } else {
@@ -83,7 +83,7 @@ public class GenericSingleSignOnService extends AbstractSingleSignOnService {
     @Override
     protected String getLogoutUri() throws SsoException {
         try {
-            final Optional<URI> uri = JsonUtils.getConfigUri(LOGOUT_WELL_KNOWN_KEY, getOpenIdConfPath());
+            final Optional<URI> uri = SingleSignOnUtils.getConfigUri(LOGOUT_WELL_KNOWN_KEY, getOpenIdConfPath());
             if (uri.isPresent()) {
                 return uri.get().toString();
             } else {
@@ -109,11 +109,6 @@ public class GenericSingleSignOnService extends AbstractSingleSignOnService {
         if (issuerUri == null || issuerUri.isEmpty()) {
             throw new SsoIllegalUriException(GenericSsoSettingKeys.SSO_OPENID_JWT_ISSUER_ALLOWED.key(), issuerUri);
         }
-        String customOpenIDConfPath = genericSettings.getString(GenericSsoSettingKeys.SSO_OPENID_CONF_WELLKNOWN_PATH, SSO_DEFAULT_OPENID_CONF_WELLKNOWN_PATH);
-        if (customOpenIDConfPath == null || customOpenIDConfPath.isEmpty()) {
-            throw new SsoIllegalArgumentException(GenericSsoSettingKeys.SSO_OPENID_CONF_WELLKNOWN_PATH.key(), customOpenIDConfPath);
-        }
-
-        return issuerUri + customOpenIDConfPath;
+        return SingleSignOnUtils.getOpenIdConfPath(issuerUri);
     }
 }
