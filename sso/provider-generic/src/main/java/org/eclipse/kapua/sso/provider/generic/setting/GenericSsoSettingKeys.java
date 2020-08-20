@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Red Hat Inc - initial API and implementation
+ *     Eurotech
  *******************************************************************************/
 package org.eclipse.kapua.sso.provider.generic.setting;
 
@@ -20,7 +21,6 @@ public enum GenericSsoSettingKeys implements SettingKey {
     SSO_OPENID_SERVER_ENDPOINT_LOGOUT("sso.generic.openid.server.endpoint.logout"),
     SSO_OPENID_JWT_AUDIENCE_ALLOWED("sso.generic.openid.jwt.audience.allowed"),
     SSO_OPENID_JWT_ISSUER_ALLOWED("sso.generic.openid.jwt.issuer.allowed"),
-    SSO_OPENID_CONF_WELLKNOWN_PATH("sso.generic.openid.conf.wellknown.path"),
     ;
 
     private final String key;

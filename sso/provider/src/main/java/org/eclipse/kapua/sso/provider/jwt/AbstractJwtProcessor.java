@@ -14,13 +14,12 @@ package org.eclipse.kapua.sso.provider.jwt;
 
 import org.eclipse.kapua.sso.JwtProcessor;
 import org.eclipse.kapua.sso.exception.SsoException;
-import org.eclipse.kapua.sso.exception.SsoIllegalArgumentException;
 import org.eclipse.kapua.sso.exception.jwt.SsoJwtException;
+import org.eclipse.kapua.sso.provider.SingleSignOnUtils;
 import org.eclipse.kapua.sso.provider.setting.SsoSetting;
 import org.eclipse.kapua.sso.provider.setting.SsoSettingKeys;
 import org.eclipse.kapua.sso.exception.jwt.SsoJwtExtractionException;
 import org.eclipse.kapua.sso.exception.jwt.SsoJwtProcessException;
-import org.eclipse.kapua.sso.exception.uri.SsoIllegalUriException;
 import org.jose4j.jwk.HttpsJwks;
 import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.consumer.InvalidJwtException;
@@ -29,9 +28,7 @@ import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.jwt.consumer.JwtContext;
 import org.jose4j.keys.resolvers.HttpsJwksVerificationKeyResolver;
 
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
@@ -46,7 +43,6 @@ import java.util.Optional;
 public abstract class AbstractJwtProcessor implements JwtProcessor {
 
     private static final String JWKS_URI_WELL_KNOWN_KEY = "jwks_uri";
-    private static final String DEFAULT_SSO_OPENID_CONF_PATH = ".well-known/openid-configuration";
     private Map<URI, Processor> processors = new HashMap<>();
     private String[] audiences;
     private String[] expectedIssuers;
@@ -123,24 +119,6 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
     }
 
     /**
-     * Retrieve the OpenID Connect discovery endpoint (the provider's Well-Known Configuration Endpoint).
-     *
-     * @param issuer the String representing the JWT Issuer URI.
-     * @return a String representing the discovery endpoint.
-     * @throws SsoIllegalArgumentException if the generated OpenID Connect discovery endpoint is a malformed URL.
-     */
-    protected String getOpenIdConfPath(final URI issuer) throws SsoIllegalArgumentException {
-        String openIdConfPath = issuer.toString() + "/" +
-                SsoSetting.getInstance().getString(SsoSettingKeys.SSO_OPENID_CONF_PATH, DEFAULT_SSO_OPENID_CONF_PATH);
-        try {
-            new URL(openIdConfPath);
-            return openIdConfPath;
-        } catch (MalformedURLException mue) {
-            throw new SsoIllegalUriException("openIdConfPath", openIdConfPath);
-        }
-    }
-
-    /**
      * Retrieve the list of JWT expected issuers.
      *
      * @return the list of String containing the JWT issuers.
@@ -177,7 +155,7 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
 
             // create new instance
 
-            final Optional<URI> uri = JsonUtils.getConfigUri(JWKS_URI_WELL_KNOWN_KEY, getOpenIdConfPath(issuer));
+            final Optional<URI> uri = SingleSignOnUtils.getConfigUri(JWKS_URI_WELL_KNOWN_KEY, SingleSignOnUtils.getOpenIdConfPath(issuer));
             if (!uri.isPresent()) {
                 return Optional.empty();
             }

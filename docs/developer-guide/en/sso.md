@@ -20,10 +20,10 @@ The current default providers are:
 Each provider will require additional configuration options. But there is a set of common configuration
 options:
 
-- **`sso.openid.client.id`** : 
-    the "client id" used when communicating with the OpenID Connect server.
-- **`sso.openid.client.secret` (optional)** : 
-    the "client secret" used when communicating with the OpenID Connect server.
+- **`sso.openid.client.id`** : the "client id" used when communicating with the OpenID Connect server.
+- **`sso.openid.client.secret` (optional)** : the "client secret" used when communicating with the OpenID Connect server.
+- **`sso.openid.conf.wellknown.path` (optional)** : to provide a custom OpenID well-known suffix (the default one is `.well-known/openid-configuration` and 
+    it's attached as suffix to the issuer).
 - **`sso.openid.jwt-processor-timeout` (optional)** : the JwtProcessor expiration time (the default value is 1 hour).
 
 It is also necessary to configure the Web Console external endpoint address.
@@ -46,8 +46,6 @@ The required values are specific to your OpenID Connect solution, please use its
 - **`sso.generic.openid.server.endpoint.auth` (optional)** : the endpoint URL to the authentication API.
 - **`sso.generic.openid.server.endpoint.logout`(optional)** : the logout endpoint of the OpenID provider.
 - **`sso.generic.openid.server.endpoint.token` (optional)** : the endpoint URL to the token API.
-- **`sso.generic.openid.conf.wellknown.path` (optional)** : to provide a custom OpenID well-known suffix (the default one is `/.well-known/openid-configuration` 
-and it's attached as suffix to the issuer).
 
 ### Keycloak provider
 
