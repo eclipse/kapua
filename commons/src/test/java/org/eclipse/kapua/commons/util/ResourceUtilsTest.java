@@ -57,7 +57,7 @@ public class ResourceUtilsTest extends Assert {
         Charset[] validCharsetList = new Charset[]{StandardCharsets.UTF_8, StandardCharsets.US_ASCII, StandardCharsets.ISO_8859_1};
         Charset[] invalidCharsetList = new Charset[]{StandardCharsets.UTF_16, StandardCharsets.UTF_16BE, StandardCharsets.UTF_16LE,};
         String expectedString = "###############################################################################\n" +
-                "# Copyright (c) 2011, 2020 Red Hat and/or its affiliates and others\n" +
+                "# Copyright (c) 2016, 2020 Red Hat and/or its affiliates and others\n" +
                 "#\n" +
                 "# All rights reserved. This program and the accompanying materials\n" +
                 "# are made available under the terms of the Eclipse Public License v1.0\n" +
