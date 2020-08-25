@@ -15,11 +15,13 @@ import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.DateParam;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
@@ -69,6 +71,8 @@ public class DeviceEvents extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @QueryParam("resource") String resource,
+            @QueryParam("startDate") DateParam startDateParam,
+            @QueryParam("endDate") DateParam endDateParam,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         DeviceEventQuery query = deviceEventFactory.newQuery(scopeId);
@@ -82,6 +86,14 @@ public class DeviceEvents extends AbstractKapuaResource {
         if (!Strings.isNullOrEmpty(resource)) {
             andPredicate.and(query.attributePredicate(DeviceEventAttributes.RESOURCE, resource));
         }
+
+        if (startDateParam != null) {
+            andPredicate.and(query.attributePredicate(DeviceEventAttributes.RECEIVED_ON, startDateParam.getDate(), Operator.GREATER_THAN_OR_EQUAL));
+        }
+        if (endDateParam != null) {
+            andPredicate.and(query.attributePredicate(DeviceEventAttributes.RECEIVED_ON, endDateParam.getDate(), Operator.LESS_THAN_OR_EQUAL));
+        }
+
         query.setPredicate(andPredicate);
 
         query.setOffset(offset);

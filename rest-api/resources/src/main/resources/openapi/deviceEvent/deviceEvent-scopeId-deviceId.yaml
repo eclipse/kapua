@@ -26,6 +26,18 @@ paths:
           description: The resource of the DeviceEvent in which to search results
           schema:
             type: string
+        - description: The start date to filter the results.
+          name: startDate
+          in: query
+          schema:
+            type: string
+            format: 'date-time'
+        - description: The end date to filter the results.
+          name: endDate
+          in: query
+          schema:
+            type: string
+            format: 'date-time'
         - $ref: '../openapi.yaml#/components/parameters/limit'
         - $ref: '../openapi.yaml#/components/parameters/offset'
       responses:
