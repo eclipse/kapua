@@ -66,12 +66,12 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
     private boolean initialized;
 
     private Grid<GwtDeviceManagementOperation> grid;
+
     private KapuaPagingToolBar pagingToolBar;
     private BasePagingLoader<PagingLoadResult<GwtDeviceManagementOperation>> loader;
     private DeviceTabPackages deviceTabPackages;
     private boolean contentDirty = true;
     private boolean loadingInProgress;
-
     protected boolean refreshProcess;
 
     public DeviceTabPackagesHistory(GwtSession currentSession, DeviceTabPackages deviceTabPackages) {
@@ -280,6 +280,10 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
 
         loader.load();
         initialized = true;
+    }
+
+    public Grid<GwtDeviceManagementOperation> getGrid() {
+        return grid;
     }
 
     // --------------------------------------------------------------------------------------
