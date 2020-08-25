@@ -30,12 +30,13 @@ import org.junit.runner.RunWith;
                 "json:target/DatastoreNewIndex_cucumber.json"},
         strict = true,
         monochrome = true)
-@CucumberProperty(key = "datastore.elasticsearch.provider", value = "org.eclipse.kapua.service.elasticsearch.client.rest.RestElasticsearchClientProvider")
 @CucumberProperty(key = "broker.ip", value = "192.168.33.10")
-@CucumberProperty(key = "kapua.config.url", value = "")
-@CucumberProperty(key = "org.eclipse.kapua.qa.datastore.extraStartupDelay", value = "5")
-@CucumberProperty(key = "org.eclipse.kapua.qa.broker.extraStartupDelay", value = "5")
-@CucumberProperty(key = "datastore.index.prefix", value = "")
 @CucumberProperty(key = "commons.settings.hotswap", value = "true")
+@CucumberProperty(key = "datastore.elasticsearch.node", value = "127.0.0.1")
+@CucumberProperty(key = "datastore.elasticsearch.provider", value = "org.eclipse.kapua.service.elasticsearch.client.rest.RestElasticsearchClientProvider")
+@CucumberProperty(key = "datastore.index.prefix", value = "")
+@CucumberProperty(key = "kapua.config.url", value = "")
+@CucumberProperty(key = "org.eclipse.kapua.qa.broker.extraStartupDelay", value = "5")
+@CucumberProperty(key = "org.eclipse.kapua.qa.datastore.extraStartupDelay", value = "5")
 public class RunDatastoreNewIndexTest {
 }

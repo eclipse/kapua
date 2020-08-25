@@ -28,4 +28,9 @@ public class ElasticsearchNode {
     public int getPort() {
         return port;
     }
+
+    @Override
+    public String toString() {
+        return address.concat(":").concat(String.valueOf(port));
+    }
 }
