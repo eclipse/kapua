@@ -84,7 +84,7 @@ kapua-password
 
 ### Adding Account and User
 
-Now you can login to Kapua, but we still need to create an Account and a User. This section has four steps. The first one is creating a child account. 
+Now you can login to Kapua, but we still need to create an Account and a User. This section has four steps. First one is creating a child account. 
 
 While logged in as kapua-sys click **Child Accounts** and **Add** a user named User123.
 
@@ -146,8 +146,8 @@ Now we have everything we need to connect Kura to Kapua.
 
 ## Downloading and configuring Kura
 
-The second part of this guide describes how to configure Raspberry Pi, but you can also use BBB (BeagleBone Black) or Intel Edison [as described on Kura download page](http://www.eclipse.org/kura/downloads.php?).
-Because there already exists a guide for [installing Kura on Raspberry Pi](https://eclipse.github.io/kura/intro/raspberry-pi-quick-start.html) we will not repeat the procedure here. When you finish, come back and follow the procedure below. In this example we will assume that Raspberry Pi has IP: 192.168.1.11 and our PC 192.168.1.10.
+Second part of this guide describes how to configure Raspberry Pi, but you can also use BBB (BeagleBone Black) or Intel Edison [as described on Kura download page](http://www.eclipse.org/kura/downloads.php?).
+Because there already exists a guide for [installing Kura on Raspberry Pi](https://eclipse.github.io/kura/intro/raspberry-pi-quick-start.html) we will not repeat the procedure here. When you finish, come back and follow the procedure below. In this example, we will assume that Raspberry Pi has IP: 192.168.1.11 and our PC 192.168.1.10.
 
 1. Connect Raspberry Pi and local PC to the same network
 2. On PC open browser and enter Raspberry's IP (which can be obtained with **ifconifg** command in Terminal of Raspberry Pi)
@@ -171,7 +171,7 @@ Kura is now fully configured and is ready to send some data.
 
 As you can see, our **data** sections Kapua is empty. That is because we did not yet send any data to it. So in this example we will user **Example publisher** deployment package, which can be obtained from [Eclipse marketplace](https://marketplace.eclipse.org/). 
 
-This bundle sends some data to provided Cloud (in our case Kapua). We will use it to verify our connection. [Click here](https://marketplace.eclipse.org/content/example-publisher-eclipse-kura) to visit Example Publisher page. 
+This bundle sends some data to the provided Cloud (in our case Kapua). We will use it to verify our connection. [Click here](https://marketplace.eclipse.org/content/example-publisher-eclipse-kura) to visit Example Publisher page. 
 
 Click on download button and copy the link address (it has **.dp** extension) and paste it into **Kura -> Packages -> Install/Upgrade -> URL**. 
 
@@ -181,7 +181,7 @@ Click **+** right from **search** box. Under **Factory** select **org.eclipse.ku
 
 Example publisher should automatically start sending data to [Kapua](http://localhost:8080/), which can be verified in kura.log file or in Kapua itself (kura.log file is in on Raspberry Pi in /var/log folder).
 
-If everything is done correctly data should be transmitted to Kapua and accumulated in **data/metrics**. 
+If everything is done correctly, data should be transmitted to Kapua and accumulated in **data/metrics**. 
 
 
 
