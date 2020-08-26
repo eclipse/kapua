@@ -94,6 +94,9 @@
     <!-- Session Timeout -->
     <session-config>
         <session-timeout>30</session-timeout>
+        <cookie-config>
+            <name>KAPUA_JSESSIONID</name>
+        </cookie-config>
     </session-config>
 
     <!--  -->
