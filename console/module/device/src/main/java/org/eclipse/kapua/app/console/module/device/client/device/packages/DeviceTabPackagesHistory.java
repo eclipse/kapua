@@ -22,6 +22,8 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.LoadListener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -64,12 +66,12 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
     private boolean initialized;
 
     private Grid<GwtDeviceManagementOperation> grid;
+
     private KapuaPagingToolBar pagingToolBar;
     private BasePagingLoader<PagingLoadResult<GwtDeviceManagementOperation>> loader;
     private DeviceTabPackages deviceTabPackages;
     private boolean contentDirty = true;
     private boolean loadingInProgress;
-
     protected boolean refreshProcess;
 
     public DeviceTabPackagesHistory(GwtSession currentSession, DeviceTabPackages deviceTabPackages) {
@@ -266,10 +268,22 @@ public class DeviceTabPackagesHistory extends KapuaTabItem<GwtDevice> {
 
         GridSelectionModel<GwtDeviceManagementOperation> selectionModel = new GridSelectionModel<GwtDeviceManagementOperation>();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
+        selectionModel.addSelectionChangedListener(new SelectionChangedListener<GwtDeviceManagementOperation>() {
+
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GwtDeviceManagementOperation> se) {
+                deviceTabPackages.getLogButton().setEnabled(se.getSelectedItem() != null);
+            }
+
+        });
         grid.setSelectionModel(selectionModel);
 
         loader.load();
         initialized = true;
+    }
+
+    public Grid<GwtDeviceManagementOperation> getGrid() {
+        return grid;
     }
 
     // --------------------------------------------------------------------------------------

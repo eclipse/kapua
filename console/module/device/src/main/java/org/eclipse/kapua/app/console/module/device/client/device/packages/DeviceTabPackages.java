@@ -284,7 +284,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
             @Override
             public void handleEvent(BaseEvent be) {
                 toolBar.enable();
-
+                logButton.setEnabled(historyPackageTab.getGrid().getSelectionModel().getSelectedItem() != null);
                 Boolean exitStatus = packageInstallDialog.getExitStatus();
                 if (exitStatus == null) { // Operation Aborted
                     if (installedPackageTab.getTreeGrid() != null) {
@@ -292,11 +292,9 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
                                 new SelectionChangedEvent<ModelData>(installedPackageTab.getTreeGrid().getSelectionModel(),
                                         installedPackageTab.getTreeGrid().getSelectionModel().getSelectedItems()));
                     }
-                    return;
                 } else {
-
                     String exitMessage = packageInstallDialog.getExitMessage();
-                    ConsoleInfo.display(exitStatus == true ? CMSGS.information() : CMSGS.error(), exitMessage);
+                    ConsoleInfo.display(exitStatus ? CMSGS.information() : CMSGS.error(), exitMessage);
 
                     uninstallButton.disable();
                     deviceTabs.setSelectedEntity(selectedEntity);
@@ -372,6 +370,7 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
                 toolBar.enable();
                 installButton.setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.write()));
                 uninstallButton.disable();
+                logButton.disable();
             } else {
                 toolBar.disable();
             }
@@ -406,6 +405,10 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
     public Button getInstallButton() {
         return installButton;
+    }
+
+    public Button getLogButton() {
+        return logButton;
     }
 
     private void showUninstallButton() {
