@@ -1,6 +1,6 @@
 # Simulator
 
-The Kura simulator is a simulator framework which can act as a Kura gateway instance, without the nessary
+The Kura simulator is a simulator framework which can act as a Kura gateway instance, without the necessary
 OSGi runtime and the required hardware abstractions. It can be used to create gateway simulations, testing
 Kapua.
 
@@ -11,7 +11,7 @@ for this.
 ## Starting
 
 The default main class is `org.eclipse.kapua.kura.simulator.main.SimulatorRunner`. It can be run after
-the module was built by be executing e.g. (which will print out some basic help):
+the module was built by executing e.g. (which will print out some basic help):
 
     java -jar target/kapua-simulator-kura-*-app.jar -?
 
@@ -94,7 +94,7 @@ The number of seconds after which the simulator will exit. The default is to kee
 
 ### Logging Options
 
-Only one of the follow options may be active:
+Only one of the following options may be active:
 
 <dl>
 
@@ -287,7 +287,7 @@ This section describes the simple simulation model which is available in the bas
 is intended to provide a stream of telemetry data for testing.
 
 The basic runner allows to read a JSON representation of the model. Programmatically it is possible to
-also other other means of configuring a data simulator. This section will however focus on the JSON representation.
+also other means of configuring a data simulator. This section will however focus on the JSON representation.
 
 A default model would look like:
 
@@ -332,7 +332,7 @@ the generator values will be refreshed. The topics then map the generated data t
 
 Generators typically generate their values on a function which maps from timestamp to a value. This
 makes the generated values comparable as it is clear what can be expected as values. As the scheduler
-runs all generators with exactly the same timestamp all generators in an application wil generate the
+runs all generators with exactly the same timestamp all generators in an application will generate the
 same values. For simulators which spawn multiple instances in a single JVM, the scheduler will pass
 the same timestamp to all applications of all simulator instances.
 
