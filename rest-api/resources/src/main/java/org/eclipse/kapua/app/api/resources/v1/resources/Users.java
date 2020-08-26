@@ -53,6 +53,7 @@ public class Users extends AbstractKapuaResource {
      *
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param name    The {@link User} name in which to search results.
+     * @param askTotalCount    Ask for the total count of the matched entities in the result
      * @param offset  The result set offset.
      * @param limit   The result set limit.
      * @return The {@link UserListResult} of all the users associated to the current selected scope.
@@ -64,6 +65,7 @@ public class Users extends AbstractKapuaResource {
     public UserListResult simpleQuery(
             @PathParam("scopeId") ScopeId scopeId,
             @QueryParam("name") String name,
+            @QueryParam("askTotalCount") boolean askTotalCount,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         UserQuery query = userFactory.newQuery(scopeId);
@@ -74,6 +76,7 @@ public class Users extends AbstractKapuaResource {
         }
         query.setPredicate(andPredicate);
 
+        query.setAskTotalCount(askTotalCount);
         query.setOffset(offset);
         query.setLimit(limit);
 
