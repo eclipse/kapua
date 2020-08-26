@@ -4,13 +4,13 @@ Kapua has a lot of different permissions for various purposes, all of which can 
 
 This document was created because adding, editing and using permissions in Kapua can be rather difficult some times, so end users like you will not waste time with searching and debugging which permission(s) is/are needed for certain operation but will rather focus on the primary task itself.
 
-Bellow there is a description for every service/grid in Kapua and which permissions need to be granted in order to see certain tabs or to enable certain buttons or features. For most of them the process and logic are pretty straightforward but some of them must be "studied" a bit in detail.
+Below there is a description for every service/grid in Kapua and which permissions need to be granted in order to see certain tabs or to enable certain buttons or features. For most of them the process and logic are pretty straightforward but some of them must be "studied" a bit in detail.
 
 ## Forwardable Permissions
 
-But before we dive into Kapua's permissions we have to mention one imporatant thing that can be more confusing than others - so called **__Forwardable__** option in permissions.
+But before we dive into Kapua's permissions we have to mention one important thing that can be more confusing than others - so called **__Forwardable__** option in permissions.
 
-**__Forwardable__** permission is a link between a parent account and child account; It enables parent account to edit child account's settings, view its Users... In short, this permission can limit certain user to viewing users only in his "scope". Best way to explain this is through an example.
+**__Forwardable__** permission is a link between a parent account and child account; It enables parent account to edit child account's settings, view its Users... In short, this permission can limit certain user to viewing users only in his "scope". The best way to explain this is through an example.
 Imagine you have account named __account0__ and in this account you have the following users:
 
  - __user0__ (permissions: _**Account:Read**_, _**Account:Write**_, _**User:Read**_ - forwardable set to False)
@@ -30,7 +30,7 @@ In this document only specific permissions and permission mix will be described,
 
 ## Welcome and About
 
-**__Welcome__** and **__About__** are used to show some basic information about Kapua.These two tabs are enabled by default, so user can always see and use them (even if the user has no permissions). User can also always change its password (upper right corner).
+**__Welcome__** and **__About__** are used to show some basic information about Kapua. These two tabs are enabled by default, so user can always see and use them (even if the user has no permissions). User can also always change its password (upper right corner).
 
 
 ## Connections
@@ -52,7 +52,7 @@ Connections view is also closely related to __**Users**__ in Kapua - connections
 
 ## Devices
 
-Kapua is a device management software and therefore it is logical that we have __**Device**__ view. With it, we can monitor the device's condition, status and many other things. If user has __Command__ permisisons, we can even send some simple commands to it remotely or reboot it, if necessary.
+Kapua is a device management software and therefore it is logical that we have __**Device**__ view. With it, we can monitor the device's condition, status and many other things. If user has __Command__ permissions, we can even send some simple commands to it remotely or reboot it, if necessary.
 **__Devices__** view is the most complex view in Kapua, since it has more than 10 tabs and subtabs all of which need some special permissions for viewing/editing.
 If user has only _**Device:Read**_ permission, the __Description__ tab will be enabled and user will be able to see all the info of a certain device (if there are any, since user cannot add devices without **_Device:Write_** permission). __**Export to CSV**__ button and refresh button are also enabled (even if there are no devices in the list).
 
@@ -187,7 +187,7 @@ Nevertheless, let's take a closer look on some of the permissions. To see __**Us
 
 For showing **__Credentials__** tab, user needs _**Credentials:Read**_ permission (alongside with _**User:Read**_) and for editing/unlocking/deleting them _**Credentials:Write**_ and _**Credentials:Delete**_ respectively.
 
-**Roles** tab is a bit different. For **Roles** tab to be visible user needs _**User:Read**_, _**Role:Read**_ and _**Access_info:Read**_ permissons, but for **Add** and **Revoke** buttons to be enabled user also needs **_Access_info:Write/Delete_** (and not "Role:Write/Delete" "- these are meant for adding, editing and deleting roles).
+**Roles** tab is a bit different. For **Roles** tab to be visible user needs _**User:Read**_, _**Role:Read**_ and _**Access_info:Read**_ permissions, but for **Add** and **Revoke** buttons to be enabled user also needs **_Access_info:Write/Delete_** (and not "Role:Write/Delete" "- these are meant for adding, editing and deleting roles).
 
 "Permissions" tab is again a bit different and deserves a bit more explanation then others. If user wants to see **Permissions** tab, **_"Access_info:Read"_**, **_"User:Read"_** and **_"Domain:Read"_** permissions are needed - do not forget on **_Domain:Read_** permission! But why?
 If you look at "Grant Permission" window closely, you will see, that we have "Domain", "Action", "Access Group" and "Forwardable" options - and the first one, "Domain" has its own permission just for enabling this dropdown menu.
