@@ -11,26 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.client;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.TableData;
-import com.extjs.gxt.ui.client.widget.layout.TableLayout;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
+import java.util.List;
+
 import org.eclipse.kapua.app.console.core.client.util.TokenCleaner;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationServiceAsync;
@@ -51,7 +33,27 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleService;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleServiceAsync;
 
-import java.util.List;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.util.Point;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.layout.TableData;
+import com.extjs.gxt.ui.client.widget.layout.TableLayout;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 public class NorthView extends LayoutContainer {
 
@@ -196,21 +198,21 @@ public class NorthView extends LayoutContainer {
                                 if (currentSession.isSsoEnabled() && currentSession.getSsoIdToken() != null) {
                                     gwtSettingService.getSsoLogoutUri(currentSession.getSsoIdToken(), new AsyncCallback<String>() {
 
-                                                @Override
-                                                public void onFailure(Throwable caught) {
-                                                    FailureHandler.handle(caught);
-                                                }
+                                        @Override
+                                        public void onFailure(Throwable caught) {
+                                            FailureHandler.handle(caught);
+                                        }
 
-                                                @Override
-                                                public void onSuccess(String result) {
-                                                    if (!result.isEmpty()) {
-                                                        Window.Location.assign(result);
-                                                    } else {
-                                                        // result is empty, thus the OpenID logout is disabled
-                                                        TokenCleaner.cleanToken();
-                                                    }
-                                                }
-                                            });
+                                        @Override
+                                        public void onSuccess(String result) {
+                                            if (!result.isEmpty()) {
+                                                Window.Location.assign(result);
+                                            } else {
+                                                // result is empty, thus the OpenID logout is disabled
+                                                TokenCleaner.cleanToken();
+                                            }
+                                        }
+                                    });
                                 } else {
                                     TokenCleaner.cleanToken();
                                 }
@@ -248,6 +250,7 @@ public class NorthView extends LayoutContainer {
 
         subAccountMenu = new Menu();
         subAccountMenu.setAutoWidth(true);
+        subAccountMenu.setAutoHeight(true);
         subAccountMenu.add(rootAccountMenuItem);
         subAccountMenu.add(new SeparatorMenuItem());
 
@@ -269,6 +272,15 @@ public class NorthView extends LayoutContainer {
      * @param accountId the account of the current menu item.
      */
     private void populateNavigatorMenu(final Menu menu, String accountId) {
+        final KapuaMenuItem loadingChildAccounts;
+        loadingChildAccounts = new KapuaMenuItem(MSGS.accountSelectorLoadingChildAccounts());
+        loadingChildAccounts.setToolTip(MSGS.accountSelectorTooltipYourAccount());
+        loadingChildAccounts.setIcon(IconSet.USER_MD);
+        loadingChildAccounts.setId(rootAccountId);
+        loadingChildAccounts.disable();
+
+        menu.add(loadingChildAccounts);
+
         gwtAccountService.find(accountId, new AsyncCallback<GwtAccount>() {
 
             @Override
@@ -280,10 +292,12 @@ public class NorthView extends LayoutContainer {
             public void onSuccess(GwtAccount result) {
                 // If no children are found, add "No Child" label
                 if (result.getChildAccounts() != null && result.getChildAccounts().isEmpty()) {
+                    menu.remove(loadingChildAccounts);
                     MenuItem noChildMenuItem = new MenuItem(MSGS.accountSelectorItemNoChild());
                     noChildMenuItem.disable();
                     menu.add(noChildMenuItem);
                 } else {
+                    menu.remove(loadingChildAccounts);
                     // For each child found create a item menu and search for its children
                     for (GwtAccount childAccount : result.getChildAccounts()) {
                         // Add item menu entry
@@ -301,10 +315,16 @@ public class NorthView extends LayoutContainer {
                         if (!childAccount.getChildAccounts().isEmpty()) {
                             Menu childMenu = new Menu();
                             childMenu.setAutoWidth(true);
+                            childMenu.setAutoHeight(true);
                             childAccountMenuItem.setSubMenu(childMenu);
                             populateNavigatorMenu(childMenu, childAccount.getId());
                         }
                     }
+                }
+                // Force new show to include new child accounts
+                if (menu.isVisible()) {
+                    Point currentPosition = menu.getPosition(true);
+                    menu.showAt(currentPosition.x, currentPosition.y);
                 }
             }
         });
@@ -387,4 +407,5 @@ public class NorthView extends LayoutContainer {
 
         userActionButton.setText(MSGS.consoleHeaderUserActionButtonLabel(userDisplayName, accountName));
     }
+
 }
