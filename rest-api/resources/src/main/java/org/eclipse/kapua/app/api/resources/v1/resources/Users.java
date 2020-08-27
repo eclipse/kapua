@@ -51,11 +51,13 @@ public class Users extends AbstractKapuaResource {
     /**
      * Gets the {@link User} list in the scope.
      *
-     * @param scopeId The {@link ScopeId} in which to search results.
-     * @param name    The {@link User} name in which to search results.
+     * @param scopeId       The {@link ScopeId} in which to search results.
+     * @param name          The {@link User} name in which to search results.
+     * @param matchTerm     A term to be matched in at least one of the configured fields of this entity
      * @param askTotalCount    Ask for the total count of the matched entities in the result
-     * @param offset  The result set offset.
-     * @param limit   The result set limit.
+     * @param offset        The result set offset.
+     * @param limit         The result set limit.
+     *
      * @return The {@link UserListResult} of all the users associated to the current selected scope.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
@@ -65,6 +67,7 @@ public class Users extends AbstractKapuaResource {
     public UserListResult simpleQuery(
             @PathParam("scopeId") ScopeId scopeId,
             @QueryParam("name") String name,
+            @QueryParam("matchTerm") String matchTerm,
             @QueryParam("askTotalCount") boolean askTotalCount,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
@@ -74,6 +77,10 @@ public class Users extends AbstractKapuaResource {
         if (!Strings.isNullOrEmpty(name)) {
             andPredicate.and(query.attributePredicate(KapuaNamedEntityAttributes.NAME, name));
         }
+        if (matchTerm != null && !matchTerm.isEmpty()) {
+            andPredicate.and(query.matchPredicate(matchTerm));
+        }
+
         query.setPredicate(andPredicate);
 
         query.setAskTotalCount(askTotalCount);

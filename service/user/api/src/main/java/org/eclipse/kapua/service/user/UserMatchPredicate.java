@@ -9,10 +9,10 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.registry;
+package org.eclipse.kapua.service.user;
 
 import org.eclipse.kapua.model.query.predicate.MatchPredicate;
 
-public interface DeviceMatchPredicate<T> extends MatchPredicate<T> {
+public interface UserMatchPredicate<T> extends MatchPredicate<T> {
 
 }
