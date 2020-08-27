@@ -1,0 +1,80 @@
+/*******************************************************************************
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.kapua;
+
+import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.mockito.Mockito;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+
+@Category(JUnitTests.class)
+public class KapuaEntityUniquenessExceptionTest extends Assert {
+
+    String[] entityType;
+    List<Map.Entry<String, Object>> uniquesFieldValues;
+    Map.Entry mapEntry;
+
+    @Before
+    public void initialize() {
+        entityType = new String[]{"Entity Type", null};
+        uniquesFieldValues = new LinkedList<>();
+        mapEntry = Mockito.mock(Map.Entry.class);
+        uniquesFieldValues.add(mapEntry);
+        uniquesFieldValues.add(mapEntry);
+        uniquesFieldValues.add(null);
+    }
+
+    @Test
+    public void kapuaEntityUniquenessExceptionTest() {
+        for (String type : entityType) {
+            KapuaEntityUniquenessException kapuaEntityUniquenessException1 = new KapuaEntityUniquenessException(type, uniquesFieldValues);
+            assertEquals("Expected and actual values should be the same.", type, kapuaEntityUniquenessException1.getEntityType());
+            assertEquals("Expected and actual values should be the same.", uniquesFieldValues, kapuaEntityUniquenessException1.getUniquesFieldValues());
+            assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_UNIQUENESS, kapuaEntityUniquenessException1.getCode());
+            assertEquals("Expected and actual values should be the same.", "Error: " + uniquesFieldValues, kapuaEntityUniquenessException1.getMessage());
+            assertNull("Null expected.", kapuaEntityUniquenessException1.getCause());
+        }
+    }
+
+    @Test
+    public void kapuaEntityUniquenessExceptionNullFieldValuesTest() {
+        for (String type : entityType) {
+            KapuaEntityUniquenessException kapuaEntityUniquenessException2 = new KapuaEntityUniquenessException(type, null);
+            assertEquals("Expected and actual values should be the same.", type, kapuaEntityUniquenessException2.getEntityType());
+            assertNull("Null expected.", kapuaEntityUniquenessException2.getUniquesFieldValues());
+            assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_UNIQUENESS, kapuaEntityUniquenessException2.getCode());
+            assertEquals("Expected and actual values should be the same.", "Error: null", kapuaEntityUniquenessException2.getMessage());
+            assertNull("Null expected.", kapuaEntityUniquenessException2.getCause());
+        }
+    }
+
+    @Test(expected = KapuaEntityUniquenessException.class)
+    public void throwingExceptionTest() throws KapuaEntityUniquenessException {
+        for (String type : entityType) {
+            throw new KapuaEntityUniquenessException(type, uniquesFieldValues);
+        }
+    }
+
+    @Test(expected = KapuaEntityUniquenessException.class)
+    public void throwingExceptionNullFieldValuesTest() throws KapuaEntityUniquenessException {
+        for (String type : entityType) {
+            throw new KapuaEntityUniquenessException(type, null);
+        }
+    }
+}  
