@@ -16,12 +16,12 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon
 public class SplitButton extends com.extjs.gxt.ui.client.widget.button.SplitButton {
 
     private String originalText;
-    private KapuaIcon icon;
+    private KapuaIcon kapuaIcon;
 
-    public SplitButton(String text, KapuaIcon icon) {
+    public SplitButton(String text, KapuaIcon kapuaIcon) {
         super();
         setText(text);
-        setIcon(icon);
+        setKapuaIcon(kapuaIcon);
     }
 
     @Override
@@ -31,13 +31,13 @@ public class SplitButton extends com.extjs.gxt.ui.client.widget.button.SplitButt
 
     @Override
     public void setText(String text) {
-        super.setText((icon != null ? icon.getInlineHTML() + " " : "") + text);
+        super.setText((kapuaIcon != null ? kapuaIcon.getInlineHTML() + " " : "") + text);
         this.originalText = text;
     }
 
-    public void setIcon(KapuaIcon icon) {
-        super.setText(icon.getInlineHTML() + " " + originalText);
-        this.icon = icon;
+    public void setKapuaIcon(KapuaIcon kapuaIcon) {
+        super.setText(kapuaIcon.getInlineHTML() + " " + originalText);
+        this.kapuaIcon = kapuaIcon;
     }
 
 }

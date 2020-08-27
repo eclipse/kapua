@@ -82,7 +82,7 @@ public class ManagementOperationNotificationDAO {
      * @return
      * @throws KapuaException
      */
-    public static ManagementOperationNotificationListResult query(EntityManager em, KapuaQuery<ManagementOperationNotification> stepDefinitionQuery)
+    public static ManagementOperationNotificationListResult query(EntityManager em, KapuaQuery stepDefinitionQuery)
             throws KapuaException {
         return ServiceDAO.query(em, ManagementOperationNotification.class, ManagementOperationNotificationImpl.class, new ManagementOperationNotificationListResultImpl(), stepDefinitionQuery);
     }
@@ -95,7 +95,7 @@ public class ManagementOperationNotificationDAO {
      * @return
      * @throws KapuaException
      */
-    public static long count(EntityManager em, KapuaQuery<ManagementOperationNotification> stepDefinitionQuery)
+    public static long count(EntityManager em, KapuaQuery stepDefinitionQuery)
             throws KapuaException {
         return ServiceDAO.count(em, ManagementOperationNotification.class, ManagementOperationNotificationImpl.class, stepDefinitionQuery);
     }

@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 
 /**
@@ -21,7 +20,7 @@ import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
  *
  * @since 1.0
  */
-public class TriggerQueryImpl extends AbstractKapuaQuery<Trigger> implements TriggerQuery {
+public class TriggerQueryImpl extends AbstractKapuaQuery implements TriggerQuery {
 
     /**
      * Constructor

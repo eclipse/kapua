@@ -43,7 +43,6 @@ public class TransportClientGetException extends TransportException {
      */
     public TransportClientGetException(@NotNull Throwable cause, @NotNull String serverIp) {
         super(TransportErrorCodes.CLIENT_GET, cause, serverIp);
-
         this.serverIp = serverIp;
     }
 

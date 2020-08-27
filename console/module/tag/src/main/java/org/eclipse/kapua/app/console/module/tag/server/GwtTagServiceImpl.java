@@ -66,6 +66,8 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
     final UserService userService = locator.getService(UserService.class);
     final UserFactory userFactory = locator.getFactory(UserFactory.class);
 
+    private static final String ENTITY_INFO = "entityInfo";
+
     @Override
     public GwtTag create(GwtTagCreator gwtTagCreator) throws GwtKapuaException {
         GwtTag gwtTag = null;
@@ -200,10 +202,10 @@ public class GwtTagServiceImpl extends KapuaRemoteServiceServlet implements GwtT
                 // Id", KapuaGwtCommonsModelConverter.convertKapuaId(tag.getScopeId())));
                 gwtTagDescription.add(new GwtGroupedNVPair("tagInfo", "tagName", tag.getName()));
                 gwtTagDescription.add(new GwtGroupedNVPair("tagInfo", "tagDescription", tag.getDescription()));
-                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagModifiedOn", tag.getModifiedOn()));
-                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagModifiedBy", tag.getModifiedBy() != null ? usernameMap.get(tag.getModifiedBy().toCompactId()) : null));
-                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagCreatedOn", tag.getCreatedOn()));
-                gwtTagDescription.add(new GwtGroupedNVPair("entityInfo", "tagCreatedBy", tag.getCreatedBy() != null ? usernameMap.get(tag.getCreatedBy().toCompactId()) : null));
+                gwtTagDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "tagModifiedOn", tag.getModifiedOn()));
+                gwtTagDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "tagModifiedBy", tag.getModifiedBy() != null ? usernameMap.get(tag.getModifiedBy().toCompactId()) : null));
+                gwtTagDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "tagCreatedOn", tag.getCreatedOn()));
+                gwtTagDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "tagCreatedBy", tag.getCreatedBy() != null ? usernameMap.get(tag.getCreatedBy().toCompactId()) : null));
 
             }
         } catch (Exception e) {

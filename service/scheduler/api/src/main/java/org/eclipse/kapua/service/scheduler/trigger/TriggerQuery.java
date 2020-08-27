@@ -20,12 +20,12 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 
 /**
  * Trigger query definition.
- * 
+ *
  * @since 1.0
- * 
+ *
  */
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = TriggerXmlRegistry.class, factoryMethod = "newQuery")
-public interface TriggerQuery extends KapuaQuery<Trigger> {
+public interface TriggerQuery extends KapuaQuery {
 }

@@ -61,6 +61,8 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
     private static final UserService USER_SERVICE = LOCATOR.getService(UserService.class);
     private static final UserFactory USER_FACTORY = LOCATOR.getFactory(UserFactory.class);
 
+    private static final String ENTITY_INFO = "entityInfo";
+
     @Override
     public GwtGroup create(GwtGroupCreator gwtGroupCreator) throws GwtKapuaException {
         GwtGroup gwtGroup = null;
@@ -197,10 +199,10 @@ public class GwtGroupServiceImpl extends KapuaRemoteServiceServlet implements Gw
                 // Id", KapuaGwtAuthenticationModelConverter.convertKapuaId(group.getScopeId())));
                 gwtGroupDescription.add(new GwtGroupedNVPair("accessGroupInfo", "accessGroupName", group.getName()));
                 gwtGroupDescription.add(new GwtGroupedNVPair("accessGroupInfo", "accessGroupDescription", group.getDescription()));
-                gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupModifiedOn", group.getModifiedOn()));
-                gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupModifiedBy", group.getModifiedBy() != null ? usernameMap.get(group.getModifiedBy().toCompactId()) : null));
-                gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupCreatedOn", group.getCreatedOn()));
-                gwtGroupDescription.add(new GwtGroupedNVPair("entityInfo", "accessGroupCreatedBy", group.getCreatedBy() != null ? usernameMap.get(group.getCreatedBy().toCompactId()) : null));
+                gwtGroupDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "accessGroupModifiedOn", group.getModifiedOn()));
+                gwtGroupDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "accessGroupModifiedBy", group.getModifiedBy() != null ? usernameMap.get(group.getModifiedBy().toCompactId()) : null));
+                gwtGroupDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "accessGroupCreatedOn", group.getCreatedOn()));
+                gwtGroupDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "accessGroupCreatedBy", group.getCreatedBy() != null ? usernameMap.get(group.getCreatedBy().toCompactId()) : null));
 
             }
         } catch (Exception e) {

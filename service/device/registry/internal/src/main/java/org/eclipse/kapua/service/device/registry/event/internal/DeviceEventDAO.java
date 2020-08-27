@@ -69,7 +69,7 @@ public class DeviceEventDAO extends ServiceDAO {
      * @return
      * @throws KapuaException
      */
-    public static DeviceEventListResult query(EntityManager em, KapuaQuery<DeviceEvent> query)
+    public static DeviceEventListResult query(EntityManager em, KapuaQuery query)
             throws KapuaException {
         return ServiceDAO.query(em, DeviceEvent.class, DeviceEventImpl.class, new DeviceEventListResultImpl(), query);
     }
@@ -82,7 +82,7 @@ public class DeviceEventDAO extends ServiceDAO {
      * @return
      * @throws KapuaException
      */
-    public static long count(EntityManager em, KapuaQuery<DeviceEvent> query)
+    public static long count(EntityManager em, KapuaQuery query)
             throws KapuaException {
         return ServiceDAO.count(em, DeviceEvent.class, DeviceEventImpl.class, query);
     }

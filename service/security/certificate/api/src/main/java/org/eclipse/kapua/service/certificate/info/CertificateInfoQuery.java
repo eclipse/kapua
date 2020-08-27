@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = CertificateInfoXmlRegistry.class, factoryMethod = "newQuery")
-public interface CertificateInfoQuery extends KapuaQuery<CertificateInfo> {
+public interface CertificateInfoQuery extends KapuaQuery {
 
     @XmlElement(name = "includeInherited")
     Boolean getIncludeInherited();

@@ -46,7 +46,7 @@ public interface EventStoreService extends KapuaEntityService<EventStoreRecord, 
      * @since 1.0.0
      */
     @Override
-    public EventStoreRecordListResult query(KapuaQuery<EventStoreRecord> query)
+    public EventStoreRecordListResult query(KapuaQuery query)
             throws KapuaException;
 
 }

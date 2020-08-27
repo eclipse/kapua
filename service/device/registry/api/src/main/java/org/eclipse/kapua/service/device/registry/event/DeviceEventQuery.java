@@ -20,13 +20,13 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 
 /**
  * Device event query definition.
- * 
+ *
  * @since 1.0
  *
  */
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = DeviceEventXmlRegistry.class, factoryMethod = "newQuery")
-public interface DeviceEventQuery extends KapuaQuery<DeviceEvent> {
+public interface DeviceEventQuery extends KapuaQuery {
 
 }

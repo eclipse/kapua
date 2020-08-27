@@ -30,6 +30,8 @@ import java.util.Random;
 
 public class TestBase extends Assert {
 
+    private static final String LAST_ACCOUNT = "LastAccount";
+
     /**
      * Common locator instance
      */
@@ -95,8 +97,8 @@ public class TestBase extends Assert {
 
         if (stepData.contains("LastAccountId")) {
             return (KapuaId) stepData.get("LastAccountId");
-        } else if (stepData.get("LastAccount") != null) {
-            return ((Account) stepData.get("LastAccount")).getId();
+        } else if (stepData.get(LAST_ACCOUNT) != null) {
+            return ((Account) stepData.get(LAST_ACCOUNT)).getId();
         } else {
             return SYS_SCOPE_ID;
         }
@@ -104,8 +106,8 @@ public class TestBase extends Assert {
 
     public KapuaId getCurrentParentId() {
 
-        if (stepData.get("LastAccount") != null) {
-            return ((Account) stepData.get("LastAccount")).getScopeId();
+        if (stepData.get(LAST_ACCOUNT) != null) {
+            return ((Account) stepData.get(LAST_ACCOUNT)).getScopeId();
         } else {
             return SYS_SCOPE_ID;
         }

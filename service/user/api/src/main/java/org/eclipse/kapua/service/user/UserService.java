@@ -96,6 +96,6 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
      * Queries for all users
      */
     @Override
-    UserListResult query(KapuaQuery<User> query) throws KapuaException;
+    UserListResult query(KapuaQuery query) throws KapuaException;
 
 }

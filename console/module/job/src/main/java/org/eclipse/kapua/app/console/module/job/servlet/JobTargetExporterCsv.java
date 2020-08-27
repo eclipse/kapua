@@ -20,7 +20,7 @@ import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +39,7 @@ import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 
 import com.opencsv.CSVWriter;
+import org.apache.commons.lang3.CharEncoding;
 
 public class JobTargetExporterCsv extends JobTargetExporter {
 
@@ -59,16 +60,19 @@ public class JobTargetExporterCsv extends JobTargetExporter {
         dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
 
         response.setContentType("text/csv");
-        response.setCharacterEncoding("UTF-8");
-        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(jobId, "UTF-8") + "_job_targets.csv");
+        response.setCharacterEncoding(CharEncoding.UTF_8);
+        response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(jobId, CharEncoding.UTF_8) + "_job_targets.csv");
         response.setHeader("Cache-Control", "no-transform, max-age=0");
 
-        OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), Charset.forName("UTF-8"));
-        writer = new CSVWriter(osw);
+        OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), Charset.forName(CharEncoding.UTF_8));
+        try {
+            writer = new CSVWriter(osw);
 
-        List<String> cols = new ArrayList<String>();
-        Collections.addAll(cols, JOB_TARGET_PROPERTIES);
-        writer.writeNext(cols.toArray(new String[] {}));
+            List<String> cols = new ArrayList<String>(Arrays.asList(JOB_TARGET_PROPERTIES));
+            writer.writeNext(cols.toArray(new String[]{ }));
+        } finally {
+            osw.close();
+        }
     }
 
     @Override

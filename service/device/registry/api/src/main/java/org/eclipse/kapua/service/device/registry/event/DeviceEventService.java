@@ -31,6 +31,6 @@ public interface DeviceEventService extends KapuaEntityService<DeviceEvent, Devi
      * @since 1.0.0
      */
     @Override
-    DeviceEventListResult query(KapuaQuery<DeviceEvent> query) throws KapuaException;
+    DeviceEventListResult query(KapuaQuery query) throws KapuaException;
 
 }

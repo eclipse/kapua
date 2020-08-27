@@ -53,14 +53,14 @@ public class LoginDialog extends Dialog {
     private final GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
     private final GwtSettingsServiceAsync gwtSettingService = GWT.create(GwtSettingsService.class);
 
-    public GwtSession currentSession;
-    public TextField<String> username;
-    public TextField<String> password;
+    private GwtSession currentSession;
+    private TextField<String> username;
+    private TextField<String> password;
 
-    public Button reset;
-    public Button login;
-    public Button ssoLogin;
-    public Status status;
+    private Button reset;
+    private Button login;
+    private Button ssoLogin;
+    private Status status;
 
     private boolean allowMainScreen;
 
@@ -94,11 +94,13 @@ public class LoginDialog extends Dialog {
             @Override
             public void componentKeyUp(ComponentEvent event) {
                 validate();
-                if (event.getKeyCode() == 13) {
-                    if (username.getValue() != null && username.getValue().trim().length() > 0 &&
-                            password.getValue() != null && password.getValue().trim().length() > 0) {
-                        onSubmit();
-                    }
+                if (
+                        event.getKeyCode() == 13 &&
+                        username.getValue() != null &&
+                        username.getValue().trim().length() > 0 &&
+                        password.getValue() != null &&
+                        password.getValue().trim().length() > 0) {
+                    onSubmit();
                 }
             }
         };
@@ -173,7 +175,7 @@ public class LoginDialog extends Dialog {
                 password.reset();
                 password.enable();
                 validate();
-                username.focus(); 
+                username.focus();
             }
         });
 
@@ -250,7 +252,7 @@ public class LoginDialog extends Dialog {
             @Override
             public void onFailure(Throwable caught) {
                 ConsoleInfo.display(CORE_MSGS.loginError(), caught.getLocalizedMessage());
-                reset();
+                resetDialog();
             }
 
             @Override
@@ -273,7 +275,7 @@ public class LoginDialog extends Dialog {
             @Override
             public void onSuccess(Void arg0) {
                 ConsoleInfo.display(MSGS.popupInfo(), MSGS.loggedOut());
-                reset();
+                resetDialog();
                 show();
             }
         });
@@ -301,7 +303,7 @@ public class LoginDialog extends Dialog {
         }
     }
 
-    public void reset() {
+    public void resetDialog() {
         username.reset();
         username.enable();
         password.reset();

@@ -47,13 +47,16 @@ import java.util.Date;
 @KapuaProvider
 public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceBundleManagementService {
 
+    private static final String SCOPE_ID = "scopeId";
+    private static final String DEVICE_ID = "deviceId";
+
     @Override
     public DeviceBundles get(KapuaId scopeId, KapuaId deviceId, Long timeout)
             throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(deviceId, "deviceId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(deviceId, DEVICE_ID);
 
         //
         // Check Access
@@ -121,8 +124,8 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
             throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(deviceId, "deviceId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(deviceId, DEVICE_ID);
         ArgumentValidator.notEmptyOrNull(bundleId, "bundleId");
 
         //
@@ -170,8 +173,8 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
             throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(deviceId, "deviceId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(deviceId, DEVICE_ID);
         ArgumentValidator.notEmptyOrNull(bundleId, "bundleId");
 
         //

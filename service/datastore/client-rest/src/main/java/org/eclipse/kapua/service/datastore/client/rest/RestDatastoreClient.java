@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.http.HttpHeaders;
 import org.apache.http.ParseException;
 import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.entity.ContentType;
@@ -97,9 +98,10 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
     private static final String MSG_EMPTY_ERROR = "Empty error message";
 
     private static final String CLIENT_CANNOT_PARSE_INDEX_RESPONSE_ERROR_MSG = "Cannot convert the indexes list";
-    private static final String CLIENT_HITS_MAX_VALUE_EXCEDEED = "Total hits exceeds integer max value";
+    private static final String CLIENT_HITS_MAX_VALUE_EXCEEDED = "Total hits exceeds integer max value";
     private static final String CLIENT_COMMUNICATION_TIMEOUT_MSG = "Elasticsearch client timeout";
     private static final String CLIENT_GENERIC_ERROR_MSG = "Generic client error";
+    private static final String QUERY_CONVERTED_QUERY = "Query - converted query: '{}'";
 
     private static final Random RANDOM = RandomUtils.getInstance();
     private static final int MAX_RETRY_ATTEMPT = ClientSettings.getInstance().getInt(ClientSettingsKey.ELASTICSEARCH_REST_TIMEOUT_MAX_RETRY, 3);
@@ -134,9 +136,9 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
     private RestDatastoreClient() {
         super("rest");
         MetricsService metricService = MetricServiceFactory.getInstance();
-        restCallRuntimeExecCount = metricService.getCounter("datastore-rest-client", "rest-client", "runtime_exc", "count");
-        timeoutRetryCount = metricService.getCounter("datastore-rest-client", "rest-client", "timeout_retry", "count");
-        timeoutRetryLimitReachedCount = metricService.getCounter("datastore-rest-client", "rest-client", "timeout_retry_limit_reached", "count");
+        restCallRuntimeExecCount = metricService.getCounter(DatastoreRestClientMetrics.METRIC_MODULE_NAME, DatastoreRestClientMetrics.METRIC_COMPONENT_NAME, DatastoreRestClientMetrics.METRIC_RUNTIME_EXEC, DatastoreRestClientMetrics.METRIC_COUNT);
+        timeoutRetryCount = metricService.getCounter(DatastoreRestClientMetrics.METRIC_MODULE_NAME, DatastoreRestClientMetrics.METRIC_COMPONENT_NAME, DatastoreRestClientMetrics.METRIC_TIMEOUT_RETRY, DatastoreRestClientMetrics.METRIC_COUNT);
+        timeoutRetryLimitReachedCount = metricService.getCounter(DatastoreRestClientMetrics.METRIC_MODULE_NAME, DatastoreRestClientMetrics.METRIC_COMPONENT_NAME, DatastoreRestClientMetrics.TIMEOUT_RETRY_LIMIT_REACHED, DatastoreRestClientMetrics.METRIC_COUNT);
     }
 
     @Override
@@ -160,7 +162,7 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
                 getInsertTypePath(insertRequest),
                 Collections.emptyMap(),
                 EntityBuilder.create().setText(json).setContentType(ContentType.APPLICATION_JSON).build(),
-                new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString())), insertRequest.getTypeDescriptor().getIndex(), "INSERT");
+                new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), insertRequest.getTypeDescriptor().getIndex(), "INSERT");
 
         if (isRequestSuccessful(insertResponse)) {
             JsonNode responseNode;
@@ -198,7 +200,7 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
                 getUpsertPath(updateRequest.getTypeDescriptor(), updateRequest.getId()),
                 Collections.emptyMap(),
                 EntityBuilder.create().setText(json).setContentType(ContentType.APPLICATION_JSON).build(),
-                new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString())), updateRequest.getTypeDescriptor().getIndex(), "UPSERT");
+                new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), updateRequest.getTypeDescriptor().getIndex(), "UPSERT");
         if (isRequestSuccessful(updateResponse)) {
             JsonNode responseNode;
             try {
@@ -244,7 +246,7 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
                 getBulkPath(),
                 Collections.emptyMap(),
                 EntityBuilder.create().setText(bulkOperation.toString()).setContentType(ContentType.APPLICATION_JSON).build(),
-                new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString())), "multi-index", "UPSERT BULK");
+                new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), "multi-index", "UPSERT BULK");
         if (isRequestSuccessful(updateResponse)) {
             BulkUpdateResponse bulkResponse = new BulkUpdateResponse();
             JsonNode responseNode;
@@ -303,7 +305,7 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
         RestClient client = getClient();
         JsonNode queryMap = queryConverter.convertQuery(query);
         Object queryFetchStyle = queryConverter.getFetchStyle(query);
-        logger.debug("Query - converted query: '{}'", queryMap);
+        logger.debug(QUERY_CONVERTED_QUERY, queryMap);
         long totalCount = 0;
         ArrayNode resultsNode = null;
         Response queryResponse = restCallTimeoutHandler(() -> client.performRequest(
@@ -311,7 +313,7 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
                 getSearchPath(typeDescriptor),
                 Collections.emptyMap(),
                 EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).setContentType(ContentType.APPLICATION_JSON).build(),
-                new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "QUERY");
+                new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "QUERY");
         if (isRequestSuccessful(queryResponse)) {
             JsonNode responseNode;
             try {
@@ -322,7 +324,7 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
             JsonNode hitsNode = responseNode.get(KEY_HITS);
             totalCount = hitsNode.get(KEY_TOTAL).asLong();
             if (totalCount > Integer.MAX_VALUE) {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, "Total hits exceeds integer max value");
+                throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_HITS_MAX_VALUE_EXCEEDED);
             }
             resultsNode = ((ArrayNode) hitsNode.get(KEY_HITS));
         } else if (queryResponse != null) {
@@ -349,14 +351,14 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
     public long count(TypeDescriptor typeDescriptor, Object query) throws ClientException {
         RestClient client = getClient();
         JsonNode queryMap = queryConverter.convertQuery(query);
-        logger.debug("Query - converted query: '{}'", queryMap);
+        logger.debug(QUERY_CONVERTED_QUERY, queryMap);
         long totalCount = 0;
         Response queryResponse = restCallTimeoutHandler(() -> client.performRequest(
                 GET_ACTION,
                 getSearchPath(typeDescriptor),
                 Collections.emptyMap(),
                 EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).setContentType(ContentType.APPLICATION_JSON).build(),
-                new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "COUNT");
+                new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "COUNT");
         if (isRequestSuccessful(queryResponse)) {
             JsonNode responseNode;
             try {
@@ -367,7 +369,7 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
             JsonNode hitsNode = responseNode.get(KEY_HITS);
             totalCount = hitsNode.get(KEY_TOTAL).asLong();
             if (totalCount > Integer.MAX_VALUE) {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_HITS_MAX_VALUE_EXCEDEED);
+                throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_HITS_MAX_VALUE_EXCEEDED);
             }
         } else if (queryResponse != null) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR,
@@ -383,7 +385,7 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
         Response deleteResponse = restCallTimeoutHandler(() -> client.performRequest(
                 DELETE_ACTION,
                 getIdPath(typeDescriptor, id),
-                Collections.emptyMap()), typeDescriptor.getIndex(), "DELETE");
+                Collections.emptyMap()), typeDescriptor.getIndex(), DELETE_ACTION);
         if (deleteResponse != null && !isRequestSuccessful(deleteResponse)) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR,
                     (deleteResponse.getStatusLine() != null) ? deleteResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
@@ -394,13 +396,13 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
     public void deleteByQuery(TypeDescriptor typeDescriptor, Object query) throws ClientException {
         RestClient client = getClient();
         JsonNode queryMap = queryConverter.convertQuery(query);
-        logger.debug("Query - converted query: '{}'", queryMap);
+        logger.debug(QUERY_CONVERTED_QUERY, queryMap);
         Response deleteResponse = restCallTimeoutHandler(() -> client.performRequest(
                 POST_ACTION,
                 getDeleteByQueryPath(typeDescriptor),
                 Collections.emptyMap(),
                 EntityBuilder.create().setText(MAPPER.writeValueAsString(queryMap)).setContentType(ContentType.APPLICATION_JSON).build(),
-                new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "DELETE BY QUERY");
+                new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "DELETE BY QUERY");
         if (deleteResponse != null && !isRequestSuccessful(deleteResponse)) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR,
                     (deleteResponse.getStatusLine() != null) ? deleteResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);
@@ -459,7 +461,7 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
                     getIndexPath(indexName),
                     Collections.emptyMap(),
                     EntityBuilder.create().setText(MAPPER.writeValueAsString(indexSettings)).setContentType(ContentType.APPLICATION_JSON).build(),
-                    new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString()));
+                    new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString()));
             return response;
         }, indexName, "CREATE INDEX");
         if (!isRequestSuccessful(createIndexResponse)) {
@@ -496,7 +498,7 @@ public class RestDatastoreClient extends AbstractDatastoreClient<RestClient> {
                 getMappingPath(typeDescriptor),
                 Collections.emptyMap(),
                 EntityBuilder.create().setText(MAPPER.writeValueAsString(mapping)).setContentType(ContentType.APPLICATION_JSON).build(),
-                new BasicHeader("Content-Type", ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "PUT MAPPING");
+                new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "PUT MAPPING");
         if (!isRequestSuccessful(createMappingResponse)) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR,
                     (createMappingResponse != null && createMappingResponse.getStatusLine() != null) ? createMappingResponse.getStatusLine().getReasonPhrase() : CLIENT_GENERIC_ERROR_MSG);

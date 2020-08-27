@@ -45,7 +45,7 @@ public class KapuaCamelFilter extends AbstractListener {
      */
     public void bindSession(Exchange exchange, Object value) throws KapuaException {
         ThreadContext.unbindSubject();
-        if (!exchange.getIn().getHeader(MessageConstants.HEADER_KAPUA_BROKER_CONTEXT, boolean.class)) {
+        if (Boolean.FALSE.equals(exchange.getIn().getHeader(MessageConstants.HEADER_KAPUA_BROKER_CONTEXT, boolean.class))) {
             try {
                 // FIX #164
                 KapuaSecurityUtils

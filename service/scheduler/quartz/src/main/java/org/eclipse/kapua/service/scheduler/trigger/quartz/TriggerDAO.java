@@ -85,7 +85,7 @@ public class TriggerDAO {
      * @return
      * @throws KapuaException
      */
-    public static TriggerListResult query(EntityManager em, KapuaQuery<Trigger> triggerQuery)
+    public static TriggerListResult query(EntityManager em, KapuaQuery triggerQuery)
             throws KapuaException {
         return ServiceDAO.query(em, Trigger.class, TriggerImpl.class, new TriggerListResultImpl(), triggerQuery);
     }
@@ -98,7 +98,7 @@ public class TriggerDAO {
      * @return
      * @throws KapuaException
      */
-    public static long count(EntityManager em, KapuaQuery<Trigger> triggerQuery)
+    public static long count(EntityManager em, KapuaQuery triggerQuery)
             throws KapuaException {
         return ServiceDAO.count(em, Trigger.class, TriggerImpl.class, triggerQuery);
     }

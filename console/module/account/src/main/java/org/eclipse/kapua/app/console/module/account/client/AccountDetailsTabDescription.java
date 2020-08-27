@@ -29,7 +29,7 @@ import org.eclipse.kapua.app.console.module.account.shared.model.permission.Acco
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountService;
 import org.eclipse.kapua.app.console.module.account.shared.service.GwtAccountServiceAsync;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.KapuaButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.EditButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.EntityDescriptionTabItem;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
@@ -64,7 +64,7 @@ public class AccountDetailsTabDescription extends EntityDescriptionTabItem<GwtAc
 
         //
         // Edit Account Button
-        Button editButton = new EditButton(new SelectionListener<ButtonEvent>() {
+        KapuaButton editButton = new EditButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {

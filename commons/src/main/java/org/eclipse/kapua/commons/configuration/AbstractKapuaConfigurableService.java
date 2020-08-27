@@ -13,6 +13,8 @@
 package org.eclipse.kapua.commons.configuration;
 
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -47,6 +49,7 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 
+import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -58,6 +61,8 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Triple;
+
+import org.xml.sax.SAXException;
 
 /**
  * Configurable service definition abstract reference implementation.
@@ -107,7 +112,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @return the metadata
      * @throws Exception In case of an error
      */
-    private static KapuaTmetadata readMetadata(String pid) throws Exception {
+    private static KapuaTmetadata readMetadata(String pid) throws JAXBException, SAXException, XMLStreamException, IOException {
         URL url = ResourceUtils.getResource(String.format("META-INF/metatypes/%s.xml", pid));
 
         if (url == null) {
@@ -126,7 +131,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @param parentId
      * @throws KapuaException
      */
-    private void validateConfigurations(String pid, KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, KapuaId parentId)
+    private void validateConfigurations(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, KapuaId parentId)
             throws KapuaException {
         if (ocd != null) {
 
@@ -174,22 +179,34 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
                 }
             }
 
-            // make sure all required properties are set
-            for (KapuaTad attrDef : ocd.getAD()) {
-                // to the required attributes make sure a value is defined.
-                if (attrDef.isRequired()) {
-                    if (updatedProps.get(attrDef.getId()) == null) {
-                        // if the default one is not defined, throw
-                        // exception.
-                        throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.REQUIRED_ATTRIBUTE_MISSING, attrDef.getId());
-                    }
-                }
-            }
+            checkRequiredProperties(ocd, updatedProps);
 
             validateNewConfigValuesCoherence(ocd, updatedProps, scopeId, parentId);
         }
     }
 
+    private void checkRequiredProperties(KapuaTocd ocd, Map<String, Object> updatedProps) throws KapuaConfigurationException {
+        // make sure all required properties are set
+        for (KapuaTad attrDef : ocd.getAD()) {
+            // to the required attributes make sure a value is defined.
+            if (Boolean.TRUE.equals(attrDef.isRequired()) && updatedProps.get(attrDef.getId()) == null) {
+                // if the default one is not defined, throw
+                // exception.
+                throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.REQUIRED_ATTRIBUTE_MISSING, attrDef.getId());
+            }
+        }
+    }
+
+    /**
+     * Validates that the configurations is coherent. By default returns true, but an extending {@link org.eclipse.kapua.service.KapuaService}
+     * may have its own logic
+     * @param ocd               The {@link KapuaTocd} containing the definition of the service configurations
+     * @param updatedProps      A {@link Map} containing the new values for the service
+     * @param scopeId           The Scope ID of the current configuration
+     * @param parentId          The ID of the Parent Scope
+     * @return                  {@literal true} if the configuration is valid, {@literal false} otherwise
+     * @throws KapuaException   When something goes wrong
+     */
     protected boolean validateNewConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, KapuaId parentId) throws KapuaException {
         return true;
     }
@@ -310,8 +327,6 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
                 }
             }
             return tocd;
-        } catch (KapuaConfigurationException e) {
-            throw e;
         } catch (Exception e) {
             throw KapuaException.internalError(e);
         }
@@ -321,7 +336,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * Process metadata to exclude disabled services and properties
      *
      * @param metadata              A {@link KapuaTmetadata} object
-     * @param excludeDisabled    if {@literal true} exclude disabled properties from the AD object
+     * @param excludeDisabled       if {@literal true} exclude disabled properties from the AD object
      * @return                      The processed {@link KapuaTocd} object
      */
     private KapuaTocd processMetadata(KapuaTmetadata metadata, KapuaId scopeId, boolean excludeDisabled) {
@@ -387,7 +402,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.write, scopeId));
 
         KapuaTocd ocd = getConfigMetadata(scopeId, false);
-        validateConfigurations(pid, ocd, values, scopeId, parentId);
+        validateConfigurations(ocd, values, scopeId, parentId);
 
         ServiceConfigQueryImpl query = new ServiceConfigQueryImpl(scopeId);
         query.setPredicate(

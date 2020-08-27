@@ -35,12 +35,12 @@ public class PublishMetric {
     private PublishMetric() {
         MetricsService metricsService = MetricServiceFactory.getInstance();
         // publish/subscribe
-        allowedMessages = metricsService.getCounter("security", "publish", "allowed", "count");
-        notAllowedMessages = metricsService.getCounter("security", "publish", "not_allowed", "count");
-        time = metricsService.getTimer("security", "publish", "time", "s");
+        allowedMessages = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_PUBLISH, SecurityMetrics.METRIC_ALLOWED, SecurityMetrics.METRIC_COUNT);
+        notAllowedMessages = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_PUBLISH, SecurityMetrics.METRIC_NOT_ALLOWED, SecurityMetrics.METRIC_COUNT);
+        time = metricsService.getTimer(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_PUBLISH, SecurityMetrics.METRIC_TIME, SecurityMetrics.METRIC_S);
         // message size
-        messageSizeAllowed = metricsService.getHistogram("security", "publish", "messages", "allowed", "size", "bytes");
-        messageSizeNotAllowed = metricsService.getHistogram("security", "publish", "messages", "not_allowed", "size", "bytes");
+        messageSizeAllowed = metricsService.getHistogram(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_PUBLISH, SecurityMetrics.METRIC_MESSAGES, SecurityMetrics.METRIC_ALLOWED, SecurityMetrics.METRIC_SIZE, SecurityMetrics.METRIC_BYTES);
+        messageSizeNotAllowed = metricsService.getHistogram(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_PUBLISH, SecurityMetrics.METRIC_MESSAGES, SecurityMetrics.METRIC_NOT_ALLOWED, SecurityMetrics.METRIC_SIZE, SecurityMetrics.METRIC_BYTES);
     }
 
     public Counter getAllowedMessages() {

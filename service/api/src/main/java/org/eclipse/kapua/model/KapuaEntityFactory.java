@@ -25,7 +25,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
  * @param <L> The {@link KapuaListResult} for which this {@link KapuaEntityFactory} is for.
  * @since 1.0.0
  */
-public interface KapuaEntityFactory<E extends KapuaEntity, C extends KapuaEntityCreator<E>, Q extends KapuaQuery<E>, L extends KapuaListResult<E>> extends KapuaObjectFactory {
+public interface KapuaEntityFactory<E extends KapuaEntity, C extends KapuaEntityCreator<E>, Q extends KapuaQuery, L extends KapuaListResult<E>> extends KapuaObjectFactory {
 
     /**
      * Instantiates a new {@link KapuaEntity}.

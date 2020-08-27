@@ -19,6 +19,7 @@ import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -108,8 +109,8 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
 
     @Override
     public void delete(KapuaId scopeId, KapuaId accessRoleId) throws KapuaException {
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(accessRoleId, "accessRoleId");
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(accessRoleId, KapuaEntityAttributes.ENTITY_ID);
 
         // Check Access
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -136,8 +137,8 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
     @Override
     public AccessRole find(KapuaId scopeId, KapuaId accessRoleId)
             throws KapuaException {
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(accessRoleId, "accessRoleId");
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(accessRoleId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access
@@ -154,7 +155,7 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
     @Override
     public AccessRoleListResult findByAccessInfoId(KapuaId scopeId, KapuaId accessInfoId)
             throws KapuaException {
-        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
         ArgumentValidator.notNull(accessInfoId, "accessInfoId");
 
         //
@@ -180,7 +181,7 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
     }
 
     @Override
-    public AccessRoleListResult query(KapuaQuery<AccessRole> query)
+    public AccessRoleListResult query(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
 
@@ -195,7 +196,7 @@ public class AccessRoleServiceImpl extends AbstractKapuaService implements Acces
     }
 
     @Override
-    public long count(KapuaQuery<AccessRole> query)
+    public long count(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
 

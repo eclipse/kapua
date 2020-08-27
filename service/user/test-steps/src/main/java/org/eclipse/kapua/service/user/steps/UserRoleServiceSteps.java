@@ -54,6 +54,8 @@ public class UserRoleServiceSteps extends TestBase {
     private AccessRoleService accessRoleService;
     private AccessRoleFactory accessRoleFactory;
 
+    private static final String ACCESS_ROLE = "AccessRole";
+
     @Inject
     public UserRoleServiceSteps(StepData stepData, DBHelper dbHelper) {
         this.stepData = stepData;
@@ -118,9 +120,9 @@ public class UserRoleServiceSteps extends TestBase {
 
             try {
                 primeException();
-                stepData.remove("AccessRole");
+                stepData.remove(ACCESS_ROLE);
                 AccessRole accessRole = accessRoleService.create(accessRoleCreator);
-                stepData.put("AccessRole", accessRole);
+                stepData.put(ACCESS_ROLE, accessRole);
                 stepData.put("AccessRoleId", accessRole.getId());
             } catch (KapuaException ex) {
                 verifyException(ex);
@@ -129,7 +131,7 @@ public class UserRoleServiceSteps extends TestBase {
 
     @Then("^Access role is not found$")
     public void accessRoleIsNotFound() throws Exception{
-        AccessRole accessRole = (AccessRole) stepData.get("AccessRole");
+        AccessRole accessRole = (AccessRole) stepData.get(ACCESS_ROLE);
 
         try {
             assertEquals(null, accessRoleService.find(getCurrentScopeId(), accessRole.getId()));
@@ -153,9 +155,9 @@ public class UserRoleServiceSteps extends TestBase {
             accessRoleCreator.setAccessInfoId(accessInfo.getId());
             try {
                 primeException();
-                stepData.remove("AccessRole");
+                stepData.remove(ACCESS_ROLE);
                 AccessRole accessRole = accessRoleService.create(accessRoleCreator);
-                stepData.put("AccessRole", accessRole);
+                stepData.put(ACCESS_ROLE, accessRole);
                 stepData.put("AccessRoleId", accessRole.getId());
                 accessRoleList.add(accessRole);
             } catch (KapuaException ex) {

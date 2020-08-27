@@ -21,6 +21,8 @@ import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
+import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -29,7 +31,6 @@ import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.Job;
-import org.eclipse.kapua.service.job.JobAttributes;
 import org.eclipse.kapua.service.job.JobCreator;
 import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.JobFactory;
@@ -97,7 +98,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         //
         // Check duplicate name
         JobQuery query = new JobQueryImpl(creator.getScopeId());
-        query.setPredicate(query.attributePredicate(JobAttributes.NAME, creator.getName()));
+        query.setPredicate(query.attributePredicate(KapuaNamedEntityAttributes.NAME, creator.getName()));
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(creator.getName());
         }
@@ -130,8 +131,8 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         JobQuery query = new JobQueryImpl(job.getScopeId());
         query.setPredicate(
                 query.andPredicate(
-                        query.attributePredicate(JobAttributes.NAME, job.getName()),
-                        query.attributePredicate(JobAttributes.ENTITY_ID, job.getId(), Operator.NOT_EQUAL)
+                        query.attributePredicate(KapuaNamedEntityAttributes.NAME, job.getName()),
+                        query.attributePredicate(KapuaEntityAttributes.ENTITY_ID, job.getId(), Operator.NOT_EQUAL)
                 )
         );
 
@@ -149,7 +150,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(jobId, "jobId");
+        ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access
@@ -161,7 +162,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
     }
 
     @Override
-    public JobListResult query(KapuaQuery<Job> query) throws KapuaException {
+    public JobListResult query(KapuaQuery query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
@@ -176,7 +177,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
     }
 
     @Override
-    public long count(KapuaQuery<Job> query) throws KapuaException {
+    public long count(KapuaQuery query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
@@ -221,7 +222,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(jobId, "jobId");
+        ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access

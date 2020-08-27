@@ -46,7 +46,6 @@ import org.eclipse.kapua.qa.common.cucumber.CucMessageRange;
 import org.eclipse.kapua.qa.common.cucumber.CucMetric;
 import org.eclipse.kapua.qa.common.cucumber.CucTopic;
 import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
 import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
@@ -132,9 +131,27 @@ public class DatastoreSteps extends TestBase {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatastoreSteps.class);
 
+    private static final String MESSAGE_COUNT_RESULT = "messageCountResult";
+    private static final String DOUBLE = "double";
+    private static final String LAST_ACCOUNT = "LastAccount";
+    private static final String MESSAGE_QUERY = "messageQuery";
+    private static final String LAST_DEVICE = "LastDevice";
+    private static final String DATE_FORMAT_HH_MM_SS = "HH:mm:ss dd/MM/yyyy";
+    private static final String DATE_FORMAT_DD_MM_YYYY = "dd/MM/yyyy HH:mm:ss";
+    private static final String RANDOM_DATE_1 = "01/04/2017 03:00:00";
+    private static final String METRIC_INFO_QUERY = "metricInfoQuery";
+    private static final String CHANNEL_INFO_QUERY = "channelInfoQuery";
+    private static final String CLIENT_INFO_QUERY = "clientInfoQuery";
+    private static final String CANNOT_FIND_CHANNEL_INFO_REGISTRY = "Cannot find the channel info registry!";
+    private static final String CANNOT_FIND_CLIENT_INFO_REGISTRY = "Cannot find the client info registry!";
+    private static final String CANNOT_FIND_METRIC_INFO_REGISTRY = "Cannot find the metric info registry!";
+    private static final String NO_MESSAGES_TO_COMPARE_TO = "No messages to compare to!";
+    private static final String NUMBER_OF_CLIENTS_DOES_NOT_MATCH = "The number of clients does not match!";
+    private static final String CLIENT_ID_NOT_FOUND = "The client id [%s] is not found in the info list!";
+
     @Then("^Number of received data messages is different than (\\d+)$")
     public void numberOfReceivedDataMessagesIsDifferentThan(int numberOfMessages) {
-        long count = (long) stepData.get("messageCountResult");
+        long count = (long) stepData.get(MESSAGE_COUNT_RESULT);
         assertNotEquals(numberOfMessages, count);
     }
 
@@ -155,7 +172,7 @@ public class DatastoreSteps extends TestBase {
                     tmpMsg.getPayload().getMetrics().put(tmpMet.getMetric(), Integer.valueOf(tmpMet.getValue()));
                     break;
                 }
-                case "double": {
+                case DOUBLE: {
                     tmpMsg.getPayload().getMetrics().put(tmpMet.getMetric(), Double.valueOf(tmpMet.getValue()));
                     break;
                 }
@@ -173,7 +190,7 @@ public class DatastoreSteps extends TestBase {
 
     @When("^I create message query for following metrics$")
     public void iCreateMessageQueryForMetrics(List<String> metricList) throws Exception {
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         List<MessageQuery> listOfMessageQueries = new ArrayList<>();
 
         try {
@@ -181,7 +198,7 @@ public class DatastoreSteps extends TestBase {
                 MessageQuery messageQuery = createBaseMessageQuery(account.getId(), 100);
                 messageQuery.setPredicate(storablePredicateFactory.newExistsPredicate(String.format(MessageSchema.MESSAGE_METRICS + ".%s", metricName)));
 
-                stepData.put("messageQuery", messageQuery);
+                stepData.put(MESSAGE_QUERY, messageQuery);
                 listOfMessageQueries.add(messageQuery);
             }
             stepData.put("ListOfMessageQueries", listOfMessageQueries);
@@ -246,8 +263,6 @@ public class DatastoreSteps extends TestBase {
         }
     }
 
-    private AccountService accountService;
-
     private DeviceRegistryService deviceRegistryService;
 
     private DeviceFactory deviceFactory;
@@ -295,7 +310,6 @@ public class DatastoreSteps extends TestBase {
 
         // Get instance of services used in different scenarios
         KapuaLocator locator = KapuaLocator.getInstance();
-        accountService = locator.getService(AccountService.class);
         deviceRegistryService = locator.getService(DeviceRegistryService.class);
         deviceFactory = locator.getFactory(DeviceFactory.class);
         messageStoreService = locator.getService(MessageStoreService.class);
@@ -383,104 +397,98 @@ public class DatastoreSteps extends TestBase {
     @Then("I expect the number of messages for this device to be (\\d+)")
     public void expectNumberOfMessages(long numberOfMessages) throws Exception {
         final MessageStoreService service = KapuaLocator.getInstance().getService(MessageStoreService.class);
-        session.withLogin(() -> {
-            With.withUserAccount(currentDevice.getAccountName(), account -> {
+        session.withLogin(() -> With.withUserAccount(currentDevice.getAccountName(), account -> {
 
-                // create new query
+            // create new query
 
-                final MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(account.getId());
+            final MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(account.getId());
 
-                // filter for client only
+            // filter for client only
 
-                query.setPredicate(storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
+            query.setPredicate(storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
 
-            // set query options
-            query.setAskTotalCount(true);
-            query.setLimit((int)numberOfMessages);
+        // set query options
+        query.setAskTotalCount(true);
+        query.setLimit((int)numberOfMessages);
 
-                // perform query
+            // perform query
 
-                final MessageListResult result = service.query(query);
+            final MessageListResult result = service.query(query);
 
-                // eval just the size
+            // eval just the size
 
-                Assert.assertEquals(numberOfMessages, result.getSize());
+            Assert.assertEquals(numberOfMessages, result.getSize());
 
-                // eval the total count
+            // eval the total count
 
-                Assert.assertEquals(Long.valueOf(numberOfMessages), result.getTotalCount());
+            Assert.assertEquals(Long.valueOf(numberOfMessages), result.getTotalCount());
 
-                // different approach -> same result
+            // different approach -> same result
 
-                Assert.assertEquals(numberOfMessages, service.count(query));
-            });
-        });
+            Assert.assertEquals(numberOfMessages, service.count(query));
+        }));
     }
 
     @Then("I delete the messages for this device")
     public void deleteMessages() throws Exception {
         final MessageStoreService service = KapuaLocator.getInstance().getService(MessageStoreService.class);
-        session.withLogin(() -> {
-            With.withUserAccount(currentDevice.getAccountName(), account -> {
+        session.withLogin(() -> With.withUserAccount(currentDevice.getAccountName(), account -> {
 
-                // create new query
-                final MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(account.getId());
+            // create new query
+            final MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(account.getId());
 
-                // filter for client only
-                query.setPredicate(storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
+            // filter for client only
+            query.setPredicate(storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
 
-                // set query options
-                query.setAskTotalCount(true);
-                query.setLimit(100);
+            // set query options
+            query.setAskTotalCount(true);
+            query.setLimit(100);
 
-                // perform delete
-                service.delete(query);
-            });
-        });
+            // perform delete
+            service.delete(query);
+        }));
     }
 
     @Then("I expect the latest captured message on channel \"(.*)\" to have the metrics")
     public void testMessageData(final String topic, final List<MetricEntry> expectedMetrics) throws Exception {
         final MessageStoreService service = KapuaLocator.getInstance().getService(MessageStoreService.class);
-        session.withLogin(() -> {
-            With.withUserAccount(currentDevice.getAccountName(), account -> {
+        session.withLogin(() -> With.withUserAccount(currentDevice.getAccountName(), account -> {
 
-                // start a new query
+            // start a new query
 
-                final MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(account.getId());
+            final MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(account.getId());
 
-                // query for client and channel
+            // query for client and channel
 
-                final AndPredicate and = storablePredicateFactory.newAndPredicate();
-                and.getPredicates().add(storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
-                and.getPredicates().add(storablePredicateFactory.newTermPredicate(MessageField.CHANNEL, topic));
-                query.setPredicate(and);
+            final AndPredicate and = storablePredicateFactory.newAndPredicate();
+            and.getPredicates().add(storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
+            and.getPredicates().add(storablePredicateFactory.newTermPredicate(MessageField.CHANNEL, topic));
+            query.setPredicate(and);
 
-                // sort by captured time
+            // sort by captured time
 
-                query.setSortFields(Arrays.asList(SortField.descending(MessageField.CAPTURED_ON.field())));
+            query.setSortFields(Arrays.asList(SortField.descending(MessageField.CAPTURED_ON.field())));
 
-                // perform the query
+            // perform the query
 
-                final MessageListResult result = service.query(query);
+            final MessageListResult result = service.query(query);
 
-                Assert.assertEquals(1, result.getSize());
+            Assert.assertEquals(1, result.getSize());
 
-                // get the first item
+            // get the first item
 
-                final DatastoreMessage message = result.getFirstItem();
-                Assert.assertEquals(currentDevice.getClientId(), message.getClientId());
+            final DatastoreMessage message = result.getFirstItem();
+            Assert.assertEquals(currentDevice.getClientId(), message.getClientId());
 
-                // get payload structure
+            // get payload structure
 
-                final KapuaPayload payload = message.getPayload();
+            final KapuaPayload payload = message.getPayload();
 
-                // assert metrics data
+            // assert metrics data
 
-                final Map<String, Object> properties = payload.getMetrics();
-                Assert.assertEquals(toData(expectedMetrics), properties);
-            });
-        });
+            final Map<String, Object> properties = payload.getMetrics();
+            Assert.assertEquals(toData(expectedMetrics), properties);
+        }));
     }
 
     @When("^I set the datastore indexing window to \"(.+)\"$")
@@ -511,9 +519,9 @@ public class DatastoreSteps extends TestBase {
     @Given("^I prepare a random message and save it as \"(.*)\"$")
     public void prepareAndRememberARandomMessage(String msgKey) throws Exception {
 
-        KapuaDataMessage tmpMessage = createTestMessage(((Account) stepData.get("LastAccount")).getId(),
-                ((Device) stepData.get("LastDevice")).getId(),
-                ((Device) stepData.get("LastDevice")).getClientId(),
+        KapuaDataMessage tmpMessage = createTestMessage(((Account) stepData.get(LAST_ACCOUNT)).getId(),
+                ((Device) stepData.get(LAST_DEVICE)).getId(),
+                ((Device) stepData.get(LAST_DEVICE)).getClientId(),
                 "", "");
         stepData.put(msgKey, tmpMessage);
     }
@@ -521,9 +529,9 @@ public class DatastoreSteps extends TestBase {
     @Given("^I prepare a random message with capture date \"(.*)\" and save it as \"(.*)\"$")
     public void prepareAndRememberARandomMessage(String captureDate, String msgKey) throws Exception {
 
-        KapuaDataMessage tmpMessage = createTestMessage(((Account) stepData.get("LastAccount")).getId(),
-                ((Device) stepData.get("LastDevice")).getId(),
-                ((Device) stepData.get("LastDevice")).getClientId(),
+        KapuaDataMessage tmpMessage = createTestMessage(((Account) stepData.get(LAST_ACCOUNT)).getId(),
+                ((Device) stepData.get(LAST_DEVICE)).getId(),
+                ((Device) stepData.get(LAST_DEVICE)).getClientId(),
                 null, captureDate);
         stepData.put(msgKey, tmpMessage);
     }
@@ -532,9 +540,9 @@ public class DatastoreSteps extends TestBase {
     public void prepareRandomMessageWithNullPayload(String msgKey) throws Exception {
 
         KapuaDataMessage tmpMessage = createTestMessage(
-                ((Account) stepData.get("LastAccount")).getId(),
-                ((Device) stepData.get("LastDevice")).getId(),
-                ((Device) stepData.get("LastDevice")).getClientId(),
+                ((Account) stepData.get(LAST_ACCOUNT)).getId(),
+                ((Device) stepData.get(LAST_DEVICE)).getId(),
+                ((Device) stepData.get(LAST_DEVICE)).getClientId(),
                 "", "");
         tmpMessage.setPayload(null);
         stepData.put(msgKey, tmpMessage);
@@ -548,8 +556,8 @@ public class DatastoreSteps extends TestBase {
 
         for (CucTopic tmpTopic : topics) {
             tmpMsg = createTestMessage(
-                    ((Account) stepData.get("LastAccount")).getId(),
-                    ((Device) stepData.get("LastDevice")).getId(),
+                    ((Account) stepData.get(LAST_ACCOUNT)).getId(),
+                    ((Device) stepData.get(LAST_DEVICE)).getId(),
                     tmpTopic.getClientId(),
                     tmpTopic.getTopic(),
                     tmpTopic.getCaptured());
@@ -574,8 +582,8 @@ public class DatastoreSteps extends TestBase {
             tmpCal.setTime(startDate);
             for (int cnt = 0; cnt <= tmpMessage.getCount(); cnt++) {
                 tmpMsg = createTestMessage(
-                        ((Account) stepData.get("LastAccount")).getId(),
-                        ((Device) stepData.get("LastDevice")).getId(),
+                        ((Account) stepData.get(LAST_ACCOUNT)).getId(),
+                        ((Device) stepData.get(LAST_DEVICE)).getId(),
                         tmpMessage.getClientId(),
                         tmpMessage.getTopic(),
                         tmpCal.getTime());
@@ -605,7 +613,7 @@ public class DatastoreSteps extends TestBase {
                     tmpMsg.getPayload().getMetrics().put(tmpMet.getMetric(), Integer.valueOf(tmpMet.getValue()));
                     break;
                 }
-                case "double": {
+                case DOUBLE: {
                     tmpMsg.getPayload().getMetrics().put(tmpMet.getMetric(), Double.valueOf(tmpMet.getValue()));
                     break;
                 }
@@ -628,9 +636,9 @@ public class DatastoreSteps extends TestBase {
         List<KapuaDataMessage> msgList = new ArrayList<>();
 
         for (int i = 0; i < number; i++) {
-            tmpMsg = createTestMessage(((Account) stepData.get("LastAccount")).getId(),
-                    ((Device) stepData.get("LastDevice")).getId(),
-                    ((Device) stepData.get("LastDevice")).getClientId(),
+            tmpMsg = createTestMessage(((Account) stepData.get(LAST_ACCOUNT)).getId(),
+                    ((Device) stepData.get(LAST_DEVICE)).getId(),
+                    ((Device) stepData.get(LAST_DEVICE)).getClientId(),
                     "", "");
             msgList.add(tmpMsg);
         }
@@ -641,7 +649,7 @@ public class DatastoreSteps extends TestBase {
     @Given("^I prepare (\\d+) randomly ordered messages and remember the list as \"(.*)\"$")
     public void prepareUnorderedRandomMessagesWithTopics(int number, String lstKey, List<CucTopic> topics) throws Exception {
 
-        Account tmpAccount = (Account) stepData.get("LastAccount");
+        Account tmpAccount = (Account) stepData.get(LAST_ACCOUNT);
         KapuaDataMessage tmpMsg;
         List<KapuaDataMessage> tmpList = new ArrayList<>();
         String clientId1 = "test-device-1";
@@ -655,7 +663,8 @@ public class DatastoreSteps extends TestBase {
         DeviceCreator tmpDevCr2 = deviceFactory.newCreator(tmpAccount.getId(), clientId2);
         Device device2 = deviceRegistryService.create(tmpDevCr2);
         Device tmpDev;
-        Date sentOn, capturedOn;
+        Date sentOn;
+        Date capturedOn;
 
         String[] metrics = new String[]{
                 "m_order_metric1",
@@ -672,12 +681,12 @@ public class DatastoreSteps extends TestBase {
                 "string_metric_5",
                 "string_metric_6"};
         Date[] metricsValuesDate = new Date[]{
-                new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:01 01/01/2017").getTime()),
-                new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:02 01/01/2017").getTime()),
-                new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:03 01/01/2017").getTime()),
-                new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:04 01/01/2017").getTime()),
-                new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:05 01/01/2017").getTime()),
-                new Date(new SimpleDateFormat("hh:MM:ss dd/MM/yyyy").parse("10:10:06 01/01/2017").getTime())};
+                new Date(new SimpleDateFormat(DATE_FORMAT_HH_MM_SS).parse("10:10:01 01/01/2017").getTime()),
+                new Date(new SimpleDateFormat(DATE_FORMAT_HH_MM_SS).parse("10:10:02 01/01/2017").getTime()),
+                new Date(new SimpleDateFormat(DATE_FORMAT_HH_MM_SS).parse("10:10:03 01/01/2017").getTime()),
+                new Date(new SimpleDateFormat(DATE_FORMAT_HH_MM_SS).parse("10:10:04 01/01/2017").getTime()),
+                new Date(new SimpleDateFormat(DATE_FORMAT_HH_MM_SS).parse("10:10:05 01/01/2017").getTime()),
+                new Date(new SimpleDateFormat(DATE_FORMAT_HH_MM_SS).parse("10:10:06 01/01/2017").getTime())};
         int[] metricsValuesInt = new int[]{10, 20, 30, 40, 50, 60};
         float[] metricsValuesFloat = new float[]{0.002f, 10.12f, 20.22f, 33.33f, 44.44f, 55.66f};
         double[] metricsValuesDouble = new double[]{1.002d, 11.12d, 21.22d, 34.33d, 45.44d, 56.66d};
@@ -770,7 +779,7 @@ public class DatastoreSteps extends TestBase {
     @Given("^I set the database to device timestamp indexing$")
     public void setDatabaseToDeviceTimestampIndexing() throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         updateConfiguration(messageStoreService, account.getId(), account.getScopeId(),
                 DataIndexBy.DEVICE_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
     }
@@ -778,7 +787,7 @@ public class DatastoreSteps extends TestBase {
     @Given("^I set the database to server timestamp indexing$")
     public void setDatabaseToServerTimestampIndexing() throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         updateConfiguration(messageStoreService, account.getId(), account.getScopeId(),
                 DataIndexBy.SERVER_TIMESTAMP, MetricsIndexBy.TIMESTAMP, 30, true);
     }
@@ -786,7 +795,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I delete the datastore message with ID \"(.*)\"$")
     public void deleteDatastoreMessage(String idKey) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         StorableId msgId = (StorableId) stepData.get(idKey);
         messageStoreService.delete(account.getId(), msgId);
     }
@@ -818,7 +827,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I search for the last inserted message$")
     public void findLastInsertedMessage() throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         StorableId msgId = (StorableId) stepData.get("LastStoredMessageId");
         DatastoreMessage tmpMsg = messageStoreService.find(account.getId(), msgId, StorableFetchStyle.SOURCE_FULL);
         stepData.put("LastMessageInDatastore", tmpMsg);
@@ -827,7 +836,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I search for the last inserted message and save it as \"(.*)\"$")
     public void findLastInsertedMessage(String keyName) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         StorableId msgId = (StorableId) stepData.get("LastStoredMessageId");
         DatastoreMessage tmpMsg = messageStoreService.find(account.getId(), msgId, StorableFetchStyle.SOURCE_FULL);
         stepData.put(keyName, tmpMsg);
@@ -836,7 +845,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I search for a data message with ID \"(.*)\" and remember it as \"(.*)\"")
     public void searchForMessageInDatastore(String idKey, String msgKey) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         StorableId tmpId = (StorableId) stepData.get(idKey);
         DatastoreMessage tmpMsg = messageStoreService.find(account.getId(), tmpId, StorableFetchStyle.SOURCE_FULL);
         stepData.put(msgKey, tmpMsg);
@@ -845,7 +854,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I search for messages with IDs from the list \"(.*)\" and store them in the list \"(.*)\"$")
     public void searchForMessagesInTheDatastore(String idListKey, String msgListKey) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         List<StorableId> msgIdLst = (List<StorableId>) stepData.get(idListKey);
         List<DatastoreMessage> tmpMsgLst = new ArrayList<>();
         DatastoreMessage tmpMsg;
@@ -861,7 +870,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I perform a default query for the account messages and store the results as \"(.+)\"$")
     public void performADefaultMessageQuery(String lstKey) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         MessageQuery query = createBaseMessageQuery(account.getId(), 100);
         MessageListResult msgList = messageStoreService.query(query);
         stepData.put(lstKey, msgList);
@@ -870,7 +879,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I perform an ordered query for messages and store the results as \"(.*)\"$")
     public void performAnOrderedMessageQuery(String lstKey) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         MessageQuery query = getBaseMessageQuery(account.getId(), 100, getDefaultListOrdering());
         MessageListResult msgList = messageStoreService.query(query);
         stepData.put(lstKey, msgList);
@@ -879,7 +888,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I count the current account messages and store the count as \"(.*)\"$")
     public void countAccountMessages(String countKey) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         MessageQuery msgQuery = createBaseMessageQuery(account.getId(), 100);
 
         long messageCount = messageStoreService.count(msgQuery);
@@ -889,7 +898,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I query for the current account channel(?:|s) (?:|again )and store (?:it|them) as \"(.*)\"$")
     public void queryForAccountChannelInfo(String chnKey) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         ChannelInfoQuery tmpQuery = createBaseChannelInfoQuery(account.getId(), 100);
         tmpQuery.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
         ChannelInfoListResult tmpList = channelInfoRegistryService.query(tmpQuery);
@@ -899,7 +908,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I query for the current account channels in the date range \"(.+)\" to \"(.+)\" and store them as \"(.+)\"$")
     public void queryForAccountChannelInfoByDateRange(String start, String end, String lstKey) throws Exception {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         ChannelInfoQuery tmpQuery = createBaseChannelInfoQuery(account.getId(), 100);
         RangePredicate timestampPredicate = storablePredicateFactory.newRangePredicate(ChannelInfoField.TIMESTAMP.field(),
                 KapuaDateUtils.parseDate(start), KapuaDateUtils.parseDate(end));
@@ -914,7 +923,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I query for the current account channels with the filter \"(.+)\" and store them as \"(.+)\"$")
     public void queryForAccountChannelInfoWithFiltering(String filter, String lstKey) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         DatastoreChannel datastoreChannel = new DatastoreChannel(filter);
         ChannelInfoQuery tmpQuery = createBaseChannelInfoQuery(account.getId(), 100);
         ChannelMatchPredicate channelMatchPredicate = storablePredicateFactory.newChannelMatchPredicate(datastoreChannel.getChannelCleaned());
@@ -945,7 +954,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I count the current account channels and store the count as \"(.*)\"$")
     public void countAccountChannels(String countKey) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         ChannelInfoQuery tmpQuery = createBaseChannelInfoQuery(account.getId(), 100);
 
         long channelCount = channelInfoRegistryService.count(tmpQuery);
@@ -991,7 +1000,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I delete all channels from the list \"(.*)\"$")
     public void deleteAllChannelsFromList(String lstKey) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         ChannelInfoListResult tmpList = (ChannelInfoListResult) stepData.get(lstKey);
 
         for (ChannelInfo tmpItem : tmpList.getItems()) {
@@ -1002,7 +1011,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I delete the channel with the ID \"(.*)\"$")
     public void deleteChannelWithId(String idKey) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         StorableId tmpId = (StorableId) stepData.get(idKey);
 
         channelInfoRegistryServiceProxy.delete(account.getId(), tmpId);
@@ -1011,11 +1020,11 @@ public class DatastoreSteps extends TestBase {
     @When("^I query for the current account metrics (?:|again )and store (?:it|them) as \"(.*)\"$")
     public void queryForAccountMetrics(String metricKey) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         MetricInfoQuery tmpQuery = createBaseMetricInfoQuery(account.getId(), 100);
         tmpQuery.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
 
-        stepData.put("metricInfoQuery", tmpQuery);
+        stepData.put(METRIC_INFO_QUERY, tmpQuery);
         MetricInfoListResult tmpList = metricInfoRegistryService.query(tmpQuery);
         stepData.put(metricKey, tmpList);
     }
@@ -1023,7 +1032,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I query for the current account metrics in the date range \"(.+)\" to \"(.+)\" and store them as \"(.+)\"$")
     public void queryForAccountMetricsInfoByDateRange(String start, String end, String lstKey) throws Exception {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         MetricInfoQuery tmpQuery = createBaseMetricInfoQuery(account.getId(), 100);
         RangePredicate timestampPredicate = storablePredicateFactory.newRangePredicate(MetricInfoField.TIMESTAMP_FULL.field(),
                 KapuaDateUtils.parseDate(start), KapuaDateUtils.parseDate(end));
@@ -1032,7 +1041,7 @@ public class DatastoreSteps extends TestBase {
         tmpQuery.setPredicate(andPredicate);
         tmpQuery.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
 
-        stepData.put("metricInfoQuery", tmpQuery);
+        stepData.put(METRIC_INFO_QUERY, tmpQuery);
         MetricInfoListResult tmpList = metricInfoRegistryService.query(tmpQuery);
         stepData.put(lstKey, tmpList);
     }
@@ -1040,7 +1049,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I perform an ordered query for the current account metrics in the date range \"(.+)\" to \"(.+)\" and store them as \"(.+)\"$")
     public void queryForAccountMetricsInfoByDateRangeOrdered(String start, String end, String lstKey) throws Exception {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         MetricInfoQuery tmpQuery = createBaseMetricInfoQuery(account.getId(), 100);
         RangePredicate timestampPredicate = storablePredicateFactory.newRangePredicate(MetricInfoField.TIMESTAMP_FULL.field(),
                 KapuaDateUtils.parseDate(start), KapuaDateUtils.parseDate(end));
@@ -1050,7 +1059,7 @@ public class DatastoreSteps extends TestBase {
         tmpQuery.setSortFields(getNamedMetricOrdering().stream().map(OrderConstraint::getField).collect(Collectors.toList()));
         tmpQuery.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
 
-        stepData.put("metricInfoQuery", tmpQuery);
+        stepData.put(METRIC_INFO_QUERY, tmpQuery);
         MetricInfoListResult tmpList = metricInfoRegistryService.query(tmpQuery);
         stepData.put(lstKey, tmpList);
     }
@@ -1058,7 +1067,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I perform an ordered query for metrics and store the results as \"(.*)\"$")
     public void performAnOrderedMetricQuery(String lstKey) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         MetricInfoQuery query = getBaseMetricQuery(account.getId(), 100, getNamedMetricOrdering());
         query.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
         MetricInfoListResult metList = metricInfoRegistryService.query(query);
@@ -1068,10 +1077,10 @@ public class DatastoreSteps extends TestBase {
     @When("^I count the current account metrics and store the count as \"(.*)\"$")
     public void countAccountMetrics(String countKey) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         MetricInfoQuery tmpQuery = createBaseMetricInfoQuery(account.getId(), 100);
 
-        stepData.put("metricInfoQuery", tmpQuery);
+        stepData.put(METRIC_INFO_QUERY, tmpQuery);
         stepData.remove(countKey);
         long metricCount = metricInfoRegistryService.count(tmpQuery);
         stepData.put(countKey, metricCount);
@@ -1080,8 +1089,8 @@ public class DatastoreSteps extends TestBase {
     @When("^I query for the metrics in topic \"(.*)\" and store them as \"(.*)\"$")
     public void queryForTopicMetrics(String topic, String lstKey) throws KapuaException {
 
-        stepData.remove("metricInfoQuery");
-        Account account = (Account) stepData.get("LastAccount");
+        stepData.remove(METRIC_INFO_QUERY);
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         MetricInfoQuery tmpQuery = createBaseMetricInfoQuery(account.getId(), 100);
         tmpQuery.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
         AndPredicate andPredicate = storablePredicateFactory.newAndPredicate();
@@ -1090,7 +1099,7 @@ public class DatastoreSteps extends TestBase {
 
         andPredicate.getPredicates().add(tmpPred);
         tmpQuery.setPredicate(andPredicate);
-        stepData.put("metricInfoQuery", tmpQuery);
+        stepData.put(METRIC_INFO_QUERY, tmpQuery);
         stepData.remove(lstKey);
         tmpList = metricInfoRegistryService.query(tmpQuery);
         stepData.put(lstKey, tmpList);
@@ -1099,7 +1108,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I query for the metrics from client \"(.*)\" and store them as \"(.*)\"$")
     public void queryForClientMetrics(String clientId, String lstKey) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         MetricInfoQuery tmpQuery = createBaseMetricInfoQuery(account.getId(), 100);
         tmpQuery.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
         AndPredicate andPredicate = storablePredicateFactory.newAndPredicate();
@@ -1108,7 +1117,7 @@ public class DatastoreSteps extends TestBase {
 
         andPredicate.getPredicates().add(tmpPred);
         tmpQuery.setPredicate(andPredicate);
-        stepData.put("metricInfoQuery", tmpQuery);
+        stepData.put(METRIC_INFO_QUERY, tmpQuery);
         tmpList = metricInfoRegistryService.query(tmpQuery);
         stepData.put(lstKey, tmpList);
     }
@@ -1183,7 +1192,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I delete all metrics from the list \"(.*)\"$")
     public void deleteAllMetricsFromList(String lstKey) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         MetricInfoListResult tmpList = (MetricInfoListResult) stepData.get(lstKey);
 
         for (MetricInfo tmpItem : tmpList.getItems()) {
@@ -1194,7 +1203,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I query for the current account client(?:|s) (?:|again )and store (?:it|them) as \"(.*)\"$")
     public void queryForAccountClientInfo(String clientKey) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         ClientInfoQuery tmpQuery = createBaseClientInfoQuery(account.getId(), 100);
         tmpQuery.addFetchAttributes(ClientInfoField.TIMESTAMP.field());
         ClientInfoListResult tmpList = clientInfoRegistryService.query(tmpQuery);
@@ -1204,7 +1213,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I query for current account clients in the date range \"(.+)\" to \"(.+)\" and store them as \"(.+)\"$")
     public void queryForAccountClientInfoByDateRange(String start, String end, String lstKey) throws Exception {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         ClientInfoQuery tmpQuery = createBaseClientInfoQuery(account.getId(), 100);
         RangePredicate timestampPredicate = storablePredicateFactory.newRangePredicate(ClientInfoField.TIMESTAMP.field(),
                 KapuaDateUtils.parseDate(start), KapuaDateUtils.parseDate(end));
@@ -1220,7 +1229,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I query for the current account client with the Id \"(.+)\" and store it as \"(.+)\"$")
     public void queryForAccountClientInfoByClientId(String clientId, String lstKey) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         ClientInfoQuery tmpQuery = createBaseClientInfoQuery(account.getId(), 100);
         TermPredicate clientIdPredicate = storablePredicateFactory.newTermPredicate(MetricInfoField.CLIENT_ID, clientId);
         AndPredicate andPredicate = storablePredicateFactory.newAndPredicate();
@@ -1234,13 +1243,13 @@ public class DatastoreSteps extends TestBase {
 
     @And("^I create message query for metric \"(.*)\"$")
     public void iQueryForMessages(String metricName) throws Exception {
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
 
         try {
             MessageQuery messageQuery = createBaseMessageQuery(account.getId(), 100);
             messageQuery.setPredicate(storablePredicateFactory.newExistsPredicate(String.format(MessageSchema.MESSAGE_METRICS + ".%s", metricName)));
 
-            stepData.put("messageQuery", messageQuery);
+            stepData.put(MESSAGE_QUERY, messageQuery);
         } catch (Exception ex) {
             verifyException(ex);
         }
@@ -1250,7 +1259,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I count the current account clients and store the count as \"(.*)\"$")
     public void countAccountClients(String countKey) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         ClientInfoQuery tmpQuery = createBaseClientInfoQuery(account.getId(), 100);
 
         long clientCount = clientInfoRegistryService.count(tmpQuery);
@@ -1296,7 +1305,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I delete all clients from the list \"(.*)\"$")
     public void deleteAllClientsFromList(String lstKey) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         ClientInfoListResult tmpList = (ClientInfoListResult) stepData.get(lstKey);
 
         for (ClientInfo tmpItem : tmpList.getItems()) {
@@ -1307,7 +1316,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I delete client number (\\d+) from the list \"(.*)\"$")
     public void deleteClientFromList(int index, String lstKey) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         ClientInfoListResult tmpList = (ClientInfoListResult) stepData.get(lstKey);
 
         clientInfoRegistryServiceProxy.delete(account.getId(), tmpList.getItem(index).getId());
@@ -1315,7 +1324,7 @@ public class DatastoreSteps extends TestBase {
 
     @When("^I search for data message with id \"(.*)\"")
     public void messageStoreFind(String storeId) throws Exception {
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         try {
             primeException();
             DatastoreMessage tmpMsg = messageStoreService.find(account.getId(), storableIdFactory.newStorableId(storeId), StorableFetchStyle.SOURCE_FULL);
@@ -1354,7 +1363,7 @@ public class DatastoreSteps extends TestBase {
     }
 
     @Then("^The datastore messages in list \"(.*)\" matches the prepared messages in list \"(.*)\"$")
-    public void checkThatTheStoredMessagesMatchTheOriginals(String datastoreMsgLstKey, String originalMsgLstKey) throws KapuaException {
+    public void checkThatTheStoredMessagesMatchTheOriginals(String datastoreMsgLstKey, String originalMsgLstKey) {
 
         List<KapuaDataMessage> origMsgs = (List<KapuaDataMessage>) stepData.get(originalMsgLstKey);
         List<DatastoreMessage> dataMsg = (List<DatastoreMessage>) stepData.get(datastoreMsgLstKey);
@@ -1382,7 +1391,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I search for channel info with id \"(.*)\"")
     public void channelInfoFind(String storableId) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         ChannelInfo channelInfo = channelInfoRegistryService.find(account.getId(), storableIdFactory.newStorableId(storableId));
         stepData.put("channelInfo", channelInfo);
     }
@@ -1406,7 +1415,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I search for metric info with id \"(.*)\"")
     public void metricInfoFind(String storableId) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         MetricInfo tmpInfo = metricInfoRegistryService.find(account.getId(), storableIdFactory.newStorableId(storableId));
         stepData.put("metricInfo", tmpInfo);
     }
@@ -1430,7 +1439,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I search for client info with id \"(.*)\"")
     public void clientInfoFind(String storableId) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         ClientInfo tmpInfo = clientInfoRegistryService.find(account.getId(), storableIdFactory.newStorableId(storableId));
         stepData.put("clientInfo", tmpInfo);
     }
@@ -1454,15 +1463,15 @@ public class DatastoreSteps extends TestBase {
     @Given("^I create message query for current account with limit (\\d+)$")
     public void createMessageQueryForAccount(int limit) {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         MessageQuery messageQuery = createBaseMessageQuery(account.getId(), limit);
-        stepData.put("messageQuery", messageQuery);
+        stepData.put(MESSAGE_QUERY, messageQuery);
     }
 
     @Given("^I create message query for current account from \"(.+)\" to \"(.+)\" with limit (\\d+)$")
     public void createMessageQueryForAccount(String fromDate, String toDate, Integer limit) throws Exception {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
 
         try {
             Date startDate = KapuaDateUtils.parseDate(fromDate);
@@ -1470,7 +1479,7 @@ public class DatastoreSteps extends TestBase {
             MessageQuery messageQuery = createBaseMessageQuery(account.getId(), limit);
             messageQuery.setPredicate(storablePredicateFactory.newRangePredicate(MessageField.TIMESTAMP.field(), startDate, endDate));
 
-            stepData.put("messageQuery", messageQuery);
+            stepData.put(MESSAGE_QUERY, messageQuery);
         } catch (Exception ex) {
             verifyException(ex);
         }
@@ -1479,7 +1488,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I query for data message$")
     public void queryForDataMessage() throws KapuaException {
 
-        MessageQuery messageQuery = (MessageQuery) stepData.get("messageQuery");
+        MessageQuery messageQuery = (MessageQuery) stepData.get(MESSAGE_QUERY);
         MessageListResult result = messageStoreService.query(messageQuery);
         stepData.put("messageListResult", result);
     }
@@ -1487,14 +1496,14 @@ public class DatastoreSteps extends TestBase {
     @When("^I delete the messages based on the last query$")
     public void deleteMessagesByQuery() throws KapuaException {
 
-        MessageQuery messageQuery = (MessageQuery) stepData.get("messageQuery");
+        MessageQuery messageQuery = (MessageQuery) stepData.get(MESSAGE_QUERY);
         messageStoreService.delete(messageQuery);
     }
 
     @When("^I delete the the message with the ID \"(.+)\" from the current account$")
     public void deleteMessageWithId(String id) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         messageStoreService.delete(account.getId(), storableIdFactory.newStorableId(id));
     }
 
@@ -1508,9 +1517,9 @@ public class DatastoreSteps extends TestBase {
     @When("^I count for data messages?$")
     public void countForDataMessage() throws KapuaException {
 
-        MessageQuery messageQuery = (MessageQuery) stepData.get("messageQuery");
+        MessageQuery messageQuery = (MessageQuery) stepData.get(MESSAGE_QUERY);
         long count = messageStoreService.count(messageQuery);
-        stepData.put("messageCountResult", count);
+        stepData.put(MESSAGE_COUNT_RESULT, count);
     }
 
     @Then("^I get message count (\\d+)$")
@@ -1518,7 +1527,7 @@ public class DatastoreSteps extends TestBase {
 
         try {
             primeException();
-            long count = (long) stepData.get("messageCountResult");
+            long count = (long) stepData.get(MESSAGE_COUNT_RESULT);
             assertEquals("This two values are not equal", desiredCount, count);
         } catch (AssertionError assertError) {
             verifyAssertionError(assertError);
@@ -1528,15 +1537,15 @@ public class DatastoreSteps extends TestBase {
     @Given("^I create channel info query for current account with limit (\\d+)$")
     public void createChannelInofQueryForAccount(int limit) {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         ChannelInfoQuery channelInfoQuery = createBaseChannelInfoQuery(account.getId(), limit);
-        stepData.put("channelInfoQuery", channelInfoQuery);
+        stepData.put(CHANNEL_INFO_QUERY, channelInfoQuery);
     }
 
     @Given("^I query for the channel info of the client \"(.+)\" and store the result as \"(.+)\"$")
     public void createChannelInofQueryForClientId(String clientId, String resKey) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         ChannelInfoQuery channelInfoQuery = createBaseChannelInfoQuery(account.getId(), 100);
         AndPredicate andPredicate = storablePredicateFactory.newAndPredicate();
         TermPredicate clientPredicate = storablePredicateFactory.newTermPredicate(ChannelInfoField.CLIENT_ID, clientId);
@@ -1551,7 +1560,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I query for channel info$")
     public void queryForChannelInfo() throws KapuaException {
 
-        ChannelInfoQuery channelInfoQuery = (ChannelInfoQuery) stepData.get("channelInfoQuery");
+        ChannelInfoQuery channelInfoQuery = (ChannelInfoQuery) stepData.get(CHANNEL_INFO_QUERY);
         channelInfoQuery.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
         ChannelInfoListResult result = channelInfoRegistryService.query(channelInfoQuery);
         stepData.put("channelInfoListResult", result);
@@ -1560,14 +1569,14 @@ public class DatastoreSteps extends TestBase {
     @When("^I delete the channel info data based on the last query$")
     public void deleteChannelInfoByQuery() throws KapuaException {
 
-        ChannelInfoQuery tmpQuery = (ChannelInfoQuery) stepData.get("channelInfoQuery");
+        ChannelInfoQuery tmpQuery = (ChannelInfoQuery) stepData.get(CHANNEL_INFO_QUERY);
         channelInfoRegistryServiceProxy.delete(tmpQuery);
     }
 
     @When("^I delete the the channel info data with the ID \"(.+)\" from the current account$")
     public void deleteChannelInfoWithId(String id) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         channelInfoRegistryServiceProxy.delete(account.getId(), storableIdFactory.newStorableId(id));
     }
 
@@ -1581,7 +1590,7 @@ public class DatastoreSteps extends TestBase {
     @When("^I count for channel info$")
     public void countForChannelInfo() throws KapuaException {
 
-        ChannelInfoQuery channelInfoQuery = (ChannelInfoQuery) stepData.get("channelInfoQuery");
+        ChannelInfoQuery channelInfoQuery = (ChannelInfoQuery) stepData.get(CHANNEL_INFO_QUERY);
         long count = channelInfoRegistryService.count(channelInfoQuery);
         stepData.put("channelInfoCountResult", count);
     }
@@ -1596,15 +1605,15 @@ public class DatastoreSteps extends TestBase {
     @Given("^I create metric info query for current account with limit (\\d+)$")
     public void createMetricInfoQueryForAccount(int limit) {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         MetricInfoQuery metricInfoQuery = createBaseMetricInfoQuery(account.getId(), limit);
-        stepData.put("metricInfoQuery", metricInfoQuery);
+        stepData.put(METRIC_INFO_QUERY, metricInfoQuery);
     }
 
     @When("^I query for metric info$")
     public void queryForMetricInfo() throws KapuaException {
 
-        MetricInfoQuery metricInfoQuery = (MetricInfoQuery) stepData.get("metricInfoQuery");
+        MetricInfoQuery metricInfoQuery = (MetricInfoQuery) stepData.get(METRIC_INFO_QUERY);
         metricInfoQuery.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
         MetricInfoListResult result = metricInfoRegistryService.query(metricInfoQuery);
         stepData.put("metricInfoListResult", result);
@@ -1620,21 +1629,21 @@ public class DatastoreSteps extends TestBase {
     @When("^I delete the metric info data based on the last query$")
     public void deleteMetricsInfoByQuery() throws KapuaException {
 
-        MetricInfoQuery tmpQuery = (MetricInfoQuery) stepData.get("metricInfoQuery");
+        MetricInfoQuery tmpQuery = (MetricInfoQuery) stepData.get(METRIC_INFO_QUERY);
         metricInfoRegistryServiceProxy.delete(tmpQuery);
     }
 
     @When("^I delete the the metric info data with the ID \"(.+)\" from the current account$")
     public void deleteMetricsInfoWithId(String id) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         metricInfoRegistryServiceProxy.delete(account.getId(), storableIdFactory.newStorableId(id));
     }
 
     @When("^I count for metric info$")
     public void countForMetricInfo() throws KapuaException {
 
-        MetricInfoQuery metricInfoQuery = (MetricInfoQuery) stepData.get("metricInfoQuery");
+        MetricInfoQuery metricInfoQuery = (MetricInfoQuery) stepData.get(METRIC_INFO_QUERY);
         long count = metricInfoRegistryService.count(metricInfoQuery);
         stepData.put("metricInfoCountResult", count);
     }
@@ -1649,15 +1658,15 @@ public class DatastoreSteps extends TestBase {
     @Given("^I create client info query for current account with limit (\\d+)$")
     public void createClientInfoQueryForAccount(int limit) {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         ClientInfoQuery clientInfoQuery = createBaseClientInfoQuery(account.getId(), limit);
-        stepData.put("clientInfoQuery", clientInfoQuery);
+        stepData.put(CLIENT_INFO_QUERY, clientInfoQuery);
     }
 
     @When("^I query for client info$")
     public void queryForClientInfo() throws KapuaException {
 
-        ClientInfoQuery clientInfoQuery = (ClientInfoQuery) stepData.get("clientInfoQuery");
+        ClientInfoQuery clientInfoQuery = (ClientInfoQuery) stepData.get(CLIENT_INFO_QUERY);
         clientInfoQuery.addFetchAttributes(ClientInfoField.TIMESTAMP.field());
         ClientInfoListResult result = clientInfoRegistryService.query(clientInfoQuery);
         stepData.put("clientInfoListResult", result);
@@ -1673,21 +1682,21 @@ public class DatastoreSteps extends TestBase {
     @When("^I delete the client info data based on the last query$")
     public void deleteClientInfoByQuery() throws KapuaException {
 
-        ClientInfoQuery tmpQuery = (ClientInfoQuery) stepData.get("clientInfoQuery");
+        ClientInfoQuery tmpQuery = (ClientInfoQuery) stepData.get(CLIENT_INFO_QUERY);
         clientInfoRegistryServiceProxy.delete(tmpQuery);
     }
 
     @When("^I delete the the client info data with the ID \"(.+)\" from the current account$")
     public void deleteClientInfoWithId(String id) throws KapuaException {
 
-        Account account = (Account) stepData.get("LastAccount");
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
         clientInfoRegistryServiceProxy.delete(account.getId(), storableIdFactory.newStorableId(id));
     }
 
     @When("^I count for client info$")
     public void countForClientInfo() throws KapuaException {
 
-        ClientInfoQuery clientInfoQuery = (ClientInfoQuery) stepData.get("clientInfoQuery");
+        ClientInfoQuery clientInfoQuery = (ClientInfoQuery) stepData.get(CLIENT_INFO_QUERY);
         long count = clientInfoRegistryService.count(clientInfoQuery);
         stepData.put("clientInfoCountResult", count);
     }
@@ -1795,23 +1804,23 @@ public class DatastoreSteps extends TestBase {
         byte[] tmpByteArrayPayload = ArrayUtils.addAll(randomPayload, stringPayload.getBytes());
         tmpTestPayload.setBody(tmpByteArrayPayload);
 
-        DateFormat dfBr = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        DateFormat dfBr = new SimpleDateFormat(DATE_FORMAT_DD_MM_YYYY);
         dfBr.setTimeZone(TimeZone.getTimeZone("Europe/Brussels"));
-        Date dateBr = dfBr.parse("01/04/2017 03:00:00");
-        DateFormat dfLA = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date dateBr = dfBr.parse(RANDOM_DATE_1);
+        DateFormat dfLA = new SimpleDateFormat(DATE_FORMAT_DD_MM_YYYY);
         dfLA.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
-        Date dateLA = dfLA.parse("01/04/2017 03:00:00");
-        DateFormat dfHK = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date dateLA = dfLA.parse(RANDOM_DATE_1);
+        DateFormat dfHK = new SimpleDateFormat(DATE_FORMAT_DD_MM_YYYY);
         dfHK.setTimeZone(TimeZone.getTimeZone("Asia/Hong_Kong"));
-        Date dateHK = dfHK.parse("01/04/2017 03:00:00");
-        DateFormat dfSyd = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date dateHK = dfHK.parse(RANDOM_DATE_1);
+        DateFormat dfSyd = new SimpleDateFormat(DATE_FORMAT_DD_MM_YYYY);
         dfSyd.setTimeZone(TimeZone.getTimeZone("Australia/Sydney"));
-        Date dateSyd = dfSyd.parse("01/04/2017 03:00:00");
+        Date dateSyd = dfSyd.parse(RANDOM_DATE_1);
 
         Map<String, Object> tmpMetrics = new HashMap<>();
         tmpMetrics.put("float", random.nextFloat() * 100);
         tmpMetrics.put("float_int", Float.valueOf(random.nextInt()));
-        tmpMetrics.put("double", random.nextDouble() * 100);
+        tmpMetrics.put(DOUBLE, random.nextDouble() * 100);
         tmpMetrics.put("double_int", Float.valueOf(random.nextInt()));
         tmpMetrics.put("integer", random.nextInt());
         tmpMetrics.put("long", random.nextLong());
@@ -1846,7 +1855,7 @@ public class DatastoreSteps extends TestBase {
             throws Exception {
 
         String tmpTopic = ((topic != null) && !topic.isEmpty()) ? topic : "default/test/topic";
-        String tmpClientId = (clientId != null) ? clientId : ((Device) stepData.get("LastDevice")).getClientId();
+        String tmpClientId = (clientId != null) ? clientId : ((Device) stepData.get(LAST_DEVICE)).getClientId();
         KapuaDataMessage tmpMessage = dataMessageFactory.newKapuaDataMessage();
 
         Date tmpRecDate = new Date();
@@ -1880,7 +1889,7 @@ public class DatastoreSteps extends TestBase {
             throws Exception {
 
         String tmpTopic = (topic != null) ? topic : "default/test/topic";
-        String tmpClientId = (clientId != null) ? clientId : ((Device) stepData.get("LastDevice")).getClientId();
+        String tmpClientId = (clientId != null) ? clientId : ((Device) stepData.get(LAST_DEVICE)).getClientId();
         KapuaDataMessage tmpMessage = dataMessageFactory.newKapuaDataMessage();
 
         Date tmpCaptured = (captured != null) ? captured : new Date();
@@ -1928,10 +1937,15 @@ public class DatastoreSteps extends TestBase {
         if ((parts1 == null) && (parts2 == null)) {
             return true;
         }
+
         if ((parts1 != null) && (parts2 != null)) {
-            assertEquals(parts1.size(), parts2.size());
+            if (parts1.size() != parts2.size()) {
+                return false;
+            }
             for (int i = 0; i < parts1.size(); i++) {
-                assertEquals(parts1.get(i), parts2.get(i));
+                if (!parts1.get(i).equals(parts2.get(i))) {
+                    return false;
+                }
             }
         }
         return true;
@@ -1942,9 +1956,9 @@ public class DatastoreSteps extends TestBase {
         assertEquals(properties1.size(), properties2.size());
 
         if (properties1.size() > 0) {
-            for (String key : properties1.keySet()) {
-                assertTrue(properties2.containsKey(key));
-                assertEquals(properties1.get(key), properties2.get(key));
+            for (Map.Entry<String, Object> entry : properties1.entrySet()) {
+                assertTrue(properties2.containsKey(entry.getKey()));
+                assertEquals(entry.getValue(), properties2.get(entry.getKey()));
             }
         }
         return true;
@@ -1952,8 +1966,8 @@ public class DatastoreSteps extends TestBase {
 
     private void isChannelForFirstMessageInStoreOK(StorableId msgId, Date storedOn) throws KapuaException {
 
-        KapuaId tmpAccId = ((Account) stepData.get("LastAccount")).getId();
-        String tmpClId = ((Device) stepData.get("LastDevice")).getClientId();
+        KapuaId tmpAccId = ((Account) stepData.get(LAST_ACCOUNT)).getId();
+        String tmpClId = ((Device) stepData.get(LAST_DEVICE)).getClientId();
         AndPredicate andPredicate = storablePredicateFactory.newAndPredicate();
         andPredicate.getPredicates().add(storablePredicateFactory.newTermPredicate(ChannelInfoField.CLIENT_ID, tmpClId));
         ChannelInfoQuery channelInfoQuery = createBaseChannelInfoQuery(tmpAccId, 100);
@@ -1961,17 +1975,17 @@ public class DatastoreSteps extends TestBase {
         channelInfoQuery.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
         ChannelInfoListResult channelInfoList = channelInfoRegistryService.query(channelInfoQuery);
 
-        assertNotNull("Cannot find the channel info registry!", channelInfoList);
-        assertNotEquals("Cannot find the channel info registry!", channelInfoList.getSize(), 0);
-        assertNotNull("Cannot find the channel info registry!", channelInfoList.getFirstItem());
+        assertNotNull(CANNOT_FIND_CHANNEL_INFO_REGISTRY, channelInfoList);
+        assertNotEquals(CANNOT_FIND_CHANNEL_INFO_REGISTRY, channelInfoList.getSize(), 0);
+        assertNotNull(CANNOT_FIND_CHANNEL_INFO_REGISTRY, channelInfoList.getFirstItem());
         assertEquals("Wrong channel info message id!", channelInfoList.getFirstItem().getFirstMessageId(), msgId);
         assertEquals("Wrong channel info message on!", channelInfoList.getFirstItem().getFirstMessageOn(), storedOn);
     }
 
     private void isClientForFirstMessageInStoreOK(StorableId msgId, Date storedOn) throws KapuaException {
 
-        KapuaId tmpAccId = ((Account) stepData.get("LastAccount")).getId();
-        String tmpClId = ((Device) stepData.get("LastDevice")).getClientId();
+        KapuaId tmpAccId = ((Account) stepData.get(LAST_ACCOUNT)).getId();
+        String tmpClId = ((Device) stepData.get(LAST_DEVICE)).getClientId();
         AndPredicate andPredicate = storablePredicateFactory.newAndPredicate();
         andPredicate.getPredicates().add(storablePredicateFactory.newTermPredicate(ClientInfoField.CLIENT_ID, tmpClId));
         ClientInfoQuery clientInfoQuery = createBaseClientInfoQuery(tmpAccId, 100);
@@ -1980,17 +1994,17 @@ public class DatastoreSteps extends TestBase {
 
         ClientInfoListResult clientInfoList = clientInfoRegistryService.query(clientInfoQuery);
 
-        assertNotNull("Cannot find the client info registry!", clientInfoList);
-        assertNotEquals("Cannot find the client info registry!", clientInfoList.getSize(), 0);
-        assertNotNull("Cannot find the client info registry!", clientInfoList.getFirstItem());
+        assertNotNull(CANNOT_FIND_CLIENT_INFO_REGISTRY, clientInfoList);
+        assertNotEquals(CANNOT_FIND_CLIENT_INFO_REGISTRY, clientInfoList.getSize(), 0);
+        assertNotNull(CANNOT_FIND_CLIENT_INFO_REGISTRY, clientInfoList.getFirstItem());
         assertEquals("Wrong client info message id!", clientInfoList.getFirstItem().getFirstMessageId(), msgId);
         assertEquals("Wrong client info message on!", clientInfoList.getFirstItem().getFirstMessageOn(), storedOn);
     }
 
     private void isMetricForFirstMessageInStoreOK(StorableId msgId, Date storedOn) throws KapuaException {
 
-        KapuaId tmpAccId = ((Account) stepData.get("LastAccount")).getId();
-        String tmpClId = ((Device) stepData.get("LastDevice")).getClientId();
+        KapuaId tmpAccId = ((Account) stepData.get(LAST_ACCOUNT)).getId();
+        String tmpClId = ((Device) stepData.get(LAST_DEVICE)).getClientId();
         AndPredicate andPredicate = storablePredicateFactory.newAndPredicate();
         andPredicate.getPredicates().add(storablePredicateFactory.newTermPredicate(MetricInfoField.CLIENT_ID, tmpClId));
         MetricInfoQuery metricInfoQuery = createBaseMetricInfoQuery(tmpAccId, 100);
@@ -1999,9 +2013,9 @@ public class DatastoreSteps extends TestBase {
 
         MetricInfoListResult metricInfoList = metricInfoRegistryService.query(metricInfoQuery);
 
-        assertNotNull("Cannot find the metric info registry!", metricInfoList);
-        assertNotEquals("Cannot find the metric info registry!", metricInfoList.getSize(), 0);
-        assertNotNull("Cannot find the metric info registry!", metricInfoList.getFirstItem());
+        assertNotNull(CANNOT_FIND_METRIC_INFO_REGISTRY, metricInfoList);
+        assertNotEquals(CANNOT_FIND_METRIC_INFO_REGISTRY, metricInfoList.getSize(), 0);
+        assertNotNull(CANNOT_FIND_METRIC_INFO_REGISTRY, metricInfoList.getFirstItem());
         assertEquals("Wrong metric info message id!", metricInfoList.getFirstItem().getFirstMessageId(), msgId);
         assertEquals("Wrong metric info message on!", metricInfoList.getFirstItem().getFirstMessageOn(), storedOn);
     }
@@ -2023,10 +2037,8 @@ public class DatastoreSteps extends TestBase {
     // create a basic message query with default parameters. Also set the requested ordering.
     private MessageQuery getBaseMessageQuery(KapuaId scopeId, int limit, List<OrderConstraint<?>> order) {
 
-        MessageQuery tmpQuery = createBaseMessageQuery(scopeId, limit,
+        return createBaseMessageQuery(scopeId, limit,
                 order.stream().map(OrderConstraint::getField).collect(Collectors.toList()));
-
-        return tmpQuery;
     }
 
     // create a basic metric query with default parameters. Also set the requested ordering.
@@ -2039,7 +2051,7 @@ public class DatastoreSteps extends TestBase {
     }
 
     // Check whether the message that was inserted into the message store matches the originally prepared message
-    private boolean checkThatTheInsertedMessageMatchesTheOriginal(KapuaDataMessage origMsg, DatastoreMessage foundMsg) throws KapuaException {
+    private boolean checkThatTheInsertedMessageMatchesTheOriginal(KapuaDataMessage origMsg, DatastoreMessage foundMsg) {
 
         assertTrue(areSemanticPartsEqual(origMsg.getChannel().getSemanticParts(), foundMsg.getChannel().getSemanticParts()));
         if (origMsg.getPayload() != null) {
@@ -2057,7 +2069,7 @@ public class DatastoreSteps extends TestBase {
     }
 
     // Check that two datastore messages match
-    private boolean checkThatDatastoreMessagesMatch(DatastoreMessage firstMsg, DatastoreMessage secondMsg) throws KapuaException {
+    private boolean checkThatDatastoreMessagesMatch(DatastoreMessage firstMsg, DatastoreMessage secondMsg) {
 
         assertEquals(firstMsg.getDatastoreId().toString(), secondMsg.getDatastoreId().toString());
         assertTrue(areSemanticPartsEqual(firstMsg.getChannel().getSemanticParts(), secondMsg.getChannel().getSemanticParts()));
@@ -2084,7 +2096,7 @@ public class DatastoreSteps extends TestBase {
         Set<String> infoClients = new HashSet<>();
 
         assertNotNull("No channel info data!", chnInfo);
-        assertNotNull("No messages to compare to!", msgLst);
+        assertNotNull(NO_MESSAGES_TO_COMPARE_TO, msgLst);
 
         for (KapuaDataMessage tmpMsg : msgLst) {
             msgClients.add(tmpMsg.getClientId());
@@ -2095,7 +2107,7 @@ public class DatastoreSteps extends TestBase {
             infoTopics.add(tmpInfo.getName());
         }
 
-        assertEquals("The number of clients does not match!", msgClients.size(), infoClients.size());
+        assertEquals(NUMBER_OF_CLIENTS_DOES_NOT_MATCH, msgClients.size(), infoClients.size());
         assertEquals("The number of topics does not match!", msgTopics.size(), infoTopics.size());
 
         for (String tmpTopic : msgTopics) {
@@ -2103,7 +2115,7 @@ public class DatastoreSteps extends TestBase {
         }
 
         for (String tmpClient : msgClients) {
-            assertTrue(String.format("The client id [%s] is not found in the info list!", tmpClient), infoClients.contains(tmpClient));
+            assertTrue(String.format(CLIENT_ID_NOT_FOUND, tmpClient), infoClients.contains(tmpClient));
         }
     }
 
@@ -2117,7 +2129,7 @@ public class DatastoreSteps extends TestBase {
         Set<String> infoClients = new HashSet<>();
 
         assertNotNull("No channel info data!", metInfo);
-        assertNotNull("No messages to compare to!", msgLst);
+        assertNotNull(NO_MESSAGES_TO_COMPARE_TO, msgLst);
 
         for (KapuaDataMessage tmpMsg : msgLst) {
             msgClients.add(tmpMsg.getClientId());
@@ -2130,7 +2142,7 @@ public class DatastoreSteps extends TestBase {
             infoMetrics.add(tmpMet.getName());
         }
 
-        assertEquals("The number of clients does not match!", msgClients.size(), infoClients.size());
+        assertEquals(NUMBER_OF_CLIENTS_DOES_NOT_MATCH, msgClients.size(), infoClients.size());
         assertEquals("The number of topics does not match!", msgMetrics.size(), infoMetrics.size());
 
         for (String tmpMetric : msgMetrics) {
@@ -2138,7 +2150,7 @@ public class DatastoreSteps extends TestBase {
         }
 
         for (String tmpClient : msgClients) {
-            assertTrue(String.format("The client id [%s] is not found in the info list!", tmpClient), infoClients.contains(tmpClient));
+            assertTrue(String.format(CLIENT_ID_NOT_FOUND, tmpClient), infoClients.contains(tmpClient));
         }
     }
 
@@ -2150,7 +2162,7 @@ public class DatastoreSteps extends TestBase {
         Set<String> infoClients = new HashSet<>();
 
         assertNotNull("No client info data!", cliInfo);
-        assertNotNull("No messages to compare to!", msgLst);
+        assertNotNull(NO_MESSAGES_TO_COMPARE_TO, msgLst);
 
         for (KapuaDataMessage tmpMsg : msgLst) {
             msgClients.add(tmpMsg.getClientId());
@@ -2159,10 +2171,10 @@ public class DatastoreSteps extends TestBase {
             infoClients.add(tmpClient.getClientId());
         }
 
-        assertEquals("The number of clients does not match!", msgClients.size(), infoClients.size());
+        assertEquals(NUMBER_OF_CLIENTS_DOES_NOT_MATCH, msgClients.size(), infoClients.size());
 
         for (String tmpClient : msgClients) {
-            assertTrue(String.format("The client id [%s] is not found in the info list!", tmpClient), infoClients.contains(tmpClient));
+            assertTrue(String.format(CLIENT_ID_NOT_FOUND, tmpClient), infoClients.contains(tmpClient));
         }
     }
 
@@ -2307,7 +2319,7 @@ public class DatastoreSteps extends TestBase {
      */
     private static String getFieldName(String field, boolean capitalizeFirstLetter) {
 
-        String str[] = cleanupFieldName(field);
+        String[] str = cleanupFieldName(field);
 
         StringBuilder fieldNameSb = new StringBuilder();
         if (capitalizeFirstLetter) {
@@ -2330,7 +2342,7 @@ public class DatastoreSteps extends TestBase {
             field = field.substring(lastDot + 1, field.length());
         }
 
-        String str[] = field.split("_");
+        String[] str = field.split("_");
         if (str.length <= 0) {
             throw new IllegalArgumentException(String.format("Invalid field name [%s]", field));
         }

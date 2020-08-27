@@ -20,7 +20,8 @@ import java.util.Date;
 
 public class DateUtils {
 
-    private static final String FORMAT = "EEE dd MMM yyyy HH:mm:ss ZZZZ";
+    private static final String EEE_DD_MMM_YYYY_HH_MM_SS_ZZZZ = "EEE dd MMM yyyy HH:mm:ss ZZZZ";
+    private static final String YYYY_MM_DD_HH_MM_SS_SSS = "yyyy.MM.dd.HH.mm.ss.SSS";
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
     private DateUtils() {
@@ -38,7 +39,7 @@ public class DateUtils {
             return MSGS.dateTimeNone();
         }
 
-        return DateTimeFormat.getFormat(FORMAT).format(d);
+        return DateTimeFormat.getFormat(EEE_DD_MMM_YYYY_HH_MM_SS_ZZZZ).format(d);
     }
 
     public static int getYear(Date date) {
@@ -51,17 +52,17 @@ public class DateUtils {
     }
 
     public static Date setYear(Date date, int year) {
-        String dateString = DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(date);
+        String dateString = DateTimeFormat.getFormat(YYYY_MM_DD_HH_MM_SS_SSS).format(date);
 
         StringBuilder sb = new StringBuilder();
         sb.append(pad(Integer.toString(year), 4));
         sb.append(dateString.substring(4));
 
-        return DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").parse(sb.toString());
+        return DateTimeFormat.getFormat(YYYY_MM_DD_HH_MM_SS_SSS).parse(sb.toString());
     }
 
     public static Date setMonth(Date date, int month) {
-        String dateString = DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(date);
+        String dateString = DateTimeFormat.getFormat(YYYY_MM_DD_HH_MM_SS_SSS).format(date);
 
         StringBuilder sb = new StringBuilder();
         sb.append(dateString.substring(0, 5));
@@ -69,22 +70,22 @@ public class DateUtils {
         sb.append(pad(Integer.toString(month + 1), 2));
         sb.append(dateString.substring(7));
 
-        return DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").parse(sb.toString());
+        return DateTimeFormat.getFormat(YYYY_MM_DD_HH_MM_SS_SSS).parse(sb.toString());
     }
 
     public static Date setDayOfMonth(Date date, int dayOfMonth) {
-        String dateString = DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(date);
+        String dateString = DateTimeFormat.getFormat(YYYY_MM_DD_HH_MM_SS_SSS).format(date);
 
         StringBuilder sb = new StringBuilder();
         sb.append(dateString.substring(0, 8));
         sb.append(pad(Integer.toString(dayOfMonth), 2));
         sb.append(dateString.substring(10));
 
-        return DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").parse(sb.toString());
+        return DateTimeFormat.getFormat(YYYY_MM_DD_HH_MM_SS_SSS).parse(sb.toString());
     }
 
     public static Date setToLastDayOfMonth(Date date) {
-        String dateString = DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(date);
+        String dateString = DateTimeFormat.getFormat(YYYY_MM_DD_HH_MM_SS_SSS).format(date);
 
         StringBuilder sb = new StringBuilder();
         sb.append(dateString.substring(0, 8));
@@ -136,50 +137,50 @@ public class DateUtils {
 
         sb.append(dateString.substring(10));
 
-        return DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").parse(sb.toString());
+        return DateTimeFormat.getFormat(YYYY_MM_DD_HH_MM_SS_SSS).parse(sb.toString());
     }
 
     public static Date setHour(Date date, int hour) {
-        String dateString = DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(date);
+        String dateString = DateTimeFormat.getFormat(YYYY_MM_DD_HH_MM_SS_SSS).format(date);
 
         StringBuilder sb = new StringBuilder();
         sb.append(dateString.substring(0, 11));
         sb.append(pad(Integer.toString(hour), 2));
         sb.append(dateString.substring(13));
 
-        return DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").parse(sb.toString());
+        return DateTimeFormat.getFormat(YYYY_MM_DD_HH_MM_SS_SSS).parse(sb.toString());
     }
 
     public static Date setMinute(Date date, int minute) {
-        String dateString = DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(date);
+        String dateString = DateTimeFormat.getFormat(YYYY_MM_DD_HH_MM_SS_SSS).format(date);
 
         StringBuilder sb = new StringBuilder();
         sb.append(dateString.substring(0, 14));
         sb.append(pad(Integer.toString(minute), 2));
         sb.append(dateString.substring(16));
 
-        return DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").parse(sb.toString());
+        return DateTimeFormat.getFormat(YYYY_MM_DD_HH_MM_SS_SSS).parse(sb.toString());
     }
 
     public static Date setSecond(Date date, int second) {
-        String dateString = DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(date);
+        String dateString = DateTimeFormat.getFormat(YYYY_MM_DD_HH_MM_SS_SSS).format(date);
 
         StringBuilder sb = new StringBuilder();
         sb.append(dateString.substring(0, 17));
         sb.append(pad(Integer.toString(second), 2));
         sb.append(dateString.substring(19));
 
-        return DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").parse(sb.toString());
+        return DateTimeFormat.getFormat(YYYY_MM_DD_HH_MM_SS_SSS).parse(sb.toString());
     }
 
     public static Date setMillisecond(Date date, int millisecond) {
-        String dateString = DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(date);
+        String dateString = DateTimeFormat.getFormat(YYYY_MM_DD_HH_MM_SS_SSS).format(date);
 
         StringBuilder sb = new StringBuilder();
         sb.append(dateString.substring(0, 20));
         sb.append(pad(Integer.toString(millisecond), 3));
 
-        return DateTimeFormat.getFormat("yyyy.MM.dd.HH.mm.ss.SSS").parse(sb.toString());
+        return DateTimeFormat.getFormat(YYYY_MM_DD_HH_MM_SS_SSS).parse(sb.toString());
     }
 
     private static String pad(String data, int size) {

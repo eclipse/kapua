@@ -145,7 +145,7 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
     }
 
     @Override
-    public DeviceManagementOperationListResult query(KapuaQuery<DeviceManagementOperation> query) throws KapuaException {
+    public DeviceManagementOperationListResult query(KapuaQuery query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
@@ -160,7 +160,7 @@ public class DeviceManagementOperationRegistryServiceImpl extends AbstractKapuaS
     }
 
     @Override
-    public long count(KapuaQuery<DeviceManagementOperation> query) throws KapuaException {
+    public long count(KapuaQuery query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");

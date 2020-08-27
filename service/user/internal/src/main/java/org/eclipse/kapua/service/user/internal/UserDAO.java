@@ -113,7 +113,7 @@ public class UserDAO extends ServiceDAO {
      * @return
      * @throws KapuaException
      */
-    public static UserListResult query(EntityManager em, KapuaQuery<User> userPermissionQuery)
+    public static UserListResult query(EntityManager em, KapuaQuery userPermissionQuery)
             throws KapuaException {
         return ServiceDAO.query(em, User.class, UserImpl.class, new UserListResultImpl(), userPermissionQuery);
     }
@@ -126,7 +126,7 @@ public class UserDAO extends ServiceDAO {
      * @return
      * @throws KapuaException
      */
-    public static long count(EntityManager em, KapuaQuery<User> userPermissionQuery)
+    public static long count(EntityManager em, KapuaQuery userPermissionQuery)
             throws KapuaException {
         return ServiceDAO.count(em, User.class, UserImpl.class, userPermissionQuery);
     }

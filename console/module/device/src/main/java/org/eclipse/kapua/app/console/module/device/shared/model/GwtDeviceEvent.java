@@ -23,6 +23,8 @@ public class GwtDeviceEvent extends KapuaBaseModel implements Serializable {
 
     private static final long serialVersionUID = 8453754536105261520L;
 
+    private static final String EVENT_MESSAGE = "eventMessage";
+
     public enum GwtActionType implements IsSerializable {
         READ, //
         CREATE, //
@@ -140,14 +142,14 @@ public class GwtDeviceEvent extends KapuaBaseModel implements Serializable {
     }
 
     public String getEventMessage() {
-        return (String) get("eventMessage");
+        return (String) get(EVENT_MESSAGE);
     }
 
     public String getUnescapedEventMessage() {
-        return getUnescaped("eventMessage");
+        return getUnescaped(EVENT_MESSAGE);
     }
 
     public void setEventMessage(String eventMessage) {
-        set("eventMessage", eventMessage);
+        set(EVENT_MESSAGE, eventMessage);
     }
 }

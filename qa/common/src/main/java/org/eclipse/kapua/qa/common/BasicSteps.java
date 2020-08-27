@@ -32,6 +32,13 @@ public class BasicSteps extends TestBase {
 
     private static final double WAIT_MULTIPLIER = Double.parseDouble(System.getProperty("org.eclipse.kapua.qa.waitMultiplier", "1.0"));
 
+    private static final String LAST_ACCOUNT_ID = "LastAccountId";
+    private static final String LAST_USER_ID = "LastUserId";
+    private static final String EXCEPTION_NAME = "ExceptionName";
+    private static final String EXCEPTION_CAUGHT = "ExceptionCaught";
+    private static final String ASSERT_ERROR_NAME = "AssertErrorName";
+    private static final String ASSERT_ERROR_CAUGHT = "AssertErrorCaught";
+
     /**
      * Scenario scoped step data.
      */
@@ -60,37 +67,37 @@ public class BasicSteps extends TestBase {
     @Given("^Scope with ID (\\d+)$")
     public void setSpecificScopeId(Integer id) {
 
-        stepData.put("LastAccountId", getKapuaId(id));
+        stepData.put(LAST_ACCOUNT_ID, getKapuaId(id));
     }
 
     @Given("^The KAPUA-SYS scope$")
     public void setRootScope() {
 
-        stepData.put("LastAccountId", SYS_SCOPE_ID);
+        stepData.put(LAST_ACCOUNT_ID, SYS_SCOPE_ID);
     }
 
     @Given("^A null scope$")
     public void setNullScope() {
 
-        stepData.put("LastAccountId", null);
+        stepData.put(LAST_ACCOUNT_ID, null);
     }
 
     @Given("^The User ID (\\d+)$")
     public void setSpecificUserId(Integer id) {
 
-        stepData.put("LastUserId", getKapuaId(id));
+        stepData.put(LAST_USER_ID, getKapuaId(id));
     }
 
     @Given("^The KAPUA-SYS user$")
     public void setRootUserId() {
 
-        stepData.put("LastUserId", SYS_USER_ID);
+        stepData.put(LAST_USER_ID, SYS_USER_ID);
     }
 
     @Given("^A null user")
     public void setNullUser() {
 
-        stepData.put("LastUserId", null);
+        stepData.put(LAST_USER_ID, null);
     }
 
     @Given("^Server with host \"(.+)\" on port \"(.+)\"$")
@@ -102,7 +109,7 @@ public class BasicSteps extends TestBase {
     @Given("^I expect the exception \"(.+)\" with the text \"(.+)\"$")
     public void setExpectedExceptionDetails(String name, String text) {
         stepData.put("ExceptionExpected", true);
-        stepData.put("ExceptionName", name);
+        stepData.put(EXCEPTION_NAME, name);
         stepData.put("ExceptionMessage", text);
     }
 
@@ -119,14 +126,14 @@ public class BasicSteps extends TestBase {
 
     @Then("^An exception was thrown$")
     public void exceptionCaught() {
-        String exName = stepData.contains("ExceptionName") ? (String)stepData.get("ExceptionName") : "Unknown";
-        boolean exCaught = stepData.contains("ExceptionCaught") ? (boolean) stepData.get("ExceptionCaught") : false;
+        String exName = stepData.contains(EXCEPTION_NAME) ? (String)stepData.get(EXCEPTION_NAME) : "Unknown";
+        boolean exCaught = stepData.contains(EXCEPTION_CAUGHT) ? (boolean) stepData.get(EXCEPTION_CAUGHT) : false;
         assertTrue(String.format("Exception %s was expected but was not raised.", exName), exCaught);
     }
 
     @Then("^No exception was thrown$")
     public void noExceptionCaught() {
-        boolean exCaught = stepData.contains("ExceptionCaught") ? (boolean) stepData.get("ExceptionCaught") : false;
+        boolean exCaught = stepData.contains(EXCEPTION_CAUGHT) ? (boolean) stepData.get(EXCEPTION_CAUGHT) : false;
         assertFalse("An unexpected exception was raised!", exCaught);
     }
 
@@ -184,26 +191,26 @@ public class BasicSteps extends TestBase {
     @And("^I expect the exception \"([^\"]*)\"$")
     public void iExpectTheException(String name) {
         stepData.put("ExceptionExpected", true);
-        stepData.put("ExceptionName", name);
+        stepData.put(EXCEPTION_NAME, name);
     }
 
     @Then("^An assertion error was thrown$")
     public void anAssertionErrorWasThrown() {
-        String assertErrorName = stepData.contains("AssertErrorName") ? (String) stepData.get("AssertErrorName") : "Unknown";
-        boolean assertErrorCaught = stepData.contains("AssertErrorCaught") ? (boolean) stepData.get("AssertErrorCaught") : false;
+        String assertErrorName = stepData.contains(ASSERT_ERROR_NAME) ? (String) stepData.get(ASSERT_ERROR_NAME) : "Unknown";
+        boolean assertErrorCaught = stepData.contains(ASSERT_ERROR_CAUGHT) ? (boolean) stepData.get(ASSERT_ERROR_CAUGHT) : false;
         assertTrue(String.format("Assert error was expected but was not raised.", assertErrorName), assertErrorCaught);
     }
 
     @And("^I expect the assertion error \"([^\"]*)\" with the text \"([^\"]*)\"$")
     public void iExpectTheAssertErrorWithTheText(String name, String text) {
         stepData.put("AssertErrorExpected", true);
-        stepData.put("AssertErrorName", name);
+        stepData.put(ASSERT_ERROR_NAME, name);
         stepData.put("AssertErrorMessage", text);
     }
 
     @And("^No assertion error was thrown$")
     public void noAssertionErrorWasThrown() {
-        boolean assertErrorCaught = stepData.contains("AssertErrorCaught") ? (boolean) stepData.get("AssertErrorCaught") : false;
+        boolean assertErrorCaught = stepData.contains(ASSERT_ERROR_CAUGHT) ? (boolean) stepData.get(ASSERT_ERROR_CAUGHT) : false;
         assertFalse("An unexpected assert error was raised!", assertErrorCaught);
     }
 

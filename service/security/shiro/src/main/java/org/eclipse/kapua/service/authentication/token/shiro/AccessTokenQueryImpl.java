@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.authentication.token.shiro;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenQuery;
 
 /**
@@ -21,7 +20,7 @@ import org.eclipse.kapua.service.authentication.token.AccessTokenQuery;
  *
  * @since 1.0
  */
-public class AccessTokenQueryImpl extends AbstractKapuaQuery<AccessToken> implements AccessTokenQuery {
+public class AccessTokenQueryImpl extends AbstractKapuaQuery implements AccessTokenQuery {
 
     /**
      * Constructor

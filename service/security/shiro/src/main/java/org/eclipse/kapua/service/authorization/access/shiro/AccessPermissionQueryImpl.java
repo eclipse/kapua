@@ -21,7 +21,7 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
  *
  * @since 1.0
  */
-public class AccessPermissionQueryImpl extends AbstractKapuaQuery<AccessPermission> implements AccessPermissionQuery {
+public class AccessPermissionQueryImpl extends AbstractKapuaQuery implements AccessPermissionQuery {
 
     /**
      * Constructor

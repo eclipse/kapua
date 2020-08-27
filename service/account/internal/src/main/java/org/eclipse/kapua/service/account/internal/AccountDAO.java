@@ -107,7 +107,7 @@ public class AccountDAO {
      * @return
      * @throws KapuaException
      */
-    public static AccountListResult query(EntityManager em, KapuaQuery<Account> accountQuery)
+    public static AccountListResult query(EntityManager em, KapuaQuery accountQuery)
             throws KapuaException {
         return ServiceDAO.query(em, Account.class, AccountImpl.class, new AccountListResultImpl(), accountQuery);
     }
@@ -120,7 +120,7 @@ public class AccountDAO {
      * @return
      * @throws KapuaException
      */
-    public static long count(EntityManager em, KapuaQuery<Account> accountQuery)
+    public static long count(EntityManager em, KapuaQuery accountQuery)
             throws KapuaException {
         return ServiceDAO.count(em, Account.class, AccountImpl.class, accountQuery);
     }

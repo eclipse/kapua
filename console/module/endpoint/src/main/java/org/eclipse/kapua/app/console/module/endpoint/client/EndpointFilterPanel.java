@@ -21,6 +21,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPane
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaNumberField;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
+import org.eclipse.kapua.app.console.module.api.client.util.CssLiterals;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.endpoint.client.messages.ConsoleEndpointMessages;
 import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpoint;
@@ -54,17 +55,17 @@ public class EndpointFilterPanel extends EntityFilterPanel<GwtEndpoint> {
         // Schema
         Label schemaLabel = new Label(MSGS.filterFieldEndpointSchemaLabel());
         schemaLabel.setWidth(WIDTH);
-        schemaLabel.setStyleAttribute("margin", "5px");
+        schemaLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
         verticalPanel.add(schemaLabel);
 
         schemaField = new KapuaTextField<String>();
         schemaField.setName("schema");
         schemaField.setWidth(WIDTH);
         schemaField.setMaxLength(MAX_LEN);
-        schemaField.setStyleAttribute("margin-top", "0px");
-        schemaField.setStyleAttribute("margin-left", "5px");
-        schemaField.setStyleAttribute("margin-right", "5px");
-        schemaField.setStyleAttribute("margin-bottom", "10px");
+        schemaField.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        schemaField.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        schemaField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        schemaField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
 
         verticalPanel.add(schemaField);
 
@@ -72,17 +73,17 @@ public class EndpointFilterPanel extends EntityFilterPanel<GwtEndpoint> {
         // DNS
         Label nameLabel = new Label(MSGS.filterFieldEndpointDnsLabel());
         nameLabel.setWidth(WIDTH);
-        nameLabel.setStyleAttribute("margin", "5px");
+        nameLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
         verticalPanel.add(nameLabel);
 
         dnsField = new KapuaTextField<String>();
         dnsField.setName("dns");
         dnsField.setWidth(WIDTH);
         dnsField.setMaxLength(MAX_LEN);
-        dnsField.setStyleAttribute("margin-top", "0px");
-        dnsField.setStyleAttribute("margin-left", "5px");
-        dnsField.setStyleAttribute("margin-right", "5px");
-        dnsField.setStyleAttribute("margin-bottom", "10px");
+        dnsField.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        dnsField.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        dnsField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        dnsField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
 
         verticalPanel.add(dnsField);
 
@@ -90,7 +91,7 @@ public class EndpointFilterPanel extends EntityFilterPanel<GwtEndpoint> {
         // Port
         Label portLabel = new Label(MSGS.filterFieldEndpointPortLabel());
         portLabel.setWidth(WIDTH);
-        portLabel.setStyleAttribute("margin", "5px");
+        portLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
         verticalPanel.add(portLabel);
 
         portField = new KapuaNumberField();
@@ -99,16 +100,16 @@ public class EndpointFilterPanel extends EntityFilterPanel<GwtEndpoint> {
         portField.setMaxLength(5);
         portField.setMinValue(0);
         portField.setMaxValue(65536);
-        portField.setStyleAttribute("margin-top", "0px");
-        portField.setStyleAttribute("margin-left", "5px");
-        portField.setStyleAttribute("margin-right", "5px");
-        portField.setStyleAttribute("margin-bottom", "10px");
+        portField.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        portField.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        portField.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        portField.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
 
         verticalPanel.add(portField);
 
         Label secureLabel = new Label(MSGS.filterFieldEndpointSecureLabel());
         secureLabel.setWidth(WIDTH);
-        secureLabel.setStyleAttribute("margin", "5px");
+        secureLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
         verticalPanel.add(secureLabel);
 
         secureCombo = new SimpleComboBox<GwtEndpoint.GwtEndpointSecure>();
@@ -120,10 +121,10 @@ public class EndpointFilterPanel extends EntityFilterPanel<GwtEndpoint> {
         secureCombo.add(GwtEndpoint.GwtEndpointSecure.FALSE);
         secureCombo.setSimpleValue(GwtEndpointSecure.ANY);
         secureCombo.setEditable(false);
-        secureCombo.setStyleAttribute("margin-top", "0px");
-        secureCombo.setStyleAttribute("margin-left", "5px");
-        secureCombo.setStyleAttribute("margin-right", "5px");
-        secureCombo.setStyleAttribute("margin-bottom", "10px");
+        secureCombo.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        secureCombo.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        secureCombo.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        secureCombo.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
 
         verticalPanel.add(secureCombo);
 

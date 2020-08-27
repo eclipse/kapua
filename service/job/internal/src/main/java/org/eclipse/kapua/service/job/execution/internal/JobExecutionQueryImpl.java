@@ -13,10 +13,9 @@ package org.eclipse.kapua.service.job.execution.internal;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.job.execution.JobExecution;
 import org.eclipse.kapua.service.job.execution.JobExecutionQuery;
 
-public class JobExecutionQueryImpl extends AbstractKapuaQuery<JobExecution> implements JobExecutionQuery {
+public class JobExecutionQueryImpl extends AbstractKapuaQuery implements JobExecutionQuery {
 
     /**
      * Constructor

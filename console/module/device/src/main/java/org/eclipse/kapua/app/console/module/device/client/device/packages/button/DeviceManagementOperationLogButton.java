@@ -16,10 +16,10 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.KapuaButton;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 
-public class DeviceManagementOperationLogButton extends Button {
+public class DeviceManagementOperationLogButton extends KapuaButton {
 
     private static final ConsoleDeviceMessages MSGS = GWT.create(ConsoleDeviceMessages.class);
 

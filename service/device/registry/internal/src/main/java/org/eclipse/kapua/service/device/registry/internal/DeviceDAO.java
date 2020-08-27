@@ -107,7 +107,7 @@ public class DeviceDAO extends ServiceDAO {
      * @return
      * @throws KapuaException
      */
-    public static DeviceListResult query(EntityManager em, KapuaQuery<Device> query)
+    public static DeviceListResult query(EntityManager em, KapuaQuery query)
             throws KapuaException {
 
         handleKapuaQueryGroupPredicate(query, DeviceDomains.DEVICE_DOMAIN, DeviceAttributes.GROUP_ID);
@@ -156,7 +156,7 @@ public class DeviceDAO extends ServiceDAO {
      * @return
      * @throws KapuaException
      */
-    public static long count(EntityManager em, KapuaQuery<Device> query)
+    public static long count(EntityManager em, KapuaQuery query)
             throws KapuaException {
         handleKapuaQueryGroupPredicate(query, DeviceDomains.DEVICE_DOMAIN, DeviceAttributes.GROUP_ID);
 

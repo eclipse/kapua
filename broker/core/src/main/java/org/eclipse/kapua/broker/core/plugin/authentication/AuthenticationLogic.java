@@ -73,6 +73,7 @@ public abstract class AuthenticationLogic {
     protected PermissionFactory permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
     protected DeviceConnectionService deviceConnectionService = KapuaLocator.getInstance().getService(DeviceConnectionService.class);
 
+    private static final String USER_NOT_AUTHORIZED = "User not authorized!";
     /**
      * Default constructor
      *
@@ -165,12 +166,12 @@ public abstract class AuthenticationLogic {
         if (deviceConnection != null) {
             ConnectionUserCouplingMode connectionUserCouplingMode = deviceConnection.getUserCouplingMode();
             if (ConnectionUserCouplingMode.INHERITED.equals(deviceConnection.getUserCouplingMode())) {
-                connectionUserCouplingMode = loadConnectionUserCouplingModeFromConfig(scopeId, options);
+                connectionUserCouplingMode = loadConnectionUserCouplingModeFromConfig(options);
             }
             enforceDeviceUserBound(connectionUserCouplingMode, deviceConnection, scopeId, userId);
         } else {
             logger.debug("Enforce Device-User bound - no device connection found so user account settings for enforcing the bound (user id - '{}')", userId);
-            enforceDeviceUserBound(loadConnectionUserCouplingModeFromConfig(scopeId, options), deviceConnection, scopeId, userId);
+            enforceDeviceUserBound(loadConnectionUserCouplingModeFromConfig(options), null, scopeId, userId);
         }
     }
 
@@ -193,13 +194,13 @@ public abstract class AuthenticationLogic {
                 if (deviceConnection.getReservedUserId() == null) {
                     checkConnectionCountByReservedUserId(scopeId, userId, 0);
                     if (!deviceConnection.getAllowUserChange() && !userId.equals(deviceConnection.getUserId())) {
-                        throw new SecurityException("User not authorized!");
+                        throw new SecurityException(USER_NOT_AUTHORIZED);
                         // TODO manage the error message. is it better to throw a more specific exception or keep it obfuscated for security reason?
                     }
                 } else {
                     checkConnectionCountByReservedUserId(scopeId, deviceConnection.getReservedUserId(), 1);
                     if (!userId.equals(deviceConnection.getReservedUserId())) {
-                        throw new SecurityException("User not authorized!");
+                        throw new SecurityException(USER_NOT_AUTHORIZED);
                         // TODO manage the error message. is it better to throw a more specific exception or keep it obfuscated for security reason?
                     }
                 }
@@ -230,7 +231,7 @@ public abstract class AuthenticationLogic {
 
         Long connectionCountByReservedUserId = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionOptionService.count(query));
         if (connectionCountByReservedUserId != null && connectionCountByReservedUserId > count) {
-            throw new SecurityException("User not authorized!");
+            throw new SecurityException(USER_NOT_AUTHORIZED);
             // TODO manage the error message. is it better to throw a more specific exception or keep it obfuscated for security reason?
         }
     }
@@ -239,12 +240,10 @@ public abstract class AuthenticationLogic {
      * Load the device connection/user coupling mode<br>
      * <b>Utility method used by the connection logic</b>
      *
-     * @param scopeId
      * @param options
      * @return
-     * @throws KapuaException
      */
-    protected ConnectionUserCouplingMode loadConnectionUserCouplingModeFromConfig(KapuaId scopeId, Map<String, Object> options) throws KapuaException {
+    protected ConnectionUserCouplingMode loadConnectionUserCouplingModeFromConfig(Map<String, Object> options) {
         String tmp = (String) options.get("deviceConnectionUserCouplingDefaultMode");// TODO move to constants
         if (tmp != null) {
             ConnectionUserCouplingMode tmpConnectionUserCouplingMode = ConnectionUserCouplingMode.valueOf(tmp);

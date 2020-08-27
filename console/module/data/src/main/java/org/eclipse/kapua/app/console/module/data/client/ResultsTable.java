@@ -44,7 +44,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.KapuaButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelector;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.DateRangeSelectorListener;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolBar;
@@ -90,12 +90,12 @@ public class ResultsTable extends LayoutContainer {
     private List<GwtHeader> selectedMetrics;
     private Date startDate;
     private Date endDate;
-    private Button exportButton;
+    private KapuaButton exportButton;
     private DateRangeSelector dateRangeSelector;
-    private Button queryButton;
+    private KapuaButton queryButton;
     private List<GwtHeader> metrics;
 
-    public ResultsTable(GwtSession currentSession, Button queryButton) {
+    public ResultsTable(GwtSession currentSession, KapuaButton queryButton) {
         this.currentSession = currentSession;
         this.queryButton = queryButton;
     }
@@ -220,7 +220,7 @@ public class ResultsTable extends LayoutContainer {
 
         resultsToolBar = new ToolBar();
 
-        exportButton = new Button(MSGS.resultsTableExportToCSV(), new KapuaIcon(IconSet.FILE_TEXT_O),
+        exportButton = new KapuaButton(MSGS.resultsTableExportToCSV(), new KapuaIcon(IconSet.FILE_TEXT_O),
                 new SelectionListener<ButtonEvent>() {
 
                     @Override

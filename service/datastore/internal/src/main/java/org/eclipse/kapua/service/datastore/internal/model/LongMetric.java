@@ -15,21 +15,21 @@ import org.eclipse.kapua.service.datastore.model.Metric;
 
 /**
  * Long metric implementation
- * 
+ *
  * @since 1.0
  */
 public class LongMetric extends MetricImpl<Long> implements Metric<Long> {
 
     /**
      * Construct a long metric with the provided name and value
-     * 
+     *
      * @param name
      * @param value
      */
     public LongMetric(String name, Object value) {
         setName(name);
         setType(Long.class);
-        setValue(Long.valueOf((Long) value).longValue());
+        setValue((Long) value);
     }
 
     @Override

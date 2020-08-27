@@ -30,9 +30,9 @@ public class SubscribeMetric {
 
     private SubscribeMetric() {
         MetricsService metricsService = MetricServiceFactory.getInstance();
-        allowedMessages = metricsService.getCounter("security", "subscribe", "allowed", "count");
-        notAllowedMessages = metricsService.getCounter("security", "subscribe", "not_allowed", "count");
-        time = metricsService.getTimer("security", "subscribe", "time", "s");
+        allowedMessages = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_SUBSCRIBE, SecurityMetrics.METRIC_ALLOWED, SecurityMetrics.METRIC_COUNT);
+        notAllowedMessages = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_SUBSCRIBE, SecurityMetrics.METRIC_NOT_ALLOWED, SecurityMetrics.METRIC_COUNT);
+        time = metricsService.getTimer(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_SUBSCRIBE, SecurityMetrics.METRIC_TIME, SecurityMetrics.METRIC_S);
     }
 
     public Counter getAllowedMessages() {

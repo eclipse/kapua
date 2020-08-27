@@ -23,6 +23,7 @@ import org.elasticsearch.common.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.EnumMap;
@@ -90,7 +91,7 @@ class DefaultConnectorDescriptionProvider implements ConnectorDescriptorProvider
         return configuration.getOrDefault(connectorName, defaultDescriptor);
     }
 
-    private static void loadConfigurations(Map<String, ConnectorDescriptor> configuration) throws Exception {
+    private static void loadConfigurations(Map<String, ConnectorDescriptor> configuration) throws IOException, ClassNotFoundException {
         String uri = BrokerSetting.getInstance().getString(BrokerSettingKey.CONFIGURATION_URI, null);
 
         if (Strings.isNullOrEmpty(uri)) {
@@ -121,8 +122,6 @@ class DefaultConnectorDescriptionProvider implements ConnectorDescriptorProvider
         String transportProtocol = p.getProperty(String.format("%s.transport_protocol", transport));
 
         for (MessageType mt : MessageType.values()) {
-
-            {
                 String key = String.format("%s.device.%s", transport, mt.name());
                 String clazzName = p.getProperty(key);
                 if (clazzName != null && !clazzName.isEmpty()) {
@@ -131,19 +130,15 @@ class DefaultConnectorDescriptionProvider implements ConnectorDescriptorProvider
                 } else {
                     logger.info("No class mapping for key {}", key);
                 }
-            }
 
-            {
-                String key = String.format("%s.kapua.%s", transport, mt.name());
-                String clazzName = p.getProperty(key);
+                key = String.format("%s.kapua.%s", transport, mt.name());
+                clazzName = p.getProperty(key);
                 if (clazzName != null && !clazzName.isEmpty()) {
                     Class<? extends KapuaMessage<?, ?>> clazz = (Class<? extends KapuaMessage<?, ?>>) Class.forName(clazzName).asSubclass(KapuaMessage.class);
                     kapuaClasses.put(mt, clazz);
                 } else {
                     logger.info("No class mapping for key {}", key);
                 }
-            }
-
         }
 
         return new ConnectorDescriptor(transportProtocol, deviceClasses, kapuaClasses);

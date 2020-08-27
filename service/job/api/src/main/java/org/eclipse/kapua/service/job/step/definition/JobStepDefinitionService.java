@@ -37,8 +37,7 @@ public interface JobStepDefinitionService extends KapuaEntityService<JobStepDefi
      * @since 1.0.0
      */
     @Override
-    JobStepDefinitionListResult query(KapuaQuery<JobStepDefinition> query) throws KapuaException;
+    JobStepDefinitionListResult query(KapuaQuery query) throws KapuaException;
 
     JobStepDefinition findByName(String name) throws KapuaException;
-
 }

@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * <BR>
  * <BR>
  * <p>
- * 
+ *
  * <pre>
  * &lt;plugins&gt;
  *     &lt;bean xmlns="http://www.springframework.org/schema/beans" id="applicationFilter" class="org.eclipse.kapua.broker.core.KapuaApplicationBrokerFilter"/&gt;
@@ -41,9 +41,9 @@ public class KapuaBrokerApplicationPlugin implements BrokerPlugin {
         logger.info("Installing Kapua application broker plugin...");
         try {
             return new KapuaApplicationBrokerFilter(broker);
-        } catch (Throwable t) {
-            logger.error("Error in plugin installation.", t);
-            throw new SecurityException(t);
+        } catch (Exception e) {
+            logger.error("Error in plugin installation.", e);
+            throw new SecurityException(e);
         }
     }
 

@@ -73,7 +73,7 @@ public class JobDeviceManagementOperationDAO {
      * @throws KapuaException
      * @since 1.1.0
      */
-    public static JobDeviceManagementOperationListResult query(EntityManager em, KapuaQuery<JobDeviceManagementOperation> jobDeviceManagementOperationQuery)
+    public static JobDeviceManagementOperationListResult query(EntityManager em, KapuaQuery jobDeviceManagementOperationQuery)
             throws KapuaException {
         return ServiceDAO.query(em, JobDeviceManagementOperation.class, JobDeviceManagementOperationImpl.class, new JobDeviceManagementOperationListResultImpl(), jobDeviceManagementOperationQuery);
     }
@@ -87,7 +87,7 @@ public class JobDeviceManagementOperationDAO {
      * @throws KapuaException
      * @since 1.1.0
      */
-    public static long count(EntityManager em, KapuaQuery<JobDeviceManagementOperation> jobDeviceManagementOperationQuery)
+    public static long count(EntityManager em, KapuaQuery jobDeviceManagementOperationQuery)
             throws KapuaException {
         return ServiceDAO.count(em, JobDeviceManagementOperation.class, JobDeviceManagementOperationImpl.class, jobDeviceManagementOperationQuery);
     }

@@ -69,6 +69,8 @@ public class DockerSteps {
 
     private StepData stepData;
 
+    private static final String ALL_IP = "0.0.0.0";
+
     @Inject
     public DockerSteps(StepData stepData) {
 
@@ -287,10 +289,10 @@ public class DockerSteps {
             String dockerImage) {
 
         final Map<String, List<PortBinding>> portBindings = new HashMap<>();
-        addHostPort("0.0.0.0", portBindings, mqttPort, mqttHostPort);
-        addHostPort("0.0.0.0", portBindings, mqttsPort, mqttsHostPort);
-        addHostPort("0.0.0.0", portBindings, webPort, webHostPort);
-        addHostPort("0.0.0.0", portBindings, debugPort, debugHostPort);
+        addHostPort(ALL_IP, portBindings, mqttPort, mqttHostPort);
+        addHostPort(ALL_IP, portBindings, mqttsPort, mqttsHostPort);
+        addHostPort(ALL_IP, portBindings, webPort, webHostPort);
+        addHostPort(ALL_IP, portBindings, debugPort, debugHostPort);
 
         final HostConfig hostConfig = HostConfig.builder().portBindings(portBindings).build();
 
@@ -343,7 +345,7 @@ public class DockerSteps {
     private ContainerConfig getDbContainerConfig() {
         final int dbPort = 3306;
         final Map<String, List<PortBinding>> portBindings = new HashMap<>();
-        addHostPort("0.0.0.0", portBindings, dbPort, dbPort);
+        addHostPort(ALL_IP, portBindings, dbPort, dbPort);
         final HostConfig hostConfig = HostConfig.builder().portBindings(portBindings).build();
 
         return ContainerConfig.builder()
@@ -368,8 +370,8 @@ public class DockerSteps {
         final int esPortRest = 9200;
         final int esPortNodes = 9300;
         final Map<String, List<PortBinding>> portBindings = new HashMap<>();
-        addHostPort("0.0.0.0", portBindings, esPortRest, esPortRest);
-        addHostPort("0.0.0.0", portBindings, esPortNodes, esPortNodes);
+        addHostPort(ALL_IP, portBindings, esPortRest, esPortRest);
+        addHostPort(ALL_IP, portBindings, esPortNodes, esPortNodes);
         final HostConfig hostConfig = HostConfig.builder().portBindings(portBindings).build();
 
         return ContainerConfig.builder()
@@ -394,7 +396,7 @@ public class DockerSteps {
     private ContainerConfig getEventBrokerContainerConfig() {
         final int brokerPort = 5672;
         final Map<String, List<PortBinding>> portBindings = new HashMap<>();
-        addHostPort("0.0.0.0", portBindings, brokerPort, brokerPort);
+        addHostPort(ALL_IP, portBindings, brokerPort, brokerPort);
         final HostConfig hostConfig = HostConfig.builder().portBindings(portBindings).build();
 
         return ContainerConfig.builder()

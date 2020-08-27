@@ -90,7 +90,7 @@ public class ManagementOperationNotificationServiceImpl extends AbstractKapuaSer
     }
 
     @Override
-    public ManagementOperationNotificationListResult query(KapuaQuery<ManagementOperationNotification> query) throws KapuaException {
+    public ManagementOperationNotificationListResult query(KapuaQuery query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
@@ -105,7 +105,7 @@ public class ManagementOperationNotificationServiceImpl extends AbstractKapuaSer
     }
 
     @Override
-    public long count(KapuaQuery<ManagementOperationNotification> query) throws KapuaException {
+    public long count(KapuaQuery query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");

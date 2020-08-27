@@ -66,7 +66,7 @@ public class AccessInfoDAO extends ServiceDAO {
      * @throws KapuaException
      * @since 1.0.0
      */
-    public static AccessInfoListResult query(EntityManager em, KapuaQuery<AccessInfo> accessInfoQuery)
+    public static AccessInfoListResult query(EntityManager em, KapuaQuery accessInfoQuery)
             throws KapuaException {
         return ServiceDAO.query(em, AccessInfo.class, AccessInfoImpl.class, new AccessInfoListResultImpl(), accessInfoQuery);
     }
@@ -80,7 +80,7 @@ public class AccessInfoDAO extends ServiceDAO {
      * @throws KapuaException
      * @since 1.0.0
      */
-    public static long count(EntityManager em, KapuaQuery<AccessInfo> accessInfoQuery)
+    public static long count(EntityManager em, KapuaQuery accessInfoQuery)
             throws KapuaException {
         return ServiceDAO.count(em, AccessInfo.class, AccessInfoImpl.class, accessInfoQuery);
     }

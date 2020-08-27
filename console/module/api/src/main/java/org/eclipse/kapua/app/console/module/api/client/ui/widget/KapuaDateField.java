@@ -26,7 +26,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.dialog.ActionDialog;
 public class KapuaDateField extends DateField {
 
     private ActionDialog dialog;
-    private Boolean enabledDateFieldEvents = false;
+    private boolean enabledDateFieldEvents;
 
     public KapuaDateField() {
         super();
@@ -77,7 +77,8 @@ public class KapuaDateField extends DateField {
             }
         };
 
-        KeyNav<ComponentEvent> keyNav = new KeyNav<ComponentEvent>(KapuaDateField.this) {
+        new KeyNav<ComponentEvent>(KapuaDateField.this) {
+
             @Override
             public void onKeyPress(ComponentEvent ce) {
                 if (ce.getKeyCode() == KeyCodes.KEY_TAB || ce.getKeyCode() == KeyCodes.KEY_ENTER) {
@@ -96,11 +97,7 @@ public class KapuaDateField extends DateField {
 
     private void setDateFieldState() {
         if (dialog != null) {
-            if (!KapuaDateField.this.getRawValue().isEmpty() && KapuaDateField.this.getOriginalValue() == null) {
-                dialog.setDateValueNotNull(true);
-            } else {
-                dialog.setDateValueNotNull(false);
-            }
+            dialog.setDateValueNotNull(!KapuaDateField.this.getRawValue().isEmpty() && KapuaDateField.this.getOriginalValue() == null);
         }
     }
 }

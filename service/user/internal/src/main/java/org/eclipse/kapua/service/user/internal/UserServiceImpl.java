@@ -264,7 +264,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     @Override
-    public UserListResult query(KapuaQuery<User> query)
+    public UserListResult query(KapuaQuery query)
             throws KapuaException {
         //
         // Argument Validation
@@ -280,7 +280,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     @Override
-    public long count(KapuaQuery<User> query)
+    public long count(KapuaQuery query)
             throws KapuaException {
         //
         // Argument Validator

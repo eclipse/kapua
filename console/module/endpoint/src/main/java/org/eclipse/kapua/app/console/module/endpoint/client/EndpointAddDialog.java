@@ -101,15 +101,15 @@ public class EndpointAddDialog extends EntityAddEditDialog {
 
     public void validateEndPoint() {
         if (endpointSchemaField.getValue() == null || endpointDnsField.getValue() == null) {
-            ConsoleInfo.display("Error", CMSGS.allFieldsRequired());
+            ConsoleInfo.display(CMSGS.error(), CMSGS.allFieldsRequired());
         } else if (endpointPortField.getValue() == null) {
-            ConsoleInfo.display("Error", MSGS.portFieldEmptyOrInvalid());
+            ConsoleInfo.display(CMSGS.error(), MSGS.portFieldEmptyOrInvalid());
         } else if (!endpointSchemaField.isValid()) {
-            ConsoleInfo.display("Error", endpointSchemaField.getErrorMessage());
+            ConsoleInfo.display(CMSGS.error(), endpointSchemaField.getErrorMessage());
         } else if (!endpointDnsField.isValid()) {
-            ConsoleInfo.display("Error", endpointDnsField.getErrorMessage());
+            ConsoleInfo.display(CMSGS.error(), endpointDnsField.getErrorMessage());
         } else if (!endpointPortField.isValid()) {
-            ConsoleInfo.display("Error", endpointPortField.getErrorMessage());
+            ConsoleInfo.display(CMSGS.error(), endpointPortField.getErrorMessage());
         }
     }
 

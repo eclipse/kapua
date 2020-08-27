@@ -15,7 +15,6 @@ import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteriaImpl;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventAttributes;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 
@@ -24,7 +23,7 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
  *
  * @since 1.0
  */
-public class DeviceEventQueryImpl extends AbstractKapuaQuery<DeviceEvent> implements DeviceEventQuery {
+public class DeviceEventQueryImpl extends AbstractKapuaQuery implements DeviceEventQuery {
 
     /**
      * Constructor

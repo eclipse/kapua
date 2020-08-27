@@ -95,7 +95,7 @@ public class ServiceConfigDAO extends ServiceDAO {
      * @return
      * @throws KapuaException
      */
-    public static ServiceConfigListResult query(EntityManager em, KapuaQuery<ServiceConfig> serviceConfigQuery)
+    public static ServiceConfigListResult query(EntityManager em, KapuaQuery serviceConfigQuery)
             throws KapuaException {
         return ServiceDAO.query(em, ServiceConfig.class, ServiceConfigImpl.class, new ServiceConfigListResultImpl(), serviceConfigQuery);
     }
@@ -108,7 +108,7 @@ public class ServiceConfigDAO extends ServiceDAO {
      * @return
      * @throws KapuaException
      */
-    public static long count(EntityManager em, KapuaQuery<ServiceConfig> serviceConfigQuery)
+    public static long count(EntityManager em, KapuaQuery serviceConfigQuery)
             throws KapuaException {
         return ServiceDAO.count(em, ServiceConfig.class, ServiceConfigImpl.class, serviceConfigQuery);
     }

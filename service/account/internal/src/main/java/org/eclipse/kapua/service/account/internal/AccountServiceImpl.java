@@ -29,6 +29,8 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
+import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -64,6 +66,8 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     @Inject
     private PermissionFactory permissionFactory;
 
+    private static final String NO_EXPIRATION_DATE_SET = "no expiration date set";
+
     /**
      * Constructor.
      *
@@ -98,7 +102,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Check if the parent account exists
         if (findById(accountCreator.getScopeId()) == null) {
-            throw new KapuaIllegalArgumentException("scopeId", "parent account does not exist: " + accountCreator.getScopeId() + "::");
+            throw new KapuaIllegalArgumentException(KapuaEntityAttributes.SCOPE_ID, "parent account does not exist: " + accountCreator.getScopeId() + "::");
         }
 
         //
@@ -113,7 +117,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Check duplicate name
         AccountQuery query = new AccountQueryImpl(accountCreator.getScopeId());
-        query.setPredicate(query.attributePredicate(AccountAttributes.NAME, accountCreator.getName()));
+        query.setPredicate(query.attributePredicate(KapuaNamedEntityAttributes.NAME, accountCreator.getName()));
 
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(accountCreator.getName());
@@ -129,7 +133,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             // parent account never expires no check is needed
             if (accountCreator.getExpirationDate() == null || parentAccount.getExpirationDate().before(accountCreator.getExpirationDate())) {
                 // if current account expiration date is null it will be obviously after parent expiration date
-                throw new KapuaIllegalArgumentException("expirationDate", accountCreator.getExpirationDate() != null ? accountCreator.getExpirationDate().toString() : "no expiration date set");
+                throw new KapuaIllegalArgumentException(AccountAttributes.EXPIRATION_DATE, accountCreator.getExpirationDate() != null ? accountCreator.getExpirationDate().toString() : NO_EXPIRATION_DATE_SET);
             }
         }
 
@@ -180,7 +184,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             // if parent account never expires no check is needed
             if (account.getExpirationDate() == null || parentAccount.getExpirationDate().before(account.getExpirationDate())) {
                 // if current account expiration date is null it will be obviously after parent expiration date
-                throw new KapuaIllegalArgumentException("expirationDate", account.getExpirationDate() != null ? account.getExpirationDate().toString() : "no expiration date set");
+                throw new KapuaIllegalArgumentException(AccountAttributes.EXPIRATION_DATE, account.getExpirationDate() != null ? account.getExpirationDate().toString() : NO_EXPIRATION_DATE_SET);
             }
         }
 
@@ -194,11 +198,9 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             // check that expiration date is after all the children account
             // if expiration date is null it means the account never expires, so it will be obviously later its children
             AccountListResult childrenAccounts = findChildrenRecursively(account.getId());
-            if (childrenAccounts.getItems().stream().anyMatch(childAccount -> {
-                // if child account expiration date is null it will be obviously after current account expiration date
-                return childAccount.getExpirationDate() == null || childAccount.getExpirationDate().after(account.getExpirationDate());
-            })) {
-                throw new KapuaIllegalArgumentException("expirationDate", account.getExpirationDate() != null ? account.getExpirationDate().toString() : "no expiration date set");
+            // if child account expiration date is null it will be obviously after current account expiration date
+            if (childrenAccounts.getItems().stream().anyMatch(childAccount -> childAccount.getExpirationDate() == null || childAccount.getExpirationDate().after(account.getExpirationDate()))) {
+                throw new KapuaIllegalArgumentException(AccountAttributes.EXPIRATION_DATE, account.getExpirationDate() != null ? account.getExpirationDate().toString() : NO_EXPIRATION_DATE_SET);
             }
         }
 
@@ -228,8 +230,8 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     public void delete(KapuaId scopeId, KapuaId accountId) throws KapuaException {
         //
         // Argument validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(accountId, "accountId");
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(accountId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access
@@ -269,8 +271,8 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     public Account find(KapuaId scopeId, KapuaId accountId) throws KapuaException {
         //
         // Argument validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(accountId, "accountId");
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+        ArgumentValidator.notNull(accountId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access
@@ -285,7 +287,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     public Account find(KapuaId accountId) throws KapuaException {
         //
         // Argument validation
-        ArgumentValidator.notNull(accountId, "accountId");
+        ArgumentValidator.notNull(accountId, KapuaEntityAttributes.ENTITY_ID);
 
         Account account = findById(accountId);
 
@@ -326,7 +328,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     public AccountListResult findChildrenRecursively(KapuaId scopeId) throws KapuaException {
         //
         // Argument validation
-        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
 
         //
         // Make sure account exists
@@ -351,7 +353,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    public AccountListResult query(KapuaQuery<Account> query) throws KapuaException {
+    public AccountListResult query(KapuaQuery query) throws KapuaException {
         //
         // Argument validation
         ArgumentValidator.notNull(query, "query");
@@ -368,7 +370,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    public long count(KapuaQuery<Account> query) throws KapuaException {
+    public long count(KapuaQuery query) throws KapuaException {
         //
         // Argument validation
         ArgumentValidator.notNull(query, "query");
@@ -395,7 +397,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     private Account findById(KapuaId accountId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(accountId, "accountId");
+        ArgumentValidator.notNull(accountId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Do find
@@ -410,7 +412,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(accountId, "accountId");
+        ArgumentValidator.notNull(accountId, KapuaEntityAttributes.ENTITY_ID);
         ArgumentValidator.notNull(accountId.getId(), "accountId.id");
 
         //

@@ -41,7 +41,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.KapuaButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolBar;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
@@ -53,6 +53,7 @@ import org.eclipse.kapua.app.console.module.data.shared.service.GwtDataService;
 import org.eclipse.kapua.app.console.module.data.shared.service.GwtDataServiceAsync;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DeviceTable extends LayoutContainer {
@@ -69,7 +70,7 @@ public class DeviceTable extends LayoutContainer {
     private List<SelectionChangedListener<GwtDatastoreDevice>> listeners = new ArrayList<SelectionChangedListener<GwtDatastoreDevice>>();
     private KapuaPagingToolBar pagingToolBar;
     private KapuaTextField<String> filterField;
-    private Button refreshButton;
+    private KapuaButton refreshButton;
 
     public DeviceTable(GwtSession currentSession) {
         this.currentSession = currentSession;
@@ -97,7 +98,7 @@ public class DeviceTable extends LayoutContainer {
     private void initDeviceTable() {
         initDeviceGrid();
 
-        refreshButton = new Button(DATA_MSGS.searchButton(), new KapuaIcon(IconSet.FILTER), new SelectionListener<ButtonEvent>() {
+        refreshButton = new KapuaButton(DATA_MSGS.searchButton(), new KapuaIcon(IconSet.FILTER), new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -117,7 +118,7 @@ public class DeviceTable extends LayoutContainer {
         filterField = new KapuaTextField<String>();
         filterField.setMaxLength(255);
         filterField.setEmptyText(DATA_MSGS.deviceInfoTableFilter());
-        KeyNav<ComponentEvent> keyNav = new KeyNav<ComponentEvent>(filterField) {
+        new KeyNav<ComponentEvent>(filterField) {
             public void onKeyPress(ComponentEvent ce) {
                 if (ce.getKeyCode() == KeyCodes.KEY_ENTER ) {
                     refresh();
@@ -224,7 +225,7 @@ public class DeviceTable extends LayoutContainer {
                     @Override
                     public void onSuccess(List<GwtDatastoreDevice> result) {
                         for (GwtDatastoreDevice device : result) {
-                            deviceGrid.getStore().findModel(device).setTimestamp(device.getTimestamp() != null ? device.getTimestamp() : GwtDatastoreDevice.NO_TIMESTAMP);
+                            deviceGrid.getStore().findModel(device).setTimestamp(device.getTimestamp() != null ? device.getTimestamp() : new Date(GwtDatastoreDevice.NO_TIMESTAMP));
                         }
                         deviceGrid.getView().refresh(false);
                     }

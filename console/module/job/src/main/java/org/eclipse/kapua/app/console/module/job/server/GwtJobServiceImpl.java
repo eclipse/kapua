@@ -59,6 +59,8 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
     private static final UserService USER_SERVICE = LOCATOR.getService(UserService.class);
     private static final UserFactory USER_FACTORY = LOCATOR.getFactory(UserFactory.class);
 
+    private static final String ENTITY_INFO = "entityInfo";
+
     @Override
     public PagingLoadResult<GwtJob> query(PagingLoadConfig loadConfig, GwtJobQuery gwtJobQuery) throws GwtKapuaException {
         //
@@ -232,10 +234,10 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
             if (job != null) {
                 gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobName", job.getName()));
                 gwtJobDescription.add(new GwtGroupedNVPair("jobInfo", "jobDescription", job.getDescription()));
-                gwtJobDescription.add(new GwtGroupedNVPair("entityInfo", "jobCreatedOn", job.getCreatedOn()));
-                gwtJobDescription.add(new GwtGroupedNVPair("entityInfo", "jobCreatedBy", job.getCreatedBy() != null ? usernameMap.get(job.getCreatedBy().toCompactId()) : null));
-                gwtJobDescription.add(new GwtGroupedNVPair("entityInfo", "jobModifiedOn", job.getModifiedOn()));
-                gwtJobDescription.add(new GwtGroupedNVPair("entityInfo", "jobModifiedBy", job.getModifiedBy() != null ? usernameMap.get(job.getModifiedBy().toCompactId()) : null));
+                gwtJobDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "jobCreatedOn", job.getCreatedOn()));
+                gwtJobDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "jobCreatedBy", job.getCreatedBy() != null ? usernameMap.get(job.getCreatedBy().toCompactId()) : null));
+                gwtJobDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "jobModifiedOn", job.getModifiedOn()));
+                gwtJobDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "jobModifiedBy", job.getModifiedBy() != null ? usernameMap.get(job.getModifiedBy().toCompactId()) : null));
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);

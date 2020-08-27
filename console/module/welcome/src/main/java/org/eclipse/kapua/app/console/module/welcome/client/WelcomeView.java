@@ -30,8 +30,6 @@ public class WelcomeView extends AbstractView {
 
     private static final ConsoleWelcomeMessages MSGS = GWT.create(ConsoleWelcomeMessages.class);
 
-    private ContentPanel centerPanel;
-
     public WelcomeView(GwtSession currentSession) {
     }
 
@@ -57,7 +55,7 @@ public class WelcomeView extends AbstractView {
         tableLayout.setCellHorizontalAlign(HorizontalAlignment.CENTER);
         tableLayout.setCellVerticalAlign(VerticalAlignment.MIDDLE);
 
-        centerPanel = new ContentPanel(tableLayout);
+        ContentPanel centerPanel = new ContentPanel(tableLayout);
         centerPanel.setBodyBorder(false);
         centerPanel.setBorders(false);
         centerPanel.setHeaderVisible(false);
@@ -67,10 +65,6 @@ public class WelcomeView extends AbstractView {
         centerPanel.add(welcomeMessage, new TableData(HorizontalAlignment.CENTER, VerticalAlignment.TOP));
 
         add(centerPanel);
-    }
-
-    public void refresh() {
-        // FIXME: no-op
     }
 
     public static String getName() {

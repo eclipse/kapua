@@ -20,12 +20,12 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 
 /**
  * {@link Domain} query definition.
- * 
+ *
  * @since 1.0.0
  *
  */
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = DomainXmlRegistry.class, factoryMethod = "newQuery")
-public interface DomainQuery extends KapuaQuery<Domain> {
+public interface DomainQuery extends KapuaQuery {
 }

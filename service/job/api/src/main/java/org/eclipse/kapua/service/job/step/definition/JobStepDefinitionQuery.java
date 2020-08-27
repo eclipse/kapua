@@ -20,12 +20,12 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 
 /**
  * {@link JobStepDefinitionQuery} definition.
- * 
+ *
  * @since 1.0
- * 
+ *
  */
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = JobStepDefinitionXmlRegistry.class, factoryMethod = "newQuery")
-public interface JobStepDefinitionQuery extends KapuaQuery<JobStepDefinition> {
+public interface JobStepDefinitionQuery extends KapuaQuery {
 }

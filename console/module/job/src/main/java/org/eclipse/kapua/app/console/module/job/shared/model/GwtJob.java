@@ -18,16 +18,18 @@ import java.util.List;
 
 public class GwtJob extends GwtUpdatableEntityModel implements IsSerializable {
 
+    private static final String DESCRIPTION = "description";
+
     public String getDescription() {
-        return get("description");
+        return get(DESCRIPTION);
     }
 
     public String getUnescapedDescription() {
-        return (String) getUnescaped("description");
+        return (String) getUnescaped(DESCRIPTION);
     }
 
     public void setDescription(String description) {
-        set("description", description);
+        set(DESCRIPTION, description);
     }
 
     public String getJobName() {

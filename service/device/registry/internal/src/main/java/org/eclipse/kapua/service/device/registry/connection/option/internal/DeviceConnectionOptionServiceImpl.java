@@ -116,7 +116,7 @@ public class DeviceConnectionOptionServiceImpl extends AbstractKapuaService impl
     }
 
     @Override
-    public DeviceConnectionOptionListResult query(KapuaQuery<DeviceConnectionOption> query)
+    public DeviceConnectionOptionListResult query(KapuaQuery query)
             throws KapuaException {
         //
         // Argument Validation
@@ -133,7 +133,7 @@ public class DeviceConnectionOptionServiceImpl extends AbstractKapuaService impl
     }
 
     @Override
-    public long count(KapuaQuery<DeviceConnectionOption> query)
+    public long count(KapuaQuery query)
             throws KapuaException {
         //
         // Argument Validation

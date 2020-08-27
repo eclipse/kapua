@@ -42,16 +42,16 @@ public class ServiceEventBusManager {
             ServiceLoader<ServiceEventBusDriver> eventBusLoaders = ServiceLoader.load(ServiceEventBusDriver.class);
             for (ServiceEventBusDriver eventBusDriverLoader : eventBusLoaders) {
                 if (serviceEventBusDrivers.containsKey(eventBusDriverLoader.getType())) {
-                    LOGGER.warn("Event bus driver instance of type {} is already loaded...SKIPPED");
+                    LOGGER.warn("Event bus driver instance of type {} is already loaded...SKIPPED", eventBusDriverLoader.getType());
                     continue;
                 }
                 serviceEventBusDrivers.put(eventBusDriverLoader.getType(), eventBusDriverLoader);
                 LOGGER.info("Event bus driver instance {}...ADDED", eventBusDriverLoader.getType());
             }
             LOGGER.info("Finding event bus driver instance...DONE");
-        } catch (Throwable t) {
-            LOGGER.error("Error while initializing {}, {}", ServiceEventBusManager.class.getName(), t.getMessage(), t);
-            throw KapuaRuntimeException.internalError(t, String.format("Error while initializing %s", ServiceEventBusManager.class.getName()));
+        } catch (Exception ex) {
+            LOGGER.error("Error while initializing {}, {}", ServiceEventBusManager.class.getName(), ex.getMessage(), ex);
+            throw KapuaRuntimeException.internalError(ex, String.format("Error while initializing %s", ServiceEventBusManager.class.getName()));
         }
     }
 

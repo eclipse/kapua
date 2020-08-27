@@ -19,7 +19,7 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.google.gwt.core.client.GWT;
 
-public class DiscardButton extends Button {
+public class DiscardButton extends KapuaButton {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 

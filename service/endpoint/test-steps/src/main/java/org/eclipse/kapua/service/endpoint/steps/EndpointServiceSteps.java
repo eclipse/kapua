@@ -49,7 +49,6 @@ public class EndpointServiceSteps extends TestBase {
     private EndpointInfoService endpointInfoService;
     private EndpointInfoFactory endpointInfoFactory;
 
-
 // ****************************************************************************************
 // * Implementation of Gherkin steps used in JobService.feature scenarios.                *
 // *                                                                                      *
@@ -57,6 +56,8 @@ public class EndpointServiceSteps extends TestBase {
 // * services that the Account services dependent on. Dependent services are:             *
 // * - Authorization Service                                                              *
 // ****************************************************************************************
+
+    private static final String ENDPOINT_INFO = "EndpointInfo";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EndpointServiceSteps.class);
 
@@ -133,9 +134,9 @@ public class EndpointServiceSteps extends TestBase {
         endpointInfoCreator.setDns(dns);
         endpointInfoCreator.setPort(port);
         try {
-            stepData.remove("EndpointInfo");
+            stepData.remove(ENDPOINT_INFO);
             EndpointInfo endpointInfo = endpointInfoService.create(endpointInfoCreator);
-            stepData.put("EndpointInfo", endpointInfo);
+            stepData.put(ENDPOINT_INFO, endpointInfo);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -234,7 +235,7 @@ public class EndpointServiceSteps extends TestBase {
             assertEquals(domain, endpointInfo.getDns());
             assertEquals(port, endpointInfo.getPort());
 
-            stepData.put("EndpointInfo", endpointInfo);
+            stepData.put(ENDPOINT_INFO, endpointInfo);
             stepData.put("EndpointInfoId", endpointInfo.getId());
         } catch (Exception ex) {
             verifyException(ex);
@@ -251,7 +252,7 @@ public class EndpointServiceSteps extends TestBase {
             EndpointInfo endpointInfo = endpointInfoService.query(endpointInfoQuery).getFirstItem();
             assertEquals(schema, endpointInfo.getSchema());
 
-            stepData.put("EndpointInfo", endpointInfo);
+            stepData.put(ENDPOINT_INFO, endpointInfo);
             stepData.put("EndpointInfoId", endpointInfo.getId());
         } catch (Exception ex) {
             verifyException(ex);
@@ -260,13 +261,13 @@ public class EndpointServiceSteps extends TestBase {
 
     @And("^I try to edit endpoint schema to \"([^\"]*)\"$")
     public void editEndpointSchema(String schema) throws Exception {
-        EndpointInfo endpointInfo = (EndpointInfo) stepData.get("EndpointInfo");
+        EndpointInfo endpointInfo = (EndpointInfo) stepData.get(ENDPOINT_INFO);
         endpointInfo.setSchema(schema);
 
         primeException();
         try {
             EndpointInfo newEndpoint = endpointInfoService.update(endpointInfo);
-            stepData.put("EndpointInfo", newEndpoint);
+            stepData.put(ENDPOINT_INFO, newEndpoint);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -291,7 +292,7 @@ public class EndpointServiceSteps extends TestBase {
     public void iDeleteTheLastCreatedEndpoint() throws Exception {
 
         try {
-            EndpointInfo endpointInfo = (EndpointInfo) stepData.get("EndpointInfo");
+            EndpointInfo endpointInfo = (EndpointInfo) stepData.get(ENDPOINT_INFO);
             endpointInfoService.delete(SYS_SCOPE_ID, endpointInfo.getId());
         } catch (Exception e) {
             verifyException(e);

@@ -60,7 +60,6 @@ public class AccountAddDialog extends EntityAddEditDialog {
     protected final LabelField accountNameLabel = new LabelField();
     protected final KapuaTextField<String> accountNameField = new KapuaTextField<String>();
     protected final KapuaTextField<String> accountPassword = new KapuaTextField<String>();
-    protected final KapuaTextField<String> confirmPassword = new KapuaTextField<String>();
     protected final KapuaDateField expirationDateField = new KapuaDateField(this);
 
     // broker cluster
@@ -289,13 +288,13 @@ public class AccountAddDialog extends EntityAddEditDialog {
 
     public void validateAccount() {
         if (accountNameField.getValue() == null || organizationName.getValue() == null || organizationEmail.getValue() == null) {
-            ConsoleInfo.display("Error", CMSGS.allFieldsRequired());
+            ConsoleInfo.display(CMSGS.error(), CMSGS.allFieldsRequired());
         } else if (!expirationDateField.isValid()) {
-            ConsoleInfo.display("Error", KapuaSafeHtmlUtils.htmlUnescape(expirationDateField.getErrorMessage()));
+            ConsoleInfo.display(CMSGS.error(), KapuaSafeHtmlUtils.htmlUnescape(expirationDateField.getErrorMessage()));
         } else if (!organizationEmail.isValid()) {
-            ConsoleInfo.display("Error", organizationEmail.getErrorMessage());
+            ConsoleInfo.display(CMSGS.error(), organizationEmail.getErrorMessage());
         } else if (!organizationPhoneNumber.isValid()) {
-            ConsoleInfo.display("Error", organizationPhoneNumber.getErrorMessage());
+            ConsoleInfo.display(CMSGS.error(), organizationPhoneNumber.getErrorMessage());
         }
     }
 

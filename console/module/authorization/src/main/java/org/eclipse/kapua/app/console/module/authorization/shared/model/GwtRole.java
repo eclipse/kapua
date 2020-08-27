@@ -19,6 +19,8 @@ public class GwtRole extends GwtUpdatableEntityModel {
 
     private static final long serialVersionUID = 5857520420217101882L;
 
+    private static final String DESCRIPTION = "description";
+
     Set<GwtRolePermission> rolePermissions;
 
     public GwtRole() {
@@ -34,15 +36,15 @@ public class GwtRole extends GwtUpdatableEntityModel {
     }
 
     public String getDescription() {
-        return get("description");
+        return get(DESCRIPTION);
     }
 
     public String getUnescapedDescription() {
-        return (String) getUnescaped("description");
+        return (String) getUnescaped(DESCRIPTION);
     }
 
     public void setDescription(String description) {
-        set("description", description);
+        set(DESCRIPTION, description);
     }
 
     public Set<GwtRolePermission> getPermissions() {

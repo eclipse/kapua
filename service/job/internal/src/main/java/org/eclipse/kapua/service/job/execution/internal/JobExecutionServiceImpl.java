@@ -97,7 +97,7 @@ public class JobExecutionServiceImpl
     }
 
     @Override
-    public JobExecutionListResult query(KapuaQuery<JobExecution> query) throws KapuaException {
+    public JobExecutionListResult query(KapuaQuery query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
@@ -112,7 +112,7 @@ public class JobExecutionServiceImpl
     }
 
     @Override
-    public long count(KapuaQuery<JobExecution> query) throws KapuaException {
+    public long count(KapuaQuery query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");

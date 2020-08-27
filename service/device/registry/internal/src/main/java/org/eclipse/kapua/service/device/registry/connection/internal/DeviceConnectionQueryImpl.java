@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.device.registry.connection.internal;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 
 /**
@@ -21,7 +20,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuer
  *
  * @since 1.0
  */
-public class DeviceConnectionQueryImpl extends AbstractKapuaQuery<DeviceConnection> implements DeviceConnectionQuery {
+public class DeviceConnectionQueryImpl extends AbstractKapuaQuery implements DeviceConnectionQuery {
 
     /**
      * Constructor

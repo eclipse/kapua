@@ -28,6 +28,6 @@ public interface ManagementOperationNotificationService
      * @since 1.0.0
      */
     @Override
-    ManagementOperationNotificationListResult query(KapuaQuery<ManagementOperationNotification> query) throws KapuaException;
+    ManagementOperationNotificationListResult query(KapuaQuery query) throws KapuaException;
 
 }

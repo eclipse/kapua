@@ -66,7 +66,7 @@ public interface RolePermissionService extends KapuaEntityService<RolePermission
      * @since 1.0.0
      */
     @Override
-    RolePermissionListResult query(KapuaQuery<RolePermission> query) throws KapuaException;
+    RolePermissionListResult query(KapuaQuery query) throws KapuaException;
 
     /**
      * Returns the count of the {@link RolePermission} elements matching the provided query.
@@ -77,7 +77,7 @@ public interface RolePermissionService extends KapuaEntityService<RolePermission
      * @since 1.0.0
      */
     @Override
-    long count(KapuaQuery<RolePermission> query) throws KapuaException;
+    long count(KapuaQuery query) throws KapuaException;
 
     /**
      * Delete the {@link RolePermission} by scope id and {@link RolePermission} id.

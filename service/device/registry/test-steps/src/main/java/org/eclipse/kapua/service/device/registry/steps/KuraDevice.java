@@ -40,6 +40,14 @@ public class KuraDevice implements MqttCallback {
      */
     private static final Logger logger = LoggerFactory.getLogger(KuraDevice.class);
 
+    private static final String $EDC_KAPUA_SYS = "$EDC/kapua-sys/";
+    private static final String $EDC = "$EDC/";
+    private static final String DEPLOY_V2_REPLY = "/DEPLOY-V2/REPLY/";
+    private static final String DEPLOY_V2_NOTIFY = "/DEPLOY-V2/NOTIFY/";
+    private static final String JOB_ID = "job.id";
+    private static final String CLIENT_ID = "client.id";
+    private static final String COMPLETED = "COMPLETED";
+
     /**
      * Topics that Kura device is listening to.
      */
@@ -64,7 +72,7 @@ public class KuraDevice implements MqttCallback {
     /**
      * Mocked Kura device client id.
      */
-    private static final String CLIENT_ID = "rpione3";
+    private static final String CLIENT_ID_RPIONE3 = "rpione3";
 
     /**
      * User with which Mocked Kura device is connecting to Cloud service.
@@ -134,7 +142,7 @@ public class KuraDevice implements MqttCallback {
 
         writeAsset = "$EDC/kapua-sys/rpione3/ASSET-V1/EXEC/write";
 
-        clientId = "rpione3";
+        clientId = CLIENT_ID_RPIONE3;
 
         mqttClientSetup();
     }
@@ -194,7 +202,7 @@ public class KuraDevice implements MqttCallback {
          * while subscribedClient is meant to receive messages from Kura device side.
          */
         try {
-            mqttClient = new MqttClient(BROKER_URI, CLIENT_ID,
+            mqttClient = new MqttClient(BROKER_URI, CLIENT_ID_RPIONE3,
                     new MemoryPersistence());
             subscribedClient = new MqttClient(BROKER_URI, MqttClient.generateClientId(),
                     new MemoryPersistence());
@@ -211,20 +219,20 @@ public class KuraDevice implements MqttCallback {
          * while subscribedClient is meant to receive messages from Kura device side.
          */
         try {
-            deployPackages = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/GET/packages";
-            deployV2ExecDownloadPackage = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/EXEC/download";
-            uninstallPackage = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/EXEC/uninstall";
-            deployBundles = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/GET/bundles";
-            deployConf = "$EDC/kapua-sys/" + clientId + "/CONF-V1/GET/configurations";
-            putConf = "$EDC/kapua-sys/" + clientId + "/CONF-V1/PUT/configurations";
-            cmdExec = "$EDC/kapua-sys/" + clientId + "/CMD-V1/EXEC/command";
-            deployV2ExecStart34 = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/EXEC/start/34";
-            deployV2ExecStart95 = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/EXEC/start/95";
-            deployV2ExecStop77 = "$EDC/kapua-sys/" + clientId + "/DEPLOY-V2/EXEC/stop/77";
+            deployPackages = $EDC_KAPUA_SYS + clientId + "/DEPLOY-V2/GET/packages";
+            deployV2ExecDownloadPackage = $EDC_KAPUA_SYS + clientId + "/DEPLOY-V2/EXEC/download";
+            uninstallPackage = $EDC_KAPUA_SYS + clientId + "/DEPLOY-V2/EXEC/uninstall";
+            deployBundles = $EDC_KAPUA_SYS + clientId + "/DEPLOY-V2/GET/bundles";
+            deployConf = $EDC_KAPUA_SYS + clientId + "/CONF-V1/GET/configurations";
+            putConf = $EDC_KAPUA_SYS + clientId + "/CONF-V1/PUT/configurations";
+            cmdExec = $EDC_KAPUA_SYS + clientId + "/CMD-V1/EXEC/command";
+            deployV2ExecStart34 = $EDC_KAPUA_SYS + clientId + "/DEPLOY-V2/EXEC/start/34";
+            deployV2ExecStart95 = $EDC_KAPUA_SYS + clientId + "/DEPLOY-V2/EXEC/start/95";
+            deployV2ExecStop77 = $EDC_KAPUA_SYS + clientId + "/DEPLOY-V2/EXEC/stop/77";
 
-            readAssets = "$EDC/kapua-sys/" + clientId + "/ASSET-V1/EXEC/read";
+            readAssets = $EDC_KAPUA_SYS + clientId + "/ASSET-V1/EXEC/read";
 
-            writeAsset = "$EDC/kapua-sys/" + clientId + "/ASSET-V1/EXEC/write";
+            writeAsset = $EDC_KAPUA_SYS + clientId + "/ASSET-V1/EXEC/write";
 
             mqttClient = new MqttClient(BROKER_URI, clientId,
                     new MemoryPersistence());
@@ -324,7 +332,7 @@ public class KuraDevice implements MqttCallback {
         if (topic.equals(deployPackages)) {
             callbackParam = extractCallback(payload);
 
-            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/REPLY/" + callbackParam.getRequestId();
+            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_REPLY + callbackParam.getRequestId();
             responsePayload = Files.readAllBytes(Paths.get(getClass().getResource(packageListChanged == true ? "/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_packages_updated_list.mqtt" : (packageListChangedAfterUninstall == true ? "/mqtt/KapuaPoolClient-id_DEPLOY_V2_REPLY_package_list_after_uninstall.mqtt" : "/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_packages_initial_list.mqtt")).toURI()));
 
             mqttClient.publish(responseTopic, responsePayload, 0, false);
@@ -333,7 +341,7 @@ public class KuraDevice implements MqttCallback {
             KuraPayload kuraPayloadInitial = new KuraPayload();
             kuraPayloadInitial.readFromByteArray(payload);
 
-            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/REPLY/" + callbackParam.getRequestId();
+            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_REPLY + callbackParam.getRequestId();
             KuraPayload customKuraPayload1 = new KuraPayload();
             customKuraPayload1.setTimestamp(new Date());
             customKuraPayload1.getMetrics().put("response.code", 200);
@@ -341,11 +349,11 @@ public class KuraDevice implements MqttCallback {
             mqttClient.publish(responseTopic, responsePayload, 0, false);
             Thread.sleep(100);
 
-            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/NOTIFY/" + clientId + "/download";
+            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_NOTIFY + clientId + "/download";
             KuraPayload customKuraPayload2 = new KuraPayload();
             customKuraPayload2.setTimestamp(new Date());
-            customKuraPayload2.getMetrics().put("job.id", kuraPayloadInitial.getMetrics().get("job.id"));
-            customKuraPayload2.getMetrics().put("client.id", clientId);
+            customKuraPayload2.getMetrics().put(JOB_ID, kuraPayloadInitial.getMetrics().get(JOB_ID));
+            customKuraPayload2.getMetrics().put(CLIENT_ID, clientId);
             customKuraPayload2.getMetrics().put("dp.download.progress", 50);
             customKuraPayload2.getMetrics().put("dp.download.size", 20409);
             customKuraPayload2.getMetrics().put("dp.download.status", "IN_PROGRESS");
@@ -354,27 +362,27 @@ public class KuraDevice implements MqttCallback {
             mqttClient.publish(responseTopic, responsePayload , 0, false);
             Thread.sleep(100);
 
-            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/NOTIFY/" + clientId + "/download";
+            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_NOTIFY + clientId + "/download";
             KuraPayload customKuraPayload3 = new KuraPayload();
             customKuraPayload3.setTimestamp(new Date());
-            customKuraPayload3.getMetrics().put("job.id", kuraPayloadInitial.getMetrics().get("job.id"));
-            customKuraPayload3.getMetrics().put("client.id", clientId);
+            customKuraPayload3.getMetrics().put(JOB_ID, kuraPayloadInitial.getMetrics().get(JOB_ID));
+            customKuraPayload3.getMetrics().put(CLIENT_ID, clientId);
             customKuraPayload3.getMetrics().put("dp.download.progress", 100);
             customKuraPayload3.getMetrics().put("dp.download.size", 20409);
-            customKuraPayload3.getMetrics().put("dp.download.status", "COMPLETED");
+            customKuraPayload3.getMetrics().put("dp.download.status", COMPLETED);
             customKuraPayload3.getMetrics().put("dp.download.index", 0);
             responsePayload = customKuraPayload3.toByteArray();
             mqttClient.publish(responseTopic, responsePayload, 0, false);
             Thread.sleep(100);
 
-            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/NOTIFY/" + clientId + "/install";
+            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_NOTIFY + clientId + "/install";
             KuraPayload customKuraPayload4 = new KuraPayload();
             customKuraPayload4.setTimestamp(new Date());
             customKuraPayload4.getMetrics().put("dp.name", "Example Publisher-1.0.300.dp");
-            customKuraPayload4.getMetrics().put("job.id", kuraPayloadInitial.getMetrics().get("job.id"));
+            customKuraPayload4.getMetrics().put(JOB_ID, kuraPayloadInitial.getMetrics().get(JOB_ID));
             customKuraPayload4.getMetrics().put("dp.install.progress", 100);
-            customKuraPayload4.getMetrics().put("dp.install.status", "COMPLETED");
-            customKuraPayload4.getMetrics().put("client.id", clientId);
+            customKuraPayload4.getMetrics().put("dp.install.status", COMPLETED);
+            customKuraPayload4.getMetrics().put(CLIENT_ID, clientId);
             responsePayload = customKuraPayload4.toByteArray();
             mqttClient.publish(responseTopic, responsePayload, 0, false);
 
@@ -384,7 +392,7 @@ public class KuraDevice implements MqttCallback {
             KuraPayload kuraPayloadInitial = new KuraPayload();
             kuraPayloadInitial.readFromByteArray(payload);
 
-            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/REPLY/" + callbackParam.getRequestId();
+            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_REPLY + callbackParam.getRequestId();
             KuraPayload customKuraPayload = new KuraPayload();
 
             customKuraPayload.setTimestamp(new Date());
@@ -393,15 +401,15 @@ public class KuraDevice implements MqttCallback {
             mqttClient.publish(responseTopic, responsePayload, 0, false);
             Thread.sleep(5000);
 
-            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/NOTIFY/" + clientId + "/uninstall";
+            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_NOTIFY + clientId + "/uninstall";
             KuraPayload customKuraPayload2 = new KuraPayload();
 
             customKuraPayload2.setTimestamp(new Date());
-            customKuraPayload2.getMetrics().put("job.id", kuraPayloadInitial.getMetrics().get("job.id"));
+            customKuraPayload2.getMetrics().put(JOB_ID, kuraPayloadInitial.getMetrics().get(JOB_ID));
             customKuraPayload2.getMetrics().put("dp.name", "org.eclipse.kura.example.beacon");
             customKuraPayload2.getMetrics().put("dp.uninstall.progress", 100);
-            customKuraPayload2.getMetrics().put("dp.uninstall.status", "COMPLETED");
-            customKuraPayload2.getMetrics().put("client.id", clientId);
+            customKuraPayload2.getMetrics().put("dp.uninstall.status", COMPLETED);
+            customKuraPayload2.getMetrics().put(CLIENT_ID, clientId);
             responsePayload = customKuraPayload2.toByteArray();
             mqttClient.publish(responseTopic, responsePayload , 0, false);
 
@@ -409,14 +417,14 @@ public class KuraDevice implements MqttCallback {
         } else if (topic.equals(deployBundles)) {
             callbackParam = extractCallback(payload);
 
-            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/REPLY/" + callbackParam.getRequestId();
+            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_REPLY + callbackParam.getRequestId();
             responsePayload = Files.readAllBytes(Paths.get(getClass().getResource(bundleStateChanged == true ? "/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_bundles_updated_state.mqtt" : "/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_bundles_inital_state.mqtt").toURI()));
 
             mqttClient.publish(responseTopic, responsePayload, 0, false);
         } else if (topic.equals(deployConf)) {
             callbackParam = extractCallback(payload);
 
-            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/CONF-V1/REPLY/" + callbackParam.getRequestId();
+            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/CONF-V1/REPLY/" + callbackParam.getRequestId();
             responsePayload = Files.readAllBytes(Paths.get(getClass().getResource( configurationChanged == true ? "/mqtt/KapuaPool-client-id_CONF-V1_REPLY_req-id_updated_configurations.mqtt" : "/mqtt/KapuaPool-client-id_CONF-V1_REPLY_req-id_inital_configurations.mqtt").toURI()));
 
             mqttClient.publish(responseTopic, responsePayload, 0, false);
@@ -424,7 +432,7 @@ public class KuraDevice implements MqttCallback {
         else if (topic.equals(putConf)) {
             callbackParam = extractCallback(payload);
 
-            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/CONF-V1/REPLY/" + callbackParam.getRequestId();
+            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/CONF-V1/REPLY/" + callbackParam.getRequestId();
             responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_CONF-V1_PUT_configurations.mqtt").toURI()));
 
             configurationChanged = true;
@@ -432,14 +440,14 @@ public class KuraDevice implements MqttCallback {
         } else if (topic.equals(cmdExec)) {
             callbackParam = extractCallback(payload);
 
-            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/CMD-V1/REPLY/" + callbackParam.getRequestId();
+            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/CMD-V1/REPLY/" + callbackParam.getRequestId();
             responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_CMD-V1_REPLY_req-id_command.mqtt").toURI()));
 
             mqttClient.publish(responseTopic, responsePayload, 0, false);
         } else if (topic.equals(deployV2ExecStart34) || topic.equals(deployV2ExecStart95)) {
             callbackParam = extractCallback(payload);
 
-            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/REPLY/" + callbackParam.getRequestId();
+            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_REPLY + callbackParam.getRequestId();
             responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_DEPLOY-V2_EXEC_START_bundle_id.mqtt").toURI()));
 
             bundleStateChanged = true;
@@ -447,7 +455,7 @@ public class KuraDevice implements MqttCallback {
         } else if (topic.equals(deployV2ExecStop77)) {
             callbackParam = extractCallback(payload);
 
-            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/DEPLOY-V2/REPLY/" + callbackParam.getRequestId();
+            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_REPLY + callbackParam.getRequestId();
             responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_DEPLOY-V2_EXEC_STOP_bundle_id.mqtt").toURI()));
 
             bundleStateChanged = true;
@@ -455,14 +463,14 @@ public class KuraDevice implements MqttCallback {
         } else if (topic.equals(readAssets)) {
             callbackParam = extractCallback(payload);
 
-            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/ASSET-V1/REPLY/" + callbackParam.getRequestId();
+            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/ASSET-V1/REPLY/" + callbackParam.getRequestId();
             responsePayload = Files.readAllBytes(Paths.get(getClass().getResource(assetStateChanged == true ? "/mqtt/KapuaPool-client-id_ASSET-V1_READ_req-id_assets_updated_assets.mqtt" : "/mqtt/KapuaPool-client-id_ASSET-V1_READ_req-id_assets.mqtt").toURI()));
 
             mqttClient.publish(responseTopic, responsePayload, 0, false);
         } else if (topic.equals(writeAsset)) {
             callbackParam = extractCallback(payload);
 
-            responseTopic = "$EDC/" + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/ASSET-V1/REPLY/" + callbackParam.getRequestId();
+            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/ASSET-V1/REPLY/" + callbackParam.getRequestId();
             responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_ASSET-V1_WRITE_req-id_assets.mqtt").toURI()));
 
             assetStateChanged = true;

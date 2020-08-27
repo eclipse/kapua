@@ -12,7 +12,6 @@
 package org.eclipse.kapua.job.engine.queue.jbatch;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
-import org.eclipse.kapua.job.engine.queue.QueuedJobExecution;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 
@@ -21,7 +20,7 @@ import org.eclipse.kapua.model.id.KapuaId;
  *
  * @since 1.1.0
  */
-public class QueuedJobExecutionQueryImpl extends AbstractKapuaQuery<QueuedJobExecution> implements QueuedJobExecutionQuery {
+public class QueuedJobExecutionQueryImpl extends AbstractKapuaQuery implements QueuedJobExecutionQuery {
 
     /**
      * Constructor

@@ -29,6 +29,7 @@ import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.event.ServiceEvent.EventStatus;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
+import org.eclipse.kapua.model.KapuaUpdatableEntityAttributes;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.slf4j.Logger;
@@ -91,9 +92,7 @@ public class ServiceEventHousekeeper implements Runnable {
             for (ServiceEntry serviceEntry : servicesEntryList) {
                 try {
                     if (running) {
-                        KapuaSecurityUtils.doPrivileged(() -> {
-                            processServiceEvents(serviceEntry.getServiceName());
-                        });
+                        KapuaSecurityUtils.doPrivileged(() -> processServiceEvents(serviceEntry.getServiceName()));
                     }
                 } catch (KapuaException e) {
                     LOGGER.warn("Generic error {}", e.getMessage(), e);
@@ -174,7 +173,7 @@ public class ServiceEventHousekeeper implements Runnable {
             //add timestamp predicate
             Date eventDateBound = Date.from(KapuaDateUtils.getKapuaSysDate().minusMillis(OLD_MESSAGES_TIME_WINDOW));
             LOGGER.trace("Looking for OLD events. Add timestamp condition query predicate. Date before {}", eventDateBound);
-            andPredicate.and(query.attributePredicate(EventStoreRecordAttributes.MODIFIED_ON, eventDateBound, Operator.LESS_THAN_OR_EQUAL));
+            andPredicate.and(query.attributePredicate(KapuaUpdatableEntityAttributes.MODIFIED_ON, eventDateBound, Operator.LESS_THAN_OR_EQUAL));
         }
 
         query.setPredicate(andPredicate);

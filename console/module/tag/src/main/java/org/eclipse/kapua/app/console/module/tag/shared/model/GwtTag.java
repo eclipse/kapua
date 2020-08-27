@@ -17,6 +17,8 @@ public class GwtTag extends GwtUpdatableEntityModel {
 
     private static final long serialVersionUID = 1379154649673867888L;
 
+    private static final String DESCRIPTION = "description";
+
     public String getTagName() {
         return get("tagName");
     }
@@ -27,15 +29,15 @@ public class GwtTag extends GwtUpdatableEntityModel {
     }
 
     public String getTagDescription() {
-        return get("description");
+        return get(DESCRIPTION);
     }
 
     public String getUnescapedDescription() {
-        return (String) getUnescaped("description");
+        return (String) getUnescaped(DESCRIPTION);
     }
 
     public void setTagDescription(String description) {
-        set("description", description);
+        set(DESCRIPTION, description);
         set("value", description);
     }
 

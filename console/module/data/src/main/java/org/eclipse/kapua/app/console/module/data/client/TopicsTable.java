@@ -42,7 +42,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.KapuaButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.KapuaTreeGrid;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
@@ -63,9 +63,11 @@ public class TopicsTable extends LayoutContainer {
     private ContentPanel tableContainer;
     private List<SelectionChangedListener<GwtTopic>> listeners = new ArrayList<SelectionChangedListener<GwtTopic>>();
     private TreeStore<GwtTopic> store;
-    private Button refreshButton;
+    private KapuaButton refreshButton;
 
     AsyncCallback<List<GwtTopic>> topicsCallback;
+
+    private static final String TOPIC_NAME = "topicName";
 
     public TopicsTable(GwtSession currentGwtSession) {
         this.currentSession = currentGwtSession;
@@ -74,7 +76,7 @@ public class TopicsTable extends LayoutContainer {
             @Override
             public void onSuccess(List<GwtTopic> topics) {
                 store.add(topics, true);
-                store.sort("topicName", Style.SortDir.ASC);
+                store.sort(TOPIC_NAME, Style.SortDir.ASC);
                 updateTimestamps(new ArrayList<ModelData>(topics));
                 topicInfoGrid.unmask();
                 topicInfoGrid.getView().scrollToTop();
@@ -134,7 +136,7 @@ public class TopicsTable extends LayoutContainer {
         tableContainer.setLayout(new FitLayout());
         tableContainer.add(topicInfoGrid);
 
-        refreshButton = new Button(MSGS.refresh(), new KapuaIcon(IconSet.REFRESH), new SelectionListener<ButtonEvent>() {
+        refreshButton = new KapuaButton(MSGS.refresh(), new KapuaIcon(IconSet.REFRESH), new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -150,7 +152,7 @@ public class TopicsTable extends LayoutContainer {
     private void initTopicInfoGrid() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig column = new ColumnConfig("topicName", MSGS.topicInfoTableTopicHeader(), 150);
+        ColumnConfig column = new ColumnConfig(TOPIC_NAME, MSGS.topicInfoTableTopicHeader(), 150);
         column.setRenderer(new TreeGridCellRenderer<GwtTopic>());
         configs.add(column);
 
@@ -159,7 +161,7 @@ public class TopicsTable extends LayoutContainer {
         configs.add(column);
 
         store = new TreeStore<GwtTopic>();
-        store.setSortInfo(new SortInfo("topicName", Style.SortDir.ASC));
+        store.setSortInfo(new SortInfo(TOPIC_NAME, Style.SortDir.ASC));
         dataService.findTopicsTree(currentSession.getSelectedAccountId(), topicsCallback);
         topicInfoGrid = new KapuaTreeGrid<GwtTopic>(store, new ColumnModel(configs));
         topicInfoGrid.getView().setViewConfig(new GridViewConfig() {

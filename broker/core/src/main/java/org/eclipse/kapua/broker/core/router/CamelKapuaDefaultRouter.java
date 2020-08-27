@@ -83,7 +83,7 @@ public class CamelKapuaDefaultRouter {
                 exchange.getIn().getHeader(CamelConstants.JMS_CORRELATION_ID));
         for (EndPoint endPoint : endPointContainer.getEndPoints()) {
             if (endPoint.matches(exchange, value, previous, properties)) {
-                return endPoint.getEndpoint(exchange, value, previous, properties);
+                return endPoint.getEndPoint(exchange, value, previous, properties);
             }
         }
         return null;

@@ -24,14 +24,14 @@ import org.eclipse.kapua.service.tag.TagQuery;
 
 /**
  * {@link Tag} DAO
- * 
+ *
  * @since 1.0.0
  */
 public class TagDAO extends ServiceDAO {
 
     /**
      * Creates and returns new {@link Tag}
-     * 
+     *
      * @param em
      *            The {@link EntityManager} that holds the transaction.
      * @param creator
@@ -52,7 +52,7 @@ public class TagDAO extends ServiceDAO {
 
     /**
      * Updates and returns the updated {@link Tag}
-     * 
+     *
      * @param em
      *            The {@link EntityManager} that holds the transaction.
      * @param tag
@@ -68,7 +68,7 @@ public class TagDAO extends ServiceDAO {
 
     /**
      * Finds the {@link Tag} by {@link Tag} identifier
-     * 
+     *
      * @param em
      *            The {@link EntityManager} that holds the transaction.
      * @param scopeId
@@ -93,7 +93,7 @@ public class TagDAO extends ServiceDAO {
      *             On query error.
      * @since 1.0.0
      */
-    public static TagListResult query(EntityManager em, KapuaQuery<Tag> tagQuery)
+    public static TagListResult query(EntityManager em, KapuaQuery tagQuery)
             throws KapuaException {
         return ServiceDAO.query(em, Tag.class, TagImpl.class, new TagListResultImpl(), tagQuery);
     }
@@ -109,7 +109,7 @@ public class TagDAO extends ServiceDAO {
      * @throws KapuaException
      * @since 1.0.0
      */
-    public static long count(EntityManager em, KapuaQuery<Tag> tagQuery)
+    public static long count(EntityManager em, KapuaQuery tagQuery)
             throws KapuaException {
         return ServiceDAO.count(em, Tag.class, TagImpl.class, tagQuery);
     }

@@ -115,7 +115,7 @@ public class DomainRegistryServiceImpl extends AbstractKapuaService implements D
     }
 
     @Override
-    public DomainListResult query(KapuaQuery<Domain> query)
+    public DomainListResult query(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
 
@@ -127,7 +127,7 @@ public class DomainRegistryServiceImpl extends AbstractKapuaService implements D
     }
 
     @Override
-    public long count(KapuaQuery<Domain> query)
+    public long count(KapuaQuery query)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
 

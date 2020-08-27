@@ -53,7 +53,7 @@ public interface KapuaEntityService<E extends KapuaEntity, C extends KapuaEntity
      * @return
      * @throws KapuaException
      */
-    KapuaListResult<E> query(KapuaQuery<E> query) throws KapuaException;
+    KapuaListResult<E> query(KapuaQuery query) throws KapuaException;
 
     /**
      * Returns the entity count matching the provided query
@@ -62,7 +62,7 @@ public interface KapuaEntityService<E extends KapuaEntity, C extends KapuaEntity
      * @return
      * @throws KapuaException
      */
-    long count(KapuaQuery<E> query) throws KapuaException;
+    long count(KapuaQuery query) throws KapuaException;
 
     /**
      * Delete the entity identified by the entity and scope identifiers

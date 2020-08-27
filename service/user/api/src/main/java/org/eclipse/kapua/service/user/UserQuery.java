@@ -26,7 +26,7 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = UserXmlRegistry.class, factoryMethod = "newQuery")
-public interface UserQuery extends KapuaQuery<User> {
+public interface UserQuery extends KapuaQuery {
 
     <T> UserMatchPredicate<T> matchPredicate(T matchTerm);
 

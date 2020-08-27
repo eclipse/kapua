@@ -11,15 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.servlet;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.kapua.commons.util.ResourceUtils;
+
 import com.google.common.html.HtmlEscapers;
+import org.apache.commons.io.FileUtils;
 import org.eclipse.scada.utils.ExceptionHelper;
 import org.eclipse.scada.utils.str.StringReplacer;
 import org.eclipse.scada.utils.str.StringReplacer.ReplaceSource;
@@ -35,79 +39,49 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
     private static final String HTTP_ERROR_PATH = "/httpError";
     private static final String THROWABLE_PATH = "/throwable";
 
-    private static final String HTTP_ERROR_TEMPLATE = "<!doctype html>" +
-            "<html>" +
-            "   <head>" +
-            "      <title>Eclipse Kapua&trade; Console - ${statusCode}</title>" +
-            "      <style>body {padding: 10px;}h1 {color: #1E80B0;}pre {display: none}.label {font-weight: bold;} .message {}</style>" +
-            "   </head>" +
-            "   <body>" +
-            "      <div>" +
-            "         <h1>Eclipse Kapua&trade;</h1>" +
-            "         <table>" +
-            "            <tr>" +
-            "               <td class='label'>HTTP Error Code:</td>" +
-            "               <td class='message'>${statusCode}</td>" +
-            "            </tr>" +
-            "            <tr>" +
-            "               <td class='label'>Requested Resource:</td>" +
-            "               <td class='message'>${requestUri}</td>" +
-            "            </tr>" +
-            "            <tr>" +
-            "               <td class='label'>Error Message:</td>" +
-            "               <td class='message'>${errorMessage}</td>" +
-            "            </tr>" +
-            "         </table>" +
-            "         <pre>${errorMessage}</pre>" +
-            "      </div>" +
-            "   </body>" +
-            "</html>";
-    private static final String THROWABLE_ERROR_TEMPLATE = "<!doctype html>" +
-            "<html>" +
-            "   <head>" +
-            "      <title>Eclipse Kapua&trade; Console - ${statusCode}</title>" +
-            "      <style>body {padding: 10px;}h1 {color: #1E80B0;}pre {display: none}.label {font-weight: bold;} .message {}</style>" +
-            "   </head>" +
-            "   <body>" +
-            "      <div>" +
-            "         <h1>Eclipse Kapua&trade;</h1>" +
-            "         <table>" +
-            "            <tr>" +
-            "               <td class='label'>HTTP Error Code:</td>" +
-            "               <td class='message'>${statusCode}</td>" +
-            "            </tr>" +
-            "            <tr>" +
-            "               <td class='label'>Requested Resource:</td>" +
-            "               <td class='message'>${requestUri}</td>" +
-            "            </tr>" +
-            "            <tr>" +
-            "               <td class='label'>Error Message:</td>" +
-            "               <td class='message'>${errorMessage}</td>" +
-            "            </tr>" +
-            "            <tr>" +
-            "                <td class='label'>Exception Message:</td>" +
-            "                <td class='message'>${exceptionMessage}</td>" +
-            "            </tr>" +
-            "         </table>" +
-            "         <pre>${errorMessage}</pre>" +
-            "      </div>" +
-            "   </body>" +
-            "</html>";
+    private static final String UNKNOWN = "Unknown";
+
+    private static String httpErrorTemplate;
+    private static String throwableErrorTemplate;
+
+    private static String getHttpErrorTemplate() throws FileNotFoundException {
+        if (httpErrorTemplate == null) {
+            httpErrorTemplate = getTemplate("org/eclipse/kapua/app/console/core/servlet/http_error_template.html");
+        }
+        return httpErrorTemplate;
+    }
+
+    private static String getThrowableErrorTemplate() throws FileNotFoundException{
+        if (throwableErrorTemplate == null) {
+            throwableErrorTemplate = getTemplate("org/eclipse/kapua/app/console/core/servlet/http_error_template.html");
+        }
+        return throwableErrorTemplate;
+    }
+
+    private static String getTemplate(String s) throws FileNotFoundException{
+        try {
+            return FileUtils.readFileToString(new File(ResourceUtils.getResource(s).getFile()));
+        } catch (IOException ioex) {
+            throw new FileNotFoundException(s);
+        } catch (NullPointerException npex) {
+            throw new FileNotFoundException(s);
+        }
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
         processError(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
         processError(request, response);
     }
 
     private void processError(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
         response.setContentType("text/html");
         response.setCharacterEncoding("UTF-8");
 
@@ -138,7 +112,7 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
             statusCode = 500;
         }
         if (requestUri == null) {
-            requestUri = "Unknown";
+            requestUri = UNKNOWN;
         }
         if (errorMessage == null) {
             errorMessage = "Internal Server Error";
@@ -149,7 +123,12 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
         data.put("requestUri", requestUri);
         data.put("errorMessage", errorMessage);
 
-        response.getWriter().write(processTemplate(data, HTTP_ERROR_TEMPLATE));
+        try {
+            response.getWriter().write(processTemplate(data, getHttpErrorTemplate()));
+        } catch (FileNotFoundException ex) {
+            logger.error("Error while parsing error template");
+            response.sendError(500);
+        }
 
         logger.error("Processed HTTP error! Code: {} - Request: {} - Error: {}", statusCode, requestUri, errorMessage);
     }
@@ -167,7 +146,7 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
         if (throwable != null) {
             exceptionMessage = ExceptionHelper.getMessage(throwable);
         } else {
-            exceptionMessage = "Unknown";
+            exceptionMessage = UNKNOWN;
         }
 
         // Defaulting them if null
@@ -175,7 +154,7 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
             statusCode = 500;
         }
         if (requestUri == null) {
-            requestUri = "Unknown";
+            requestUri = UNKNOWN;
         }
         if (errorMessage == null) {
             errorMessage = "Internal Server Error";
@@ -187,7 +166,12 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
         data.put("errorMessage", errorMessage);
         data.put("exceptionMessage", exceptionMessage);
 
-        response.getWriter().write(processTemplate(data, THROWABLE_ERROR_TEMPLATE));
+        try {
+            response.getWriter().write(processTemplate(data, getThrowableErrorTemplate()));
+        } catch (FileNotFoundException ex) {
+            logger.error("Error while parsing error template");
+            response.sendError(500);
+        }
 
         logger.error("Processed HTTP error! Code: {} - Request: {} - Error: {}", statusCode, requestUri, errorMessage);
     }

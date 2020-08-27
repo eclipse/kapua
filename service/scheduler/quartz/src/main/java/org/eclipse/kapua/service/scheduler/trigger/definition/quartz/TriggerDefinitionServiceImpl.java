@@ -16,6 +16,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -89,7 +90,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
     public TriggerDefinition find(KapuaId stepDefinitionId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(stepDefinitionId, "stepDefinitionId");
+        ArgumentValidator.notNull(stepDefinitionId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access
@@ -104,7 +105,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
     public TriggerDefinition find(KapuaId scopeId, KapuaId stepDefinitionId) throws KapuaException {
         //
         // Argument Validation
-        ArgumentValidator.notNull(stepDefinitionId, "stepDefinitionId");
+        ArgumentValidator.notNull(stepDefinitionId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access
@@ -135,7 +136,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
     }
 
     @Override
-    public TriggerDefinitionListResult query(KapuaQuery<TriggerDefinition> query) throws KapuaException {
+    public TriggerDefinitionListResult query(KapuaQuery query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
@@ -150,7 +151,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
     }
 
     @Override
-    public long count(KapuaQuery<TriggerDefinition> query) throws KapuaException {
+    public long count(KapuaQuery query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
@@ -169,7 +170,7 @@ public class TriggerDefinitionServiceImpl extends AbstractKapuaService implement
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, "scopeId");
-        ArgumentValidator.notNull(stepDefinitionId, "stepDefinitionId");
+        ArgumentValidator.notNull(stepDefinitionId, KapuaEntityAttributes.ENTITY_ID);
 
         //
         // Check Access

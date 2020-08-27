@@ -115,7 +115,7 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
     }
 
     @Override
-    public DeviceEventListResult query(KapuaQuery<DeviceEvent> query)
+    public DeviceEventListResult query(KapuaQuery query)
             throws KapuaException {
         //
         // Argument Validation
@@ -129,7 +129,7 @@ public class DeviceEventServiceImpl extends AbstractKapuaService implements Devi
     }
 
     @Override
-    public long count(KapuaQuery<DeviceEvent> query)
+    public long count(KapuaQuery query)
             throws KapuaException {
         //
         // Argument Validation

@@ -13,18 +13,20 @@ package org.eclipse.kapua.broker.core.listener;
 
 /**
  * Camel Header constants
- * 
+ *
  * @since 1.0
  */
-public interface CamelConstants {
+public class CamelConstants {
 
-    public String JMS_EXCHANGE_FAILURE_ENDPOINT = "CamelFailureEndpoint";
-    public String JMS_EXCHANGE_FAILURE_EXCEPTION = "CamelExceptionCaught";
-    public String JMS_EXCHANGE_REDELIVERED = "JMSRedelivered";
+    private CamelConstants() { }
 
-    public String JMS_HEADER_TIMESTAMP = "JMSTimestamp";
-    public String JMS_HEADER_DESTINATION = "JMSDestination";
+    public static final String JMS_EXCHANGE_FAILURE_ENDPOINT = "CamelFailureEndpoint";
+    public static final String JMS_EXCHANGE_FAILURE_EXCEPTION = "CamelExceptionCaught";
+    public static final String JMS_EXCHANGE_REDELIVERED = "JMSRedelivered";
 
-    public String JMS_CORRELATION_ID = "JMSCorrelationID";
+    public static final String JMS_HEADER_TIMESTAMP = "JMSTimestamp";
+    public static final String JMS_HEADER_DESTINATION = "JMSDestination";
+
+    public static final String JMS_CORRELATION_ID = "JMSCorrelationID";
 
 }

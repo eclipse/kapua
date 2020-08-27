@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.user.internal;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserQuery;
 
 /**
@@ -21,7 +20,7 @@ import org.eclipse.kapua.service.user.UserQuery;
  *
  * @since 1.0
  */
-public class UserQueryImpl extends AbstractKapuaQuery<User> implements UserQuery {
+public class UserQueryImpl extends AbstractKapuaQuery implements UserQuery {
 
     /**
      * Constructor

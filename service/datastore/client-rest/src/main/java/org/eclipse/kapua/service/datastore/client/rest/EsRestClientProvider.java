@@ -75,6 +75,8 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
     private static final String PROVIDER_FAILED_TO_CONFIGURE_MSG = "Failed to configure ElasticSearch rest client";
     private static final String PROVIDER_FAILED_TO_CONFIGURE_SSL_MSG = "Failed to configure ElasticSearch ssl rest client layer";
     private static final String PROVIDER_CANNOT_CLOSE_CLIENT_MSG = "Cannot close ElasticSearch rest client. Client is already stopped or not initialized!";
+    private static final String INITIALIZING_ES_REST_CLIENT = ">>> Initializing ES rest client...";
+    private static final String INITIALIZING_ES_REST_CLIENT_DONE = ">>> Initializing ES rest client... DONE";
 
     private static final int DEFAULT_PORT = 9200;
     private static final String DEFAULT_KEY_STORE_TYPE = "jks";
@@ -116,14 +118,14 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
      */
     public static EsRestClientProvider init() {
         synchronized (EsRestClientProvider.class) {
-            logger.info(">>> Initializing ES rest client...");
+            logger.info(INITIALIZING_ES_REST_CLIENT);
             closeIfInstanceInitialized();
             try {
                 instance = new EsRestClientProvider();
             } catch (ClientUnavailableException e) {
                 logger.error(">>> Initializing ES rest client... ERROR: {}", e.getMessage(), e);
             }
-            logger.info(">>> Initializing ES rest client... DONE");
+            logger.info(INITIALIZING_ES_REST_CLIENT_DONE);
         }
         return instance;
     }
@@ -139,10 +141,10 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
      */
     public static void init(AbstractBaseKapuaSetting<ClientSettingsKey> settings) throws ClientException {
         synchronized (EsRestClientProvider.class) {
-            logger.info(">>> Initializing ES rest client...");
+            logger.info(INITIALIZING_ES_REST_CLIENT);
             closeIfInstanceInitialized();
             instance = new EsRestClientProvider(settings);
-            logger.info(">>> Initializing ES rest client... DONE");
+            logger.info(INITIALIZING_ES_REST_CLIENT_DONE);
         }
     }
 
@@ -156,10 +158,10 @@ public class EsRestClientProvider implements ClientProvider<RestClient> {
      */
     public static void init(List<InetSocketAddress> addresses) throws ClientException {
         synchronized (EsRestClientProvider.class) {
-            logger.info(">>> Initializing ES rest client...");
+            logger.info(INITIALIZING_ES_REST_CLIENT);
             closeIfInstanceInitialized();
             instance = new EsRestClientProvider(addresses);
-            logger.info(">>> Initializing ES rest client... DONE");
+            logger.info(INITIALIZING_ES_REST_CLIENT_DONE);
         }
     }
 

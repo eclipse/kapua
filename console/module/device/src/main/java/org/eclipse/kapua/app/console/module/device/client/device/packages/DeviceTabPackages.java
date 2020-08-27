@@ -38,6 +38,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog.InfoDialogType;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.module.api.client.util.CssLiterals;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.client.device.DeviceView;
 import org.eclipse.kapua.app.console.module.device.client.device.packages.button.DeviceManagementOperationLogButton;
@@ -121,9 +122,9 @@ public class DeviceTabPackages extends KapuaTabItem<GwtDevice> {
 
         add(devicesConfigurationPanel);
         layout(true);
-        toolBar.setStyleAttribute("border-left", "1px solid rgb(208, 208, 208)");
-        toolBar.setStyleAttribute("border-right", "1px solid rgb(208, 208, 208)");
-        toolBar.setStyleAttribute("border-top", "1px solid rgb(208, 208, 208)");
+        toolBar.setStyleAttribute("border-left", CssLiterals.border1PxSolidRgb(208, 208, 208));
+        toolBar.setStyleAttribute("border-right", CssLiterals.border1PxSolidRgb(208, 208, 208));
+        toolBar.setStyleAttribute("border-top", CssLiterals.border1PxSolidRgb(208, 208, 208));
         toolBar.setStyleAttribute("border-bottom", "0px none");
         initialized = true;
     }

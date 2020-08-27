@@ -51,6 +51,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.FileUploadDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaMessageBox;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.module.api.client.util.CssLiterals;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
@@ -139,9 +140,9 @@ public class DeviceConfigSnapshots extends LayoutContainer {
 
         add(devicesHistoryPanel);
         layout(true);
-        toolBar.setStyleAttribute("border-left", "0px none");
-        toolBar.setStyleAttribute("border-right", "0px none");
-        toolBar.setStyleAttribute("border-top", "0px none");
+        toolBar.setStyleAttribute("border-left", CssLiterals.BORDER_0PX_NONE);
+        toolBar.setStyleAttribute("border-right", CssLiterals.BORDER_0PX_NONE);
+        toolBar.setStyleAttribute("border-top", CssLiterals.BORDER_0PX_NONE);
         toolBar.setStyleAttribute("border-bottom", "1px solid rgb(208, 208, 208)");
         initialized = true;
     }

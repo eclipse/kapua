@@ -34,7 +34,9 @@ public class DeviceNotConnectedException extends DeviceManagementException {
      * @since 1.1.0
      */
     public DeviceNotConnectedException(@NotNull KapuaId deviceId) {
-        this(deviceId, null);
+        super(DeviceManagementErrorCodes.DEVICE_NOT_CONNECTED, null);
+        this.deviceId = deviceId;
+        this.currentConnectionStatus = null;
     }
 
     /**
@@ -46,7 +48,6 @@ public class DeviceNotConnectedException extends DeviceManagementException {
      */
     public DeviceNotConnectedException(@NotNull KapuaId deviceId, @NotNull DeviceConnectionStatus currentConnectionStatus) {
         super(DeviceManagementErrorCodes.DEVICE_NOT_CONNECTED, deviceId, currentConnectionStatus);
-
         this.deviceId = deviceId;
         this.currentConnectionStatus = currentConnectionStatus;
     }

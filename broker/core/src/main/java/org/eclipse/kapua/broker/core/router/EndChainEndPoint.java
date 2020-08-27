@@ -35,7 +35,7 @@ public class EndChainEndPoint implements EndPoint {
 
     @Override
     @XmlTransient
-    public String getEndpoint(Exchange exchange, Object value, String previous, Map<String, Object> properties) {
+    public String getEndPoint(Exchange exchange, Object value, String previous, Map<String, Object> properties) {
         return null;
     }
 

@@ -20,12 +20,12 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 
 /**
  * {@link Group} query definition.
- * 
+ *
  * @since 1.0.0
  *
  */
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = GroupXmlRegistry.class, factoryMethod = "newQuery")
-public interface GroupQuery extends KapuaQuery<Group> {
+public interface GroupQuery extends KapuaQuery {
 }

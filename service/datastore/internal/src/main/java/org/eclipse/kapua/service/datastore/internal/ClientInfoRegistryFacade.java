@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Client information registry facade
- * 
+ *
  * @since 1.0.0
  */
 public class ClientInfoRegistryFacade {
@@ -56,13 +56,16 @@ public class ClientInfoRegistryFacade {
     private final Object metadataUpdateSync = new Object();
     private DatastoreClient client;
 
+    private static final String QUERY = "query";
+    private static final String QUERY_SCOPE_ID = "query.scopeId";
+
     /**
      * Constructs the client info registry facade
-     * 
+     *
      * @param configProvider
      * @param mediator
      * @throws ClientUnavailableException
-     * 
+     *
      * @since 1.0.0
      */
     public ClientInfoRegistryFacade(ConfigurationProvider configProvider, ClientInfoRegistryMediator mediator) throws ClientUnavailableException {
@@ -73,7 +76,7 @@ public class ClientInfoRegistryFacade {
 
     /**
      * Update the client information after a message store operation
-     * 
+     *
      * @param clientInfo
      * @return
      * @throws KapuaIllegalArgumentException
@@ -130,7 +133,7 @@ public class ClientInfoRegistryFacade {
      * Delete client information by identifier.<br>
      * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
      * It just deletes the client info registry entry by id without checking the consistency of the others registries or the message store.</b>
-     * 
+     *
      * @param scopeId
      * @param id
      * @throws KapuaIllegalArgumentException
@@ -158,7 +161,7 @@ public class ClientInfoRegistryFacade {
 
     /**
      * Find client information by identifier
-     * 
+     *
      * @param scopeId
      * @param id
      * @return
@@ -188,7 +191,7 @@ public class ClientInfoRegistryFacade {
 
     /**
      * Find clients informations matching the given query
-     * 
+     *
      * @param query
      * @return
      * @throws KapuaIllegalArgumentException
@@ -201,8 +204,8 @@ public class ClientInfoRegistryFacade {
             ConfigurationException,
             QueryMappingException,
             ClientException {
-        ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
+        ArgumentValidator.notNull(query, QUERY);
+        ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
         MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
@@ -219,7 +222,7 @@ public class ClientInfoRegistryFacade {
 
     /**
      * Get clients informations count matching the given query
-     * 
+     *
      * @param query
      * @return
      * @throws KapuaIllegalArgumentException
@@ -232,8 +235,8 @@ public class ClientInfoRegistryFacade {
             ConfigurationException,
             QueryMappingException,
             ClientException {
-        ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
+        ArgumentValidator.notNull(query, QUERY);
+        ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
         MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
@@ -252,7 +255,7 @@ public class ClientInfoRegistryFacade {
      * Delete clients informations count matching the given query.<br>
      * <b>Be careful using this function since it doesn't guarantee the datastore consistency.<br>
      * It just deletes the client info registry entries that matching the query without checking the consistency of the others registries or the message store.</b>
-     * 
+     *
      * @param query
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
@@ -264,8 +267,8 @@ public class ClientInfoRegistryFacade {
             ConfigurationException,
             QueryMappingException,
             ClientException {
-        ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
+        ArgumentValidator.notNull(query, QUERY);
+        ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
         MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();

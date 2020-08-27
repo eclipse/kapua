@@ -33,7 +33,6 @@ public class DatastoreClientFactory {
 
     private static final String CANNOT_LOAD_CLIENT_ERROR_MSG = "Cannot load the provided client class name [%s]. Check the configuration.";
     private static final String CLIENT_CLASS_NAME;
-    private static Class<DatastoreClient> datastoreClientInstance;
     private static DatastoreClient instance;
 
     static {
@@ -47,7 +46,7 @@ public class DatastoreClientFactory {
     /**
      * Return the client instance. The implementation is specified by {@link DatastoreSettingKey#CONFIG_CLIENT_CLASS}.
      *
-     * @return
+     * @return The {@link DatastoreClient} instance
      * @throws ClientUnavailableException
      */
     public static DatastoreClient getInstance() throws ClientUnavailableException {
@@ -55,6 +54,7 @@ public class DatastoreClientFactory {
         if (instance == null) {
             synchronized (DatastoreClientFactory.class) {
                 if (instance == null) {
+                    Class<DatastoreClient> datastoreClientInstance;
                     try {
                         datastoreClientInstance = (Class<DatastoreClient>) Class.forName(CLIENT_CLASS_NAME);
                     } catch (ClassNotFoundException e) {

@@ -20,12 +20,12 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 
 /**
  * {@link Tag} query definition.
- * 
+ *
  * @since 1.0.0
  *
  */
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = TagXmlRegistry.class, factoryMethod = "newQuery")
-public interface TagQuery extends KapuaQuery<Tag> {
+public interface TagQuery extends KapuaQuery {
 }

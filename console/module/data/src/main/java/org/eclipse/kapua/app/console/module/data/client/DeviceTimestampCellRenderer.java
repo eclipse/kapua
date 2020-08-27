@@ -34,6 +34,7 @@ import org.eclipse.kapua.app.console.module.data.shared.service.GwtDataService;
 import org.eclipse.kapua.app.console.module.data.shared.service.GwtDataServiceAsync;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DeviceTimestampCellRenderer implements GridCellRenderer<GwtDatastoreDevice> {
@@ -58,7 +59,7 @@ public class DeviceTimestampCellRenderer implements GridCellRenderer<GwtDatastor
         cellText.setStyleName("x-grid3-cell");
         cellText.setStyleAttribute("float", "left");
 
-        if (GwtDatastoreDevice.NO_TIMESTAMP.equals(gwtDevice.getTimestamp())) {
+        if (new Date(GwtDatastoreDevice.NO_TIMESTAMP).equals(gwtDevice.getTimestamp())) {
             cellText.setText(DATA_MSGS.topicInfoTableNoLastPostDate());
         } else {
             cellText.setText(gwtDevice.getTimestamp() != null ? gwtDevice.getTimestampFormatted() : DATA_MSGS.topicInfoTableCalculatingLastPostDate());
@@ -119,7 +120,7 @@ public class DeviceTimestampCellRenderer implements GridCellRenderer<GwtDatastor
                 if (!list.isEmpty() && list.get(0).getTimestamp() != null) {
                     gwtDevice.setTimestamp(list.get(0).getTimestamp());
                 } else {
-                    gwtDevice.setTimestamp(GwtDatastoreDevice.NO_TIMESTAMP);
+                    gwtDevice.setTimestamp(new Date(GwtDatastoreDevice.NO_TIMESTAMP));
                 }
 
                 grid.getView().refresh(false);

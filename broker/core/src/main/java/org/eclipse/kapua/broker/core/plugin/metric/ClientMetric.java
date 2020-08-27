@@ -30,10 +30,10 @@ public class ClientMetric {
 
     private ClientMetric() {
         MetricsService metricsService = MetricServiceFactory.getInstance();
-        connectedClient = metricsService.getCounter("security", "login", "clients", "connected", "count");
-        connectedKapuasys = metricsService.getCounter("security", "login", "kapuasys", "connected", "count");
-        disconnectionClient = metricsService.getCounter("security", "login", "clients", "disconnected", "count");
-        disconnectionKapuasys = metricsService.getCounter("security", "login", "kapuasys", "disconnected", "count");
+        connectedClient = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_CLIENTS, SecurityMetrics.METRIC_CONNECTED, SecurityMetrics.METRIC_COUNT);
+        connectedKapuasys = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_KAPUASYS, SecurityMetrics.METRIC_CONNECTED, SecurityMetrics.METRIC_COUNT);
+        disconnectionClient = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_CLIENTS, SecurityMetrics.METRIC_DISCONNECTED, SecurityMetrics.METRIC_COUNT);
+        disconnectionKapuasys = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_KAPUASYS, SecurityMetrics.METRIC_DISCONNECTED, SecurityMetrics.METRIC_COUNT);
     }
 
     public Counter getConnectedClient() {

@@ -21,7 +21,7 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
  *
  * @since 1.0.0
  */
-public class RolePermissionQueryImpl extends AbstractKapuaQuery<RolePermission> implements RolePermissionQuery {
+public class RolePermissionQueryImpl extends AbstractKapuaQuery implements RolePermissionQuery {
 
     /**
      * Constructor

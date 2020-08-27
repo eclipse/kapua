@@ -20,13 +20,13 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 
 /**
  * Credential query definition.
- * 
+ *
  * @since 1.0
- * 
+ *
  */
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = CredentialXmlRegistry.class, factoryMethod = "newQuery")
-public interface CredentialQuery extends KapuaQuery<Credential> {
+public interface CredentialQuery extends KapuaQuery {
 
 }

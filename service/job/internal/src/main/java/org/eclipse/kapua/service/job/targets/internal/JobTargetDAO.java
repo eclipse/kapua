@@ -104,7 +104,7 @@ public class JobTargetDAO {
      * @return
      * @throws KapuaException
      */
-    public static JobTargetListResult query(EntityManager em, KapuaQuery<JobTarget> jobTargetQuery)
+    public static JobTargetListResult query(EntityManager em, KapuaQuery jobTargetQuery)
             throws KapuaException {
         return ServiceDAO.query(em, JobTarget.class, JobTargetImpl.class, new JobTargetListResultImpl(), jobTargetQuery);
     }
@@ -117,7 +117,7 @@ public class JobTargetDAO {
      * @return
      * @throws KapuaException
      */
-    public static long count(EntityManager em, KapuaQuery<JobTarget> jobTargetQuery)
+    public static long count(EntityManager em, KapuaQuery jobTargetQuery)
             throws KapuaException {
         return ServiceDAO.count(em, JobTarget.class, JobTargetImpl.class, jobTargetQuery);
     }

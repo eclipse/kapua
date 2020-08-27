@@ -22,6 +22,11 @@ public class GwtUser extends GwtUpdatableEntityModel implements IsSerializable {
 
     private static final long serialVersionUID = -3731370307878410611L;
 
+    private static final String USERNAME = "username";
+    private static final String DISPLAY_NAME = "displayName";
+    private static final String EMAIL = "email";
+    private static final String PHONE_NUMBER = "phoneNumber";
+
     public enum GwtUserStatus implements IsSerializable {
         ENABLED, DISABLED, ANY;
 
@@ -80,51 +85,51 @@ public class GwtUser extends GwtUpdatableEntityModel implements IsSerializable {
     }
 
     public String getUsername() {
-        return (String) get("username");
+        return (String) get(USERNAME);
     }
 
     public String getUnescapedUsername() {
-        return (String) getUnescaped("username");
+        return (String) getUnescaped(USERNAME);
     }
 
     public void setUsername(String username) {
-        set("username", username);
+        set(USERNAME, username);
     }
 
     public String getDisplayName() {
-        return (String) get("displayName");
+        return (String) get(DISPLAY_NAME);
     }
 
     public String getUnescapedDisplayName() {
-        return (String) getUnescaped("displayName");
+        return (String) getUnescaped(DISPLAY_NAME);
     }
 
     public void setDisplayName(String displayName) {
-        set("displayName", displayName);
+        set(DISPLAY_NAME, displayName);
     }
 
     public String getEmail() {
-        return (String) get("email");
+        return (String) get(EMAIL);
     }
 
     public String getUnescapedEmail() {
-        return (String) getUnescaped("email");
+        return (String) getUnescaped(EMAIL);
     }
 
     public void setEmail(String email) {
-        set("email", email);
+        set(EMAIL, email);
     }
 
     public String getPhoneNumber() {
-        return (String) get("phoneNumber");
+        return (String) get(PHONE_NUMBER);
     }
 
     public String getUnescapedPhoneNumber() {
-        return (String) getUnescaped("phoneNumber");
+        return (String) getUnescaped(PHONE_NUMBER);
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        set("phoneNumber", phoneNumber);
+        set(PHONE_NUMBER, phoneNumber);
     }
 
     public String getStatus() {

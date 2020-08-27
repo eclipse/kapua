@@ -26,7 +26,7 @@ import com.codahale.metrics.Counter;
 
 /**
  * Kapua message converter used to convert data messages.
- * 
+ *
  * @since 1.0
  */
 public class KapuaDataConverter extends AbstractKapuaConverter {
@@ -37,12 +37,12 @@ public class KapuaDataConverter extends AbstractKapuaConverter {
 
     public KapuaDataConverter() {
         super();
-        metricConverterDataMessage = METRICS_SERVICE.getCounter(METRIC_COMPONENT_NAME, "kapua", "kapua_message", "messages", "data", "count");
+        metricConverterDataMessage = METRICS_SERVICE.getCounter(ConverterMetrics.METRIC_MODULE_NAME, ConverterMetrics.METRIC_COMPONENT_NAME, ConverterMetrics.METRIC_KAPUA_MESSAGE, ConverterMetrics.METRIC_MESSAGES, ConverterMetrics.METRIC_DATA, ConverterMetrics.METRIC_COUNT);
     }
 
     /**
      * Convert incoming message to a Kapua data message
-     * 
+     *
      * @param exchange
      * @param value
      * @return Message container that contains data message

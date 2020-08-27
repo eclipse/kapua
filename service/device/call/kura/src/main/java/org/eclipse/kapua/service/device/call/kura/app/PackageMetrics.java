@@ -75,14 +75,14 @@ public enum PackageMetrics implements DeviceAppMetrics {
      *
      * @since 1.0.0
      */
-    APP_METRIC_PACKAGE_DOWNLOAD_PACKAGE_NAME("dp.name"),
+    APP_METRIC_PACKAGE_DOWNLOAD_PACKAGE_NAME(Constants.DP_NAME),
 
     /**
      * Download package version metric name.
      *
      * @since 1.0.0
      */
-    APP_METRIC_PACKAGE_DOWNLOAD_PACKAGE_VERSION("dp.version"),
+    APP_METRIC_PACKAGE_DOWNLOAD_PACKAGE_VERSION(Constants.DP_VERSION),
 
     /**
      * Download package HTTP basic auth usename metric name.
@@ -200,14 +200,14 @@ public enum PackageMetrics implements DeviceAppMetrics {
      *
      * @since 1.0.0
      */
-    APP_METRIC_PACKAGE_INSTALL_PACKAGE_NAME("dp.name"),
+    APP_METRIC_PACKAGE_INSTALL_PACKAGE_NAME(Constants.DP_NAME),
 
     /**
      * Install package version metric name.
      *
      * @since 1.0.0
      */
-    APP_METRIC_PACKAGE_INSTALL_PACKAGE_VERSION("dp.version"),
+    APP_METRIC_PACKAGE_INSTALL_PACKAGE_VERSION(Constants.DP_VERSION),
 
     /**
      * Install package system update metric name.
@@ -224,15 +224,14 @@ public enum PackageMetrics implements DeviceAppMetrics {
      *
      * @since 1.0.0
      */
-    APP_METRIC_PACKAGE_UNINSTALL_PACKAGE_NAME("dp.name"),
+    APP_METRIC_PACKAGE_UNINSTALL_PACKAGE_NAME(Constants.DP_NAME),
 
     /**
      * Uninstall package version metric name.
      *
      * @since 1.0.0
      */
-    APP_METRIC_PACKAGE_UNINSTALL_PACKAGE_VERSION("dp.version"),
-    ;
+    APP_METRIC_PACKAGE_UNINSTALL_PACKAGE_VERSION(Constants.DP_VERSION);
 
     /**
      * The name of the metric.
@@ -272,4 +271,10 @@ public enum PackageMetrics implements DeviceAppMetrics {
     public String toString() {
         return getName();
     }
+
+    protected static class Constants {
+        protected static final String DP_NAME = "dp.name";
+        protected static final String DP_VERSION = "dp.version";
+    }
+
 }

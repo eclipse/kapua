@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.job.step.definition.internal;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionQuery;
 
 /**
@@ -21,7 +20,7 @@ import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionQuery;
  *
  * @since 1.0
  */
-public class JobStepDefinitionQueryImpl extends AbstractKapuaQuery<JobStepDefinition> implements JobStepDefinitionQuery {
+public class JobStepDefinitionQueryImpl extends AbstractKapuaQuery implements JobStepDefinitionQuery {
 
     /**
      * Constructor

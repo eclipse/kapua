@@ -56,7 +56,7 @@ public interface DomainRegistryService extends KapuaEntityService<Domain, Domain
      * @since 1.0.0
      */
     @Override
-    DomainListResult query(KapuaQuery<Domain> query) throws KapuaException;
+    DomainListResult query(KapuaQuery query) throws KapuaException;
 
     /**
      * Returns the count of the {@link Domain} elements matching the provided query.
@@ -67,7 +67,7 @@ public interface DomainRegistryService extends KapuaEntityService<Domain, Domain
      * @since 1.0.0
      */
     @Override
-    long count(KapuaQuery<Domain> query) throws KapuaException;
+    long count(KapuaQuery query) throws KapuaException;
 
     /**
      * Delete the {@link Domain} by scope id and {@link Domain} id.

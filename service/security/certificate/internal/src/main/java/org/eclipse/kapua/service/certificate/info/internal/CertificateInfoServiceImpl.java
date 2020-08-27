@@ -46,7 +46,7 @@ public class CertificateInfoServiceImpl implements CertificateInfoService {
     }
 
     @Override
-    public CertificateInfoListResult query(KapuaQuery<CertificateInfo> query) throws KapuaException {
+    public CertificateInfoListResult query(KapuaQuery query) throws KapuaException {
         ArgumentValidator.notNull(query, "query");
 
         CertificateQuery certificateQuery = new CertificateQueryImpl(query);
@@ -59,7 +59,7 @@ public class CertificateInfoServiceImpl implements CertificateInfoService {
     }
 
     @Override
-    public long count(KapuaQuery<CertificateInfo> query) throws KapuaException {
+    public long count(KapuaQuery query) throws KapuaException {
         ArgumentValidator.notNull(query, "query");
 
         CertificateQuery privateQuery = new CertificateQueryImpl(query);

@@ -126,7 +126,7 @@ public class JobStepDefinitionServiceImpl
     }
 
     @Override
-    public JobStepDefinitionListResult query(KapuaQuery<JobStepDefinition> query) throws KapuaException {
+    public JobStepDefinitionListResult query(KapuaQuery query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");
@@ -141,7 +141,7 @@ public class JobStepDefinitionServiceImpl
     }
 
     @Override
-    public long count(KapuaQuery<JobStepDefinition> query) throws KapuaException {
+    public long count(KapuaQuery query) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(query, "query");

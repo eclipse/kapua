@@ -44,4 +44,15 @@ public class BrokerDomain extends AbstractDomain {
     public boolean getGroupable() {
         return false;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
 }

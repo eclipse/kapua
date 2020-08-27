@@ -48,7 +48,7 @@ public interface DeviceConnectionService extends KapuaEntityService<DeviceConnec
      * @since 1.0.0
      */
     @Override
-    DeviceConnectionListResult query(KapuaQuery<DeviceConnection> query)
+    DeviceConnectionListResult query(KapuaQuery query)
             throws KapuaException;
 
     /**

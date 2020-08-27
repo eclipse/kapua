@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.device.management.registry.operation.notificat
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationQuery;
 
 /**
@@ -21,7 +20,7 @@ import org.eclipse.kapua.service.device.management.registry.operation.notificati
  *
  * @since 1.0
  */
-public class ManagementOperationNotificationQueryImpl extends AbstractKapuaQuery<ManagementOperationNotification> implements ManagementOperationNotificationQuery {
+public class ManagementOperationNotificationQueryImpl extends AbstractKapuaQuery implements ManagementOperationNotificationQuery {
 
     private ManagementOperationNotificationQueryImpl() {
         super();

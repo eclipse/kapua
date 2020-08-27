@@ -25,41 +25,41 @@ public class Acl {
     public static final Acl WRITE_ADMIN = new Acl(false, true, true);
     public static final Acl READ_ADMIN = new Acl(true, false, true);
 
-    private boolean read;
-    private boolean write;
-    private boolean admin;
+    private boolean readPermission;
+    private boolean writePermission;
+    private boolean adminPermission;
 
-    protected Acl(boolean read, boolean write, boolean admin) {
-        this.read = read;
-        this.write = write;
-        this.admin = admin;
+    protected Acl(boolean readPermission, boolean writePermission, boolean adminPermission) {
+        this.readPermission = readPermission;
+        this.writePermission = writePermission;
+        this.adminPermission = adminPermission;
     }
 
     /**
      * Has read rights
-     * 
+     *
      * @return
      */
     public boolean isRead() {
-        return read;
+        return readPermission;
     }
 
     /**
      * Has write rights
-     * 
+     *
      * @return
      */
     public boolean isWrite() {
-        return write;
+        return writePermission;
     }
 
     /**
      * Has admin rights
-     * 
+     *
      * @return
      */
     public boolean isAdmin() {
-        return admin;
+        return adminPermission;
     }
 
 }

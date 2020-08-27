@@ -13,7 +13,6 @@ package org.eclipse.kapua.service.authorization.role.shiro;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleQuery;
 
 /**
@@ -21,7 +20,7 @@ import org.eclipse.kapua.service.authorization.role.RoleQuery;
  *
  * @since 1.0
  */
-public class RoleQueryImpl extends AbstractKapuaQuery<Role> implements RoleQuery {
+public class RoleQueryImpl extends AbstractKapuaQuery implements RoleQuery {
 
     /**
      * Constructor

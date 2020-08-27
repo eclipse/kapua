@@ -27,7 +27,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.AddButton;
-import org.eclipse.kapua.app.console.module.api.client.ui.button.Button;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.KapuaButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.DeleteButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.EditButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
@@ -73,7 +73,7 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
 
     protected M selectedEntity;
 
-    private List<Button> extraButtons;
+    private List<KapuaButton> extraButtons;
 
     public EntityCRUDToolbar(GwtSession currentSession) {
         this(currentSession, false);
@@ -147,17 +147,17 @@ public class EntityCRUDToolbar<M extends GwtEntityModel> extends ToolBar {
         updateButtonEnablement();
     }
 
-    protected void addExtraButton(Button buttons) {
+    protected void addExtraButton(KapuaButton buttons) {
         getExtraButtons().add(buttons);
     }
 
-    protected void addExtraButtons(List<Button> buttons) {
+    protected void addExtraButtons(List<KapuaButton> buttons) {
         getExtraButtons().addAll(buttons);
     }
 
-    protected List<Button> getExtraButtons() {
+    protected List<KapuaButton> getExtraButtons() {
         if (extraButtons == null) {
-            extraButtons = new ArrayList<Button>();
+            extraButtons = new ArrayList<KapuaButton>();
         }
 
         return extraButtons;

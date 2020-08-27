@@ -37,6 +37,6 @@ public interface TriggerService extends KapuaEntityService<Trigger, TriggerCreat
      * @since 1.0.0
      */
     @Override
-    TriggerListResult query(KapuaQuery<Trigger> query) throws KapuaException;
+    TriggerListResult query(KapuaQuery query) throws KapuaException;
 
 }

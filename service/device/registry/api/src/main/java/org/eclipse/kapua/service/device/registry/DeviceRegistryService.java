@@ -36,7 +36,7 @@ public interface DeviceRegistryService extends KapuaEntityService<Device, Device
      * @since 1.0.0
      */
     @Override
-    DeviceListResult query(KapuaQuery<Device> query) throws KapuaException;
+    DeviceListResult query(KapuaQuery query) throws KapuaException;
 
     /**
      * Finds a device by its unique clientId and loads it with all its properties.

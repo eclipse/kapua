@@ -55,7 +55,7 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
      * @param query
      */
     @Override
-    CredentialListResult query(KapuaQuery<Credential> query)
+    CredentialListResult query(KapuaQuery query)
             throws KapuaException;
 
     /**

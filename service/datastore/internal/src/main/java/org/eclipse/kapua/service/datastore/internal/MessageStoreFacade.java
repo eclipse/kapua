@@ -91,6 +91,10 @@ public final class MessageStoreFacade {
     private final ConfigurationProvider configProvider;
     private DatastoreClient<?> client;
 
+    private static final String QUERY = "query";
+    private static final String QUERY_SCOPE_ID = "query.scopeId";
+    private static final String SCOPE_ID = "scopeId";
+
     /**
      * Constructs the message store facade
      *
@@ -104,7 +108,7 @@ public final class MessageStoreFacade {
         this.mediator = mediator;
         client = DatastoreClientFactory.getInstance();
         MetricsService metricService = MetricServiceFactory.getInstance();
-        metricMessagesAlreadyInTheDatastoreCount = metricService.getCounter(MessageStoreServiceImpl.METRIC_MODULE_NAME, MessageStoreServiceImpl.METRIC_COMPONENT_NAME, "store", "messages", "already_in_the_datastore", "count");
+        metricMessagesAlreadyInTheDatastoreCount = metricService.getCounter(DataStoreDriverMetrics.METRIC_MODULE_NAME, DataStoreDriverMetrics.METRIC_COMPONENT_NAME, DataStoreDriverMetrics.METRIC_STORE, DataStoreDriverMetrics.METRIC_MESSAGES, DataStoreDriverMetrics.METRIC_ALREADY_IN_THE_DATASTORE, DataStoreDriverMetrics.METRIC_COUNT);
     }
 
     /**
@@ -121,7 +125,7 @@ public final class MessageStoreFacade {
             ConfigurationException,
             ClientException {
         ArgumentValidator.notNull(message, "message");
-        ArgumentValidator.notNull(message.getScopeId(), "scopeId");
+        ArgumentValidator.notNull(message.getScopeId(), SCOPE_ID);
         ArgumentValidator.notNull(message.getReceivedOn(), "receivedOn");
         ArgumentValidator.notNull(messageId, "messageId");
 
@@ -207,7 +211,7 @@ public final class MessageStoreFacade {
             throws KapuaIllegalArgumentException,
             ConfigurationException,
             ClientException {
-        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(id, "id");
 
         MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(scopeId);
@@ -245,7 +249,7 @@ public final class MessageStoreFacade {
     public DatastoreMessage find(KapuaId scopeId, StorableId id, StorableFetchStyle fetchStyle)
             throws KapuaIllegalArgumentException, ClientException {
 
-        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(id, "id");
         ArgumentValidator.notNull(fetchStyle, "fetchStyle");
 
@@ -275,8 +279,8 @@ public final class MessageStoreFacade {
             throws KapuaIllegalArgumentException,
             ConfigurationException,
             ClientException {
-        ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
+        ArgumentValidator.notNull(query, QUERY);
+        ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
         MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
@@ -308,8 +312,8 @@ public final class MessageStoreFacade {
             throws KapuaIllegalArgumentException,
             ConfigurationException,
             ClientException {
-        ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
+        ArgumentValidator.notNull(query, QUERY);
+        ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
         MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
@@ -339,8 +343,8 @@ public final class MessageStoreFacade {
             throws KapuaIllegalArgumentException,
             ConfigurationException,
             ClientException {
-        ArgumentValidator.notNull(query, "query");
-        ArgumentValidator.notNull(query.getScopeId(), "query.scopeId");
+        ArgumentValidator.notNull(query, QUERY);
+        ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
         MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();

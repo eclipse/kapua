@@ -101,7 +101,7 @@ public class DeviceManagementOperationDAO {
      * @return
      * @throws KapuaException
      */
-    public static DeviceManagementOperationListResult query(EntityManager em, KapuaQuery<DeviceManagementOperation> query)
+    public static DeviceManagementOperationListResult query(EntityManager em, KapuaQuery query)
             throws KapuaException {
         return ServiceDAO.query(em, DeviceManagementOperation.class, DeviceManagementOperationImpl.class, new DeviceManagementOperationListResultImpl(), query);
     }
@@ -114,7 +114,7 @@ public class DeviceManagementOperationDAO {
      * @return
      * @throws KapuaException
      */
-    public static long count(EntityManager em, KapuaQuery<DeviceManagementOperation> query)
+    public static long count(EntityManager em, KapuaQuery query)
             throws KapuaException {
         return ServiceDAO.count(em, DeviceManagementOperation.class, DeviceManagementOperationImpl.class, query);
     }
