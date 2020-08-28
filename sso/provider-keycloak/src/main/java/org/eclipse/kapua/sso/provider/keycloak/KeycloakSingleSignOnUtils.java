@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso.provider.keycloak;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.sso.exception.SsoIllegalArgumentException;
 import org.eclipse.kapua.sso.exception.uri.SsoIllegalUriException;
 import org.eclipse.kapua.sso.provider.keycloak.setting.KeycloakSsoSetting;
@@ -35,7 +36,7 @@ public class KeycloakSingleSignOnUtils {
      */
     public static String getRealm() throws SsoIllegalArgumentException {
         String realm = KEYCLOAK_SSO_SETTING.getString(KeycloakSsoSettingKeys.KEYCLOAK_REALM);
-        if (realm == null || realm.isEmpty()) {
+        if (Strings.isNullOrEmpty(realm)) {
             throw new SsoIllegalArgumentException(KeycloakSsoSettingKeys.KEYCLOAK_REALM.key(), realm);
         }
         return realm;
@@ -49,7 +50,7 @@ public class KeycloakSingleSignOnUtils {
      */
     public static String getProviderUri() throws SsoIllegalUriException {
         String providerUri = KEYCLOAK_SSO_SETTING.getString(KeycloakSsoSettingKeys.KEYCLOAK_URI);
-        if (providerUri == null || providerUri.isEmpty()) {
+        if (Strings.isNullOrEmpty(providerUri)) {
             throw new SsoIllegalUriException(KeycloakSsoSettingKeys.KEYCLOAK_URI.key(), providerUri);
         }
         return providerUri;

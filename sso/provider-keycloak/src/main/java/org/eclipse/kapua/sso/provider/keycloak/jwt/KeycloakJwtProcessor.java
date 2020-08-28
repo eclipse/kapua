@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso.provider.keycloak.jwt;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.kapua.sso.exception.SsoException;
 import org.eclipse.kapua.sso.exception.SsoIllegalArgumentException;
 import org.eclipse.kapua.sso.provider.jwt.AbstractJwtProcessor;
@@ -41,9 +42,8 @@ public class KeycloakJwtProcessor extends AbstractJwtProcessor {
     @Override
     protected List<String> getJwtAudiences() throws SsoIllegalArgumentException {
         List<String> jwtAudiences = SSO_SETTING.getList(String.class, SsoSettingKeys.SSO_OPENID_CLIENT_ID);
-        if (jwtAudiences == null || jwtAudiences.isEmpty()) {
-            throw new SsoIllegalArgumentException(SsoSettingKeys.SSO_OPENID_CLIENT_ID.key(),
-                    (jwtAudiences == null ? null : "") );
+        if (CollectionUtils.isEmpty(jwtAudiences)) {
+            throw new SsoIllegalArgumentException(SsoSettingKeys.SSO_OPENID_CLIENT_ID.key(), (jwtAudiences == null ? null : "") );
         }
         return jwtAudiences;
     }
