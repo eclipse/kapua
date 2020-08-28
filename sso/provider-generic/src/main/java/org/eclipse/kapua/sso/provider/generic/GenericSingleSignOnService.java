@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso.provider.generic;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.sso.exception.SsoException;
 import org.eclipse.kapua.sso.exception.SsoIllegalArgumentException;
 import org.eclipse.kapua.sso.exception.uri.SsoIllegalUriException;
@@ -48,14 +49,10 @@ public class GenericSingleSignOnService extends AbstractSingleSignOnService {
     protected String getAuthUri() throws SsoException {
         try {
             final Optional<URI> uri = SingleSignOnUtils.getConfigUri(AUTH_WELL_KNOWN_KEY, getOpenIdConfPath());
-            if (uri.isPresent()) {
-                return uri.get().toString();
-            } else {
-                throw new SsoIllegalUriException(AUTH_WELL_KNOWN_KEY, null);
-            }
+            return uri.orElseThrow(() -> new SsoIllegalUriException(AUTH_WELL_KNOWN_KEY, null)).toString();
         } catch (SsoException se) {
             String authUri = genericSettings.getString(GenericSsoSettingKeys.SSO_OPENID_SERVER_ENDPOINT_AUTH);
-            if (authUri == null || authUri.isEmpty()) {
+            if (Strings.isNullOrEmpty(authUri)) {
                 throw se;
             }
             return authUri;
@@ -66,14 +63,10 @@ public class GenericSingleSignOnService extends AbstractSingleSignOnService {
     protected String getTokenUri() throws SsoException {
         try {
             final Optional<URI> uri = SingleSignOnUtils.getConfigUri(TOKEN_WELL_KNOWN_KEY, getOpenIdConfPath());
-            if (uri.isPresent()) {
-                return uri.get().toString();
-            } else {
-                throw new SsoIllegalUriException(TOKEN_WELL_KNOWN_KEY, null);
-            }
+            return uri.orElseThrow(() -> new SsoIllegalUriException(TOKEN_WELL_KNOWN_KEY, null)).toString();
         } catch (SsoException se) {
             String tokenUri = genericSettings.getString(GenericSsoSettingKeys.SSO_OPENID_SERVER_ENDPOINT_TOKEN);
-            if (tokenUri == null || tokenUri.isEmpty()) {
+            if (Strings.isNullOrEmpty(tokenUri)) {
                 throw se;
             }
             return tokenUri;
@@ -84,14 +77,10 @@ public class GenericSingleSignOnService extends AbstractSingleSignOnService {
     protected String getLogoutUri() throws SsoException {
         try {
             final Optional<URI> uri = SingleSignOnUtils.getConfigUri(LOGOUT_WELL_KNOWN_KEY, getOpenIdConfPath());
-            if (uri.isPresent()) {
-                return uri.get().toString();
-            } else {
-                throw new SsoIllegalUriException(LOGOUT_WELL_KNOWN_KEY, null);
-            }
+            return uri.orElseThrow(() -> new SsoIllegalUriException(LOGOUT_WELL_KNOWN_KEY, null)).toString();
         } catch (SsoException se) {
             String logoutUri = genericSettings.getString(GenericSsoSettingKeys.SSO_OPENID_SERVER_ENDPOINT_LOGOUT);
-            if (logoutUri == null || logoutUri.isEmpty()) {
+            if (Strings.isNullOrEmpty(logoutUri)) {
                 throw se;
             }
             return logoutUri;
@@ -106,7 +95,7 @@ public class GenericSingleSignOnService extends AbstractSingleSignOnService {
      */
     private String getOpenIdConfPath() throws SsoIllegalArgumentException {
         String issuerUri = genericSettings.getString(GenericSsoSettingKeys.SSO_OPENID_JWT_ISSUER_ALLOWED);
-        if (issuerUri == null || issuerUri.isEmpty()) {
+        if (Strings.isNullOrEmpty(issuerUri)) {
             throw new SsoIllegalUriException(GenericSsoSettingKeys.SSO_OPENID_JWT_ISSUER_ALLOWED.key(), issuerUri);
         }
         return SingleSignOnUtils.getOpenIdConfPath(issuerUri);

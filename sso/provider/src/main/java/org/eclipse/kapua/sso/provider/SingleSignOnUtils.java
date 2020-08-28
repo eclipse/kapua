@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso.provider;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.sso.exception.SsoIllegalArgumentException;
 import org.eclipse.kapua.sso.exception.uri.SsoIllegalUriException;
 import org.eclipse.kapua.sso.exception.uri.SsoJwtUriException;
@@ -98,7 +99,7 @@ public final class SingleSignOnUtils {
      */
     public static String getOpenIdConfPath(String issuer) throws SsoIllegalArgumentException {
         String openIDConfPathSuffix = SsoSetting.getInstance().getString(SsoSettingKeys.SSO_OPENID_CONF_PATH, DEFAULT_SSO_OPENID_CONF_PATH);
-        if (openIDConfPathSuffix == null || openIDConfPathSuffix.isEmpty()) {
+        if (Strings.isNullOrEmpty(openIDConfPathSuffix)) {
             throw new SsoIllegalArgumentException(SsoSettingKeys.SSO_OPENID_CONF_PATH.key(), openIDConfPathSuffix);
         }
         String openIdConfPath = issuer + "/" + openIDConfPathSuffix;
