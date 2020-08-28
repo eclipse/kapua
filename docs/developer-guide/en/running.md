@@ -37,7 +37,7 @@ To stop Kapua, run
 
 ## OpenShift
 
-OpenShift is a PaaS (Platform As A Service) platform based on Kubernetes. Kapua support deployments into [OpenShift Origin](https://www.openshift.org),
+OpenShift is a PaaS (Platform As A Service) platform based on Kubernetes. Kapua supports deployments into [OpenShift Origin](https://www.openshift.org),
 which is an open source community project. Origin sources, can be found [here](https://www.openshift.org/). We support Kapua on OpenShift Origin **1.4.1**.
 
 Currently we support running OpenShift only on Linux OS. If you would like to run Kapua on Mac OS or on Windows for development purposes, please install Linux
