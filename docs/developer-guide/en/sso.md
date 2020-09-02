@@ -20,10 +20,10 @@ The current default providers are:
 Each provider will require additional configuration options. But there is a set of common configuration
 options:
 
-- **`sso.openid.client.id`** : 
-    the "client id" used when communicating with the OpenID Connect server.
-- **`sso.openid.client.secret` (optional)** : 
-    the "client secret" used when communicating with the OpenID Connect server.
+- **`sso.openid.client.id`** : the "client id" used when communicating with the OpenID Connect server.
+- **`sso.openid.client.secret` (optional)** : the "client secret" used when communicating with the OpenID Connect server.
+- **`sso.openid.conf.wellknown.path` (optional)** : to provide a custom OpenID well-known suffix (the default one is `.well-known/openid-configuration` and 
+    it's attached as suffix to the issuer).
 - **`sso.openid.jwt-processor-timeout` (optional)** : the JwtProcessor expiration time (the default value is 1 hour).
 
 It is also necessary to configure the Web Console external endpoint address.
@@ -35,14 +35,33 @@ The SSO Login will be available in the form of a dedicated button on the Kapua l
 
 ### Generic provider
 
-The following values are specific to your OpenID Connection solution, please use its
-documentation to look up the required values:
+The generic provider configuration values are retrieved through the `well-known` OpenID configuration document provided by the OpenID Provider 
+(see the official [OpenID Connect Discovery specification](https://openid.net/specs/openid-connect-discovery-1_0.html) for further information).
+The `issuer` is the only required parameter. However, custom parameters can be added through the following properties, and are used in case the automatic 
+configuration through the `well-known` document fails.
+The required values are specific to your OpenID Connect solution, please use its documentation to look up the required values:
 
-- **`sso.generic.openid.server.endpoint.auth`** : the endpoint URL to the authentication API.
-- **`sso.generic.openid.server.endpoint.logout`** : the logout endpoint of the OpenID provider.
-- **`sso.generic.openid.server.endpoint.token`** : the endpoint URL to the token API.
-- **`sso.generic.openid.jwt.audience.allowed`** : the JWT audience.
 - **`sso.generic.openid.jwt.issuer.allowed`** : the base URL to the OpenID server provider.
+- **`sso.generic.openid.jwt.audience.allowed`** : the JWT audience.
+- **`sso.generic.openid.server.endpoint.auth` (optional)** : the endpoint URL to the authentication API.
+- **`sso.generic.openid.server.endpoint.logout`(optional)** : the logout endpoint of the OpenID provider.
+- **`sso.generic.openid.server.endpoint.token` (optional)** : the endpoint URL to the token API.
+
+#### Note about 'client id' and 'audience' values
+
+Properties `sso.openid.client.id` and `sso.generic.openid.jwt.audience.allowed` (the second property is used only for the `generic` provider) 
+basically represent the same value.
+More precisely, `sso.openid.client.id` is used as parameter in the requests to the OpenID Provider, while `sso.generic.openid.jwt.audience.allowed` is used by 
+the `JwtProcessor` in order to validate the token received from the OpenID Provider. These two should correspond to the same `clientId`.
+
+According to the official OpenID Connect specification (see [here](https://openid.net/specs/openid-connect-core-1_0.html#IDToken) and 
+[here](https://openid.net/specs/openid-connect-core-1_0.html#IDTokenValidation)), the `audience` contains a list of allowed `client_id`. 
+The token can contain a list of audiences (described by the `aud` claim). 
+When the token is received, we need to validate that the audience contains the `client_id` corresponding to the Kapua Console. 
+Only one `client_id` corresponds to the Kapua Console (if multiple client_ids are present in the audience, they correspond to other clients).
+
+However, some OpenID Provider implementations are using different values between clientId and audience, thus the only way to make them work is to use two 
+different values for these properties (also, please note that the `generic-provider` should be the most 'permissive' provider). 
 
 ### Keycloak provider
 
