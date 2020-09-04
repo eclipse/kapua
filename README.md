@@ -2,9 +2,15 @@
 
 # Eclipse Kapua&trade;
 
-[![Build Status](https://travis-ci.org/eclipse/kapua.svg?branch=develop)](https://travis-ci.org/eclipse/kapua/branches)
-[![Hudson](https://img.shields.io/jenkins/s/https/hudson.eclipse.org/kapua/job/Develop.svg)](https://hudson.eclipse.org/kapua/job/develop)
+![Travis (.org)](https://img.shields.io/travis/eclipse/kapua?label=Travis%20build)
+![Jenkins](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fhudson.eclipse.org%2Fkapua%2Fjob%2Fdevelop&label=Jenkins%20build)
 [![Gitter](https://badges.gitter.im/eclipse/kapua.svg)](https://gitter.im/eclipse/kapua?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+![GitHub issues](https://img.shields.io/github/issues-raw/eclipse/kapua?color=success)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/eclipse/kapua?color=blue)
+![GitHub](https://img.shields.io/github/license/eclipse/kapua?color=yellow)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/eclipse/kapua)
+![GitHub contributors](https://img.shields.io/github/contributors/eclipse/kapua)
+![GitHub forks](https://img.shields.io/github/forks/eclipse/kapua?style=social)
 
 [Eclipse Kapua&trade;](http://eclipse.org/kapua) is a modular platform providing the services required to manage IoT gateways and smart edge devices. Kapua provides a core integration framework and an initial set of core IoT services including a device registry, device management services, messaging services, data management, and application enablement.
 
@@ -44,7 +50,7 @@ The team maintains some docker images in a Docker Hub repository at [Kapua Repos
 
 Suppose the target is the current snapshot 1.3.0-SNAPSHOT.
 
-* Clone Eclipse Kapua into a local directory
+* Clone Eclipse Kapua&trade; into a local directory
 * Open an OS shell and move to Kapua project root directory
 * Start Docker runtime
 * Start Kapua:
@@ -63,7 +69,7 @@ On Windows (PowerShell):
 
 The command starts all the Kapua containers using Docker Compose.
 
-By default, the `latest` version of images will be used. If you want to run some other version of Kapua, set the `IMAGE_VERSION` environment variable, like
+By default, the `latest` version of images will be used. If you want to run some other version of Kapua, set the `IMAGE_VERSION` environment variable, for example:
 
 ```bash
     export IMAGE_VERSION=0.2.0
@@ -93,9 +99,9 @@ On Windows (PowerShell):
 
 ### Access
 
-Once the containers are running, the Kapua services can be accessed. Kapua is a multi tenant
+Once the containers are running, the Kapua services can be accessed. Eclipse Kapua&trade; is a multi tenant
 system. The demo installation comes with one default tenant, called _kapua-sys_, which is also the root tenant. 
-In Eclipse Kapua a _tenant_ is commonly referred to as an _account_.
+In Eclipse Kapua&trade; a _tenant_ is commonly referred to as an _account_.
 
 #### The console
 
@@ -154,9 +160,9 @@ the IP address of your docker instance.
 #### The Broker
 
 The broker container exposes an [Mqtt](http://mqtt.org/) end point at tcp://localhost:1883/.
-The broker can be accessed through either [Eclipse Kura](http://www.eclipse.org/kura/) or a plain Mqtt client like, for example, [Eclipse Paho](http://www.eclipse.org/paho/).
+The broker can be accessed through either [Eclipse Kura&trade;](http://www.eclipse.org/kura/) or a plain Mqtt client like, for example, [Eclipse Paho&trade;](http://www.eclipse.org/paho/).
 
-In order for a client to establish an Mqtt connection with the broker, a client must provide a valid identity. The _kapua-sys_ account provides the user named _kapua-broker_ which has been pre-seeded and profiled for the purpose.
+In order for a client to establish a Mqtt connection with the broker, a client must provide a valid identity. The _kapua-sys_ account provides the user named _kapua-broker_ which has been pre-seeded and profiled for the purpose.
 
 The credentials for the user kapua-broker are the following:
 
@@ -173,7 +179,7 @@ the IP address of your docker instance.
 Kapua comes with a framework that you can use to simulate Kura gateways. It can be used to test your Kapua deployments easily. See [Simulator documentation](docs/user-manual/en/simulator.md) for more info.
 
 #### More deployment info
-Installing and running a demo using Docker is easy but it's not the only way. There are other scenarios that the users may be interested to. We provide advanced setup scenarios in the following guides:
+Installing and running a demo using Docker is easy, but it's not the only way. There are other scenarios that the users may be interested in. We provide advanced setup scenarios in the following guides:
 
 * [Running with Docker](deployment/docker/README.md)
 * [Running with OpenShift](docs/developer-guide/en/running.md#openshift)
@@ -192,8 +198,8 @@ If you're interested to get involved in IoT and Eclipse Kapua&trade; project, jo
 
 ### Community
 
-- [Eclipse Kapua Gitter Room](https://gitter.im/eclipse/kapua)
-- [Eclipse Kapua Forum](https://www.eclipse.org/forums/index.php?t=thread&frm_id=340)
+- [Eclipse Kapua&trade; Gitter Room](https://gitter.im/eclipse/kapua)
+- [Eclipse Kapua&trade; Forum](https://www.eclipse.org/forums/index.php?t=thread&frm_id=340)
 
 ### Acknowledgments
 
@@ -204,5 +210,5 @@ Thanks to YourKit for providing us an open source license of YourKit Java Profil
 YourKit supports open source projects with innovative and intelligent tools
 for monitoring and profiling Java and .NET applications.
 YourKit is the creator of [YourKit Java Profiler](https://www.yourkit.com/java/profiler/),
-[YourKit .NET Profiler](https://www.yourkit.com/.net/profiler/)</a>,
+[YourKit .NET Profiler](https://www.yourkit.com/.net/profiler/),
 and [YourKit YouMonitor](https://www.yourkit.com/youmonitor/).
