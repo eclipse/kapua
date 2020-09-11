@@ -153,3 +153,170 @@ Feature: Translator Service
     And I try to translate kura data message to mqtt message
     Then I get mqtt message with channel with scope "kapua-sys", client id "rpione3" and non empty body
     And No exception was thrown
+
+    #TranslatorDataMqttKura
+
+  Scenario: Translating of mqtt message with invalid payload and invalid topic into kura data message
+  Creating mqtt message with invalid payload and invalid topic that contain accountName only. Trying to translate it into kura data message.
+  Invalid channel exception should be thrown.
+
+    Given I create mqtt message with valid payload "invalidPayload" and invalid topic "kapua-sys"
+    And I expect the exception "InvalidChannelException" with the text "Invalid channel: kapua-sys"
+    When I try to translate mqtt message to kura data message
+    Then An exception was thrown
+
+  Scenario: Translating of mqtt message with invalid payload and with null topic into kura data message
+  Creating mqtt message with invalid payload and invalid "null" MqttMessage. Trying to translate it into kura data message.
+  Invalid message exception should be thrown.
+
+    Given I create mqtt message with valid payload "invalidPayload" and valid topic "kapua-sys/rpione3/DEPLOY-V2/GET"
+    And I expect the exception "InvalidMessageException" with the text "Invalid message: null"
+    When I try to translate mqtt null message to kura data message
+    Then An exception was thrown
+
+  #TranslatorDataKuraMqtt
+
+  Scenario: Translating kura data message with valid channel and with null payload
+  Creating kura data message with valid channel and with null payload. Trying to translate it into mqtt message.
+  Invalid payload exception should be thrown.
+
+    Given I create kura data message with channel with scope "kapua-sys", client id "rpione3" and null payload
+    And I expect the exception "InvalidPayloadException" with the text "Invalid payload: null"
+    When I try to translate kura data message to mqtt message
+    Then An exception was thrown
+
+
+  Scenario: Translating kura data message with valid channel, metrics and without body into mqtt message
+  Creating kura data message with valid channel, metrics and without body. Trying to translate it into mqtt message.
+  Invalid channel exception should be thrown.
+
+    Given I create kura data message with null channel and payload without body and with metrics
+    And I expect the exception "InvalidChannelException" with the text "Invalid channel: null"
+    When I try to translate kura data message to mqtt message
+    Then An exception was thrown
+
+  Scenario: Translating invalid kura data message with valid channel, body and metrics into mqtt message
+  Creating null kura data message with valid channel, body and metrics. Trying to translate it into invalid mqtt message.
+  Check if mqtt message with valid topic and encoded body is received.
+  Invalid message exception should be thrown
+
+    Given I create kura data message with channel with scope "kapua-sys", client id "rpione3" and payload with body and metrics
+    And I expect the exception "InvalidMessageException" with the text "Invalid message: null"
+    When I try to translate invalid kura data message to mqtt message
+    Then An exception was thrown
+
+  #TranslatorDataJmsKura
+
+  Scenario: Translating of jms message with invalid payload and valid topic into kura data message
+  Creating jms message with invalid payload and valid topic. Trying to translate it into kura data message.
+  Check if jms message with valid topic and encoded payload body is received.
+
+    Given I create jms message with invalid payload "invalidPayload" and valid topic "kapua-sys.rpione3.DEPLOY-V2.GET.packages"
+    When I try to translate jms message to kura data message
+    Then I got kura data message channel with "kapua-sys" scope, "rpione3" client id and proper semanticPart
+      | DEPLOY-V2    |
+      | GET          |
+      | packages     |
+    And I got kura data message with "byte[]" payload body
+    And No exception was thrown
+
+  Scenario: Translating of jms message with valid payload and valid topic into kura data message
+  Creating jms message with valid payload and valid topic. Trying to translate it into kura data message.
+  Check if jms message with valid topic and encoded payload body is received.
+
+    Given I create jms message with valid payload "response.code" and valid topic "kapua-sys.rpione3.DEPLOY-V2.GET.packages"
+    When I try to translate jms message to kura data message
+    Then I got kura data message channel with "kapua-sys" scope, "rpione3" client id and proper semanticPart
+      | DEPLOY-V2    |
+      | GET          |
+      | packages     |
+    And I got kura data message with proper payload metrics response code 200
+    And No exception was thrown
+
+  Scenario: Translating of jms message with empty payload and valid topic into kura data message
+  Creating jms message with empty payload and valid topic. Trying to translate it into kura data message.
+  Check if jms message with valid topic and empty payload body is received.
+
+    Given I create jms message with empty payload "" and valid topic "kapua-sys.rpione3.DEPLOY-V2.GET.packages"
+    And I try to translate jms message to kura data message
+    And I got kura data message channel with "kapua-sys" scope, "rpione3" client id and proper semanticPart
+      | DEPLOY-V2    |
+      | GET          |
+      | packages     |
+    Then I got kura data message with empty payload
+    And No exception was thrown
+
+  Scenario: Translating of jms message with empty payload and invalid topic that contain only userName into kura data message
+  Creating jms message with empty payload and invalid topic. Trying to translate it into kura data message.
+  Invalid channel exception should be thrown.
+
+    Given I create jms message with empty payload "" and valid topic "kapua-sys"
+    Then I expect the exception "InvalidChannelException" with the text " Invalid channel: kapua-sys"
+    When I try to translate jms message to kura data message
+    And An exception was thrown
+
+  Scenario: Translating invalid jms data message with valid channel, body and metrics into kura data message
+  Creating null jms message with valid channel, body and metrics. Trying to translate it into invalid jms message.
+  Check if mqtt message with valid topic and encoded body is received.
+  Invalid message exception should be thrown
+
+    Given I create jms message with valid payload "response.code" and valid topic "kapua-sys.rpione3.DEPLOY-V2.GET.packages"
+    Then I expect the exception "InvalidMessageException" with the text "Invalid message: null"
+    When I try to translate invalid jms message to kura data message
+    And An exception was thrown
+
+  #TranslatorDataKuraJms
+
+  Scenario: Translating kura data message with valid channel and without body and metrics into jms message
+  Creating kura data message with valid channel and without body and metrics. Trying to translate it into jms message.
+  Check if jms message with valid topic and empty payload body is received.
+
+    Given I create kura data message with channel with scope "kapua-sys", client id "rpione3" and payload without body and metrics
+    When I try to translate kura data message to jms message
+    Then I got jms message with topic "kapua-sys.rpione3" and empty body
+    And No exception was thrown
+
+  Scenario: Translating kura data message with valid channel, metrics and without body into jms message
+  Creating kura data message with valid channel, metrics and without body. Trying to translate it into jms message.
+  Check if jms message with valid topic and encoded payload body is received.
+
+    Given I create kura data message with channel with scope "kapua-sys", client id "rpione3" and payload without body and metrics
+    When I try to translate kura data message to jms message
+    Then I got jms message with topic "kapua-sys.rpione3" and non empty body
+    And No exception was thrown
+
+  Scenario: Translating kura data message with valid channel, body and metrics into jms message
+  Creating kura data message with valid channel, body and metrics. Trying to translate it into jms message.
+  Check if jms message with valid topic and encoded payload body is received.
+
+    Given I create kura data message with channel with scope "kapua-sys", client id "rpione3" and payload with body and metrics
+    When I try to translate kura data message to jms message
+    Then I got jms message with topic "kapua-sys.rpione3" and non empty body
+    And No exception was thrown
+
+  Scenario: Translating kura data message with valid channel, and with null payload
+  Creating kura data message with valid channel and with "null" payload Trying to translate it into jms message.
+  Invalid payload exception should be thrown.
+
+    Given I create kura data message with channel with scope "kapua-sys", client id "rpione3" and null payload
+    Then I expect the exception "InvalidPayloadException" with the text "Invalid payload: null"
+    When I try to translate kura data message to jms message
+    And An exception was thrown
+
+  Scenario: Translating kura data message with null channel, and payload without body and with metrics
+  Creating kura data message with "null" channel and with valid payload without body and metrics. Trying to translate it into jms message.
+  Invalid channel exception should be thrown.
+
+    Given I create kura data message with null channel and payload without body and with metrics
+    Then I expect the exception "InvalidChannelException" with the text "Invalid channel: null"
+    When I try to translate kura data message to jms message
+    And An exception was thrown
+
+  Scenario: Translating invalid kura data message with valid channel, body and metrics into jms message
+  Creating "null" kura data message with valid channel, body and metrics. Trying to translate it into jms message.
+  Invalid message exception should be thrown.
+
+    Given I create kura data message with channel with scope "kapua-sys", client id "rpione3" and payload with body and metrics
+    Then I expect the exception "InvalidMessageException" with the text "Invalid message: null"
+    When I try to translate invalid kura data message to jms message
+    And An exception was thrown
