@@ -10,14 +10,14 @@
  *      Eurotech - initial API and implementation
  *      Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.commons.model;
+package org.eclipse.kapua.commons.model.id;
 
 import java.math.BigInteger;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceSchemaUtils;
 import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
-import org.eclipse.kapua.commons.model.id.IdGenerator;
+import org.eclipse.kapua.commons.model.AbstractCommonServiceTest;
 import org.eclipse.kapua.commons.model.misc.CollisionEntity;
 import org.eclipse.kapua.commons.model.misc.CollisionIdGenerator;
 import org.eclipse.kapua.commons.model.misc.CollisionServiceImpl;
@@ -40,9 +40,9 @@ import org.slf4j.LoggerFactory;
  *
  */
 @Category(JUnitTests.class)
-public class KapuaIdGeneratorTest extends AbstractCommonServiceTest {
+public class IdGeneratorTest extends AbstractCommonServiceTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KapuaIdGeneratorTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(IdGeneratorTest.class);
 
     public static final String DEFAULT_TEST_PATH = "./src/test/sql/H2/";
     public static final String DEFAULT_TEST_FILTER = "test_*.sql";
