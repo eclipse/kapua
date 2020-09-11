@@ -40,6 +40,7 @@ public class RestApisApplication extends ResourceConfig {
         mappedMediaTypes.put("json", MediaType.APPLICATION_JSON_TYPE);
 
         property(ServerProperties.MEDIA_TYPE_MAPPINGS, mappedMediaTypes);
+        property(ServerProperties.WADL_FEATURE_DISABLE, true);
         register(UriConnegFilter.class);
         register(JaxbContextResolver.class);
         register(RestApiJAXBContextProvider.class);
