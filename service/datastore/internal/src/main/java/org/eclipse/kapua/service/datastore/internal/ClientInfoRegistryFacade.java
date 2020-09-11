@@ -107,7 +107,7 @@ public class ClientInfoRegistryFacade {
                         response = getElasticsearchClient().upsert(request);
 
                         LOG.debug("Upsert on asset successfully executed [{}.{}, {} - {}]", kapuaIndexName, ClientInfoSchema.CLIENT_TYPE_NAME, response.getId(), response.getId());
-                        }
+                    }
                     // Update cache if client update is completed successfully
                     DatastoreCacheManager.getInstance().getClientsCache().put(clientInfo.getClientId(), true);
                 }
@@ -248,7 +248,7 @@ public class ClientInfoRegistryFacade {
         getElasticsearchClient().deleteByQuery(typeDescriptor, query);
     }
 
-    private ElasticsearchClient<?> getElasticsearchClient() throws ClientInitializationException {
+    private ElasticsearchClient<?> getElasticsearchClient() throws ClientInitializationException, ClientUnavailableException {
         return DatastoreClientFactory.getElasticsearchClient();
     }
 }

@@ -137,13 +137,13 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         Response insertResponse = restCallTimeoutHandler(() -> getClient()
                 .performRequest(
                         ElasticsearchKeywords.ACTION_POST,
-                getInsertTypePath(insertRequest),
-                Collections.emptyMap(),
+                        getInsertTypePath(insertRequest),
+                        Collections.emptyMap(),
                         EntityBuilder.create()
                                 .setText(json)
                                 .setContentType(ContentType.APPLICATION_JSON)
                                 .build(),
-                new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), insertRequest.getTypeDescriptor().getIndex(), "INSERT");
+                        new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), insertRequest.getTypeDescriptor().getIndex(), "INSERT");
 
         if (isRequestSuccessful(insertResponse)) {
             JsonNode responseNode;
@@ -180,13 +180,13 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         Response updateResponse = restCallTimeoutHandler(() -> getClient()
                 .performRequest(
                         ElasticsearchKeywords.ACTION_POST,
-                getUpsertPath(updateRequest.getTypeDescriptor(), updateRequest.getId()),
-                Collections.emptyMap(),
+                        getUpsertPath(updateRequest.getTypeDescriptor(), updateRequest.getId()),
+                        Collections.emptyMap(),
                         EntityBuilder.create()
                                 .setText(json)
                                 .setContentType(ContentType.APPLICATION_JSON)
                                 .build(),
-                new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), updateRequest.getTypeDescriptor().getIndex(), "UPSERT");
+                        new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), updateRequest.getTypeDescriptor().getIndex(), "UPSERT");
 
         if (isRequestSuccessful(updateResponse)) {
             JsonNode responseNode;
@@ -229,13 +229,13 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         Response updateResponse = restCallTimeoutHandler(() -> getClient()
                 .performRequest(
                         ElasticsearchKeywords.ACTION_POST,
-                getBulkPath(),
-                Collections.emptyMap(),
+                        getBulkPath(),
+                        Collections.emptyMap(),
                         EntityBuilder.create()
                                 .setText(bulkOperation.toString())
                                 .setContentType(ContentType.APPLICATION_JSON)
                                 .build(),
-                new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), "multi-index", "UPSERT BULK");
+                        new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), "multi-index", "UPSERT BULK");
 
         if (isRequestSuccessful(updateResponse)) {
             BulkUpdateResponse bulkResponse = new BulkUpdateResponse();
@@ -286,7 +286,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         ResultList<T> result = query(typeDescriptor, query, clazz);
 
         return result.getResult().isEmpty() ? null : result.getResult().get(0);
-        }
+    }
 
     @Override
     public <T> ResultList<T> query(TypeDescriptor typeDescriptor, Object query, Class<T> clazz) throws ClientException {
@@ -299,13 +299,13 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                 getClient()
                         .performRequest(
                                 ElasticsearchKeywords.ACTION_GET,
-                getSearchPath(typeDescriptor),
-                Collections.emptyMap(),
+                                getSearchPath(typeDescriptor),
+                                Collections.emptyMap(),
                                 EntityBuilder.create()
                                         .setText(objectMapper.writeValueAsString(queryMap))
                                         .setContentType(ContentType.APPLICATION_JSON)
                                         .build(),
-                new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "QUERY");
+                                new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "QUERY");
 
         if (isRequestSuccessful(queryResponse)) {
             JsonNode responseNode;
@@ -352,13 +352,13 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                 getClient()
                         .performRequest(
                                 ElasticsearchKeywords.ACTION_GET,
-                getSearchPath(typeDescriptor),
-                Collections.emptyMap(),
+                                getSearchPath(typeDescriptor),
+                                Collections.emptyMap(),
                                 EntityBuilder.create()
                                         .setText(objectMapper.writeValueAsString(queryMap))
                                         .setContentType(ContentType.APPLICATION_JSON)
                                         .build(),
-                new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "COUNT");
+                                new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "COUNT");
 
         if (isRequestSuccessful(queryResponse)) {
             JsonNode responseNode;
@@ -389,8 +389,8 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                                         getIdPath(typeDescriptor, id),
                                         Collections.emptyMap()
                                 ),
-                        typeDescriptor.getIndex(),
-                        ElasticsearchKeywords.ACTION_DELETE);
+                typeDescriptor.getIndex(),
+                ElasticsearchKeywords.ACTION_DELETE);
 
         if (deleteResponse != null && !isRequestSuccessful(deleteResponse)) {
             throw buildExceptionFromUnsuccessfulResponse("Delete", deleteResponse);
@@ -406,10 +406,10 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                 ElasticsearchKeywords.ACTION_POST,
                 getDeleteByQueryPath(typeDescriptor),
                 Collections.emptyMap(),
-                                EntityBuilder.create()
-                                        .setText(objectMapper.writeValueAsString(queryMap))
-                                        .setContentType(ContentType.APPLICATION_JSON)
-                                        .build(),
+                EntityBuilder.create()
+                        .setText(objectMapper.writeValueAsString(queryMap))
+                        .setContentType(ContentType.APPLICATION_JSON)
+                        .build(),
                 new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "DELETE BY QUERY");
 
         if (deleteResponse != null && !isRequestSuccessful(deleteResponse)) {
@@ -424,7 +424,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                         getClient()
                                 .performRequest(
                                         ElasticsearchKeywords.ACTION_HEAD,
-                getIndexPath(indexRequest.getIndex()),
+                                        getIndexPath(indexRequest.getIndex()),
                                         Collections.emptyMap()
                                 ),
                 indexRequest.getIndex(),
@@ -448,7 +448,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                         getClient()
                                 .performRequest(
                                         ElasticsearchKeywords.ACTION_GET,
-                getFindIndexPath(indexRequest.getIndex()),
+                                        getFindIndexPath(indexRequest.getIndex()),
                                         Collections.singletonMap("pretty", "true")
                                 ),
                 indexRequest.getIndex(),
@@ -476,8 +476,8 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                 getClient()
                         .performRequest(
                                 ElasticsearchKeywords.ACTION_PUT,
-                    getIndexPath(indexName),
-                    Collections.emptyMap(),
+                                getIndexPath(indexName),
+                                Collections.emptyMap(),
                                 EntityBuilder.create()
                                         .setText(objectMapper.writeValueAsString(indexSettings))
                                         .setContentType(ContentType.APPLICATION_JSON)
@@ -496,7 +496,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                         getClient()
                                 .performRequest(
                                         ElasticsearchKeywords.ACTION_GET,
-                getMappingPath(typeDescriptor),
+                                        getMappingPath(typeDescriptor),
                                         Collections.emptyMap()
                                 ),
                 typeDescriptor.getIndex(),
@@ -520,13 +520,13 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                 getClient()
                         .performRequest(
                                 ElasticsearchKeywords.ACTION_PUT,
-                getMappingPath(typeDescriptor),
-                Collections.emptyMap(),
+                                getMappingPath(typeDescriptor),
+                                Collections.emptyMap(),
                                 EntityBuilder.create()
                                         .setText(objectMapper.writeValueAsString(mapping))
                                         .setContentType(ContentType.APPLICATION_JSON)
                                         .build(),
-                new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "PUT MAPPING");
+                                new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "PUT MAPPING");
 
         if (!isRequestSuccessful(createMappingResponse)) {
             throw buildExceptionFromUnsuccessfulResponse("Create mapping", createMappingResponse);
@@ -540,7 +540,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                         getClient()
                                 .performRequest(
                                         ElasticsearchKeywords.ACTION_POST,
-                getRefreshAllIndexesPath(),
+                                        getRefreshAllIndexesPath(),
                                         Collections.emptyMap()
                                 ),
                 ElasticsearchKeywords.INDEX_ALL,
@@ -558,7 +558,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                         getClient()
                                 .performRequest(
                                         ElasticsearchKeywords.ACTION_DELETE,
-                getIndexPath("_all"),
+                                        getIndexPath("_all"),
                                         Collections.emptyMap()
                                 ),
                 ElasticsearchKeywords.INDEX_ALL,
@@ -580,7 +580,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                 return getClient()
                         .performRequest(
                                 ElasticsearchKeywords.ACTION_DELETE,
-                        getIndexPath(index),
+                                getIndexPath(index),
                                 Collections.emptyMap()
                         );
             }, index, "DELETE INDEX");
@@ -604,18 +604,18 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                 try {
                     return restAction.call();
                 } catch (TimeoutException te) {
-                        timeoutRetryCount.inc();
+                    timeoutRetryCount.inc();
                     if (retryCount < getClientConfiguration().getRequestConfiguration().getRequestRetryAttemptMax() - 1) {
-                            try {
+                        try {
                             Thread.sleep((long) (getClientConfiguration().getRequestConfiguration().getRequestRetryAttemptWait() * (0.5 + RANDOM.nextFloat() / 2)));
-                            } catch (InterruptedException e1) {
+                        } catch (InterruptedException e1) {
                             Thread.currentThread().interrupt();
-                            }
                         }
+                    }
                 } catch (RuntimeException e) {
                     restCallRuntimeExecCount.inc();
-                        throw e;
-                    }
+                    throw e;
+                }
             } while (++retryCount <= getClientConfiguration().getRequestConfiguration().getRequestRetryAttemptMax());
 
         } catch (ResponseException re) {
@@ -680,7 +680,14 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
             reason = "Unknown. Cannot get the reason from Response";
         }
 
-        return new ClientActionResponseException(action, reason);
+        String responseCodeString;
+        if (response.getStatusLine() != null) {
+            responseCodeString = String.valueOf(response.getStatusLine().getStatusCode());
+        } else {
+            responseCodeString = "Unknown";
+        }
+
+        return new ClientActionResponseException(action, reason, responseCodeString);
     }
 
     private String getRefreshAllIndexesPath() {

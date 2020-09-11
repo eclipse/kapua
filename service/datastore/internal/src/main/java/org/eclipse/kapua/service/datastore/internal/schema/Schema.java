@@ -77,7 +77,7 @@ public class Schema {
         LOG.debug("Before entering updating metadata");
         synchronized (Schema.class) {
             LOG.debug("Entered updating metadata");
-            ElasticsearchClient elasticsearchClient = DatastoreClientFactory.getInstance().getElasticsearchClient();
+            ElasticsearchClient<?> elasticsearchClient = DatastoreClientFactory.getInstance().getElasticsearchClient();
             // Check existence of the data index
             IndexResponse dataIndexExistsResponse = elasticsearchClient.isIndexExists(new IndexRequest(dataIndexName));
             if (!dataIndexExistsResponse.isIndexExists()) {

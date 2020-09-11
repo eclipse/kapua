@@ -20,19 +20,22 @@ public class ClientActionResponseException extends ClientException {
 
     private final String action;
     private final String reason;
+    private final String responseCode;
 
     /**
      * Constructor.
      *
-     * @param action The action that generated the {@link ClientActionResponseException}.
-     * @param reason The reason of the {@link ClientActionResponseException}.
+     * @param action       The action that generated the {@link ClientActionResponseException}.
+     * @param reason       The reason of the {@link ClientActionResponseException}.
+     * @param responseCode
      * @since 1.3.0
      */
-    public ClientActionResponseException(String action, String reason) {
-        super(ClientErrorCodes.ACTION_RESPONSE_ERROR, null, action, reason);
+    public ClientActionResponseException(String action, String reason, String responseCode) {
+        super(ClientErrorCodes.ACTION_RESPONSE_ERROR, null, action, reason, responseCode);
 
         this.reason = reason;
         this.action = action;
+        this.responseCode = responseCode;
     }
 
     /**
@@ -43,11 +46,12 @@ public class ClientActionResponseException extends ClientException {
      * @param reason The reason of the {@link ClientActionResponseException}.
      * @since 1.3.0
      */
-    public ClientActionResponseException(Throwable cause, String action, String reason) {
+    public ClientActionResponseException(Throwable cause, String action, String reason, String responseCode) {
         super(ClientErrorCodes.ACTION_RESPONSE_ERROR, cause, action, reason);
 
         this.reason = reason;
         this.action = action;
+        this.responseCode = responseCode;
     }
 
     /**
@@ -68,5 +72,15 @@ public class ClientActionResponseException extends ClientException {
      */
     public String getReason() {
         return reason;
+    }
+
+    /**
+     * Gets the HTTP response code.
+     *
+     * @return The HTTP response code.
+     * @since 1.3.0
+     */
+    public String getResponseCode() {
+        return responseCode;
     }
 }

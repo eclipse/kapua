@@ -536,7 +536,7 @@ public final class MessageStoreFacade {
         getElasticsearchClient().deleteIndexes(indexExp);
     }
 
-    private ElasticsearchClient<?> getElasticsearchClient() throws ClientInitializationException {
+    private ElasticsearchClient<?> getElasticsearchClient() throws ClientInitializationException, ClientUnavailableException {
         return DatastoreClientFactory.getElasticsearchClient();
     }
 }

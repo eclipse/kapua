@@ -291,7 +291,11 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
     }
 
     @Override
-    public RestElasticsearchClient getElasticsearchClient() {
+    public RestElasticsearchClient getElasticsearchClient() throws ClientUnavailableException {
+        if (restElasticsearchClient == null) {
+            throw new ClientUnavailableException("Client not initialized");
+        }
+
         return restElasticsearchClient;
     }
 

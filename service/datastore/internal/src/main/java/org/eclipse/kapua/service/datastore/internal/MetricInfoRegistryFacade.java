@@ -103,7 +103,7 @@ public class MetricInfoRegistryFacade {
                 response = getElasticsearchClient().upsert(request);
 
                 LOG.debug("Upsert on metric successfully executed [{}.{}, {} - {}]", kapuaIndexName, MetricInfoSchema.METRIC_TYPE_NAME, metricInfoId, response.getId());
-                }
+            }
             // Update cache if metric update is completed successfully
             DatastoreCacheManager.getInstance().getMetricsCache().put(metricInfoId, true);
         }
@@ -315,7 +315,7 @@ public class MetricInfoRegistryFacade {
         getElasticsearchClient().deleteByQuery(typeDescriptor, query);
     }
 
-    private ElasticsearchClient<?> getElasticsearchClient() throws ClientInitializationException {
+    private ElasticsearchClient<?> getElasticsearchClient() throws ClientInitializationException, ClientUnavailableException {
         return DatastoreClientFactory.getElasticsearchClient();
     }
 }

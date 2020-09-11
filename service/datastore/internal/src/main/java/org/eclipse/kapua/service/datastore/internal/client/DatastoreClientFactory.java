@@ -17,6 +17,7 @@ import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientConfiguration;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,12 +66,12 @@ public class DatastoreClientFactory {
                             .withModelContext(new ModelContextImpl())
                             .withModelConverter(new QueryConverterImpl())
                             .init();
-                    }
                 }
             }
+        }
 
         return elasticsearchClientProviderInstance;
-        }
+    }
 
     /**
      * Gets the {@link ElasticsearchClient} instance.
@@ -79,7 +80,7 @@ public class DatastoreClientFactory {
      * @throws ClientInitializationException see {@link #getInstance()}
      * @since 1.3.0
      */
-    public static ElasticsearchClient getElasticsearchClient() throws ClientInitializationException {
+    public static ElasticsearchClient getElasticsearchClient() throws ClientInitializationException, ClientUnavailableException {
         return getInstance().getElasticsearchClient();
     }
 

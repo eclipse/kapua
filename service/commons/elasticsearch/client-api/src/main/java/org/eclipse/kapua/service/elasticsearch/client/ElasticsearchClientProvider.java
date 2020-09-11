@@ -13,6 +13,7 @@ package org.eclipse.kapua.service.elasticsearch.client;
 
 import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientConfiguration;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 
 /**
  * {@link ElasticsearchClient} wrapper definition.
@@ -72,7 +73,8 @@ public interface ElasticsearchClientProvider<C extends ElasticsearchClient> exte
      * Gets an initialized {@link ElasticsearchClient} instance.
      *
      * @return An initialized {@link ElasticsearchClient} instance.
+     * @throws ClientUnavailableException if the client has not being initialized.
      * @since 1.0.0
      */
-    C getElasticsearchClient();
+    C getElasticsearchClient() throws ClientUnavailableException;
 }

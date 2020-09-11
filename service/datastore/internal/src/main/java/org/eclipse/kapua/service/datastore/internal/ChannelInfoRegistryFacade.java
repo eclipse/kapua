@@ -33,6 +33,7 @@ import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
@@ -105,7 +106,7 @@ public class ChannelInfoRegistryFacade {
                         response = getElasticsearchClient().upsert(request);
 
                         LOG.debug("Upsert on channel successfully executed [{}.{}, {} - {}]", registryIndexName, ChannelInfoSchema.CHANNEL_TYPE_NAME, channelInfoId, response.getId());
-                        }
+                    }
                     // Update cache if channel update is completed successfully
                     DatastoreCacheManager.getInstance().getChannelsCache().put(channelInfoId, true);
                 }
@@ -258,7 +259,7 @@ public class ChannelInfoRegistryFacade {
         getElasticsearchClient().deleteByQuery(typeDescriptor, query);
     }
 
-    private ElasticsearchClient<?> getElasticsearchClient() throws ClientInitializationException {
+    private ElasticsearchClient<?> getElasticsearchClient() throws ClientInitializationException, ClientUnavailableException {
         return DatastoreClientFactory.getElasticsearchClient();
     }
 }

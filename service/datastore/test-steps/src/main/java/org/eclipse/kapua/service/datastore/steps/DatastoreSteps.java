@@ -101,7 +101,6 @@ import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.elasticsearch.client.model.IndexRequest;
 import org.junit.Assert;
 import org.slf4j.Logger;
@@ -212,8 +211,8 @@ public class DatastoreSteps extends TestBase {
         List<Long> metricCountList = new ArrayList<>();
         List<MessageQuery> messageQueries = (List<MessageQuery>) stepData.get("ListOfMessageQueries");
 
-        for(MessageQuery messageQuery : messageQueries) {
-           long countMetric = messageStoreService.count(messageQuery);
+        for (MessageQuery messageQuery : messageQueries) {
+            long countMetric = messageStoreService.count(messageQuery);
             metricCountList.add(countMetric);
         }
         stepData.put("MetricCountList", metricCountList);
@@ -304,7 +303,7 @@ public class DatastoreSteps extends TestBase {
     // *************************************
 
     @Before
-    public void beforeScenario(Scenario scenario) throws ClientInitializationException {
+    public void beforeScenario(Scenario scenario) throws Exception {
 
         this.scenario = scenario;
 
@@ -399,33 +398,33 @@ public class DatastoreSteps extends TestBase {
         final MessageStoreService service = KapuaLocator.getInstance().getService(MessageStoreService.class);
         session.withLogin(() -> With.withUserAccount(currentDevice.getAccountName(), account -> {
 
-                // create new query
+            // create new query
 
-                final MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(account.getId());
+            final MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(account.getId());
 
-                // filter for client only
+            // filter for client only
 
-                query.setPredicate(storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
+            query.setPredicate(storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
 
             // set query options
             query.setAskTotalCount(true);
-            query.setLimit((int)numberOfMessages);
+            query.setLimit((int) numberOfMessages);
 
-                // perform query
+            // perform query
 
-                final MessageListResult result = service.query(query);
+            final MessageListResult result = service.query(query);
 
-                // eval just the size
+            // eval just the size
 
-                Assert.assertEquals(numberOfMessages, result.getSize());
+            Assert.assertEquals(numberOfMessages, result.getSize());
 
-                // eval the total count
+            // eval the total count
 
-                Assert.assertEquals(Long.valueOf(numberOfMessages), result.getTotalCount());
+            Assert.assertEquals(Long.valueOf(numberOfMessages), result.getTotalCount());
 
-                // different approach -> same result
+            // different approach -> same result
 
-                Assert.assertEquals(numberOfMessages, service.count(query));
+            Assert.assertEquals(numberOfMessages, service.count(query));
         }));
     }
 
@@ -434,18 +433,18 @@ public class DatastoreSteps extends TestBase {
         final MessageStoreService service = KapuaLocator.getInstance().getService(MessageStoreService.class);
         session.withLogin(() -> With.withUserAccount(currentDevice.getAccountName(), account -> {
 
-                // create new query
-                final MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(account.getId());
+            // create new query
+            final MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(account.getId());
 
-                // filter for client only
-                query.setPredicate(storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
+            // filter for client only
+            query.setPredicate(storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
 
-                // set query options
-                query.setAskTotalCount(true);
-                query.setLimit(100);
+            // set query options
+            query.setAskTotalCount(true);
+            query.setLimit(100);
 
-                // perform delete
-                service.delete(query);
+            // perform delete
+            service.delete(query);
         }));
     }
 
@@ -454,40 +453,40 @@ public class DatastoreSteps extends TestBase {
         final MessageStoreService service = KapuaLocator.getInstance().getService(MessageStoreService.class);
         session.withLogin(() -> With.withUserAccount(currentDevice.getAccountName(), account -> {
 
-                // start a new query
+            // start a new query
 
-                final MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(account.getId());
+            final MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(account.getId());
 
-                // query for client and channel
+            // query for client and channel
 
-                final AndPredicate and = storablePredicateFactory.newAndPredicate();
-                and.getPredicates().add(storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
-                and.getPredicates().add(storablePredicateFactory.newTermPredicate(MessageField.CHANNEL, topic));
-                query.setPredicate(and);
+            final AndPredicate and = storablePredicateFactory.newAndPredicate();
+            and.getPredicates().add(storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
+            and.getPredicates().add(storablePredicateFactory.newTermPredicate(MessageField.CHANNEL, topic));
+            query.setPredicate(and);
 
-                // sort by captured time
+            // sort by captured time
 
-                query.setSortFields(Arrays.asList(SortField.descending(MessageField.CAPTURED_ON.field())));
+            query.setSortFields(Arrays.asList(SortField.descending(MessageField.CAPTURED_ON.field())));
 
-                // perform the query
+            // perform the query
 
-                final MessageListResult result = service.query(query);
+            final MessageListResult result = service.query(query);
 
-                Assert.assertEquals(1, result.getSize());
+            Assert.assertEquals(1, result.getSize());
 
-                // get the first item
+            // get the first item
 
-                final DatastoreMessage message = result.getFirstItem();
-                Assert.assertEquals(currentDevice.getClientId(), message.getClientId());
+            final DatastoreMessage message = result.getFirstItem();
+            Assert.assertEquals(currentDevice.getClientId(), message.getClientId());
 
-                // get payload structure
+            // get payload structure
 
-                final KapuaPayload payload = message.getPayload();
+            final KapuaPayload payload = message.getPayload();
 
-                // assert metrics data
+            // assert metrics data
 
-                final Map<String, Object> properties = payload.getMetrics();
-                Assert.assertEquals(toData(expectedMetrics), properties);
+            final Map<String, Object> properties = payload.getMetrics();
+            Assert.assertEquals(toData(expectedMetrics), properties);
         }));
     }
 
@@ -2457,8 +2456,8 @@ public class DatastoreSteps extends TestBase {
      * Creating query for data messages with reasonable defaults and user specified ordering.
      *
      * @param scopeId scope
-     * @param limit limit results
-     * @param order the required result ordering
+     * @param limit   limit results
+     * @param order   the required result ordering
      * @return query
      */
     public MessageQuery createBaseMessageQuery(KapuaId scopeId, int limit, List<SortField> order) {
