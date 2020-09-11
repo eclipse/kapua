@@ -18,23 +18,38 @@ package org.eclipse.kapua.service.elasticsearch.client.exception;
  */
 public class ClientInternalError extends ClientException {
 
+    private final String reason;
+
     /**
      * Constructor.
      *
+     * @param reason The reason that caused the {@link ClientInternalError}.
      * @since 1.3.0
      */
-    public ClientInternalError() {
-        super(ClientErrorCodes.INTERNAL_ERROR);
+    public ClientInternalError(String reason) {
+        this(null, reason);
     }
 
-
     /**
      * Constructor.
      *
-     * @param cause The root {@link Throwable} of this {@link ClientInternalError}.
+     * @param cause  The root {@link Throwable} of this {@link ClientInternalError}.
+     * @param reason The reason that caused the {@link ClientInternalError}.
      * @since 1.3.0
      */
-    public ClientInternalError(Throwable cause) {
-        super(ClientErrorCodes.INTERNAL_ERROR, cause);
+    public ClientInternalError(Throwable cause, String reason) {
+        super(ClientErrorCodes.INTERNAL_ERROR, cause, reason);
+
+        this.reason = reason;
+    }
+
+    /**
+     * The reason that caused this {@link ClientInternalError}.
+     *
+     * @return The reason that caused this {@link ClientInternalError}.
+     * @since 1.3.0
+     */
+    public String getReason() {
+        return reason;
     }
 }

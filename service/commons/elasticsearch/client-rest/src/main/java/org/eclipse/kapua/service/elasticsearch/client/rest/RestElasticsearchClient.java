@@ -127,11 +127,12 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     public InsertResponse insert(InsertRequest insertRequest) throws ClientException {
         Map<String, Object> storableMap = getModelContext().marshal(insertRequest.getStorable());
         LOG.debug("Insert - converted object: '{}'", storableMap);
+
         String json;
         try {
             json = objectMapper.writeValueAsString(storableMap);
         } catch (JsonProcessingException e) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR, e);
+            throw new ClientInternalError(e, "Error managing ObjectMapper.write");
         }
 
         Response insertResponse = restCallTimeoutHandler(() -> getClient()
@@ -150,7 +151,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
             try {
                 responseNode = objectMapper.readTree(EntityUtils.toString(insertResponse.getEntity()));
             } catch (IOException e) {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, e);
+                throw new ClientInternalError(e, "Error managing ObjectMapper.read");
             }
 
             String id = responseNode.get(ElasticsearchKeywords.KEY_DOC_ID).asText();
@@ -174,7 +175,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         try {
             json = objectMapper.writeValueAsString(updateRequestMap);
         } catch (JsonProcessingException e) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR, e);
+            throw new ClientInternalError(e, "Error managing ObjectMapper.write");
         }
 
         Response updateResponse = restCallTimeoutHandler(() -> getClient()
@@ -193,8 +194,9 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
             try {
                 responseNode = objectMapper.readTree(EntityUtils.toString(updateResponse.getEntity()));
             } catch (IOException e) {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, e);
+                throw new ClientInternalError(e, "Error managing ObjectMapper.read");
             }
+
             String id = responseNode.get(ElasticsearchKeywords.KEY_DOC_ID).asText();
             String index = responseNode.get(ElasticsearchKeywords.KEY_DOC_INDEX).asText();
             String type = responseNode.get(ElasticsearchKeywords.KEY_DOC_TYPE).asText();
@@ -221,7 +223,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
             try {
                 bulkOperation.append(objectMapper.writeValueAsString(storableMap));
             } catch (IOException e) {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, e);
+                throw new ClientInternalError(e, "Error managing ObjectMapper.write");
             }
             bulkOperation.append(", \"doc_as_upsert\": true }\n");
         }
@@ -243,7 +245,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
             try {
                 responseNode = objectMapper.readTree(EntityUtils.toString(updateResponse.getEntity()));
             } catch (IOException e) {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, e);
+                throw new ClientInternalError(e, "Error managing ObjectMapper.read");
             }
 
             ArrayNode items = (ArrayNode) responseNode.get(ElasticsearchKeywords.KEY_ITEMS);
@@ -272,7 +274,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                     bulkResponse.add(new UpdateResponse(metricId, new TypeDescriptor(indexName, typeName)));
                     LOG.debug("Upsert on channel metric successfully executed [{}.{}, {}]", indexName, typeName, metricId);
                 } else {
-                    throw new ClientException(ClientErrorCodes.ACTION_ERROR, "Unexpected action response");
+                    throw new ClientInternalError("Empty JSON response from upsert");
                 }
             }
             return bulkResponse;
@@ -312,8 +314,9 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
             try {
                 responseNode = objectMapper.readTree(EntityUtils.toString(queryResponse.getEntity()));
             } catch (IOException e) {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, e);
+                throw new ClientInternalError(e, "Error managing ObjectMapper.read");
             }
+
             JsonNode hitsNode = responseNode.get(ElasticsearchKeywords.KEY_HITS);
             totalCount = hitsNode.get(ElasticsearchKeywords.KEY_TOTAL).asLong();
             if (totalCount > Integer.MAX_VALUE) {
@@ -365,8 +368,9 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
             try {
                 responseNode = objectMapper.readTree(EntityUtils.toString(queryResponse.getEntity()));
             } catch (IOException e) {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, e);
+                throw new ClientInternalError(e, "Error managing ObjectMapper.read");
             }
+
             JsonNode hitsNode = responseNode.get(ElasticsearchKeywords.KEY_HITS);
             totalCount = hitsNode.get(ElasticsearchKeywords.KEY_TOTAL).asLong();
             if (totalCount > Integer.MAX_VALUE) {
@@ -459,7 +463,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                 try {
                     return new IndexResponse(EntityUtils.toString(isIndexExistsResponse.getEntity()).split("\n"));
                 } catch (ParseException | IOException e) {
-                    throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, "Cannot convert the indexes list");
+                    throw new ClientInternalError(e, "Cannot convert the indexes list");
                 }
             } else if (isIndexExistsResponse.getStatusLine().getStatusCode() == 404) {
                 return new IndexResponse(null);
@@ -628,10 +632,8 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
             } else {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, re);
             }
-        } catch (IOException e) {
-            throw new ClientException(ClientErrorCodes.ACTION_ERROR, e);
         } catch (Exception e) {
-            throw new ClientInternalError(e);
+            throw new ClientInternalError(e, "Error in handling REST timeout handler");
         }
         timeoutRetryLimitReachedCount.inc();
 
