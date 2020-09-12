@@ -32,6 +32,16 @@
 
     <!-- -->
     <!-- Filters -->
+
+    <filter>
+        <filter-name>CORSResponseFilter</filter-name>
+        <filter-class>org.eclipse.kapua.app.api.core.CORSResponseFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CORSResponseFilter</filter-name>
+        <url-pattern>/v1/*</url-pattern>
+    </filter-mapping>
+
     <filter>
         <filter-name>ShiroFilter</filter-name>
         <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
