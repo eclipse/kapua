@@ -87,17 +87,6 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
     public RestElasticsearchClientProvider() {
     }
 
-    /**
-     * Initialize the {@link RestElasticsearchClientProvider} instance.
-     * <p>
-     * The nodes addresses and other parameters are read from {@link ElasticsearchClientConfiguration}.
-     * <p>
-     * The init methods can be called more than once in order to reinitialize the underlying datastore connection.
-     * It the datastore was already initialized this method close the old one before initializing the new one.
-     *
-     * @return The initialized {@link RestElasticsearchClientProvider}.
-     * @since 1.0.0
-     */
     @Override
     public RestElasticsearchClientProvider init() {
         synchronized (RestElasticsearchClientProvider.class) {
@@ -111,7 +100,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
 
             }
 
-            clientReconnectCallCounter = MetricServiceFactory.getInstance().getCounter(elasticsearchClientConfiguration.getHolderModuleName(), "elasticsearch-client-rest", "reconnect_call", "count");
+            clientReconnectCallCounter = MetricServiceFactory.getInstance().getCounter(elasticsearchClientConfiguration.getModuleName(), "elasticsearch-client-rest", "reconnect_call", "count");
 
             // Close the current client if already initialized.
             close();

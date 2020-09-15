@@ -12,7 +12,7 @@
 package org.eclipse.kapua.service.elasticsearch.client.exception;
 
 /**
- * Client communication exception (timeout, no node available ...)
+ * {@link ClientException} to {@code throw} when there is a client communication exception (timeout, no node available ...)
  *
  * @since 1.0.0
  */
@@ -26,6 +26,6 @@ public class ClientCommunicationException extends ClientException {
      * @since 1.3.0
      */
     public ClientCommunicationException() {
-        super(ClientErrorCodes.COMMUNICATION_ERROR);
+        super(ClientErrorCodes.CLIENT_COMMUNICATION_ERROR);
     }
 }

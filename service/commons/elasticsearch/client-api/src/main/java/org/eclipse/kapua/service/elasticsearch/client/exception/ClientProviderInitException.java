@@ -11,14 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.exception;
 
-import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 
 /**
- * {@link ClientException} to throw when {@link ElasticsearchClient} fails to initialize.
+ * {@link ClientException} to throw when {@link ElasticsearchClientProvider} fails to initialize.
  *
  * @since 1.3.0
  */
-public class ClientInitializationException extends ClientException {
+public class ClientProviderInitException extends ClientException {
 
     private static final long serialVersionUID = 2211521053876589804L;
 
@@ -27,18 +27,18 @@ public class ClientInitializationException extends ClientException {
      *
      * @since 1.3.0
      */
-    public ClientInitializationException() {
-        super(ClientErrorCodes.CLIENT_INITIALIZATION_ERROR);
+    public ClientProviderInitException() {
+        super(ClientErrorCodes.CLIENT_PROVIDER_INIT_ERROR);
     }
 
 
     /**
      * Constructor.
      *
-     * @param cause The root {@link Throwable} of this {@link ClientInitializationException}.
+     * @param cause The root {@link Throwable} of this {@link ClientProviderInitException}.
      * @since 1.3.0
      */
-    public ClientInitializationException(Throwable cause, String clientClassName) {
-        super(ClientErrorCodes.CLIENT_INITIALIZATION_ERROR, cause);
+    public ClientProviderInitException(Throwable cause, String clientClassName) {
+        super(ClientErrorCodes.CLIENT_PROVIDER_INIT_ERROR, cause);
     }
 }

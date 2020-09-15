@@ -113,9 +113,9 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         }
 
         MetricsService metricService = MetricServiceFactory.getInstance();
-        restCallRuntimeExecCount = metricService.getCounter(getClientConfiguration().getHolderModuleName(), DatastoreRestClientMetrics.METRIC_COMPONENT_NAME, DatastoreRestClientMetrics.METRIC_RUNTIME_EXEC, DatastoreRestClientMetrics.METRIC_COUNT);
-        timeoutRetryCount = metricService.getCounter(getClientConfiguration().getHolderModuleName(), DatastoreRestClientMetrics.METRIC_COMPONENT_NAME, DatastoreRestClientMetrics.METRIC_TIMEOUT_RETRY, DatastoreRestClientMetrics.METRIC_COUNT);
-        timeoutRetryLimitReachedCount = metricService.getCounter(getClientConfiguration().getHolderModuleName(), DatastoreRestClientMetrics.METRIC_COMPONENT_NAME, DatastoreRestClientMetrics.TIMEOUT_RETRY_LIMIT_REACHED, DatastoreRestClientMetrics.METRIC_COUNT);
+        restCallRuntimeExecCount = metricService.getCounter(getClientConfiguration().getModuleName(), DatastoreRestClientMetrics.METRIC_COMPONENT_NAME, DatastoreRestClientMetrics.METRIC_RUNTIME_EXEC, DatastoreRestClientMetrics.METRIC_COUNT);
+        timeoutRetryCount = metricService.getCounter(getClientConfiguration().getModuleName(), DatastoreRestClientMetrics.METRIC_COMPONENT_NAME, DatastoreRestClientMetrics.METRIC_TIMEOUT_RETRY, DatastoreRestClientMetrics.METRIC_COUNT);
+        timeoutRetryLimitReachedCount = metricService.getCounter(getClientConfiguration().getModuleName(), DatastoreRestClientMetrics.METRIC_COMPONENT_NAME, DatastoreRestClientMetrics.TIMEOUT_RETRY_LIMIT_REACHED, DatastoreRestClientMetrics.METRIC_COUNT);
     }
 
     @Override

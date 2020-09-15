@@ -12,7 +12,7 @@
 package org.eclipse.kapua.service.elasticsearch.client.model;
 
 /**
- * Base request definition.
+ * Base {@link Request} definition.
  *
  * @since 1.0.0
  */
@@ -45,9 +45,9 @@ public abstract class Request {
      * @since 1.0.0
      */
     protected Request(String id, TypeDescriptor typeDescriptor, Object storable) {
-        this.id = id;
-        this.typeDescriptor = typeDescriptor;
-        this.storable = storable;
+        setId(id);
+        setTypeDescriptor(typeDescriptor);
+        setStorable(storable);
     }
 
     /**

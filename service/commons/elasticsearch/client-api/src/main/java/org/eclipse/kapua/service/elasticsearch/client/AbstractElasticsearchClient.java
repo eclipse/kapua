@@ -16,7 +16,7 @@ import org.eclipse.kapua.service.elasticsearch.client.configuration.Elasticsearc
 import java.io.Closeable;
 
 /**
- * {@link ElasticsearchClient} base implementation.
+ * {@link ElasticsearchClient} {@code abstract} implementation.
  *
  * @since 1.0.0
  */

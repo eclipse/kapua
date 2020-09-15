@@ -16,8 +16,7 @@ import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvide
 import org.eclipse.kapua.service.elasticsearch.client.ModelContext;
 import org.eclipse.kapua.service.elasticsearch.client.QueryConverter;
 import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientConfiguration;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientProviderInitException;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.cluster.ClusterName;
 import org.elasticsearch.common.settings.Settings;
@@ -34,7 +33,7 @@ import java.net.InetSocketAddress;
  * Instantiate and manages the {@link TransportElasticsearchClient}.
  *
  * @since 1.0.0
- * @deprecated Since 1.0.0. {@link TransportElasticsearchClientProvider} will be removed in the next releases. Please use the Rest client instead.
+ * @deprecated Since 1.0.0. {@link TransportElasticsearchClientProvider} will be removed in the next releases. Please use the REST client instead.
  */
 @Deprecated
 public class TransportElasticsearchClientProvider implements ElasticsearchClientProvider<TransportElasticsearchClient> {
@@ -62,18 +61,8 @@ public class TransportElasticsearchClientProvider implements ElasticsearchClient
     }
 
 
-    /**
-     * Initialize the {@link TransportElasticsearchClientProvider} instance.
-     * <p>
-     * The nodes addresses and other parameters are read from {@link ElasticsearchClientConfiguration}.
-     * <p>
-     * The init methods can be called more than once in order to reinitialize the underlying datastore connection.
-     * It the datastore was already initialized this method close the old one before initializing the new one.
-     *
-     * @throws ClientUnavailableException
-     */
     @Override
-    public ElasticsearchClientProvider<TransportElasticsearchClient> init() throws ClientInitializationException {
+    public ElasticsearchClientProvider<TransportElasticsearchClient> init() throws ClientProviderInitException {
         synchronized (TransportElasticsearchClientProvider.class) {
             LOG.info(">>> Initializing ES transport client...");
             if (elasticsearchClientConfiguration == null) {

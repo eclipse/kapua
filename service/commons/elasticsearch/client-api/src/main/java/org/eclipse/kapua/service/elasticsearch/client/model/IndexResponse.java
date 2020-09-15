@@ -12,7 +12,7 @@
 package org.eclipse.kapua.service.elasticsearch.client.model;
 
 /**
- * Index response definitin.
+ * {@link IndexResponse} definition.
  *
  * @since 1.0.0
  */

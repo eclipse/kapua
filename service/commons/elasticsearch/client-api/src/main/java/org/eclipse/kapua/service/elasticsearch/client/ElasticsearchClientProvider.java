@@ -12,7 +12,8 @@
 package org.eclipse.kapua.service.elasticsearch.client;
 
 import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientConfiguration;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientClosingException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientProviderInitException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 
 /**
@@ -25,21 +26,24 @@ public interface ElasticsearchClientProvider<C extends ElasticsearchClient> exte
 
     /**
      * Initializes the {@link ElasticsearchClientProvider}.
+     * <p>
+     * The init methods can be called more than once in order to reinitialize the underlying datastore connection.
+     * It the datastore was already initialized this method close the old one before initializing the new one.
      *
      * @return Itself, to chain invocations.
-     * @throws ClientInitializationException in case of error while initializing {@link ElasticsearchClientProvider}
+     * @throws ClientProviderInitException in case of error while initializing {@link ElasticsearchClientProvider}
      * @since 1.3.0
      */
-    ElasticsearchClientProvider<C> init() throws ClientInitializationException;
+    ElasticsearchClientProvider<C> init() throws ClientProviderInitException;
 
     /**
      * Closes the {@link ElasticsearchClientProvider} and all {@link ElasticsearchClient}s
      *
-     * @throws Exception in case of errors.
+     * @throws ClientClosingException in case of error while closing the client.
      * @since 1.0.0
      */
     @Override
-    void close() throws Exception;
+    void close() throws ClientClosingException;
 
     /**
      * Sets the {@link ElasticsearchClientConfiguration} to use to instantiate and manage the {@link ElasticsearchClient}.

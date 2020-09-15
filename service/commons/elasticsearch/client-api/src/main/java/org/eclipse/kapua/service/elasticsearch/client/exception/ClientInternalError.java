@@ -12,7 +12,7 @@
 package org.eclipse.kapua.service.elasticsearch.client.exception;
 
 /**
- * {@link ClientException} to throw when something really bad happens.
+ * {@link ClientException} to throw when an unrecoverable error occurs.
  *
  * @since 1.3.0
  */

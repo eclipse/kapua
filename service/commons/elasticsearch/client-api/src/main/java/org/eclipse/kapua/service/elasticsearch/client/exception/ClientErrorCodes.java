@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.elasticsearch.client.exception;
 import org.eclipse.kapua.KapuaErrorCode;
 
 /**
- * Elasticsearch Client {@link KapuaErrorCode}s
+ * {@link ClientException} {@link KapuaErrorCode}s
  *
  * @since 1.0.0
  */
@@ -35,41 +35,46 @@ public enum ClientErrorCodes implements KapuaErrorCode {
     CLIENT_INITIALIZATION_ERROR,
 
     /**
-     * See {@link ClientUndefinedException}.
+     * See @{@link ClientProviderInitException}
      *
-     * @since 1.0.0
+     * @since 1.3.0
      */
-    CLIENT_UNDEFINED,
+    CLIENT_PROVIDER_INIT_ERROR,
+
+    /**
+     * See {@link ClientClosingException}.
+     *
+     * @since 1.3.0
+     */
+    CLIENT_CLOSING_ERROR,
+
     /**
      * See {@link DatamodelMappingException}.
      *
      * @since 1.0.0
      */
     DATAMODEL_MAPPING_EXCEPTION,
+
     /**
-     * Schema mapping error.
-     *
-     * @since 1.0.0
-     */
-    SCHEMA_MAPPING_EXCEPTION,
-    /**
-     * Query mapping error.
+     * See {@link QueryMappingException}.
      *
      * @since 1.0.0
      */
     QUERY_MAPPING_EXCEPTION,
+
     /**
      * Error on performed action.
      *
      * @since 1.0.0
      */
     ACTION_ERROR,
+
     /**
-     * Error on communication with the underlying datastore layer (timeout, no node available ...).
+     * See @{@link ClientCommunicationException}.
      *
      * @since 1.0.0
      */
-    COMMUNICATION_ERROR,
+    CLIENT_COMMUNICATION_ERROR,
 
     /**
      * See {@link ClientInternalError}.

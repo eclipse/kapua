@@ -47,59 +47,157 @@ public class ElasticsearchClientSslConfiguration {
     private String trustStorePath;
     private String trustStorePassword;
 
+    /**
+     * Gets whether or not the SSL encryption is enabled.
+     *
+     * @return {@code true} if SSL encryption is enabled, {@code false} otherwise.
+     * @since 1.3.0
+     */
     public boolean isEnabled() {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    /**
+     * Sest whether or not the SSL encryption is enabled.
+     *
+     * @param enabled {@code true} if SSL encryption is enabled, {@code false} otherwise.
+     * @return This {@link ElasticsearchClientSslConfiguration} to chain method invocation.
+     * @since 1.3.0
+     */
+    public ElasticsearchClientSslConfiguration setEnabled(boolean enabled) {
         this.enabled = enabled;
+        return this;
     }
 
+    /**
+     * Gets whether or not to trust the server certificate.
+     *
+     * @return {@code true} if needs to be trusted, {@code false} otherwise.
+     * @since 1.3.0
+     */
     public boolean isTrustServiceCertificate() {
         return trustServiceCertificate;
     }
 
-    public void setTrustServiceCertificate(boolean trustServiceCertificate) {
+    /**
+     * Sets whether or not to trust the server certificate.
+     *
+     * @param trustServiceCertificate {@code true} if needs to be trusted, {@code false} otherwise.
+     * @return This {@link ElasticsearchClientSslConfiguration} to chain method invocation.
+     * @since 1.3.0
+     */
+    public ElasticsearchClientSslConfiguration setTrustServiceCertificate(boolean trustServiceCertificate) {
         this.trustServiceCertificate = trustServiceCertificate;
+        return this;
     }
 
+    /**
+     * Gets the {@link java.security.KeyStore} path.
+     *
+     * @return he {@link java.security.KeyStore} path.
+     * @since 1.3.0
+     */
     public String getKeyStorePath() {
         return keyStorePath;
     }
 
-    public void setKeyStorePath(String keyStorePath) {
+    /**
+     * Sets the {@link java.security.KeyStore} path.
+     *
+     * @param keyStorePath The {@link java.security.KeyStore} path.
+     * @return This {@link ElasticsearchClientSslConfiguration} to chain method invocation.
+     * @since 1.3.0
+     */
+    public ElasticsearchClientSslConfiguration setKeyStorePath(String keyStorePath) {
         this.keyStorePath = keyStorePath;
+        return this;
     }
 
+    /**
+     * Gets the {@link java.security.KeyStore} password.
+     *
+     * @return The {@link java.security.KeyStore} password.
+     * @since 1.3.0
+     */
     public String getKeyStorePassword() {
         return keyStorePassword;
     }
 
-    public void setKeyStorePassword(String keyStorePassword) {
+    /**
+     * Sets the {@link java.security.KeyStore} password.
+     *
+     * @param keyStorePassword The {@link java.security.KeyStore} password.
+     * @return This {@link ElasticsearchClientSslConfiguration} to chain method invocation.
+     * @since 1.3.0
+     */
+    public ElasticsearchClientSslConfiguration setKeyStorePassword(String keyStorePassword) {
         this.keyStorePassword = keyStorePassword;
+        return this;
     }
 
+    /**
+     * Gets the {@link java.security.KeyStore} type.
+     *
+     * @return The {@link java.security.KeyStore} type.
+     * @since 1.3.0
+     */
     public String getKeyStoreType() {
         return keyStoreType;
     }
 
-    public void setKeyStoreType(String keyStoreType) {
+    /**
+     * Sets the {@link java.security.KeyStore} type.
+     *
+     * @param keyStoreType The {@link java.security.KeyStore} type.
+     * @return This {@link ElasticsearchClientSslConfiguration} to chain method invocation.
+     * @since 1.3.0
+     */
+    public ElasticsearchClientSslConfiguration setKeyStoreType(String keyStoreType) {
         this.keyStoreType = keyStoreType;
+        return this;
     }
 
+    /**
+     * Gets the trust {@link java.security.KeyStore} path.
+     *
+     * @return The trust {@link java.security.KeyStore} path.
+     * @since 1.3.0
+     */
     public String getTrustStorePath() {
         return trustStorePath;
     }
 
-    public void setTrustStorePath(String trustStorePath) {
+    /**
+     * Sets the trust {@link java.security.KeyStore} path.
+     *
+     * @param trustStorePath The trust {@link java.security.KeyStore} path.
+     * @return This {@link ElasticsearchClientSslConfiguration} to chain method invocation.
+     * @since 1.3.0
+     */
+    public ElasticsearchClientSslConfiguration setTrustStorePath(String trustStorePath) {
         this.trustStorePath = trustStorePath;
+        return this;
     }
 
+    /**
+     * Gets the trust {@link java.security.KeyStore} password.
+     *
+     * @return The trust {@link java.security.KeyStore} password.
+     * @since 1.3.0
+     */
     public String getTrustStorePassword() {
         return trustStorePassword;
     }
 
-    public void setTrustStorePassword(String trustStorePassword) {
+    /**
+     * Sets the trust {@link java.security.KeyStore} password.
+     *
+     * @param trustStorePassword The trust {@link java.security.KeyStore} password.
+     * @return This {@link ElasticsearchClientSslConfiguration} to chain method invocation.
+     * @since 1.3.0
+     */
+    public ElasticsearchClientSslConfiguration setTrustStorePassword(String trustStorePassword) {
         this.trustStorePassword = trustStorePassword;
+        return this;
     }
 }

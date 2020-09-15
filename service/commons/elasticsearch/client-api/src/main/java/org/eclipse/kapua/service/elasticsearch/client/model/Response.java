@@ -15,7 +15,9 @@ package org.eclipse.kapua.service.elasticsearch.client.model;
 import org.eclipse.kapua.KapuaSerializable;
 
 /**
- * Base response definition
+ * Base {@link Response} definition.
+ *
+ * @since 1.0.0
  */
 public abstract class Response implements KapuaSerializable {
 
@@ -48,8 +50,8 @@ public abstract class Response implements KapuaSerializable {
      * @since 1.0.0
      */
     protected Response(String id, TypeDescriptor typeDescriptor) {
-        this.id = id;
-        this.typeDescriptor = typeDescriptor;
+        setId(id);
+        setTypeDescriptor(typeDescriptor);
     }
 
     /**

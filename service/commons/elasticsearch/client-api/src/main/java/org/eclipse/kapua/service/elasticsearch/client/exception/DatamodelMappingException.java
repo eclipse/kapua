@@ -12,8 +12,7 @@
 package org.eclipse.kapua.service.elasticsearch.client.exception;
 
 /**
- * Datamodel mapping exception.<br>
- * This exception is raised if some error occurred when mapping a datamodel
+ * {@link ClientException} to {@code throw} when there is a datamodel mapping error.
  *
  * @since 1.0.0
  */

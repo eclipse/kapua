@@ -12,9 +12,7 @@
 package org.eclipse.kapua.service.elasticsearch.client.exception;
 
 /**
- * Query mapping exception.
- * <p>
- * This exception is raised if some error occurred when mapping a query
+ * {@link ClientException} to {@code throw} when there is a quuery mapping error.
  *
  * @since 1.0.0
  */

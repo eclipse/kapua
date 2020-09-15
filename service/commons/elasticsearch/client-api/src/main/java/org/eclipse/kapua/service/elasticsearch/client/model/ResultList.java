@@ -22,8 +22,8 @@ import java.util.List;
  */
 public class ResultList<T> {
 
-    private List<T> result;
-    private long totalCount;
+    private final List<T> result;
+    private final long totalCount;
 
     /**
      * Constructor.
@@ -33,6 +33,7 @@ public class ResultList<T> {
      */
     public ResultList(long totalCount) {
         result = new ArrayList<>();
+
         this.totalCount = totalCount;
     }
 

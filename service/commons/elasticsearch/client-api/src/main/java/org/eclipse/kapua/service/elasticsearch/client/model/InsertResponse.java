@@ -22,15 +22,6 @@ public class InsertResponse extends Response {
     /**
      * Constructor.
      *
-     * @since 1.0.0
-     */
-    public InsertResponse() {
-        super(null, null);
-    }
-
-    /**
-     * Constructor.
-     *
      * @param id             Ihe inserted record id
      * @param typeDescriptor The {@link TypeDescriptor}.
      * @since 1.0.0

@@ -14,7 +14,9 @@ package org.eclipse.kapua.service.elasticsearch.client.exception;
 import org.eclipse.kapua.KapuaException;
 
 /**
- * Generic client exception
+ * {@link ClientException} definition.
+ * <p>
+ * This is the base {@link KapuaException} for all detailed {@link Exception} of this module.
  *
  * @since 1.0.0
  */

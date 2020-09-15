@@ -12,7 +12,7 @@
 package org.eclipse.kapua.service.elasticsearch.client.model;
 
 /**
- * Index request definition.
+ * {@link IndexRequest} definition.
  *
  * @since 1.0.0
  */
@@ -27,7 +27,7 @@ public class IndexRequest {
      * @since 1.0.0
      */
     public IndexRequest(String index) {
-        this.index = index;
+        setIndex(index);
     }
 
     /**

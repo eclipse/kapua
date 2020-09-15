@@ -28,7 +28,7 @@
             <artifactId>kapua-commons</artifactId>
         </dependency>
 
-        <!--  external dependencies -->
+        <!-- External dependencies -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>

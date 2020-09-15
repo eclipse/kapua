@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Bulk update response definition.
+ * {@link BulkUpdateResponse} definition.
  * <p>
  * It bundles a {@link List} of {@link UpdateRequest}
  *
@@ -24,16 +24,6 @@ import java.util.List;
 public class BulkUpdateResponse {
 
     List<UpdateResponse> responseList;
-
-    /**
-     * Adds an {@link UpdateResponse} to the {@link List}
-     *
-     * @param response The {@link UpdateResponse} to add.
-     * @since 1.0.0
-     */
-    public void add(UpdateResponse response) {
-        getResponse().add(response);
-    }
 
     /**
      * Gets the {@link List} of {@link UpdateResponse}s.
@@ -47,6 +37,16 @@ public class BulkUpdateResponse {
         }
 
         return responseList;
+    }
+
+    /**
+     * Adds an {@link UpdateResponse} to the {@link List}
+     *
+     * @param response The {@link UpdateResponse} to add.
+     * @since 1.0.0
+     */
+    public void add(UpdateResponse response) {
+        getResponse().add(response);
     }
 
     /**

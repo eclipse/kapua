@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,20 +14,19 @@ package org.eclipse.kapua.service.elasticsearch.client.exception;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
 
 /**
- * {@link ClientException} to throw when {@link ElasticsearchClient} is not defined.
+ * {@link ClientException} to throw when {@link ElasticsearchClient} fails to close properly.
  *
- * @since 1.0.0
+ * @since 1.3.0
  */
-public class ClientUndefinedException extends ClientException {
-
-    private static final long serialVersionUID = 2211521053876589804L;
+public class ClientClosingException extends ClientException {
 
     /**
      * Constructor.
      *
+     * @param cause The root {@link Throwable} of this {@link ClientClosingException}.
      * @since 1.3.0
      */
-    public ClientUndefinedException() {
-        super(ClientErrorCodes.CLIENT_UNDEFINED);
+    public ClientClosingException(Throwable cause) {
+        super(ClientErrorCodes.CLIENT_CLOSING_ERROR, cause);
     }
 }

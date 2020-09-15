@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Bulk update request definition.
+ * {@link BulkUpdateRequest} definition.
  * <p>
  * It bundles a {@link List} of {@link UpdateRequest}
  *

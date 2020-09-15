@@ -47,6 +47,14 @@ public interface ElasticsearchClient<C extends Closeable> {
     void init();
 
     /**
+     * Closes the underlying Elasticsearch connection.
+     *
+     * @throws ClientUnavailableException If the {@link ElasticsearchClient} was not initialized and {@link #close()} is invoked.
+     * @since 1.0.0
+     */
+    void close() throws ClientUnavailableException;
+
+    /**
      * Gets the org.elasticsearch.Client.
      *
      * @return The org.elasticsearch.Client.
@@ -113,14 +121,6 @@ public interface ElasticsearchClient<C extends Closeable> {
      * @since 1.3.0
      */
     ElasticsearchClient<C> withModelConverter(QueryConverter modelConverter);
-
-    /**
-     * Closes the underlying Elasticsearch connection.
-     *
-     * @throws ClientUnavailableException If the {@link ElasticsearchClient} was not initialized and {@link #close()} is invoked.
-     * @since 1.0.0
-     */
-    void close() throws ClientUnavailableException;
 
     /**
      * Inserts a document.

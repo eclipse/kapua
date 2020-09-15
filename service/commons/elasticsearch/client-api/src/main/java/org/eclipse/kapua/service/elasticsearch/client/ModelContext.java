@@ -16,7 +16,7 @@ import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMapping
 import java.util.Map;
 
 /**
- * Model context definition.
+ * {@link ModelContext} definition.
  * <p>
  * This object is responsible for translating document model objects from/to client objects
  *

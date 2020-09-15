@@ -42,6 +42,7 @@ public class UpdateResponse extends Response {
      */
     public UpdateResponse(String id, TypeDescriptor typeDescriptor) {
         super(id, typeDescriptor);
+
         setResult(true);
     }
 
@@ -55,8 +56,9 @@ public class UpdateResponse extends Response {
      */
     public UpdateResponse(String id, TypeDescriptor typeDescriptor, String description) {
         this(id, typeDescriptor);
+
         setResult(false);
-        this.description = description;
+        setDescription(description);
     }
 
     /**
