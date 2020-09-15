@@ -28,8 +28,8 @@ Feature: Datastore tests
     Given Start Broker
 
   Scenario: Delete items by date ranges
-    Delete previously stored messages based on a time interval. The number of deleted items should
-    depend on the index window. Only the items in whole hours/days/weeks of th einterval should be deleted.
+  Delete previously stored messages based on a time interval. The number of deleted items should
+  depend on the index window. Only the items in whole hours/days/weeks of th einterval should be deleted.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -41,7 +41,7 @@ Feature: Datastore tests
 
     When I prepare a number of messages in the specified ranges and remember the list as "TestMessages"
       | clientId      | topic               | count | startDate                | endDate                  |
-      | test-client-1 | delete/by/date/test |   92  | 2018-10-01T12:00:00.000Z | 2018-12-31T12:00:00.000Z |
+      | test-client-1 | delete/by/date/test | 92    | 2018-10-01T12:00:00.000Z | 2018-12-31T12:00:00.000Z |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all indices
 
@@ -68,7 +68,7 @@ Feature: Datastore tests
 
     When I prepare a number of messages in the specified ranges and remember the list as "TestMessages"
       | clientId      | topic               | count | startDate                | endDate                  |
-      | test-client-1 | delete/by/date/test |  744  | 2018-12-01T00:30:00.000Z | 2018-12-31T23:30:00.000Z |
+      | test-client-1 | delete/by/date/test | 744   | 2018-12-01T00:30:00.000Z | 2018-12-31T23:30:00.000Z |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all indices
 
@@ -95,7 +95,7 @@ Feature: Datastore tests
 
     When I prepare a number of messages in the specified ranges and remember the list as "TestMessages"
       | clientId      | topic               | count | startDate                | endDate                  |
-      | test-client-1 | delete/by/date/test |  1440 | 2018-12-01T00:00:30.000Z | 2018-12-01T23:59:30.000Z |
+      | test-client-1 | delete/by/date/test | 1440  | 2018-12-01T00:00:30.000Z | 2018-12-01T23:59:30.000Z |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all indices
 
@@ -119,8 +119,8 @@ Feature: Datastore tests
     Then I logout
 
   Scenario: Delete items by the datastore ID
-    Delete a previously stored message and verify that it is not in the store any more. Also delete and check the
-    message related channel, metric and client info entries.
+  Delete a previously stored message and verify that it is not in the store any more. Also delete and check the
+  message related channel, metric and client info entries.
 
     Given I delete all indices
     Given I login as user with name "kapua-sys" and password "kapua-password"
@@ -162,16 +162,16 @@ Feature: Datastore tests
     And I select account "kapua-sys"
     And The device "test-device-1"
     Given I prepare a number of messages with the following details and remember the list as "TestMessages1"
-      |topic                   |
-      |delete/by/query/test/1  |
+      | topic                  |
+      | delete/by/query/test/1 |
     And The device "test-device-2"
     Given I prepare a number of messages with the following details and remember the list as "TestMessages2"
-      |topic                   |
-      |delete/by/query/tests/2 |
+      | topic                   |
+      | delete/by/query/tests/2 |
     And The device "test-device-3"
     Given I prepare a number of messages with the following details and remember the list as "TestMessages3"
-      |topic                   |
-      |delete/by/query/test/3  |
+      | topic                  |
+      | delete/by/query/test/3 |
     Then I store the messages from list "TestMessages1" and remember the IDs as "StoredMessageIDs1"
     Then I store the messages from list "TestMessages2" and remember the IDs as "StoredMessageIDs2"
     Then I store the messages from list "TestMessages3" and remember the IDs as "StoredMessageIDs3"
@@ -213,10 +213,10 @@ Feature: Datastore tests
     And I select account "kapua-sys"
     And The device "test-device-1"
     Given I prepare a number of messages with the following details and remember the list as "TestMessages"
-      |topic                             |
-      |same/metric/name/different/type/1 |
-      |same/metric/name/different/type/2 |
-      |same/metric/name/different/type/3 |
+      | topic                             |
+      | same/metric/name/different/type/1 |
+      | same/metric/name/different/type/2 |
+      | same/metric/name/different/type/3 |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all indices
     When I count the current account messages and store the count as "AccountMessageCount"
@@ -228,58 +228,58 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: Query before schema search
-    Before schema is created methods that search with find for messages, channel info,
-    metric info and client info, should return null values.
-    Query methods on messages, channel info, metric info and client info should return empty
-    results and count on the same services should return 0.
-    Delete based on query or parametrized delete on non existent data should not fail. If data
-    doesn't exist it is not deleted.
+  Before schema is created methods that search with find for messages, channel info,
+  metric info and client info, should return null values.
+  Query methods on messages, channel info, metric info and client info should return empty
+  results and count on the same services should return 0.
+  Delete based on query or parametrized delete on non existent data should not fail. If data
+  doesn't exist it is not deleted.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     Given I select account "kapua-sys"
-      When I search for data message with id "fake-id"
-        Then I don't find message
-      When I search for channel info with id "fake-id"
-        Then I don't find channel info
-      When I search for metric info with id "fake-id"
-        Then I don't find metric info
-      When I search for client info with id "fake-id"
-        Then I don't find client info
+    When I search for data message with id "fake-id"
+    Then I don't find message
+    When I search for channel info with id "fake-id"
+    Then I don't find channel info
+    When I search for metric info with id "fake-id"
+    Then I don't find metric info
+    When I search for client info with id "fake-id"
+    Then I don't find client info
     Given I create message query for current account with limit 100
-      When I query for data message
-        Then I get empty message list result
-      When I count for data message
-        Then I get message count 0
-      Then I delete the messages based on the last query
-      And I delete the the message with the ID "fake-id" from the current account
+    When I query for data message
+    Then I get empty message list result
+    When I count for data message
+    Then I get message count 0
+    Then I delete the messages based on the last query
+    And I delete the the message with the ID "fake-id" from the current account
     Given I create channel info query for current account with limit 10
-      When I query for channel info
-        Then I get empty channel info list result
-      When I count for channel info
-        Then I get channel info count 0
-      Then I delete the channel info data based on the last query
-      Then I delete the the channel info data with the ID "fake-id" from the current account
+    When I query for channel info
+    Then I get empty channel info list result
+    When I count for channel info
+    Then I get channel info count 0
+    Then I delete the channel info data based on the last query
+    Then I delete the the channel info data with the ID "fake-id" from the current account
     Given I create metric info query for current account with limit 10
-      When I query for metric info
-        Then I get empty metric info list result
-      When I count for metric info
-        Then I get metric info count 0
-      Then I delete the metric info data based on the last query
-      Then I delete the the metric info data with the ID "fake-id" from the current account
+    When I query for metric info
+    Then I get empty metric info list result
+    When I count for metric info
+    Then I get metric info count 0
+    Then I delete the metric info data based on the last query
+    Then I delete the the metric info data with the ID "fake-id" from the current account
     Given I create client info query for current account with limit 10
-      When I query for client info
-        Then I get empty client info list result
-      When I count for client info
-        Then I get client info count 0
-      Then I delete the client info data based on the last query
-      Then I delete the the client info data with the ID "fake-id" from the current account
+    When I query for client info
+    Then I get empty client info list result
+    When I count for client info
+    Then I get client info count 0
+    Then I delete the client info data based on the last query
+    Then I delete the the client info data with the ID "fake-id" from the current account
     Then I delete all indices
     And I logout
 
   Scenario: Check the database cache coherency
-    This test checks the coherence of the registry cache for the metrics info (so if, once the
-    cache is erased, after a new metric insert the firstMessageId and firstMessageOn contain
-    the previous value)
+  This test checks the coherence of the registry cache for the metrics info (so if, once the
+  cache is erased, after a new metric insert the firstMessageId and firstMessageOn contain
+  the previous value)
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -297,8 +297,8 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: Check the message store
-    Store few messages with few metrics, position and body (partially randomly generated) and check
-    if the stored message (retrieved by id) has all the fields correctly set.
+  Store few messages with few metrics, position and body (partially randomly generated) and check
+  if the stored message (retrieved by id) has all the fields correctly set.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -311,20 +311,20 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: Query based on message ordering
-    Test the correctness of the query filtering order (3 fields: date descending, date ascending,
-    string descending) for messages
+  Test the correctness of the query filtering order (3 fields: date descending, date ascending,
+  string descending) for messages
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
     And I set the database to device timestamp indexing
     Given I prepare 100 randomly ordered messages and remember the list as "TestMessageList"
-      |topic           |
-      |bus/route/one   |
-      |bus/route/one   |
-      |bus/route/two/a |
-      |bus/route/two/b |
-      |tram/route/one  |
-      |car/one         |
+      | topic           |
+      | bus/route/one   |
+      | bus/route/one   |
+      | bus/route/two/a |
+      | bus/route/two/b |
+      | tram/route/one  |
+      | car/one         |
     And I store the messages from list "TestMessageList" and remember the IDs as "StoredMessageIDs"
     Then I refresh all indices
     When I perform an ordered query for messages and store the results as "QueriedMessageList"
@@ -332,8 +332,8 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: Test the message store with timestamp indexing
-    Test the correctness of the storage process with a basic message (no metrics, payload and position)
-    indexing message date by device timestamp (as default).
+  Test the correctness of the storage process with a basic message (no metrics, payload and position)
+  indexing message date by device timestamp (as default).
 
     And I delete all indices
     Given I login as user with name "kapua-sys" and password "kapua-password"
@@ -349,8 +349,8 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: Test the message store with server timestamp indexing
-    Test the correctness of the storage process with a basic message (no metrics, payload and position)
-    indexing message date by server timestamp (as default).
+  Test the correctness of the storage process with a basic message (no metrics, payload and position)
+  indexing message date by server timestamp (as default).
 
     Given I delete all indices
     Given I login as user with name "kapua-sys" and password "kapua-password"
@@ -366,8 +366,8 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: ChannelInfo client ID based on the account id
-    Check the correctness of the client ids info stored in the channel info data by retrieving the
-    channel info by account.
+  Check the correctness of the client ids info stored in the channel info data by retrieving the
+  channel info by account.
 
     Given I delete all indices
     Given I login as user with name "kapua-sys" and password "kapua-password"
@@ -375,13 +375,13 @@ Feature: Datastore tests
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     When I prepare a number of messages with the following details and remember the list as "TestMessages"
-      |clientId      |topic                      |
-      |test-client-1 |ci_client_by_account/1/2/3 |
-      |test-client-2 |ci_client_by_account/1/2/3 |
-      |test-client-3 |ci_client_by_account/1/2/3 |
-      |test-client-4 |ci_client_by_account/1/2/3 |
-      |test-client-4 |ci_client_by_account/1/2/3 |
-      |test-client-4 |ci_client_by_account/1/2/3 |
+      | clientId      | topic                      |
+      | test-client-1 | ci_client_by_account/1/2/3 |
+      | test-client-2 | ci_client_by_account/1/2/3 |
+      | test-client-3 | ci_client_by_account/1/2/3 |
+      | test-client-4 | ci_client_by_account/1/2/3 |
+      | test-client-4 | ci_client_by_account/1/2/3 |
+      | test-client-4 | ci_client_by_account/1/2/3 |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all indices
     When I query for the current account channels and store them as "AccountChannelList"
@@ -390,19 +390,19 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: ChannelInfo last published date
-    Check the correctness of the channel info last publish date stored by retrieving the
-    channel info by account and time window.
+  Check the correctness of the channel info last publish date stored by retrieving the
+  channel info by account and time window.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     When I prepare a number of messages with the following details and remember the list as "TestMessages"
-      |clientId      |topic                            |captured                 |
-      |test-client-1 |ci_client_by_pd_by_account/1/2/3 |2017-07-03T09:00:00.000Z |
-      |test-client-2 |ci_client_by_pd_by_account/1/2/3 |2017-07-03T09:00:00.000Z |
-      |test-client-2 |ci_client_by_pd_by_account/1/2/3 |2017-07-03T09:00:10.000Z |
-      |test-client-2 |ci_client_by_pd_by_account/1/2/3 |2017-07-03T09:00:20.000Z |
+      | clientId      | topic                            | captured                 |
+      | test-client-1 | ci_client_by_pd_by_account/1/2/3 | 2017-07-03T09:00:00.000Z |
+      | test-client-2 | ci_client_by_pd_by_account/1/2/3 | 2017-07-03T09:00:00.000Z |
+      | test-client-2 | ci_client_by_pd_by_account/1/2/3 | 2017-07-03T09:00:10.000Z |
+      | test-client-2 | ci_client_by_pd_by_account/1/2/3 | 2017-07-03T09:00:20.000Z |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all indices
     When I query for the current account channels in the date range "2017-07-03T09:00:00.000Z" to "2017-07-03T09:00:20.000Z" and store them as "ChannelList"
@@ -414,8 +414,8 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: ChannelInfo topic data based on the account id
-    Check the correctness of the topic info stored in the channel info data by retrieving the channel
-    info by account.
+  Check the correctness of the topic info stored in the channel info data by retrieving the channel
+  info by account.
 
     Given I delete all indices
     Given I login as user with name "kapua-sys" and password "kapua-password"
@@ -423,13 +423,13 @@ Feature: Datastore tests
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     When I prepare a number of messages with the following details and remember the list as "TestMessages"
-      |clientId      |topic                     |
-      |test-client-1 |ci_topic_by_account/1/2/3 |
-      |test-client-1 |ci_topic_by_account/1/2/4 |
-      |test-client-1 |ci_topic_by_account/1/2/5 |
-      |test-client-1 |ci_topic_by_account/1/2/6 |
-      |test-client-2 |ci_topic_by_account/1/2/3 |
-      |test-client-2 |ci_topic_by_account/1/2/4 |
+      | clientId      | topic                     |
+      | test-client-1 | ci_topic_by_account/1/2/3 |
+      | test-client-1 | ci_topic_by_account/1/2/4 |
+      | test-client-1 | ci_topic_by_account/1/2/5 |
+      | test-client-1 | ci_topic_by_account/1/2/6 |
+      | test-client-2 | ci_topic_by_account/1/2/3 |
+      | test-client-2 | ci_topic_by_account/1/2/4 |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all indices
     When I query for the current account channels and store them as "AccountChannelList"
@@ -438,25 +438,25 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: ChannelInfo client ID and topic data based on the client id
-    Check the correctness of the client ids and topics stored in the channel info data by retrieving the
-    channel info by client id
+  Check the correctness of the client ids and topics stored in the channel info data by retrieving the
+  channel info by client id
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
     And I set the database to device timestamp indexing
     And The device "test-device-1"
     When I prepare a number of messages with the following details and remember the list as "TestMessages1"
-      |clientId      |topic             |
-      |test-client-1 |bus/route/one     |
-      |test-client-1 |bus/route/one/a   |
-      |test-client-1 |bus/route/two/a   |
-      |test-client-1 |bus/route/two/b   |
+      | clientId      | topic           |
+      | test-client-1 | bus/route/one   |
+      | test-client-1 | bus/route/one/a |
+      | test-client-1 | bus/route/two/a |
+      | test-client-1 | bus/route/two/b |
     Then I store the messages from list "TestMessages1" and remember the IDs as "StoredMessageIDs1"
     When I prepare a number of messages with the following details and remember the list as "TestMessages2"
-      |clientId      |topic             |
-      |test-client-2 |bus/route/three   |
-      |test-client-2 |bus/route/four    |
-      |test-client-2 |bus/route/four/a  |
+      | clientId      | topic            |
+      | test-client-2 | bus/route/three  |
+      | test-client-2 | bus/route/four   |
+      | test-client-2 | bus/route/four/a |
     Then I store the messages from list "TestMessages2" and remember the IDs as "StoredMessageIDs2"
     And I refresh all indices
     When I query for the channel info of the client "test-client-1" and store the result as "ClientInfoList"
@@ -465,24 +465,24 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: Account wide metrics check
-    Check the correctness of the metric info data stored by retrieving the metrics information by account.
+  Check the correctness of the metric info data stored by retrieving the metrics information by account.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     Then I prepare a number of messages with the following details and remember the list as "TestMessages"
-      |clientId      |topic            |
-      |test-client-1 |test_topic/1/2/3 |
-      |test-client-2 |test_topic/1/2/3 |
+      | clientId      | topic            |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/3 |
     And I set the following metrics to the message 0 from the list "TestMessages"
-      |metric        |type      |value |
-      |tst-metric-1  |double    |123   |
-      |tst-metric-2  |int       |123   |
+      | metric       | type   | value |
+      | tst-metric-1 | double | 123   |
+      | tst-metric-2 | int    | 123   |
     And I set the following metrics to the message 1 from the list "TestMessages"
-      |metric        |type      |value |
-      |tst-metric-3  |string    |123   |
-      |tst-metric-4  |bool      |true  |
+      | metric       | type   | value |
+      | tst-metric-3 | string | 123   |
+      | tst-metric-4 | bool   | true  |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all indices
     When I query for the current account metrics and store them as "AccountMetrics"
@@ -491,35 +491,35 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: MetricsInfo last published date
-    Check the correctness of the metrics info last publish date stored by retrieving the
-    metrics info published in a defined time window.
+  Check the correctness of the metrics info last publish date stored by retrieving the
+  metrics info published in a defined time window.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     When I prepare a number of messages with the following details and remember the list as "TestMessages"
-      |clientId      |topic            |captured                 |
-      |test-client-1 |test_topic/1/2/3 |2017-07-03T09:00:00.000Z |
-      |test-client-2 |test_topic/1/2/3 |2017-07-03T09:00:00.000Z |
-      |test-client-2 |test_topic/1/2/3 |2017-07-03T09:00:10.000Z |
-      |test-client-2 |test_topic/1/2/3 |2017-07-03T09:00:20.000Z |
+      | clientId      | topic            | captured                 |
+      | test-client-1 | test_topic/1/2/3 | 2017-07-03T09:00:00.000Z |
+      | test-client-2 | test_topic/1/2/3 | 2017-07-03T09:00:00.000Z |
+      | test-client-2 | test_topic/1/2/3 | 2017-07-03T09:00:10.000Z |
+      | test-client-2 | test_topic/1/2/3 | 2017-07-03T09:00:20.000Z |
     And I set the following metrics to the message 0 from the list "TestMessages"
-      |metric        |type   |value |
-      |tst-metric-1  |double |123   |
-      |tst-metric-2  |int    |123   |
+      | metric       | type   | value |
+      | tst-metric-1 | double | 123   |
+      | tst-metric-2 | int    | 123   |
     And I set the following metrics to the message 1 from the list "TestMessages"
-      |metric        |type   |value |
-      |tst-metric-3  |string |123   |
-      |tst-metric-4  |bool   |true  |
+      | metric       | type   | value |
+      | tst-metric-3 | string | 123   |
+      | tst-metric-4 | bool   | true  |
     And I set the following metrics to the message 2 from the list "TestMessages"
-      |metric        |type   |value |
-      |tst-metric-3  |string |123   |
-      |tst-metric-4  |bool   |true  |
+      | metric       | type   | value |
+      | tst-metric-3 | string | 123   |
+      | tst-metric-4 | bool   | true  |
     And I set the following metrics to the message 3 from the list "TestMessages"
-      |metric        |type   |value |
-      |tst-metric-3  |string |123   |
-      |tst-metric-4  |bool   |true  |
+      | metric       | type   | value |
+      | tst-metric-3 | string | 123   |
+      | tst-metric-4 | bool   | true  |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all indices
     When I query for the current account metrics in the date range "2017-07-03T09:00:00.000Z" to "2017-07-03T09:00:20.000Z" and store them as "AccountMetrics"
@@ -536,32 +536,32 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: MetricsInfo client ID and topic data based on the client id
-    Check the correctness of the client ids and metrics stored in the metrics info data by retrieving the
-    metric info by client id.
+  Check the correctness of the client ids and metrics stored in the metrics info data by retrieving the
+  metric info by client id.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     Then I prepare a number of messages with the following details and remember the list as "TestMessages"
-      |clientId      |topic            |
-      |test-client-1 |test_topic/1/2/3 |
-      |test-client-1 |test_topic/1/2/3 |
+      | clientId      | topic            |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-1 | test_topic/1/2/3 |
     And I set the following metrics to the message 0 from the list "TestMessages"
-      |metric        |type      |value |
-      |tst-metric-1  |double    |123   |
-      |tst-metric-2  |int       |123   |
+      | metric       | type   | value |
+      | tst-metric-1 | double | 123   |
+      | tst-metric-2 | int    | 123   |
     And I set the following metrics to the message 1 from the list "TestMessages"
-      |metric        |type      |value |
-      |tst-metric-3  |string    |123   |
-      |tst-metric-4  |bool      |true  |
+      | metric       | type   | value |
+      | tst-metric-3 | string | 123   |
+      | tst-metric-4 | bool   | true  |
     Then I prepare a number of messages with the following details and remember the list as "TestMessages2"
-      |clientId      |topic            |
-      |test-client-2 |test_topic/1/2/3 |
+      | clientId      | topic            |
+      | test-client-2 | test_topic/1/2/3 |
     And I set the following metrics to the message 0 from the list "TestMessages2"
-      |metric        |type      |value |
-      |tst-metric-3  |double    |123   |
-      |tst-metric-4  |int       |123   |
+      | metric       | type   | value |
+      | tst-metric-3 | double | 123   |
+      | tst-metric-4 | int    | 123   |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     Then I store the messages from list "TestMessages2" and remember the IDs as "StoredMessageIDs2"
     And I refresh all indices
@@ -571,20 +571,20 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: Query based on metrics ordering
-    Test the correctness of the query filtering order (3 fields: date descending, date ascending,
-    string descending) for the metrics
+  Test the correctness of the query filtering order (3 fields: date descending, date ascending,
+  string descending) for the metrics
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
     And I set the database to device timestamp indexing
     Given I prepare 100 randomly ordered messages and remember the list as "TestMessageList"
-      |topic           |
-      |bus/route/one   |
-      |bus/route/one   |
-      |bus/route/two/a |
-      |bus/route/two/b |
-      |tram/route/one  |
-      |car/one         |
+      | topic           |
+      | bus/route/one   |
+      | bus/route/one   |
+      | bus/route/two/a |
+      | bus/route/two/b |
+      | tram/route/one  |
+      | car/one         |
     And I store the messages from list "TestMessageList" and remember the IDs as "StoredMessageIDs"
     Then I refresh all indices
     When I perform an ordered query for metrics and store the results as "QueriedMetricList"
@@ -592,18 +592,18 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: Account based ClientInfo data check
-    Check the correctness of the client info data stored by retrieving the client information by account.
+  Check the correctness of the client info data stored by retrieving the client information by account.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     When I prepare a number of messages with the following details and remember the list as "TestMessages"
-      |clientId      |topic            |
-      |test-client-1 |test_topic/1/2/3 |
-      |test-client-2 |test_topic/1/2/3 |
-      |test-client-2 |test_topic/1/2/3 |
-      |test-client-2 |test_topic/1/2/3 |
+      | clientId      | topic            |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/3 |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all indices
     When I query for the current account clients and store them as "AccountClients"
@@ -612,19 +612,19 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: Captured date based ClientInfo data check
-    Check the correctness of the client info data stored by retrieving the client info with a query based
-    on the Captured date.
+  Check the correctness of the client info data stored by retrieving the client info with a query based
+  on the Captured date.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     When I prepare a number of messages with the following details and remember the list as "TestMessages"
-      |clientId      |topic            |captured                 |
-      |test-client-1 |test_topic/1/2/3 |2017-07-03T09:00:00.000Z |
-      |test-client-2 |test_topic/1/2/3 |2017-07-03T09:00:00.000Z |
-      |test-client-2 |test_topic/1/2/3 |2017-07-03T09:00:10.000Z |
-      |test-client-2 |test_topic/1/2/3 |2017-07-03T09:00:20.000Z |
+      | clientId      | topic            | captured                 |
+      | test-client-1 | test_topic/1/2/3 | 2017-07-03T09:00:00.000Z |
+      | test-client-2 | test_topic/1/2/3 | 2017-07-03T09:00:00.000Z |
+      | test-client-2 | test_topic/1/2/3 | 2017-07-03T09:00:10.000Z |
+      | test-client-2 | test_topic/1/2/3 | 2017-07-03T09:00:20.000Z |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all indices
     When I query for current account clients in the date range "2017-07-03T09:00:00.000Z" to "2017-07-03T09:00:20.000Z" and store them as "ClientInfos"
@@ -636,22 +636,22 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: Client Id based ClientInfo data check
-    Check the correctness of the client info data stored by retrieving the client info with a query based
-    on the Client Id.
+  Check the correctness of the client info data stored by retrieving the client info with a query based
+  on the Client Id.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     When I prepare a number of messages with the following details and remember the list as "TestMessages1"
-      |clientId      |topic            |
-      |test-client-1 |test_topic/1/2/3 |
+      | clientId      | topic            |
+      | test-client-1 | test_topic/1/2/3 |
     Then I store the messages from list "TestMessages1" and remember the IDs as "StoredMessageIDs1"
     When I prepare a number of messages with the following details and remember the list as "TestMessages2"
-      |clientId      |topic            |
-      |test-client-2 |test_topic/1/2/4 |
-      |test-client-3 |test_topic/1/2/3 |
-      |test-client-4 |test_topic/1/2/4 |
+      | clientId      | topic            |
+      | test-client-2 | test_topic/1/2/4 |
+      | test-client-3 | test_topic/1/2/3 |
+      | test-client-4 | test_topic/1/2/4 |
     Then I store the messages from list "TestMessages2" and remember the IDs as "StoredMessageIDs2"
     And I refresh all indices
     When I query for the current account client with the Id "test-client-1" and store it as "ClientInfo"
@@ -660,39 +660,39 @@ Feature: Datastore tests
     And I delete all indices
 
   Scenario: Channel info queries based on datastore channel filters
-    Query for account channels and use specific topic filters to narrow the range of retrieved
-    channel info items.
+  Query for account channels and use specific topic filters to narrow the range of retrieved
+  channel info items.
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
     And The device "test-device-1"
     And I set the database to device timestamp indexing
     When I prepare a number of messages with the following details and remember the list as "TestMessages"
-      |clientId      |topic       |
-      |test-client-1 |tba_1/1/1/1 |
-      |test-client-1 |tba_1/1/1/2 |
-      |test-client-1 |tba_1/1/1/3 |
-      |test-client-1 |tba_1/1/2/1 |
-      |test-client-1 |tba_1/1/2/2 |
-      |test-client-1 |tba_1/1/2/3 |
-      |test-client-1 |tba_1/2/1/1 |
-      |test-client-1 |tba_1/2/1/2 |
-      |test-client-1 |tba_1/2/1/3 |
-      |test-client-1 |tba_1/2/2/1 |
-      |test-client-1 |tba_1/2/2/2 |
-      |test-client-1 |tba_1/2/2/3 |
-      |test-client-1 |tba_2/1/1/1 |
-      |test-client-1 |tba_2/1/1/2 |
-      |test-client-1 |tba_2/1/1/3 |
-      |test-client-1 |tba_2/1/2/1 |
-      |test-client-1 |tba_2/1/2/2 |
-      |test-client-1 |tba_2/1/2/3 |
-      |test-client-1 |tba_2/2/1/1 |
-      |test-client-1 |tba_2/2/1/2 |
-      |test-client-1 |tba_2/2/1/3 |
-      |test-client-1 |tba_2/2/2/1 |
-      |test-client-1 |tba_2/2/2/2 |
-      |test-client-1 |tba_2/2/2/3 |
+      | clientId      | topic       |
+      | test-client-1 | tba_1/1/1/1 |
+      | test-client-1 | tba_1/1/1/2 |
+      | test-client-1 | tba_1/1/1/3 |
+      | test-client-1 | tba_1/1/2/1 |
+      | test-client-1 | tba_1/1/2/2 |
+      | test-client-1 | tba_1/1/2/3 |
+      | test-client-1 | tba_1/2/1/1 |
+      | test-client-1 | tba_1/2/1/2 |
+      | test-client-1 | tba_1/2/1/3 |
+      | test-client-1 | tba_1/2/2/1 |
+      | test-client-1 | tba_1/2/2/2 |
+      | test-client-1 | tba_1/2/2/3 |
+      | test-client-1 | tba_2/1/1/1 |
+      | test-client-1 | tba_2/1/1/2 |
+      | test-client-1 | tba_2/1/1/3 |
+      | test-client-1 | tba_2/1/2/1 |
+      | test-client-1 | tba_2/1/2/2 |
+      | test-client-1 | tba_2/1/2/3 |
+      | test-client-1 | tba_2/2/1/1 |
+      | test-client-1 | tba_2/2/1/2 |
+      | test-client-1 | tba_2/2/1/3 |
+      | test-client-1 | tba_2/2/2/1 |
+      | test-client-1 | tba_2/2/2/2 |
+      | test-client-1 | tba_2/2/2/3 |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all indices
     When I query for the current account channels and store them as "AccountChannelList"
@@ -702,57 +702,57 @@ Feature: Datastore tests
     When I query for the current account channels with the filter "tba_1/#" and store them as "QueryResult2"
     Then There are exactly 12 channels in the list "QueryResult2"
     And The channel list "QueryResult2" contains the following topics
-      |topic       |
-      |tba_1/1/1/1 |
-      |tba_1/1/1/2 |
-      |tba_1/1/1/3 |
-      |tba_1/1/2/1 |
-      |tba_1/1/2/2 |
-      |tba_1/1/2/3 |
-      |tba_1/2/1/1 |
-      |tba_1/2/1/2 |
-      |tba_1/2/1/3 |
-      |tba_1/2/2/1 |
-      |tba_1/2/2/2 |
-      |tba_1/2/2/3 |
+      | topic       |
+      | tba_1/1/1/1 |
+      | tba_1/1/1/2 |
+      | tba_1/1/1/3 |
+      | tba_1/1/2/1 |
+      | tba_1/1/2/2 |
+      | tba_1/1/2/3 |
+      | tba_1/2/1/1 |
+      | tba_1/2/1/2 |
+      | tba_1/2/1/3 |
+      | tba_1/2/2/1 |
+      | tba_1/2/2/2 |
+      | tba_1/2/2/3 |
     When I query for the current account channels with the filter "tba_2/#" and store them as "QueryResult3"
     Then There are exactly 12 channels in the list "QueryResult3"
     And The channel list "QueryResult3" contains the following topics
-      |topic       |
-      |tba_2/1/1/1 |
-      |tba_2/1/1/2 |
-      |tba_2/1/1/3 |
-      |tba_2/1/2/1 |
-      |tba_2/1/2/2 |
-      |tba_2/1/2/3 |
-      |tba_2/2/1/1 |
-      |tba_2/2/1/2 |
-      |tba_2/2/1/3 |
-      |tba_2/2/2/1 |
-      |tba_2/2/2/2 |
-      |tba_2/2/2/3 |
+      | topic       |
+      | tba_2/1/1/1 |
+      | tba_2/1/1/2 |
+      | tba_2/1/1/3 |
+      | tba_2/1/2/1 |
+      | tba_2/1/2/2 |
+      | tba_2/1/2/3 |
+      | tba_2/2/1/1 |
+      | tba_2/2/1/2 |
+      | tba_2/2/1/3 |
+      | tba_2/2/2/1 |
+      | tba_2/2/2/2 |
+      | tba_2/2/2/3 |
     When I query for the current account channels with the filter "tba_1/1/#" and store them as "QueryResult4"
     Then There are exactly 6 channels in the list "QueryResult4"
     And The channel list "QueryResult4" contains the following topics
-      |topic       |
-      |tba_1/1/1/1 |
-      |tba_1/1/1/2 |
-      |tba_1/1/1/3 |
-      |tba_1/1/2/1 |
-      |tba_1/1/2/2 |
-      |tba_1/1/2/3 |
+      | topic       |
+      | tba_1/1/1/1 |
+      | tba_1/1/1/2 |
+      | tba_1/1/1/3 |
+      | tba_1/1/2/1 |
+      | tba_1/1/2/2 |
+      | tba_1/1/2/3 |
     When I query for the current account channels with the filter "tba_2/1/1/#" and store them as "QueryResult5"
     Then There are exactly 3 channels in the list "QueryResult5"
     And The channel list "QueryResult5" contains the following topics
-      |topic       |
-      |tba_2/1/1/1 |
-      |tba_2/1/1/2 |
-      |tba_2/1/1/3 |
+      | topic       |
+      | tba_2/1/1/1 |
+      | tba_2/1/1/2 |
+      | tba_2/1/1/3 |
     And I delete all indices
 
   Scenario: Find correct number of messages by corresponding metric
-    Checking of the number of messages that are associated with the correct metrics.
-    Searching for messages is done by one metric.
+  Checking of the number of messages that are associated with the correct metrics.
+  Searching for messages is done by one metric.
 
     Given I start the Kura Mock
     When Device is connected
@@ -806,8 +806,8 @@ Feature: Datastore tests
     Then I logout
 
   Scenario: Finding correct number of messages by corresponding two metrics
-    Checking of the number of messages that are associated with the correct metrics.
-    Searching for messages is done by two metrics.
+  Checking of the number of messages that are associated with the correct metrics.
+  Searching for messages is done by two metrics.
 
     Given I start the Kura Mock
     When Device is connected
@@ -864,8 +864,8 @@ Feature: Datastore tests
     And I logout
 
   Scenario: Finding all messages by selecting all metrics
-    Checking of the number of messages that are associated with the correct metrics.
-    Searching for messages is done by all metrics.
+  Checking of the number of messages that are associated with the correct metrics.
+  Searching for messages is done by all metrics.
 
     Given I start the Kura Mock
     When Device is connected

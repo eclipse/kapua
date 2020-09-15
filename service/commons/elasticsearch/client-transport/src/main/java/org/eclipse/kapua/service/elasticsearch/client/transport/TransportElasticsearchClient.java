@@ -22,6 +22,7 @@ import org.eclipse.kapua.service.elasticsearch.client.QueryConverter;
 import org.eclipse.kapua.service.elasticsearch.client.SchemaKeys;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientErrorCodes;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateResponse;
 import org.eclipse.kapua.service.elasticsearch.client.model.IndexRequest;
@@ -104,21 +105,21 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
      *
      * @since 1.0.0
      */
-    private TransportElasticsearchClient() {
+    public TransportElasticsearchClient() {
         super("transport");
     }
 
 
     @Override
-    public void init() {
+    public void init() throws ClientInitializationException {
         if (getClientConfiguration() == null) {
-
+            throw new ClientInitializationException("Client configuration not defined");
         }
         if (getModelContext() == null) {
-
-    }
+            throw new ClientInitializationException("Missing model context");
+        }
         if (getModelConverter() == null) {
-
+            throw new ClientInitializationException("Missing model converter");
         }
     }
 
@@ -203,7 +204,7 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
         ResultList<T> result = query(typeDescriptor, query, clazz);
 
         return result.getResult().isEmpty() ? null : result.getResult().get(0);
-        }
+    }
 
     @Override
     public <T> ResultList<T> query(TypeDescriptor typeDescriptor, Object query, Class<T> clazz) throws ClientException {
@@ -359,7 +360,7 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
                             .admin()
                             .indices()
                             .prepareGetSettings(indexRequest.getIndex())
-                    .get(getQueryTimeout());
+                            .get(getQueryTimeout());
             List<String> list = new ArrayList<>();
             response.getIndexToSettings().keysIt().forEachRemaining(list::add);
 

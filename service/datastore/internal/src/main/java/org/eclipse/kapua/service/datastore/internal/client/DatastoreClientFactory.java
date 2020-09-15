@@ -11,12 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.client;
 
+import org.eclipse.kapua.service.datastore.exception.DatastoreInternalError;
 import org.eclipse.kapua.service.datastore.internal.converter.ModelContextImpl;
 import org.eclipse.kapua.service.datastore.internal.converter.QueryConverterImpl;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientConfiguration;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,29 +43,30 @@ public class DatastoreClientFactory {
      * The implementation is specified by {@link DatastoreElasticsearchClientConfiguration#getProviderClassName()}.
      *
      * @return An Elasticsearch client.
-     * @throws ClientInitializationException if error occurs if the {@link ElasticsearchClient} cannot be initialized
      */
-    public static ElasticsearchClientProvider getInstance() throws ClientInitializationException {
-        //lazy synchronization
+    public static ElasticsearchClientProvider<?> getInstance() {
         if (elasticsearchClientProviderInstance == null) {
             synchronized (DatastoreClientFactory.class) {
                 if (elasticsearchClientProviderInstance == null) {
 
-                    ElasticsearchClientConfiguration esClientConfiguration = DatastoreElasticsearchClientConfiguration.getInstance();
-
+                    ElasticsearchClientProvider<?> elasticsearchClientProvider;
                     try {
+                        ElasticsearchClientConfiguration esClientConfiguration = DatastoreElasticsearchClientConfiguration.getInstance();
+
                         Class<ElasticsearchClientProvider<?>> providerClass = (Class<ElasticsearchClientProvider<?>>) Class.forName(esClientConfiguration.getProviderClassName());
                         Constructor<?> constructor = providerClass.getConstructor();
-                        elasticsearchClientProviderInstance = (ElasticsearchClientProvider<?>) constructor.newInstance();
+                        elasticsearchClientProvider = (ElasticsearchClientProvider<?>) constructor.newInstance();
+
+                        elasticsearchClientProvider
+                                .withClientConfiguration(esClientConfiguration)
+                                .withModelContext(new ModelContextImpl())
+                                .withModelConverter(new QueryConverterImpl())
+                                .init();
                     } catch (Exception e) {
-                        throw new ClientInitializationException(e, esClientConfiguration.getProviderClassName());
+                        throw new DatastoreInternalError(e, "Cannot instantiate Elasticsearch Client");
                     }
 
-                    elasticsearchClientProviderInstance
-                            .withClientConfiguration(esClientConfiguration)
-                            .withModelContext(new ModelContextImpl())
-                            .withModelConverter(new QueryConverterImpl())
-                            .init();
+                    elasticsearchClientProviderInstance = elasticsearchClientProvider;
                 }
             }
         }
@@ -77,10 +78,10 @@ public class DatastoreClientFactory {
      * Gets the {@link ElasticsearchClient} instance.
      *
      * @return The {@link ElasticsearchClient} instance.
-     * @throws ClientInitializationException see {@link #getInstance()}
+     * @throws ClientUnavailableException see {@link ElasticsearchClientProvider#getElasticsearchClient()}
      * @since 1.3.0
      */
-    public static ElasticsearchClient getElasticsearchClient() throws ClientInitializationException, ClientUnavailableException {
+    public static ElasticsearchClient<?> getElasticsearchClient() throws ClientUnavailableException {
         return getInstance().getElasticsearchClient();
     }
 

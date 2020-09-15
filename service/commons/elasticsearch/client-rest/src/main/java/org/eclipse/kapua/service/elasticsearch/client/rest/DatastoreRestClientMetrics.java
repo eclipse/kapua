@@ -13,9 +13,8 @@ package org.eclipse.kapua.service.elasticsearch.client.rest;
 
 public class DatastoreRestClientMetrics {
 
-    private DatastoreRestClientMetrics() { }
-
-    public static final String METRIC_MODULE_NAME = "datastore-rest-client";
+    private DatastoreRestClientMetrics() {
+    }
 
     public static final String METRIC_COMPONENT_NAME = "rest-client";
 

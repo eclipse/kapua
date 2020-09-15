@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientConfiguration;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateResponse;
@@ -44,12 +45,12 @@ public interface ElasticsearchClient<C extends Closeable> {
      *
      * @since 1.0.0
      */
-    void init();
+    void init() throws ClientInitializationException;
 
     /**
      * Closes the underlying Elasticsearch connection.
      *
-     * @throws ClientUnavailableException If the {@link ElasticsearchClient} was not initialized and {@link #close()} is invoked.
+     * @throws ClientUnavailableException If the {@link ElasticsearchClient} was not initialized and this is invoked.
      * @since 1.0.0
      */
     void close() throws ClientUnavailableException;

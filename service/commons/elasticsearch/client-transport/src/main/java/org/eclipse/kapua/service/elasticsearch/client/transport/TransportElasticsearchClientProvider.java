@@ -40,14 +40,9 @@ public class TransportElasticsearchClientProvider implements ElasticsearchClient
 
     private static final Logger LOG = LoggerFactory.getLogger(TransportElasticsearchClientProvider.class);
 
-    private static final String PROVIDER_ALREADY_INITIALIZED_MSG = "Provider already initialized! Closing it before initialize the new one!";
-    private static final String PROVIDER_NO_NODE_CONFIGURED_MSG = "No ElasticSearch nodes are configured";
-    private static final String PROVIDER_FAILED_TO_CONFIGURE_MSG = "Failed to configure ElasticSearch transport";
-    private static final String PROVIDER_CANNOT_CLOSE_CLIENT_MSG = "Cannot close ElasticSearch client. Client is already stopped or not initialized!";
-
-    private TransportElasticsearchClient transportElasticsearchClient;
     private TransportClient internalElasticsearchTransportClient;
 
+    private TransportElasticsearchClient transportElasticsearchClient;
     private ElasticsearchClientConfiguration elasticsearchClientConfiguration;
     private ModelContext modelContext;
     private QueryConverter modelConverter;
@@ -60,35 +55,51 @@ public class TransportElasticsearchClientProvider implements ElasticsearchClient
     private TransportElasticsearchClientProvider() {
     }
 
-
     @Override
     public ElasticsearchClientProvider<TransportElasticsearchClient> init() throws ClientProviderInitException {
         synchronized (TransportElasticsearchClientProvider.class) {
-            LOG.info(">>> Initializing ES transport client...");
-            if (elasticsearchClientConfiguration == null) {
 
+            if (getClientConfiguration() == null) {
+                throw new ClientProviderInitException("Client configuration not defined");
             }
             if (modelContext == null) {
-
+                throw new ClientProviderInitException("Model context not defined");
             }
             if (modelConverter == null) {
-
+                throw new ClientProviderInitException("Model converter not defined");
             }
 
             close();
 
+            // Init internal Elasticsearch Client
+            LOG.info(">>> Initializing ES transport client...");
             Settings settings =
                     Settings.builder()
-                            .put(ClusterName.CLUSTER_NAME_SETTING.getKey(), elasticsearchClientConfiguration.getClusterName())
+                            .put(ClusterName.CLUSTER_NAME_SETTING.getKey(), getClientConfiguration().getClusterName())
                             .build();
+
             internalElasticsearchTransportClient = new PreBuiltTransportClient(settings);
 
-            elasticsearchClientConfiguration
+            // Add configured nodes
+            getClientConfiguration()
                     .getNodes()
                     .stream()
                     .map(n -> new InetSocketAddress(n.getAddress(), n.getPort()))
                     .map(InetSocketTransportAddress::new)
                     .forEachOrdered(internalElasticsearchTransportClient::addTransportAddress);
+
+            // Init Kapua Elasticsearch Client
+            transportElasticsearchClient = new TransportElasticsearchClient();
+            try {
+                transportElasticsearchClient
+                        .withClientConfiguration(getClientConfiguration())
+                        .withModelContext(modelContext)
+                        .withModelConverter(modelConverter)
+                        .withClient(internalElasticsearchTransportClient)
+                        .init();
+            } catch (Exception e) {
+                throw new ClientProviderInitException(e, "Cannot init ElasticsearchClient");
+            }
 
             LOG.info(">>> Initializing ES transport client... DONE");
 
@@ -96,9 +107,6 @@ public class TransportElasticsearchClientProvider implements ElasticsearchClient
         }
     }
 
-    /**
-     * Close the ES transport client
-     */
     @Override
     public void close() {
         synchronized (TransportElasticsearchClientProvider.class) {
@@ -138,4 +146,19 @@ public class TransportElasticsearchClientProvider implements ElasticsearchClient
     public TransportElasticsearchClient getElasticsearchClient() {
         return transportElasticsearchClient;
     }
+
+    //
+    // Private methods
+    //
+
+    /**
+     * Gets the {@link ElasticsearchClientConfiguration}.
+     *
+     * @return The {@link ElasticsearchClientConfiguration}.
+     * @since 1.3.0
+     */
+    private ElasticsearchClientConfiguration getClientConfiguration() {
+        return elasticsearchClientConfiguration;
+    }
+
 }

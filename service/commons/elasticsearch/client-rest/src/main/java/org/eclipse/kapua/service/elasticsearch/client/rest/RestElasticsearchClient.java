@@ -18,11 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.http.HttpHeaders;
 import org.apache.http.ParseException;
-import org.apache.http.client.entity.EntityBuilder;
-import org.apache.http.entity.ContentType;
-import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
@@ -35,6 +31,7 @@ import org.eclipse.kapua.service.elasticsearch.client.exception.ClientActionResp
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientCommunicationException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientErrorCodes;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInternalError;
 import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateResponse;
@@ -46,6 +43,10 @@ import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
+import org.eclipse.kapua.service.elasticsearch.client.rest.exception.RequestEntityWriteError;
+import org.eclipse.kapua.service.elasticsearch.client.rest.exception.ResponseEntityReadError;
+import org.eclipse.kapua.service.elasticsearch.client.rest.utils.ApplicationJsonEntityBuilder;
+import org.eclipse.kapua.service.elasticsearch.client.rest.utils.ContentTypeApplicationJsonHeader;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.ResponseException;
 import org.elasticsearch.client.RestClient;
@@ -77,10 +78,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     private static final String MSG_EMPTY_ERROR = "Empty error message";
 
     private final ObjectMapper objectMapper;
-    private static final String CLIENT_CANNOT_PARSE_INDEX_RESPONSE_ERROR_MSG = "Cannot convert the indexes list";
     private static final String CLIENT_HITS_MAX_VALUE_EXCEEDED = "Total hits exceeds integer max value";
-    private static final String CLIENT_COMMUNICATION_TIMEOUT_MSG = "Elasticsearch client timeout";
-    private static final String CLIENT_GENERIC_ERROR_MSG = "Generic client error";
     private static final String QUERY_CONVERTED_QUERY = "Query - converted query: '{}'";
     private static final String COUNT_CONVERTED_QUERY = "Count - converted query: '{}'";
 
@@ -101,15 +99,15 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     }
 
     @Override
-    public void init() {
+    public void init() throws ClientInitializationException {
         if (getClientConfiguration() == null) {
-
+            throw new ClientInitializationException("Client configuration not defined");
         }
         if (getModelContext() == null) {
-
+            throw new ClientInitializationException("Missing model context");
         }
         if (getModelConverter() == null) {
-
+            throw new ClientInitializationException("Missing model converter");
         }
 
         MetricsService metricService = MetricServiceFactory.getInstance();
@@ -125,34 +123,25 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
 
     @Override
     public InsertResponse insert(InsertRequest insertRequest) throws ClientException {
-        Map<String, Object> storableMap = getModelContext().marshal(insertRequest.getStorable());
-        LOG.debug("Insert - converted object: '{}'", storableMap);
+        Map<String, Object> insertRequestStorableMap = getModelContext().marshal(insertRequest.getStorable());
+        LOG.debug("Insert - converted object: '{}'", insertRequestStorableMap);
 
-        String json;
-        try {
-            json = objectMapper.writeValueAsString(storableMap);
-        } catch (JsonProcessingException e) {
-            throw new ClientInternalError(e, "Error managing ObjectMapper.write");
-        }
+        String json = writeRequestFromMap(insertRequestStorableMap);
 
-        Response insertResponse = restCallTimeoutHandler(() -> getClient()
-                .performRequest(
-                        ElasticsearchKeywords.ACTION_POST,
-                        getInsertTypePath(insertRequest),
-                        Collections.emptyMap(),
-                        EntityBuilder.create()
-                                .setText(json)
-                                .setContentType(ContentType.APPLICATION_JSON)
-                                .build(),
-                        new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), insertRequest.getTypeDescriptor().getIndex(), "INSERT");
+        Response insertResponse = restCallTimeoutHandler(() ->
+                        getClient()
+                                .performRequest(
+                                        ElasticsearchKeywords.ACTION_POST,
+                                        getInsertTypePath(insertRequest),
+                                        Collections.emptyMap(),
+                                        ApplicationJsonEntityBuilder.buildFrom(json),
+                                        new ContentTypeApplicationJsonHeader()
+                                ),
+                insertRequest.getTypeDescriptor().getIndex(),
+                "INSERT");
 
         if (isRequestSuccessful(insertResponse)) {
-            JsonNode responseNode;
-            try {
-                responseNode = objectMapper.readTree(EntityUtils.toString(insertResponse.getEntity()));
-            } catch (IOException e) {
-                throw new ClientInternalError(e, "Error managing ObjectMapper.read");
-            }
+            JsonNode responseNode = readResponseAsJsonNode(insertResponse);
 
             String id = responseNode.get(ElasticsearchKeywords.KEY_DOC_ID).asText();
             String index = responseNode.get(ElasticsearchKeywords.KEY_DOC_INDEX).asText();
@@ -165,37 +154,28 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
 
     @Override
     public UpdateResponse upsert(UpdateRequest updateRequest) throws ClientException {
-        Map<String, Object> storableMap = getModelContext().marshal(updateRequest.getStorable());
+        Map<String, Object> updateRequestStorableMap = getModelContext().marshal(updateRequest.getStorable());
+
         Map<String, Object> updateRequestMap = new HashMap<>();
-        updateRequestMap.put(ElasticsearchKeywords.KEY_DOC, storableMap);
+        updateRequestMap.put(ElasticsearchKeywords.KEY_DOC, updateRequestStorableMap);
         updateRequestMap.put(ElasticsearchKeywords.KEY_DOC_AS_UPSERT, true);
         LOG.debug("Upsert - converted object: '{}'", updateRequestMap);
 
-        String json;
-        try {
-            json = objectMapper.writeValueAsString(updateRequestMap);
-        } catch (JsonProcessingException e) {
-            throw new ClientInternalError(e, "Error managing ObjectMapper.write");
-        }
+        String json = writeRequestFromMap(updateRequestMap);
 
-        Response updateResponse = restCallTimeoutHandler(() -> getClient()
-                .performRequest(
-                        ElasticsearchKeywords.ACTION_POST,
-                        getUpsertPath(updateRequest.getTypeDescriptor(), updateRequest.getId()),
-                        Collections.emptyMap(),
-                        EntityBuilder.create()
-                                .setText(json)
-                                .setContentType(ContentType.APPLICATION_JSON)
-                                .build(),
-                        new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), updateRequest.getTypeDescriptor().getIndex(), "UPSERT");
+        Response updateResponse = restCallTimeoutHandler(() ->
+                        getClient()
+                                .performRequest(
+                                        ElasticsearchKeywords.ACTION_POST,
+                                        getUpsertPath(updateRequest.getTypeDescriptor(), updateRequest.getId()),
+                                        Collections.emptyMap(),
+                                        ApplicationJsonEntityBuilder.buildFrom(json),
+                                        new ContentTypeApplicationJsonHeader()),
+                updateRequest.getTypeDescriptor().getIndex(),
+                "UPSERT");
 
         if (isRequestSuccessful(updateResponse)) {
-            JsonNode responseNode;
-            try {
-                responseNode = objectMapper.readTree(EntityUtils.toString(updateResponse.getEntity()));
-            } catch (IOException e) {
-                throw new ClientInternalError(e, "Error managing ObjectMapper.read");
-            }
+            JsonNode responseNode = readResponseAsJsonNode(updateResponse);
 
             String id = responseNode.get(ElasticsearchKeywords.KEY_DOC_ID).asText();
             String index = responseNode.get(ElasticsearchKeywords.KEY_DOC_INDEX).asText();
@@ -209,8 +189,10 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     @Override
     public BulkUpdateResponse upsert(BulkUpdateRequest bulkUpdateRequest) throws ClientException {
         StringBuilder bulkOperation = new StringBuilder();
+
         for (UpdateRequest upsertRequest : bulkUpdateRequest.getRequest()) {
             Map<String, Object> storableMap = getModelContext().marshal(upsertRequest.getStorable());
+
             bulkOperation.append("{ \"update\": {\"_id\": \"")
                     .append(upsertRequest.getId())
                     .append("\", \"_type\": \"")
@@ -220,35 +202,26 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                     .append("\"}\n");
 
             bulkOperation.append("{ \"doc\": ");
-            try {
-                bulkOperation.append(objectMapper.writeValueAsString(storableMap));
-            } catch (IOException e) {
-                throw new ClientInternalError(e, "Error managing ObjectMapper.write");
-            }
+            bulkOperation.append(writeRequestFromMap(storableMap));
             bulkOperation.append(", \"doc_as_upsert\": true }\n");
         }
 
-        Response updateResponse = restCallTimeoutHandler(() -> getClient()
-                .performRequest(
-                        ElasticsearchKeywords.ACTION_POST,
-                        getBulkPath(),
-                        Collections.emptyMap(),
-                        EntityBuilder.create()
-                                .setText(bulkOperation.toString())
-                                .setContentType(ContentType.APPLICATION_JSON)
-                                .build(),
-                        new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), "multi-index", "UPSERT BULK");
+        Response updateResponse = restCallTimeoutHandler(() ->
+                        getClient()
+                                .performRequest(
+                                        ElasticsearchKeywords.ACTION_POST,
+                                        getBulkPath(),
+                                        Collections.emptyMap(),
+                                        ApplicationJsonEntityBuilder.buildFrom(bulkOperation.toString()),
+                                        new ContentTypeApplicationJsonHeader()),
+                "multi-index",
+                "UPSERT BULK");
 
         if (isRequestSuccessful(updateResponse)) {
-            BulkUpdateResponse bulkResponse = new BulkUpdateResponse();
-            JsonNode responseNode;
-            try {
-                responseNode = objectMapper.readTree(EntityUtils.toString(updateResponse.getEntity()));
-            } catch (IOException e) {
-                throw new ClientInternalError(e, "Error managing ObjectMapper.read");
-            }
+            JsonNode responseNode = readResponseAsJsonNode(updateResponse);
 
             ArrayNode items = (ArrayNode) responseNode.get(ElasticsearchKeywords.KEY_ITEMS);
+            BulkUpdateResponse bulkResponse = new BulkUpdateResponse();
             for (JsonNode item : items) {
                 JsonNode jsonNode = item.get(ElasticsearchKeywords.KEY_UPDATE);
                 if (jsonNode != null) {
@@ -292,30 +265,26 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
 
     @Override
     public <T> ResultList<T> query(TypeDescriptor typeDescriptor, Object query, Class<T> clazz) throws ClientException {
-        JsonNode queryMap = getModelConverter().convertQuery(query);
+        JsonNode queryJsonNode = getModelConverter().convertQuery(query);
         Object queryFetchStyle = getModelConverter().getFetchStyle(query);
-        LOG.debug(QUERY_CONVERTED_QUERY, queryMap);
+        LOG.debug(QUERY_CONVERTED_QUERY, queryJsonNode);
+
+        String json = writeRequestFromJsonNode(queryJsonNode);
+
         long totalCount = 0;
         ArrayNode resultsNode = null;
         Response queryResponse = restCallTimeoutHandler(() ->
-                getClient()
-                        .performRequest(
-                                ElasticsearchKeywords.ACTION_GET,
-                                getSearchPath(typeDescriptor),
-                                Collections.emptyMap(),
-                                EntityBuilder.create()
-                                        .setText(objectMapper.writeValueAsString(queryMap))
-                                        .setContentType(ContentType.APPLICATION_JSON)
-                                        .build(),
-                                new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "QUERY");
+                        getClient()
+                                .performRequest(
+                                        ElasticsearchKeywords.ACTION_GET,
+                                        getSearchPath(typeDescriptor),
+                                        Collections.emptyMap(),
+                                        ApplicationJsonEntityBuilder.buildFrom(json),
+                                        new ContentTypeApplicationJsonHeader()),
+                typeDescriptor.getIndex(), "QUERY");
 
         if (isRequestSuccessful(queryResponse)) {
-            JsonNode responseNode;
-            try {
-                responseNode = objectMapper.readTree(EntityUtils.toString(queryResponse.getEntity()));
-            } catch (IOException e) {
-                throw new ClientInternalError(e, "Error managing ObjectMapper.read");
-            }
+            JsonNode responseNode = readResponseAsJsonNode(queryResponse);
 
             JsonNode hitsNode = responseNode.get(ElasticsearchKeywords.KEY_HITS);
             totalCount = hitsNode.get(ElasticsearchKeywords.KEY_TOTAL).asLong();
@@ -348,28 +317,24 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
 
     @Override
     public long count(TypeDescriptor typeDescriptor, Object query) throws ClientException {
-        JsonNode queryMap = getModelConverter().convertQuery(query);
-        LOG.debug(COUNT_CONVERTED_QUERY, queryMap);
-        long totalCount = 0;
-        Response queryResponse = restCallTimeoutHandler(() ->
-                getClient()
-                        .performRequest(
-                                ElasticsearchKeywords.ACTION_GET,
-                                getSearchPath(typeDescriptor),
-                                Collections.emptyMap(),
-                                EntityBuilder.create()
-                                        .setText(objectMapper.writeValueAsString(queryMap))
-                                        .setContentType(ContentType.APPLICATION_JSON)
-                                        .build(),
-                                new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "COUNT");
+        JsonNode queryJsonNode = getModelConverter().convertQuery(query);
+        LOG.debug(COUNT_CONVERTED_QUERY, queryJsonNode);
 
+        String json = writeRequestFromJsonNode(queryJsonNode);
+
+        Response queryResponse = restCallTimeoutHandler(() ->
+                        getClient()
+                                .performRequest(
+                                        ElasticsearchKeywords.ACTION_GET,
+                                        getSearchPath(typeDescriptor),
+                                        Collections.emptyMap(),
+                                        ApplicationJsonEntityBuilder.buildFrom(json),
+                                        new ContentTypeApplicationJsonHeader()),
+                typeDescriptor.getIndex(), "COUNT");
+
+        long totalCount = 0;
         if (isRequestSuccessful(queryResponse)) {
-            JsonNode responseNode;
-            try {
-                responseNode = objectMapper.readTree(EntityUtils.toString(queryResponse.getEntity()));
-            } catch (IOException e) {
-                throw new ClientInternalError(e, "Error managing ObjectMapper.read");
-            }
+            JsonNode responseNode = readResponseAsJsonNode(queryResponse);
 
             JsonNode hitsNode = responseNode.get(ElasticsearchKeywords.KEY_HITS);
             totalCount = hitsNode.get(ElasticsearchKeywords.KEY_TOTAL).asLong();
@@ -403,18 +368,21 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
 
     @Override
     public void deleteByQuery(TypeDescriptor typeDescriptor, Object query) throws ClientException {
-        JsonNode queryMap = getModelConverter().convertQuery(query);
-        LOG.debug(QUERY_CONVERTED_QUERY, queryMap);
+        JsonNode queryJsonNode = getModelConverter().convertQuery(query);
+        LOG.debug(QUERY_CONVERTED_QUERY, queryJsonNode);
 
-        Response deleteResponse = restCallTimeoutHandler(() -> getClient().performRequest(
-                ElasticsearchKeywords.ACTION_POST,
-                getDeleteByQueryPath(typeDescriptor),
-                Collections.emptyMap(),
-                EntityBuilder.create()
-                        .setText(objectMapper.writeValueAsString(queryMap))
-                        .setContentType(ContentType.APPLICATION_JSON)
-                        .build(),
-                new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "DELETE BY QUERY");
+        String json = writeRequestFromJsonNode(queryJsonNode);
+
+        Response deleteResponse = restCallTimeoutHandler(() ->
+                        getClient()
+                                .performRequest(
+                                        ElasticsearchKeywords.ACTION_POST,
+                                        getDeleteByQueryPath(typeDescriptor),
+                                        Collections.emptyMap(),
+                                        ApplicationJsonEntityBuilder.buildFrom(json),
+                                        new ContentTypeApplicationJsonHeader()),
+                typeDescriptor.getIndex(),
+                "DELETE BY QUERY");
 
         if (deleteResponse != null && !isRequestSuccessful(deleteResponse)) {
             throw buildExceptionFromUnsuccessfulResponse("Delete by query", deleteResponse);
@@ -476,17 +444,19 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     @Override
     public void createIndex(String indexName, ObjectNode indexSettings) throws ClientException {
         LOG.debug("Create index - object: '{}'", indexSettings);
+
+        String json = writeRequestFromJsonNode(indexSettings);
+
         Response createIndexResponse = restCallTimeoutHandler(() ->
-                getClient()
-                        .performRequest(
-                                ElasticsearchKeywords.ACTION_PUT,
-                                getIndexPath(indexName),
-                                Collections.emptyMap(),
-                                EntityBuilder.create()
-                                        .setText(objectMapper.writeValueAsString(indexSettings))
-                                        .setContentType(ContentType.APPLICATION_JSON)
-                                        .build(),
-                                new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), indexName, "CREATE INDEX");
+                        getClient()
+                                .performRequest(
+                                        ElasticsearchKeywords.ACTION_PUT,
+                                        getIndexPath(indexName),
+                                        Collections.emptyMap(),
+                                        ApplicationJsonEntityBuilder.buildFrom(json),
+                                        new ContentTypeApplicationJsonHeader()),
+                indexName,
+                "CREATE INDEX");
 
         if (!isRequestSuccessful(createIndexResponse)) {
             throw buildExceptionFromUnsuccessfulResponse("Create index", createIndexResponse);
@@ -520,17 +490,19 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     @Override
     public void putMapping(TypeDescriptor typeDescriptor, JsonNode mapping) throws ClientException {
         LOG.debug("Create mapping - object: '{}, index: {}, type: {}'", mapping, typeDescriptor.getIndex(), typeDescriptor.getType());
+
+        String json = writeRequestFromJsonNode(mapping);
+
         Response createMappingResponse = restCallTimeoutHandler(() ->
-                getClient()
-                        .performRequest(
-                                ElasticsearchKeywords.ACTION_PUT,
-                                getMappingPath(typeDescriptor),
-                                Collections.emptyMap(),
-                                EntityBuilder.create()
-                                        .setText(objectMapper.writeValueAsString(mapping))
-                                        .setContentType(ContentType.APPLICATION_JSON)
-                                        .build(),
-                                new BasicHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())), typeDescriptor.getIndex(), "PUT MAPPING");
+                        getClient()
+                                .performRequest(
+                                        ElasticsearchKeywords.ACTION_PUT,
+                                        getMappingPath(typeDescriptor),
+                                        Collections.emptyMap(),
+                                        ApplicationJsonEntityBuilder.buildFrom(json),
+                                        new ContentTypeApplicationJsonHeader()),
+                typeDescriptor.getIndex(),
+                "PUT MAPPING");
 
         if (!isRequestSuccessful(createMappingResponse)) {
             throw buildExceptionFromUnsuccessfulResponse("Create mapping", createMappingResponse);
@@ -683,13 +655,37 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         }
 
         String responseCodeString;
-        if (response.getStatusLine() != null) {
+        if (response != null && response.getStatusLine() != null) {
             responseCodeString = String.valueOf(response.getStatusLine().getStatusCode());
         } else {
             responseCodeString = "Unknown";
         }
 
         return new ClientActionResponseException(action, reason, responseCodeString);
+    }
+
+    private JsonNode readResponseAsJsonNode(Response response) throws ResponseEntityReadError {
+        try {
+            return objectMapper.readTree(EntityUtils.toString(response.getEntity()));
+        } catch (IOException e) {
+            throw new ResponseEntityReadError(e);
+        }
+    }
+
+    private String writeRequestFromJsonNode(JsonNode jsonNode) throws RequestEntityWriteError {
+        try {
+            return objectMapper.writeValueAsString(jsonNode);
+        } catch (JsonProcessingException e) {
+            throw new RequestEntityWriteError(e);
+        }
+    }
+
+    private String writeRequestFromMap(Map<String, Object> storableMap) throws RequestEntityWriteError {
+        try {
+            return objectMapper.writeValueAsString(storableMap);
+        } catch (JsonProcessingException e) {
+            throw new RequestEntityWriteError(e);
+        }
     }
 
     private String getRefreshAllIndexesPath() {

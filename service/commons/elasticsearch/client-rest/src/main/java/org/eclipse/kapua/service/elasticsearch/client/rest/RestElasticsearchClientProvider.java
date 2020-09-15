@@ -30,6 +30,8 @@ import org.eclipse.kapua.service.elasticsearch.client.configuration.Elasticsearc
 import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientReconnectConfiguration;
 import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientSslConfiguration;
 import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchNode;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientProviderInitException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 import org.eclipse.kapua.service.elasticsearch.client.rest.ssl.SkipCertificateCheckTrustStrategy;
 import org.elasticsearch.client.RestClient;
@@ -88,16 +90,16 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
     }
 
     @Override
-    public RestElasticsearchClientProvider init() {
+    public RestElasticsearchClientProvider init() throws ClientProviderInitException {
         synchronized (RestElasticsearchClientProvider.class) {
             if (elasticsearchClientConfiguration == null) {
-
+                throw new ClientProviderInitException("Client configuration not defined");
             }
             if (modelContext == null) {
-
+                throw new ClientProviderInitException("Model context not defined");
             }
             if (modelConverter == null) {
-
+                throw new ClientProviderInitException("Model converter not defined");
             }
 
             clientReconnectCallCounter = MetricServiceFactory.getInstance().getCounter(elasticsearchClientConfiguration.getModuleName(), "elasticsearch-client-rest", "reconnect_call", "count");
@@ -105,10 +107,11 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
             // Close the current client if already initialized.
             close();
 
+            // Init Kapua Elasticsearch Client
             try {
                 initClient();
-            } catch (ClientUnavailableException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                throw new ClientProviderInitException(e, "Cannot init ElasticsearchClient");
             }
 
             // Start a nre reconnect task
@@ -203,12 +206,12 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
      * @throws ClientUnavailableException if any {@link Exception} occurs while {@link RestClient} initialization.
      * @since 1.0.0
      */
-    private RestClient initClient() throws ClientUnavailableException {
+    private RestClient initClient() throws ClientInitializationException {
 
         ElasticsearchClientConfiguration clientConfiguration = getClientConfiguration();
 
         if (clientConfiguration.getNodes().isEmpty()) {
-            throw new ClientUnavailableException("No Elasticsearch nodes are configured");
+            throw new ClientInitializationException("No Elasticsearch nodes are configured");
         }
 
         boolean sslEnabled = getClientConfiguration().getSslConfiguration().isEnabled();
@@ -226,6 +229,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
             );
         }
 
+        // Init internal Elasticseatch client
         RestClientBuilder restClientBuilder = RestClient.builder(hosts.toArray(new HttpHost[0]));
         if (sslEnabled) {
             try {
@@ -236,7 +240,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
                 SSLContext sslContext = sslBuilder.build();
                 restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setSSLContext(sslContext));
             } catch (NoSuchAlgorithmException | KeyManagementException e) {
-                throw new ClientUnavailableException(e, "Failed to build SSLContext");
+                throw new ClientInitializationException(e, "Failed to build SSLContext");
             }
         }
 
@@ -250,6 +254,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
 
         RestClient restClient = restClientBuilder.build();
 
+        // Init Kapua Elasticsearch Client
         restElasticsearchClient = new RestElasticsearchClient();
         restElasticsearchClient
                 .withClientConfiguration(clientConfiguration)
@@ -330,10 +335,10 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
      * Initializes the {@link KeyStore}  as per  {@link ElasticsearchClientSslConfiguration} with the given {@link SSLContextBuilder}.
      *
      * @param sslBuilder The {@link SSLContextBuilder} to use.
-     * @throws ClientUnavailableException if {@link KeyStore} cannot be initialized.
+     * @throws ClientInitializationException if {@link KeyStore} cannot be initialized.
      * @since 1.0.0
      */
-    private void initKeyStore(SSLContextBuilder sslBuilder) throws ClientUnavailableException {
+    private void initKeyStore(SSLContextBuilder sslBuilder) throws ClientInitializationException {
         ElasticsearchClientSslConfiguration sslConfiguration = getClientSslConfiguration();
 
         String keystorePath = sslConfiguration.getKeyStorePath();
@@ -343,8 +348,8 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
         if (StringUtils.isNotBlank(keystorePath)) {
             try {
                 sslBuilder.loadKeyMaterial(loadKeyStore(keystorePath, keystorePassword), null);
-            } catch (UnrecoverableKeyException | ClientUnavailableException | NoSuchAlgorithmException | KeyStoreException lkme) {
-                throw new ClientUnavailableException(lkme, "Failed to init KeyStore");
+            } catch (UnrecoverableKeyException | NoSuchAlgorithmException | KeyStoreException lkme) {
+                throw new ClientInitializationException(lkme, "Failed to init KeyStore");
             }
         }
     }
@@ -355,16 +360,16 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
      * @param keystorePath     The {@link KeyStore} path.
      * @param keystorePassword The {@link KeyStore} password.
      * @return The initialized {@link KeyStore}.
-     * @throws ClientUnavailableException if {@link KeyStore} cannot be loaded.
+     * @throws ClientInitializationException if {@link KeyStore} cannot be loaded.
      * @since 1.0.0
      */
-    private KeyStore loadKeyStore(String keystorePath, String keystorePassword) throws ClientUnavailableException {
+    private KeyStore loadKeyStore(String keystorePath, String keystorePassword) throws ClientInitializationException {
         try (InputStream is = Files.newInputStream(new File(keystorePath).toPath())) {
             KeyStore keystore = KeyStore.getInstance(getClientConfiguration().getSslConfiguration().getKeyStoreType());
             keystore.load(is, keystorePassword.toCharArray());
             return keystore;
         } catch (IOException | KeyStoreException | CertificateException | NoSuchAlgorithmException e) {
-            throw new ClientUnavailableException(e, "Failed to load KeyStore");
+            throw new ClientInitializationException(e, "Failed to load KeyStore");
         }
     }
 
@@ -379,10 +384,10 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
      * </ol>
      *
      * @param sslBuilder The {@link SSLContextBuilder} to use.
-     * @throws ClientUnavailableException if {@link KeyStore} cannot be initialized.
+     * @throws ClientInitializationException if {@link KeyStore} cannot be initialized.
      * @since 1.0.0
      */
-    private void initTrustStore(SSLContextBuilder sslBuilder) throws ClientUnavailableException {
+    private void initTrustStore(SSLContextBuilder sslBuilder) throws ClientInitializationException {
         ElasticsearchClientSslConfiguration sslConfiguration = getClientSslConfiguration();
 
         boolean trustServerCertificate = sslConfiguration.isTrustServiceCertificate();
@@ -399,8 +404,8 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
             } else {
                 sslBuilder.loadTrustMaterial((TrustStrategy) null);
             }
-        } catch (NoSuchAlgorithmException | KeyStoreException | ClientUnavailableException ltme) {
-            throw new ClientUnavailableException(ltme, "Failed to init TrustStore");
+        } catch (NoSuchAlgorithmException | KeyStoreException ltme) {
+            throw new ClientInitializationException(ltme, "Failed to init TrustStore");
         }
     }
 }
