@@ -12,17 +12,19 @@
 package org.eclipse.kapua.commons.setting;
 
 /**
- * Setting key definition.
- * 
- * @since 1.0
+ * {@link SettingKey} definition.
+ * <p>
+ * This is to be implemented as a {@link Enum} to contain all Settings value available for a given {@link AbstractBaseKapuaSetting}
  *
+ * @since 1.0.0
  */
 public interface SettingKey {
 
     /**
-     * Get the setting key
-     * 
-     * @return
+     * Gets the {@link SettingKey} value.
+     *
+     * @return The {@link SettingKey} value.
+     * @since 1.0.0
      */
     public String key();
 }

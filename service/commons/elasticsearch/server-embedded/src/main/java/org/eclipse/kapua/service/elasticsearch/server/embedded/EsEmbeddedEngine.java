@@ -25,6 +25,7 @@ import org.elasticsearch.transport.Netty4Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,38 +33,51 @@ import java.util.Collection;
 /**
  * Elasticsearch embedded node engine.
  * <p>
- * This class will start an Elasticsearch node bounds the transport connector to the port 9300 and rest to the port 9200 on 127.0.0.1.
+ * This class will start an Elasticsearch node bounds the transport connector to the port 9300 and rest to the port 9200 both bound to 127.0.0.1.
+ * <p>
  * To be used for test purpose.
  *
  * @since 1.0.0
  */
-public class EsEmbeddedEngine {
+public class EsEmbeddedEngine implements Closeable {
 
     private static final Logger LOG = LoggerFactory.getLogger(EsEmbeddedEngine.class);
 
-    private static String defaultDataDirectory;
+    /**
+     * The {@link Node}
+     *
+     * @since 1.0.0
+     */
     private static volatile Node node;
 
+    /**
+     * Constructor.
+     * <p>
+     * Initializes the {@link EsEmbeddedEngine} according to the given {@link EmbeddedNodeSettings}
+     *
+     * @since 1.0.0
+     */
     public EsEmbeddedEngine() {
-        // lazy synchronization
         if (node == null) {
             synchronized (EsEmbeddedEngine.this) {
-                defaultDataDirectory = "target/elasticsearch/data/" + UUIDs.randomBase64UUID();
+                String defaultDataDirectory = "target/elasticsearch/data/" + UUIDs.randomBase64UUID();
                 if (node == null) {
-                    LOG.info("Starting Elasticsearch embedded node... (data directory: '{}')", defaultDataDirectory);
+                    LOG.info("Starting Elasticsearch embedded node...");
+                    LOG.info("\tData directory:     {}", defaultDataDirectory);
                     EmbeddedNodeSettings clientSettings = EmbeddedNodeSettings.getInstance();
-                    String clusterName = clientSettings.getString(EmbeddedNodeSettingsKey.ELASTICSEARCH_CLUSTER);
-                    LOG.info("Cluster name [{}]", clusterName);
+                    String clusterName = clientSettings.getString(EmbeddedNodeSettingsKeys.ELASTICSEARCH_CLUSTER);
+                    LOG.info("\tCluster name:       {}", clusterName);
 
-                    // transport
-                    int transportTcpPort = clientSettings.getInt(EmbeddedNodeSettingsKey.ELASTICSEARCH_TRANSPORT_PORT);
-                    String transportTcpHost = clientSettings.getString(EmbeddedNodeSettingsKey.ELASTICSEARCH_TRANSPORT_NODE);
-                    LOG.info(">>> Transport: host [{}] - port [{}]", transportTcpHost, transportTcpPort);
+                    // Transport Endpoint
+                    String transportTcpHost = clientSettings.getString(EmbeddedNodeSettingsKeys.ELASTICSEARCH_TRANSPORT_NODE);
+                    int transportTcpPort = clientSettings.getInt(EmbeddedNodeSettingsKeys.ELASTICSEARCH_TRANSPORT_PORT);
+                    LOG.info("\tTransport Endpoint: {}:{}", transportTcpHost, transportTcpPort);
 
-                    // rest
-                    int restTcpPort = clientSettings.getInt(EmbeddedNodeSettingsKey.ELASTICSEARCH_REST_PORT);
-                    String restTcpHost = clientSettings.getString(EmbeddedNodeSettingsKey.ELASTICSEARCH_REST_NODE);
-                    LOG.info(">>> Rest: host [{}] - port [{}]", restTcpHost, restTcpPort);
+                    // REST Endpoint
+                    String restTcpHost = clientSettings.getString(EmbeddedNodeSettingsKeys.ELASTICSEARCH_REST_NODE);
+                    int restTcpPort = clientSettings.getInt(EmbeddedNodeSettingsKeys.ELASTICSEARCH_REST_PORT);
+                    LOG.info("\tRest Endpoint:      {}:{}", restTcpHost, restTcpPort);
+
                     // ES 5.3 FIX
                     // Builder elasticsearchSettings = Settings.settingsBuilder()
                     // .put("http.enabled", "false")
@@ -73,21 +87,28 @@ public class EsEmbeddedEngine {
                             .put("cluster.name", clusterName)
                             .put("transport.host", transportTcpHost)
                             .put("transport.tcp.port", transportTcpPort)
-                            .put("http.enabled", "true")
-                            .put("http.type", "netty4")
                             .put("http.host", restTcpHost)
                             .put("http.port", restTcpPort)
+                            .put("http.enabled", "true")
+                            .put("http.type", "netty4")
                             .put("path.data", defaultDataDirectory)
                             .put("path.home", ".").build();
+
                     // ES 5.3 FIX
                     // node = NodeBuilder.nodeBuilder()
                     // .local(true)
                     // .settings(elasticsearchSettings.build())
                     // .node();
-                    Collection<Class<? extends Plugin>> plugins = Arrays.asList(
-                            Netty4Plugin.class, ReindexPlugin.class, PercolatorPlugin.class, MustachePlugin.class);
+                    Collection<Class<? extends Plugin>> plugins =
+                            Arrays.asList(
+                                    Netty4Plugin.class,
+                                    ReindexPlugin.class,
+                                    PercolatorPlugin.class,
+                                    MustachePlugin.class
+                            );
+
                     node = new PluggableNode(settings, plugins);
-                    // node = new Node(settings);
+
                     try {
                         node.start();
                     } catch (NodeValidationException e) {
@@ -99,21 +120,35 @@ public class EsEmbeddedEngine {
         }
     }
 
+    /**
+     * Gets a {@link Client} to interact with the {@link EsEmbeddedEngine}
+     *
+     * @return A {@link Client} to interact with the {@link EsEmbeddedEngine}
+     * @see Node#client()
+     * @since 1.0.0
+     */
     public Client getClient() {
+        if (node == null) {
+            throw new RuntimeException("Node already closed! Please init again the EsEmbeddedNode");
+        }
+
         return node.client();
     }
 
+    @Override
     public void close() throws IOException {
         if (node != null) {
             LOG.info("Closing Elasticsearch embedded node...");
-            node.close();
-            node = null;
-            LOG.info("Closing Elasticsearch embedded node... DONE");
+            try {
+                node.close();
+            } finally {
+                node = null;
+            }
+            LOG.info("Closing Elasticsearch embedded node... DONE!");
         }
     }
 
-    private class PluggableNode extends Node {
-
+    private static class PluggableNode extends Node {
         public PluggableNode(Settings settings, Collection<Class<? extends Plugin>> plugins) {
             super(InternalSettingsPreparer.prepareEnvironment(settings, null), plugins);
         }

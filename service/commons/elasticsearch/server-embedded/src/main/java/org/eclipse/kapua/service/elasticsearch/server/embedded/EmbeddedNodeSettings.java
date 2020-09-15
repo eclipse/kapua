@@ -18,20 +18,36 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  *
  * @since 1.0.0
  */
-public class EmbeddedNodeSettings extends AbstractKapuaSetting<EmbeddedNodeSettingsKey> {
+public class EmbeddedNodeSettings extends AbstractKapuaSetting<EmbeddedNodeSettingsKeys> {
 
+    /**
+     * The {@link AbstractKapuaSetting} filename.
+     *
+     * @since 1.0.0
+     */
     private static final String DATASTORE_CONFIG_RESOURCE = "kapua-datastore-embedded-client-setting.properties";
 
+    /**
+     * The {@link EmbeddedNodeSettings} instance.
+     *
+     * @since 1.0.0
+     */
     private static final EmbeddedNodeSettings INSTANCE = new EmbeddedNodeSettings();
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     private EmbeddedNodeSettings() {
         super(DATASTORE_CONFIG_RESOURCE);
     }
 
     /**
-     * Get the datastore ES embedded node settings instance
+     * Gets the {@link EmbeddedNodeSettings}
      *
-     * @return
+     * @return The {@link EmbeddedNodeSettings}
+     * @since 1.0.0
      */
     public static EmbeddedNodeSettings getInstance() {
         return INSTANCE;
