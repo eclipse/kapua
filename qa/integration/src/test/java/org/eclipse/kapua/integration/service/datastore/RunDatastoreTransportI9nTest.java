@@ -32,6 +32,7 @@ import org.junit.runner.RunWith;
 @CucumberProperty(key = "broker.ip", value = "192.168.33.10")
 @CucumberProperty(key = "commons.settings.hotswap", value = "true")
 @CucumberProperty(key = "datastore.elasticsearch.node", value = "127.0.0.1")
+@CucumberProperty(key = "datastore.elasticsearch.port", value = "9300")
 @CucumberProperty(key = "datastore.elasticsearch.provider", value = "org.eclipse.kapua.service.elasticsearch.client.transport.TransportElasticsearchClientProvider")
 @CucumberProperty(key = "datastore.index.prefix", value = "")
 @CucumberProperty(key = "kapua.config.url", value = "")

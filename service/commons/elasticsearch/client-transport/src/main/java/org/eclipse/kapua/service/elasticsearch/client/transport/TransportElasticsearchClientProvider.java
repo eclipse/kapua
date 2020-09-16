@@ -47,13 +47,13 @@ public class TransportElasticsearchClientProvider implements ElasticsearchClient
     private ModelContext modelContext;
     private QueryConverter modelConverter;
 
-    /**
-     * Constructor.
-     *
-     * @since 1.0.0
-     */
-    private TransportElasticsearchClientProvider() {
-    }
+//    /**
+//     * Constructor.
+//     *
+//     * @since 1.0.0
+//     */
+//    private TransportElasticsearchClientProvider() {
+//    }
 
     @Override
     public ElasticsearchClientProvider<TransportElasticsearchClient> init() throws ClientProviderInitException {

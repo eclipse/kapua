@@ -25,7 +25,7 @@ public class EmbeddedNodeSettings extends AbstractKapuaSetting<EmbeddedNodeSetti
      *
      * @since 1.0.0
      */
-    private static final String DATASTORE_CONFIG_RESOURCE = "kapua-datastore-embedded-client-setting.properties";
+    private static final String DATASTORE_CONFIG_RESOURCE = "kapua-datastore-embedded-server-setting.properties";
 
     /**
      * The {@link EmbeddedNodeSettings} instance.
