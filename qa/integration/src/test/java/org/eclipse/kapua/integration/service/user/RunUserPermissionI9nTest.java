@@ -16,6 +16,7 @@ import org.eclipse.kapua.qa.common.cucumber.CucumberProperty;
 import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
 import org.junit.runner.RunWith;
 
+
 @RunWith(CucumberWithProperties.class)
 @CucumberOptions(
         features = "classpath:features/user/UserPermissionI9n.feature",
@@ -39,6 +40,8 @@ import org.junit.runner.RunWith;
         monochrome = true)
 @CucumberProperty(key = "kapua.config.url", value = "")
 @CucumberProperty(key = "datastore.elasticsearch.provider", value = "org.eclipse.kapua.service.elasticsearch.client.rest.RestElasticsearchClientProvider")
+@CucumberProperty(key = "datastore.elasticsearch.node", value = "127.0.0.1")
+@CucumberProperty(key = "datastore.elasticsearch.port", value = "9200")
 @CucumberProperty(key = "org.eclipse.kapua.qa.datastore.extraStartupDelay", value = "5")
 @CucumberProperty(key = "org.eclipse.kapua.qa.broker.extraStartupDelay", value = "5")
 public class RunUserPermissionI9nTest {

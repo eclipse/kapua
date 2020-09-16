@@ -29,11 +29,11 @@ import org.eclipse.kapua.service.elasticsearch.client.QueryConverter;
 import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientConfiguration;
 import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientReconnectConfiguration;
 import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientSslConfiguration;
-import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchNode;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientProviderInitException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 import org.eclipse.kapua.service.elasticsearch.client.rest.ssl.SkipCertificateCheckTrustStrategy;
+import org.eclipse.kapua.service.elasticsearch.client.utils.InetAddressParser;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.slf4j.Logger;
@@ -43,7 +43,6 @@ import javax.net.ssl.SSLContext;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
@@ -57,6 +56,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * {@link ElasticsearchClientProvider} REST implementation.
@@ -80,14 +80,6 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
 
     private static Counter clientReconnectCallCounter;
     private ScheduledExecutorService reconnectExecutorTask;
-
-    /**
-     * Constructor.
-     *
-     * @since 1.0.0
-     */
-    public RestElasticsearchClientProvider() {
-    }
 
     @Override
     public RestElasticsearchClientProvider init() throws ClientProviderInitException {
@@ -203,7 +195,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
      * Initializes the {@link RestClient} as per {@link ElasticsearchClientConfiguration}.
      *
      * @return The initialized {@link RestClient}.
-     * @throws ClientUnavailableException if any {@link Exception} occurs while {@link RestClient} initialization.
+     * @throws ClientInitializationException if any {@link Exception} occurs while {@link RestClient} initialization.
      * @since 1.0.0
      */
     private RestClient initClient() throws ClientInitializationException {
@@ -214,19 +206,24 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
             throw new ClientInitializationException("No Elasticsearch nodes are configured");
         }
 
-        boolean sslEnabled = getClientConfiguration().getSslConfiguration().isEnabled();
+        boolean sslEnabled = clientConfiguration.getSslConfiguration().isEnabled();
         LOG.info("ES Rest Client - SSL Layer: {}", (sslEnabled ? "Enabled" : "Disabled "));
         List<HttpHost> hosts = new ArrayList<>();
-        for (ElasticsearchNode node : getClientConfiguration().getNodes()) {
-            InetSocketAddress address = new InetSocketAddress(node.getAddress(), node.getPort());
-            hosts.add(
-                    new HttpHost(
-                            address.getAddress(),
-                            address.getHostName(),
-                            address.getPort(),
-                            (sslEnabled ? "https" : "http")
+        try {
+            InetAddressParser
+                    .parseAddresses(clientConfiguration.getNodes())
+                    .stream()
+                    .map(inetSocketAddress ->
+                            new HttpHost(
+                                    inetSocketAddress.getAddress(),
+                                    inetSocketAddress.getHostName(),
+                                    inetSocketAddress.getPort(),
+                                    (sslEnabled ? "https" : "http"))
                     )
-            );
+                    .collect(Collectors.toCollection(() -> hosts));
+
+        } catch (Exception e) {
+            throw new ClientInitializationException(e, "Error while parsing node addresses!");
         }
 
         // Init internal Elasticseatch client

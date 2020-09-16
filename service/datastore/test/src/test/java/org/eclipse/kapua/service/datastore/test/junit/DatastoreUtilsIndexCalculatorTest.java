@@ -16,10 +16,9 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
-
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -36,9 +35,9 @@ import java.util.List;
 import java.util.TimeZone;
 
 @Category(JUnitTests.class)
-public class IndexCalculatorTest extends Assert {
+public class DatastoreUtilsIndexCalculatorTest extends Assert {
 
-    private static final Logger LOG = LoggerFactory.getLogger(IndexCalculatorTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DatastoreUtilsIndexCalculatorTest.class);
 
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm Z");
 
@@ -169,7 +168,7 @@ public class IndexCalculatorTest extends Assert {
                 calEndDate != null ? calEndDate.get(Calendar.WEEK_OF_YEAR) : "Infinity",
                 calEndDate != null ? calEndDate.get(Calendar.DAY_OF_WEEK) : "Infinity");
 
-        String[] index = DatastoreUtils.convertToDataIndexes(new String[]{ null, null }, startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null);
+        String[] index = DatastoreUtils.convertToDataIndexes(new String[]{null, null}, startDate != null ? startDate.toInstant() : null, endDate != null ? endDate.toInstant() : null);
         compareResult(null, index);
     }
 
@@ -203,6 +202,6 @@ public class IndexCalculatorTest extends Assert {
     }
 
     private String[] getDataIndexesByAccount(KapuaId scopeId) {
-        return buildExpectedResult("1", 1, 2015, 52, 2018, new int[]{ 53, 52, 52, 52 });
+        return buildExpectedResult("1", 1, 2015, 52, 2018, new int[]{53, 52, 52, 52});
     }
 }

@@ -117,7 +117,7 @@
             <!--  handling timeout and communication exceptions in a retry queue -->
             <!-- BEGIN DATASTORE PERSISTENCE -->
             <onException>
-                <exception>org.eclipse.kapua.service.datastore.exception.DatastoreUnavailableException</exception>
+                <exception>org.eclipse.kapua.service.datastore.internal.mediator.DatastoreCommunicationException</exception>
                 <redeliveryPolicy maximumRedeliveries="0" logRetryAttempted="true" retryAttemptedLogLevel="WARN"/>
                 <handled>
                     <constant>true</constant>
@@ -127,7 +127,7 @@
             </onException>
             <!-- handling configuration error -->
             <onException>
-                <exception>org.eclipse.kapua.service.datastore.exception.DatastoreDisabledException</exception>
+                <exception>org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException</exception>
                 <redeliveryPolicy maximumRedeliveries="0" logRetryAttempted="true" retryAttemptedLogLevel="WARN"/>
                 <handled>
                     <constant>true</constant>
@@ -136,7 +136,7 @@
                 <to uri="activemq:queue:storeConfigurationException"/>
             </onException>
             <onException>
-                <exception>org.eclipse.kapua.service.datastore.exception.DatastoreServiceException</exception>
+                <exception>org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException</exception>
                 <redeliveryPolicy maximumRedeliveries="0" logRetryAttempted="true" retryAttemptedLogLevel="WARN"/>
                 <handled>
                     <constant>true</constant>

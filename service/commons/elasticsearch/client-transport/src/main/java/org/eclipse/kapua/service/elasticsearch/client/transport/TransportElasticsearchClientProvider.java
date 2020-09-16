@@ -17,6 +17,7 @@ import org.eclipse.kapua.service.elasticsearch.client.ModelContext;
 import org.eclipse.kapua.service.elasticsearch.client.QueryConverter;
 import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientConfiguration;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientProviderInitException;
+import org.eclipse.kapua.service.elasticsearch.client.utils.InetAddressParser;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.cluster.ClusterName;
 import org.elasticsearch.common.settings.Settings;
@@ -24,8 +25,6 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.InetSocketAddress;
 
 /**
  * {@link ElasticsearchClientProvider} transport implementation.
@@ -47,14 +46,6 @@ public class TransportElasticsearchClientProvider implements ElasticsearchClient
     private ModelContext modelContext;
     private QueryConverter modelConverter;
 
-//    /**
-//     * Constructor.
-//     *
-//     * @since 1.0.0
-//     */
-//    private TransportElasticsearchClientProvider() {
-//    }
-
     @Override
     public ElasticsearchClientProvider<TransportElasticsearchClient> init() throws ClientProviderInitException {
         synchronized (TransportElasticsearchClientProvider.class) {
@@ -62,6 +53,11 @@ public class TransportElasticsearchClientProvider implements ElasticsearchClient
             if (getClientConfiguration() == null) {
                 throw new ClientProviderInitException("Client configuration not defined");
             }
+
+            if (getClientConfiguration().getNodes().isEmpty()) {
+                throw new ClientProviderInitException("Client configuration nodes empty");
+            }
+
             if (modelContext == null) {
                 throw new ClientProviderInitException("Model context not defined");
             }
@@ -73,20 +69,27 @@ public class TransportElasticsearchClientProvider implements ElasticsearchClient
 
             // Init internal Elasticsearch Client
             LOG.info(">>> Initializing ES transport client...");
-            Settings settings =
-                    Settings.builder()
-                            .put(ClusterName.CLUSTER_NAME_SETTING.getKey(), getClientConfiguration().getClusterName())
-                            .build();
+            try {
+                Settings settings =
+                        Settings.builder()
+                                .put(ClusterName.CLUSTER_NAME_SETTING.getKey(), getClientConfiguration().getClusterName())
+                                .build();
 
-            internalElasticsearchTransportClient = new PreBuiltTransportClient(settings);
+                internalElasticsearchTransportClient = new PreBuiltTransportClient(settings);
+            } catch (Exception e) {
+                throw new ClientProviderInitException(e, "Cannot build Elasticsearch Transport Client!");
+            }
 
-            // Add configured nodes
-            getClientConfiguration()
-                    .getNodes()
-                    .stream()
-                    .map(n -> new InetSocketAddress(n.getAddress(), n.getPort()))
-                    .map(InetSocketTransportAddress::new)
-                    .forEachOrdered(internalElasticsearchTransportClient::addTransportAddress);
+            try {
+                // Add configured nodes
+                InetAddressParser
+                        .parseAddresses(getClientConfiguration().getNodes())
+                        .stream()
+                        .map(InetSocketTransportAddress::new)
+                        .forEachOrdered(internalElasticsearchTransportClient::addTransportAddress);
+            } catch (Exception e) {
+                throw new ClientProviderInitException(e, "Error while parsing node addresses!");
+            }
 
             // Init Kapua Elasticsearch Client
             transportElasticsearchClient = new TransportElasticsearchClient();
@@ -98,7 +101,7 @@ public class TransportElasticsearchClientProvider implements ElasticsearchClient
                         .withClient(internalElasticsearchTransportClient)
                         .init();
             } catch (Exception e) {
-                throw new ClientProviderInitException(e, "Cannot init ElasticsearchClient");
+                throw new ClientProviderInitException(e, "Cannot init Kapua Elasticsearch Client!");
             }
 
             LOG.info(">>> Initializing ES transport client... DONE");
