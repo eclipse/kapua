@@ -53,9 +53,8 @@ import org.elasticsearch.client.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -132,7 +131,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                         getClient()
                                 .performRequest(
                                         ElasticsearchKeywords.ACTION_POST,
-                                        getInsertTypePath(insertRequest),
+                                        ElasticsearchResourcePaths.insertType(insertRequest),
                                         Collections.emptyMap(),
                                         ApplicationJsonEntityBuilder.buildFrom(json),
                                         new ContentTypeApplicationJsonHeader()
@@ -167,7 +166,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                         getClient()
                                 .performRequest(
                                         ElasticsearchKeywords.ACTION_POST,
-                                        getUpsertPath(updateRequest.getTypeDescriptor(), updateRequest.getId()),
+                                        ElasticsearchResourcePaths.upsert(updateRequest.getTypeDescriptor(), updateRequest.getId()),
                                         Collections.emptyMap(),
                                         ApplicationJsonEntityBuilder.buildFrom(json),
                                         new ContentTypeApplicationJsonHeader()),
@@ -210,7 +209,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                         getClient()
                                 .performRequest(
                                         ElasticsearchKeywords.ACTION_POST,
-                                        getBulkPath(),
+                                        ElasticsearchResourcePaths.getBulkPath(),
                                         Collections.emptyMap(),
                                         ApplicationJsonEntityBuilder.buildFrom(bulkOperation.toString()),
                                         new ContentTypeApplicationJsonHeader()),
@@ -277,7 +276,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                         getClient()
                                 .performRequest(
                                         ElasticsearchKeywords.ACTION_GET,
-                                        getSearchPath(typeDescriptor),
+                                        ElasticsearchResourcePaths.search(typeDescriptor),
                                         Collections.emptyMap(),
                                         ApplicationJsonEntityBuilder.buildFrom(json),
                                         new ContentTypeApplicationJsonHeader()),
@@ -292,12 +291,13 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_HITS_MAX_VALUE_EXCEEDED);
             }
             resultsNode = ((ArrayNode) hitsNode.get(ElasticsearchKeywords.KEY_HITS));
-        } else if (queryResponse != null) {
+        } else if (!isRequestBadRequest(queryResponse) &&
+                !isRequestNotFound(queryResponse)) {
             throw buildExceptionFromUnsuccessfulResponse("Query", queryResponse);
         }
 
         ResultList<T> resultList = new ResultList<>(totalCount);
-        if (resultsNode != null && resultsNode.size() > 0) {
+        if (resultsNode != null && !resultsNode.isEmpty()) {
             for (JsonNode result : resultsNode) {
                 Map<String, Object> object = objectMapper.convertValue(result.get(SchemaKeys.KEY_SOURCE), Map.class);
 
@@ -326,7 +326,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                         getClient()
                                 .performRequest(
                                         ElasticsearchKeywords.ACTION_GET,
-                                        getSearchPath(typeDescriptor),
+                                        ElasticsearchResourcePaths.search(typeDescriptor),
                                         Collections.emptyMap(),
                                         ApplicationJsonEntityBuilder.buildFrom(json),
                                         new ContentTypeApplicationJsonHeader()),
@@ -341,7 +341,8 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
             if (totalCount > Integer.MAX_VALUE) {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_HITS_MAX_VALUE_EXCEEDED);
             }
-        } else if (queryResponse != null) {
+        } else if (!isRequestBadRequest(queryResponse) &&
+                !isRequestNotFound(queryResponse)) {
             throw buildExceptionFromUnsuccessfulResponse("Count", queryResponse);
         }
 
@@ -355,13 +356,14 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                         getClient()
                                 .performRequest(
                                         ElasticsearchKeywords.ACTION_DELETE,
-                                        getIdPath(typeDescriptor, id),
+                                        ElasticsearchResourcePaths.id(typeDescriptor, id),
                                         Collections.emptyMap()
                                 ),
                 typeDescriptor.getIndex(),
                 ElasticsearchKeywords.ACTION_DELETE);
 
-        if (deleteResponse != null && !isRequestSuccessful(deleteResponse)) {
+        if (!isRequestSuccessful(deleteResponse) &&
+                !isRequestNotFound(deleteResponse)) {
             throw buildExceptionFromUnsuccessfulResponse("Delete", deleteResponse);
         }
     }
@@ -377,14 +379,16 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                         getClient()
                                 .performRequest(
                                         ElasticsearchKeywords.ACTION_POST,
-                                        getDeleteByQueryPath(typeDescriptor),
+                                        ElasticsearchResourcePaths.deleteByQuery(typeDescriptor),
                                         Collections.emptyMap(),
                                         ApplicationJsonEntityBuilder.buildFrom(json),
                                         new ContentTypeApplicationJsonHeader()),
                 typeDescriptor.getIndex(),
                 "DELETE BY QUERY");
 
-        if (deleteResponse != null && !isRequestSuccessful(deleteResponse)) {
+        if (!isRequestSuccessful(deleteResponse) &&
+                !isRequestNotFound(deleteResponse) &&
+                !isRequestBadRequest(deleteResponse)) {
             throw buildExceptionFromUnsuccessfulResponse("Delete by query", deleteResponse);
         }
     }
@@ -396,49 +400,45 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                         getClient()
                                 .performRequest(
                                         ElasticsearchKeywords.ACTION_HEAD,
-                                        getIndexPath(indexRequest.getIndex()),
+                                        ElasticsearchResourcePaths.index(indexRequest.getIndex()),
                                         Collections.emptyMap()
                                 ),
                 indexRequest.getIndex(),
                 "INDEX EXIST");
 
-        if (isIndexExistsResponse != null && isIndexExistsResponse.getStatusLine() != null) {
-            if (isIndexExistsResponse.getStatusLine().getStatusCode() == 200) {
-                return new IndexResponse(true);
-            } else if (isIndexExistsResponse.getStatusLine().getStatusCode() == 404) {
-                return new IndexResponse(false);
-            }
+        if (isRequestSuccessful(isIndexExistsResponse)) {
+            return new IndexResponse(true);
+        } else if (isRequestNotFound(isIndexExistsResponse)) {
+            return new IndexResponse(false);
+        } else {
+            throw buildExceptionFromUnsuccessfulResponse("Index exists", isIndexExistsResponse);
         }
-
-        throw buildExceptionFromUnsuccessfulResponse("Index exists", isIndexExistsResponse);
     }
 
     @Override
     public IndexResponse findIndexes(IndexRequest indexRequest) throws ClientException {
         LOG.debug("Find indexes - index prefix: '{}'", indexRequest.getIndex());
-        Response isIndexExistsResponse = restCallTimeoutHandler(() ->
+        Response findIndexResponse = restCallTimeoutHandler(() ->
                         getClient()
                                 .performRequest(
                                         ElasticsearchKeywords.ACTION_GET,
-                                        getFindIndexPath(indexRequest.getIndex()),
+                                        ElasticsearchResourcePaths.findIndex(indexRequest.getIndex()),
                                         Collections.singletonMap("pretty", "true")
                                 ),
                 indexRequest.getIndex(),
                 "INDEX EXIST");
 
-        if (isIndexExistsResponse != null && isIndexExistsResponse.getStatusLine() != null) {
-            if (isIndexExistsResponse.getStatusLine().getStatusCode() == 200) {
-                try {
-                    return new IndexResponse(EntityUtils.toString(isIndexExistsResponse.getEntity()).split("\n"));
-                } catch (ParseException | IOException e) {
-                    throw new ClientInternalError(e, "Cannot convert the indexes list");
-                }
-            } else if (isIndexExistsResponse.getStatusLine().getStatusCode() == 404) {
-                return new IndexResponse(null);
+        if (isRequestSuccessful(findIndexResponse)) {
+            try {
+                return new IndexResponse(EntityUtils.toString(findIndexResponse.getEntity()).split("\n"));
+            } catch (ParseException | IOException e) {
+                throw new ClientInternalError(e, "Cannot convert the indexes list");
             }
+        } else if (isRequestNotFound(findIndexResponse)) {
+            return new IndexResponse(null);
+        } else {
+            throw buildExceptionFromUnsuccessfulResponse("Find indexes", findIndexResponse);
         }
-
-        throw buildExceptionFromUnsuccessfulResponse("Find indexes", isIndexExistsResponse);
     }
 
     @Override
@@ -451,7 +451,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                         getClient()
                                 .performRequest(
                                         ElasticsearchKeywords.ACTION_PUT,
-                                        getIndexPath(indexName),
+                                        ElasticsearchResourcePaths.index(indexName),
                                         Collections.emptyMap(),
                                         ApplicationJsonEntityBuilder.buildFrom(json),
                                         new ContentTypeApplicationJsonHeader()),
@@ -470,21 +470,19 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                         getClient()
                                 .performRequest(
                                         ElasticsearchKeywords.ACTION_GET,
-                                        getMappingPath(typeDescriptor),
+                                        ElasticsearchResourcePaths.mapping(typeDescriptor),
                                         Collections.emptyMap()
                                 ),
                 typeDescriptor.getIndex(),
                 "MAPPING EXIST");
 
-        if (isMappingExistsResponse != null && isMappingExistsResponse.getStatusLine() != null) {
-            if (isMappingExistsResponse.getStatusLine().getStatusCode() == 200) {
-                return true;
-            } else if (isMappingExistsResponse.getStatusLine().getStatusCode() == 404) {
-                return false;
-            }
+        if (isRequestSuccessful(isMappingExistsResponse)) {
+            return true;
+        } else if (isRequestNotFound(isMappingExistsResponse)) {
+            return false;
+        } else {
+            throw buildExceptionFromUnsuccessfulResponse("Mapping exists", isMappingExistsResponse);
         }
-
-        throw buildExceptionFromUnsuccessfulResponse("Mapping exists", isMappingExistsResponse);
     }
 
     @Override
@@ -497,7 +495,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                         getClient()
                                 .performRequest(
                                         ElasticsearchKeywords.ACTION_PUT,
-                                        getMappingPath(typeDescriptor),
+                                        ElasticsearchResourcePaths.mapping(typeDescriptor),
                                         Collections.emptyMap(),
                                         ApplicationJsonEntityBuilder.buildFrom(json),
                                         new ContentTypeApplicationJsonHeader()),
@@ -516,7 +514,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                         getClient()
                                 .performRequest(
                                         ElasticsearchKeywords.ACTION_POST,
-                                        getRefreshAllIndexesPath(),
+                                        ElasticsearchResourcePaths.refreshAllIndexes(),
                                         Collections.emptyMap()
                                 ),
                 ElasticsearchKeywords.INDEX_ALL,
@@ -534,7 +532,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                         getClient()
                                 .performRequest(
                                         ElasticsearchKeywords.ACTION_DELETE,
-                                        getIndexPath("_all"),
+                                        ElasticsearchResourcePaths.index("_all"),
                                         Collections.emptyMap()
                                 ),
                 ElasticsearchKeywords.INDEX_ALL,
@@ -556,54 +554,48 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                 return getClient()
                         .performRequest(
                                 ElasticsearchKeywords.ACTION_DELETE,
-                                getIndexPath(index),
+                                ElasticsearchResourcePaths.index(index),
                                 Collections.emptyMap()
                         );
             }, index, "DELETE INDEX");
 
             // for that call the deleteIndexResponse=null case could be considered as good response since if an index doesn't exist (404) the delete could be considered successful.
             // the deleteIndexResponse is null also if the error is due to a bad index request (400) but this error, except if there is an application bug, shouldn't never happen.
-            if (deleteIndexResponse == null) {
+            if (isRequestNotFound(deleteIndexResponse)) {
                 LOG.debug("Deleting index: {} - index does not exist", index);
             } else if (!isRequestSuccessful(deleteIndexResponse)) {
                 throw buildExceptionFromUnsuccessfulResponse("Delete indexes", deleteIndexResponse);
             }
+
             LOG.debug("Deleting index: {} - index deleted", index);
         }
     }
 
-    private <T> T restCallTimeoutHandler(Callable<T> restAction, String index, String operationName) throws ClientException {
+    private Response restCallTimeoutHandler(Callable<Response> restAction, String index, String operationName) throws ClientException {
         int retryCount = 0;
         try {
-
             do {
                 try {
                     return restAction.call();
-                } catch (TimeoutException te) {
-                    timeoutRetryCount.inc();
-                    if (retryCount < getClientConfiguration().getRequestConfiguration().getRequestRetryAttemptMax() - 1) {
-                        try {
-                            Thread.sleep((long) (getClientConfiguration().getRequestConfiguration().getRequestRetryAttemptWait() * (0.5 + RANDOM.nextFloat() / 2)));
-                        } catch (InterruptedException e1) {
-                            Thread.currentThread().interrupt();
-                        }
-                    }
                 } catch (RuntimeException e) {
-                    restCallRuntimeExecCount.inc();
-                    throw e;
+                    if (e.getCause() instanceof TimeoutException) {
+                        timeoutRetryCount.inc();
+                        if (retryCount < getClientConfiguration().getRequestConfiguration().getRequestRetryAttemptMax() - 1) {
+                            try {
+                                Thread.sleep((long) (getClientConfiguration().getRequestConfiguration().getRequestRetryAttemptWait() * (0.5 + RANDOM.nextFloat() / 2)));
+                            } catch (InterruptedException e1) {
+                                Thread.currentThread().interrupt();
+                            }
+                        }
+                    } else {
+                        throw e;
+                    }
                 }
             } while (++retryCount <= getClientConfiguration().getRequestConfiguration().getRequestRetryAttemptMax());
 
-        } catch (ResponseException re) {
-            if (re.getResponse().getStatusLine().getStatusCode() == 404) {
-                LOG.warn("Resource for index '{}' not found on action '{}'! {}", index, operationName, re.getLocalizedMessage());
-                return null;
-            } else if (re.getResponse().getStatusLine().getStatusCode() == 400) {
-                LOG.warn("Bad request for index '{}' on action '{}'! {}", index, operationName, re.getLocalizedMessage());
-                return null;
-            } else {
-                throw new ClientException(ClientErrorCodes.ACTION_ERROR, re);
-            }
+        } catch (ResponseException responseException) {
+            LOG.warn("Elasticsearch Response with code {} for on index {} while performing {}. Follows stacktrace.", responseException.getResponse().getStatusLine().getStatusCode(), index, operationName, responseException);
+            return responseException.getResponse();
         } catch (Exception e) {
             throw new ClientInternalError(e, "Error in handling REST timeout handler");
         }
@@ -619,8 +611,8 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
      * @return {@code true} if {@link Response#getStatusLine()} has a 2xx HTTP code, {@code false} otherwise.
      * @since 1.0.0
      */
-    private boolean isRequestSuccessful(Response response) {
-        if (response != null && response.getStatusLine() != null) {
+    private boolean isRequestSuccessful(@NotNull Response response) {
+        if (response.getStatusLine() != null) {
             return isRequestSuccessful(response.getStatusLine().getStatusCode());
         } else {
             return false;
@@ -631,11 +623,64 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
      * Checks if the given response code is a HTTP 2xx code.
      *
      * @param responseCode The response code to check.
-     * @return {@code true} if reponse code is a 2xx HTTP code, {@code false} otherwise.
+     * @return {@code true} if response code is a 2xx HTTP code, {@code false} otherwise.
      * @since 1.0.0
      */
     private boolean isRequestSuccessful(int responseCode) {
         return (200 <= responseCode && responseCode <= 299);
+    }
+
+    /**
+     * Checks if the given {@link Response#getStatusLine} as a HTTP 400 code.
+     *
+     * @param response The {@link Response} to check.
+     * @return {@code true} if {@link Response#getStatusLine()} has a 400 HTTP code, {@code false} otherwise.
+     * @since 1.3.0
+     */
+    private boolean isRequestBadRequest(@NotNull Response response) {
+        if (response.getStatusLine() != null) {
+            return isRequestBadRequest(response.getStatusLine().getStatusCode());
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Checks if the given response code is a HTTP 400 code.
+     *
+     * @param responseCode The response code to check.
+     * @return {@code true} if reponse code is a 204 HTTP code, {@code false} otherwise.
+     * @since 1.3.0
+     */
+    private boolean isRequestBadRequest(int responseCode) {
+        return (400 == responseCode);
+    }
+
+
+    /**
+     * Checks if the given {@link Response#getStatusLine} as a HTTP 404 code.
+     *
+     * @param response The {@link Response} to check.
+     * @return {@code true} if {@link Response#getStatusLine()} has a 404 HTTP code, {@code false} otherwise.
+     * @since 1.3.0
+     */
+    private boolean isRequestNotFound(@NotNull Response response) {
+        if (response.getStatusLine() != null) {
+            return isRequestNotFound(response.getStatusLine().getStatusCode());
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Checks if the given response code is a HTTP 404 code.
+     *
+     * @param responseCode The response code to check.
+     * @return {@code true} if response code is a 404 HTTP code, {@code false} otherwise.
+     * @since 1.3.0
+     */
+    private boolean isRequestNotFound(int responseCode) {
+        return (404 == responseCode);
     }
 
     /**
@@ -646,16 +691,16 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
      * @return The {@link ClientActionResponseException} to throw.
      * @since 1.3.0
      */
-    private ClientException buildExceptionFromUnsuccessfulResponse(String action, Response response) {
+    private ClientException buildExceptionFromUnsuccessfulResponse(@NotNull String action, @NotNull Response response) {
         String reason;
-        if (response != null && response.getStatusLine() != null) {
+        if (response.getStatusLine() != null) {
             reason = response.getStatusLine().getReasonPhrase();
         } else {
             reason = "Unknown. Cannot get the reason from Response";
         }
 
         String responseCodeString;
-        if (response != null && response.getStatusLine() != null) {
+        if (response.getStatusLine() != null) {
             responseCodeString = String.valueOf(response.getStatusLine().getStatusCode());
         } else {
             responseCodeString = "Unknown";
@@ -664,7 +709,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         return new ClientActionResponseException(action, reason, responseCodeString);
     }
 
-    private JsonNode readResponseAsJsonNode(Response response) throws ResponseEntityReadError {
+    private JsonNode readResponseAsJsonNode(@NotNull Response response) throws ResponseEntityReadError {
         try {
             return objectMapper.readTree(EntityUtils.toString(response.getEntity()));
         } catch (IOException e) {
@@ -672,7 +717,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         }
     }
 
-    private String writeRequestFromJsonNode(JsonNode jsonNode) throws RequestEntityWriteError {
+    private String writeRequestFromJsonNode(@NotNull JsonNode jsonNode) throws RequestEntityWriteError {
         try {
             return objectMapper.writeValueAsString(jsonNode);
         } catch (JsonProcessingException e) {
@@ -680,60 +725,11 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         }
     }
 
-    private String writeRequestFromMap(Map<String, Object> storableMap) throws RequestEntityWriteError {
+    private String writeRequestFromMap(@NotNull Map<String, Object> storableMap) throws RequestEntityWriteError {
         try {
             return objectMapper.writeValueAsString(storableMap);
         } catch (JsonProcessingException e) {
             throw new RequestEntityWriteError(e);
         }
     }
-
-    private String getRefreshAllIndexesPath() {
-        return "/_all/_refresh";
-    }
-
-    private String getIndexPath(String index) {
-        return String.format("/%s", index);
-    }
-
-    private String getFindIndexPath(String index) {
-        return String.format("/_cat/indices?h=index&index=%s", index);
-    }
-
-    private String getBulkPath() {
-        return "/_bulk";
-    }
-
-    private String getInsertTypePath(InsertRequest request) {
-        if (request.getId() != null) {
-            return String.format("%s?id=%s&version=1&version_type=external", getTypePath(request.getTypeDescriptor()), request.getId());
-        } else {
-            return getTypePath(request.getTypeDescriptor());
-        }
-    }
-
-    private String getTypePath(TypeDescriptor typeDescriptor) {
-        return String.format("/%s/%s", typeDescriptor.getIndex(), typeDescriptor.getType());
-    }
-
-    private String getDeleteByQueryPath(TypeDescriptor typeDescriptor) {
-        return String.format("/%s/%s/_delete_by_query", typeDescriptor.getIndex(), typeDescriptor.getType());
-    }
-
-    private String getMappingPath(TypeDescriptor typeDescriptor) {
-        return String.format("/%s/_mapping/%s", typeDescriptor.getIndex(), typeDescriptor.getType());
-    }
-
-    private String getIdPath(TypeDescriptor typeDescriptor, String id) throws UnsupportedEncodingException {
-        return String.format("/%s/%s/%s", typeDescriptor.getIndex(), typeDescriptor.getType(), URLEncoder.encode(id, "UTF-8"));
-    }
-
-    private String getUpsertPath(TypeDescriptor typeDescriptor, String id) throws UnsupportedEncodingException {
-        return String.format("/%s/%s/%s/_update", typeDescriptor.getIndex(), typeDescriptor.getType(), URLEncoder.encode(id, "UTF-8"));
-    }
-
-    private String getSearchPath(TypeDescriptor typeDescriptor) {
-        return String.format("/%s/%s/_search", typeDescriptor.getIndex(), typeDescriptor.getType());
-    }
-
 }
