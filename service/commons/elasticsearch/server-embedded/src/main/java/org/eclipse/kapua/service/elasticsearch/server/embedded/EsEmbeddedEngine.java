@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.server.embedded;
 
+import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.UUIDs;
 import org.elasticsearch.common.settings.Settings;
@@ -43,6 +44,8 @@ public class EsEmbeddedEngine implements Closeable {
 
     private static final Logger LOG = LoggerFactory.getLogger(EsEmbeddedEngine.class);
 
+    private static final EmbeddedNodeSettings EMBEDDED_NODE_SETTINGS = EmbeddedNodeSettings.getInstance();
+
     /**
      * The {@link Node}
      *
@@ -60,23 +63,38 @@ public class EsEmbeddedEngine implements Closeable {
     public EsEmbeddedEngine() {
         if (node == null) {
             synchronized (EsEmbeddedEngine.this) {
-                String defaultDataDirectory = "target/elasticsearch/data/" + UUIDs.randomBase64UUID();
                 if (node == null) {
                     LOG.info("Starting Elasticsearch embedded node...");
-                    LOG.info("\tData directory:     {}", defaultDataDirectory);
-                    EmbeddedNodeSettings clientSettings = EmbeddedNodeSettings.getInstance();
-                    String clusterName = clientSettings.getString(EmbeddedNodeSettingsKeys.ELASTICSEARCH_CLUSTER);
-                    LOG.info("\tCluster name:       {}", clusterName);
+
+                    // Config
+                    String clusterName = EMBEDDED_NODE_SETTINGS.getString(EmbeddedNodeSettingsKeys.ELASTICSEARCH_CLUSTER);
+                    String defaultDataDirectory = "target/elasticsearch/data/" + UUIDs.randomBase64UUID();
 
                     // Transport Endpoint
-                    String transportTcpHost = clientSettings.getString(EmbeddedNodeSettingsKeys.ELASTICSEARCH_TRANSPORT_NODE);
-                    int transportTcpPort = clientSettings.getInt(EmbeddedNodeSettingsKeys.ELASTICSEARCH_TRANSPORT_PORT);
-                    LOG.info("\tTransport Endpoint: {}:{}", transportTcpHost, transportTcpPort);
+                    String transportTcpHost = EMBEDDED_NODE_SETTINGS.getString(EmbeddedNodeSettingsKeys.ELASTICSEARCH_TRANSPORT_NODE);
+                    int transportTcpPort = EMBEDDED_NODE_SETTINGS.getInt(EmbeddedNodeSettingsKeys.ELASTICSEARCH_TRANSPORT_PORT);
 
                     // REST Endpoint
-                    String restTcpHost = clientSettings.getString(EmbeddedNodeSettingsKeys.ELASTICSEARCH_REST_NODE);
-                    int restTcpPort = clientSettings.getInt(EmbeddedNodeSettingsKeys.ELASTICSEARCH_REST_PORT);
-                    LOG.info("\tRest Endpoint:      {}:{}", restTcpHost, restTcpPort);
+                    String restTcpHost = EMBEDDED_NODE_SETTINGS.getString(EmbeddedNodeSettingsKeys.ELASTICSEARCH_REST_NODE);
+                    int restTcpPort = EMBEDDED_NODE_SETTINGS.getInt(EmbeddedNodeSettingsKeys.ELASTICSEARCH_REST_PORT);
+
+                    // Print config
+                    ConfigurationPrinter
+                            .create()
+                            .withLogger(LOG)
+                            .withTitle("Elasticsearch Embedded Node Configuration")
+                            .addParameter("Cluster name", clusterName)
+                            .addParameter("Data Directory", defaultDataDirectory)
+                            .addHeader("Transport Endpoint")
+                            .increaseIndentation()
+                            .addParameter("Host", transportTcpHost)
+                            .addParameter("Port", transportTcpPort)
+                            .decreaseIndentation()
+                            .addHeader("REST Endpoint")
+                            .increaseIndentation()
+                            .addParameter("Host", restTcpHost)
+                            .addParameter("Port", restTcpPort)
+                            .printLog();
 
                     // ES 5.3 FIX
                     // Builder elasticsearchSettings = Settings.settingsBuilder()
@@ -112,7 +130,7 @@ public class EsEmbeddedEngine implements Closeable {
                     try {
                         node.start();
                     } catch (NodeValidationException e) {
-                        throw new RuntimeException("Cannot start embedded node!", e);
+                        throw new RuntimeException("Starting Elasticsearch embedded node... ERROR!", e);
                     }
                     LOG.info("Starting Elasticsearch embedded node... DONE");
                 }

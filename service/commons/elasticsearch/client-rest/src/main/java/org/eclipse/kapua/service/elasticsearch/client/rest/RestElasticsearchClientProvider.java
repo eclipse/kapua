@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.elasticsearch.client.rest;
 
 import com.codahale.metrics.Counter;
+import com.google.common.base.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
@@ -23,12 +24,14 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.ssl.TrustStrategy;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.ModelContext;
 import org.eclipse.kapua.service.elasticsearch.client.QueryConverter;
 import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientConfiguration;
 import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientReconnectConfiguration;
 import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientSslConfiguration;
+import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchNode;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientProviderInitException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
@@ -93,6 +96,51 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
             if (modelConverter == null) {
                 throw new ClientProviderInitException("Model converter not defined");
             }
+
+            // Print Configurations
+            ConfigurationPrinter configurationPrinter =
+                    ConfigurationPrinter
+                            .create()
+                            .withLogger(LOG)
+                            .withTitle("Elasticsearch REST Provider Configuration")
+                            .addParameter("Module Name", getClientConfiguration().getModuleName())
+                            .addParameter("Cluster Name", getClientConfiguration().getClusterName())
+                            .addHeader("Nodes")
+                            .increaseIndentation();
+
+            int nodesIndex = 1;
+            for (ElasticsearchNode node : getClientConfiguration().getNodes()) {
+                configurationPrinter
+                        .addHeader("# " + nodesIndex++)
+                        .increaseIndentation()
+                        .addParameter("Host", node.getAddress())
+                        .addParameter("Port", node.getPort())
+                        .decreaseIndentation();
+            }
+
+            // SSL Configuration
+            configurationPrinter
+                    .decreaseIndentation()
+                    .addHeader("SSL Layer")
+                    .increaseIndentation()
+                    .addParameter("Is Enabled", getClientSslConfiguration().isEnabled());
+
+            if (getClientSslConfiguration().isEnabled()) {
+                configurationPrinter
+                        .addParameter("Key Store Path", getClientSslConfiguration().getKeyStorePath())
+                        .addParameter("Key Store Type", getClientSslConfiguration().getKeyStoreType())
+                        .addParameter("Key Store Password", Strings.isNullOrEmpty(getClientSslConfiguration().getKeyStorePassword()) ? "No" : "Yes")
+                        .addParameter("Trust Server Certificate", getClientSslConfiguration().isTrustServiceCertificate())
+                        .addParameter("Trust Store Path", getClientSslConfiguration().getTrustStorePath())
+                        .addParameter("Trust Store Password", Strings.isNullOrEmpty(getClientSslConfiguration().getTrustStorePassword()) ? "No" : "Yes");
+            }
+
+            // Other configurations
+            configurationPrinter
+                    .decreaseIndentation()
+                    .addParameter("Model Context", modelContext)
+                    .addParameter("Model Converter", modelConverter)
+                    .printLog();
 
             clientReconnectCallCounter = MetricServiceFactory.getInstance().getCounter(elasticsearchClientConfiguration.getModuleName(), "elasticsearch-client-rest", "reconnect_call", "count");
 

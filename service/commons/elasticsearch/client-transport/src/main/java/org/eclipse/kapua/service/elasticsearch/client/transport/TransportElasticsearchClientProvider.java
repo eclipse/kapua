@@ -12,10 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.elasticsearch.client.transport;
 
+import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
 import org.eclipse.kapua.service.elasticsearch.client.ModelContext;
 import org.eclipse.kapua.service.elasticsearch.client.QueryConverter;
 import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientConfiguration;
+import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchNode;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientProviderInitException;
 import org.eclipse.kapua.service.elasticsearch.client.utils.InetAddressParser;
 import org.elasticsearch.client.transport.TransportClient;
@@ -65,6 +67,34 @@ public class TransportElasticsearchClientProvider implements ElasticsearchClient
                 throw new ClientProviderInitException("Model converter not defined");
             }
 
+            // Print Configurations
+            ConfigurationPrinter configurationPrinter =
+                    ConfigurationPrinter
+                            .create()
+                            .withLogger(LOG)
+                            .withTitle("Elasticsearch Transport Provider Configuration")
+                            .addParameter("Module Name", getClientConfiguration().getModuleName())
+                            .addParameter("Cluster Name", getClientConfiguration().getClusterName())
+                            .addHeader("Nodes")
+                            .increaseIndentation();
+
+            int nodesIndex = 1;
+            for (ElasticsearchNode node : getClientConfiguration().getNodes()) {
+                configurationPrinter
+                        .addHeader("# " + nodesIndex++)
+                        .increaseIndentation()
+                        .addParameter("Host", node.getAddress())
+                        .addParameter("Port", node.getPort())
+                        .decreaseIndentation();
+            }
+            // Other configurations
+            configurationPrinter
+                    .decreaseIndentation()
+                    .addParameter("Model Context", modelContext)
+                    .addParameter("Model Converter", modelConverter)
+                    .printLog();
+
+            // Close previously initialized Transport Clients.
             close();
 
             // Init internal Elasticsearch Client
