@@ -1,0 +1,88 @@
+/*******************************************************************************
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.kapua;
+
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdStatic;
+import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import java.math.BigInteger;
+
+
+@Category(JUnitTests.class)
+public class KapuaEntityNotFoundExceptionTest extends Assert {
+    String[] entityType;
+    String[] entityName;
+    KapuaId entityId;
+
+    @Before
+    public void initialize() {
+        entityType = new String[]{"Entity Type", "1234", "!@#$%^&*(", null};
+        entityName = new String[]{"Entity Name", "1234", "!@#$%^&*(", null};
+        entityId = new KapuaIdStatic(BigInteger.ONE);
+    }
+
+    @Test
+    public void kapuaEntityNotFoundExceptionStringParametersTest() {
+        for (String type : entityType) {
+            for (String name : entityName) {
+                KapuaEntityNotFoundException kapuaEntityNotFoundException = new KapuaEntityNotFoundException(type, name);
+                assertEquals("Expected and actual values should be the same.", type, kapuaEntityNotFoundException.getEntityType());
+                assertEquals("Expected and actual values should be the same.", name, kapuaEntityNotFoundException.getEntityName());
+                assertNull("Null expected.", kapuaEntityNotFoundException.getEntityId());
+                assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_NOT_FOUND, kapuaEntityNotFoundException.getCode());
+                assertEquals("Expected and actual values should be the same.", "The entity of type " + type + " with id/name " + name + " was not found.", kapuaEntityNotFoundException.getMessage());
+                assertNull("Null expected.", kapuaEntityNotFoundException.getCause());
+            }
+        }
+    }
+
+    @Test
+    public void kapuaEntityNotFoundExceptionStringKapuaIdParametersTest() {
+        for (String type : entityType) {
+            KapuaEntityNotFoundException kapuaEntityNotFoundException = new KapuaEntityNotFoundException(type, entityId);
+            assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_NOT_FOUND, kapuaEntityNotFoundException.getCode());
+            assertEquals("Expected and actual values should be the same.", type, kapuaEntityNotFoundException.getEntityType());
+            assertEquals("Expected and actual values should be the same.", entityId, kapuaEntityNotFoundException.getEntityId());
+            assertEquals("Expected and actual values should be the same.", "The entity of type " + type + " with id/name " + entityId.getId() + " was not found.", kapuaEntityNotFoundException.getMessage());
+            assertNull("Null expected.", kapuaEntityNotFoundException.getCause());
+        }
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void kapuaEntityNotFoundExceptionStringNullKapuaIdParametersTest() {
+        KapuaId nullEntityId = null;
+        for (String type : entityType) {
+            KapuaEntityNotFoundException kapuaEntityNotFoundException = new KapuaEntityNotFoundException(type, nullEntityId);
+        }
+    }
+
+    @Test(expected = KapuaEntityNotFoundException.class)
+    public void throwingExceptionStringParametersTest() throws KapuaEntityNotFoundException {
+        for (String type : entityType) {
+            for (String name : entityName) {
+                throw new KapuaEntityNotFoundException(type, name);
+            }
+        }
+    }
+
+    @Test(expected = KapuaEntityNotFoundException.class)
+    public void throwingExceptionTest() throws KapuaEntityNotFoundException {
+        for (String type : entityType) {
+            throw new KapuaEntityNotFoundException(type, entityId);
+        }
+    }
+}
