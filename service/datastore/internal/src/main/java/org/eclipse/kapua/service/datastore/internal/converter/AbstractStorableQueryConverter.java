@@ -11,19 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.converter;
 
-import org.eclipse.kapua.service.datastore.model.Storable;
-import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
-import org.eclipse.kapua.service.datastore.model.query.StorableQuery;
+import org.eclipse.kapua.service.storable.model.Storable;
+import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
+import org.eclipse.kapua.service.storable.model.query.StorableQuery;
 
 /**
  * Abstract storable query converter implementation.<br>
  * This object defines common method to all the query converter used by Kapua.
  *
- * @param <S>
- *            persisted object type (such as messages, channels information...)
- * @param <Q>
- *            query object
- * 
+ * @param <S> persisted object type (such as messages, channels information...)
+ * @param <Q> query object
  * @since 1.0
  */
 public abstract class AbstractStorableQueryConverter<S extends Storable, Q extends StorableQuery<S>> {
@@ -31,7 +28,7 @@ public abstract class AbstractStorableQueryConverter<S extends Storable, Q exten
     /**
      * Query included fields list.<br>
      * The list may use the fetchStyle parameter to differentiate the included fields list (depending on the type of the entity)
-     * 
+     *
      * @param fetchStyle
      * @return
      */
@@ -40,7 +37,7 @@ public abstract class AbstractStorableQueryConverter<S extends Storable, Q exten
     /**
      * Query excluded fields list.<br>
      * The list may use the fetchStyle parameter to differentiate the excluded fields list (depending on the type of the entity)
-     * 
+     *
      * @param fetchStyle
      * @return
      */
@@ -48,7 +45,7 @@ public abstract class AbstractStorableQueryConverter<S extends Storable, Q exten
 
     /**
      * Query fields list
-     * 
+     *
      * @return
      */
     protected abstract String[] getFields();

@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources.model;
 
-import javax.ws.rs.PathParam;
+import org.eclipse.kapua.service.storable.model.Storable;
+import org.eclipse.kapua.service.storable.model.StorableId;
 
-import org.eclipse.kapua.service.datastore.model.Storable;
-import org.eclipse.kapua.service.datastore.model.StorableId;
+import javax.ws.rs.PathParam;
 
 /**
  * {@link StorableId} implementation to be used on REST API to parse the {@link PathParam} entityId.
@@ -35,7 +35,8 @@ public class StorableEntityId implements StorableId {
         setId(id);
     }
 
-    public StorableEntityId() { }
+    public StorableEntityId() {
+    }
 
     @Override
     public String toString() {

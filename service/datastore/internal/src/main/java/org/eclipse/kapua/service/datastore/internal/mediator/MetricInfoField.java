@@ -15,14 +15,13 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.schema.MetricInfoSchema;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoCreator;
-import org.eclipse.kapua.service.datastore.model.StorableId;
-import org.eclipse.kapua.service.datastore.model.query.StorableField;
+import org.eclipse.kapua.service.storable.model.StorableId;
+import org.eclipse.kapua.service.storable.model.query.StorableField;
 
 /**
  * This enumeration defines the fields names used in the {@link MetricInfo} client schema
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public enum MetricInfoField implements StorableField {
     /**
@@ -68,7 +67,7 @@ public enum MetricInfoField implements StorableField {
     /**
      * Get the metric identifier (return the hash code of the string obtained by combining accountName, clientId, channel and the converted metricName and metricType).<br>
      * <b>If the id is null then it is generated.</b>
-     * 
+     *
      * @param id
      * @param scopeId
      * @param clientId
@@ -90,12 +89,12 @@ public enum MetricInfoField implements StorableField {
     /**
      * Get the metric identifier getting parameters from the metricInfoCreator. Then it calls {@link MetricInfoField#getOrDeriveId(StorableId id, KapuaId scopeId, String clientId, String channel, String
      * metricName, Class metricType)}
-     * 
+     *
      * @param id
      * @param metricInfoCreator
      * @return
      */
-    public static String getOrDeriveId(StorableId id, @SuppressWarnings("rawtypes") MetricInfoCreator metricInfoCreator) {
+    public static String getOrDeriveId(StorableId id, MetricInfoCreator metricInfoCreator) {
         return getOrDeriveId(id,
                 metricInfoCreator.getScopeId(),
                 metricInfoCreator.getClientId(),
@@ -107,7 +106,7 @@ public enum MetricInfoField implements StorableField {
     /**
      * Get the metric identifier getting parameters from the metricInfo. Then it calls {@link MetricInfoField#getOrDeriveId(StorableId id, KapuaId scopeId, String clientId, String channel, String
      * metricName, Class metricType)}
-     * 
+     *
      * @param id
      * @param metricInfo
      * @return

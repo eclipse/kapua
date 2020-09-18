@@ -9,23 +9,20 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.model;
-
-import org.eclipse.kapua.KapuaSerializable;
+package org.eclipse.kapua.service.storable.model.query.predicate;
 
 /**
- * Storable identifier definition.<br>
- * It defines the identifier of every object that can be stored in a datastore schema.
+ * Query predicate definition for checking if a field exists
  *
  * @since 1.0
  */
-public interface StorableId extends KapuaSerializable {
+public interface ExistsPredicate extends StorablePredicate {
 
     /**
-     * Return the storable identifier as a string
+     * Returns the field name to check
      *
      * @return
      */
-    @Override
-    String toString();
+    String getName();
+
 }

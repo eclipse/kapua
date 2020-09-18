@@ -10,11 +10,10 @@
  *     Eurotech - initial API and implementation
  *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.model.query;
+package org.eclipse.kapua.service.storable.model.query;
 
 /**
  * Sortable field definition
- *
  */
 public class SortField {
 

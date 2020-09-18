@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.model;
+package org.eclipse.kapua.service.storable.model;
 
 import org.eclipse.kapua.KapuaSerializable;
 import org.eclipse.kapua.model.query.KapuaListResult;
@@ -32,7 +32,7 @@ import java.util.List;
  */
 @XmlRootElement(name = "result")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "limitExceeded", "size", "items", "nextKey", "totalCount" })
+@XmlType(propOrder = {"limitExceeded", "size", "items", "nextKey", "totalCount"})
 public interface StorableListResult<E extends Storable> extends KapuaSerializable {
 
     /**

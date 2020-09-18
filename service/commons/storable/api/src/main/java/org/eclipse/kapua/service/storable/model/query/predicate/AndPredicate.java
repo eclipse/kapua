@@ -9,14 +9,21 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.model;
+package org.eclipse.kapua.service.storable.model.query.predicate;
+
+import java.util.List;
 
 /**
- * Storable object creator definition
+ * Query "and" aggregation definition
  *
- * @param <E>
  * @since 1.0
  */
-public interface StorableCreator<E extends Storable> {
+public interface AndPredicate extends StorablePredicate {
 
+    /**
+     * Get the {@link StorablePredicate} list
+     *
+     * @return
+     */
+    List<StorablePredicate> getPredicates();
 }

@@ -9,31 +9,23 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.model.query;
+package org.eclipse.kapua.service.storable.model;
 
-import org.eclipse.kapua.service.datastore.model.StorableId;
-
-import java.util.Set;
+import org.eclipse.kapua.KapuaSerializable;
 
 /**
- * Query predicate definition for matching identifier values fields
+ * Storable identifier definition.<br>
+ * It defines the identifier of every object that can be stored in a datastore schema.
  *
  * @since 1.0
  */
-public interface IdsPredicate extends StorablePredicate {
+public interface StorableId extends KapuaSerializable {
 
     /**
-     * Get the identifier type
+     * Return the storable identifier as a string
      *
      * @return
      */
-    String getType();
-
-    /**
-     * Get the identifier set.<br>
-     * This set is used a comparison term by the query predicate.
-     *
-     * @return
-     */
-    Set<StorableId> getIdSet();
+    @Override
+    String toString();
 }

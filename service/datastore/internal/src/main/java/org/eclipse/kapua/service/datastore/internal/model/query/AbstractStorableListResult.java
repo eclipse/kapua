@@ -11,21 +11,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
+import org.eclipse.kapua.service.storable.model.Storable;
+import org.eclipse.kapua.service.storable.model.StorableListResult;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.kapua.service.datastore.model.Storable;
-import org.eclipse.kapua.service.datastore.model.StorableListResult;
-
 /**
  * Storable object list implementation
- * 
- * @since 1.0.0
  *
- * @param <E>
- *            storable list result type
+ * @param <E> storable list result type
+ * @since 1.0.0
  */
 public class AbstractStorableListResult<E extends Storable> implements StorableListResult<E> {
 
@@ -38,7 +36,7 @@ public class AbstractStorableListResult<E extends Storable> implements StorableL
 
     /**
      * Default constructor.
-     * 
+     *
      * @since 1.0.0
      */
     public AbstractStorableListResult() {
@@ -49,9 +47,8 @@ public class AbstractStorableListResult<E extends Storable> implements StorableL
 
     /**
      * Construct a result list linking the next result list
-     * 
+     *
      * @param nextKey
-     * 
      * @since 1.0.0
      */
     public AbstractStorableListResult(Object nextKey) {
@@ -61,10 +58,9 @@ public class AbstractStorableListResult<E extends Storable> implements StorableL
 
     /**
      * Construct a result list linking the next result list and setting the total count
-     * 
+     *
      * @param nextKeyOffset
      * @param totalCount
-     * 
      * @since 1.0.0
      */
     public AbstractStorableListResult(Object nextKeyOffset, Long totalCount) {
@@ -129,9 +125,10 @@ public class AbstractStorableListResult<E extends Storable> implements StorableL
 
     /**
      * Set the total count
-     * 
+     *
      * @param totalCount
      */
+    @Override
     public void setTotalCount(Long totalCount) {
         this.totalCount = totalCount;
     }

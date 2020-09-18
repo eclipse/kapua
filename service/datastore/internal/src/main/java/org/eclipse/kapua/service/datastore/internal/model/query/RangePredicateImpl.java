@@ -14,9 +14,9 @@ package org.eclipse.kapua.service.datastore.internal.model.query;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
-import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
-import org.eclipse.kapua.service.datastore.model.query.StorableField;
 import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
+import org.eclipse.kapua.service.storable.model.query.StorableField;
+import org.eclipse.kapua.service.storable.model.query.predicate.RangePredicate;
 
 /**
  * Implementation of query predicate for matching range values

@@ -16,11 +16,11 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.service.datastore.internal.AbstractStorableQuery;
 import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
-import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.eclipse.kapua.service.elasticsearch.client.QueryConverter;
 import org.eclipse.kapua.service.elasticsearch.client.SchemaKeys;
 import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.QueryMappingException;
+import org.eclipse.kapua.service.storable.model.query.SortField;
 
 import java.util.List;
 
@@ -46,7 +46,11 @@ public class QueryConverterImpl implements QueryConverter {
         rootNode.set(SchemaKeys.KEY_SOURCE, includesFields);
         // query
         if (storableQuery.getPredicate() != null) {
-            rootNode.set(SchemaKeys.KEY_QUERY, storableQuery.getPredicate().toSerializedMap());
+            try {
+                rootNode.set(SchemaKeys.KEY_QUERY, storableQuery.getPredicate().toSerializedMap());
+            } catch (Exception e) {
+                throw new DatamodelMappingException(e, "Cannot serialize predicates");
+            }
         }
         // sort
         ArrayNode sortNode = SchemaUtil.getArrayNode();

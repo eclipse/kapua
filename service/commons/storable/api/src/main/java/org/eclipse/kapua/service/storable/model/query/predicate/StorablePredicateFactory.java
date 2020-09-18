@@ -9,9 +9,10 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.model.query;
+package org.eclipse.kapua.service.storable.model.query.predicate;
 
 import org.eclipse.kapua.model.KapuaObjectFactory;
+import org.eclipse.kapua.service.storable.model.query.StorableField;
 
 /**
  * {@link KapuaObjectFactory} for {@link StorablePredicate}s
@@ -29,13 +30,13 @@ public interface StorablePredicateFactory extends KapuaObjectFactory {
     AndPredicate newAndPredicate();
 
     /**
-     * Returns a new instance of {@link ChannelMatchPredicate}.
+     * Returns a new instance of {@link MatchPredicate}.
      *
      * @param expression The expression to match with the channel name.
-     * @return The newly instantiated {@link ChannelMatchPredicate}.
+     * @return The newly instantiated {@link MatchPredicate}.
      * @since 1.0.0
      */
-    ChannelMatchPredicate newChannelMatchPredicate(String expression);
+    MatchPredicate newMatchPredicate(String expression);
 
     /**
      * Return a new instance of {@link RangePredicate}
@@ -49,18 +50,6 @@ public interface StorablePredicateFactory extends KapuaObjectFactory {
     <V extends Comparable<V>> RangePredicate newRangePredicate(String fieldName, V minValue, V maxValue);
 
     /**
-     * Return a new instance of {@link MetricPredicate}
-     *
-     * @param fieldName The metric name to filter.
-     * @param type      The type of the metric to filter
-     * @param minValue  The lower limit. Can be {@code null}.
-     * @param maxValue  The upper limit. Can be {@code null}.
-     * @return The newly instantiated {@link MetricPredicate}.
-     * @since 1.0.0
-     */
-    <V extends Comparable<V>> MetricPredicate newMetricPredicate(String fieldName, Class<V> type, V minValue, V maxValue);
-
-    /**
      * Return a new instance of {@link TermPredicate}
      *
      * @param field The field name to filter
@@ -69,16 +58,6 @@ public interface StorablePredicateFactory extends KapuaObjectFactory {
      * @since 1.0.0
      */
     <V> TermPredicate newTermPredicate(StorableField field, V value);
-
-    /**
-     * Returns a new instance of {@link ExistsPredicate}.
-     *
-     * @param fieldName The field name to search.
-     * @return The newly instantiated {@link ExistsPredicate}.
-     */
-    ExistsPredicate newExistsPredicate(String fieldName);
-
-    <V extends Comparable<V>> MetricExistsPredicate newMetricExistsPredicate(String fieldName, Class<V> type);
 
     OrPredicate newOrPredicate();
 

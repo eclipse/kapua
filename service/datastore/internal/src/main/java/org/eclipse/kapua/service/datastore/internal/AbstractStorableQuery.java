@@ -12,24 +12,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.storable.model.Storable;
+import org.eclipse.kapua.service.storable.model.query.SortField;
+import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
+import org.eclipse.kapua.service.storable.model.query.StorableQuery;
+import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicate;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.datastore.model.Storable;
-import org.eclipse.kapua.service.datastore.model.query.SortField;
-import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
-import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
-import org.eclipse.kapua.service.datastore.model.query.StorableQuery;
-
 /**
  * Abstract storable query implementation.
- * 
- * @since 1.0.0
  *
- * @param <S>
- *            persisted object type (such as messages, channels information...)
+ * @param <S> persisted object type (such as messages, channels information...)
+ * @since 1.0.0
  */
 public abstract class AbstractStorableQuery<S extends Storable> implements StorableQuery<S> {
 
@@ -45,7 +43,7 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
 
     /**
      * Default constructor
-     * 
+     *
      * @since 1.0.0
      */
     public AbstractStorableQuery() {
@@ -58,10 +56,8 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
 
     /**
      * Constructor.
-     * 
-     * @param scopeId
-     *            The scopeId of the query
-     * 
+     *
+     * @param scopeId The scopeId of the query
      * @since 1.0.0
      */
     public AbstractStorableQuery(KapuaId scopeId) {
@@ -72,7 +68,7 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
 
     /**
      * Get the includes fields by fetchStyle
-     * 
+     *
      * @param fetchStyle
      * @return
      */
@@ -80,7 +76,7 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
 
     /**
      * Get the excludes fields by fetchStyle
-     * 
+     *
      * @param fetchStyle
      * @return
      */
@@ -88,7 +84,7 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
 
     /**
      * Get the fields list
-     * 
+     *
      * @return
      */
     public abstract String[] getFields();

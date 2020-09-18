@@ -9,32 +9,15 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.model.query;
+package org.eclipse.kapua.service.storable.model;
 
-import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.KapuaSerializable;
 
 /**
- * Query sort behavior
+ * Storable object definition
  *
  * @since 1.0
  */
-public enum SortDirection {
-    /**
-     * Ascending
-     */
-    ASC,
+public interface Storable extends KapuaSerializable {
 
-    /**
-     * Descending
-     */
-    DESC;
-
-    public static SortDirection fromString(String value) throws KapuaIllegalArgumentException {
-        String ucValue = value.toUpperCase();
-        try {
-            return valueOf(ucValue);
-        } catch (Exception e) {
-            throw new KapuaIllegalArgumentException("sortDirection", value);
-        }
-    }
 }

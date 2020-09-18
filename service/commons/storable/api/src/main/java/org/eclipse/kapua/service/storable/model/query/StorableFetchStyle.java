@@ -9,15 +9,26 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.model;
-
-import org.eclipse.kapua.KapuaSerializable;
+package org.eclipse.kapua.service.storable.model.query;
 
 /**
- * Storable object definition
+ * Fetch style behavior
  *
  * @since 1.0
  */
-public interface Storable extends KapuaSerializable {
+public enum StorableFetchStyle {
+    /**
+     * Only indexed fields
+     */
+    FIELDS,
 
+    /**
+     * Full document (except the message body)
+     */
+    SOURCE_SELECT,
+
+    /**
+     * Full document
+     */
+    SOURCE_FULL
 }

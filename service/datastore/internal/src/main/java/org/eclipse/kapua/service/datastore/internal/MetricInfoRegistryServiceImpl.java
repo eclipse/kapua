@@ -42,18 +42,18 @@ import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
-import org.eclipse.kapua.service.datastore.model.StorableId;
-import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
-import org.eclipse.kapua.service.datastore.model.query.ExistsPredicate;
+import org.eclipse.kapua.service.datastore.model.query.DatastorePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
-import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
-import org.eclipse.kapua.service.datastore.model.query.SortField;
-import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
-import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
-import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
+import org.eclipse.kapua.service.storable.model.StorableId;
+import org.eclipse.kapua.service.storable.model.query.SortField;
+import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
+import org.eclipse.kapua.service.storable.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.ExistsPredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.RangePredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +76,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaService implemen
     private final PermissionFactory permissionFactory;
     private final MetricInfoRegistryFacade metricInfoRegistryFacade;
     private final MessageStoreService messageStoreService;
-    private final StorablePredicateFactory storablePredicateFactory;
+    private final DatastorePredicateFactory datastorePredicateFactory;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
@@ -94,7 +94,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaService implemen
         authorizationService = locator.getService(AuthorizationService.class);
         permissionFactory = locator.getFactory(PermissionFactory.class);
         messageStoreService = locator.getService(MessageStoreService.class);
-        storablePredicateFactory = KapuaLocator.getInstance().getFactory(StorablePredicateFactory.class);
+        datastorePredicateFactory = KapuaLocator.getInstance().getFactory(DatastorePredicateFactory.class);
 
         MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
         ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(messageStoreService, accountService);
@@ -227,7 +227,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaService implemen
         messageQuery.setSortFields(sort);
 
         RangePredicate messageIdPredicate = new RangePredicateImpl(new StorableFieldImpl(MetricInfoSchema.METRIC_MTR_TIMESTAMP), metricInfo.getFirstMessageOn(), null);
-        TermPredicate clientIdPredicate = storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, metricInfo.getClientId());
+        TermPredicate clientIdPredicate = datastorePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, metricInfo.getClientId());
         ExistsPredicate metricPredicate = new ExistsPredicateImpl(MessageField.METRICS.field(), metricInfo.getName());
 
         AndPredicate andPredicate = new AndPredicateImpl();

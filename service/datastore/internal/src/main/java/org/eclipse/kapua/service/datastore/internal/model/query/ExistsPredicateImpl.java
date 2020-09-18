@@ -14,8 +14,8 @@ package org.eclipse.kapua.service.datastore.internal.model.query;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.service.datastore.internal.schema.KeyValueEntry;
 import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
-import org.eclipse.kapua.service.datastore.model.query.ExistsPredicate;
 import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
+import org.eclipse.kapua.service.storable.model.query.predicate.ExistsPredicate;
 
 /**
  * Implementation of query predicate for checking if a field exists

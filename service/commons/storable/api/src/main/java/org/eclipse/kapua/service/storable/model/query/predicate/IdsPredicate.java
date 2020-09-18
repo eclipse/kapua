@@ -9,21 +9,31 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.model.query;
+package org.eclipse.kapua.service.storable.model.query.predicate;
 
-import java.util.List;
+import org.eclipse.kapua.service.storable.model.StorableId;
+
+import java.util.Set;
 
 /**
- * Query "and" aggregation definition
+ * Query predicate definition for matching identifier values fields
  *
  * @since 1.0
  */
-public interface AndPredicate extends StorablePredicate {
+public interface IdsPredicate extends StorablePredicate {
 
     /**
-     * Get the {@link StorablePredicate} list
+     * Get the identifier type
      *
      * @return
      */
-    List<StorablePredicate> getPredicates();
+    String getType();
+
+    /**
+     * Get the identifier set.<br>
+     * This set is used a comparison term by the query predicate.
+     *
+     * @return
+     */
+    Set<StorableId> getIdSet();
 }

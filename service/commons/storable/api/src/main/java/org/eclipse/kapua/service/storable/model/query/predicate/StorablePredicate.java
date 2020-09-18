@@ -9,26 +9,21 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.model.query;
+package org.eclipse.kapua.service.storable.model.query.predicate;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * Fetch style behavior
+ * Storable query predicate definition
  *
  * @since 1.0
  */
-public enum StorableFetchStyle {
-    /**
-     * Only indexed fields
-     */
-    FIELDS,
+public interface StorablePredicate {
 
     /**
-     * Full document (except the message body)
+     * Serialize the predicate to a Json object
+     *
+     * @return
      */
-    SOURCE_SELECT,
-
-    /**
-     * Full document
-     */
-    SOURCE_FULL
+    ObjectNode toSerializedMap() throws Exception;
 }

@@ -9,49 +9,36 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.model.query;
+package org.eclipse.kapua.service.storable.model.query.predicate;
+
+import org.eclipse.kapua.service.storable.model.query.StorableField;
 
 /**
- * Query predicate for matching range values implementation
+ * Query predicate definition for matching field value
  *
  * @since 1.0
  */
-public interface RangePredicate extends StorablePredicate {
+public interface TermPredicate extends StorablePredicate {
 
     /**
-     * Get the field to be compared
+     * Return the field
      *
      * @return
      */
-    String getField();
+    StorableField getField();
 
     /**
-     * Return the desired minimum value
+     * Return the value
      *
      * @return
      */
-    Object getMinValue();
+    Object getValue();
 
     /**
-     * Get the minimum value as {@link Comparable} (type)
-     *
-     * @param clazz
-     * @return
-     */
-    <V extends Comparable<V>> V getMinValue(Class<V> clazz);
-
-    /**
-     * Get the maximum value
-     *
-     * @return
-     */
-    Object getMaxValue();
-
-    /**
-     * Get the maximum value as {@link Comparable} (typed)
+     * Return the value (typed)
      *
      * @param clazz
      * @return
      */
-    <V extends Comparable<V>> V getMaxValue(Class<V> clazz);
+    <V> V getValue(Class<V> clazz);
 }

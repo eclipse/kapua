@@ -58,25 +58,25 @@ import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
-import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.DatastorePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
-import org.eclipse.kapua.service.datastore.model.query.OrPredicate;
-import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
-import org.eclipse.kapua.service.datastore.model.query.SortDirection;
-import org.eclipse.kapua.service.datastore.model.query.SortField;
-import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
-import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
-import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
-import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.service.storable.model.query.SortDirection;
+import org.eclipse.kapua.service.storable.model.query.SortField;
+import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
+import org.eclipse.kapua.service.storable.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.OrPredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.RangePredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -93,7 +93,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
     private static final DatastoreObjectFactory DATASTORE_FACTORY = LOCATOR.getFactory(DatastoreObjectFactory.class);
-    private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
+    private static final DatastorePredicateFactory DATASTORE_PREDICATE_FACTORY = LOCATOR.getFactory(DatastorePredicateFactory.class);
 
     @Override
     public List<GwtTopic> findTopicsTree(String scopeId) throws GwtKapuaException {
@@ -356,9 +356,9 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     public ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String scopeId, GwtTopic topic) throws GwtKapuaException {
         StorablePredicate predicate;
         if (topic.getSemanticTopic().endsWith("/#")) {
-            predicate = STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(topic.getSemanticTopic().replaceFirst("/#$", "/"));
+            predicate = DATASTORE_PREDICATE_FACTORY.newChannelMatchPredicate(topic.getSemanticTopic().replaceFirst("/#$", "/"));
         } else {
-            predicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MessageField.CHANNEL, topic.getSemanticTopic());
+            predicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(MessageField.CHANNEL, topic.getSemanticTopic());
         }
         return findHeaders(scopeId, predicate);
     }
@@ -371,13 +371,13 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
     @Override
     public ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String scopeId, GwtDatastoreDevice device) throws GwtKapuaException {
-        TermPredicate predicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MetricInfoField.CLIENT_ID, device.getDevice());
+        TermPredicate predicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(MetricInfoField.CLIENT_ID, device.getDevice());
         return findHeaders(scopeId, predicate);
     }
 
     @Override
     public ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String accountName, GwtDatastoreAsset gwtDatastoreAsset) throws GwtKapuaException {
-        ChannelMatchPredicate predicate = STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(gwtDatastoreAsset.getTopick());
+        ChannelMatchPredicate predicate = DATASTORE_PREDICATE_FACTORY.newChannelMatchPredicate(gwtDatastoreAsset.getTopick());
         return findHeaders(accountName, predicate);
     }
 
@@ -386,9 +386,9 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             throws GwtKapuaException {
         StorablePredicate predicate;
         if (topic.getSemanticTopic().endsWith("/#")) {
-            predicate = STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(topic.getSemanticTopic().replaceFirst("/#$", "/"));
+            predicate = DATASTORE_PREDICATE_FACTORY.newChannelMatchPredicate(topic.getSemanticTopic().replaceFirst("/#$", "/"));
         } else {
-            predicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MessageField.CHANNEL, topic.getSemanticTopic());
+            predicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(MessageField.CHANNEL, topic.getSemanticTopic());
         }
 
         return findMessages(loadConfig, scopeId, headers, startDate, endDate, predicate);
@@ -402,16 +402,16 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     @Override
     public PagingLoadResult<GwtMessage> findMessagesByDevice(PagingLoadConfig loadConfig, String scopeId, GwtDatastoreDevice device, List<GwtHeader> headers, Date startDate, Date endDate)
             throws GwtKapuaException {
-        TermPredicate predicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MessageField.CLIENT_ID, device.getDevice());
+        TermPredicate predicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(MessageField.CLIENT_ID, device.getDevice());
         return findMessages(loadConfig, scopeId, headers, startDate, endDate, predicate);
     }
 
     @Override
     public PagingLoadResult<GwtMessage> findMessagesByAssets(PagingLoadConfig loadConfig, String scopeId, GwtDatastoreDevice device, GwtDatastoreAsset asset, List<GwtHeader> headers, Date startDate, Date endDate)
             throws GwtKapuaException {
-        ChannelMatchPredicate assetPredicate = STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(asset.getTopick());
-        TermPredicate devicePredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MessageField.CLIENT_ID, device.getDevice());
-        AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
+        ChannelMatchPredicate assetPredicate = DATASTORE_PREDICATE_FACTORY.newChannelMatchPredicate(asset.getTopick());
+        TermPredicate devicePredicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(MessageField.CLIENT_ID, device.getDevice());
+        AndPredicate andPredicate = DATASTORE_PREDICATE_FACTORY.newAndPredicate();
         andPredicate.getPredicates().add(assetPredicate);
         andPredicate.getPredicates().add(devicePredicate);
         return findMessages(loadConfig, scopeId, headers, startDate, endDate, andPredicate);
@@ -448,16 +448,16 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         MessageQuery query = DATASTORE_FACTORY.newDatastoreMessageQuery(GwtKapuaCommonsModelConverter.convertKapuaId(scopeId));
         query.setLimit(loadConfig.getLimit());
         query.setOffset(loadConfig.getOffset());
-        AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
+        AndPredicate andPredicate = DATASTORE_PREDICATE_FACTORY.newAndPredicate();
         if (predicate != null) {
             andPredicate.getPredicates().add(predicate);
         }
-        RangePredicate dateRangePredicate = STORABLE_PREDICATE_FACTORY.newRangePredicate(MessageField.TIMESTAMP.field(), startDate, endDate);
+        RangePredicate dateRangePredicate = DATASTORE_PREDICATE_FACTORY.newRangePredicate(MessageField.TIMESTAMP.field(), startDate, endDate);
         andPredicate.getPredicates().add(dateRangePredicate);
         if (headers != null) {
-            OrPredicate metricsPredicate = STORABLE_PREDICATE_FACTORY.newOrPredicate();
+            OrPredicate metricsPredicate = DATASTORE_PREDICATE_FACTORY.newOrPredicate();
             for (GwtHeader header : headers) {
-                metricsPredicate.getPredicates().add(STORABLE_PREDICATE_FACTORY.newExistsPredicate(String.format(MessageSchema.MESSAGE_METRICS + ".%s", header.getName())));
+                metricsPredicate.getPredicates().add(DATASTORE_PREDICATE_FACTORY.newExistsPredicate(String.format(MessageSchema.MESSAGE_METRICS + ".%s", header.getName())));
             }
             andPredicate.getPredicates().add(metricsPredicate);
         }

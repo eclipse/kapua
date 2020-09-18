@@ -11,27 +11,25 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
+import org.eclipse.kapua.service.storable.model.StorableId;
+import org.eclipse.kapua.service.storable.model.query.predicate.IdsPredicate;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
-import org.eclipse.kapua.service.datastore.model.StorableId;
-import org.eclipse.kapua.service.datastore.model.query.IdsPredicate;
-
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 /**
  * Implementation of query predicate for matching identifier values fields
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class IdsPredicateImpl implements IdsPredicate {
 
     private String type;
-    private Set<StorableId> idSet = new HashSet<StorableId>();
+    private Set<StorableId> idSet = new HashSet<>();
 
     /**
      * Default constructor
@@ -41,7 +39,7 @@ public class IdsPredicateImpl implements IdsPredicate {
 
     /**
      * Construct an identifier predicate given the type
-     * 
+     *
      * @param type
      */
     public IdsPredicateImpl(String type) {
@@ -51,7 +49,7 @@ public class IdsPredicateImpl implements IdsPredicate {
 
     /**
      * Construct an identifier predicate given the type and the identifier collection
-     * 
+     *
      * @param type
      * @param ids
      */
@@ -67,7 +65,7 @@ public class IdsPredicateImpl implements IdsPredicate {
 
     /**
      * Set the identifier type
-     * 
+     *
      * @param type
      * @return
      */
@@ -83,7 +81,7 @@ public class IdsPredicateImpl implements IdsPredicate {
 
     /**
      * Add the storable identifier to the identifier set
-     * 
+     *
      * @param id
      * @return
      */
@@ -94,7 +92,7 @@ public class IdsPredicateImpl implements IdsPredicate {
 
     /**
      * Add the storable identifier list to the identifier set
-     * 
+     *
      * @param ids
      * @return
      */
@@ -105,7 +103,7 @@ public class IdsPredicateImpl implements IdsPredicate {
 
     /**
      * Clear the storable identifier set
-     * 
+     *
      * @return
      */
     public IdsPredicate clearValues() {

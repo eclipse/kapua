@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model;
 
-import java.util.Date;
-
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
-import org.eclipse.kapua.service.datastore.model.StorableId;
+import org.eclipse.kapua.service.storable.model.StorableId;
+
+import java.util.Date;
 
 /**
  * Channel information schema implementation
@@ -37,7 +37,7 @@ public class ChannelInfoImpl implements ChannelInfo {
 
     /**
      * Construct a channel information for the given scope
-     * 
+     *
      * @param scope
      */
     public ChannelInfoImpl(KapuaId scope) {
@@ -46,7 +46,7 @@ public class ChannelInfoImpl implements ChannelInfo {
 
     /**
      * Construct a channel information for the given scope and storable identifier
-     * 
+     *
      * @param scopeId
      * @param id
      */
@@ -81,9 +81,10 @@ public class ChannelInfoImpl implements ChannelInfo {
 
     /**
      * Set the client identifier
-     * 
+     *
      * @param clientId
      */
+    @Override
     public void setClientId(String clientId) {
         this.clientId = clientId;
     }

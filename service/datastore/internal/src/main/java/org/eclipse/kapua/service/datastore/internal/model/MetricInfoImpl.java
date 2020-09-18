@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model;
 
-import java.util.Date;
-
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
-import org.eclipse.kapua.service.datastore.model.StorableId;
+import org.eclipse.kapua.service.storable.model.StorableId;
+
+import java.util.Date;
 
 /**
  * Metric information schema implementation
@@ -40,7 +40,7 @@ public class MetricInfoImpl implements MetricInfo {
 
     /**
      * Construct a metric information for the given scope
-     * 
+     *
      * @param scopeId
      */
     public MetricInfoImpl(KapuaId scopeId) {
@@ -49,7 +49,7 @@ public class MetricInfoImpl implements MetricInfo {
 
     /**
      * Construct a metric information for the given scope and storable identifier
-     * 
+     *
      * @param scopeId
      * @param id
      */

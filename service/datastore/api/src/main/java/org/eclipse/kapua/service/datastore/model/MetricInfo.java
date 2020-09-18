@@ -14,6 +14,9 @@ package org.eclipse.kapua.service.datastore.model;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
+import org.eclipse.kapua.service.storable.model.Storable;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
+import org.eclipse.kapua.service.storable.model.id.StorableIdAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -41,7 +44,7 @@ import java.util.Date;
         "firstMessageId", //
         "firstMessageOn", //
         "lastMessageId", //
-        "lastMessageOn" })
+        "lastMessageOn"})
 public interface MetricInfo extends Storable {
 
     /**

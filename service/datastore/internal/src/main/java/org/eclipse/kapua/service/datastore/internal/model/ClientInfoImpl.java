@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model;
 
-import java.util.Date;
-
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
-import org.eclipse.kapua.service.datastore.model.StorableId;
+import org.eclipse.kapua.service.storable.model.StorableId;
+
+import java.util.Date;
 
 /**
  * Client information schema implementation
@@ -36,7 +36,7 @@ public class ClientInfoImpl implements ClientInfo {
 
     /**
      * Construct a client information for the given account
-     * 
+     *
      * @param scopeId
      */
     public ClientInfoImpl(KapuaId scopeId) {
@@ -45,7 +45,7 @@ public class ClientInfoImpl implements ClientInfo {
 
     /**
      * Construct a client information for the given account and storable identifier
-     * 
+     *
      * @param scopeId
      * @param id
      */

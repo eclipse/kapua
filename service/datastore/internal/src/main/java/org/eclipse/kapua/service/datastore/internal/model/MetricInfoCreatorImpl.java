@@ -11,15 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model;
 
-import java.util.Date;
-
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.model.MetricInfoCreator;
-import org.eclipse.kapua.service.datastore.model.StorableId;
+import org.eclipse.kapua.service.storable.model.StorableId;
+
+import java.util.Date;
 
 /**
  * Metric information schema creator implementation
- * 
+ *
  * @since 1.0.0
  */
 public class MetricInfoCreatorImpl<T> implements MetricInfoCreator<T> {
@@ -36,9 +36,8 @@ public class MetricInfoCreatorImpl<T> implements MetricInfoCreator<T> {
 
     /**
      * Construct a metric information creator for the given account
-     * 
+     *
      * @param scopeId
-     * 
      * @since 1.0.0
      */
     public MetricInfoCreatorImpl(KapuaId scopeId) {

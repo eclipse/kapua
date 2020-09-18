@@ -29,16 +29,16 @@ import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
-import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
+import org.eclipse.kapua.service.datastore.model.query.DatastorePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
-import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
-import org.eclipse.kapua.service.datastore.model.query.SortDirection;
-import org.eclipse.kapua.service.datastore.model.query.SortField;
-import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
-import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
-import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
-import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 import org.eclipse.kapua.service.elasticsearch.client.model.InsertResponse;
+import org.eclipse.kapua.service.storable.model.query.SortDirection;
+import org.eclipse.kapua.service.storable.model.query.SortField;
+import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
+import org.eclipse.kapua.service.storable.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.RangePredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -60,7 +60,7 @@ public class DataMessages extends AbstractKapuaResource {
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final MessageStoreService MESSAGE_STORE_SERVICE = LOCATOR.getService(MessageStoreService.class);
     private static final DatastoreObjectFactory DATASTORE_OBJECT_FACTORY = LOCATOR.getFactory(DatastoreObjectFactory.class);
-    private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
+    private static final DatastorePredicateFactory DATASTORE_PREDICATE_FACTORY = LOCATOR.getFactory(DatastorePredicateFactory.class);
 
     /**
      * Gets the {@link DatastoreMessage} list in the scope.
@@ -95,9 +95,9 @@ public class DataMessages extends AbstractKapuaResource {
                                                                      @QueryParam("offset") @DefaultValue("0") int offset,//
                                                                      @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
 
-        AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
+        AndPredicate andPredicate = DATASTORE_PREDICATE_FACTORY.newAndPredicate();
         if (!Strings.isNullOrEmpty(clientId)) {
-            TermPredicate clientIdPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MessageField.CLIENT_ID, clientId);
+            TermPredicate clientIdPredicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(MessageField.CLIENT_ID, clientId);
             andPredicate.getPredicates().add(clientIdPredicate);
         }
 
@@ -108,7 +108,7 @@ public class DataMessages extends AbstractKapuaResource {
         Date startDate = startDateParam != null ? startDateParam.getDate() : null;
         Date endDate = endDateParam != null ? endDateParam.getDate() : null;
         if (startDate != null || endDate != null) {
-            RangePredicate timestampPredicate = STORABLE_PREDICATE_FACTORY.newRangePredicate(ChannelInfoField.TIMESTAMP.field(), startDate, endDate);
+            RangePredicate timestampPredicate = DATASTORE_PREDICATE_FACTORY.newRangePredicate(ChannelInfoField.TIMESTAMP.field(), startDate, endDate);
             andPredicate.getPredicates().add(timestampPredicate);
         }
 
@@ -131,9 +131,9 @@ public class DataMessages extends AbstractKapuaResource {
     private StorablePredicate getChannelPredicate(String channel, boolean strictChannel) {
         StorablePredicate channelPredicate;
         if (strictChannel) {
-            channelPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(ChannelInfoField.CHANNEL, channel);
+            channelPredicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(ChannelInfoField.CHANNEL, channel);
         } else {
-            channelPredicate = STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(channel);
+            channelPredicate = DATASTORE_PREDICATE_FACTORY.newChannelMatchPredicate(channel);
         }
         return channelPredicate;
     }
@@ -141,12 +141,12 @@ public class DataMessages extends AbstractKapuaResource {
     private <V extends Comparable<V>> StorablePredicate getMetricPredicate(String metricName, MetricType<V> metricType, String metricMinValue, String metricMaxValue) {
         if (metricMinValue == null && metricMaxValue == null) {
             Class<V> type = metricType != null ? metricType.getType() : null;
-            return STORABLE_PREDICATE_FACTORY.newMetricExistsPredicate(metricName, type);
+            return DATASTORE_PREDICATE_FACTORY.newMetricExistsPredicate(metricName, type);
         } else {
             V minValue = (V) ObjectValueConverter.fromString(metricMinValue, metricType.getType());
             V maxValue = (V) ObjectValueConverter.fromString(metricMaxValue, metricType.getType());
 
-            return STORABLE_PREDICATE_FACTORY.newMetricPredicate(metricName, metricType.getType(), minValue, maxValue);
+            return DATASTORE_PREDICATE_FACTORY.newMetricPredicate(metricName, metricType.getType(), minValue, maxValue);
         }
     }
 

@@ -14,9 +14,9 @@ package org.eclipse.kapua.service.datastore.internal.model.query;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.service.datastore.internal.schema.KeyValueEntry;
 import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
-import org.eclipse.kapua.service.datastore.model.query.StorableField;
-import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
 import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
+import org.eclipse.kapua.service.storable.model.query.StorableField;
+import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
 
 /**
  * Implementation of query predicate for matching field value

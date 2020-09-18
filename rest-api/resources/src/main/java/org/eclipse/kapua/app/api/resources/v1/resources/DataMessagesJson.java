@@ -31,9 +31,9 @@ import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
-import org.eclipse.kapua.service.datastore.model.query.SortDirection;
-import org.eclipse.kapua.service.datastore.model.query.SortField;
-import org.eclipse.kapua.service.datastore.model.query.XmlAdaptedSortField;
+import org.eclipse.kapua.service.storable.model.query.SortDirection;
+import org.eclipse.kapua.service.storable.model.query.SortField;
+import org.eclipse.kapua.service.storable.model.query.XmlAdaptedSortField;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -128,7 +128,7 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
      * @return an {@link StorableEntityId} object encapsulating the response from
      * the datastore
      * @throws KapuaException Whenever something bad happens. See specific
-     *                   {@link KapuaService} exceptions.
+     *                        {@link KapuaService} exceptions.
      */
     @POST
     @Consumes({MediaType.APPLICATION_JSON})

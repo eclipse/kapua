@@ -9,20 +9,9 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.model.query;
+package org.eclipse.kapua.service.storable;
 
-/**
- * Query predicate definition for checking if a field exists
- *
- * @since 1.0
- */
-public interface ExistsPredicate extends StorablePredicate {
+import org.eclipse.kapua.service.KapuaService;
 
-    /**
-     * Returns the field name to check
-     *
-     * @return
-     */
-    String getName();
-
+public interface StorableService extends KapuaService {
 }

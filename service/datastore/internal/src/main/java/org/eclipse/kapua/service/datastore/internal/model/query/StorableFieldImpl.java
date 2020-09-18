@@ -11,13 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
-import org.eclipse.kapua.service.datastore.model.query.StorableField;
+import org.eclipse.kapua.service.storable.model.query.StorableField;
 
 /**
  * Storable field implementation
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class StorableFieldImpl implements StorableField {
 
@@ -25,7 +24,7 @@ public class StorableFieldImpl implements StorableField {
 
     /**
      * Construct a storable field given the field name
-     * 
+     *
      * @param field
      */
     public StorableFieldImpl(String field) {

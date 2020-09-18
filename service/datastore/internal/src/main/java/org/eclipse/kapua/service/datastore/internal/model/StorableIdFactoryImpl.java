@@ -12,14 +12,13 @@
 package org.eclipse.kapua.service.datastore.internal.model;
 
 import org.eclipse.kapua.locator.KapuaProvider;
-import org.eclipse.kapua.service.datastore.model.StorableId;
-import org.eclipse.kapua.service.datastore.model.StorableIdFactory;
+import org.eclipse.kapua.service.storable.model.StorableId;
+import org.eclipse.kapua.service.storable.model.StorableIdFactory;
 
 /**
  * Storable identifier factory reference implementation.
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @KapuaProvider
 public class StorableIdFactoryImpl implements StorableIdFactory {

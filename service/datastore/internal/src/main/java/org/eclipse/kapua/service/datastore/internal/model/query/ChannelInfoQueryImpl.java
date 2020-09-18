@@ -11,30 +11,28 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
-import java.util.Collections;
-
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.AbstractStorableQuery;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
-import org.eclipse.kapua.service.datastore.model.query.SortField;
-import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
+import org.eclipse.kapua.service.storable.model.query.SortField;
+import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
+
+import java.util.Collections;
 
 /**
  * Channel information query implementation
- * 
- * @since 1.0.0
  *
+ * @since 1.0.0
  */
 public class ChannelInfoQueryImpl extends AbstractStorableQuery<ChannelInfo> implements ChannelInfoQuery {
 
     /**
      * Constructor.
-     * 
+     *
      * @param scopeId
-     * 
      * @since 1.0.0
      */
     public ChannelInfoQueryImpl(KapuaId scopeId) {
@@ -44,21 +42,21 @@ public class ChannelInfoQueryImpl extends AbstractStorableQuery<ChannelInfo> imp
 
     @Override
     public String[] getIncludes(StorableFetchStyle fetchStyle) {
-        return new String[] { "*" };
+        return new String[]{"*"};
     }
 
     @Override
     public String[] getExcludes(StorableFetchStyle fetchStyle) {
-        return new String[] { "" };
+        return new String[]{""};
     }
 
     @Override
     public String[] getFields() {
-        return new String[] { ChannelInfoField.SCOPE_ID.field(),
+        return new String[]{ChannelInfoField.SCOPE_ID.field(),
                 ChannelInfoField.CHANNEL.field(),
                 ChannelInfoField.TIMESTAMP.field(),
                 ChannelInfoField.MESSAGE_ID.field(),
-                ChannelInfoField.CLIENT_ID.field() };
+                ChannelInfoField.CLIENT_ID.field()};
     }
 
 }

@@ -12,23 +12,29 @@
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
 import org.eclipse.kapua.locator.KapuaProvider;
-import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
-import org.eclipse.kapua.service.datastore.model.query.ExistsPredicate;
+import org.eclipse.kapua.service.datastore.model.query.DatastorePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.MetricExistsPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MetricPredicate;
-import org.eclipse.kapua.service.datastore.model.query.OrPredicate;
-import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
-import org.eclipse.kapua.service.datastore.model.query.StorableField;
-import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
-import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
+import org.eclipse.kapua.service.storable.model.query.StorableField;
+import org.eclipse.kapua.service.storable.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.ExistsPredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.MatchPredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.OrPredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.RangePredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
 
 @KapuaProvider
-public class StorablePredicateFactoryImpl implements StorablePredicateFactory {
+public class DatastorePredicateFactoryImpl implements DatastorePredicateFactory {
 
     @Override
     public AndPredicate newAndPredicate() {
         return new AndPredicateImpl();
+    }
+
+    @Override
+    public MatchPredicate newMatchPredicate(String expression) {
+        return null;
     }
 
     @Override

@@ -19,8 +19,8 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
-import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
+import org.eclipse.kapua.service.storable.model.StorableId;
 
 import java.text.ParseException;
 import java.util.Date;

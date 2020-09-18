@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.model.query;
 
+import org.eclipse.kapua.service.storable.model.query.predicate.RangePredicate;
+
 /**
  * Query predicate for matching range values on message metrics implementation
  *

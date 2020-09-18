@@ -14,9 +14,9 @@ package org.eclipse.kapua.service.datastore.internal.model.query;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
-import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
-import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
 import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
+import org.eclipse.kapua.service.storable.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicate;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -79,7 +79,11 @@ public class AndPredicateImpl implements AndPredicate {
         ObjectNode termNode = SchemaUtil.getObjectNode();
         ArrayNode conditionsNode = SchemaUtil.getArrayNode();
         for (StorablePredicate predicate : predicates) {
-            conditionsNode.add(predicate.toSerializedMap());
+            try {
+                conditionsNode.add(predicate.toSerializedMap());
+            } catch (Exception e) {
+                throw new DatamodelMappingException(e, "Cannot serialize AndPredicate");
+            }
         }
         termNode.set(PredicateConstants.MUST_KEY, conditionsNode);
         rootNode.set(PredicateConstants.BOOL_KEY, termNode);

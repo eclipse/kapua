@@ -11,15 +11,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model;
 
-import java.util.Objects;
+import org.eclipse.kapua.service.storable.model.StorableId;
 
-import org.eclipse.kapua.service.datastore.model.StorableId;
+import java.util.Objects;
 
 /**
  * Storable identifier implementation
  *
  * @since 1.0
- *
  */
 public class StorableIdImpl implements StorableId {
 
@@ -27,7 +26,7 @@ public class StorableIdImpl implements StorableId {
 
     /**
      * Construct a storable id with the provided id
-     * 
+     *
      * @param id
      */
     public StorableIdImpl(String id) {
