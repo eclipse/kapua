@@ -190,9 +190,6 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm implements Destr
     private String extractExternalId(String jwt) {
         final String id;
         try {
-            if (jwtProcessor == null) {
-                init();
-            }
             final JwtContext ctx = jwtProcessor.process(jwt);
             id = ctx.getJwtClaims().getSubject();
         } catch (final Exception e) {
