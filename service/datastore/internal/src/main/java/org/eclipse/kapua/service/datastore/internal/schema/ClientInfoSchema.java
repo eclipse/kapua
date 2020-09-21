@@ -13,9 +13,12 @@ package org.eclipse.kapua.service.datastore.internal.schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.service.elasticsearch.client.SchemaKeys;
 import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
+import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
+import org.eclipse.kapua.service.storable.model.utils.MappingUtils;
 
 /**
  * Client info schema
@@ -57,28 +60,24 @@ public class ClientInfoSchema {
      * @return
      * @throws DatamodelMappingException
      */
-    public static JsonNode getClientTypeSchema(boolean allEnable, boolean sourceEnable) throws DatamodelMappingException {
-        ObjectNode rootNode = SchemaUtil.getObjectNode();
+    public static JsonNode getClientTypeSchema(boolean allEnable, boolean sourceEnable) throws DatamodelMappingException, KapuaException {
+        ObjectNode rootNode = MappingUtils.newObjectNode();
 
-        ObjectNode clientNodeName = SchemaUtil.getObjectNode();
-        ObjectNode sourceClient = SchemaUtil.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_ENABLED, sourceEnable)});
+        ObjectNode clientNodeName = MappingUtils.newObjectNode();
+        ObjectNode sourceClient = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_ENABLED, sourceEnable)});
         clientNodeName.set(SchemaKeys.KEY_SOURCE, sourceClient);
 
-        ObjectNode allClient = SchemaUtil.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_ENABLED, allEnable)});
+        ObjectNode allClient = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_ENABLED, allEnable)});
         clientNodeName.set(SchemaKeys.KEY_ALL, allClient);
 
-        ObjectNode propertiesNode = SchemaUtil.getObjectNode();
-        ObjectNode clientId = SchemaUtil
-                .getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
+        ObjectNode propertiesNode = MappingUtils.newObjectNode();
+        ObjectNode clientId = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
         propertiesNode.set(CLIENT_ID, clientId);
-        ObjectNode clientTimestamp = SchemaUtil
-                .getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN)});
+        ObjectNode clientTimestamp = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN)});
         propertiesNode.set(CLIENT_TIMESTAMP, clientTimestamp);
-        ObjectNode clientScopeId = SchemaUtil
-                .getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
+        ObjectNode clientScopeId = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
         propertiesNode.set(CLIENT_SCOPE_ID, clientScopeId);
-        ObjectNode clientMessageId = SchemaUtil
-                .getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
+        ObjectNode clientMessageId = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
         propertiesNode.set(CLIENT_MESSAGE_ID, clientMessageId);
         clientNodeName.set(SchemaKeys.FIELD_NAME_PROPERTIES, propertiesNode);
         rootNode.set(CLIENT_TYPE_NAME, clientNodeName);

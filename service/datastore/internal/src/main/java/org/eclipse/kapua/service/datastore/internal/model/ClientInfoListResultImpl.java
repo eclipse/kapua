@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model;
 
-import org.eclipse.kapua.service.datastore.internal.model.query.AbstractStorableListResult;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
+import org.eclipse.kapua.service.storable.model.AbstractStorableListResult;
 
 /**
  * Client information query result list implementation

@@ -12,11 +12,14 @@
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
-import org.eclipse.kapua.service.datastore.internal.schema.KeyValueEntry;
-import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.query.MetricExistsPredicate;
 import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
+import org.eclipse.kapua.service.storable.model.query.predicate.ExistsPredicateImpl;
+import org.eclipse.kapua.service.storable.model.query.predicate.PredicateConstants;
+import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
+import org.eclipse.kapua.service.storable.model.utils.MappingUtils;
 
 /**
  * Implementation of query predicate for checking if a field exists
@@ -58,10 +61,10 @@ public class MetricExistsPredicateImpl extends ExistsPredicateImpl implements Me
      *   }
      * </pre>
      */
-    public ObjectNode toSerializedMap() throws DatamodelMappingException {
-        ObjectNode rootNode = SchemaUtil.getObjectNode();
+    public ObjectNode toSerializedMap() throws DatamodelMappingException, KapuaException {
+        ObjectNode rootNode = MappingUtils.newObjectNode();
         String fieldName = type == null ? String.format("metrics.%s", name) : String.format("metrics.%s.%s", name, DatastoreUtils.getClientMetricFromAcronym(type.getSimpleName().toLowerCase()));
-        ObjectNode termNode = SchemaUtil.getField(new KeyValueEntry[]{new KeyValueEntry(PredicateConstants.FIELD_KEY, fieldName)});
+        ObjectNode termNode = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(PredicateConstants.FIELD_KEY, fieldName)});
         rootNode.set(PredicateConstants.EXISTS_KEY, termNode);
         return rootNode;
     }

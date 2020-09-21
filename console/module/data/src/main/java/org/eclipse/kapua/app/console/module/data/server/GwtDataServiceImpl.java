@@ -48,7 +48,6 @@ import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoField;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelMatchPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.TermPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
@@ -157,9 +156,9 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 StorablePredicate predicate;
 
                 if (semanticTopic.endsWith("/#")) {
-                    predicate = new ChannelMatchPredicateImpl(semanticTopic.replaceFirst("/#$", "/"));
+                    predicate = DATASTORE_PREDICATE_FACTORY.newChannelMatchPredicate(semanticTopic.replaceFirst("/#$", "/"));
                 } else {
-                    predicate = new TermPredicateImpl(MessageField.CHANNEL, semanticTopic);
+                    predicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(MessageField.CHANNEL, semanticTopic);
                 }
 
                 messageQuery.setPredicate(predicate);
@@ -191,7 +190,7 @@ public class GwtDataServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 query.setAskTotalCount(true);
                 query.setSortFields(Collections.singletonList(SortField.descending(MessageSchema.MESSAGE_TIMESTAMP)));
                 query.setFetchAttributes(Collections.singletonList(ClientInfoField.TIMESTAMP.field()));
-                query.setPredicate(new TermPredicateImpl(ClientInfoField.CLIENT_ID, device.getClientId()));
+                query.setPredicate(DATASTORE_PREDICATE_FACTORY.newTermPredicate(ClientInfoField.CLIENT_ID, device.getClientId()));
                 ClientInfoListResult result = clientInfoRegistryService.query(query);
 
                 if (result.getFirstItem() != null) {

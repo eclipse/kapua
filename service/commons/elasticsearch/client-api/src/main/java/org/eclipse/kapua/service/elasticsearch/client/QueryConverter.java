@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.elasticsearch.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.QueryMappingException;
 
@@ -40,7 +41,7 @@ public interface QueryConverter {
      * @throws DatamodelMappingException if model mappings are not correct.
      * @since 1.0.0
      */
-    JsonNode convertQuery(Object query) throws QueryMappingException, DatamodelMappingException;
+    JsonNode convertQuery(Object query) throws QueryMappingException, DatamodelMappingException, KapuaException;
 
     /**
      * Gets the query fetch style

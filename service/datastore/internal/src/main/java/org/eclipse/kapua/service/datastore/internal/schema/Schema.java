@@ -29,6 +29,8 @@ import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMapping
 import org.eclipse.kapua.service.elasticsearch.client.model.IndexRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.IndexResponse;
 import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
+import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
+import org.eclipse.kapua.service.storable.model.utils.MappingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +62,7 @@ public class Schema {
      * @throws ClientException
      */
     public Metadata synch(KapuaId scopeId, long time)
-            throws ClientException {
+            throws ClientException, KapuaException {
         String dataIndexName;
         try {
             String indexingWindowOption = DatastoreSettings.getInstance().getString(DatastoreSettingsKey.INDEXING_WINDOW_OPTION, DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK);
@@ -123,7 +125,7 @@ public class Schema {
      * @throws ClientException
      */
     public void updateMessageMappings(KapuaId scopeId, long time, Map<String, Metric> metrics)
-            throws ClientException {
+            throws ClientException, KapuaException {
         if (metrics == null || metrics.size() == 0) {
             return;
         }
@@ -152,16 +154,16 @@ public class Schema {
         DatastoreClientFactory.getInstance().getElasticsearchClient().putMapping(new TypeDescriptor(currentMetadata.getDataIndexName(), MessageSchema.MESSAGE_TYPE_NAME), metricsMapping);
     }
 
-    private ObjectNode getNewMessageMappingsBuilder(Map<String, Metric> esMetrics) throws DatamodelMappingException {
+    private ObjectNode getNewMessageMappingsBuilder(Map<String, Metric> esMetrics) throws DatamodelMappingException, KapuaException {
         if (esMetrics == null) {
             return null;
         }
         // metrics mapping container (to be added to message mapping)
-        ObjectNode typeNode = SchemaUtil.getObjectNode(); // root
-        ObjectNode messageNode = SchemaUtil.getObjectNode(); // message
-        ObjectNode typePropertiesNode = SchemaUtil.getObjectNode(); // properties
-        ObjectNode metricsNode = SchemaUtil.getObjectNode(); // metrics
-        ObjectNode metricsPropertiesNode = SchemaUtil.getObjectNode(); // properties (metric properties)
+        ObjectNode typeNode = MappingUtils.newObjectNode(); // root
+        ObjectNode messageNode = MappingUtils.newObjectNode(); // message
+        ObjectNode typePropertiesNode = MappingUtils.newObjectNode(); // properties
+        ObjectNode metricsNode = MappingUtils.newObjectNode(); // metrics
+        ObjectNode metricsPropertiesNode = MappingUtils.newObjectNode(); // properties (metric properties)
         typeNode.set(SchemaKeys.FIELD_NAME_MESSAGE, messageNode);
         messageNode.set(SchemaKeys.FIELD_NAME_PROPERTIES, typePropertiesNode);
         typePropertiesNode.set(SchemaKeys.FIELD_NAME_METRICS, metricsNode);
@@ -171,22 +173,21 @@ public class Schema {
         ObjectNode metricMapping;
         for (Entry<String, Metric> esMetric : esMetrics.entrySet()) {
             Metric metric = esMetric.getValue();
-            metricMapping = SchemaUtil.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_DYNAMIC, SchemaKeys.VALUE_TRUE)});
+            metricMapping = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_DYNAMIC, SchemaKeys.VALUE_TRUE)});
 
-            ObjectNode matricMappingPropertiesNode = SchemaUtil.getObjectNode(); // properties (inside metric name)
+            ObjectNode matricMappingPropertiesNode = MappingUtils.newObjectNode(); // properties (inside metric name)
             ObjectNode valueMappingNode;
 
             switch (metric.getType()) {
                 case SchemaKeys.TYPE_STRING:
-                    valueMappingNode = SchemaUtil
-                            .getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
+                    valueMappingNode = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
                     break;
                 case SchemaKeys.TYPE_DATE:
-                    valueMappingNode = SchemaUtil.getField(
+                    valueMappingNode = MappingUtils.getField(
                             new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN)});
                     break;
                 default:
-                    valueMappingNode = SchemaUtil.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, metric.getType())});
+                    valueMappingNode = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, metric.getType())});
                     break;
             }
 
@@ -216,13 +217,13 @@ public class Schema {
         return diffs;
     }
 
-    private ObjectNode getMappingSchema(String idxName) throws DatamodelMappingException {
+    private ObjectNode getMappingSchema(String idxName) throws DatamodelMappingException, KapuaException {
         String idxRefreshInterval = String.format("%ss", DatastoreSettings.getInstance().getLong(DatastoreSettingsKey.INDEX_REFRESH_INTERVAL));
         Integer idxShardNumber = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.INDEX_SHARD_NUMBER, 1);
         Integer idxReplicaNumber = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.INDEX_REPLICA_NUMBER, 0);
 
-        ObjectNode rootNode = SchemaUtil.getObjectNode();
-        ObjectNode refreshIntervalNode = SchemaUtil.getField(new KeyValueEntry[]{
+        ObjectNode rootNode = MappingUtils.newObjectNode();
+        ObjectNode refreshIntervalNode = MappingUtils.getField(new KeyValueEntry[]{
                 new KeyValueEntry(SchemaKeys.KEY_REFRESH_INTERVAL, idxRefreshInterval),
                 new KeyValueEntry(SchemaKeys.KEY_SHARD_NUMBER, idxShardNumber),
                 new KeyValueEntry(SchemaKeys.KEY_REPLICA_NUMBER, idxReplicaNumber)});

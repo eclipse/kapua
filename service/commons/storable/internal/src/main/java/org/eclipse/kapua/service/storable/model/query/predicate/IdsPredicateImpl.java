@@ -9,13 +9,11 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal.model.query;
+package org.eclipse.kapua.service.storable.model.query.predicate;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
-import org.eclipse.kapua.service.storable.model.StorableId;
-import org.eclipse.kapua.service.storable.model.query.predicate.IdsPredicate;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,7 +24,7 @@ import java.util.Set;
  *
  * @since 1.0
  */
-public class IdsPredicateImpl implements IdsPredicate {
+public class IdsPredicateImpl extends StorablePredicateImpl implements IdsPredicate {
 
     private String type;
     private Set<StorableId> idSet = new HashSet<>();
@@ -79,13 +77,9 @@ public class IdsPredicateImpl implements IdsPredicate {
         return this.idSet;
     }
 
-    /**
-     * Add the storable identifier to the identifier set
-     *
-     * @param id
-     * @return
-     */
-    public IdsPredicate addValue(StorableId id) {
+
+    @Override
+    public IdsPredicate addId(StorableId id) {
         this.idSet.add(id);
         return this;
     }
@@ -95,8 +89,9 @@ public class IdsPredicateImpl implements IdsPredicate {
      *
      * @param ids
      * @return
+     * @since 1.0.0
      */
-    public IdsPredicate addValues(Collection<StorableId> ids) {
+    public IdsPredicate addIds(Collection<StorableId> ids) {
         this.idSet.addAll(ids);
         return this;
     }
@@ -125,14 +120,13 @@ public class IdsPredicateImpl implements IdsPredicate {
      * </pre>
      */
     public ObjectNode toSerializedMap() {
-        ObjectNode rootNode = SchemaUtil.getObjectNode();
-        ObjectNode idsNode = SchemaUtil.getObjectNode();
-        ArrayNode idsList = SchemaUtil.getArrayNode();
-        for (StorableId id : idSet) {
-            idsList.add(id.toString());
-        }
-        idsNode.set(PredicateConstants.TYPE_KEY, SchemaUtil.getTextNode(type));
+        ArrayNode idsList = newArrayNode(idSet);
+
+        ObjectNode idsNode = newObjectNode();
+        idsNode.set(PredicateConstants.TYPE_KEY, newTextNode(type));
         idsNode.set(PredicateConstants.VALUES_KEY, idsList);
+
+        ObjectNode rootNode = newObjectNode();
         rootNode.set(PredicateConstants.IDS_KEY, idsNode);
         return rootNode;
     }

@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.mediator;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.schema.Metadata;
@@ -34,7 +35,7 @@ public interface ChannelInfoRegistryMediator {
      * @throws ClientException
      */
     Metadata getMetadata(KapuaId scopeId, long indexedOn)
-            throws ClientException;
+            throws ClientException, KapuaException;
 
     /**
      * On before channel info delete event handler
@@ -49,7 +50,7 @@ public interface ChannelInfoRegistryMediator {
             throws KapuaIllegalArgumentException,
             ConfigurationException,
             QueryMappingException,
-            ClientException;
+            ClientException, KapuaException;
 
     /**
      * On after channel info delete event handler

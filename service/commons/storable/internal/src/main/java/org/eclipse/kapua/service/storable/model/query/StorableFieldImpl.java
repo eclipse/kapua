@@ -9,45 +9,29 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal.schema;
+package org.eclipse.kapua.service.storable.model.query;
 
 /**
- * Field entry
- * 
+ * Storable field implementation
+ *
  * @since 1.0
  */
-public class KeyValueEntry {
+public class StorableFieldImpl implements StorableField {
 
-    private String key;
-    private Object value;
+    private String field;
 
     /**
-     * Construct a key/value entry with the provided key and value
-     * 
-     * @param key
-     * @param value
+     * Construct a storable field given the field name
+     *
+     * @param field
      */
-    public KeyValueEntry(String key, Object value) {
-        this.key = key;
-        this.value = value;
+    public StorableFieldImpl(String field) {
+        this.field = field;
     }
 
-    /**
-     * Get the key
-     * 
-     * @return
-     */
-    public String getKey() {
-        return key;
-    }
-
-    /**
-     * Get the value
-     * 
-     * @return
-     */
-    public Object getValue() {
-        return value;
+    @Override
+    public String field() {
+        return field;
     }
 
 }

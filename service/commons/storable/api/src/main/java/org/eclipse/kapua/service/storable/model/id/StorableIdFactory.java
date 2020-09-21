@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.storable.model;
+package org.eclipse.kapua.service.storable.model.id;
 
 import org.eclipse.kapua.model.KapuaObjectFactory;
 

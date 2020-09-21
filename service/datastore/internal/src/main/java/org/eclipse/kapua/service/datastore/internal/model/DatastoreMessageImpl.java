@@ -16,7 +16,7 @@ import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.internal.KapuaMessageImpl;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
-import org.eclipse.kapua.service.storable.model.StorableId;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
 
 import java.util.Date;
 

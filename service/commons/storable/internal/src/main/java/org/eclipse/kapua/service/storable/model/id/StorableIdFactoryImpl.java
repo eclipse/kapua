@@ -9,31 +9,20 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal.model.query;
+package org.eclipse.kapua.service.storable.model.id;
 
-import org.eclipse.kapua.service.storable.model.query.StorableField;
+import org.eclipse.kapua.locator.KapuaProvider;
 
 /**
- * Storable field implementation
+ * Storable identifier factory reference implementation.
  *
  * @since 1.0
  */
-public class StorableFieldImpl implements StorableField {
-
-    private String field;
-
-    /**
-     * Construct a storable field given the field name
-     *
-     * @param field
-     */
-    public StorableFieldImpl(String field) {
-        this.field = field;
-    }
+@KapuaProvider
+public class StorableIdFactoryImpl implements StorableIdFactory {
 
     @Override
-    public String field() {
-        return field;
+    public StorableId newStorableId(String stringId) {
+        return new StorableIdImpl(stringId);
     }
-
 }

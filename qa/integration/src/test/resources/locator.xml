@@ -54,7 +54,6 @@
         <api>org.eclipse.kapua.service.datastore.ClientInfoRegistryService</api>
         <api>org.eclipse.kapua.service.datastore.ChannelInfoRegistryService</api>
         <api>org.eclipse.kapua.service.datastore.MetricInfoRegistryService</api>
-        <api>org.eclipse.kapua.service.storable.model.StorableIdFactory</api>
 
         <!-- datastore scope configuration -->
         <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
@@ -148,6 +147,9 @@
 
         <api>org.eclipse.kapua.service.job.targets.JobTargetService</api>
         <api>org.eclipse.kapua.service.job.targets.JobTargetFactory</api>
+
+        <api>org.eclipse.kapua.service.storable.model.id.StorableIdFactory</api>
+        <api>org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory</api>
 
         <api>org.eclipse.kapua.job.engine.JobEngineService</api>
         <api>org.eclipse.kapua.job.engine.JobEngineFactory</api>

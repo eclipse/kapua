@@ -52,7 +52,6 @@
         <api>org.eclipse.kapua.service.datastore.ChannelInfoRegistryService</api>
         <api>org.eclipse.kapua.service.datastore.MetricInfoRegistryService</api>
         <api>org.eclipse.kapua.service.datastore.DatastoreObjectFactory</api>
-        <api>org.eclipse.kapua.service.storable.model.StorableIdFactory</api>
         <api>org.eclipse.kapua.service.datastore.model.query.DatastorePredicateFactory</api>
 
         <api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
@@ -114,6 +113,9 @@
 
         <api>org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService</api>
         <api>org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory</api>
+
+        <api>org.eclipse.kapua.service.storable.model.id.StorableIdFactory</api>
+        <api>org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory</api>
 
         <api>org.eclipse.kapua.service.tag.TagFactory</api>
         <api>org.eclipse.kapua.service.tag.TagService</api>

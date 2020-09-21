@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal.model.query;
+package org.eclipse.kapua.service.storable.model.query.predicate;
 
 /**
  * Predicates constants (keys and fields names)

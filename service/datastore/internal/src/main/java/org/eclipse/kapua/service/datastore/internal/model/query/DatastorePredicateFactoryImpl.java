@@ -16,35 +16,14 @@ import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
 import org.eclipse.kapua.service.datastore.model.query.DatastorePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.MetricExistsPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MetricPredicate;
-import org.eclipse.kapua.service.storable.model.query.StorableField;
-import org.eclipse.kapua.service.storable.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.service.storable.model.query.predicate.ExistsPredicate;
-import org.eclipse.kapua.service.storable.model.query.predicate.MatchPredicate;
-import org.eclipse.kapua.service.storable.model.query.predicate.OrPredicate;
-import org.eclipse.kapua.service.storable.model.query.predicate.RangePredicate;
-import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactoryImpl;
 
 @KapuaProvider
-public class DatastorePredicateFactoryImpl implements DatastorePredicateFactory {
-
-    @Override
-    public AndPredicate newAndPredicate() {
-        return new AndPredicateImpl();
-    }
-
-    @Override
-    public MatchPredicate newMatchPredicate(String expression) {
-        return null;
-    }
+public class DatastorePredicateFactoryImpl extends StorablePredicateFactoryImpl implements DatastorePredicateFactory {
 
     @Override
     public ChannelMatchPredicate newChannelMatchPredicate(String expression) {
         return new ChannelMatchPredicateImpl(expression);
-    }
-
-    @Override
-    public <V extends Comparable<V>> RangePredicate newRangePredicate(String fieldName, V minValue, V maxValue) {
-        return new RangePredicateImpl(fieldName, minValue, maxValue);
     }
 
     @Override
@@ -53,23 +32,7 @@ public class DatastorePredicateFactoryImpl implements DatastorePredicateFactory 
     }
 
     @Override
-    public <V> TermPredicate newTermPredicate(StorableField field, V value) {
-        return new TermPredicateImpl(field, value);
-    }
-
-    @Override
-    public ExistsPredicate newExistsPredicate(String fieldName) {
-        return new ExistsPredicateImpl(fieldName);
-    }
-
-    @Override
     public <V extends Comparable<V>> MetricExistsPredicate newMetricExistsPredicate(String fieldName, Class<V> type) {
         return new MetricExistsPredicateImpl(fieldName, type);
     }
-
-    @Override
-    public OrPredicate newOrPredicate() {
-        return new OrPredicateImpl();
-    }
-
 }

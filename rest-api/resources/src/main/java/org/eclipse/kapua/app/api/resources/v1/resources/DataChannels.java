@@ -21,7 +21,6 @@ import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
 import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
-import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelMatchPredicateImpl;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
@@ -70,7 +69,7 @@ public class DataChannels extends AbstractKapuaResource {
                                               @QueryParam("name") String name, //
                                               @QueryParam("offset") @DefaultValue("0") int offset,//
                                               @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
-        AndPredicate andPredicate = new AndPredicateImpl();
+        AndPredicate andPredicate = DATASTORE_PREDICATE_FACTORY.newAndPredicate();
         if (!Strings.isNullOrEmpty(clientId)) {
             TermPredicate clientIdPredicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(ChannelInfoField.CLIENT_ID, clientId);
             andPredicate.getPredicates().add(clientIdPredicate);

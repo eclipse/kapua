@@ -203,7 +203,7 @@ import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerXmlRegistry;
-import org.eclipse.kapua.service.storable.model.StorableId;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.SortField;
 import org.eclipse.kapua.service.storable.model.query.SortFieldXmlAdapter;
 import org.eclipse.kapua.service.storable.model.query.XmlAdaptedSortField;

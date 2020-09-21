@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.mediator;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.schema.Metadata;
@@ -32,7 +33,7 @@ public interface MessageStoreMediator {
      * @return
      * @throws ClientException
      */
-    Metadata getMetadata(KapuaId scopeId, long indexedOn) throws ClientException;
+    Metadata getMetadata(KapuaId scopeId, long indexedOn) throws ClientException, KapuaException;
 
     /**
      * On after message mappings event handler
@@ -42,7 +43,7 @@ public interface MessageStoreMediator {
      * @param metrics
      * @throws ClientException
      */
-    void onUpdatedMappings(KapuaId scopeId, long indexedOn, Map<String, Metric> metrics) throws ClientException;
+    void onUpdatedMappings(KapuaId scopeId, long indexedOn, Map<String, Metric> metrics) throws ClientException, KapuaException;
 
     /**
      * On after message store event handler
@@ -51,5 +52,5 @@ public interface MessageStoreMediator {
      * @param message
      * @throws ClientException
      */
-    void onAfterMessageStore(MessageInfo messageInfo, DatastoreMessage message) throws KapuaIllegalArgumentException, ConfigurationException, ClientException;
+    void onAfterMessageStore(MessageInfo messageInfo, DatastoreMessage message) throws KapuaIllegalArgumentException, ConfigurationException, ClientException, KapuaException;
 }

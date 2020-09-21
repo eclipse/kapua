@@ -24,9 +24,16 @@
     <artifactId>kapua-service-storable-api</artifactId>
 
     <dependencies>
+        <!-- Base Service API-->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-service-api</artifactId>
+        </dependency>
+
+        <!-- Internal Dependencies -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-commons</artifactId>
         </dependency>
     </dependencies>
 

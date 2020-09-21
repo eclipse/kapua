@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,40 +9,37 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal.model.query;
+package org.eclipse.kapua.service.storable.model.query.predicate;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
-import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
-import org.eclipse.kapua.service.storable.model.query.predicate.OrPredicate;
-import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicate;
+import org.eclipse.kapua.KapuaException;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 /**
- * Implementation of query "or" aggregation
+ * Implementation of query "and" aggregation
  *
  * @since 1.0
  */
-public class OrPredicateImpl implements OrPredicate {
+public class AndPredicateImpl extends StorablePredicateImpl implements AndPredicate {
 
     private List<StorablePredicate> predicates = new ArrayList<>();
 
     /**
      * Default constructor
      */
-    public OrPredicateImpl() {
+    public AndPredicateImpl() {
     }
 
     /**
-     * Creates an "or" predicate for the given predicates collection
+     * Creates an and predicate for the given predicates collection
      *
      * @param predicates
      */
-    public OrPredicateImpl(Collection<StorablePredicate> predicates) {
+    public AndPredicateImpl(Collection<StorablePredicate> predicates) {
         predicates.addAll(predicates);
     }
 
@@ -57,7 +54,7 @@ public class OrPredicateImpl implements OrPredicate {
      * @param predicate
      * @return
      */
-    public OrPredicate addPredicate(StorablePredicate predicate) {
+    public AndPredicate addPredicate(StorablePredicate predicate) {
         this.predicates.add(predicate);
         return this;
 
@@ -68,24 +65,19 @@ public class OrPredicateImpl implements OrPredicate {
      *
      * @return
      */
-    public OrPredicate clearPredicates() {
+    public AndPredicate clearPredicates() {
         this.predicates.clear();
         return this;
     }
 
     @Override
-    public ObjectNode toSerializedMap() throws DatamodelMappingException {
-        ObjectNode rootNode = SchemaUtil.getObjectNode();
-        ObjectNode termNode = SchemaUtil.getObjectNode();
-        ArrayNode conditionsNode = SchemaUtil.getArrayNode();
-        for (StorablePredicate predicate : predicates) {
-            try {
-                conditionsNode.add(predicate.toSerializedMap());
-            } catch (Exception e) {
-                throw new DatamodelMappingException(e, "Cannot serialize OrPredicate");
-            }
-        }
-        termNode.set(PredicateConstants.SHOULD_KEY, conditionsNode);
+    public ObjectNode toSerializedMap() throws KapuaException {
+        ArrayNode conditionsNode = newArrayNodeFromPredicates(predicates);
+
+        ObjectNode termNode = newObjectNode();
+        termNode.set(PredicateConstants.MUST_KEY, conditionsNode);
+
+        ObjectNode rootNode = newObjectNode();
         rootNode.set(PredicateConstants.BOOL_KEY, termNode);
         return rootNode;
     }

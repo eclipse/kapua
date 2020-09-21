@@ -12,18 +12,19 @@
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
-import org.eclipse.kapua.service.datastore.internal.schema.KeyValueEntry;
-import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
-import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
+import org.eclipse.kapua.service.storable.model.query.predicate.PredicateConstants;
+import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateImpl;
+import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
 
 /**
  * Implementation of query predicate for matching the channel value
  *
  * @since 1.0
  */
-public class ChannelMatchPredicateImpl implements ChannelMatchPredicate {
+public class ChannelMatchPredicateImpl extends StorablePredicateImpl implements ChannelMatchPredicate {
 
     private String field;
     private String expression;
@@ -55,9 +56,9 @@ public class ChannelMatchPredicateImpl implements ChannelMatchPredicate {
     }
 
     @Override
-    public ObjectNode toSerializedMap() throws DatamodelMappingException {
-        ObjectNode rootNode = SchemaUtil.getObjectNode();
-        ObjectNode expressionNode = SchemaUtil.getField(new KeyValueEntry[]{new KeyValueEntry(field.toString(), (String) expression)});
+    public ObjectNode toSerializedMap() throws KapuaException {
+        ObjectNode rootNode = newObjectNode();
+        ObjectNode expressionNode = getField(new KeyValueEntry[]{new KeyValueEntry(field, expression)});
         rootNode.set(PredicateConstants.PREFIX_KEY, expressionNode);
         return rootNode;
     }

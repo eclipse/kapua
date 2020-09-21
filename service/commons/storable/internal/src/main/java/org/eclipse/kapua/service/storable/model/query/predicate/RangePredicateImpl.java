@@ -9,21 +9,18 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal.model.query;
+package org.eclipse.kapua.service.storable.model.query.predicate;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
-import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
 import org.eclipse.kapua.service.storable.model.query.StorableField;
-import org.eclipse.kapua.service.storable.model.query.predicate.RangePredicate;
 
 /**
  * Implementation of query predicate for matching range values
  *
  * @since 1.0.0
  */
-public class RangePredicateImpl implements RangePredicate {
+public class RangePredicateImpl extends StorablePredicateImpl implements RangePredicate {
 
     protected String field;
     protected Object minValue;
@@ -146,20 +143,23 @@ public class RangePredicateImpl implements RangePredicate {
      *  }
      * </pre>
      *
-     * @throws DatamodelMappingException
+     * @throws KapuaException
      */
     @Override
-    public ObjectNode toSerializedMap() throws DatamodelMappingException {
-        ObjectNode rootNode = SchemaUtil.getObjectNode();
-        ObjectNode valuesNode = SchemaUtil.getObjectNode();
+    public ObjectNode toSerializedMap() throws KapuaException {
+
+        ObjectNode valuesNode = newObjectNode();
         if (maxValue != null) {
-            SchemaUtil.appendField(valuesNode, PredicateConstants.LTE_KEY, maxValue);
+            appendField(valuesNode, PredicateConstants.LTE_KEY, maxValue);
         }
         if (minValue != null) {
-            SchemaUtil.appendField(valuesNode, PredicateConstants.GTE_KEY, minValue);
+            appendField(valuesNode, PredicateConstants.GTE_KEY, minValue);
         }
-        ObjectNode termNode = SchemaUtil.getObjectNode();
+
+        ObjectNode termNode = newObjectNode();
         termNode.set(field, valuesNode);
+
+        ObjectNode rootNode = newObjectNode();
         rootNode.set(PredicateConstants.RANGE_KEY, termNode);
         return rootNode;
     }

@@ -19,7 +19,7 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
 import org.eclipse.kapua.service.storable.model.Storable;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
-import org.eclipse.kapua.service.storable.model.id.StorableIdAdapter;
+import org.eclipse.kapua.service.storable.model.id.StorableIdXmlAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -59,7 +59,7 @@ public interface DatastoreMessage extends Storable {
      * @return
      */
     @XmlElement(name = "datastoreId")
-    @XmlJavaTypeAdapter(StorableIdAdapter.class)
+    @XmlJavaTypeAdapter(StorableIdXmlAdapter.class)
     StorableId getDatastoreId();
 
     /**

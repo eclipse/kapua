@@ -15,41 +15,69 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.schema.MetricInfoSchema;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoCreator;
-import org.eclipse.kapua.service.storable.model.StorableId;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.StorableField;
 
 /**
  * This enumeration defines the fields names used in the {@link MetricInfo} client schema
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public enum MetricInfoField implements StorableField {
     /**
      * Account name
+     *
+     * @since 1.0.0
      */
     SCOPE_ID(MetricInfoSchema.METRIC_SCOPE_ID),
+
     /**
      * Client identifier
+     *
+     * @since 1.0.0
      */
     CLIENT_ID(MetricInfoSchema.METRIC_CLIENT_ID),
+
     /**
      * Channel
+     *
+     * @since 1.0.0
      */
     CHANNEL(MetricInfoSchema.METRIC_CHANNEL),
+
     /**
      * Full metric name (so with the metric type suffix)
+     *
+     * @since 1.0.0
      */
     NAME_FULL(MetricInfoSchema.METRIC_MTR_NAME_FULL),
+
     /**
      * Metric type full name (not the acronym)
+     *
+     * @since 1.0.0
      */
     TYPE_FULL(MetricInfoSchema.METRIC_MTR_TYPE_FULL),
+
     /**
      * Metric timestamp (derived from the message that published the metric)
+     *
+     * @since 1.3.0
+     */
+    TIMESTAMP(MetricInfoSchema.METRIC_MTR_TIMESTAMP),
+
+    /**
+     * Metric timestamp (derived from the message that published the metric)
+     *
+     * @since 1.0.0
      */
     TIMESTAMP_FULL(MetricInfoSchema.METRIC_MTR_TIMESTAMP_FULL),
+
+
     /**
      * Message identifier
+     *
+     * @since 1.0.0
      */
     MESSAGE_ID_FULL(MetricInfoSchema.METRIC_MTR_MSG_ID_FULL);
 

@@ -12,7 +12,7 @@
 package org.eclipse.kapua.app.api.resources.v1.resources.model;
 
 import org.eclipse.kapua.service.storable.model.Storable;
-import org.eclipse.kapua.service.storable.model.StorableId;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
 
 import javax.ws.rs.PathParam;
 

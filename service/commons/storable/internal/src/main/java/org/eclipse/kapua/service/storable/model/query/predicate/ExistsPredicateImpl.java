@@ -9,20 +9,18 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal.model.query;
+package org.eclipse.kapua.service.storable.model.query.predicate;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.eclipse.kapua.service.datastore.internal.schema.KeyValueEntry;
-import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
-import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
-import org.eclipse.kapua.service.storable.model.query.predicate.ExistsPredicate;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
 
 /**
  * Implementation of query predicate for checking if a field exists
  *
  * @since 1.0
  */
-public class ExistsPredicateImpl implements ExistsPredicate {
+public class ExistsPredicateImpl extends StorablePredicateImpl implements ExistsPredicate {
 
     protected String name;
 
@@ -64,9 +62,10 @@ public class ExistsPredicateImpl implements ExistsPredicate {
      *   }
      * </pre>
      */
-    public ObjectNode toSerializedMap() throws DatamodelMappingException {
-        ObjectNode rootNode = SchemaUtil.getObjectNode();
-        ObjectNode termNode = SchemaUtil.getField(new KeyValueEntry[]{new KeyValueEntry(PredicateConstants.FIELD_KEY, name)});
+    public ObjectNode toSerializedMap() throws KapuaException {
+        ObjectNode termNode = getField(new KeyValueEntry[]{new KeyValueEntry(PredicateConstants.FIELD_KEY, name)});
+
+        ObjectNode rootNode = newObjectNode();
         rootNode.set(PredicateConstants.EXISTS_KEY, termNode);
         return rootNode;
     }

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.mediator;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaPayload;
@@ -27,7 +28,6 @@ import org.eclipse.kapua.service.datastore.internal.MetricInfoRegistryFacade;
 import org.eclipse.kapua.service.datastore.internal.model.ChannelInfoImpl;
 import org.eclipse.kapua.service.datastore.internal.model.ClientInfoImpl;
 import org.eclipse.kapua.service.datastore.internal.model.MetricInfoImpl;
-import org.eclipse.kapua.service.datastore.internal.model.StorableIdImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.Metadata;
 import org.eclipse.kapua.service.datastore.internal.schema.Schema;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
@@ -36,6 +36,7 @@ import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.QueryMappingException;
+import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
 
 import java.util.Map;
 
@@ -50,6 +51,9 @@ public class DatastoreMediator implements MessageStoreMediator,
         MetricInfoRegistryMediator {
 
     private static final DatastoreMediator INSTANCE;
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final StorableIdFactory STORABLE_ID_FACTORY = LOCATOR.getFactory(StorableIdFactory.class);
 
     private final Schema esSchema;
 
@@ -126,12 +130,12 @@ public class DatastoreMediator implements MessageStoreMediator,
      * Message Store Mediator methods
      */
     @Override
-    public Metadata getMetadata(KapuaId scopeId, long indexedOn) throws ClientException {
+    public Metadata getMetadata(KapuaId scopeId, long indexedOn) throws ClientException, KapuaException {
         return esSchema.synch(scopeId, indexedOn);
     }
 
     @Override
-    public void onUpdatedMappings(KapuaId scopeId, long indexedOn, Map<String, Metric> metrics) throws ClientException {
+    public void onUpdatedMappings(KapuaId scopeId, long indexedOn, Map<String, Metric> metrics) throws ClientException, KapuaException {
         esSchema.updateMessageMappings(scopeId, indexedOn, metrics);
     }
 
@@ -146,7 +150,7 @@ public class DatastoreMediator implements MessageStoreMediator,
 
         ClientInfoImpl clientInfo = new ClientInfoImpl(message.getScopeId());
         clientInfo.setClientId(message.getClientId());
-        clientInfo.setId(new StorableIdImpl(ClientInfoField.getOrDeriveId(null, message.getScopeId(), message.getClientId())));
+        clientInfo.setId(STORABLE_ID_FACTORY.newStorableId(ClientInfoField.getOrDeriveId(null, message.getScopeId(), message.getClientId())));
         clientInfo.setFirstMessageId(message.getDatastoreId());
         clientInfo.setFirstMessageOn(message.getTimestamp());
         clientInfoStoreFacade.upstore(clientInfo);
@@ -156,7 +160,7 @@ public class DatastoreMediator implements MessageStoreMediator,
         channelInfo.setName(semanticChannel);
         channelInfo.setFirstMessageId(message.getDatastoreId());
         channelInfo.setFirstMessageOn(message.getTimestamp());
-        channelInfo.setId(new StorableIdImpl(ChannelInfoField.getOrDeriveId(null, channelInfo)));
+        channelInfo.setId(STORABLE_ID_FACTORY.newStorableId(ChannelInfoField.getOrDeriveId(null, channelInfo)));
         channelInfoStoreFacade.upstore(channelInfo);
 
         KapuaPayload payload = message.getPayload();
@@ -177,7 +181,7 @@ public class DatastoreMediator implements MessageStoreMediator,
             metricInfo.setChannel(semanticChannel);
             metricInfo.setName(entry.getKey());
             metricInfo.setMetricType(entry.getValue().getClass());
-            metricInfo.setId(new StorableIdImpl(MetricInfoField.getOrDeriveId(null, metricInfo)));
+            metricInfo.setId(STORABLE_ID_FACTORY.newStorableId(MetricInfoField.getOrDeriveId(null, metricInfo)));
             metricInfo.setFirstMessageId(message.getDatastoreId());
             metricInfo.setFirstMessageOn(message.getTimestamp());
             messageMetrics[i++] = metricInfo;

@@ -9,21 +9,19 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal.model.query;
+package org.eclipse.kapua.service.storable.model.query.predicate;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.eclipse.kapua.service.datastore.internal.schema.KeyValueEntry;
-import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
-import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.storable.model.query.StorableField;
-import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
+import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
 
 /**
  * Implementation of query predicate for matching field value
  *
  * @since 1.0
  */
-public class TermPredicateImpl implements TermPredicate {
+public class TermPredicateImpl extends StorablePredicateImpl implements TermPredicate {
 
     private StorableField field;
     private Object value;
@@ -91,9 +89,10 @@ public class TermPredicateImpl implements TermPredicate {
      *  }
      * </pre>
      */
-    public ObjectNode toSerializedMap() throws DatamodelMappingException {
-        ObjectNode rootNode = SchemaUtil.getObjectNode();
-        ObjectNode termNode = SchemaUtil.getField(new KeyValueEntry[]{new KeyValueEntry(field.field(), value)});
+    public ObjectNode toSerializedMap() throws KapuaException {
+        ObjectNode termNode = getField(new KeyValueEntry[]{new KeyValueEntry(field.field(), value)});
+
+        ObjectNode rootNode = newObjectNode();
         rootNode.set(PredicateConstants.TERM_KEY, termNode);
         return rootNode;
     }

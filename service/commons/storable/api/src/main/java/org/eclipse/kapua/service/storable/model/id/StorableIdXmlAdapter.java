@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.storable.model;
+package org.eclipse.kapua.service.storable.model.id;
 
 import org.eclipse.kapua.locator.KapuaLocator;
 
@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  *
  * @since 1.0
  */
-public class StorableIdAdapter extends XmlAdapter<String, StorableId> {
+public class StorableIdXmlAdapter extends XmlAdapter<String, StorableId> {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final StorableIdFactory STORABLE_ID_FACTORY = LOCATOR.getFactory(StorableIdFactory.class);

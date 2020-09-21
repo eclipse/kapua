@@ -1,0 +1,53 @@
+/*******************************************************************************
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.kapua.service.storable.model.query.predicate;
+
+import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.service.storable.model.query.StorableField;
+
+@KapuaProvider
+public class StorablePredicateFactoryImpl implements StorablePredicateFactory {
+    @Override
+    public AndPredicate newAndPredicate() {
+        return new AndPredicateImpl();
+    }
+
+    @Override
+    public ExistsPredicate newExistsPredicate(String... fields) {
+        return new ExistsPredicateImpl(fields);
+    }
+
+    @Override
+    public IdsPredicate newIdsPredicate(String type) {
+        return new IdsPredicateImpl(type);
+    }
+
+    @Override
+    public MatchPredicate newMatchPredicate(String field, String expression) {
+        return new MatchPredicateImpl(field, expression);
+    }
+
+    @Override
+    public OrPredicate newOrPredicate() {
+        return new OrPredicateImpl();
+    }
+
+    @Override
+    public <V extends Comparable<V>> RangePredicate newRangePredicate(String fieldName, V minValue, V maxValue) {
+        return new RangePredicateImpl(fieldName, minValue, maxValue);
+    }
+
+    @Override
+    public <V> TermPredicate newTermPredicate(StorableField field, V value) {
+        return new TermPredicateImpl(field, value);
+    }
+}

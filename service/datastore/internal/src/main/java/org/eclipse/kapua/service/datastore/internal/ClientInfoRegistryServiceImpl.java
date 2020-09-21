@@ -30,11 +30,7 @@ import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
-import org.eclipse.kapua.service.datastore.internal.model.query.AndPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.RangePredicateImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.StorableFieldImpl;
-import org.eclipse.kapua.service.datastore.internal.schema.ClientInfoSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
@@ -46,11 +42,12 @@ import org.eclipse.kapua.service.datastore.model.query.DatastorePredicateFactory
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
-import org.eclipse.kapua.service.storable.model.StorableId;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.SortField;
 import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.storable.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.storable.model.query.predicate.RangePredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;
 import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +65,10 @@ import java.util.List;
 public class ClientInfoRegistryServiceImpl extends AbstractKapuaService implements ClientInfoRegistryService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ClientInfoRegistryServiceImpl.class);
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
+
 
     private final AccountService accountService;
     private final AuthorizationService authorizationService;
@@ -224,10 +225,10 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaService implemen
         messageQuery.setOffset(0);
         messageQuery.setSortFields(sort);
 
-        RangePredicate messageIdPredicate = new RangePredicateImpl(new StorableFieldImpl(ClientInfoSchema.CLIENT_TIMESTAMP), clientInfo.getFirstMessageOn(), null);
+        RangePredicate messageIdPredicate = STORABLE_PREDICATE_FACTORY.newRangePredicate(ClientInfoField.TIMESTAMP.field(), clientInfo.getFirstMessageOn(), null);
         TermPredicate clientIdPredicate = datastorePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, clientInfo.getClientId());
 
-        AndPredicate andPredicate = new AndPredicateImpl();
+        AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
         andPredicate.getPredicates().add(messageIdPredicate);
         andPredicate.getPredicates().add(clientIdPredicate);
         messageQuery.setPredicate(andPredicate);

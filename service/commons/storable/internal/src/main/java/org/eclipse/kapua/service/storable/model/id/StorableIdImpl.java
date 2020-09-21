@@ -9,9 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal.model;
-
-import org.eclipse.kapua.service.storable.model.StorableId;
+package org.eclipse.kapua.service.storable.model.id;
 
 import java.util.Objects;
 

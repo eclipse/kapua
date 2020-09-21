@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.mediator;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.schema.Metadata;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
@@ -32,7 +33,7 @@ public interface MetricInfoRegistryMediator {
      * @throws ClientException
      */
     Metadata getMetadata(KapuaId scopeId, long indexedOn)
-            throws ClientException;
+            throws ClientException, KapuaException;
 
     /**
      * On after metric info delete event handler
@@ -41,5 +42,5 @@ public interface MetricInfoRegistryMediator {
      * @param metricInfo
      * @throws ClientException
      */
-    void onAfterMetricInfoDelete(KapuaId scopeId, MetricInfo metricInfo) throws ClientException;
+    void onAfterMetricInfoDelete(KapuaId scopeId, MetricInfo metricInfo) throws ClientException, KapuaException;
 }

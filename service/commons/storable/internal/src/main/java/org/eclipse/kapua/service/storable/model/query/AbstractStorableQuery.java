@@ -10,14 +10,11 @@
  *     Eurotech - initial API and implementation
  *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal;
+package org.eclipse.kapua.service.storable.model.query;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.storable.model.Storable;
-import org.eclipse.kapua.service.storable.model.query.SortField;
-import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
-import org.eclipse.kapua.service.storable.model.query.StorableQuery;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicate;
 
 import java.util.ArrayList;

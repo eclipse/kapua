@@ -14,13 +14,14 @@ package org.eclipse.kapua.service.datastore.internal.converter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.eclipse.kapua.service.datastore.internal.AbstractStorableQuery;
-import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.elasticsearch.client.QueryConverter;
 import org.eclipse.kapua.service.elasticsearch.client.SchemaKeys;
 import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.QueryMappingException;
+import org.eclipse.kapua.service.storable.model.query.AbstractStorableQuery;
 import org.eclipse.kapua.service.storable.model.query.SortField;
+import org.eclipse.kapua.service.storable.model.utils.MappingUtils;
 
 import java.util.List;
 
@@ -32,17 +33,17 @@ import java.util.List;
 public class QueryConverterImpl implements QueryConverter {
 
     @Override
-    public JsonNode convertQuery(Object query) throws QueryMappingException, DatamodelMappingException {
+    public JsonNode convertQuery(Object query) throws QueryMappingException, DatamodelMappingException, KapuaException {
         if (!(query instanceof AbstractStorableQuery<?>)) {
             throw new QueryMappingException();
         }
 
-        ObjectNode rootNode = SchemaUtil.getObjectNode();
+        ObjectNode rootNode = MappingUtils.newObjectNode();
         AbstractStorableQuery<?> storableQuery = (AbstractStorableQuery<?>) query;
         // includes/excludes
-        ObjectNode includesFields = SchemaUtil.getObjectNode();
-        includesFields.set(SchemaKeys.KEY_INCLUDES, SchemaUtil.getAsArrayNode(storableQuery.getIncludes(storableQuery.getFetchStyle())));
-        includesFields.set(SchemaKeys.KEY_EXCLUDES, SchemaUtil.getAsArrayNode(storableQuery.getExcludes(storableQuery.getFetchStyle())));
+        ObjectNode includesFields = MappingUtils.newObjectNode();
+        includesFields.set(SchemaKeys.KEY_INCLUDES, MappingUtils.newArrayNode(storableQuery.getIncludes(storableQuery.getFetchStyle())));
+        includesFields.set(SchemaKeys.KEY_EXCLUDES, MappingUtils.newArrayNode(storableQuery.getExcludes(storableQuery.getFetchStyle())));
         rootNode.set(SchemaKeys.KEY_SOURCE, includesFields);
         // query
         if (storableQuery.getPredicate() != null) {
@@ -53,21 +54,21 @@ public class QueryConverterImpl implements QueryConverter {
             }
         }
         // sort
-        ArrayNode sortNode = SchemaUtil.getArrayNode();
+        ArrayNode sortNode = MappingUtils.newArrayNode();
         List<SortField> sortFields = storableQuery.getSortFields();
         if (sortFields != null) {
             for (SortField field : sortFields) {
-                sortNode.add(SchemaUtil.getField(field.getField(), field.getSortDirection().name()));
+                sortNode.add(MappingUtils.getField(field.getField(), field.getSortDirection().name()));
             }
         }
         // offset and limit settings
         Integer offset = storableQuery.getOffset();
         if (offset != null) {
-            rootNode.set(SchemaKeys.KEY_FROM, SchemaUtil.getNumericNode(offset));
+            rootNode.set(SchemaKeys.KEY_FROM, MappingUtils.newNumericNode(offset));
         }
         Integer limit = storableQuery.getLimit();
         if (limit != null) {
-            rootNode.set(SchemaKeys.KEY_SIZE, SchemaUtil.getNumericNode(limit));
+            rootNode.set(SchemaKeys.KEY_SIZE, MappingUtils.newNumericNode(limit));
         }
         rootNode.set(SchemaKeys.KEY_SORT, sortNode);
         return rootNode;

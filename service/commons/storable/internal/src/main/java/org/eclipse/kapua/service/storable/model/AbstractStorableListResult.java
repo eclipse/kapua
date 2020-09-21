@@ -9,10 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal.model.query;
-
-import org.eclipse.kapua.service.storable.model.Storable;
-import org.eclipse.kapua.service.storable.model.StorableListResult;
+package org.eclipse.kapua.service.storable.model;
 
 import java.util.ArrayList;
 import java.util.Collection;

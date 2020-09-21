@@ -29,14 +29,21 @@ public interface StorablePredicateFactory extends KapuaObjectFactory {
      */
     AndPredicate newAndPredicate();
 
+    ExistsPredicate newExistsPredicate(String... fields);
+
+    IdsPredicate newIdsPredicate(String type);
+
     /**
      * Returns a new instance of {@link MatchPredicate}.
      *
+     * @param field      The field name
      * @param expression The expression to match with the channel name.
      * @return The newly instantiated {@link MatchPredicate}.
-     * @since 1.0.0
+     * @since 1.3.0
      */
-    MatchPredicate newMatchPredicate(String expression);
+    MatchPredicate newMatchPredicate(String field, String expression);
+
+    OrPredicate newOrPredicate();
 
     /**
      * Return a new instance of {@link RangePredicate}
@@ -58,7 +65,5 @@ public interface StorablePredicateFactory extends KapuaObjectFactory {
      * @since 1.0.0
      */
     <V> TermPredicate newTermPredicate(StorableField field, V value);
-
-    OrPredicate newOrPredicate();
 
 }

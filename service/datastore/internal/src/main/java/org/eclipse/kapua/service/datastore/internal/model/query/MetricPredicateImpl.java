@@ -12,10 +12,13 @@
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
-import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.query.MetricPredicate;
 import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
+import org.eclipse.kapua.service.storable.model.query.predicate.PredicateConstants;
+import org.eclipse.kapua.service.storable.model.query.predicate.RangePredicateImpl;
+import org.eclipse.kapua.service.storable.model.utils.MappingUtils;
 
 /**
  * Implementation of query predicate for matching range values
@@ -59,16 +62,16 @@ public class MetricPredicateImpl extends RangePredicateImpl implements MetricPre
      * @throws DatamodelMappingException
      */
     @Override
-    public ObjectNode toSerializedMap() throws DatamodelMappingException {
-        ObjectNode rootNode = SchemaUtil.getObjectNode();
-        ObjectNode valuesNode = SchemaUtil.getObjectNode();
+    public ObjectNode toSerializedMap() throws DatamodelMappingException, KapuaException {
+        ObjectNode rootNode = MappingUtils.newObjectNode();
+        ObjectNode valuesNode = MappingUtils.newObjectNode();
         if (maxValue != null) {
-            SchemaUtil.appendField(valuesNode, PredicateConstants.LTE_KEY, maxValue);
+            MappingUtils.appendField(valuesNode, PredicateConstants.LTE_KEY, maxValue);
         }
         if (minValue != null) {
-            SchemaUtil.appendField(valuesNode, PredicateConstants.GTE_KEY, minValue);
+            MappingUtils.appendField(valuesNode, PredicateConstants.GTE_KEY, minValue);
         }
-        ObjectNode termNode = SchemaUtil.getObjectNode();
+        ObjectNode termNode = MappingUtils.newObjectNode();
         termNode.set(String.format("metrics.%s.%s", field, DatastoreUtils.getClientMetricFromAcronym(type.getSimpleName().toLowerCase())), valuesNode);
         rootNode.set(PredicateConstants.RANGE_KEY, termNode);
         return rootNode;

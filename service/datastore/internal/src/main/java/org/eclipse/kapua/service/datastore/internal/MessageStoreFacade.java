@@ -12,12 +12,14 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import com.codahale.metrics.Counter;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.internal.device.data.KapuaDataChannelImpl;
@@ -34,11 +36,9 @@ import org.eclipse.kapua.service.datastore.internal.mediator.Metric;
 import org.eclipse.kapua.service.datastore.internal.model.DataIndexBy;
 import org.eclipse.kapua.service.datastore.internal.model.DatastoreMessageImpl;
 import org.eclipse.kapua.service.datastore.internal.model.MessageListResultImpl;
-import org.eclipse.kapua.service.datastore.internal.model.StorableIdImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelMatchPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.IdsPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
@@ -62,8 +62,11 @@ import org.eclipse.kapua.service.elasticsearch.client.model.InsertRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.InsertResponse;
 import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
-import org.eclipse.kapua.service.storable.model.StorableId;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
+import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
 import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
+import org.eclipse.kapua.service.storable.model.query.predicate.IdsPredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +82,10 @@ import java.util.Map;
 public final class MessageStoreFacade {
 
     private static final Logger logger = LoggerFactory.getLogger(MessageStoreFacade.class);
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final StorableIdFactory STORABLE_ID_FACTORY = LOCATOR.getFactory(StorableIdFactory.class);
+    private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
 
     private final Counter metricMessagesAlreadyInTheDatastoreCount;
 
@@ -148,17 +155,22 @@ public final class MessageStoreFacade {
             }
         }
         // Extract schema metadata
-        Metadata schemaMetadata = mediator.getMetadata(message.getScopeId(), indexedOn);
+        Metadata schemaMetadata = null;
+        try {
+            schemaMetadata = mediator.getMetadata(message.getScopeId(), indexedOn);
+        } catch (KapuaException e) {
+            e.printStackTrace();
+        }
         Date indexedOnDate = new Date(indexedOn);
         String indexName = schemaMetadata.getDataIndexName();
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MessageSchema.MESSAGE_TYPE_NAME);
 
         if (!newInsert) {
-            DatastoreMessage datastoreMessage = find(message.getScopeId(), new StorableIdImpl(messageId), StorableFetchStyle.SOURCE_SELECT);
+            DatastoreMessage datastoreMessage = find(message.getScopeId(), STORABLE_ID_FACTORY.newStorableId(messageId), StorableFetchStyle.SOURCE_SELECT);
             if (datastoreMessage != null) {
                 logger.debug("Message with datatstore id '{}' already found", messageId);
                 metricMessagesAlreadyInTheDatastoreCount.inc();
-                return new StorableIdImpl(messageId);
+                return STORABLE_ID_FACTORY.newStorableId(messageId);
             }
         }
 
@@ -181,13 +193,21 @@ public final class MessageStoreFacade {
                 metrics.put(mappedName, metric);
             }
         }
-        mediator.onUpdatedMappings(message.getScopeId(), indexedOn, metrics);
+        try {
+            mediator.onUpdatedMappings(message.getScopeId(), indexedOn, metrics);
+        } catch (KapuaException e) {
+            e.printStackTrace();
+        }
 
         InsertResponse insertResponse = getElasticsearchClient().insert(insertRequest);
-        messageToStore.setDatastoreId(new StorableIdImpl(insertResponse.getId()));
+        messageToStore.setDatastoreId(STORABLE_ID_FACTORY.newStorableId(insertResponse.getId()));
 
-        mediator.onAfterMessageStore(messageInfo, messageToStore);
-        return new StorableIdImpl(insertResponse.getId());
+        try {
+            mediator.onAfterMessageStore(messageInfo, messageToStore);
+        } catch (KapuaException e) {
+            e.printStackTrace();
+        }
+        return STORABLE_ID_FACTORY.newStorableId(insertResponse.getId());
     }
 
     /**
@@ -219,7 +239,12 @@ public final class MessageStoreFacade {
         // get the index by finding the object by id
         DatastoreMessage messageToBeDeleted = find(scopeId, id, StorableFetchStyle.FIELDS);
         if (messageToBeDeleted != null) {
-            Metadata schemaMetadata = mediator.getMetadata(scopeId, messageToBeDeleted.getTimestamp().getTime());
+            Metadata schemaMetadata = null;
+            try {
+                schemaMetadata = mediator.getMetadata(scopeId, messageToBeDeleted.getTimestamp().getTime());
+            } catch (KapuaException e) {
+                e.printStackTrace();
+            }
             String indexName = schemaMetadata.getDataIndexName();
             TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MessageSchema.MESSAGE_TYPE_NAME);
             getElasticsearchClient().delete(typeDescriptor, id.toString());
@@ -250,8 +275,8 @@ public final class MessageStoreFacade {
         MessageQueryImpl idsQuery = new MessageQueryImpl(scopeId);
         idsQuery.setLimit(1);
 
-        IdsPredicateImpl idsPredicate = new IdsPredicateImpl(MessageSchema.MESSAGE_TYPE_NAME);
-        idsPredicate.addValue(id);
+        IdsPredicate idsPredicate = STORABLE_PREDICATE_FACTORY.newIdsPredicate(MessageSchema.MESSAGE_TYPE_NAME);
+        idsPredicate.addId(id);
         idsQuery.setPredicate(idsPredicate);
 
         String indexName = SchemaUtil.getDataIndexName(scopeId);
@@ -520,7 +545,7 @@ public final class MessageStoreFacade {
 
         // generate uuid
         datastoreMessage.setId(message.getId());
-        datastoreMessage.setDatastoreId(new StorableIdImpl(messageId));
+        datastoreMessage.setDatastoreId(STORABLE_ID_FACTORY.newStorableId(messageId));
         return datastoreMessage;
     }
 

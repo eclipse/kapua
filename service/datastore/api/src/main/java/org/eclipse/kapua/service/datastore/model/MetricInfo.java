@@ -16,7 +16,7 @@ import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
 import org.eclipse.kapua.service.storable.model.Storable;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
-import org.eclipse.kapua.service.storable.model.id.StorableIdAdapter;
+import org.eclipse.kapua.service.storable.model.id.StorableIdXmlAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -54,7 +54,7 @@ public interface MetricInfo extends Storable {
      * @since 1.0.0
      */
     @XmlElement(name = "id")
-    @XmlJavaTypeAdapter(StorableIdAdapter.class)
+    @XmlJavaTypeAdapter(StorableIdXmlAdapter.class)
     StorableId getId();
 
     /**
@@ -64,7 +64,7 @@ public interface MetricInfo extends Storable {
      * @since 1.0.0
      */
     @XmlElement(name = "id")
-    @XmlJavaTypeAdapter(StorableIdAdapter.class)
+    @XmlJavaTypeAdapter(StorableIdXmlAdapter.class)
     void setId(StorableId id);
 
     /**
@@ -152,7 +152,7 @@ public interface MetricInfo extends Storable {
      * @since 1.0.0
      */
     @XmlElement(name = "firstMessageId")
-    @XmlJavaTypeAdapter(StorableIdAdapter.class)
+    @XmlJavaTypeAdapter(StorableIdXmlAdapter.class)
     StorableId getFirstMessageId();
 
     /**
@@ -189,7 +189,7 @@ public interface MetricInfo extends Storable {
      * @since 1.0.0
      */
     @XmlElement(name = "lastMessageId")
-    @XmlJavaTypeAdapter(StorableIdAdapter.class)
+    @XmlJavaTypeAdapter(StorableIdXmlAdapter.class)
     StorableId getLastMessageId();
 
     /**

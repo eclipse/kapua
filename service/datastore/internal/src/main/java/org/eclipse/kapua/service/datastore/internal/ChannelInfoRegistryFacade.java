@@ -11,8 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
@@ -20,9 +22,7 @@ import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoRegistry
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
 import org.eclipse.kapua.service.datastore.internal.model.ChannelInfoListResultImpl;
-import org.eclipse.kapua.service.datastore.internal.model.StorableIdImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.IdsPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.Metadata;
 import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
@@ -36,7 +36,10 @@ import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailabl
 import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
-import org.eclipse.kapua.service.storable.model.StorableId;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
+import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
+import org.eclipse.kapua.service.storable.model.query.predicate.IdsPredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +51,10 @@ import org.slf4j.LoggerFactory;
 public class ChannelInfoRegistryFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(ChannelInfoRegistryFacade.class);
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final StorableIdFactory STORABLE_ID_FACTORY = LOCATOR.getFactory(StorableIdFactory.class);
+    private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
 
     private final ChannelInfoRegistryMediator mediator;
     private final ConfigurationProvider configProvider;
@@ -86,7 +93,7 @@ public class ChannelInfoRegistryFacade {
         ArgumentValidator.notNull(channelInfo.getFirstMessageOn(), "channelInfo.messageTimestamp");
 
         String channelInfoId = ChannelInfoField.getOrDeriveId(channelInfo.getId(), channelInfo);
-        StorableId storableId = new StorableIdImpl(channelInfoId);
+        StorableId storableId = STORABLE_ID_FACTORY.newStorableId(channelInfoId);
 
         UpdateResponse response;
         // Store channel. Look up channel in the cache, and cache it if it doesn't exist
@@ -99,7 +106,12 @@ public class ChannelInfoRegistryFacade {
                 if (!DatastoreCacheManager.getInstance().getChannelsCache().get(channelInfoId)) {
                     ChannelInfo storedField = find(channelInfo.getScopeId(), storableId);
                     if (storedField == null) {
-                        Metadata metadata = mediator.getMetadata(channelInfo.getScopeId(), channelInfo.getFirstMessageOn().getTime());
+                        Metadata metadata = null;
+                        try {
+                            metadata = mediator.getMetadata(channelInfo.getScopeId(), channelInfo.getFirstMessageOn().getTime());
+                        } catch (KapuaException e) {
+                            e.printStackTrace();
+                        }
                         String registryIndexName = metadata.getRegistryIndexName();
 
                         UpdateRequest request = new UpdateRequest(channelInfo.getId().toString(), new TypeDescriptor(metadata.getRegistryIndexName(), ChannelInfoSchema.CHANNEL_TYPE_NAME), channelInfo);
@@ -142,7 +154,11 @@ public class ChannelInfoRegistryFacade {
         String indexName = SchemaUtil.getKapuaIndexName(scopeId);
         ChannelInfo channelInfo = find(scopeId, id);
         if (channelInfo != null) {
-            mediator.onBeforeChannelInfoDelete(channelInfo);
+            try {
+                mediator.onBeforeChannelInfoDelete(channelInfo);
+            } catch (KapuaException e) {
+                e.printStackTrace();
+            }
             TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);
             getElasticsearchClient().delete(typeDescriptor, id.toString());
         }
@@ -165,8 +181,8 @@ public class ChannelInfoRegistryFacade {
         ChannelInfoQueryImpl idsQuery = new ChannelInfoQueryImpl(scopeId);
         idsQuery.setLimit(1);
 
-        IdsPredicateImpl idsPredicate = new IdsPredicateImpl(ChannelInfoSchema.CHANNEL_TYPE_NAME);
-        idsPredicate.addValue(id);
+        IdsPredicate idsPredicate = STORABLE_PREDICATE_FACTORY.newIdsPredicate(ChannelInfoSchema.CHANNEL_TYPE_NAME);
+        idsPredicate.addId(id);
         idsQuery.setPredicate(idsPredicate);
 
         ChannelInfoListResult result = query(idsQuery);
@@ -252,7 +268,11 @@ public class ChannelInfoRegistryFacade {
         ChannelInfoListResult channels = query(query);
         // TODO Improve performances
         for (ChannelInfo channelInfo : channels.getItems()) {
-            mediator.onBeforeChannelInfoDelete(channelInfo);
+            try {
+                mediator.onBeforeChannelInfoDelete(channelInfo);
+            } catch (KapuaException e) {
+                e.printStackTrace();
+            }
         }
 
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);
