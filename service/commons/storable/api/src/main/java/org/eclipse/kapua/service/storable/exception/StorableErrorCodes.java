@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,22 +9,28 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.storable.model.query.predicate;
+package org.eclipse.kapua.service.storable.exception;
 
-import java.util.List;
+import org.eclipse.kapua.KapuaErrorCode;
 
 /**
- * {@link StorablePredicate} "AND" aggregation definition.
+ * {@link StorableException} {@link KapuaErrorCode}s
  *
- * @since 1.0.0
+ * @since 1.3.0
  */
-public interface AndPredicate extends StorablePredicate {
+public enum StorableErrorCodes implements KapuaErrorCode {
 
     /**
-     * Gets the {@link StorablePredicate} {@link List}
+     * See {@link InvalidValueMappingException}
      *
-     * @return The {@link StorablePredicate} {@link List}
-     * @since 1.0.0
+     * @since 1.3.0
      */
-    List<StorablePredicate> getPredicates();
+    INVALID_VALUE,
+
+    /**
+     * See {@link UnsupportedTypeMappingException}
+     *
+     * @since 1.3.0
+     */
+    UNSUPPORTED_TYPE
 }

@@ -12,18 +12,21 @@
 package org.eclipse.kapua.service.storable.model.query.predicate;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.eclipse.kapua.service.storable.exception.MappingException;
+import org.eclipse.kapua.service.storable.model.query.StorableQuery;
 
 /**
- * Storable query predicate definition
+ * {@link StorableQuery} predicate definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface StorablePredicate {
 
     /**
-     * Serialize the predicate to a Json object
+     * Serializes the {@link StorablePredicate} to a {@link ObjectNode}.
      *
-     * @return
+     * @return The serialized {@link StorablePredicate}
+     * @since 1.0.0
      */
-    ObjectNode toSerializedMap() throws Exception;
+    ObjectNode toSerializedMap() throws MappingException;
 }

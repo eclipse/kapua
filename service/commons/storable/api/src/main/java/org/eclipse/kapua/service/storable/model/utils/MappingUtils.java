@@ -16,10 +16,11 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-import org.eclipse.kapua.KapuaErrorCodes;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.storable.exception.InvalidValueMappingException;
+import org.eclipse.kapua.service.storable.exception.MappingException;
+import org.eclipse.kapua.service.storable.exception.UnsupportedTypeMappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicate;
 
@@ -31,9 +32,6 @@ import java.util.Date;
 public class MappingUtils {
 
     private final static JsonNodeFactory JSON_NODE_FACTORY = JsonNodeFactory.instance;
-
-    private static final String UNSUPPORTED_OBJECT_TYPE_ERROR_MSG = "The conversion of object [%s] is not supported!";
-    private static final String NOT_VALID_OBJECT_TYPE_ERROR_MSG = "Cannot convert date [%s]";
 
     private MappingUtils() {
     }
@@ -48,10 +46,10 @@ public class MappingUtils {
      * @param node
      * @param name
      * @param value
-     * @throws KapuaException
+     * @throws MappingException
      * @since 1.3.0
      */
-    public static void appendField(ObjectNode node, String name, Object value) throws KapuaException {
+    public static void appendField(ObjectNode node, String name, Object value) throws MappingException {
         if (value instanceof String) {
             node.set(name, JSON_NODE_FACTORY.textNode((String) value));
         } else if (value instanceof Boolean) {
@@ -70,14 +68,14 @@ public class MappingUtils {
             try {
                 node.set(name, JSON_NODE_FACTORY.textNode(KapuaDateUtils.formatDate((Date) value)));
             } catch (ParseException e) {
-                throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e, String.format(NOT_VALID_OBJECT_TYPE_ERROR_MSG, value));
+                throw new InvalidValueMappingException(e, name, value, Date.class);
             }
         } else if (value instanceof StorableId) {
             node.set(name, JSON_NODE_FACTORY.textNode(value.toString()));
         } else if (value instanceof KapuaId) {
             node.set(name, JSON_NODE_FACTORY.textNode(value.toString()));
         } else {
-            throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, String.format(UNSUPPORTED_OBJECT_TYPE_ERROR_MSG, value != null ? value.getClass() : "null"));
+            throw new UnsupportedTypeMappingException(name, value);
         }
     }
 
@@ -90,10 +88,10 @@ public class MappingUtils {
      *
      * @param entries
      * @return
-     * @throws KapuaException
+     * @throws MappingException
      * @since 1.3.0
      */
-    public static ObjectNode getField(KeyValueEntry[] entries) throws KapuaException {
+    public static ObjectNode getField(KeyValueEntry[] entries) throws MappingException {
         ObjectNode objectNode = newObjectNode();
 
         for (KeyValueEntry entry : entries) {
@@ -108,10 +106,10 @@ public class MappingUtils {
      * @param name
      * @param value
      * @return
-     * @throws KapuaException
+     * @throws MappingException
      * @since 1.3.0
      */
-    public static ObjectNode getField(String name, Object value) throws KapuaException {
+    public static ObjectNode getField(String name, Object value) throws MappingException {
         ObjectNode objectNode = newObjectNode();
 
         appendField(objectNode, name, value);
@@ -133,19 +131,19 @@ public class MappingUtils {
 
     public static ArrayNode newArrayNode(Collection<?> collections) {
         ArrayNode arrayNode = newArrayNode();
+
         collections.stream().map(Object::toString).forEach(arrayNode::add);
+
         return arrayNode;
     }
 
-    public static ArrayNode newArrayNodeFromPredicates(Collection<StorablePredicate> storablePredicates) throws KapuaException {
+    public static ArrayNode newArrayNodeFromPredicates(Collection<StorablePredicate> storablePredicates) throws MappingException {
         ArrayNode arrayNode = newArrayNode();
+
         for (StorablePredicate predicate : storablePredicates) {
-            try {
-                arrayNode.add(predicate.toSerializedMap());
-            } catch (Exception e) {
-                throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e, "Cannot serialize AndPredicate");
-            }
+            arrayNode.add(predicate.toSerializedMap());
         }
+
         return arrayNode;
     }
 
