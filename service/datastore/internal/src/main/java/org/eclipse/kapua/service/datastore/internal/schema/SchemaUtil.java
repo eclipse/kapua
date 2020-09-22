@@ -20,11 +20,14 @@ import java.util.Map;
 /**
  * Schema utility class
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class SchemaUtil {
 
 
+    /**
+     * @since 1.0.0
+     */
     private SchemaUtil() {
     }
 
@@ -36,6 +39,7 @@ public class SchemaUtil {
      * @param subKeys
      * @param values
      * @return
+     * @since 1.0.0
      */
     public static Map<String, Object> getMapOfMap(String key, String[] subKeys, String[] values) {
         Map<String, String> mapChildren = new HashMap<>();
@@ -52,6 +56,7 @@ public class SchemaUtil {
      *
      * @param scopeId
      * @return
+     * @since 1.0.0
      */
     public static String getDataIndexName(KapuaId scopeId) {
         return DatastoreUtils.getDataIndexName(scopeId);
@@ -62,6 +67,7 @@ public class SchemaUtil {
      *
      * @param scopeId
      * @return
+     * @since 1.0.0
      */
     public static String getKapuaIndexName(KapuaId scopeId) {
         return DatastoreUtils.getRegistryIndexName(scopeId);

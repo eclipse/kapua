@@ -12,9 +12,9 @@
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
+import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.query.predicate.PredicateConstants;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateImpl;
 import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
@@ -56,7 +56,7 @@ public class ChannelMatchPredicateImpl extends StorablePredicateImpl implements 
     }
 
     @Override
-    public ObjectNode toSerializedMap() throws KapuaException {
+    public ObjectNode toSerializedMap() throws MappingException {
         ObjectNode rootNode = newObjectNode();
         ObjectNode expressionNode = getField(new KeyValueEntry[]{new KeyValueEntry(field, expression)});
         rootNode.set(PredicateConstants.PREFIX_KEY, expressionNode);

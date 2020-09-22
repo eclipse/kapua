@@ -12,7 +12,7 @@
 package org.eclipse.kapua.service.storable.model.query.predicate;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.query.StorableField;
 import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
 
@@ -89,7 +89,7 @@ public class TermPredicateImpl extends StorablePredicateImpl implements TermPred
      *  }
      * </pre>
      */
-    public ObjectNode toSerializedMap() throws KapuaException {
+    public ObjectNode toSerializedMap() throws MappingException {
         ObjectNode termNode = getField(new KeyValueEntry[]{new KeyValueEntry(field.field(), value)});
 
         ObjectNode rootNode = newObjectNode();

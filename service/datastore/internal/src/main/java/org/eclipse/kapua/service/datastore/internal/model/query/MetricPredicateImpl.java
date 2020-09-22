@@ -12,10 +12,10 @@
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.model.query.MetricPredicate;
 import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
+import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.query.predicate.PredicateConstants;
 import org.eclipse.kapua.service.storable.model.query.predicate.RangePredicateImpl;
 import org.eclipse.kapua.service.storable.model.utils.MappingUtils;
@@ -62,7 +62,7 @@ public class MetricPredicateImpl extends RangePredicateImpl implements MetricPre
      * @throws DatamodelMappingException
      */
     @Override
-    public ObjectNode toSerializedMap() throws DatamodelMappingException, KapuaException {
+    public ObjectNode toSerializedMap() throws MappingException {
         ObjectNode rootNode = MappingUtils.newObjectNode();
         ObjectNode valuesNode = MappingUtils.newObjectNode();
         if (maxValue != null) {

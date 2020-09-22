@@ -29,6 +29,7 @@ import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMapping
 import org.eclipse.kapua.service.elasticsearch.client.model.IndexRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.IndexResponse;
 import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
+import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
 import org.eclipse.kapua.service.storable.model.utils.MappingUtils;
 import org.slf4j.Logger;
@@ -41,14 +42,16 @@ import java.util.Map.Entry;
 /**
  * Datastore schema creation/update
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class Schema {
 
     private static final Logger LOG = LoggerFactory.getLogger(Schema.class);
 
     /**
-     * Construct the Elasticsearch schema
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public Schema() {
     }
@@ -60,9 +63,9 @@ public class Schema {
      * @param time
      * @return
      * @throws ClientException
+     * @since 1.0.0
      */
-    public Metadata synch(KapuaId scopeId, long time)
-            throws ClientException, KapuaException {
+    public Metadata synch(KapuaId scopeId, long time) throws ClientException, MappingException {
         String dataIndexName;
         try {
             String indexingWindowOption = DatastoreSettings.getInstance().getString(DatastoreSettingsKey.INDEXING_WINDOW_OPTION, DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK);
@@ -123,9 +126,10 @@ public class Schema {
      * @param time
      * @param metrics
      * @throws ClientException
+     * @since 1.0.0
      */
     public void updateMessageMappings(KapuaId scopeId, long time, Map<String, Metric> metrics)
-            throws ClientException, KapuaException {
+            throws ClientException, MappingException {
         if (metrics == null || metrics.size() == 0) {
             return;
         }
@@ -154,7 +158,14 @@ public class Schema {
         DatastoreClientFactory.getInstance().getElasticsearchClient().putMapping(new TypeDescriptor(currentMetadata.getDataIndexName(), MessageSchema.MESSAGE_TYPE_NAME), metricsMapping);
     }
 
-    private ObjectNode getNewMessageMappingsBuilder(Map<String, Metric> esMetrics) throws DatamodelMappingException, KapuaException {
+    /**
+     * @param esMetrics
+     * @return
+     * @throws DatamodelMappingException
+     * @throws KapuaException
+     * @since 1.0.0
+     */
+    private ObjectNode getNewMessageMappingsBuilder(Map<String, Metric> esMetrics) throws MappingException {
         if (esMetrics == null) {
             return null;
         }
@@ -198,6 +209,12 @@ public class Schema {
         return typeNode;
     }
 
+    /**
+     * @param currentMetadata
+     * @param esMetrics
+     * @return
+     * @since 1.0.0
+     */
     private Map<String, Metric> getMessageMappingDiffs(Metadata currentMetadata, Map<String, Metric> esMetrics) {
         if (esMetrics == null || esMetrics.isEmpty()) {
             return null;
@@ -217,7 +234,13 @@ public class Schema {
         return diffs;
     }
 
-    private ObjectNode getMappingSchema(String idxName) throws DatamodelMappingException, KapuaException {
+    /**
+     * @param idxName
+     * @return
+     * @throws MappingException
+     * @since 1.0.0
+     */
+    private ObjectNode getMappingSchema(String idxName) throws MappingException {
         String idxRefreshInterval = String.format("%ss", DatastoreSettings.getInstance().getLong(DatastoreSettingsKey.INDEX_REFRESH_INTERVAL));
         Integer idxShardNumber = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.INDEX_SHARD_NUMBER, 1);
         Integer idxReplicaNumber = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.INDEX_REPLICA_NUMBER, 0);

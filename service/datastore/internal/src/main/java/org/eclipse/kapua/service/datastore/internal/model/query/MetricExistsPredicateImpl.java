@@ -12,10 +12,9 @@
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.model.query.MetricExistsPredicate;
-import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
+import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.query.predicate.ExistsPredicateImpl;
 import org.eclipse.kapua.service.storable.model.query.predicate.PredicateConstants;
 import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
@@ -61,7 +60,7 @@ public class MetricExistsPredicateImpl extends ExistsPredicateImpl implements Me
      *   }
      * </pre>
      */
-    public ObjectNode toSerializedMap() throws DatamodelMappingException, KapuaException {
+    public ObjectNode toSerializedMap() throws MappingException {
         ObjectNode rootNode = MappingUtils.newObjectNode();
         String fieldName = type == null ? String.format("metrics.%s", name) : String.format("metrics.%s.%s", name, DatastoreUtils.getClientMetricFromAcronym(type.getSimpleName().toLowerCase()));
         ObjectNode termNode = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(PredicateConstants.FIELD_KEY, fieldName)});

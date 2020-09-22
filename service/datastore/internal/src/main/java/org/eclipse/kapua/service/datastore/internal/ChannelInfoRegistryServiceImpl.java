@@ -40,14 +40,12 @@ import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.DatastorePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.SortField;
 import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.storable.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.storable.model.query.predicate.RangePredicate;
-import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;
 import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,14 +65,13 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaService impleme
     private static final Logger LOG = LoggerFactory.getLogger(ChannelInfoRegistryServiceImpl.class);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
+    private static final DatastorePredicateFactory DATASTORE_PREDICATE_FACTORY = LOCATOR.getFactory(DatastorePredicateFactory.class);
 
     private final AccountService accountService;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
     private final ChannelInfoRegistryFacade channelInfoRegistryFacade;
     private final MessageStoreService messageStoreService;
-    private final DatastorePredicateFactory datastorePredicateFactory;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
@@ -84,7 +81,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaService impleme
      *
      * @throws ClientUnavailableException
      */
-    public ChannelInfoRegistryServiceImpl() throws ClientInitializationException {
+    public ChannelInfoRegistryServiceImpl() {
         super(DatastoreEntityManagerFactory.getInstance());
 
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -92,7 +89,6 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaService impleme
         authorizationService = locator.getService(AuthorizationService.class);
         permissionFactory = locator.getFactory(PermissionFactory.class);
         messageStoreService = locator.getService(MessageStoreService.class);
-        datastorePredicateFactory = KapuaLocator.getInstance().getFactory(DatastorePredicateFactory.class);
 
         MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
         ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(messageStoreService, accountService);
@@ -226,11 +222,11 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaService impleme
         messageQuery.setOffset(0);
         messageQuery.setSortFields(sort);
 
-        RangePredicate messageIdPredicate = STORABLE_PREDICATE_FACTORY.newRangePredicate(ChannelInfoField.TIMESTAMP.field(), channelInfo.getFirstMessageOn(), null);
-        TermPredicate clientIdPredicate = datastorePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, channelInfo.getClientId());
-        TermPredicate channelPredicate = datastorePredicateFactory.newTermPredicate(MessageField.CHANNEL, channelInfo.getName());
+        RangePredicate messageIdPredicate = DATASTORE_PREDICATE_FACTORY.newRangePredicate(ChannelInfoField.TIMESTAMP.field(), channelInfo.getFirstMessageOn(), null);
+        TermPredicate clientIdPredicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(MessageField.CLIENT_ID, channelInfo.getClientId());
+        TermPredicate channelPredicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(MessageField.CHANNEL, channelInfo.getName());
 
-        AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
+        AndPredicate andPredicate = DATASTORE_PREDICATE_FACTORY.newAndPredicate();
         andPredicate.getPredicates().add(messageIdPredicate);
         andPredicate.getPredicates().add(clientIdPredicate);
         andPredicate.getPredicates().add(channelPredicate);

@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.mediator;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaPayload;
@@ -35,7 +34,7 @@ import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
-import org.eclipse.kapua.service.elasticsearch.client.exception.QueryMappingException;
+import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
 
 import java.util.Map;
@@ -58,7 +57,7 @@ public class DatastoreMediator implements MessageStoreMediator,
     private final Schema esSchema;
 
     private MessageStoreFacade messageStoreFacade;
-    private ClientInfoRegistryFacade clientInfoStoreFacade;
+    private ClientInfoRegistryFacade clientInfoRegistryFacade;
     private ChannelInfoRegistryFacade channelInfoStoreFacade;
     private MetricInfoRegistryFacade metricInfoStoreFacade;
 
@@ -76,9 +75,9 @@ public class DatastoreMediator implements MessageStoreMediator,
     }
 
     /**
-     * Get the {@link DatastoreMediator} instance (singleton)
+     * Gets the {@link DatastoreMediator} instance.
      *
-     * @return
+     * @return The {@link DatastoreMediator} instance.
      * @since 1.0.0
      */
     public static DatastoreMediator getInstance() {
@@ -86,9 +85,9 @@ public class DatastoreMediator implements MessageStoreMediator,
     }
 
     /**
-     * Set the message store facade
+     * Sets the {@link MessageStoreFacade}.
      *
-     * @param messageStoreFacade
+     * @param messageStoreFacade The {@link MessageStoreFacade}.
      * @since 1.0.0
      */
     public void setMessageStoreFacade(MessageStoreFacade messageStoreFacade) {
@@ -96,19 +95,19 @@ public class DatastoreMediator implements MessageStoreMediator,
     }
 
     /**
-     * Set the client info facade
+     * Sets the {@link ClientInfoRegistryFacade}.
      *
-     * @param clientInfoStoreFacade
+     * @param clientInfoRegistryFacade The {@link ClientInfoRegistryFacade}.
      * @since 1.0.0
      */
-    public void setClientInfoStoreFacade(ClientInfoRegistryFacade clientInfoStoreFacade) {
-        this.clientInfoStoreFacade = clientInfoStoreFacade;
+    public void setClientInfoStoreFacade(ClientInfoRegistryFacade clientInfoRegistryFacade) {
+        this.clientInfoRegistryFacade = clientInfoRegistryFacade;
     }
 
     /**
-     * Set the channel info facade
+     * Sets the {@link ChannelInfoRegistryFacade}.
      *
-     * @param channelInfoStoreFacade
+     * @param channelInfoStoreFacade The {@link ChannelInfoRegistryFacade}.
      * @since 1.0.0
      */
     public void setChannelInfoStoreFacade(ChannelInfoRegistryFacade channelInfoStoreFacade) {
@@ -116,35 +115,36 @@ public class DatastoreMediator implements MessageStoreMediator,
     }
 
     /**
-     * Set the metric info facade
+     * Sets the {@link MetricInfoRegistryFacade}.
      *
-     * @param metricInfoStoreFacade
+     * @param metricInfoStoreFacade The {@link MetricInfoRegistryFacade}.
      * @since 1.0.0
      */
     public void setMetricInfoStoreFacade(MetricInfoRegistryFacade metricInfoStoreFacade) {
         this.metricInfoStoreFacade = metricInfoStoreFacade;
     }
 
-    /*
-     *
-     * Message Store Mediator methods
-     */
+    //
+    // Message Store Mediator methods
+    //
+
     @Override
-    public Metadata getMetadata(KapuaId scopeId, long indexedOn) throws ClientException, KapuaException {
+    public Metadata getMetadata(KapuaId scopeId, long indexedOn) throws ClientException, MappingException {
         return esSchema.synch(scopeId, indexedOn);
     }
 
     @Override
-    public void onUpdatedMappings(KapuaId scopeId, long indexedOn, Map<String, Metric> metrics) throws ClientException, KapuaException {
+    public void onUpdatedMappings(KapuaId scopeId, long indexedOn, Map<String, Metric> metrics) throws ClientException, MappingException {
         esSchema.updateMessageMappings(scopeId, indexedOn, metrics);
     }
 
     @Override
-    public void onAfterMessageStore(MessageInfo messageInfo,
-                                    DatastoreMessage message)
+    public void onAfterMessageStore(MessageInfo messageInfo, DatastoreMessage message)
             throws KapuaIllegalArgumentException,
             ConfigurationException,
+            MappingException,
             ClientException {
+
         // convert semantic channel to String
         String semanticChannel = message.getChannel() != null ? message.getChannel().toString() : "";
 
@@ -153,7 +153,7 @@ public class DatastoreMediator implements MessageStoreMediator,
         clientInfo.setId(STORABLE_ID_FACTORY.newStorableId(ClientInfoField.getOrDeriveId(null, message.getScopeId(), message.getClientId())));
         clientInfo.setFirstMessageId(message.getDatastoreId());
         clientInfo.setFirstMessageOn(message.getTimestamp());
-        clientInfoStoreFacade.upstore(clientInfo);
+        clientInfoRegistryFacade.upstore(clientInfo);
 
         ChannelInfoImpl channelInfo = new ChannelInfoImpl(message.getScopeId());
         channelInfo.setClientId(message.getClientId());
@@ -195,25 +195,17 @@ public class DatastoreMediator implements MessageStoreMediator,
      * ClientInfo Store Mediator methods
      */
     @Override
-    public void onAfterClientInfoDelete(KapuaId scopeId, ClientInfo clientInfo)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException,
-            ClientException {
+    public void onAfterClientInfoDelete(KapuaId scopeId, ClientInfo clientInfo) {
         // nothing to do at the present
         // the datastore coherence will be guarantee by a periodic task that will scan the datastore looking for a no more referenced info registry record
         // otherwise the computational cost for each delete operation will be too high
     }
 
     /*
-     *
      * ChannelInfo Store Mediator methods
      */
     @Override
-    public void onBeforeChannelInfoDelete(ChannelInfo channelInfo)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException,
-            QueryMappingException,
-            ClientException {
+    public void onBeforeChannelInfoDelete(ChannelInfo channelInfo) {
         // nothing to do at the present
         // the datastore coherence will be guarantee by a periodic task that will scan the datastore looking for a no more referenced info registry record
         // otherwise the computational cost for each delete operation will be too high

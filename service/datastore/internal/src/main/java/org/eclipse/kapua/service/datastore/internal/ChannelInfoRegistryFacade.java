@@ -16,11 +16,9 @@ import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoRegistryMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
-import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
 import org.eclipse.kapua.service.datastore.internal.model.ChannelInfoListResultImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
@@ -29,13 +27,12 @@ import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
-import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
+import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
 import org.eclipse.kapua.service.storable.model.query.predicate.IdsPredicate;
@@ -48,7 +45,7 @@ import org.slf4j.LoggerFactory;
  *
  * @since 1.0.0
  */
-public class ChannelInfoRegistryFacade {
+public class ChannelInfoRegistryFacade extends AbstractRegistryFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(ChannelInfoRegistryFacade.class);
 
@@ -57,7 +54,6 @@ public class ChannelInfoRegistryFacade {
     private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
 
     private final ChannelInfoRegistryMediator mediator;
-    private final ConfigurationProvider configProvider;
     private final Object metadataUpdateSync = new Object();
 
     private static final String QUERY = "query";
@@ -72,7 +68,8 @@ public class ChannelInfoRegistryFacade {
      * @since 1.0.0
      */
     public ChannelInfoRegistryFacade(ConfigurationProvider configProvider, ChannelInfoRegistryMediator mediator) {
-        this.configProvider = configProvider;
+        super(configProvider);
+
         this.mediator = mediator;
     }
 
@@ -85,7 +82,7 @@ public class ChannelInfoRegistryFacade {
      * @throws ConfigurationException
      * @throws ClientException
      */
-    public StorableId upstore(ChannelInfo channelInfo) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
+    public StorableId upstore(ChannelInfo channelInfo) throws KapuaIllegalArgumentException, ConfigurationException, ClientException, MappingException {
         ArgumentValidator.notNull(channelInfo, "channelInfo");
         ArgumentValidator.notNull(channelInfo.getScopeId(), "channelInfo.scopeId");
         ArgumentValidator.notNull(channelInfo.getName(), "channelInfo.name");
@@ -106,12 +103,7 @@ public class ChannelInfoRegistryFacade {
                 if (!DatastoreCacheManager.getInstance().getChannelsCache().get(channelInfoId)) {
                     ChannelInfo storedField = find(channelInfo.getScopeId(), storableId);
                     if (storedField == null) {
-                        Metadata metadata = null;
-                        try {
-                            metadata = mediator.getMetadata(channelInfo.getScopeId(), channelInfo.getFirstMessageOn().getTime());
-                        } catch (KapuaException e) {
-                            e.printStackTrace();
-                        }
+                        Metadata metadata = mediator.getMetadata(channelInfo.getScopeId(), channelInfo.getFirstMessageOn().getTime());
                         String registryIndexName = metadata.getRegistryIndexName();
 
                         UpdateRequest request = new UpdateRequest(channelInfo.getId().toString(), new TypeDescriptor(metadata.getRegistryIndexName(), ChannelInfoSchema.CHANNEL_TYPE_NAME), channelInfo);
@@ -143,10 +135,7 @@ public class ChannelInfoRegistryFacade {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(id, "id");
 
-        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(scopeId);
-        long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
-
-        if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
+        if (!isDatastoreServiceEnabled(scopeId)) {
             LOG.debug("Storage not enabled for account {}, return", scopeId);
             return;
         }
@@ -202,10 +191,7 @@ public class ChannelInfoRegistryFacade {
         ArgumentValidator.notNull(query, QUERY);
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
-        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
-        long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
-
-        if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
+        if (!isDatastoreServiceEnabled(query.getScopeId())) {
             LOG.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
             return new ChannelInfoListResultImpl();
         }
@@ -228,10 +214,7 @@ public class ChannelInfoRegistryFacade {
         ArgumentValidator.notNull(query, QUERY);
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
-        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
-        long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
-
-        if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
+        if (!isDatastoreServiceEnabled(query.getScopeId())) {
             LOG.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
             return 0;
         }
@@ -256,10 +239,7 @@ public class ChannelInfoRegistryFacade {
         ArgumentValidator.notNull(query, QUERY);
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
-        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
-        long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
-
-        if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
+        if (!isDatastoreServiceEnabled(query.getScopeId())) {
             LOG.debug("Storage not enabled for account {}, skipping delete", query.getScopeId());
             return;
         }
@@ -277,9 +257,5 @@ public class ChannelInfoRegistryFacade {
 
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);
         getElasticsearchClient().deleteByQuery(typeDescriptor, query);
-    }
-
-    private ElasticsearchClient<?> getElasticsearchClient() throws ClientInitializationException, ClientUnavailableException {
-        return DatastoreClientFactory.getElasticsearchClient();
     }
 }

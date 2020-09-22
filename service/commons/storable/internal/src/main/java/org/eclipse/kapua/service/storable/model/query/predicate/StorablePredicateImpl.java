@@ -12,22 +12,17 @@
 package org.eclipse.kapua.service.storable.model.query.predicate;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
 import org.eclipse.kapua.service.storable.model.utils.MappingUtils;
 
 import java.util.Collection;
 
 public abstract class StorablePredicateImpl implements StorablePredicate {
-
-    private final static JsonNodeFactory JSON_NODE_FACTORY = JsonNodeFactory.instance;
-
-    private static final String UNSUPPORTED_OBJECT_TYPE_ERROR_MSG = "The conversion of object [%s] is not supported!";
-    private static final String NOT_VALID_OBJECT_TYPE_ERROR_MSG = "Cannot convert date [%s]";
 
     //
     // Appends
@@ -42,7 +37,7 @@ public abstract class StorablePredicateImpl implements StorablePredicate {
      * @throws KapuaException
      * @since 1.3.0
      */
-    protected void appendField(ObjectNode node, String name, Object value) throws KapuaException {
+    protected void appendField(ObjectNode node, String name, Object value) throws MappingException {
         MappingUtils.appendField(node, name, value);
     }
 
@@ -58,7 +53,7 @@ public abstract class StorablePredicateImpl implements StorablePredicate {
      * @throws KapuaException
      * @since 1.3.0
      */
-    protected ObjectNode getField(KeyValueEntry[] entries) throws KapuaException {
+    protected ObjectNode getField(KeyValueEntry[] entries) throws MappingException {
         return MappingUtils.getField(entries);
     }
 
@@ -71,7 +66,7 @@ public abstract class StorablePredicateImpl implements StorablePredicate {
      * @throws KapuaException
      * @since 1.3.0
      */
-    protected ObjectNode getField(String name, Object value) throws KapuaException {
+    protected ObjectNode getField(String name, Object value) throws MappingException {
         return MappingUtils.getField(name, value);
     }
 
@@ -91,7 +86,7 @@ public abstract class StorablePredicateImpl implements StorablePredicate {
         return MappingUtils.newArrayNode(collection);
     }
 
-    protected ArrayNode newArrayNodeFromPredicates(Collection<StorablePredicate> storablePredicates) throws KapuaException {
+    protected ArrayNode newArrayNodeFromPredicates(Collection<StorablePredicate> storablePredicates) throws MappingException {
         return MappingUtils.newArrayNodeFromPredicates(storablePredicates);
     }
 

@@ -13,7 +13,7 @@ package org.eclipse.kapua.service.storable.model.query.predicate;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.service.storable.exception.MappingException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,7 +71,7 @@ public class OrPredicateImpl extends StorablePredicateImpl implements OrPredicat
     }
 
     @Override
-    public ObjectNode toSerializedMap() throws KapuaException {
+    public ObjectNode toSerializedMap() throws MappingException {
         ArrayNode conditionsNode = newArrayNodeFromPredicates(predicates);
 
         ObjectNode termNode = newObjectNode();

@@ -13,42 +13,58 @@ package org.eclipse.kapua.service.datastore.internal.schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
+import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.elasticsearch.client.SchemaKeys;
-import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
+import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
 import org.eclipse.kapua.service.storable.model.utils.MappingUtils;
 
 /**
- * Client info schema
+ * {@link ClientInfo} schema definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class ClientInfoSchema {
 
+    /**
+     * @since 1.0.0
+     */
     private ClientInfoSchema() {
-
     }
 
     /**
-     * Client information schema name
+     * Client information schema name.
+     *
+     * @since 1.0.0
      */
     public static final String CLIENT_TYPE_NAME = "client";
+
     /**
      * Client information - client identifier
+     *
+     * @since 1.0.0
      */
     public static final String CLIENT_ID = "client_id";
+
     /**
      * Client information - scope id
+     *
+     * @since 1.0.0
      */
     public static final String CLIENT_SCOPE_ID = "scope_id";
+
     /**
      * Client information - message timestamp (of the first message published in this channel)
+     *
+     * @since 1.0.0
      */
     public static final String CLIENT_TIMESTAMP = "timestamp";
+
     /**
      * Client information - message identifier (of the first message published in this channel)
+     *
+     * @since 1.0.0
      */
     public static final String CLIENT_MESSAGE_ID = "message_id";
 
@@ -58,28 +74,37 @@ public class ClientInfoSchema {
      * @param allEnable
      * @param sourceEnable
      * @return
-     * @throws DatamodelMappingException
+     * @throws MappingException
+     * @since 1.0.0
      */
-    public static JsonNode getClientTypeSchema(boolean allEnable, boolean sourceEnable) throws DatamodelMappingException, KapuaException {
-        ObjectNode rootNode = MappingUtils.newObjectNode();
+    public static JsonNode getClientTypeSchema(boolean allEnable, boolean sourceEnable) throws MappingException {
 
         ObjectNode clientNodeName = MappingUtils.newObjectNode();
-        ObjectNode sourceClient = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_ENABLED, sourceEnable)});
-        clientNodeName.set(SchemaKeys.KEY_SOURCE, sourceClient);
+        {
+            ObjectNode sourceClient = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_ENABLED, sourceEnable)});
+            clientNodeName.set(SchemaKeys.KEY_SOURCE, sourceClient);
 
-        ObjectNode allClient = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_ENABLED, allEnable)});
-        clientNodeName.set(SchemaKeys.KEY_ALL, allClient);
+            ObjectNode allClient = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_ENABLED, allEnable)});
+            clientNodeName.set(SchemaKeys.KEY_ALL, allClient);
 
-        ObjectNode propertiesNode = MappingUtils.newObjectNode();
-        ObjectNode clientId = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
-        propertiesNode.set(CLIENT_ID, clientId);
-        ObjectNode clientTimestamp = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN)});
-        propertiesNode.set(CLIENT_TIMESTAMP, clientTimestamp);
-        ObjectNode clientScopeId = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
-        propertiesNode.set(CLIENT_SCOPE_ID, clientScopeId);
-        ObjectNode clientMessageId = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
-        propertiesNode.set(CLIENT_MESSAGE_ID, clientMessageId);
-        clientNodeName.set(SchemaKeys.FIELD_NAME_PROPERTIES, propertiesNode);
+            ObjectNode propertiesNode = MappingUtils.newObjectNode();
+            {
+                ObjectNode clientId = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
+                propertiesNode.set(CLIENT_ID, clientId);
+
+                ObjectNode clientTimestamp = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN)});
+                propertiesNode.set(CLIENT_TIMESTAMP, clientTimestamp);
+
+                ObjectNode clientScopeId = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
+                propertiesNode.set(CLIENT_SCOPE_ID, clientScopeId);
+
+                ObjectNode clientMessageId = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
+                propertiesNode.set(CLIENT_MESSAGE_ID, clientMessageId);
+            }
+            clientNodeName.set(SchemaKeys.FIELD_NAME_PROPERTIES, propertiesNode);
+        }
+
+        ObjectNode rootNode = MappingUtils.newObjectNode();
         rootNode.set(CLIENT_TYPE_NAME, clientNodeName);
         return rootNode;
     }

@@ -24,7 +24,7 @@ import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.internal.device.data.KapuaDataChannelImpl;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
+import org.eclipse.kapua.service.datastore.exception.DatastoreDisabledException;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreChannel;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
@@ -53,15 +53,14 @@ import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
-import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.QueryMappingException;
 import org.eclipse.kapua.service.elasticsearch.client.model.InsertRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.InsertResponse;
 import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
+import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
 import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
@@ -79,7 +78,7 @@ import java.util.Map;
  *
  * @since 1.0.0
  */
-public final class MessageStoreFacade {
+public final class MessageStoreFacade extends AbstractRegistryFacade {
 
     private static final Logger logger = LoggerFactory.getLogger(MessageStoreFacade.class);
 
@@ -90,7 +89,6 @@ public final class MessageStoreFacade {
     private final Counter metricMessagesAlreadyInTheDatastoreCount;
 
     private final MessageStoreMediator mediator;
-    private final ConfigurationProvider configProvider;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
@@ -105,7 +103,8 @@ public final class MessageStoreFacade {
      * @since 1.0.0
      */
     public MessageStoreFacade(ConfigurationProvider confProvider, MessageStoreMediator mediator) {
-        this.configProvider = confProvider;
+        super(confProvider);
+
         this.mediator = mediator;
 
         MetricsService metricService = MetricServiceFactory.getInstance();
@@ -123,29 +122,24 @@ public final class MessageStoreFacade {
      */
     public StorableId store(KapuaMessage<?, ?> message, String messageId, boolean newInsert)
             throws KapuaIllegalArgumentException,
+            DatastoreDisabledException,
             ConfigurationException,
-            ClientException {
+            ClientException, MappingException {
         ArgumentValidator.notNull(message, "message");
         ArgumentValidator.notNull(message.getScopeId(), SCOPE_ID);
         ArgumentValidator.notNull(message.getReceivedOn(), "receivedOn");
         ArgumentValidator.notNull(messageId, "messageId");
 
-        // Collect context data
-        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(message.getScopeId());
-        MessageInfo messageInfo = configProvider.getInfo(message.getScopeId());
-
         // Define data TTL
-        long ttlSecs = accountServicePlan.getDataTimeToLiveMilliseconds();
-        if (!accountServicePlan.getDataStorageEnabled() || ttlSecs == MessageStoreConfiguration.DISABLED) {
-            String msg = String.format("Message Store not enabled for account %s", messageInfo.getAccount().getName());
-            logger.debug(msg);
-            throw new ConfigurationException(msg);
+        if (!isDatastoreServiceEnabled(message.getScopeId())) {
+            throw new DatastoreDisabledException(message.getScopeId());
         }
 
         Date capturedOn = message.getCapturedOn();
         // Overwrite timestamp if necessary
         // Use the account service plan to determine whether we will give
         // precede to the device time
+        MessageStoreConfiguration accountServicePlan = getConfigProvider().getConfiguration(message.getScopeId());
         long indexedOn = KapuaDateUtils.getKapuaSysDate().toEpochMilli();
         if (DataIndexBy.DEVICE_TIMESTAMP.equals(accountServicePlan.getDataIndexBy())) {
             if (capturedOn != null) {
@@ -155,12 +149,8 @@ public final class MessageStoreFacade {
             }
         }
         // Extract schema metadata
-        Metadata schemaMetadata = null;
-        try {
-            schemaMetadata = mediator.getMetadata(message.getScopeId(), indexedOn);
-        } catch (KapuaException e) {
-            e.printStackTrace();
-        }
+        Metadata schemaMetadata = mediator.getMetadata(message.getScopeId(), indexedOn);
+
         Date indexedOnDate = new Date(indexedOn);
         String indexName = schemaMetadata.getDataIndexName();
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MessageSchema.MESSAGE_TYPE_NAME);
@@ -202,11 +192,9 @@ public final class MessageStoreFacade {
         InsertResponse insertResponse = getElasticsearchClient().insert(insertRequest);
         messageToStore.setDatastoreId(STORABLE_ID_FACTORY.newStorableId(insertResponse.getId()));
 
-        try {
-            mediator.onAfterMessageStore(messageInfo, messageToStore);
-        } catch (KapuaException e) {
-            e.printStackTrace();
-        }
+        MessageInfo messageInfo = getConfigProvider().getInfo(message.getScopeId());
+        mediator.onAfterMessageStore(messageInfo, messageToStore);
+
         return STORABLE_ID_FACTORY.newStorableId(insertResponse.getId());
     }
 
@@ -228,10 +216,7 @@ public final class MessageStoreFacade {
         ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(id, "id");
 
-        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(scopeId);
-        long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
-
-        if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
+        if (!isDatastoreServiceEnabled(scopeId)) {
             logger.debug("Storage not enabled for account {}, return", scopeId);
             return;
         }
@@ -301,10 +286,7 @@ public final class MessageStoreFacade {
         ArgumentValidator.notNull(query, QUERY);
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
-        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
-        long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
-
-        if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
+        if (!isDatastoreServiceEnabled(query.getScopeId())) {
             logger.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
             return new MessageListResultImpl();
         }
@@ -334,10 +316,7 @@ public final class MessageStoreFacade {
         ArgumentValidator.notNull(query, QUERY);
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
-        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
-        long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
-
-        if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
+        if (!isDatastoreServiceEnabled(query.getScopeId())) {
             logger.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
             return 0;
         }
@@ -365,10 +344,7 @@ public final class MessageStoreFacade {
         ArgumentValidator.notNull(query, QUERY);
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
-        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
-        long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
-
-        if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
+        if (!isDatastoreServiceEnabled(query.getScopeId())) {
             logger.debug("Storage not enabled for account {}, skipping delete", query.getScopeId());
             return;
         }
@@ -559,9 +535,5 @@ public final class MessageStoreFacade {
 
     public void deleteIndexes(String indexExp) throws ClientException {
         getElasticsearchClient().deleteIndexes(indexExp);
-    }
-
-    private ElasticsearchClient<?> getElasticsearchClient() throws ClientInitializationException, ClientUnavailableException {
-        return DatastoreClientFactory.getElasticsearchClient();
     }
 }

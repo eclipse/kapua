@@ -16,9 +16,7 @@ import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
-import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
 import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoRegistryMediator;
 import org.eclipse.kapua.service.datastore.internal.model.MetricInfoListResultImpl;
@@ -29,7 +27,6 @@ import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
-import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
@@ -51,7 +48,7 @@ import org.slf4j.LoggerFactory;
  *
  * @since 1.0.0
  */
-public class MetricInfoRegistryFacade {
+public class MetricInfoRegistryFacade extends AbstractRegistryFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(MetricInfoRegistryFacade.class);
 
@@ -60,7 +57,6 @@ public class MetricInfoRegistryFacade {
     private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
 
     private final MetricInfoRegistryMediator mediator;
-    private final ConfigurationProvider configProvider;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
@@ -75,7 +71,8 @@ public class MetricInfoRegistryFacade {
      * @since 1.0.0
      */
     public MetricInfoRegistryFacade(ConfigurationProvider configProvider, MetricInfoRegistryMediator mediator) throws ClientInitializationException {
-        this.configProvider = configProvider;
+        super(configProvider);
+
         this.mediator = mediator;
     }
 
@@ -215,10 +212,7 @@ public class MetricInfoRegistryFacade {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(id, "id");
 
-        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(scopeId);
-        long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
-
-        if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
+        if (!isDatastoreServiceEnabled(scopeId)) {
             LOG.debug("Storage not enabled for account {}, return", scopeId);
             return;
         }
@@ -266,10 +260,7 @@ public class MetricInfoRegistryFacade {
         ArgumentValidator.notNull(query, QUERY);
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
-        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
-        long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
-
-        if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
+        if (!isDatastoreServiceEnabled(query.getScopeId())) {
             LOG.debug(STORAGE_NOT_ENABLED, query.getScopeId());
             return new MetricInfoListResultImpl();
         }
@@ -293,10 +284,7 @@ public class MetricInfoRegistryFacade {
         ArgumentValidator.notNull(query, QUERY);
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
-        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
-        long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
-
-        if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
+        if (!isDatastoreServiceEnabled(query.getScopeId())) {
             LOG.debug(STORAGE_NOT_ENABLED, query.getScopeId());
             return 0;
         }
@@ -320,19 +308,13 @@ public class MetricInfoRegistryFacade {
         ArgumentValidator.notNull(query, QUERY);
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
-        MessageStoreConfiguration accountServicePlan = configProvider.getConfiguration(query.getScopeId());
-        long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
-
-        if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
+        if (!isDatastoreServiceEnabled(query.getScopeId())) {
             LOG.debug(STORAGE_NOT_ENABLED, query.getScopeId());
+            return;
         }
 
         String indexName = SchemaUtil.getKapuaIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MetricInfoSchema.METRIC_TYPE_NAME);
         getElasticsearchClient().deleteByQuery(typeDescriptor, query);
-    }
-
-    private ElasticsearchClient<?> getElasticsearchClient() throws ClientInitializationException, ClientUnavailableException {
-        return DatastoreClientFactory.getElasticsearchClient();
     }
 }
