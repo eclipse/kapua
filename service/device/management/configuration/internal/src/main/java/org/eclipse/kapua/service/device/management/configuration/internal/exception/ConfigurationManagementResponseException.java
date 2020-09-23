@@ -11,13 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.configuration.internal.exception;
 
-import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementResponseException;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseException;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
 
 public class ConfigurationManagementResponseException extends DeviceManagementResponseException {
 
+    private static final long serialVersionUID = 1540849582889208592L;
+
     public ConfigurationManagementResponseException(ConfigurationManagementResponseErrorCodes code, KapuaResponseCode responseCode, String exceptionMessage, String exceptionStack,
-            Object... arguments) {
+                                                    Object... arguments) {
         super(code, responseCode, exceptionMessage, exceptionStack, arguments);
     }
 }

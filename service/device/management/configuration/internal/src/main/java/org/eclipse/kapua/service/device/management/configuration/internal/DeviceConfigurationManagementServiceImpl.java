@@ -21,8 +21,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
-import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementErrorCodes;
-import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementException;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
@@ -36,6 +34,8 @@ import org.eclipse.kapua.service.device.management.configuration.message.interna
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationRequestPayload;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationResponseMessage;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationResponsePayload;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestException;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 import org.xml.sax.SAXException;
@@ -112,13 +112,13 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
                 try {
                     body = new String(responsePayload.getBody(), charEncoding);
                 } catch (Exception e) {
-                    throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, (Object) responsePayload.getBody());
+                    throw new DeviceManagementResponseException(e, responsePayload.getBody());
                 }
 
                 try {
                     deviceConfiguration = XmlUtil.unmarshal(body, DeviceConfigurationImpl.class);
                 } catch (Exception e) {
-                    throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, body);
+                    throw new DeviceManagementResponseException(e, body);
 
                 }
             }
@@ -168,7 +168,7 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
 
             configurationRequestPayload.setBody(requestBody);
         } catch (Exception e) {
-            throw new DeviceManagementException(DeviceManagementErrorCodes.REQUEST_EXCEPTION, e, deviceComponentConfiguration);
+            throw new DeviceManagementRequestException(e, deviceComponentConfiguration);
         }
 
         ConfigurationRequestMessage configurationRequestMessage = new ConfigurationRequestMessage();
@@ -242,7 +242,7 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
 
             configurationRequestPayload.setBody(requestBody);
         } catch (Exception e) {
-            throw new DeviceManagementException(DeviceManagementErrorCodes.REQUEST_EXCEPTION, e, deviceConfiguration);
+            throw new DeviceManagementRequestException(e, deviceConfiguration);
         }
 
         ConfigurationRequestMessage configurationRequestMessage = new ConfigurationRequestMessage();

@@ -25,6 +25,7 @@ import javax.validation.constraints.NotNull;
 public abstract class DeviceManagementException extends KapuaException {
 
     private static final String KAPUA_ERROR_MESSAGES = "device-management-error-messages";
+    private static final long serialVersionUID = 8255502521649641255L;
 
     /**
      * @since 1.1.0

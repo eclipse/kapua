@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.command.internal.exception;
 
-import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementResponseErrorCodes;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementErrorCodes;
 
-public enum CommandManagementResponseErrorCodes implements DeviceManagementResponseErrorCodes {
+public enum CommandManagementResponseErrorCodes implements DeviceManagementErrorCodes {
 
     /**
      * The device has returned an error when executing command

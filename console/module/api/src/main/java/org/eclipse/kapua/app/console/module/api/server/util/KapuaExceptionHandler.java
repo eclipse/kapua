@@ -12,7 +12,6 @@
 package org.eclipse.kapua.app.console.module.api.server.util;
 
 import org.apache.shiro.authc.AuthenticationException;
-import org.eclipse.kapua.DeviceMenagementException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaErrorCodes;
@@ -30,6 +29,7 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthorizedException;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -160,8 +160,8 @@ public class KapuaExceptionHandler {
             throw new GwtKapuaException(GwtKapuaErrorCode.PACKAGE_URI_SYNTAX_ERROR, t, t.getLocalizedMessage());
         } else if (t instanceof KapuaMaxNumberOfItemsReachedException) {
             throw new GwtKapuaException(GwtKapuaErrorCode.MAX_NUMBER_OF_ITEMS_REACHED, t, ((KapuaMaxNumberOfItemsReachedException) t).getArgValue());
-        } else if (t instanceof DeviceMenagementException) {
-            throw new GwtKapuaException(GwtKapuaErrorCode.valueOf(((DeviceMenagementException) t).getCode().name()), t, t.getLocalizedMessage());
+        } else if (t instanceof DeviceManagementException) {
+            throw new GwtKapuaException(GwtKapuaErrorCode.valueOf(((DeviceManagementException) t).getCode().name()), t, t.getLocalizedMessage());
         } else if (t instanceof KapuaException && ((KapuaException) t).getCode() == (KapuaErrorCodes.SAME_START_AND_DATE)) {
             throw new GwtKapuaException(GwtKapuaErrorCode.SAME_START_AND_DATE, t, t.getLocalizedMessage());
         } else if (t instanceof KapuaException && ((KapuaException) t).getCode() == (KapuaErrorCodes.RETRY_AND_CRON_BOTH_SELECTED)) {

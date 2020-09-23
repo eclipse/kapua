@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.bundle.internal.exception;
 
-import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementResponseErrorCodes;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementErrorCodes;
 
-public enum BundleManagementResponseErrorCodes implements DeviceManagementResponseErrorCodes {
+public enum BundleManagementResponseErrorCodes implements DeviceManagementErrorCodes {
 
     /**
      * The device has returned an error when getting bundles

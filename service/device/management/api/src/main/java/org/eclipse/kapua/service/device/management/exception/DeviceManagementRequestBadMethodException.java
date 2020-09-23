@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,10 +9,13 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.commons.exception;
+package org.eclipse.kapua.service.device.management.exception;
 
-import org.eclipse.kapua.KapuaErrorCode;
+public class DeviceManagementRequestBadMethodException extends DeviceManagementException {
 
-public interface DeviceManagementResponseErrorCodes extends KapuaErrorCode {
+    private static final long serialVersionUID = 2544641159548768773L;
 
+    public DeviceManagementRequestBadMethodException() {
+        super(DeviceManagementGenericErrorCodes.REQUEST_BAD_METHOD);
+    }
 }

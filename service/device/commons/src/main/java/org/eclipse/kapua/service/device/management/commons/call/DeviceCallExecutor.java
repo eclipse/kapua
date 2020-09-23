@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.commons.call;
 
-import org.eclipse.kapua.DeviceMenagementErrorCodes;
-import org.eclipse.kapua.DeviceMenagementException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -23,6 +21,7 @@ import org.eclipse.kapua.service.device.call.message.app.request.DeviceRequestMe
 import org.eclipse.kapua.service.device.call.message.app.response.DeviceResponseMessage;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestBadMethodException;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementSendException;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementTimeoutException;
 import org.eclipse.kapua.service.device.management.exception.DeviceNotConnectedException;
@@ -154,7 +153,7 @@ public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRe
                     responseMessage = deviceCall.write(deviceRequestMessage, timeout);
                     break;
                 default:
-                    throw new DeviceMenagementException(DeviceMenagementErrorCodes.REQUEST_BAD_METHOD);
+                    throw new DeviceManagementRequestBadMethodException();
             }
 
             //

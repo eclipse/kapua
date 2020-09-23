@@ -30,10 +30,9 @@ import org.eclipse.kapua.service.device.management.bundle.message.internal.Bundl
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleResponsePayload;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
-import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementErrorCodes;
-import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementException;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 
@@ -99,16 +98,14 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
             try {
                 body = new String(responsePayload.getBody(), charEncoding);
             } catch (Exception e) {
-                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, (Object) responsePayload.getBody());
+                throw new DeviceManagementResponseException(e, responsePayload.getBody());
             }
 
             DeviceBundles deviceBundleList = null;
             try {
                 deviceBundleList = XmlUtil.unmarshal(body, DeviceBundlesImpl.class);
             } catch (Exception e) {
-                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION,
-                        e,
-                        body);
+                throw new DeviceManagementResponseException(e, body);
             }
 
             return deviceBundleList;

@@ -22,6 +22,8 @@ import javax.validation.constraints.NotNull;
  */
 public class DeviceManagementSendException extends DeviceManagementException {
 
+    private static final long serialVersionUID = 8314422738805026338L;
+
     private final KapuaRequestMessage requestMessage;
 
     /**
@@ -31,7 +33,7 @@ public class DeviceManagementSendException extends DeviceManagementException {
      * @since 1.1.0
      */
     public DeviceManagementSendException(@NotNull KapuaRequestMessage requestMessage) {
-        super(DeviceManagementErrorCodes.SEND_ERROR, requestMessage);
+        super(DeviceManagementGenericErrorCodes.SEND_ERROR, requestMessage);
         this.requestMessage = requestMessage;
     }
 
@@ -43,7 +45,7 @@ public class DeviceManagementSendException extends DeviceManagementException {
      * @since 1.1.0
      */
     public DeviceManagementSendException(@NotNull Throwable cause, @NotNull KapuaRequestMessage requestMessage) {
-        super(DeviceManagementErrorCodes.SEND_ERROR, cause, requestMessage);
+        super(DeviceManagementGenericErrorCodes.SEND_ERROR, cause, requestMessage);
         this.requestMessage = requestMessage;
     }
 

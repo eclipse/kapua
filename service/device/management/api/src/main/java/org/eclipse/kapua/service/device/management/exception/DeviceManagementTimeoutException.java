@@ -20,6 +20,8 @@ import javax.validation.constraints.NotNull;
  */
 public class DeviceManagementTimeoutException extends DeviceManagementException {
 
+    private static final long serialVersionUID = 7480204887766596656L;
+
     private final Long timeout;
 
     /**
@@ -30,7 +32,7 @@ public class DeviceManagementTimeoutException extends DeviceManagementException 
      * @since 1.1.0
      */
     public DeviceManagementTimeoutException(@NotNull Throwable cause, @NotNull Long timeout) {
-        super(DeviceManagementErrorCodes.TIMEOUT, cause, timeout);
+        super(DeviceManagementGenericErrorCodes.TIMEOUT, cause, timeout);
 
         this.timeout = timeout;
     }
