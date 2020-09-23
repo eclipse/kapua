@@ -13,87 +13,82 @@ cache:
   - $HOME/.m2
 
 install:
-- echo ==== Setting up toolchain.xml ====
-- ls /usr/lib/jvm
-- ls
-- cp build-tools/src/main/toolchains/travis-ci.xml ~/.m2/toolchains.xml
-- echo ==== Setting up Maven 3.3 for Travis ====
-- wget -T 30 -t 3 -O maven.tar.gz http://www-eu.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz || wget -T 30 -t 3 -O maven.tar.gz http://www-us.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
-- mkdir maven
-- cd maven ; tar --strip-components 1 -xzf ../maven.tar.gz ; cd ..
-- chmod a+x maven/bin/mvn
+  - echo ==== Setting up toolchain.xml ====
+  - echo == Available JVMs
+  - ls /usr/lib/jvm
+  - echo == Copying Toolchain File travis-ci.xml to .m2
+  - cp build-tools/src/main/toolchains/travis-ci.xml ~/.m2/toolchains.xml
+  - echo ==================================
 
-before_script:
-  - export M2_HOME=$PWD/maven
-  - export PATH=${M2_HOME}/bin:${PATH}
-  - export BUILD_OPTS=""
-  - export CONFIG_OVERRIDES="-Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true  -Dbroker.host=localhost"
-  - export MAVEN_OPTS="-Xmx4096m"
-  - hash -r
+env:
+  global:
+    - BUILD_OPTS="" 
+    - CONFIG_OVERRIDES="-Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dbroker.host=localhost"
+    - MAVEN_OPTS="-Xmx4096m"
 
 jobs:
   include:
   - stage: build
     script:
-    - $M2_HOME/bin/mvn -v
-    - $M2_HOME/bin/mvn -B ${BUILD_OPTS} -DskipTests clean install
+    - mvn -v
+    - mvn -B ${BUILD_OPTS} -DskipTests clean install
   - stage: test
     script:
-    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @brokerAcl" verify
+    - ./travis.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @brokerAcl" verify
   - stage: test
     script:
-    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @tag" verify
+    - ./travis.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @tag" verify
   - stage: test
     script:
-    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @broker" verify
+    - ./travis.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @broker" verify
   - stage: test
     script:
-    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @device" verify
+    - ./travis.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @device" verify
   - stage: test
     script:
-    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @connection" verify
+    - ./travis.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @connection" verify
   - stage: test
     script:
-    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @datastore" verify
+    - ./travis.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @datastore" verify
   - stage: test
     script:
-    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @user" verify
+    - ./travis.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @user" verify
   - stage: test
     script:
-    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @security" verify
+    - ./travis.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @security" verify
   - stage: test
     script:
-    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @jobs" verify
+    - ./travis.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @jobs" verify
   - stage: test
     script:
-    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @triggerService" verify
+    - ./travis.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @triggerService" verify
   - stage: test
     script:
-    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @account" verify
+    - ./travis.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @account" verify
   - stage: test
     script:
-    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @jobEngineStartOfflineDevice" verify
+    - ./travis.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @jobEngineStartOfflineDevice" verify
   - stage: test
     script:
-    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @jobEngineStartOnlineDevice" verify
+    - ./travis.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @jobEngineStartOnlineDevice" verify
   - stage: test
     script:
-    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @jobEngineRestartOfflineDevice" verify
+    - ./travis.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @jobEngineRestartOfflineDevice" verify
   - stage: test
     script:
-    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @jobEngineRestartOnlineDevice" verify
+    - ./travis.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @jobEngineRestartOnlineDevice" verify
   - stage: test
     script:
-    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @jobEngineRestartOnlineDeviceSecondPart" verify
+    - ./travis.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @jobEngineRestartOnlineDeviceSecondPart" verify
   - stage: test
     script:
-    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @jobEngineServiceStop" verify
+    - ./travis.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @jobEngineServiceStop" verify
   - stage: test
     script:
-    - ./travis.sh $M2_HOME/bin/mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='org.eclipse.kapua.qa.markers.junit.JUnitTests' verify
+    - ./travis.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='org.eclipse.kapua.qa.markers.junit.JUnitTests' verify
   - stage: test
     script:
-    - $M2_HOME/bin/mvn -B -DskipTests install javadoc:jar
+    - mvn -B -DskipTests install javadoc:jar
 
 # The following upgrades Java during the build in
 # order to work around an older Java 8 compiler issue
