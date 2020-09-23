@@ -15,7 +15,10 @@ package org.eclipse.kapua.sso.provider;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -31,7 +34,6 @@ import org.eclipse.kapua.sso.exception.SsoAccessTokenException;
 import org.eclipse.kapua.sso.exception.SsoException;
 import org.eclipse.kapua.sso.exception.uri.SsoLoginUriException;
 import org.eclipse.kapua.sso.exception.uri.SsoLogoutUriException;
-import org.eclipse.kapua.sso.exception.uri.SsoUriException;
 import org.eclipse.kapua.sso.provider.setting.SsoSetting;
 import org.eclipse.kapua.sso.provider.setting.SsoSettingKeys;
 
@@ -52,6 +54,8 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
 
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractSingleSignOnService.class);
+
+    private static final String HIDDEN_SECRET = "****";
 
     protected SsoSetting ssoSettings;
 
@@ -117,9 +121,13 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
     }
 
     @Override
-    public String getLoginUri(final String state, final URI redirectUri) throws SsoUriException {
+    public String getLoginUri(final String state, final URI redirectUri) throws SsoLoginUriException {
+        StringBuilder logStr = new StringBuilder();
+        logStr.append("Requested SSO login URI:");
         try {
-            final URIBuilder uri = new URIBuilder(getAuthUri());
+            final String authUri = getAuthUri();
+            final URIBuilder uri = new URIBuilder(authUri);
+            logStr.append("\n\tURI: ").append(authUri);
 
             uri.addParameter("scope", "openid");
             uri.addParameter("response_type", "code");
@@ -127,17 +135,32 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
             uri.addParameter("state", state);
             uri.addParameter("redirect_uri", redirectUri.toString());
 
+            // logging parameters
+            logStr.append("\n\tParameters:");
+            for (NameValuePair nameValuePair : uri.getQueryParams()) {
+                logStr.append("\n\t\t").append(nameValuePair);
+            }
+
             return uri.toString();
-        } catch (URISyntaxException | SsoException e) {
-            throw new SsoLoginUriException(e);
+        } catch (URISyntaxException use) {
+            logger.error("Authentication URI is not a valid URI: {}", use.getLocalizedMessage(), use);
+            throw new SsoLoginUriException(use);
+        } catch (SsoException se) {
+            logger.error("Error while retrieving the authentication URI {}", se.getLocalizedMessage(), se);
+            throw new SsoLoginUriException(se);
+        } finally {
+            logger.debug("{}", logStr);
         }
     }
 
     @Override
-    public String getLogoutUri(final String idTokenHint, final URI postLogoutRedirectUri, final String state)
-            throws SsoUriException {
+    public String getLogoutUri(final String idTokenHint, final URI postLogoutRedirectUri, final String state) throws SsoLogoutUriException {
+        StringBuilder logStr = new StringBuilder();
+        logStr.append("Requested SSO logout URI:");
         try {
-            final URIBuilder uri = new URIBuilder(getLogoutUri());
+            final String logoutUri = getLogoutUri();
+            final URIBuilder uri = new URIBuilder(logoutUri);
+            logStr.append("\n\tURI: ").append(logoutUri);
 
             if (idTokenHint != null) { // idTokenHint is recommended
                 uri.addParameter("id_token_hint", idTokenHint);
@@ -149,9 +172,26 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
                 uri.addParameter("state", state);
             }
 
+            // logging parameters
+            logStr.append("\n\tParameters:");
+            for (NameValuePair nameValuePair : uri.getQueryParams()) {
+                String name = nameValuePair.getName();
+                if (name.equals("id_token_hint")) {
+                    logStr.append("\n\t\t").append(name).append("=").append(HIDDEN_SECRET);
+                } else {
+                    logStr.append("\n\t\t").append(nameValuePair);
+                }
+            }
+
             return uri.toString();
-        } catch (URISyntaxException | SsoException e) {
-            throw new SsoLogoutUriException(e);
+        } catch (URISyntaxException use) {
+            logger.error("Logout URI is not a valid URI: {}", use.getLocalizedMessage(), use);
+            throw new SsoLogoutUriException(use);
+        } catch (SsoException se) {
+            logger.error("Error while retrieving the logout URI {}", se.getLocalizedMessage(), se);
+            throw new SsoLogoutUriException(se);
+        } finally {
+            logger.debug("{}", logStr);
         }
     }
 
@@ -162,13 +202,17 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
     public JsonObject getAccessToken(final String authCode, final URI redirectUri) throws SsoAccessTokenException {
         // FIXME: switch to HttpClient implementation: better performance and connection caching
 
+        StringBuilder logStr = new StringBuilder();
+        logStr.append("SSO access token HTTP request:");
         try {
             URL url = new URL(getTokenUri());
+            logStr.append("\n\tUrl: ").append(url);
 
             final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
             urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty(HttpHeaders.CONTENT_TYPE, URLEncodedUtils.CONTENT_TYPE);
+            logStr.append("\n\tHTTP request method: ").append(urlConnection.getRequestMethod());
 
             final List<NameValuePair> parameters = new ArrayList<NameValuePair>();
             parameters.add(new BasicNameValuePair("grant_type", "authorization_code"));
@@ -182,23 +226,51 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
 
             parameters.add(new BasicNameValuePair("redirect_uri", redirectUri.toString()));
 
+            logStr.append("\n\tParameters:");
+            for (NameValuePair nameValuePair : parameters) {
+                String name = nameValuePair.getName();
+                if (name.equals("code") || name.equals("client_secret")) {
+                    logStr.append("\n\t\t").append(name).append("=").append(HIDDEN_SECRET);
+                } else {
+                    logStr.append("\n\t\t").append(nameValuePair);
+                }
+            }
+
             final UrlEncodedFormEntity entity = new UrlEncodedFormEntity(parameters);
 
             // Send post request
-
             urlConnection.setDoOutput(true);
-
             try (final OutputStream outputStream = urlConnection.getOutputStream()) {
                 entity.writeTo(outputStream);
             }
 
             // parse result
-
             try (InputStream stream = urlConnection.getInputStream(); JsonReader jsonReader = Json.createReader(stream)) {
-                return jsonReader.readObject();
+                logStr.append("\n\tResponse code: ").append(urlConnection.getResponseCode());
+                JsonObject result = jsonReader.readObject();
+                logStr.append("\n\tResponse body:");
+                logStr.append("\n\t\taccess_token: ").append(HIDDEN_SECRET);
+                logStr.append("\n\t\tid_token: ").append(HIDDEN_SECRET);
+                logger.debug("Successfully obtained access token.");
+                return result;
             }
-        } catch (SsoException | IOException e) {
-            throw new SsoAccessTokenException(e);
+        } catch (SsoException se) {
+            logger.error("Error while retrieving the String of the token API endpoint {}", se.getLocalizedMessage(), se);
+            throw new SsoAccessTokenException(se);
+        } catch (MalformedURLException mue) {
+            logger.error("Malformed token API endpoint URL {}", mue.getLocalizedMessage(), mue);
+            throw new SsoAccessTokenException(mue);
+        } catch (ProtocolException pe) {
+            logger.error("Wrong HTTP request method {}", pe.getLocalizedMessage(), pe);
+            throw new SsoAccessTokenException(pe);
+        } catch (UnsupportedEncodingException uee) {
+            logger.error("Unsupported HTTP request default encoding {}", uee.getLocalizedMessage(), uee);
+            throw new SsoAccessTokenException(uee);
+        } catch (IOException ioe) {
+            logger.error("Error while getting the access token {}", ioe.getLocalizedMessage(), ioe);
+            throw new SsoAccessTokenException(ioe);
+        } finally {
+            logger.debug("{}", logStr);
         }
     }
 

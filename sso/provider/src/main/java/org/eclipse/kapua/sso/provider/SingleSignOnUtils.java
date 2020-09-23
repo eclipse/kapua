@@ -18,6 +18,8 @@ import org.eclipse.kapua.sso.exception.uri.SsoJwtUriException;
 import org.eclipse.kapua.sso.exception.uri.SsoUriException;
 import org.eclipse.kapua.sso.provider.setting.SsoSetting;
 import org.eclipse.kapua.sso.provider.setting.SsoSettingKeys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -36,6 +38,8 @@ import java.util.Optional;
  */
 public final class SingleSignOnUtils {
 
+    private static final Logger logger = LoggerFactory.getLogger(SingleSignOnUtils.class);
+
     private static final String DEFAULT_SSO_OPENID_CONF_PATH = ".well-known/openid-configuration";
 
     private SingleSignOnUtils() {
@@ -48,33 +52,46 @@ public final class SingleSignOnUtils {
      * @param openIdConfPath the OpendID Connect configuration path.
      * @return an Optional with a {@link URI} corresponding to the given property if everything is fine, otherwise
      * an empty Optional.
-     * @throws SsoUriException if an {@link IOException} is caught.
+     * @throws SsoUriException if an {@link IOException}, a {@link MalformedURLException} or a {@link URISyntaxException} is caught.
      */
     public static Optional<URI> getConfigUri(String property, String openIdConfPath) throws SsoUriException {
         final JsonObject jsonObject;
 
-        // Read .well-known resource
-        try (final InputStream stream = new URL(openIdConfPath).openStream()) {
-            // Parse json response
-            jsonObject = Json.createReader(stream).readObject();
-        } catch (IOException ioe) {
-            throw new SsoJwtUriException(ioe);
-        }
-
-        // Get property
-        final JsonValue uriJsonValue = jsonObject.get(property);
-
-        // test result
+        StringBuilder logStr = new StringBuilder();
+        logStr.append("Requested property: ").append(property).append(" from openIdConfPath: ").append(openIdConfPath);
         try {
-            if (uriJsonValue instanceof JsonString) {
-                return Optional.of(new URI(((JsonString) uriJsonValue).getString()));
+            // Read .well-known resource
+            try (final InputStream stream = new URL(openIdConfPath).openStream()) {
+                // Parse json response
+                jsonObject = Json.createReader(stream).readObject();
             }
+
+            // Get property
+            final JsonValue uriJsonValue = jsonObject.get(property);
+
+            // test result
+            if (uriJsonValue instanceof JsonString) {
+                Optional<URI> optionalURI = Optional.of(new URI(((JsonString) uriJsonValue).getString()));
+                logStr.append(", result value: ").append(optionalURI.get());
+                return optionalURI;
+            }
+
+            // return
+            logStr.append(", no value found.");
+            return Optional.empty();
+        } catch (MalformedURLException mue) {
+            logger.error("openIdConfPath parameter is malformed: {}", mue.getLocalizedMessage(), mue);
+            throw new SsoJwtUriException(mue);
+        } catch (IOException ioe) {
+            logger.error("IOException occurred while reading the well-known resource: {}", ioe.getLocalizedMessage(), ioe);
+            throw new SsoJwtUriException(ioe);
         } catch (URISyntaxException urise) {
-            throw new IllegalAccessError("Unable to retrieve Config Uri");
+            logger.error("Unable to extract the required property from the openIdConfPath: {}", urise.getLocalizedMessage(), urise);
+            throw new SsoJwtUriException(urise);
+        } finally {
+            logger.debug("{}", logStr);
         }
 
-        // return
-        return Optional.empty();
     }
 
     /**
