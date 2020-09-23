@@ -31,7 +31,7 @@ public class DeviceTabConfigurationDescriptor extends AbstractEntityTabDescripto
 
     @Override
     public Integer getOrder() {
-        return 500;
+        return 600;
     }
 
     @Override

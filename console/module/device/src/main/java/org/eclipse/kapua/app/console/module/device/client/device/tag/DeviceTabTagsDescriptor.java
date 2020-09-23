@@ -31,7 +31,7 @@ public class DeviceTabTagsDescriptor extends AbstractEntityTabDescriptor<GwtDevi
 
     @Override
     public Integer getOrder() {
-        return 150;
+        return 200;
     }
 
     @Override
