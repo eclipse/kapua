@@ -13,10 +13,12 @@ cache:
   - $HOME/.m2
 
 install:
-- echo ==== Setting up toolchain.xml ====
-- ls /usr/lib/jvm
-- ls
-- cp build-tools/src/main/toolchains/travis-ci.xml ~/.m2/toolchains.xml
+  - echo ==== Setting up toolchain.xml ====
+  - echo == Available JVMs
+  - ls /usr/lib/jvm
+  - echo == Copying Toolchain File travis-ci.xml to .m2
+  - cp build-tools/src/main/toolchains/travis-ci.xml ~/.m2/toolchains.xml
+  - echo ==================================
 
 env:
   global:
