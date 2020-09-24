@@ -31,7 +31,7 @@ public class DeviceTabCommandDescriptor extends AbstractEntityTabDescriptor<GwtD
 
     @Override
     public Integer getOrder() {
-        return 600;
+        return 800;
     }
 
     @Override

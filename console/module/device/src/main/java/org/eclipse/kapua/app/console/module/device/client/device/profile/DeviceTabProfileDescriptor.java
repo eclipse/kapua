@@ -26,7 +26,7 @@ public class DeviceTabProfileDescriptor extends AbstractEntityTabDescriptor<GwtD
 
     @Override
     public String getViewId() {
-        return "device.tabs";
+        return "device.profile";
     }
 
     @Override
