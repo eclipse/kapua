@@ -24,7 +24,7 @@ Scenario: Init Security Context for all scenarios
 
     When I login as user with name "kapua-sys" and password "kapua-password"
     When I count the domain entries in the database
-    Then I count 21
+    Then I count 23
 
   Scenario: Regular domain
   Create a regular domain entry. The newly created entry must match the
