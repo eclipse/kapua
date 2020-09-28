@@ -455,6 +455,16 @@
         <url-pattern>/file/*</url-pattern>
     </servlet-mapping>
 
+    <!-- Image servlet for QR code generation -->
+    <servlet>
+        <servlet-name>ImageServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.core.servlet.ImageServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ImageServlet</servlet-name>
+        <url-pattern>/image/*</url-pattern>
+    </servlet-mapping>
+
     <servlet>
         <servlet-name>skinServlet</servlet-name>
         <servlet-class>org.eclipse.kapua.app.console.core.servlet.SkinServlet</servlet-class>
