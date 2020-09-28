@@ -18,10 +18,20 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 @Category(JUnitTests.class)
-public class AbstractKapuaSettingTest {
+public class AbstractKapuaSettingTest extends Assertions {
+
+    private class IncorrectConfigResourceName extends AbstractKapuaSetting<TestSettingKey> {
+        protected IncorrectConfigResourceName() {
+            super("incorrect.properties");
+        }
+    }
+
+    @Test(expected = ExceptionInInitializerError.class)
+    public void abstractKapuaSettingIncorrectConfigResourceNameTest() {
+        AbstractKapuaSetting abstractKapuaSetting = new IncorrectConfigResourceName();
+    }
 
     private static class TestSettingKey implements SettingKey {
-
         private String key;
 
         @SuppressWarnings("unused")
@@ -36,28 +46,21 @@ public class AbstractKapuaSettingTest {
     }
 
     @Test
-    public void shouldReadPathFromEnv() {
-        // When
+    public void shouldReadPathFromEnvTest() {
         String path = new TestSetting().property("PATH");
 
-        // Then
-        Assertions.assertThat(path).isNotEmpty();
+        assertThat(path).isNotEmpty();
     }
 
     @Test
-    public void shouldReadEnvUsingDotNotation() {
-        // Given
+    public void shouldReadEnvUsingDotNotationTest() {
         System.setProperty("FOO_BAR_BAZ", "qux");
-
-        // When
         String path = new TestSetting().property("foo.bar.baz");
 
-        // Then
-        Assertions.assertThat(path).isEqualTo("qux");
+        assertThat(path).isEqualTo("qux");
     }
 
     static class TestSetting extends AbstractKapuaSetting<TestSettingKey> {
-
         String property(String key) {
             return config.getString(key);
         }
@@ -65,7 +68,5 @@ public class AbstractKapuaSettingTest {
         protected TestSetting() {
             super("test.properties");
         }
-
     }
-
 }
