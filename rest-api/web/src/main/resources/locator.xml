@@ -24,6 +24,7 @@
         <api>org.eclipse.kapua.service.authentication.credential.mfa.MfaCredentialOptionService</api>
         <api>org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeFactory</api>
         <api>org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeService</api>
+        <api>org.eclipse.kapua.service.authentication.mfa.MfaAuthenticationService</api>
         <api>org.eclipse.kapua.service.authentication.token.AccessTokenService</api>
         <api>org.eclipse.kapua.service.authentication.token.AccessTokenFactory</api>
 
