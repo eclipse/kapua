@@ -27,6 +27,8 @@ public class UsernamePasswordCredentialsImpl implements UsernamePasswordCredenti
 
     private String username;
     private String password;
+    private String authenticationCode;
+    private String trustKey;
 
     /**
      * Constructor
@@ -66,5 +68,25 @@ public class UsernamePasswordCredentialsImpl implements UsernamePasswordCredenti
     @Override
     public Object getCredentials() {
         return password;
+    }
+
+    @Override
+    public String getAuthenticationCode() {
+        return authenticationCode;
+    }
+
+    @Override
+    public void setAuthenticationCode(String authenticationCode) {
+        this.authenticationCode = authenticationCode;
+    }
+
+    @Override
+    public String getTrustKey() {
+        return trustKey;
+    }
+
+    @Override
+    public void setTrustKey(String trustKey) {
+        this.trustKey = trustKey;
     }
 }

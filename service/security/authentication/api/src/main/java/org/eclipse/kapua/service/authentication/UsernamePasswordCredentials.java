@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlRootElement(name = "usernamePasswordCredentials")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "username", "password" }, factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newUsernamePasswordCredentials")
+@XmlType(propOrder = { "username", "password", "authenticationCode", "trustKey" }, factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newUsernamePasswordCredentials")
 public interface UsernamePasswordCredentials extends LoginCredentials {
 
     /**
@@ -53,4 +53,32 @@ public interface UsernamePasswordCredentials extends LoginCredentials {
      * @param password
      */
     void setPassword(String password);
+
+    /**
+     * return the authenticationCode
+     *
+     * @return
+     */
+    String getAuthenticationCode();
+
+    /**
+     * Set the authenticationCode
+     *
+     * @param authenticationCode
+     */
+    void setAuthenticationCode(String authenticationCode);
+
+    /**
+     * return the trustKey
+     *
+     * @return the trust key
+     */
+    String getTrustKey();
+
+    /**
+     * Set the trust key
+     *
+     * @param trustKey
+     */
+    void setTrustKey(String trustKey);
 }

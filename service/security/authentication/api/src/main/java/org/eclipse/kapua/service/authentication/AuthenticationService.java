@@ -35,6 +35,16 @@ public interface AuthenticationService extends KapuaService {
     AccessToken login(LoginCredentials loginCredentials) throws KapuaException;
 
     /**
+     * Login the provided user login credentials on the system (if the credentials are valid) and enable the trust key
+     *
+     * @param loginCredentials
+     * @param enableTrust
+     * @return
+     * @throws KapuaException an exception is thrown if the credentials are not found on the system, are expired or are disabled
+     */
+    AccessToken login(LoginCredentials loginCredentials, boolean enableTrust) throws KapuaException;
+
+    /**
      * FIXME: add javadoc
      *
      * @param sessionCredentials
